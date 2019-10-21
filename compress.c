@@ -379,7 +379,7 @@ int perm_stat = 0;			/* permanent status */
 
 code_int getcode();
 
-Usage() {
+void Usage() {
 #ifdef DEBUG
 fprintf(stderr,"Usage: compress [-dDVfc] [-b maxbits] [file ...]\n");
 }
@@ -460,7 +460,7 @@ FILE *infile, *outfile;
  * procedure needs no input table, but tracks the way the table was built.
  */
 
-do_compression( decomp, file )
+void do_compression( decomp, file )
 int decomp;
 char *file;
 {
@@ -663,7 +663,7 @@ long int out_count = 0;			/* # of codes output (for debugging) */
  * questions about this implementation to ames!jaw.
  */
 
-compress()
+void compress()
 {
     register long fcode;
     register code_int i = 0;
@@ -805,7 +805,7 @@ char_type lmask[9] = {0xff, 0xfe, 0xfc, 0xf8, 0xf0, 0xe0, 0xc0, 0x80, 0x00};
 char_type rmask[9] = {0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff};
 #endif /* vax */
 
-output( code )
+void output( code )
 code_int  code;
 {
 #ifdef DEBUG
@@ -931,7 +931,7 @@ code_int  code;
  * with those of the compress() routine.  See the definitions above.
  */
 
-decompress() {
+void decompress() {
     register char_type *stackp;
     register int finchar;
     register code_int code, oldcode, incode;
@@ -1227,7 +1227,7 @@ writeerr()
     exit ( 1 );
 }
 
-copystat(ifname, ofname)
+void copystat(ifname, ofname)
 char *ifname, *ofname;
 {
     struct stat statbuf;
@@ -1299,7 +1299,7 @@ oops ( )	/* wild pointer -- assume bad input */
     exit ( 1 );
 }
 
-cl_block ()		/* table clear for block compress */
+void cl_block ()		/* table clear for block compress */
 {
     register long int rat;
 
@@ -1341,7 +1341,7 @@ cl_block ()		/* table clear for block compress */
     }
 }
 
-cl_hash(hsize)		/* reset code table */
+void cl_hash(hsize)		/* reset code table */
 	register count_int hsize;
 {
 #ifndef XENIX_16	/* Normal machine */
@@ -1393,7 +1393,7 @@ cl_hash(hsize)		/* reset code table */
 		*--htab_p = m1;
 }
 
-prratio(stream, num, den)
+void prratio(stream, num, den)
 FILE *stream;
 long int num, den;
 {
