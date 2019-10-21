@@ -1423,7 +1423,7 @@ int id,chargeval;
 	  ((chargeval == -1) ||
 	   (Player.possessions[i]->charge == chargeval))) {
 	o = Player.possessions[i];
-	conform_lost_object(o);
+	conform_lost_objects(1, o);
 	found = TRUE;
       }
   if (! found) for(i=0;((i<Player.packptr)&&(! found));i++)
@@ -1431,8 +1431,11 @@ int id,chargeval;
       if ((Player.pack[i]->id == id) &&
 	  ((chargeval == -1) ||
 	   (Player.pack[i]->charge == chargeval))) {
-	free((char *)Player.pack[i]);
-	Player.pack[i] = NULL;
+	Player.pack[i]->number--;
+	if (Player.pack[i]->number == 0) {
+	  free((char *)Player.pack[i]);
+	  Player.pack[i] = NULL;
+	}
 	found = TRUE;
       }
   fixpack();

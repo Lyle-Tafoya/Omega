@@ -296,8 +296,7 @@ struct monster *m;
     }
   if (m->hp < 10) {
     mprint("The Eater explodes in a burst of mana!");
-    for(i=0;i<9;i++) 
-      manastorm(m->x+Dirs[0][i],m->y+Dirs[0][i],100);
+    manastorm(m->x,m->y,1000);
   }
 }
 
@@ -642,13 +641,14 @@ struct monster *m;
 	    strcat(Str2,m->monstring);
 	  }
 	  else strcpy(Str2,m->monstring);
-	  strcat(Str2,"suddenly runs away for some reason.");
+	  strcat(Str2," suddenly runs away for some reason.");
 	  mprint(Str2);
 	  m_teleport(m);
 	  m->movef = M_MOVE_SCAREDY;
 	  m->specialf = M_MOVE_SCAREDY;
 	  m_pickup(m,Player.possessions[i]);
-	  conform_lost_object(Player.possessions[i]);
+	  conform_unused_object(Player.possessions[i]);
+	  Player.possessions[i] = NULL;
 	}
       }
     }

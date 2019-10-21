@@ -47,14 +47,13 @@ All the above save money may also be sent to:
         brothers@paul.rutgers.edu
 
 Bug reports and suggestions can also be sent to the current maintainer
-of Omega.  Until July 1994, this is
-        rendell@cs.monash.edu.au
+of Omega.  Currently, this is
+	omega@alcyone.darkside.com (Erik Max Francis)
 Since Laurence has moved on and indicates that he is no longer interested
 in maintaining the game, you have a much greater chance of action if you
-email the maintainer.  After July 1994, hopefully someone else will take
-up the job.  Tom O. Breton (tob@world.std.com) is currently working on
-tehomega, a complete re-write of omega - finger his account to see how
-the project is progressing.
+email the maintainer.  Tom O. Breton (tob@world.std.com) is currently
+working on tehomega, a complete re-write of omega - finger his account to
+see how the project is progressing.
 
 PC version comments can be sent to Nathan Glasser:
 

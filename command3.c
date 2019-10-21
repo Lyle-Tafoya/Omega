@@ -157,8 +157,10 @@ void help()
     c = (char) mcigetc();
 #if defined(MSDOS) || defined(AMIGA)
   while ((c < 'a' || c > 'm') && c != ESCAPE);
-  sprintf(filestr, "%shelp%d.txt", Omegalib, c+1-'a');
-  displayfile(filestr);
+  if (c != ESCAPE) {
+    sprintf(filestr, "%shelp%d.txt", Omegalib, c+1-'a');
+    displayfile(filestr);
+  }
 #else
   while ((c < 'a' || c > 'n') && c != ESCAPE);
   if (c == 'n') {
@@ -246,7 +248,7 @@ void fire()
 	if (obj->dmg == 0) {
 	  if (m->treasure > 0) { /* the monster can have treasure/objects */
 	    mprint("Your gift is caught!");
-	    givemonster(m,obj);
+	    givemonster(m,split_item(1,obj));
 	    conform_lost_objects(1,obj);
 	  }
 	  else {

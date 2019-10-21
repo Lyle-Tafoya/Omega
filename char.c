@@ -47,6 +47,7 @@ void initplayer()
     Player.rank[i] = 0;
     Player.guildxp[i] = 0;
   }
+  Player.patron = 0;
   Player.alignment = 0;
   Player.cash = 250;
   change_to_user_perms();

@@ -1,6 +1,8 @@
 Version		Changes
 =======		=======
 
+Produced by Laurence Brothers (brothers@paul.rutgers.edu)
+
 0.57(alpha)	First public release
 
 0.58(alpha)	bugfixes, I forget what else
@@ -36,12 +38,14 @@ Version		Changes
 0.75		Somewhat bugfixed version of 0.71, with MS-DOS cpp code and
 		makefile courtesy Nathan Glasser.
 		5/4/89.
-		---------------
-0.78		Rather more bugfixed version from 0.75, by Robert Rendell.
-		Put in support for uid swapping so omega may run suid. 
-		Removed the high scores from the player save file (weird...) 
-		Put in file locking on the high score file so file isn't
-		corrupted by simultanious updates.  Fixed many sundry bugs.
+
+Produced by Robert Rendell (rendell@cs.monash.edu.au)
+
+0.78		Rather more bugfixed version from 0.75.  Put in support for
+		uid swapping so omega may run suid. Removed the high scores
+		from the player save file (weird...) Put in file locking on
+		the high score file so file isn't corrupted by simultanious
+		updates. Fixed many sundry bugs.
 		3 Sept 93.
 
 0.78.1		Fixed a number of bugs reported by various people.
@@ -68,3 +72,9 @@ Version		Changes
 		filename limit.  Also fixed setoptions so it didn't crash
 		when called from the character creation routines.
 		28 June 94.
+
+0.80.2		Patch 2: more bugfixes, mostly involving bugs with multiple
+		items - there were several cases where conform_lost_object/s
+		was called on an item that was then given to a monster or
+		put in a safe, causing strange effects like piles of 0 size.
+

@@ -415,15 +415,27 @@ int hostile_magic;
 void terrain_check(takestime)
 int takestime;
 {
-  if (gamestatusp(MOUNTED))
+  int faster = 0;
+
+  if (Player.patron == DRUID) {
+    faster = 1;
+    switch(random_range(32)) {
+      case 0:print2("Along the many paths of nature..."); break;
+      case 1:print2("You move swiftly through the wilderness."); break;
+    }
+  }
+  else if (gamestatusp(MOUNTED)) {
+    faster = 1;
     switch(random_range(32)) {
       case 0:
       case 1:print2("Clippity Clop.");break;
       case 2:print2("....my spurs go jingle jangle jingle....");break;
       case 3:print2("....as I go riding merrily along....");break;
     }
+  }
   else if (Player.possessions[O_BOOTS] &&
-      Player.possessions[O_BOOTS]->usef == I_BOOTS_7LEAGUE)
+      Player.possessions[O_BOOTS]->usef == I_BOOTS_7LEAGUE) {
+    takestime = 0;
     switch(random_range(32)) {
       case 0:print2("Boingg!"); break;
       case 1:print2("Whooosh!"); break;
@@ -431,6 +443,14 @@ int takestime;
       case 3:print2("...able to leap over 7 leagues in a single bound....");
 	break;
     }
+  }
+  else if (Player.status[SHADOWFORM]) {
+    faster = 1;
+    switch(random_range(32)) {
+      case 0:print2("As swift as a shadow."); break;
+      case 1:print2("\"I walk through the trees...\""); break;
+    }
+  }
   else switch(random_range(32)) {
     case 0:print2("Trudge. Trudge."); break;
     case 1:print2("The road goes ever onward...."); break;
@@ -465,7 +485,7 @@ int takestime;
     if (takestime) {
       Time += 60;
       hourly_check();
-      if (! gamestatusp(MOUNTED)) {
+      if (! faster) {
 	Time += 60;
 	hourly_check();
       }
@@ -476,7 +496,7 @@ int takestime;
     if (takestime) {
       Time += 60;
       hourly_check();
-      if (! gamestatusp(MOUNTED)) {
+      if (! faster) {
 	Time += 60;
 	hourly_check();
       }
@@ -492,7 +512,7 @@ int takestime;
       if (Player.rank[PRIESTHOOD] == 0 || Player.patron != DRUID) {
 	Time += 60;
 	hourly_check();
-	if (! gamestatusp(MOUNTED)) {
+	if (! faster) {
 	  Time += 60;
 	  hourly_check();
 	}
@@ -506,7 +526,7 @@ int takestime;
       hourly_check();
       Time += 60;
       hourly_check();
-      if (! gamestatusp(MOUNTED) && (Player.rank[PRIESTHOOD] == 0 || Player.patron != DRUID)) {
+      if (! faster) {
 	Time += 60;
 	hourly_check();
 	Time += 60;
@@ -521,7 +541,7 @@ int takestime;
       hourly_check();
       Time += 60;
       hourly_check();
-      if (! gamestatusp(MOUNTED)) {
+      if (! faster) {
 	Time += 60;
 	hourly_check();
 	Time += 60;
@@ -548,7 +568,7 @@ int takestime;
       hourly_check();
       Time += 60;
       hourly_check();
-      if (! gamestatusp(MOUNTED)) {
+      if (! faster) {
 	Time += 60;
 	hourly_check();
 	Time += 60;
@@ -590,7 +610,7 @@ int takestime;
       hourly_check();
       Time += 60;
       hourly_check();
-      if (! gamestatusp(MOUNTED)) {
+      if (! faster) {
 	Time += 60;
 	hourly_check();
 	Time += 60;

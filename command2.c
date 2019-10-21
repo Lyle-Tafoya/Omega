@@ -170,7 +170,7 @@ int *searchval;
       setgamestatus(FAST_MOVE);
       *searchval = Searchnum;
     }
-    for (i=0;i<8;i++) 
+    for (i=0;i<9;i++) 
       searchat(Player.x+Dirs[0][i],Player.y+Dirs[1][i]);
     drawvision(Player.x,Player.y);
   }
@@ -183,7 +183,10 @@ int *searchval;
  {
    if (Level->site[Player.x][Player.y].things == NULL)
      print3("There's nothing there!");
-   else pickup_at(Player.x,Player.y);
+   else if (Player.status[SHADOWFORM])
+     print3("You can't really interact with the real world in your shadowy state.");
+   else
+     pickup_at(Player.x,Player.y);
  }
 
 

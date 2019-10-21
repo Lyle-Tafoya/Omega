@@ -564,6 +564,7 @@ int npcid;
     determine_npc_behavior(npc,Archmagelevel,Archmagebehavior);
     st = ARTIFACTID+9; /* kolwynia */
     npc->talkf = M_TALK_ARCHMAGE;
+    m_status_reset(npc, WANDERING);
     m_status_reset(npc, HOSTILE);
     break;
   case 10:
@@ -1049,43 +1050,52 @@ void m_altar(m)
 struct monster *m;
 {
   int visible = view_los_p(Player.x,Player.y,m->x,m->y);
-  if (m->uniqueness != COMMON) strcpy(Str1,m->monstring);
-  else {
-    strcpy(Str1,"The ");
-    strcat(Str1,m->monstring);
-  }
-  strcat(Str1," walks next to an altar...");
-  if (visible) mprint(Str1);
-  if (Level->site[m->x][m->y].aux==Player.patron) {
-    if (visible) {
-      mprint("Your deity is angry!");
-      mprint("A bolt of godsfire strikes the monster....");
+  int reaction = 0;
+  int altar = Level->site[m->x][m->y].aux;
+
+  if (visible) {
+    if (m->uniqueness != COMMON) strcpy(Str1,m->monstring);
+    else {
+      strcpy(Str1,"The ");
+      strcat(Str1,m->monstring);
     }
-    disrupt(m->x,m->y,Player.rank[PRIESTHOOD]*50);
+    strcat(Str1," walks next to an altar...");
+    mprint(Str1);
   }
-  else if ((Player.patron == ODIN) || (Player.patron == ATHENA)) {
-    if ((Level->site[m->x][m->y].aux == SET) ||
-	(Level->site[m->x][m->y].aux == HECATE)) {
+  if (!m_statusp(m, HOSTILE))
+    reaction = 0;
+  else if (m->id == HISCORE_NPC && m->aux2 == altar)
+    reaction = 1;	/* high priest of same deity */
+  else if ((m->id == ML6+11 || m->id == ML8+11 || m->id == ML9+6) &&
+      m->aux1 == altar)
+    reaction = 1;	/* angel of same deity */
+  else if (altar == Player.patron)
+    reaction = -1;	/* friendly deity will zap hostile monster */
+  else if (((Player.patron == ODIN || Player.patron == ATHENA) &&
+      (altar == SET || altar == HECATE)) ||
+      ((Player.patron == SET || Player.patron == HECATE) &&
+      (altar == ODIN || altar == ATHENA)))
+    reaction = 1;	/* hostile deity will help hostile monster */
+  switch (reaction) {
+    case -1:
+      if (visible) {
+	mprint("Your deity is angry!");
+	mprint("A bolt of godsfire strikes the monster....");
+      }
+      disrupt(m->x,m->y,Player.rank[PRIESTHOOD]*50);
+      break;
+    case 1:
       if (visible) {
 	mprint("The deity of the altar smiles on the monster....");
 	mprint("A shaft of light zaps the altar...");
       }
       m->hp = Monsters[m->id].hp*2;
-    }
-    else if (visible) mprint("but nothing much seems to happen");
+      break;
+    default:
+      if (visible)
+	mprint("but nothing much seems to happen");
+      break;
   }
-  else if ((Player.patron == SET) || (Player.patron == HECATE)) {
-    if ((Level->site[m->x][m->y].aux == ODIN) ||
-	(Level->site[m->x][m->y].aux == ATHENA)) {
-      if (visible) {
-	mprint("The deity of the altar smiles on the monster....");
-	mprint("A shaft of light zaps the altar...");
-      }
-      m->hp = Monsters[m->id].hp*2;
-    }
-    else if (visible) mprint("but nothing much seems to happen");
-  }
-  else if (visible) mprint("but nothing much seems to happen");
 }
 
 

@@ -723,7 +723,7 @@ int spell;
 
 
 
-static char *spell_names[] = {
+static char *spell_names[] = {		/* alphabetical listing */
 "accuracy", "alertness", "apportation", "ball lightning", "blessing",
 "breathing", "clairvoyance", "curing", "desecration", "disintegrate",
 "dispelling", "disrupt", "enchantment", "energy drain", "fear", "firebolt",
@@ -733,7 +733,7 @@ static char *spell_names[] = {
 "sanctification", "sanctuary", "self knowledge", "shadow form", "sleep",
 "summoning", "teleport", "the warp", "true sight", "wishing" };
 
-static int spell_ids[] = {
+static int spell_ids[] = {	/* in the same order as spell_names[] */
 S_ACCURACY, S_ALERT, S_APPORT, S_LBALL, S_BLESS, S_BREATHE, S_CLAIRVOYANCE,
 S_CURE, S_DESECRATE, S_DISINTEGRATE, S_DISPEL, S_DISRUPT, S_ENCHANT, S_DRAIN,
 S_FEAR, S_FIREBOLT, S_HASTE, S_HEAL, S_HELLFIRE, S_HERO, S_IDENTIFY,
@@ -753,6 +753,9 @@ int first, last;
     if (Spells[spell_ids[i]].known) {
       printed = TRUE;
       menuprint(spell_names[i]);
+      menuprint(" (");
+      menunumprint(Spells[spell_ids[i]].powerdrain);
+      menuprint(" mana)");
       menuprint("\n");
     }
   if (! printed)

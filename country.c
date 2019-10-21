@@ -518,22 +518,21 @@ int populate;
 	break;
       case 'H':
 	Level->site[i][j].locchar = FLOOR;
-	if (populate && strcmp(Player.name,Priest[Player.patron]) != 0)
+	if (populate && (!Player.patron ||
+	    strcmp(Player.name,Priest[Player.patron]) ||
+	    Player.rank[PRIESTHOOD] != HIGHPRIEST))
 	  make_high_priest(i,j,deity);
 	break;
       case 'S':
 	Level->site[i][j].locchar = FLOOR;
-	if (strcmp(Player.name,Priest[Player.patron]) != 0) 
+	if (!Player.patron ||
+	    strcmp(Player.name,Priest[Player.patron]) ||
+	    Player.rank[PRIESTHOOD] != HIGHPRIEST)
 	  lset(i,j,SECRET);
 	break;
       case 'W':
 	Level->site[i][j].locchar = FLOOR;
-	if ((deity != Player.patron) &&
-	    ((deity == ODIN) ||
-	     (deity == SET) ||
-	     (deity == HECATE) ||
-	     (deity == ATHENA) ||
-	     (deity == DESTINY)))
+	if (deity != Player.patron && deity != DRUID)
 	  Level->site[i][j].p_locf = L_TEMPLE_WARNING;
 	break;
       case 'm':
@@ -609,22 +608,16 @@ int i,j,deity,populate;
       make_site_monster(i,j,ML7+14);
     break; /* inner circle demon */
   case 3: 
-    if (populate) {
+    if (populate)
       make_site_monster(i,j,ML6+11);
-      Level->site[i][j].creature->aux1 = deity;
-    }
     break; /* angel of apropriate sect */
   case 4: 
-    if (populate) {
+    if (populate)
       make_site_monster(i,j,ML8+11);
-      Level->site[i][j].creature->aux1 = deity;
-    }
-    break; /* archangel of apropriate sect */
+    break; /* high angel of apropriate sect */
   case 5: 
-    if (populate) {
+    if (populate)
       make_site_monster(i,j,ML9+6);
-      Level->site[i][j].creature->aux1 = deity;
-    }
     break; /* archangel of apropriate sect */
   }
 }

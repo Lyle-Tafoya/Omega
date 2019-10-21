@@ -1,0 +1,30 @@
+# Change these two lines to reflect where your (modified) curses library is.
+# (see compile.dj, in the docs directory)
+
+INCLUDE = /djgpp/contrib/curses/inc
+LIBRARY = /djgpp/contrib/curses/lib
+
+CFLAGS = -DMSDOS -O -DDJGPP -I$(INCLUDE)
+LDFLAGS = -s -L$(LIBRARY)
+CC = gcc
+
+LIBS = -lcurse -lpc
+
+#################### that's it for changing the Makefile ####################
+
+OBJ = omega.o abyss.o aux1.o aux2.o aux3.o char.o city.o \
+	  command1.o command2.o command3.o \
+	  country.o effect1.o effect2.o effect3.o \
+	  etc.o env.o file.o gen1.o gen2.o guild1.o guild2.o house.o \
+	  init.o inv.o item.o itemf1.o itemf2.o itemf3.o lev.o \
+	  mmelee.o mmove.o mon.o move.o movef.o mspec.o \
+	  mstrike.o mtalk.o priest.o \
+	  save.o scr.o site1.o site2.o \
+	  spell.o time.o trap.o util.o village.o compress.o
+
+omega: $(OBJ)
+	$(CC) $(LDFLAGS) $(OBJ) $(LIBS) -o omega.cof
+	strip omega.cof
+	coff2exe -s c:/djgpp/bin/go32.exe omega.cof	
+
+$(OBJ): defs.h extern.h glob.h

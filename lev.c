@@ -322,7 +322,10 @@ int mid;
   *newmonster = Monsters[mid];
   if ((mid == ML6+11) || (mid == ML8+11) || (mid == ML9+6)) {
     /* aux1 field of an angel is its deity */
-    newmonster->aux1 = random_range(6)+1;
+    if (Current_Environment == E_TEMPLE)
+      newmonster->aux1 = Country[LastCountryLocX][LastCountryLocY].aux;
+    else
+      newmonster->aux1 = random_range(6)+1;
     strcpy(Str3,Monsters[mid].monstring);
     switch(newmonster->aux1) {
     case ODIN: strcat(Str3," of Odin"); break;

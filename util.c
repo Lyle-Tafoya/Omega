@@ -650,7 +650,7 @@ void calc_weight()
       (Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND]))
     weight -= Player.possessions[O_READY_HAND]->weight *
       Player.possessions[O_READY_HAND]->number;
-  for(i=1;i<MAXPACK;i++) 
+  for(i=0;i<MAXPACK;i++) 
     if (Player.pack[i] != NULL)
       weight += Player.pack[i]->weight *
 	Player.pack[i]->number;

@@ -149,8 +149,13 @@ int x,y;
   setgamestatus(SKIP_MONSTERS);
   if (! inbounds(x,y)) return (FALSE);
   else if (Player.status[SHADOWFORM]) {
-    resetgamestatus(SKIP_MONSTERS);
-    return(TRUE);
+    switch(Level->site[x][y].p_locf) {
+      case L_CHAOS: case L_ABYSS: case L_VOID:
+	return confirmation();
+      default:
+	resetgamestatus(SKIP_MONSTERS);
+	return(TRUE);
+    }
   }
   else if (loc_statusp(x,y,SECRET)) {
     if (!gamestatusp(FAST_MOVE)) print3("Ouch!");
@@ -247,13 +252,14 @@ int x,y;
       lreset(x,y,SECRET);
       lset(x, y, CHANGED);
       if ((Level->site[x][y].locchar==OPEN_DOOR) ||
-	  (Level->site[x][y].locchar==CLOSED_DOOR))
+	  (Level->site[x][y].locchar==CLOSED_DOOR)) {
 	mprint("You find a secret door!");
-      else mprint("You find a secret passage!");
-      for(i=0;i<8;i++) {
-	lset(x+Dirs[0][i],y+Dirs[1][i],STOPS);
-	lset(x+Dirs[0][i], y+Dirs[1][i], CHANGED);
+	for(i=0;i<8;i++) {
+	  lset(x+Dirs[0][i],y+Dirs[1][i],STOPS);
+	  lset(x+Dirs[0][i], y+Dirs[1][i], CHANGED);
+	}
       }
+      else mprint("You find a secret passage!");
       drawvision(Player.x,Player.y);
     }
     if ((Level->site[x][y].p_locf >= TRAP_BASE) &&
@@ -434,10 +440,7 @@ pob o;
 	  nprint1(" Ka-Blamm!!!");
 	  /* general case. Some sticks will eventually do special things */
 	  morewait();
-	for(i=0;i<9;i++)
-	  manastorm(Player.x+Dirs[0][i],
-		    Player.y+Dirs[1][i],
-		    o->charge*o->level*10);
+	  manastorm(Player.x, Player.y, o->charge*o->level*10);
 	  dispose_lost_objects(1,o);
 	}
 	return 1;
@@ -634,7 +637,10 @@ void describe_player()
     print1("A somewhat bruised ");
   else print1("A fit ");
 
-  nprint1(levelname(Player.level));
+  if (Player.status[SHADOWFORM])
+    nprint1("shadow");
+  else
+    nprint1(levelname(Player.level));
   nprint1(" named ");
   nprint1(Player.name);
   if (gamestatusp(MOUNTED))
@@ -829,7 +835,8 @@ struct monster *m;
       morewait();
       givemonster(m,Player.possessions[bestitem]);
       morewait(); /* msgs come from givemonster */
-      conform_lost_object(Player.possessions[bestitem]);
+      conform_unused_object(Player.possessions[bestitem]);
+      Player.possessions[bestitem] = NULL;
     }
     print2("You feel less experienced... ");
     Player.xp = max(0,Player.xp - m->xpv);

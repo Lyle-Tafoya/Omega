@@ -28,7 +28,7 @@ WINDOW *Levelw,*Dataw,*Flagw,*Timew,*Menuw,*Locw,*Morew,*Phasew;
 WINDOW *Comwin,*Msg1w,*Msg2w,*Msg3w,*Msgw;
 WINDOW *Showline[MAXITEMS];
 
-#if !defined(MSDOS) && !defined(AMIGA)
+#if 0 /* !defined(MSDOS) && !defined(AMIGA) */
 void wattrset ARGS((WINDOW *, int));
 #endif
 
@@ -1719,10 +1719,12 @@ void clear_screen()
   refresh();
 }
 
+#if 0 /* ncurses comes with wattrset */
 #if !defined(MSDOS) && !defined(AMIGA)
 /* this function will never be called if we're neither MSDOS nor AMIGA, */
 /* but the linker needs something, naturally... */
 void wattrset(WINDOW *w, int s)
 {
 }
+#endif
 #endif

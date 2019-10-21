@@ -65,8 +65,8 @@ void l_condo()
 	    ol->thing = Player.possessions[i];
 	    ol->next = Condoitems;
 	    Condoitems = ol;
-	    conform_lost_objects(Player.possessions[i]->number,
-				 Player.possessions[i]);
+	    conform_unused_object(Player.possessions[i]);
+	    Player.possessions[i] = NULL;
 	  }
 	}
       }

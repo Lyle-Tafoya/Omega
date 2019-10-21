@@ -392,7 +392,7 @@ int fx,fy,tx,ty,dmg,dtype;
 	  break;
       }
     }
-    else if (NULL != (target = Level->site[ex][ey].creature)) {
+    if (NULL != (target = Level->site[ex][ey].creature)) {
       if (los_p(Player.x,Player.y,target->x,target->y)) {
       if (target->uniqueness == COMMON) {
 	strcpy(Str1,"The ");
@@ -410,7 +410,7 @@ int fx,fy,tx,ty,dmg,dtype;
       m_status_set(target,HOSTILE);
       m_damage(target,random_range(dmg),dtype);
     }
-    else if (Level->site[ex][ey].locchar == HEDGE)
+    if (Level->site[ex][ey].locchar == HEDGE)
       if (Level->site[ex][ey].p_locf != L_TRIFID) {
 	if ((dtype == FLAME)||(dtype == ELECTRICITY)) {
 	  mprint("The hedge is blasted away!");

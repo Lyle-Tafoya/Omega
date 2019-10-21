@@ -8,22 +8,22 @@ LIBDIR = /usr/games/lib/omegalib
 # it will fail if none of them are defined.  If you do uncomment
 # one, make sure you comment out the other definition of CFLAGS lower down
 
- CFLAGS = -DBSD 
-# CFLAGS = -DSYSV -O
+#CFLAGS = -DBSD -O
+CFLAGS = -DUNIX -DSYSV -O
 # I also had to define -cckr (K&R style C) for system V
-# CFLAGS = -DMSDOS -O
-# CFLAGS = -DAMIGA -O
+#CFLAGS = -DMSDOS -O
+#CFLAGS = -DAMIGA -O
 
 # If you have gcc and don't intend to hack around with the game,
 # I recommend setting CC to gcc and using -O (as the CFLAGS).
 
 #CFLAGS = -O
 LDFLAGS = -s
-CC = gcc
+CC = gcc -I/usr/include/ncurses
 
 # comment out one of the following two, after establishing whether your
 # machine uses termcap (most BSD machines) or terminfo (System-V)
-LIBS = -lcurses -ltermcap
+LIBS = -lncurses -ltermcap
 #LIBS = -lcurses -ltermlib
 
 #################### that's it for changing the Makefile ####################

@@ -402,7 +402,7 @@ void alert(blessing)
  int blessing;
 {
   if (blessing > -1) {
-    mprint("You feel a sense of insomnia.");
+    mprint("You feel on-the-ball.");
     Player.status[ALERT]+= 4+(5*blessing);
   }
   else sleep_player(abs(blessing)+3);

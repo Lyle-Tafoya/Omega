@@ -9,5 +9,5 @@ Therefore, it is likely that your version, whatever it is, has some
 bugs. The author no longer strives to correct bugs and remedy
 misfeatures, so you probably shouldn't send mail to
 brothers@paul.rutgers.edu.  However, if you send such mail to
-rendell@cs.monash.edu.au before July 1994, there may be attempts
+omega@alcyone.darkside.com (Erik Max Francis), there may be attempts
 to remedy the problem - don't hold your breath, though.
