@@ -697,7 +697,7 @@ pob o;
   }
 }
 
-int pack_item_cost(index)
+int pack_item_cost(int index)
 {
   int cost;
   if (index > 20) {
