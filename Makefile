@@ -8,8 +8,8 @@ LIBDIR = /home/sdossey/omega/lib/
 # it will fail if none of them are defined.  If you do uncomment
 # one, make sure you comment out the other definition of CFLAGS lower down
 
-CFLAGS = -DBSD -ggdb
-#CFLAGS = -DSYSV -O
+#CFLAGS = -DBSD -ggdb
+CFLAGS = -DSYSV -O
 # I also had to define -cckr (K&R style C) for system V
 #CFLAGS = -DMSDOS -O
 #CFLAGS = -DAMIGA -O
