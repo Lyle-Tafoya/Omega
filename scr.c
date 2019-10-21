@@ -21,6 +21,7 @@
 # define CHARATTR(c)	((c) & ~0xff)
 #endif
 
+#include <unistd.h>
 #include "glob.h"
 
 #ifdef EXCESSIVE_REDRAW
