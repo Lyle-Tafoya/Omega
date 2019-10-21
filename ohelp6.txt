@@ -1,0 +1,12 @@
+BUGS AND FEATURES
+=================
+"It's not a bug, it's an undocumented feature." 
+
+omega is not just a large program, it is a large, complicated, and not
+particularly well written program. There are so many features that not
+all can be well tested, particularly in combination with one another.
+Therefore, it is likely that your version, whatever it is, has some
+bugs. The author always strives to correct bugs and remedy
+misfeatures, so if you send mail to brothers@paul.rutgers.edu, he will
+attempt to remedy the problem. Suggestions for further features,
+monsters, traps, items, dungeons, etc. are also welcome.

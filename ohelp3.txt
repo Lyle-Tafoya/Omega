@@ -1,0 +1,106 @@
+INVENTORY
+=========
+omega inventories are now much different from other rogue-like games.
+
+Unlike rogue, et al., you cannot directly employ every object you
+carry. Every object may either go into your "pack" or into some
+specific inventory slot such as "belt" or "ready hand" or "left
+shoulder" etc. Some slots are dedicated to certain types of items (eg,
+only armor can go in the armor slot), but other slots are general
+purpose, like your belt or your shoulder.
+
+It takes game time to transfer an object from your pack, (which can
+hold a fixed number of items) to specific slots from which the item may be
+useable. The pack is implemented as a mock-stack, so the deeper you burrow
+into your pack looking for some item, the more game time you are
+wasting. Therefore, carrying a whole lot of (semi)useless items may be
+a strategically bad move.  Of course, as always, you can't carry more
+weight (either in your pack or in your inventory slots) than is
+dictated by your current STRENGTH and AGILITY.
+
+INVENTORY CONTROL MODES
+=======================
+There are two type of inventory control: Display mode and Quick mode.
+Which mode you use by default can be toggled by the TOPLINE option
+settable with the 'O' command and in your .omegarc file.
+
+In Display mode, all the inventory slots are displayed in the menu
+window. In Quick mode, only the message lines above the main window
+are used, and therefore the slots are not all displayed, only
+one of them at a time. Additionally, the commands are slightly 
+different. One nuance to the display -- note the character following
+the index of the slot in the following two lines.
+
+-- a> weapon hand: mace
+-- e) belt: short sword
+
+The '>' in the first line indicates the mace is "in use", while 
+the ') in the second lines means the short sword is not currently
+being used. If it is possible for an item to be "in use" in the
+current slot, it will be indicated by a '>'. Therefore, if you
+don't want to put some new unidentified weapon into use, don't
+try to carry it in the weapon hand; the same holds for shields
+in the shield slot, etc.
+
+The amount of time each action takes is indicated below. Dropping two
+items takes twice as long as dropping one item.
+
+DISPLAY MODE:
+^l,^r: Redisplay inventory (if screen is munged). Takes no time.
+d:  Drop the item currently in the 'up-in-the-air' slot, or in the
+    'selected' slot if there is nothing 'up-in-the-air'. Takes one second.
+p:  Put the 'up-in-the-air' item into your pack, or the 'selected'
+    item, if the 'up-in-the-air' item is vacant. Takes 5 seconds.
+s:  Show the contents of your pack. Takes 5 seconds.
+t:  Take an item from your pack and put into the 'selected' slot, or
+    if that is full, tries to put into the 'up-in-the-air' slot.
+    Takes 5 seconds + 1 second/item examined in pack. I.e., rummaging
+    at three items before taking one takes 8 seconds.
+e:  Exchange the 'up-in-the-air' slot with the 'selected' slot. This
+    will merge two quantities of an item together if possible.
+    Either slot may be vacant, in which case it is a simple 'put'
+    or 'take' to a slot.
+    Takes 2 seconds.
+x:  Same as 'e' but quit inventory mode immediately if the
+    up-in-the-air slot is vacant after the action (ie, if it wasn't
+    an exchange, but was just a put). Helpful when picking up new items.
+    Takes 2 seconds.
+>:  Cause the next slot lower down to be the 'selected' one. Takes no time.
+<:  Cause the next slot higher up to be the 'selected' one. Takes no time.
+?:  Print this help. Takes no time.
+ESCAPE: return to game, dropping any object in the 'up-in-the-air' slot.
+        Takes no time.
+
+In Display Mode, the 'selected' slot is the one with a highlighted
+'->' before it.
+
+QUICK (TOPINV) MODE:
+d:  Drop an item. Takes one second.
+p:  Put some item into your pack. Takes 5 seconds.
+s:  Show the contents of your pack. Takes 5 seconds.
+t:  Take an item from your pack and put into some inventory slot, or
+    into the 'up-in-the-air' slot if the one selected is full.
+    Takes 5 seconds + depth of item in pack.
+e:  Exchange the 'up-in-the-air' slot with some slot. This
+    will merge two quantities of an item together if possible.
+    Either slot may be vacant, in which case it is a simple 'put'
+    or 'take' to a slot.
+    Takes 2 seconds.
+x:  Same as 'e' but quit inventory mode immediately if the
+    up-in-the-air slot is vacant after the action (ie, if it wasn't
+    an exchange, but was just a put). Helpful when picking up new items.
+    Takes 2 seconds.
+~:  Enter Display Mode. Takes no time.
+?:  Print this help. Takes no time.
+ESCAPE: return to game, dropping any object in the 'up-in-the-air' slot.
+        Takes no time.
+
+In quick mode, there is no 'selected' slot, instead the letter
+identifying the slot must be entered following the command.
+
+The 'e' and 'x' commands in both modes are the ones you'll use most;
+it combines taking and putting from inventory slot to "up-in-air"
+where picked-up items will be, and where you will drop items from on
+leaving the inventory mode. Usually the pack is used for items which
+it is not important to be able to get at easily, while inventory
+slots are for useful items.

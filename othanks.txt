@@ -1,0 +1,7 @@
+Thanks to:
+
+Ben, Greg, Hammy, Izchak, Nathan, and Silver, for bug reports,
+playtesting, suggestions, debugging, and general advice.
+
+Thanks to the army of players and debuggers of versions 0.6
+and 0.7; I predict a lot more work for you now....

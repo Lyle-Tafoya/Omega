@@ -1,0 +1,44 @@
+omega wizard's guide.
+
+OMEGA MAINTENANCE
+=================
+
+There should be little need for the wizard to actively maintain the
+game. But.....
+
+After years of play, the file omega.log may get unwieldy and overlarge.
+This file can simply be truncated as follows. Log records are now
+one line at a time, so just delete as many lines as you like, making
+sure there are no blank lines, and that the file ends on an end of
+line.
+
+You can even remove omega.log completely as long as you replace it
+with a null file of the same name. omega.log must be publically
+writeable.
+
+The file omega.hi is a high score list. This file can't be truncated
+or removed, but you can edit it as you feel to be appropriate. If you
+look in ofile.c you can figure out what those numbers in the
+file actually mean; usually one is NPC level and one is NPC behavior,
+but some entries have another entry such as alignment. The
+distribution comes with a "safety" version of the original high
+score file; if anything happens to the original you can just
+copy omegahi.bak to omega.hi, making sure of course it has
+public write access.
+
+Anyone can mung the log and hiscore files simply by writing to them
+(unless you used setuid, anyhow). In my opinion, people who hack
+score files can very easily be taken care of by deleting
+their accounts; if that doesn't work, shoot them.
+
+WIZARD MODE
+===========
+
+If you are the WIZARD as defined in odefs.h, you can enter wizard mode
+by hitting ^g. If you ever set wizard mode, your high scores and npc
+will not be saved.
+
+In wizard mode, ^x gives you a wish. ^w draws the current level, ^k
+allows you to set an arbitrary game status bit, meanings of the bits
+are given in odefs.h. The possible wishes are listed in oscroll3.txt,
+and the code for them is in oeffect1.c

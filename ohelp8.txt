@@ -1,0 +1,44 @@
+
+THE COUNTRYSIDE
+===============
+Rampart is set in a strange landscape of different terrain types. The
+land is surrounded in part by a mystic sea of chaos which it is
+probably a good idea to avoid. Screen characters have a different
+meaning in the countryside than they do elsewhere, by the way, and
+there is a different command set (accessible by '?' when out of the
+city). Time passes much more quickly in countryside movement; you will
+have to bring a lot of food with you, though you may wish to
+hunt ('H' command) to supplement your food reserves; many of the
+animals that you may encounter, for example, are edible.
+
+Since each countryside site is quite a large area, you may have
+to search ('s' command) to learn of interesting sites nearby.
+
+Countryside Map Example:
+
+++----.--- The @ as usual is the player; the +'s are an arm of the Sea of
++++++O--^^ Chaos; the O is the city of Rampart; the ^'s are mountains;
+----@----^ the .'s are a road; the -'s are plains and meadows;
+---.-^^^^^ and the * is a dungeon entrance.
+...-^*^^^^
+
+The countryside can be rather dangerous for low level characters to
+explore at random. However, maps of the surrounding areas can be
+purchased at the villages which can be found mostly at the ends
+of the roads. Each village has a "special" magical site somewhere
+inside its borders. These sites may be beneficial or harmful
+depending how they are approached and the circumstances of their
+activation.
+
+There are a number of "special" locations in the countryside; these
+are basically one-level screens of various sorts, or they may be
+multi-level dungeons. If you follow the advice of the oracle
+who may be found somewhere in Rampart, you will wind up visiting most
+of these sites.
+
+A special site or dungeon may be entered from the Countryside
+environment by means of the '>' command. Depending whether or not it
+is a multilevel or single level site, it may be exited simply by
+moving off the edge of the screen, or by ascending or descending a
+stairway from the first level of the dungeon.
+

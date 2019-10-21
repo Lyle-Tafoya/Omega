@@ -1,0 +1,47 @@
+(The project demo is due tomorrow, er, that is, today, at 0900. It's
+now 0300. Printouts, pizza boxes, and szechuan kitchen trays litter
+your desk, and the bitmap screen seems to warp in and out of focus....
+The compiler seems to be taking *FOREVER*....)
+
+(You do a routine check on your filesystem...)
+
+% df
+Filesystem            kbytes    used   avail capacity  Mounted on
+/users                     0    6818       0   999%    /
+/secur/omega            +inf    +inf    +inf     0%    /
+
+(How odd. The /secur filesystem definitely shouldn't be mounted; it must
+be space used by the omega team, a very hush-hush project you know
+nothing about. Well, no wonder the compiler is wedged; you don't seem
+to have any disk space left. Unfortunately, there is no night
+operator and you don't know the su password. Cursing, you figure you
+can at least find out what the damn omega group is doing....)
+
+% cd /secur/omega
+% ls 
+src/	bin/	doc/	tmp/	lib/	README
+% more README
+If you are reading this file, you should not be reading this file!
+Call your project cadre leader at once!
+%
+
+(Not bloody likely!)
+
+% ls doc
+% (Hmm, not big on documentation, huh)
+% ls src
+omega.mpc
+% (Wow, that must be mondo-parallel c, for the new optical machine!)
+% ls bin
+omega
+% (Well, hell, what can happen? And if it does, it's not *MY* fault
+the damn filesystem is mounted!)
+% omega
+
+(This was definitely a mistake. For long moments nothing seemed to happen.
+Then there was a flare of bluish light from the workstation screen,
+like a brightness of 256 on a scale of 0..7. You wake up with a
+serious headache outside the massive gates of a walled city. You notice
+a pouch at your side that seems to be filled with.... gold! You seem
+to hear a faint voice fading off into the distance "Interrupt SIGZAP
+at 0x0"....)

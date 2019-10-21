@@ -1,58 +1,12 @@
-/* omega copyright (C) 1987 by Laurence Raphael Brothers */
+/* omega copyright (C) 1987,1988 by Laurence Raphael Brothers */
 /* oitem.c */
 
-#include <strings.h>
 #include "oglob.h"
 
-
-/* from oetc */
-extern void hint();
-
-/* from outil */
-extern int random_range(),pow2();
-
-/* from oitemf */
-extern void i_no_op(),i_nothing(),i_heal(),i_victrix(),i_desecrate();
-extern void i_spells(),i_bless(),i_enchant(),i_acquire(),i_jane_t();
-extern void i_flux(),i_breathing(),i_invisible(),i_perm_invisible();
-extern void i_teleport(),i_wish(),i_clairvoyance(),i_displace(),i_id();
-extern void i_objdet(),i_mondet(),i_sleep_self(),i_neutralize_poison();
-extern void i_speed(),i_restore(),i_azoth(),i_regenerate(),i_demonblade();
-extern void i_firebolt(),i_lbolt(),i_missile(),i_fireball(),i_lball();
-extern void i_sleep_other(),i_summon(),i_hide(),i_disrupt(),i_disintegrate();
-extern void i_perm_vision(),i_perm_burden(),i_perm_fire_resist(),i_charge();
-extern void i_perm_poison_resist(),i_perm_strength(),i_perm_gaze_immune();
-extern void i_perm_energy_resist();void i_perm_speed(),i_perm_breathing();
-extern void i_perm_displace(),i_perm_negimmune(),i_mace_disrupt(),i_warp();
-extern void i_food(),i_poison_food(),i_stim(),i_immune(),i_lembas();
-extern void i_orbfire(),i_orbwater(),i_orbair(),i_orbearth(),i_orbdead();
-extern void i_orbmastery(),i_lightsabre(),i_alert(),i_snowball(),i_pow();
-extern void i_knowledge(),i_perm_knowledge(),i_fear_resist(),i_corpse();
-extern void i_perm_fear_resist(),i_pick(),i_key(),i_defend(),i_apport();
-extern void i_chaos(),i_law(),i_augment(),i_perm_regenerate(),i_symbol();
-extern void i_accuracy(),i_perm_accuracy(),i_hero(),i_perm_hero();
-extern void i_levitate(),i_perm_levitate(),i_perm_protection();
-extern void i_perm_agility(),i_cure(),i_dispel(),i_pepper_food();
-extern void i_enchantment(),i_polymorph(),i_illuminate(),i_perm_illuminate();
-extern void i_crystal(),i_kolwynia(),i_death(),i_life(),i_helm(),i_antioch();
-extern void i_juggernaut(),i_trap(),i_truesight(),i_perm_truesight();
-
-/* oitem functions */
-void item_use();
-pob create_object();
-void make_shield(),make_armor(),make_weapon();
-void make_scroll(),make_potion(),make_food();
-void make_thing(),make_ring(),make_artifact();
-void make_boots(),make_cloak(),make_stick(),make_cash();
-
-int itemplus(),itemcharge(),itemblessing(),twohanded_p();
-
-
-void scrollname(),potionname(),stickname(),ringname(),cloakname(),grotname();
-void bootname();
-
 /* make a random new object, returning pointer */
-pob create_object()
+/* may return NULL. */
+pob create_object(itemlevel)
+int itemlevel;
 {
   pob new;
   int  r; 
@@ -76,10 +30,9 @@ pob create_object()
     /* not ok if object is too good for level, or if unique and already made */
     /* 1/100 chance of finding object if too good for level */
     ok = ((new->uniqueness != UNIQUE_MADE) &&
-	  ((new->level*3 < Dlevel+random_range(3)) 
-	   || ((Dlevel == 0) && (new->level < 5)) /* better stuff in city */
+	  ((new->level < itemlevel+random_range(3))
 	   || (random_range(100)==23)));
-    if (! ok)    free((char *) new);
+    if (!ok) free((char *) new);
   }
   if (new->uniqueness == UNIQUE_UNMADE) 
     Objects[new->id].uniqueness=UNIQUE_MADE;
@@ -92,9 +45,8 @@ int level;
 {
   *new = Objects[CASHID];
   new->basevalue = random_range(level*level+10)+1; /* aux is AU value */
-  strcpy(new->objstr,cashstr());
-  strcpy(new->truename,cashstr());
-  strcpy(new->cursestr,cashstr());
+  new->objstr = salloc(cashstr());
+  new->cursestr = new->truename = new->objstr;
 }
 
 void make_food(new,id)
@@ -104,6 +56,77 @@ int id;
   if (id == -1) id = random_range(NUMFOODS);
   *new = Objects[FOODID+id];
 }
+
+
+void make_corpse(new,m)
+pob new;
+struct monster *m;
+{
+  *new = Objects[CORPSEID];
+  new->charge = m->id;
+  new->weight = m->corpseweight;
+  new->basevalue = m->corpsevalue;
+  new->known = 2;
+  new->objstr = salloc(m->corpsestr);
+  new->truename = new->cursestr = new->objstr;
+  if (m->monchar == '@')
+    new->usef = I_CANNIBAL;
+  else if (m_statusp(m,EDIBLE)) {
+    new->usef = I_FOOD;
+    new->aux = 6;
+  }
+  else if (m_statusp(m,POISONOUS))
+    new->usef = I_POISON_FOOD;
+  /* Special corpse-eating effects */
+  else switch(m->id) {
+  case ML1+1: /*tse tse fly */
+  case ML4+9: /*torpor beast */
+    new->usef = I_SLEEP_SELF;
+    break;
+  case ML2+5:
+    new->usef = I_INVISIBLE;
+    break;
+  case ML1+5: /* blipper */
+    new->usef = I_TELEPORT;
+    break;
+  case ML2+3: /* floating eye -- it's traditional.... */
+    new->usef = I_CLAIRVOYANCE;
+    break;
+  case ML4+11: /*astral fuzzy */
+    new->usef = I_DISPLACE;
+    break;
+  case ML4+12: /*s o law */
+    new->usef = I_CHAOS;
+    break;
+  case ML4+13: /*s o chaos */
+    new->usef = I_LAW;
+    break;
+  case ML5+9: /* astral vampire */
+    new->usef = I_ENCHANT;
+    break;
+  case ML5+11: /* manaburst */
+    new->usef = I_SPELLS;
+    break;
+  case ML6+9: /* rakshasa */
+    new->usef = I_TRUESIGHT;
+    break;
+  case ML7+0: /* behemoth */
+    new->usef = I_HEAL;
+    break;
+  case ML7+2: /* unicorn */
+    new->usef = I_NEUTRALIZE_POISON;
+    break;
+  case ML8+10: /*coma beast */
+    new->usef = I_ALERT;
+    break;
+  default:
+    new->usef = I_INEDIBLE; 
+    break;
+  }
+}
+
+
+
 
 void make_ring(new,id)
 pob new;
@@ -123,9 +146,8 @@ int id;
   if (id == -1) id = random_range(NUMTHINGS);
   *new = Objects[THINGID+id];
   if (strcmp(new->objstr,"grot") == 0) {
-    grotname(new->objstr);
-    strcpy(new->truename,new->objstr);
-    strcpy(new->cursestr,new->objstr);
+    new->objstr = salloc(grotname());
+    new->truename = new->cursestr = new->objstr;
   }
 }
 
@@ -239,293 +261,305 @@ pob new;
 
 /* item name functions */
 
-void scrollname(reset,sstr)
-int reset;
-char sstr[64];
-{
-  static int used[30];
-  int i;
+char *scrollname(reset,id)
+int reset,id;
 
-  if (reset)
+{
+  static int ids[30];
+  int i,j,k;
+
+  if (reset) {
     for(i=0;i<30;i++)
-      used[i]=FALSE;
-  else {
-    do 
-      i = random_range(30);
-    while(used[i]);
-    
-    used[i] = TRUE;
-    
-    switch(i) {
-      case 0: strcpy(sstr,"scroll-GRISTOGRUE"); break;
-      case 1: strcpy(sstr,"scroll-Kho Reck Tighp"); break;
-      case 2: strcpy(sstr,"scroll-E Z"); break;
-      case 3: strcpy(sstr,"scroll-Kevitz"); break;
-      case 4: strcpy(sstr,"scroll-Arcanum Prime"); break;
-      case 5: strcpy(sstr,"scroll-NYARLATHOTEP"); break;
-      case 6: strcpy(sstr,"scroll-Gilthoniel"); break;
-      case 7: strcpy(sstr,"scroll-Zarathustra"); break;
-      case 8: strcpy(sstr,"scroll-Ancient Lore"); break;
-      case 9: strcpy(sstr,"scroll-Eyes Only"); break;
-      case 10: strcpy(sstr,"scroll-Ambogar Empheltz"); break;
-      case 11: strcpy(sstr,"scroll-Isengard"); break;
-      case 12: strcpy(sstr,"scroll-Deosil Widdershins"); break;
-      case 13: strcpy(sstr,"scroll-Magister Paracelsus"); break;
-      case 14: strcpy(sstr,"scroll-Qlipphotic Summons"); break;
-      case 15: strcpy(sstr,"scroll-Aratron Samael"); break;
-      case 16: strcpy(sstr,"scroll-De Wormiis Mysterius"); break;
-      case 17: strcpy(sstr,"scroll-Necronomicon"); break;
-      case 18: strcpy(sstr,"scroll-Pnakotic Manuscript"); break;
-      case 19: strcpy(sstr,"scroll-Codex of Xalimar"); break;
-      case 20: strcpy(sstr,"scroll-The Mabinogion"); break;
-      case 21: strcpy(sstr,"scroll-Ginseng Shiatsu"); break;
-      case 22: strcpy(sstr,"scroll-Tome of Tromax"); break;
-      case 23: strcpy(sstr,"scroll-Book of the Dead "); break;
-      case 24: strcpy(sstr,"scroll-The Flame Tongue"); break;
-      case 25: strcpy(sstr,"scroll-Karst Khogar"); break;
-      case 26: strcpy(sstr,"scroll-The Yellow Sign"); break;
-      case 27: strcpy(sstr,"scroll-The Kevillist Manifesto"); break;
-      case 28: strcpy(sstr,"scroll-Goshtar Script"); break;
-      case 29: strcpy(sstr,"scroll-Pendragon Encryption"); break;
+      ids[i]=i;
+    for(i=0;i<500;i++) {
+      j = random_range(30);
+      k = ids[i % 30];
+      ids[i % 30]=ids[j];
+      ids[j]=k;
     }
   }
+  else {
+    switch(ids[id]) {
+      case 0: strcpy(Str4,"scroll-GRISTOGRUE"); break;
+      case 1: strcpy(Str4,"scroll-Kho Reck Tighp"); break;
+      case 2: strcpy(Str4,"scroll-E Z"); break;
+      case 3: strcpy(Str4,"scroll-Kevitz"); break;
+      case 4: strcpy(Str4,"scroll-Arcanum Prime"); break;
+      case 5: strcpy(Str4,"scroll-NYARLATHOTEP"); break;
+      case 6: strcpy(Str4,"scroll-Gilthoniel"); break;
+      case 7: strcpy(Str4,"scroll-Zarathustra"); break;
+      case 8: strcpy(Str4,"scroll-Ancient Lore"); break;
+      case 9: strcpy(Str4,"scroll-Eyes Only"); break;
+      case 10: strcpy(Str4,"scroll-Ambogar Empheltz"); break;
+      case 11: strcpy(Str4,"scroll-Isengard"); break;
+      case 12: strcpy(Str4,"scroll-Deosil Widdershins"); break;
+      case 13: strcpy(Str4,"scroll-Magister Paracelsus"); break;
+      case 14: strcpy(Str4,"scroll-Qlipphotic Summons"); break;
+      case 15: strcpy(Str4,"scroll-Aratron Samael"); break;
+      case 16: strcpy(Str4,"scroll-De Wormiis Mysterius"); break;
+      case 17: strcpy(Str4,"scroll-Necronomicon"); break;
+      case 18: strcpy(Str4,"scroll-Pnakotic Manuscript"); break;
+      case 19: strcpy(Str4,"scroll-Codex of Xalimar"); break;
+      case 20: strcpy(Str4,"scroll-The Mabinogion"); break;
+      case 21: strcpy(Str4,"scroll-Ginseng Shiatsu"); break;
+      case 22: strcpy(Str4,"scroll-Tome of Tromax"); break;
+      case 23: strcpy(Str4,"scroll-Book of the Dead "); break;
+      case 24: strcpy(Str4,"scroll-The Flame Tongue"); break;
+      case 25: strcpy(Str4,"scroll-Karst Khogar"); break;
+      case 26: strcpy(Str4,"scroll-The Yellow Sign"); break;
+      case 27: strcpy(Str4,"scroll-The Kevillist Manifesto"); break;
+      case 28: strcpy(Str4,"scroll-Goshtar Script"); break;
+      case 29: strcpy(Str4,"scroll-Pendragon Encryption"); break;
+      }
+  }
+  return(Str4);
 }
 
-/* actually copies into gstr for some reason */
-void grotname(gstr)
-char gstr[64];
+
+char *grotname()
 {
   switch(random_range(20)) {
-    case 0: strcpy(gstr,"pot lid"); break;
-    case 1: strcpy(gstr,"mound of offal"); break;
-    case 2: strcpy(gstr,"sword that was broken"); break;
-    case 3: strcpy(gstr,"salted snail"); break;
-    case 4: strcpy(gstr,"key"); break;
-    case 5: strcpy(gstr,"toadstool"); break;
-    case 6: strcpy(gstr,"greenish spindle"); break;
-    case 7: strcpy(gstr,"tin soldier"); break;
-    case 8: strcpy(gstr,"broken yo-yo"); break;
-    case 9: strcpy(gstr,"NYC subway map"); break;
-    case 10: strcpy(gstr,"Nixon's the One! button"); break;
-    case 11: strcpy(gstr,"beer can (empty)"); break;
-    case 12: strcpy(gstr,"golden bejewelled falcon"); break;
-    case 13: strcpy(gstr,"hamster cage"); break;
-    case 14: strcpy(gstr,"wooden nickel"); break;
-    case 15: strcpy(gstr,"three-dollar bill"); break;
-    case 16: strcpy(gstr,"rosebud"); break;
-    case 17: strcpy(gstr,"water pistol"); break;
-    case 18: strcpy(gstr,"shattered skull"); break;
-    case 19: strcpy(gstr,"jawbone of an ass"); break;
+    case 0: strcpy(Str4,"pot lid"); break;
+    case 1: strcpy(Str4,"mound of offal"); break;
+    case 2: strcpy(Str4,"sword that was broken"); break;
+    case 3: strcpy(Str4,"salted snail"); break;
+    case 4: strcpy(Str4,"key"); break;
+    case 5: strcpy(Str4,"toadstool"); break;
+    case 6: strcpy(Str4,"greenish spindle"); break;
+    case 7: strcpy(Str4,"tin soldier"); break;
+    case 8: strcpy(Str4,"broken yo-yo"); break;
+    case 9: strcpy(Str4,"NYC subway map"); break;
+    case 10: strcpy(Str4,"Nixon's the One! button"); break;
+    case 11: strcpy(Str4,"beer can (empty)"); break;
+    case 12: strcpy(Str4,"golden bejewelled falcon"); break;
+    case 13: strcpy(Str4,"hamster cage"); break;
+    case 14: strcpy(Str4,"wooden nickel"); break;
+    case 15: strcpy(Str4,"three-dollar bill"); break;
+    case 16: strcpy(Str4,"rosebud"); break;
+    case 17: strcpy(Str4,"water pistol"); break;
+    case 18: strcpy(Str4,"shattered skull"); break;
+    case 19: strcpy(Str4,"jawbone of an ass"); break;
   }
+  return(Str4);
 }
 
 
 
 
-void potionname(reset,pstr)
-int reset;
-char pstr[64];
+char *potionname(reset,id)
+int reset,id;
 {
-  static int used[20];
-  int i;
-  if (reset)
-    for(i=0;i<20;i++)
-      used[i]=FALSE;
-  else {
-    do 
-      i = random_range(20);
-    while(used[i]);
-    
-    used[i] = TRUE;
+  static int ids[20];
+  int i,j,k;
 
-    switch (i) {
-      case 0: strcpy(pstr,"vial of dewy liquid"); break;
-      case 1: strcpy(pstr,"jug of tarry black substance"); break;
-      case 2: strcpy(pstr,"flask of cold smoking froth"); break;
-      case 3: strcpy(pstr,"phial of glowing fluid"); break;
-      case 4: strcpy(pstr,"bottle of sickening slime"); break;
-      case 5: strcpy(pstr,"sac of greenish gel"); break;
-      case 6: strcpy(pstr,"wineskin of odorous goo"); break;
-      case 7: strcpy(pstr,"canteen of sweet sap"); break;
-      case 8: strcpy(pstr,"urn of clear fluid"); break;
-      case 9: strcpy(pstr,"clotted grey ooze"); break;
-      case 10: strcpy(pstr,"keg of bubbly golden fluid"); break;
-      case 11: strcpy(pstr,"tube of minty paste"); break;
-      case 12: strcpy(pstr,"pitcher of aromatic liquid"); break;
-      case 13: strcpy(pstr,"pot of rancid grease"); break;
-      case 14: strcpy(pstr,"thermos of hot black liquid"); break;
-      case 15: strcpy(pstr,"magnum of deep red liquid"); break;
-      case 16: strcpy(pstr,"vase full of ichor"); break;
-      case 17: strcpy(pstr,"container of white cream"); break;
-      case 18: strcpy(pstr,"syringe of clear fluid"); break;
-      case 19: strcpy(pstr,"can of volatile essence"); break;
-    }      
+  if (reset) {
+    for(i=0;i<20;i++)
+      ids[i]=i;
+    for(i=0;i<500;i++) {
+      j = random_range(20);
+      k = ids[i % 20];
+      ids[i % 20]=ids[j];
+      ids[j]=k;
+    }
+  }
+  else {
+    switch (ids[id]) {
+      case 0: strcpy(Str4,"vial of dewy liquid"); break;
+      case 1: strcpy(Str4,"jug of tarry black substance"); break;
+      case 2: strcpy(Str4,"flask of cold smoking froth"); break;
+      case 3: strcpy(Str4,"phial of glowing fluid"); break;
+      case 4: strcpy(Str4,"bottle of sickening slime"); break;
+      case 5: strcpy(Str4,"sac of greenish gel"); break;
+      case 6: strcpy(Str4,"wineskin of odorous goo"); break;
+      case 7: strcpy(Str4,"canteen of sweet sap"); break;
+      case 8: strcpy(Str4,"urn of clear fluid"); break;
+      case 9: strcpy(Str4,"clotted grey ooze"); break;
+      case 10: strcpy(Str4,"keg of bubbly golden fluid"); break;
+      case 11: strcpy(Str4,"tube of minty paste"); break;
+      case 12: strcpy(Str4,"pitcher of aromatic liquid"); break;
+      case 13: strcpy(Str4,"pot of rancid grease"); break;
+      case 14: strcpy(Str4,"thermos of hot black liquid"); break;
+      case 15: strcpy(Str4,"magnum of deep red liquid"); break;
+      case 16: strcpy(Str4,"vase full of ichor"); break;
+      case 17: strcpy(Str4,"container of white cream"); break;
+      case 18: strcpy(Str4,"syringe of clear fluid"); break;
+      case 19: strcpy(Str4,"can of volatile essence"); break;
+      }      
+    return(Str4);
   }
 }
 
 
-void stickname(reset,sstr)
-int reset;
-char sstr[64];
+char *stickname(reset,id)
+int reset,id;
 {
-  static int used[20];
-  int i;
-  if (reset)
-    for(i=0;i<20;i++)
-      used[i]=FALSE;
-  else {
-    do 
-      i = random_range(20);
-    while(used[i]);
-    
-    used[i] = TRUE;
+  static int ids[20];
+  int i,j,k;
 
-    switch (i) {
-      case 0: strcpy(sstr,"oaken staff"); break;
-      case 1: strcpy(sstr,"heavy metal rod"); break;
-      case 2: strcpy(sstr,"shaft of congealed light"); break;
-      case 3: strcpy(sstr,"slender ceramic wand"); break;
-      case 4: strcpy(sstr,"rune-inscribed bone wand"); break;
-      case 5: strcpy(sstr,"knurly staff"); break;
-      case 6: strcpy(sstr,"steel knobbed rod");  break;
-      case 7: strcpy(sstr,"lucite wand"); break;
-      case 8: strcpy(sstr,"sturdy alpenstock"); break;
-      case 9: strcpy(sstr,"gem-studded ebony staff"); break;
-      case 10: strcpy(sstr,"chromed sequinned staff"); break;
-      case 11: strcpy(sstr,"old peeling stick"); break;
-      case 12: strcpy(sstr,"jointed metal rod"); break;
-      case 13: strcpy(sstr,"wand with lead ferrules"); break;
-      case 14: strcpy(sstr,"forked wooden stick"); break;
-      case 15: strcpy(sstr,"cane with gold eagle handle"); break;
-      case 16: strcpy(sstr,"crystalline wand");  break;
-      case 17: strcpy(sstr,"metal stick with trigger"); break;
-      case 18: strcpy(sstr,"leather-handled stone rod"); break;
-      case 19: strcpy(sstr,"tiny mithril wand"); break;
-    }      
+  if (reset) {
+    for(i=0;i<20;i++)
+      ids[i]=i;
+    for(i=0;i<500;i++) {
+      j = random_range(20);
+      k = ids[i % 20];
+      ids[i % 20]=ids[j];
+      ids[j]=k;
+    }
+  }
+  else {
+    switch (ids[id]) {
+      case 0: strcpy(Str4,"oaken staff"); break;
+      case 1: strcpy(Str4,"heavy metal rod"); break;
+      case 2: strcpy(Str4,"shaft of congealed light"); break;
+      case 3: strcpy(Str4,"slender ceramic wand"); break;
+      case 4: strcpy(Str4,"rune-inscribed bone wand"); break;
+      case 5: strcpy(Str4,"knurly staff"); break;
+      case 6: strcpy(Str4,"steel knobbed rod");  break;
+      case 7: strcpy(Str4,"lucite wand"); break;
+      case 8: strcpy(Str4,"sturdy alpenstock"); break;
+      case 9: strcpy(Str4,"gem-studded ebony staff"); break;
+      case 10: strcpy(Str4,"chromed sequinned staff"); break;
+      case 11: strcpy(Str4,"old peeling stick"); break;
+      case 12: strcpy(Str4,"jointed metal rod"); break;
+      case 13: strcpy(Str4,"wand with lead ferrules"); break;
+      case 14: strcpy(Str4,"forked wooden stick"); break;
+      case 15: strcpy(Str4,"cane with gold eagle handle"); break;
+      case 16: strcpy(Str4,"crystalline wand");  break;
+      case 17: strcpy(Str4,"metal stick with trigger"); break;
+      case 18: strcpy(Str4,"leather-handled stone rod"); break;
+      case 19: strcpy(Str4,"tiny mithril wand"); break;
+      }      
+    return(Str4);
   }
 }
 
-void ringname(reset,rstr)
-int reset;
-char rstr[64];
+char *ringname(reset,id)
+int reset,id;
 {
-  static int used[20];
-  int i;
-  if (reset)
-    for(i=0;i<20;i++)
-      used[i]=FALSE;
-  else {
-    do 
-      i = random_range(20);
-    while(used[i]);
-    
-    used[i] = TRUE;
+  static int ids[20];
+  int i,j,k;
 
-    switch (i) {
-      case 0: strcpy(rstr,"gold ring with a blue gem"); break;
-      case 1: strcpy(rstr,"brass ring"); break;
-      case 2: strcpy(rstr,"mithril ring with a red gem"); break;
-      case 3: strcpy(rstr,"platinum ring");  break;
-      case 4: strcpy(rstr,"gold dragon's head ring"); break;
-      case 5: strcpy(rstr,"bronze ring"); break;
-      case 6: strcpy(rstr,"aardvark seal ring"); break;
-      case 7: strcpy(rstr,"grey metal ring"); break;
-      case 8: strcpy(rstr,"silver skull ring"); break;
-      case 9: strcpy(rstr,"onyx ring"); break;
-      case 10: strcpy(rstr,"Collegium Magii class ring"); break;
-      case 11: strcpy(rstr,"worn stone ring"); break;
-      case 12: strcpy(rstr,"diorite ring"); break;
-      case 13: strcpy(rstr,"ancient scarab ring");  break;
-      case 14: strcpy(rstr,"plastic charm ring"); break;
-      case 15: strcpy(rstr,"soapy gypsum ring"); break;
-      case 16: strcpy(rstr,"glass ring"); break;
-      case 17: strcpy(rstr,"glowing bluestone ring"); break;
-      case 18: strcpy(rstr,"ring with eye sigil"); break;
-      case 19: strcpy(rstr,"zirconium ring"); break;
-    }      
+  if (reset) {
+    for(i=0;i<20;i++)
+      ids[i]=i;
+    for(i=0;i<500;i++) {
+      j = random_range(20);
+      k = ids[i % 20];
+      ids[i % 20]=ids[j];
+      ids[j]=k;
+    }
+  }
+  else {
+    switch (ids[id]) {
+      case 0: strcpy(Str4,"gold ring with a blue gem"); break;
+      case 1: strcpy(Str4,"brass ring"); break;
+      case 2: strcpy(Str4,"mithril ring with a red gem"); break;
+      case 3: strcpy(Str4,"platinum ring");  break;
+      case 4: strcpy(Str4,"gold dragon's head ring"); break;
+      case 5: strcpy(Str4,"bronze ring"); break;
+      case 6: strcpy(Str4,"aardvark seal ring"); break;
+      case 7: strcpy(Str4,"grey metal ring"); break;
+      case 8: strcpy(Str4,"silver skull ring"); break;
+      case 9: strcpy(Str4,"onyx ring"); break;
+      case 10: strcpy(Str4,"Collegium Magii class ring"); break;
+      case 11: strcpy(Str4,"worn stone ring"); break;
+      case 12: strcpy(Str4,"diorite ring"); break;
+      case 13: strcpy(Str4,"ancient scarab ring");  break;
+      case 14: strcpy(Str4,"plastic charm ring"); break;
+      case 15: strcpy(Str4,"soapy gypsum ring"); break;
+      case 16: strcpy(Str4,"glass ring"); break;
+      case 17: strcpy(Str4,"glowing bluestone ring"); break;
+      case 18: strcpy(Str4,"ring with eye sigil"); break;
+      case 19: strcpy(Str4,"zirconium ring"); break;
+      }      
+    return(Str4);
   }
 }
 
 
-void cloakname(reset,cstr)
-int reset;
-char cstr[64];
+char *cloakname(reset,id)
+int reset,id;
 {
-  static int used[20];
-  int i;
-  if (reset)
-    for(i=0;i<20;i++)
-      used[i]=FALSE;
-  else {
-    do 
-      i = random_range(20);
-    while(used[i]);
-    
-    used[i] = TRUE;
+  static int ids[20];
+  int i,j,k;
 
-    switch (i) {
-      case 0: strcpy(cstr,"tattered piece of cloth"); break;
-      case 1: strcpy(cstr,"fuligin cloak"); break;
-      case 2: strcpy(cstr,"chintz cloak"); break;
-      case 3: strcpy(cstr,"diaphanous cape");  break;
-      case 4: strcpy(cstr,"red half-cloak"); break;
-      case 5: strcpy(cstr,"mouse-hide cloak"); break;
-      case 6: strcpy(cstr,"kelly green cloak"); break;
-      case 7: strcpy(cstr,"cloth-of-gold cloak"); break;
-      case 8: strcpy(cstr,"dirty old cloak"); break;
-      case 9: strcpy(cstr,"weightless cloak"); break;
-      case 10: strcpy(cstr,"boat cloak"); break;
-      case 11: strcpy(cstr,"greasy tarpaulin"); break;
-      case 12: strcpy(cstr,"sable cloak"); break;
-      case 13: strcpy(cstr,"soft velvet cloak");  break;
-      case 14: strcpy(cstr,"opera cape"); break;
-      case 15: strcpy(cstr,"elegant brocade cloak"); break;
-      case 16: strcpy(cstr,"cloak of many colors"); break;
-      case 17: strcpy(cstr,"grey-green rag"); break;
-      case 18: strcpy(cstr,"puce and chartreuse cloak"); break;
-      case 19: strcpy(cstr,"smoky cloak"); break;
-    }      
+  if (reset) {
+    for(i=0;i<20;i++)
+      ids[i]=i;
+    for(i=0;i<500;i++) {
+      j = random_range(20);
+      k = ids[i % 20];
+      ids[i % 20]=ids[j];
+      ids[j]=k;
+    }
+  }
+  else {
+    switch (ids[id]) {
+      case 0: strcpy(Str4,"tattered piece of cloth"); break;
+      case 1: strcpy(Str4,"fuligin cloak"); break;
+      case 2: strcpy(Str4,"chintz cloak"); break;
+      case 3: strcpy(Str4,"diaphanous cape");  break;
+      case 4: strcpy(Str4,"red half-cloak"); break;
+      case 5: strcpy(Str4,"mouse-hide cloak"); break;
+      case 6: strcpy(Str4,"kelly green cloak"); break;
+      case 7: strcpy(Str4,"cloth-of-gold cloak"); break;
+      case 8: strcpy(Str4,"dirty old cloak"); break;
+      case 9: strcpy(Str4,"weightless cloak"); break;
+      case 10: strcpy(Str4,"boat cloak"); break;
+      case 11: strcpy(Str4,"greasy tarpaulin"); break;
+      case 12: strcpy(Str4,"sable cloak"); break;
+      case 13: strcpy(Str4,"soft velvet cloak");  break;
+      case 14: strcpy(Str4,"opera cape"); break;
+      case 15: strcpy(Str4,"elegant brocade cloak"); break;
+      case 16: strcpy(Str4,"cloak of many colors"); break;
+      case 17: strcpy(Str4,"grey-green rag"); break;
+      case 18: strcpy(Str4,"puce and chartreuse cloak"); break;
+      case 19: strcpy(Str4,"smoky cloak"); break;
+      }      
+    return(Str4);
   }
 }
 
-void bootname(reset,cstr)
-int reset;
-char cstr[64];
+char *bootname(reset,id)
+int reset,id;
 {
-  static int used[20];
-  int i;
-  if (reset)
-    for(i=0;i<20;i++)
-      used[i]=FALSE;
-  else {
-    do 
-      i = random_range(20);
-    while(used[i]);
-    
-    used[i] = TRUE;
+  static int ids[20];
+  int i,j,k;
 
-    switch (i) {
-      case 0: strcpy(cstr,"sturdy leather boots"); break;
-      case 1: strcpy(cstr,"dayglo spandex socks"); break;
-      case 2: strcpy(cstr,"dark-colored tabi"); break;
-      case 3: strcpy(cstr,"patent-leather shoes");  break;
-      case 4: strcpy(cstr,"beaten-up gumshoes"); break;
-      case 5: strcpy(cstr,"alligator-hide boots"); break;
-      case 6: strcpy(cstr,"comfortable sandals"); break;
-      case 7: strcpy(cstr,"roller skates"); break;
-      case 8: strcpy(cstr,"purple suede gaiters"); break;
-      case 9: strcpy(cstr,"mirror-plated wingtips"); break;
-      case 10: strcpy(cstr,"heavy workboots"); break;
-      case 11: strcpy(cstr,"polyurethane-soled sneakers"); break;
-      case 12: strcpy(cstr,"clodhoppers"); break;
-      case 13: strcpy(cstr,"wooden shoes");  break;
-      case 14: strcpy(cstr,"ski boots"); break;
-      case 15: strcpy(cstr,"hob-nailed boots"); break;
-      case 16: strcpy(cstr,"elven boots"); break;
-      case 17: strcpy(cstr,"cowboy boots"); break;
-      case 18: strcpy(cstr,"flipflop slippers"); break;
-      case 19: strcpy(cstr,"riding boots"); break;
+  if (reset) {
+    for(i=0;i<20;i++)
+      ids[i]=i;
+    for(i=0;i<500;i++) {
+      j = random_range(20);
+      k = ids[i % 20];
+      ids[i % 20]=ids[j];
+      ids[j]=k;
+    }
+  }
+  else {
+    switch (ids[id]) {
+      case 0: strcpy(Str4,"sturdy leather boots"); break;
+      case 1: strcpy(Str4,"calf-length moccasins"); break;
+      case 2: strcpy(Str4,"dark-colored tabi"); break;
+      case 3: strcpy(Str4,"patent-leather shoes");  break;
+      case 4: strcpy(Str4,"beaten-up gumshoes"); break;
+      case 5: strcpy(Str4,"alligator-hide boots"); break;
+      case 6: strcpy(Str4,"comfortable sandals"); break;
+      case 7: strcpy(Str4,"roller skates"); break;
+      case 8: strcpy(Str4,"purple suede gaiters"); break;
+      case 9: strcpy(Str4,"mirror-plated wingtips"); break;
+      case 10: strcpy(Str4,"heavy workboots"); break;
+      case 11: strcpy(Str4,"polyurethane-soled sneakers"); break;
+      case 12: strcpy(Str4,"clodhoppers"); break;
+      case 13: strcpy(Str4,"wooden shoes");  break;
+      case 14: strcpy(Str4,"ski boots"); break;
+      case 15: strcpy(Str4,"hob-nailed boots"); break;
+      case 16: strcpy(Str4,"elven boots"); break;
+      case 17: strcpy(Str4,"cowboy boots"); break;
+      case 18: strcpy(Str4,"flipflop slippers"); break;
+      case 19: strcpy(Str4,"riding boots"); break;
     }      
+    return(Str4);
   }
 }
 
@@ -561,7 +595,7 @@ int itemblessing()
 }
 
     
-int twohanded_p(id)
+int twohandedp(id)
 int id;
 {
   switch(id) {
@@ -569,11 +603,12 @@ int id;
   case WEAPONID+12:
   case WEAPONID+18:
   case WEAPONID+20:
-  case WEAPONID+24:
   case WEAPONID+26:
   case WEAPONID+27:
   case WEAPONID+32:
   case WEAPONID+36:
+  case WEAPONID+38:
+  case WEAPONID+39:
     return(TRUE); break;
   default: return(FALSE); break;
   }
@@ -583,6 +618,7 @@ int id;
 void item_use(o)
 struct object *o;
 {
+  clearmsg();
   switch(o->usef) {
     case -1:i_no_op(o); break;
     case 0:i_nothing(o); break;
@@ -608,6 +644,7 @@ struct object *o;
     case I_HERO: i_hero(o); break;
     case I_TRUESIGHT: i_truesight(o); break;
     case I_ILLUMINATE: i_illuminate(o); break;
+    case I_DEFLECT: i_deflect(o); break;
 
     /* potion functions */
     case I_HEAL: i_heal(o); break;
@@ -642,6 +679,7 @@ struct object *o;
     case I_APPORT: i_apport(o); break;
     case I_DISPEL: i_dispel(o); break;
     case I_POLYMORPH: i_polymorph(o); break;
+    case I_FEAR:i_fear(o); break;
 
     /* food functions */
     case I_FOOD: i_food(o); break;
@@ -660,6 +698,9 @@ struct object *o;
     case I_PERM_AGILITY: i_perm_agility(o); break;
       
     /* artifact functions */
+    case I_SCEPTRE:i_sceptre(o);break;
+    case I_PLANES:i_planes(o);break;
+    case I_STARGEM:i_stargem(o);break;
     case I_SYMBOL:i_symbol(o); break;
     case I_ORBMASTERY: i_orbmastery(o); break;
     case I_ORBFIRE: i_orbfire(o); break;
@@ -685,7 +726,6 @@ struct object *o;
     case I_PERM_TRUESIGHT: i_perm_truesight(o); break;
 
     /* ring functions */
-    case I_PERM_VISION: i_perm_vision(o); break;
     case I_PERM_BURDEN: i_perm_burden(o); break;
     case I_PERM_STRENGTH: i_perm_strength(o); break;
     case I_PERM_GAZE_IMMUNE: i_perm_gaze_immune(o); break;
@@ -695,11 +735,13 @@ struct object *o;
     case I_PERM_KNOWLEDGE: i_perm_knowledge(o); break;
 
     /* armor functions */
+    case I_NORMAL_ARMOR: i_normal_armor(o); break;
     case I_PERM_FEAR_RESIST: i_perm_fear_resist(o); break;
     case I_PERM_ENERGY_RESIST: i_perm_energy_resist(o); break;
     case I_PERM_BREATHING: i_perm_breathing(o); break;
 
     /* weapons functions */
+    case I_NORMAL_WEAPON: i_normal_weapon(o); break;
     case I_LIGHTSABRE: i_lightsabre(o); break;
     case I_DEMONBLADE: i_demonblade(o); break;
     case I_DESECRATE: i_desecrate(o); break;
@@ -712,6 +754,11 @@ struct object *o;
     case I_KEY: i_key(o); break;
     case I_PERM_ILLUMINATE: i_perm_illuminate(o); break;
     case I_TRAP: i_trap(o); break;
+    case I_RAISE_PORTCULLIS:i_raise_portcullis(o); break;
+
+    /* shield functions */
+    case I_NORMAL_SHIELD: i_normal_shield(o); break;
+    case I_PERM_DEFLECT: i_perm_deflect(o); break;
   }
 }
 

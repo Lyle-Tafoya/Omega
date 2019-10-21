@@ -1,30 +1,17 @@
-/* omega (c) 1987 by Laurence Raphael Brothers */
+/* omega (c) 1987,1988 by Laurence Raphael Brothers */
 /* ofile.c */
 /* functions with file access in them. Also some direct calls to
    curses functions */
 
 #include <curses.h>
-#include <strings.h>
 #include <sys/file.h>
 #include "oglob.h"
 
-/* from ocom */
-extern void save();
-
-/* from  outil */
-extern int calc_points();
-
-/* from oscr */
-extern void endgraf(),xredraw(),printm(),mprint(),morewait();
-extern char ynq(), mgetc();
-
-/* ofile functions */
-void commandlist(),helpfile(),showfile(),showscores();
-void extendlog(),filescanstring(),checkhigh();
-void theologyfile(),cityguidefile();
-int filecheck();
-
-FILE *checkfopen();
+#ifndef F_OK
+#define F_OK 00 
+#define R_OK 04
+#define W_OK 02
+#endif
 
 FILE *checkfopen(filestring,optionstring)
 char *filestring,*optionstring;
@@ -32,15 +19,17 @@ char *filestring,*optionstring;
   FILE *fd;
   char response;
   fd = fopen(filestring,optionstring);
+  clearmsg();
   while (fd == NULL) {
-    printm("\nWarning! Error opening file:");
-    mprint(filestring);
-    mprint(" Abort or Retry? [ar] ");
-    do response = mgetc(); while ((response != 'a') && (response != 'r'));
+    print3("Warning! Error opening file:");
+    nprint3(filestring);
+    print1(" Abort or Retry? [ar] ");
+    do response = mcigetc(); while ((response != 'a') && (response != 'r'));
     if (response == 'r') fd = fopen(filestring,optionstring);
     else {
+      print2("Sorry 'bout that.... Bye!");
+      morewait();
       endgraf();
-      printf("\n\nSorry 'bout that.... Bye!");
       exit(0);
     }
   }
@@ -51,7 +40,9 @@ void commandlist()
 {
   FILE *fd; 
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"ocommands.txt");
+  if (Current_Environment == E_COUNTRYSIDE)
+    strcat(Str1,"occmds.txt");
+  else strcat(Str1,"ocmds.txt");
   fd = checkfopen(Str1,"r");
   showfile(fd);
   fclose(fd);
@@ -60,11 +51,12 @@ void commandlist()
   xredraw();
 }
 
-void helpfile()
+
+void user_intro()
 {
-  FILE *fd;
+  FILE *fd; 
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"ohelp.txt");
+  strcat(Str1,"ointro.txt");
   fd = checkfopen(Str1,"r");
   showfile(fd);
   fclose(fd);
@@ -72,12 +64,100 @@ void helpfile()
   refresh();
   xredraw();
 }
+
+void show_license()
+{
+  FILE *fd; 
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"olicense.txt");
+  fd = checkfopen(Str1,"r");
+  showfile(fd);
+  fclose(fd);
+  clear();
+  refresh();
+  xredraw();
+}
+
+
+
+void abyss_file()
+{
+  FILE *fd; 
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"oabyss.txt");
+  fd = checkfopen(Str1,"r");
+  showfile(fd);
+  fclose(fd);
+  clear();
+  refresh();
+}
+
+
+
+
+void inv_help()
+{
+  FILE *fd; 
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp3.txt");
+  fd = checkfopen(Str1,"r");
+  showfile(fd);
+  fclose(fd);
+  clear();
+  refresh();
+  xredraw();
+}
+
+
+
+void combat_help()
+{
+  FILE *fd; 
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp5.txt");
+  fd = checkfopen(Str1,"r");
+  showfile(fd);
+  fclose(fd);
+  clear();
+  refresh();
+  xredraw();
+}
+
+
+
 
 void cityguidefile()
 {
   FILE *fd;
   strcpy(Str1,OMEGALIB);
   strcat(Str1,"oscroll2.txt");
+  fd = checkfopen(Str1,"r");
+  showfile(fd);
+  fclose(fd);
+  clear();
+  refresh();
+  xredraw();
+}
+
+
+void wishfile()
+{
+  FILE *fd;
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"oscroll3.txt");
+  fd = checkfopen(Str1,"r");
+  showfile(fd);
+  fclose(fd);
+  clear();
+  refresh();
+  xredraw();
+}
+
+void adeptfile()
+{
+  FILE *fd;
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"oscroll4.txt");
   fd = checkfopen(Str1,"r");
   showfile(fd);
   fclose(fd);
@@ -96,6 +176,20 @@ void theologyfile()
   fclose(fd);
   clear();
   refresh();
+  xredraw();
+}
+
+
+void showmotd()
+{
+  FILE *fd;
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"omotd.txt");
+  fd = checkfopen(Str1,"r");
+  showfile(fd);
+  fclose(fd);
+  clear();
+  refresh();
 }
 
 
@@ -105,23 +199,23 @@ void theologyfile()
 void showfile(fd)
 FILE *fd;
 {
-  char c,d=' ';
+  int c,d=' ';
   int x,y;
   clear();
   refresh();
   c = fgetc(fd);
-  while ((c != EOF)&&(d != 'q')&&(d!=ESCAPE)) {
+  while ((c != EOF)&&((char) d != 'q')&&((char) d!=ESCAPE)) {
     getyx(stdscr,y,x);
-    if (y > 20) {
+    if (y > ScreenLength) {
       printw("\n-More-");
       refresh();
       d = wgetch(stdscr);
       clear();
     }
-    printw("%c",c);
+    printw("%c",(char) c);
     c = fgetc(fd);
   }
-  if ((d != 'q')&&(d!=ESCAPE)) {
+  if (((char) d != 'q')&&((char) d!=ESCAPE)) {
     printw("\n-Done-");
     refresh();
     getch();
@@ -135,13 +229,19 @@ void showscores()
   FILE *fd;
   int i;
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"omega.hiscore");
+  strcat(Str1,"omega.hi");
   fd = checkfopen(Str1,"r");
   filescanstring(fd,Hiscorer);
   filescanstring(fd,Hidescrip);
   fscanf(fd,"%d\n%d\n%d\n",&Hiscore,&Hilevel,&Hibehavior);
+  filescanstring(fd,Chaoslord);
+  fscanf(fd,"%d\n%d\n%d\n",&Chaoslordlevel,&Chaos,&Chaoslordbehavior);
+  filescanstring(fd,Lawlord);
+  fscanf(fd,"%d\n%d\n%d\n",&Lawlordlevel,&Law,&Lawlordbehavior);
   filescanstring(fd,Duke);
   fscanf(fd,"%d\n%d\n",&Dukelevel,&Dukebehavior);
+  filescanstring(fd,Justiciar);
+  fscanf(fd,"%d\n%d\n",&Justiciarlevel,&Justiciarbehavior);
   filescanstring(fd,Commandant);
   fscanf(fd,"%d\n%d\n",&Commandantlevel,&Commandantbehavior);
   filescanstring(fd,Champion);
@@ -159,70 +259,126 @@ void showscores()
   fclose(fd);
   clear();
   printw("High Score: %d",Hiscore);
-  printw(", by %s, a level %d adventurer",Hiscorer,Hilevel);
-  printw("\n%s",Hidescrip);
+  printw(", by %s (%s)",Hiscorer,levelname(Hilevel));
+  printw("\n%s\n",Hidescrip);
+  printw("\nLord of Chaos: %s (%s)",Chaoslord,levelname(Chaoslordlevel));
+  printw("\nLord of Law: %s (%s)",Lawlord,levelname(Lawlordlevel));
   printw("\n\nDuke of Rampart:              ");
-  printw("%s",Duke);
+  printw("%s (%s)",Duke,levelname(Dukelevel));
+  printw("\nJusticiar:                    ");
+  printw("%s (%s)",Justiciar,levelname(Justiciarlevel));
   printw("\nCommandant:                   ");
-  printw("%s",Commandant);
+  printw("%s (%s)",Commandant,levelname(Commandantlevel));
   printw("\nChampion:                     ");
-  printw("%s",Champion);
+  printw("%s (%s)",Champion,levelname(Championlevel));
   printw("\nArchmage:                     ");
-  printw("%s",Archmage);
+  printw("%s (%s)",Archmage,levelname(Archmagelevel));
   printw("\nPrime Sorceror:               ");
-  printw("%s",Prime);
+  printw("%s (%s)",Prime,levelname(Primelevel));
   printw("\nShadowlord:                   ");
-  printw("%s",Shadowlord);
+  printw("%s (%s)",Shadowlord,levelname(Shadowlordlevel));
   printw("\n\nHigh Priests:");
   printw("\n of Odin:                     ");
-  printw("%s",Priest[ODIN]);
+  printw("%s (%s)",Priest[ODIN],levelname(Priestlevel[ODIN]));
   printw("\n of Set:                      ");
-  printw("%s",Priest[SET]);
+  printw("%s (%s)",Priest[SET],levelname(Priestlevel[SET]));
   printw("\n of Athena:                   ");
-  printw("%s",Priest[ATHENA]);
+  printw("%s (%s)",Priest[ATHENA],levelname(Priestlevel[ATHENA]));
   printw("\n of Hecate:                   ");
-  printw("%s",Priest[HECATE]);
+  printw("%s (%s)",Priest[HECATE],levelname(Priestlevel[HECATE]));
   printw("\n of the Lords of Destiny:     ");
-  printw("%s",Priest[DESTINY]);
+  printw("%s (%s)",Priest[DESTINY],levelname(Priestlevel[DESTINY]));
   printw("\nThe ArchDruid:                ");
-  printw("%s",Priest[DRUID]);
-  printw("\n\n\n\nHit any key to continue.");
+  printw("%s (%s)",Priest[DRUID],levelname(Priestlevel[DRUID]));
+  printw("\n\nHit any key to continue.");
   refresh();
   wgetch(stdscr);
 }
 
+
+/* writes a new high score file */
 void checkhigh(descrip,behavior)
 char *descrip;
 int behavior;
 {
-  int i;
+  int i,points;
   FILE *fd;
-  if (! Cheated) {
+
+  if (FixedPoints > 0) points = FixedPoints;
+  else points = calc_points();
+
+  if (! gamestatusp(CHEATED)) {
     strcpy(Str1,OMEGALIB);
-    strcat(Str1,"omega.hiscore");
+    strcat(Str1,"omega.hi");
     fd = checkfopen(Str1,"w");
     
-    if (Hiscore < calc_points()) {
+    if (Hiscore < points) {
       morewait();
       mprint("Yow! A new high score!");
       fprintf(fd,"%s\n",Player.name);
       fprintf(fd,"%s\n",descrip);
-      fprintf(fd,"%d\n",calc_points());
+      fprintf(fd,"%d\n",points);
       fprintf(fd,"%d\n",Player.level);
-      fprintf(fd,"%d",behavior);
+      fprintf(fd,"%d\n",behavior);
     }
     else {
       fprintf(fd,"%s\n",Hiscorer);
       fprintf(fd,"%s\n",Hidescrip);
       fprintf(fd,"%d\n",Hiscore);
       fprintf(fd,"%d\n",Hilevel);
-      fprintf(fd,"%d",Hibehavior);
+      fprintf(fd,"%d\n",Hibehavior);
     }
-    fprintf(fd,"\n%s",Duke);
+
+
+
+    if (Player.alignment < Chaos) {
+      morewait();
+      mprint("Criminy! A new Lord of Chaos!");
+      fprintf(fd,"%s\n",Player.name);
+      fprintf(fd,"%d\n",Player.level);
+      fprintf(fd,"%d\n",Player.alignment);
+      fprintf(fd,"%d\n",behavior);
+    }
+    else {
+      fprintf(fd,"%s\n",Chaoslord);
+      fprintf(fd,"%d\n",Chaoslordlevel);
+      fprintf(fd,"%d\n",Chaos);
+      fprintf(fd,"%d\n",Chaoslordbehavior);
+    }
+
+
+
+
+
+
+    if (Player.alignment > Law) {
+      morewait();
+      mprint("Gosh! A new Lord of Law!");
+      fprintf(fd,"%s\n",Player.name);
+      fprintf(fd,"%d\n",Player.level);
+      fprintf(fd,"%d\n",Player.alignment);
+      fprintf(fd,"%d\n",behavior);
+    }
+    else {
+      fprintf(fd,"%s\n",Lawlord);
+      fprintf(fd,"%d\n",Lawlordlevel);
+      fprintf(fd,"%d\n",Law);
+      fprintf(fd,"%d\n",Lawlordbehavior);
+    }
+
+
+
+
+    fprintf(fd,"%s",Duke);
     fprintf(fd,"\n%d",Dukelevel);
     if (Player.rank[NOBILITY] == DUKE)
       fprintf(fd,"\n%d",behavior);
     else fprintf(fd,"\n%d",Dukebehavior);
+    fprintf(fd,"\n%s",Justiciar);
+    fprintf(fd,"\n%d",Justiciarlevel);
+    if (Player.rank[ORDER] == JUSTICIAR)
+      fprintf(fd,"\n%d",behavior);
+    else fprintf(fd,"\n%d",Justiciarbehavior);
     fprintf(fd,"\n%s",Commandant);
     fprintf(fd,"\n%d",Commandantlevel);
     if (Player.rank[LEGION] == COMMANDANT)
@@ -255,6 +411,7 @@ int behavior;
 	fprintf(fd,"\n%d",behavior);
       else fprintf(fd,"\n%d",Priestbehavior[i]);
     }
+    fprintf(fd,"\n");
     fclose(fd);
   }
 }
@@ -267,21 +424,18 @@ int lifestatus;
   char username[60];
   int npcbehavior;
   strcpy(username,getlogin());
-  if ((Player.level > 0) && (! Cheated)) {
+  if ((Player.level > 0) && (! gamestatusp(CHEATED))) {
     npcbehavior=fixnpc(lifestatus);
     checkhigh(descrip,npcbehavior);
-    Logsize++;
-    strcpy(Str1,OMEGALIB);
-    strcat(Str1,"omega.lognum");
-    fd = checkfopen(Str1,"w");
-    fprintf(fd,"%d",Logsize);
-    fclose(fd);
     strcpy(Str1,OMEGALIB);
     strcat(Str1,"omega.log");
     fd = checkfopen(Str1,"a");
-    fprintf(fd,"%s\n",username);
-    fprintf(fd,"%s\n",Player.name);
-    fprintf(fd,"%d %d %d\n",lifestatus,Player.level,npcbehavior);
+    fprintf(fd,
+	    " %d %d %d %s\n",
+	    lifestatus,
+	    Player.level,
+	    npcbehavior,
+	    Player.name);
     fclose(fd);
   }
 }
@@ -290,21 +444,22 @@ int lifestatus;
 
 
 
-
+/* reads a string from a file. If it is a line with more than 80 char's,
+   then remainder of line to \n is consumed */
 void filescanstring(fd,fstr)
 FILE *fd;
 char *fstr;
 {
   int i= -1;
-  char byte='x';
-  while ((i<80) && (byte != '\n')) {
+  int byte='x';
+  while ((i<80) && (byte != '\n') && (byte != EOF)) {
     i++;
-    fscanf(fd,"%c",&byte);
+    byte=fgetc(fd);
     fstr[i] = byte;
   } 
   if (byte != '\n')
-    while(byte!='\n')
-      fscanf(fd,"%c",&byte);
+    while((byte!='\n') && (byte != EOF))
+      byte=fgetc(fd);
   fstr[i]=0;
 }
 
@@ -324,9 +479,131 @@ int filecheck()
     printf("\nWarning! File not accessible:");
     printf(Str1);
   }
-  
+
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"odepths.dat");
+  strcat(Str1,"ocountry.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"odlair.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"omisle.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ocourt.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ospeak.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"otemple.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"oabyss.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ovillage1.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ovillage2.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ovillage3.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ovillage4.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohome1.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohome2.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohome3.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"oarena.dat");
   result = access(Str1,F_OK|R_OK);
   if (result == -1) {
     impossible = TRUE;
@@ -334,8 +611,42 @@ int filecheck()
     printf(Str1);
   }
   
+  
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"omega.hiscore");
+  strcat(Str1,"omaze1.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not appendable or accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"omaze2.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not appendable or accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"omaze3.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not appendable or accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"omaze4.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not appendable or accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"omega.hi");
   result = access(Str1,F_OK|R_OK|W_OK);
   if (result == -1) {
     impossible = TRUE;
@@ -351,18 +662,18 @@ int filecheck()
     printf("\nWarning! File not appendable or accessible:");
     printf(Str1);
   }
-  
+
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"omega.lognum");
-  result = access(Str1,F_OK|R_OK|W_OK);
+  strcat(Str1,"omotd.txt");
+  result = access(Str1,F_OK|R_OK);
   if (result == -1) {
     impossible = TRUE;
-    printf("\nWarning! File not appendable or accessible:");
+    printf("\nWarning! File not accessible:");
     printf(Str1);
   }
-  
+
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"omega.motd");
+  strcat(Str1,"olicense.txt");
   result = access(Str1,F_OK|R_OK);
   if (result == -1) {
     impossible = TRUE;
@@ -371,7 +682,24 @@ int filecheck()
   }
   
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"ocommands.txt");
+  strcat(Str1,"ocircle.dat");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    impossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ocmds.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"occmds.txt");
   result = access(Str1,F_OK|R_OK);
   if (result == -1) {
     badbutpossible = TRUE;
@@ -381,7 +709,103 @@ int filecheck()
   
 
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"ohelp.txt");
+  strcat(Str1,"ohelp1.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp2.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp3.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp4.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp5.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp6.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp7.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp8.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp9.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp10.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp11.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp12.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"ohelp13.txt");
   result = access(Str1,F_OK|R_OK);
   if (result == -1) {
     badbutpossible = TRUE;
@@ -389,15 +813,15 @@ int filecheck()
     printf(Str1);
   }
   
+  
   strcpy(Str1,OMEGALIB);
-  strcat(Str1,"omega.saves");
-  result = access(Str1,F_OK|R_OK|W_OK);
+  strcat(Str1,"oabyss.txt");
+  result = access(Str1,F_OK|R_OK);
   if (result == -1) {
     badbutpossible = TRUE;
-    printf("\nWarning! File not appendable or accessible:");
+    printf("\nWarning! File not accessible:");
     printf(Str1);
   }
-  
   strcpy(Str1,OMEGALIB);
   strcat(Str1,"oscroll1.txt");
   result = access(Str1,F_OK|R_OK);
@@ -415,6 +839,25 @@ int filecheck()
     printf("\nWarning! File not accessible:");
     printf(Str1);
   }
+
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"oscroll3.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
+
+  strcpy(Str1,OMEGALIB);
+  strcat(Str1,"oscroll4.txt");
+  result = access(Str1,F_OK|R_OK);
+  if (result == -1) {
+    badbutpossible = TRUE;
+    printf("\nWarning! File not accessible:");
+    printf(Str1);
+  }
   
   if (impossible) {
     printf("\nFurther execution is impossible. Sorry.");
@@ -423,9 +866,59 @@ int filecheck()
   }
   else if (badbutpossible) {
     printf("\nFurther execution may cause anomalous behavior.");
-    printf("\nContinue anyhow? [yn]");
+    printf("\nContinue anyhow? [yn] ");
     if (getchar()=='y') return(-1);
     else return(0);
   }
   else return(1);
 }
+
+
+/* display a file given a string name of file */
+void displayfile(filestr)
+char *filestr;
+{
+  FILE *fd = checkfopen(filestr,"r");
+  int c,d=' ';
+  int x,y;
+  clear();
+  refresh();
+  c = fgetc(fd);
+  while ((c != EOF)&&((char) d != 'q')&&((char) d!=ESCAPE)) {
+    getyx(stdscr,y,x);
+    if (y > ScreenLength) { 
+      printw("\n-More-");
+      refresh();
+      d = wgetch(stdscr);
+      clear();
+    }
+    printw("%c",(char) c);
+    c = fgetc(fd);
+  }
+  if (((char) d != 'q')&&((char) d!=ESCAPE)) {
+    printw("\n-Done-");
+    refresh();
+    getch();
+  }
+  clear();
+  refresh();
+}    
+
+
+/* display a file given a string name of file */
+void copyfile(srcstr)
+char *srcstr;
+{
+  char deststr[80];
+  char cmd[200];
+  print1("Enter name of file to create: ");
+  strcpy(deststr,msgscanstring());
+  strcpy(cmd,"cp ");
+  strcat(cmd,srcstr);
+  strcat(cmd," ");
+  strcat(cmd,deststr);
+  print2("Copying file....");
+  system(cmd);
+  print3("Done.");
+}    
+

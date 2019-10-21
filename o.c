@@ -1,147 +1,113 @@
-/* omega copyright (c) 1987 by Laurence Raphael Brothers */
+/* omega copyright (c) 1987,1988 by Laurence Raphael Brothers */
 
 /* this file includes main() and some top-level functions */
 /* o.c */
 
-#include <stdio.h>
 #include <signal.h>
-#include <strings.h>
+
 #include "odefs.h"
 
-/* from ofile */
-extern int filecheck();
+#include "oextern.h"
 
-/* from outil */
-extern void initdirs();
-extern int getdir();
+#include "ominit.h"
 
-/* from oscr */
-extern void initgraf(),drawvision(),endgraf(),mprint(),dataprint();
-extern void printm(),morewait(),showflags(),show_screen(),screencheck();
-extern char ynq();
+#include "oiinit.h"
 
-/* from ocom */
-extern void p_process(),pickup(),save(),quit();
-
-/* from somewhere */
-extern int calcmana();
-
-/* from oaux */
-extern void initplayer(),initspells(),p_damage(),p_teleport(),hourly_check();
-extern void foodcheck(),move_status_check(),hour_status_check();
-extern void damage_item();
-
-/* from otime */
-extern void time_clock();
-
-/* from oetc */
-extern void hint();
-
-/* from oinitmon0to3 */
-extern void initmon0to3();
-
-/* from oinitmon4to7 */
-extern void initmon4to7();
-
-/* from oinitmon8to10 */
-extern void initmon8to10();
-
-/* from olev */
-extern void wandercheck();
-extern int restore_game();
-
-/* from ogen */
-extern void init_dungeon();
-
-/* from oitem */
-extern pob create_object();
-
-/* from oinititem1 */
-extern void inititem1();
-
-/* from oinititem2 */
-extern void inititem2();
-
-              /* globals all originate in o.c */
-              /* extern defs in oglob.h */
-              /* There do seem to be an awful lot of them.... */
-
-/* one of each monster */
-struct monster Monsters[NUMMONSTERS];
+/* most globals originate in o.c */
 
 /* one of each spell */
 struct spell Spells[NUMSPELLS+1];
 
-/* one of each item */
-struct object Objects[TOTALITEMS];
+/* locations of city sites [0] - found, [1] - x, [2] - y */
+int CitySiteList[NUMCITYSITES][3];
 
-pml Mlist[NUMLEVELS];                 /* monsters on each level */
+/* Currently defined in caps since it is now a variable, was a constant */
+int LENGTH=MAXLENGTH; 
+int WIDTH=MAXWIDTH;
+
+int GameStatus=0L;                    /* Game Status bit vector */
+int ScreenLength;                     /* How large is level window */
 struct player Player;                 /* the player */
-struct location Dungeon[NUMLEVELS][WIDTH][LENGTH];  /* the whole dungeon */
-struct level_data Leveldata[NUMLEVELS];  /* info about various levels */
+struct terrain Country[MAXWIDTH][MAXLENGTH];/* The countryside */
+struct level *City=NULL;              /* The city of Rampart */
+struct level *TempLevel=NULL;         /* Place holder */
+struct level *Level=NULL;             /* Pointer to current Level */
+struct level *Dungeon=NULL;           /* Pointer to current Dungeon */
+int Villagenum;                       /* Current Village number */ 
+int ScreenOffset;                     /* Offset of displayed screen to level */
+int MaxDungeonLevels;                 /* Deepest level allowed in dungeon */
+int Current_Dungeon= -1;              /* What is Dungeon now */
+int Current_Environment= E_CITY;      /* Which environment are we in */
+int Last_Environment= E_COUNTRYSIDE;  /* Which environment were we in */
 int Dirs[2][9];                       /* 9 xy directions */
 char Cmd='s';                         /* last player command */
+int Command_Duration = 0;             /* how long does current command take */
+struct monster *Arena_Monster=NULL;   /* Opponent in arena */
+int Arena_Opponent=0;                 /* case label of opponent in l_arena()*/
+int Arena_Victory;                    /* did player win in arena? */
+int Imprisonment=0;                   /* amount of time spent in jail */
+int Precipitation=0;                  /* Hours of rain, snow, etc */
 int Lunarity=0;                       /* Effect of the moon on character */
 int Phase;                            /* Phase of the moon */
 int Date;                             /* Starting date */
+int Pawndate;                         /* Pawn Shop item generation date */
+pob Pawnitems[PAWNITEMS] = {NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL};
+/* items in pawn shop */
+int SymbolUseHour= -1;                /* holy symbol use marker */
+int ViewHour= -1;                     /* crystal ball use marker */
+int ZapHour= -1;                      /* staff of enchantment use marker */
+int HelmHour= -1;                     /* helm of teleportation use marker*/
+int Constriction=0;                   /* Dragonlord Attack State */
+int Blessing=FALSE;                   /* Altar Blessing State */
+int LastDay= -1;                      /* DPW date of dole */
+int RitualHour= -1;                   /* last use of ritual magic */
+int RitualRoom= -1;                   /* last room of ritual magic */
+int Lawstone=0;                       /* magic stone counter */
+int Chaostone=0;                      /* magic stone counter */
+int Mindstone=0;                      /* magic stone counter */
 int Searchnum = 1;                    /* number of times to search on 's' */
-int Wizard = FALSE;                   /* Wizard mode ? */
-int Cheated = FALSE;                  /* If ever used wizard mode */
-int Fastmove = TRUE;                  /* are we in the middle of a fast move */
-int Skipmonsters = FALSE;             /* don't deal with them this move */
-int Skipplayer = FALSE;               /* don't deal with him this move */
-int Gameover = FALSE;                 /* yow! are we having fun yet? */
-int Dlevel = 0;                       /* current dungeon level */
-int WhichScreen=0;                    /* which screen are we on? (0..3) */
+int Verbosity = VERBOSE;              /* verbosity level */
 char Seed;                            /* random seed */
 int Time = 0;                         /* turn number */
-int Tick = 0;                         /* 1/0 a turn; action coordinator */
-char Laststring[80];                  /* the last mprint string */
-int Logsize;                          /* number of players in log */
-int Tacmode=FALSE;                    /* In tactical combat mode? */
-int Arena = FALSE;                    /* Arena combat leaves no corpses */
-int Final = FALSE;                    /* Final duel flag */
+int Tick = 0;                         /* 10 a turn; action coordinator */
+char Stringbuffer[10][80] = {
+  "First String",  "First String",  "First String",  "First String",  
+  "First String",  "First String",  "First String",  "First String",
+  "First String",  "First String"}; /* last 10 strings */
 int Gymcredit = 0;                    /* credit at rampart gym */
+int Spellsleft = 0;                   /* research allowance at college */
+int StarGemUse = 0;                   /* last date of star gem use */
+int HiMagicUse = 0;                   /* last date of high magic use */
+int HiMagic = 0;                      /* current level for l_throne */ 
 int Balance = 0;                      /* bank account */
-int Bank_Broken = FALSE;              /* Has bank been broken into */
+int FixedPoints = 0;                  /* points are frozen after adepthood*/
+int LastTownLocX=0;            /* previous position in village or city */
+int LastTownLocY=0;            /* previous position in village or city */
+int LastCountryLocX=0;            /* previous position in countryside */
+int LastCountryLocY=0;            /* previous position in countryside */
 char Password[64];                    /* autoteller password */
-int Deepest = 0;                      /* The deepest level attained */
-int SuppressPrinting=FALSE;           /* turn off mprint, printm, when TRUE */
 char Str1[100],Str2[100],Str3[100],Str4[100];
    /* Some string space, random uses */
 
-int Thieflevel,Clericlevel,Sorcerorlevel,Collegelevel,Merclevel;
-/*record entry levels for various guilds, etc */
-
-int Clubmember=FALSE;                       /* Explorers' club member? */ 
-int Sawdruid=FALSE;                         /* met the druid? */
-int Soldcondo=FALSE;                        /* Bought the condo? */
 pol Condoitems=NULL;                        /* Items in condo */
 
 /* high score names, levels, behavior */
 int Shadowlordbehavior,Archmagebehavior,Primebehavior,Commandantbehavior;
 int Championbehavior,Priestbehavior[7],Hibehavior,Dukebehavior;
+int Chaoslordbehavior,Lawlordbehavior,Justiciarbehavior;
 char Shadowlord[80],Archmage[80],Prime[80],Commandant[80],Duke[80];
 char Champion[80],Priest[7][80],Hiscorer[80],Hidescrip[80];
+char Chaoslord[80],Lawlord[80],Justiciar[80];
 int Shadowlordlevel,Archmagelevel,Primelevel,Commandantlevel,Dukelevel;
-int Championlevel,Priestlevel[7],Hiscore,Hilevel;
-
-
-/* o.c functions */
-void intercycle(),initrand();
-int game_restore(),signalexit(),main();
-
-/* bookkeeping between monster and player moves. Is executed every move */
-
-
+int Championlevel,Priestlevel[7],Hiscore,Hilevel,Justiciarlevel;
+int Chaoslordlevel,Lawlordlevel,Chaos,Law;
 
 /* This may be implementation dependent */
+/* SRANDFUNCTION is defined in odefs.h */
 void initrand()
 {
-  srandom(time()+Seed);
+  SRANDFUNCTION;
 }
-
-
 
 
 int game_restore(argc,argv)
@@ -156,7 +122,7 @@ char *argv[];
     unlink(savestr);
     if (! ok) {
       endgraf();
-      mprint("Try again with the right save file, luser!");
+      printf("Try again with the right save file, luser!\n");
       exit(0);
     }
     return(TRUE);
@@ -172,36 +138,46 @@ char *argv[];
   int continuing;
 
 
+  /* always catch ^c and hang-up signals */
+
+  signal(SIGINT,quit);
+  signal(SIGHUP,signalsave);
+
   if (CATCH_SIGNALS) {
-    signal(SIGINT,quit);
-    signal(3,signalexit);
-    signal(4,signalexit);
-    signal(5,signalexit);
-    signal(6,signalexit);
-    signal(7,signalexit);
-    signal(8,signalexit);
-    signal(10,signalexit);
-    signal(11,signalexit);
-    signal(12,signalexit);
-    signal(29,signalexit);
-  }
+    signal(SIGQUIT,signalexit);
+    signal(SIGILL,signalexit);
+    signal(SIGTRAP,signalexit);
+    signal(SIGIOT,signalexit);
+    signal(SIGEMT,signalexit);
+    signal(SIGFPE,signalexit);
+    signal(SIGBUS,signalexit);
+    signal(SIGSEGV,signalexit);
+    signal(SIGSYS,signalexit);
+    }
+
+
 
   /* if filecheck is 0, some necessary data files are missing */
   if (filecheck() == 0) exit(0);
 
   /* all kinds of initialization */
+  initgraf();
   initdirs();
   initrand();
-  inititem1();
-  inititem2();
+  inititem();
   initspells();
-  initgraf();
 
-  /* if filecheck is 0, some necessary data files are missing */
-  if (filecheck == 0) {
-    endgraf();
-    exit(0);
-  }
+  strcpy(Stringbuffer[0],"First String");
+  strcpy(Stringbuffer[1],"First String");
+  strcpy(Stringbuffer[2],"First String");
+  strcpy(Stringbuffer[3],"First String");
+  strcpy(Stringbuffer[4],"First String");
+  strcpy(Stringbuffer[5],"First String");
+  strcpy(Stringbuffer[6],"First String");
+  strcpy(Stringbuffer[7],"First String");
+  strcpy(Stringbuffer[8],"First String");
+  strcpy(Stringbuffer[9],"First String");
+
 
   /* game restore attempts to restore game if there is an argument */
   continuing = game_restore(argc,argv);
@@ -210,34 +186,31 @@ char *argv[];
   /* monsters initialized in game_restore if game is being restored */  
   if (! continuing) {
     initplayer();
-    initmon0to3();
-    initmon4to7();
-    initmon8to10();
-    init_dungeon();
-    Leveldata[0].generated=TRUE;  
-    Dlevel = 0;
-    Player.x = 32;
-    Player.y = 2;
+    
     Date = random_range(360);
     Phase = random_range(24);
+    moon_check();
     strcpy(Password,"");
-    mprint("You find yourself on Park Avenue, the City of Rampart.");
+
+    init_world();
+    
     mprint("'?' for help or commandlist, 'Q' to quit.");
-    show_screen(0);
   }
   else mprint("Your adventure continues....");
 
-  
+  dataprint();
   timeprint();
   showflags();
-  drawvision(Player.x,Player.y,Player.vision);
 
-  /* game cycle */
-  while (! Gameover) time_clock();
-  
-  /* clean up curses */
-  endgraf();
-  
+  screencheck(Player.y);
+
+ /* game cycle */
+  time_clock(TRUE);
+  while (TRUE) {
+    if (Current_Environment == E_COUNTRYSIDE)
+      p_country_process();
+    else time_clock(FALSE);
+  }
 }
 
 int signalexit()
@@ -245,13 +218,58 @@ int signalexit()
   mprint("Yikes!");
   morewait();
   mprint("Sorry, caught a core-dump signal.");
-  if (Dlevel==0) {
-    mprint("Want to try and save the game?");
-    if (ynq()=='y')
-      save();
-  }
+  mprint("Want to try and save the game?");
+  if (ynq()=='y')
+    save(FALSE); /* don't compress */
   mprint("Bye!");
   endgraf();
   exit(0);
+}
+
+
+
+
+/* Start up game with new dungeons; start with player in city */
+void init_world()
+{
+  if (Level != NULL) free((char *) Level);
+  if (City != NULL) free((char *) City);
+  if (TempLevel != NULL) free((char *) TempLevel);
+  if (Dungeon != NULL) free_dungeon();
+  City = Level = TempLevel = Dungeon = NULL;
+  load_country();
+  load_city();
+  change_environment(E_CITY);
+  locprint("The City of Rampart.");
+}
+
+/* set variable item names */
+void inititem()
+{
+  int i;
+  scrollname(TRUE,0);
+  for(i=0;i<NUMSCROLLS;i++) {
+    Objects[SCROLLID+i].objstr = salloc(scrollname(FALSE,i));
+  }
+  potionname(TRUE,0);
+  for(i=0;i<NUMPOTIONS;i++) {
+    Objects[POTIONID+i].objstr = salloc(potionname(FALSE,i));
+  }
+  stickname(TRUE,0);
+  for(i=0;i<NUMSTICKS;i++) {
+    Objects[STICKID+i].objstr = salloc(stickname(FALSE,i));
+  }
+  bootname(TRUE,0);
+  for(i=0;i<NUMBOOTS;i++) {
+    Objects[BOOTID+i].objstr = salloc(bootname(FALSE,i));
+  }
+  cloakname(TRUE,0);
+  for(i=0;i<NUMCLOAKS;i++) {
+    Objects[CLOAKID+i].objstr = salloc(cloakname(FALSE,i));
+  }
+  ringname(TRUE,0);
+  for(i=0;i<NUMRINGS;i++) {
+    Objects[RINGID+i].objstr = salloc(ringname(FALSE,i));
+  }
 }
 

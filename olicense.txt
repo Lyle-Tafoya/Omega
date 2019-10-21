@@ -1,0 +1,51 @@
+omega
+=====
+
+General Public License:
+
+omega is copyright (C) 1987,1988 by Laurence R. Brothers
+
+All rights are reserved, save the following permissions:
+
+Free copying: Anyone may make a copy of omega, and distribute the
+copy, so long as this license remains accessible (via the 'P'
+command). Distribution must be free of charge (except, possibly, for
+the physical medium).
+
+Modification: Modification to omega is freely permitted so long as the
+modifications are not distributed without my consent (i.e., you can
+hack freely). Any modifications are considered "works for hire" and
+ownership of omega will be retained by me. I specifically note that no
+compensation in any form will be rendered to those who make such
+modifications.
+
+Warranty: No warranty is made for omega's operation. Any damages
+incurred in the use of omega or in its implementation are solely the
+responsibility of the end-user.
+
+Compensation: I waive all rights to compensation for the use of omega
+by licensees.  However, those wishing to send money, international
+postal reply coupons, interesting postcards, marbles, grimoires, etc.
+will find their contributions freely accepted.
+
+Coverage: Anyone who compiles, runs, copies, or in any other way
+manipulates any copy of omega's code, programs, or files shall be
+considered to be bound by this license.
+
+Bug reports, suggestions, fan mail, and money may be sent to the
+author at:
+
+	Laurence R. Brothers
+	Department of Computer Science
+	Rutgers University
+	New Brunswick, New Jersey 08903
+	USA
+
+All the above save money may also be sent to:
+
+	brothers@paul.rutgers.edu
+
+The latest version of omega can usually be found in the directory
+~ftp/pub/brothers/newesttars on paul.rutgers.edu [128.6.5.60]. You
+can also try john, george, or ringo, if you have trouble with
+paul.

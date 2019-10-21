@@ -5,52 +5,22 @@
 /* also some in ofile.c */
 
 #include <curses.h>
-#include <strings.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include "oglob.h"
 
-/* from ofile */
-extern void showscores(),extendlog(),showfile();
+char *sprintf();
+
+#ifdef EXCESSIVE_REDRAW
+#define wclear werase
+#endif
 
 
+/* note these variables are not exported to other files */
 
-/* from outil */
-extern int los_p(),view_los_p();
-extern int inbounds();
-extern int screenmod();
-extern int offscreen();
-extern int distance();
-extern int calc_points();
-extern int hour(),showhour();
-extern int day();
-extern char *month(),*ordinal();
-
-/* from oplay */
-extern char *itemid();
-extern int optionp();
-
-/* from ospell */
-extern char *spellid();
-
-WINDOW *Levelw,*Dataw,*Flagw,*Timew,*Menuw1,*Menuw2,*Msgw,*Locw,*Morew,*Phasew;
-WINDOW *CurrentMenu,*Rightside,*Comwin;
-     
-void redraw(),drawspot(),drawvision(),morewait(),drawmonsters();
-void mprint(),printm(),title(),sitclear(),initgraf(),xredraw();
-void plotchar(),show_screen(),blankoutspot(),show_license();
-void menuclear(),showcursor(),mnumprint(),menumorewait(),menunumprint();
-void menu_i_print(),clearmsg(),menuprint(),menu_item_print();
-void stdmorewait(),draw_explosion(),dataprint(),comwinprint(),timeprint();
-void menuspellprint(),erase_level(),levelrefresh();
-void refreshmsg(),menuaddch(),drawscreen(),maddch(),putspot();
-void menuprintitem(),display_quit(),showflags();
-void drawplayer(),displaystats(),display_death(),plotmon();
-void dobackspace(),drawandrefreshspot(),selectmenu();
-void drawomega(),screencheck(),blotspot(),plotspot();
-int parsenum(),getnumber(),litroom();
-char getspot(),mgetc(),lgetc(),menugetc(),*msgscanstring();
-char mcigetc();
+WINDOW *Levelw,*Dataw,*Flagw,*Timew,*Menuw,*Locw,*Morew,*Phasew;
+WINDOW *Comwin,*Rightside,*Msg1w,*Msg2w,*Msg3w,*Msgw,*Packw;
+WINDOW *Hideline[MAXITEMS],*Showline[MAXITEMS];
 
 void phaseprint()
 {
@@ -67,61 +37,32 @@ void phaseprint()
   }
 }
 
-void selectmenu()
+void show_screen()
 {
-  int y,x;
-  getyx(CurrentMenu,y,x);
-  if (y>17) {
-    if (CurrentMenu == Menuw1)
-      CurrentMenu = Menuw2;
-    else {
-      menumorewait();
-      menuclear();
-      CurrentMenu = Menuw1;
-    }
-  }
-}
-
-void show_screen(y)
-int y;
-{
-  int i,j,seen,top,bottom;
+  int i,j,top,bottom;
   wclear(Levelw);
-  switch(y) {
-  case 0:
-    top = TOPEDGE;
-    bottom = EDGE1+2;
-    break;
-  case 1:
-    top = EDGE1-1;
-    bottom = EDGE2+1;
-    break;
-  case 2:
-    top = EDGE2-1;
-    bottom = EDGE3+1;
-    break;
-  case 3:
-    top = EDGE3-2;
-    bottom = BOTTOMEDGE;
-    break;
-  }
-  for (j=top;j<=bottom;j++) 
-    for (i=0;i<WIDTH;i++) {
-      seen = Dungeon[Dlevel][i][j].seen;
-      wmove(Levelw,screenmod(j),i);
-      waddch(Levelw,(seen ? Dungeon[Dlevel][i][j].showchar : ' '));
-    }
+  top = ScreenOffset;
+  bottom = ScreenOffset + ScreenLength;
+  top = max(0,top);
+  bottom = min(bottom,LENGTH-1);
+  if (Current_Environment != E_COUNTRYSIDE) 
+    for (j=top;j<=bottom;j++) 
+      for (i=0;i<WIDTH;i++) {
+	wmove(Levelw,screenmod(j),i);
+	waddch(Levelw,(loc_statusp(i,j,SEEN) ?
+		       getspot(i,j,FALSE) :
+		       ' '));
+      }
+  else for (j=top;j<=bottom;j++) 
+      for (i=0;i<WIDTH;i++) {
+	wmove(Levelw,screenmod(j),i);
+	waddch(Levelw,(Country[i][j].explored ? 
+		       Country[i][j].current_terrain_type : 
+		       ' '));
+      }
   wrefresh(Levelw);
 }
 
-
-
-
-
-void refreshmsg()
-{
-  wrefresh(Msgw);
-}
 
 
 char mgetc()
@@ -140,7 +81,7 @@ char mcigetc()
 
 char menugetc()
 {
-  return(wgetch(Menuw1));
+  return(wgetch(Menuw));
 }
 
 
@@ -164,13 +105,79 @@ char ynq()
   wrefresh(Msgw);
   return(p);
 }
-    
 
+
+char ynq1()
+{
+  char p=' ';
+  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE))
+    p = wgetch(Msg1w);
+  switch (p) {
+    case 'y': wprintw(Msg1w,"yes. "); break;
+    case 'n': wprintw(Msg1w,"no. "); break;
+    case ESCAPE:
+    case 'q': wprintw(Msg1w,"quit. "); break;
+    }
+  wrefresh(Msg1w);
+  return(p);
+}
+
+
+char ynq2()
+{
+  char p=' ';
+  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE))
+    p = wgetch(Msg2w);
+  switch (p) {
+    case 'y': wprintw(Msg2w,"yes. "); break;
+    case 'n': wprintw(Msg2w,"no. "); break;
+    case ESCAPE:
+    case 'q': wprintw(Msg2w,"quit. "); break;
+    }
+  wrefresh(Msg2w);
+  return(p);
+}
+    
+/* puts up a morewait to allow reading if anything in top two lines */
+void checkclear()
+{
+  int x1,y,x2;
+  getyx(Msg1w,x1,y);
+  getyx(Msg2w,x2,y);  
+  if ((x1 != 0) || (x2 != 0)) {
+    morewait();
+    wclear(Msg1w);
+    wclear(Msg2w);
+    wrefresh(Msg1w);
+    wrefresh(Msg2w);
+  }
+}
+  
 /* for external call */
 void clearmsg()
 {
-  wclear(Msgw);
-  wrefresh(Msgw);
+  wclear(Msg1w);
+  wclear(Msg2w);
+  wclear(Msg3w);
+  Msgw = Msg1w;
+  wrefresh(Msg1w);
+  wrefresh(Msg2w);
+  wrefresh(Msg3w);
+}
+
+void clearmsg3()
+{
+  wclear(Msg3w);
+  wrefresh(Msg3w);
+}
+
+void clearmsg1()
+{
+  wclear(Msg1w);
+  wclear(Msg2w);
+  Msgw = Msg1w;
+  wrefresh(Msg1w);
+  wrefresh(Msg2w);
 }
 
 
@@ -179,18 +186,105 @@ void erase_level()
   wclear(Levelw);
 }
 
+/* direct print to first msg line */
+void print1(s)
+char *s;
+{
+  if (! gamestatusp(SUPPRESS_PRINTING)) {
+    buffercycle(s);
+    wclear(Msg1w);
+    wprintw(Msg1w,s);
+    wrefresh(Msg1w);
+  }
+}
 
-/* possible moreprint to message window, otherwise just a printm */
+/* for run on-messages -- print1 clears first.... */
+void nprint1(s)
+char *s;
+{
+  if (! gamestatusp(SUPPRESS_PRINTING)) {
+    buffercycle(s);
+    wprintw(Msg1w,s);
+    wrefresh(Msg1w);
+  }
+}
+
+
+
+
+/* direct print to second msg line */
+void print2(s)
+char *s;
+{
+  if (! gamestatusp(SUPPRESS_PRINTING)) {
+    buffercycle(s);
+    wclear(Msg2w);
+    wprintw(Msg2w,s);
+    wrefresh(Msg2w);
+  }
+}
+
+/* for run on-messages -- print2 clears first.... */
+void nprint2(s)
+char *s;
+{
+  if (! gamestatusp(SUPPRESS_PRINTING)) {
+    buffercycle(s);
+    wprintw(Msg2w,s);
+    wrefresh(Msg2w);
+  }
+}
+
+
+
+
+/* msg line 3 is not part of the region that mprint or printm can reach */
+/* typical use of print3 is for "you can't do that" type error messages */
+void print3(s)
+char *s;
+{
+  if (! gamestatusp(SUPPRESS_PRINTING)) {
+    buffercycle(s);
+    wclear(Msg3w);
+    wprintw(Msg3w,s);
+    wrefresh(Msg3w);
+  }
+}
+
+/* for run on-messages -- print3 clears first.... */
+void nprint3(s)
+char *s;
+{
+  if (! gamestatusp(SUPPRESS_PRINTING)) {
+    buffercycle(s);
+    wprintw(Msg3w,s);
+    wrefresh(Msg3w);
+  }
+}
+
+
+
+/* prints wherever cursor is in window, but checks to see if
+it should morewait and clear window */
 void mprint(s)
 char *s;
 {
   int x,y;
-  if (! SuppressPrinting) {
-    strcpy(Laststring,s);
+  if (! gamestatusp(SUPPRESS_PRINTING)) {
+    buffercycle(s);
     getyx(Msgw,y,x);
-    if (x+strlen(s) > 64) {
-      morewait();
-      wclear(Msgw);
+    if (x+strlen(s) >= WIDTH) {
+      if (Msgw == Msg1w) {
+	wclear(Msg2w);
+	Msgw = Msg2w;
+      }
+      else {
+	morewait();
+	wclear(Msg1w);
+	wclear(Msg2w);
+	wrefresh(Msg2w);
+	Msgw = Msg1w;
+      }
     }
     wprintw(Msgw,s);
     waddch(Msgw,' '); 
@@ -200,26 +294,12 @@ char *s;
 
 
 
-/* no new line */
-void printm(s)
-char *s;
-{
-  if (! SuppressPrinting) {
-    wprintw(Msgw,s);
-    waddch(Msgw,' ');
-    wrefresh(Msgw);
-  }
-}  
 
 void title()
 {
-  FILE *fd;
-  strcpy(Str1,OMEGALIB);
-  strcat(Str1,"omega.motd");
-  fd = fopen(Str1,"r");
-  showfile(fd);
+  showmotd();
   /* Pseudo Random Seed */
-  Seed = (int) time(0);
+  Seed = (int) time((long *)NULL);
   clear();
   refresh();  
   showscores();
@@ -229,60 +309,79 @@ void title()
 
 
 
-
-
+/* blanks out ith line of Menuw or Levelw */
+/* This is a serious kluge, but nothing else seems to work the way
+   I want it to! */
+void hide_line(i)
+int i;
+{
+  touchwin(Hideline[i]);
+  wrefresh(Hideline[i]);
+}
 
 
 
 /* initialize, screen, windows */
 void initgraf()
 {
+  int i;
   initscr();
-
-  Rightside = newwin(20,15,1,65);
-  Msgw = newwin(1,80,0,0);  
-  Morew = newwin(1,15,1,65);  
-  Locw = newwin(1,80,21,0);
-  Levelw = newwin(20,64,1,0);
-  Menuw1 = newwin(20,64,1,0);
-  Menuw2 = newwin(20,40,1,40);  
-  Dataw = newwin(2,80,22,0);
-  Timew = newwin(2,15,3,65);
+  if (LINES < 24) {
+    printf("Minimum Screen Size: 24 Lines.");
+    exit(0);
+  }
+  else ScreenLength = LINES - 6;
+  Rightside = newwin(ScreenLength,15,2,65);
+  Msg1w = newwin(1,80,0,0);
+  Msg2w = newwin(1,80,1,0);
+  Msg3w = newwin(1,80,2,0);
+  Msgw = Msg1w;
+  Morew = newwin(1,15,3,65);  
+  Locw = newwin(1,80,ScreenLength+3,0);
+  Levelw = newwin(ScreenLength,64,3,0);
+  for(i=0;i<MAXITEMS;i++) {
+    Hideline[i] = newwin(1,64,i+3,0);
+    Showline[i] = newwin(1,64,i+3,0);
+    wclear(Hideline[i]);
+    wclear(Showline[i]);
+  }
+  Menuw = newwin(ScreenLength,64,3,0);
+  Packw = newwin(ScreenLength,64,3,0);
+  Dataw = newwin(2,80,ScreenLength+4,0);
+  Timew = newwin(2,15,4,65);
   Phasew = newwin(2,15,6,65);
-  Flagw = newwin(3,15,9,65);
-  Comwin = newwin(8,15,13,65);
-  CurrentMenu = Menuw1;
+  Flagw = newwin(4,15,9,65);
+  Comwin = newwin(8,15,14,65);
 
   noecho();
   crmode();
 
-  scrollok(Msgw,TRUE);
-
-  wclear(Msgw);
-  wclear(Locw);
-  wclear(Levelw);
-  wclear(Timew);
-  wclear(Flagw);
-  wclear(Phasew);
-  wclear(Dataw);
-  wclear(Menuw1);
-  wclear(Menuw2);
-  wclear(Comwin);
-
   clear();
-  refresh();
   title();
   clear();
   refresh();
 }
 
+
+
+
+
 void drawplayer()
 {
-  static int lastx=0,lasty=0;
-  plotspot(lastx,lasty,(Player.status[BLINDED]>0 ? FALSE : TRUE));
-  wmove(Levelw,screenmod(Player.y),Player.x);
-  if ((! Player.status[INVISIBLE]) || Player.status[TRUESIGHT])
+  static int lastx= -1,lasty= -1;
+  if (Current_Environment == E_COUNTRYSIDE) {
+    wmove(Levelw,screenmod(lasty),lastx);
+    waddch(Levelw,Country[lastx][lasty].current_terrain_type);
+    wmove(Levelw,screenmod(Player.y),Player.x);
     waddch(Levelw,PLAYER);
+  }
+  else {
+    if (inbounds(lastx,lasty))
+      plotspot(lastx,lasty,(Player.status[BLINDED]>0 ? FALSE : TRUE));
+    wmove(Levelw,screenmod(Player.y),Player.x);
+    if ((! Player.status[INVISIBLE]) || Player.status[TRUESIGHT])
+      waddch(Levelw,PLAYER);
+  }
   lastx = Player.x;
   lasty = Player.y;
 }
@@ -290,45 +389,57 @@ void drawplayer()
 int litroom(x,y)
 int x,y;
 {
-  if (Dungeon[Dlevel][x][y].roomnumber < ROOMBASE) return(FALSE);
-  else 
-    return(Leveldata[Dlevel].rooms
-	   [Dungeon[Dlevel][x][y].roomnumber-ROOMBASE].lighted ||
-	   Player.status[ILLUMINATION]);
+  if (Level->site[x][y].roomnumber < ROOMBASE) return(FALSE);
+  else return(loc_statusp(x,y,LIT) ||
+	      Player.status[ILLUMINATION]);
 }
 
-void drawvision(x,y,v)
-int x,y,v;
+void drawvision(x,y)
+int x,y;
 {
-  static int oldx,oldy,oldv,oldroom;
+  static int oldx = -1,oldy = -1;
   int i,j;
-  if (Dlevel != 0)
-    for (i=0-oldv;i<oldv+1;i++)
-      for (j=0-oldv;j<oldv+1;j++)
-	if (inbounds(oldx+i,oldy+j))
-	  if ((oldroom != Dungeon[Dlevel][x][y].roomnumber) ||
-	      (! litroom(oldx,oldy)))
-	    blankoutspot(oldx+i,oldy+j);
-  if (Player.status[BLINDED]) {
-    drawspot(oldx,oldy);
-    drawspot(x,y);
-    drawplayer();
-    v = 0;
+
+  if (Current_Environment != E_COUNTRYSIDE) {
+    if (Player.status[BLINDED]) {
+      drawspot(oldx,oldy);
+      drawspot(x,y);
+      drawplayer();
+    }
+    else {
+      if (Player.status[ILLUMINATION] > 0) {
+	for (i= -2;i<3;i++)
+	  for (j= -2;j<3;j++)
+	    if (inbounds(x+i,y+j))
+	      if (view_los_p(x+i,y+j,Player.x,Player.y))
+		dodrawspot(x+i,y+j);
+      }
+      else {
+	for (i= -1;i<2;i++)
+	  for (j= -1;j<2;j++)
+	    if (inbounds(x+i,y+j))
+	      dodrawspot(x+i,y+j);
+      }
+      drawplayer();
+      drawmonsters(FALSE); /* erase all monsters */
+      drawmonsters(TRUE);  /* draw those now visible */
+    }
+    if ((! gamestatusp(FAST_MOVE)) || (! optionp(JUMPMOVE)))
+      showcursor(Player.x,Player.y);
+    oldx = x;
+    oldy = y;
   }
   else {
-    for (i=0-v;i<v+1;i++)
-      for (j=0-v;j<v+1;j++)
-	if (inbounds(x+i,y+j))
-	  drawspot(x+i,y+j);
+    for (i= -1;i<2;i++)
+      for (j= -1;j<2;j++)
+	if (inbounds(x+i,y+j)) {
+	  wmove(Levelw,screenmod(y+j),x+i);
+	  Country[x+i][y+j].explored = TRUE;
+	  waddch(Levelw,Country[x+i][y+j].current_terrain_type);
+	}
     drawplayer();
-    drawmonsters(TRUE);
-  }
-  if ((! Fastmove) || (! optionp(JUMPMOVE)))
     showcursor(Player.x,Player.y);
-  oldx = x;
-  oldy = y;
-  oldv = v;
-  oldroom = Dungeon[Dlevel][x][y].roomnumber;
+  }
 }
 
 
@@ -344,48 +455,51 @@ void levelrefresh()
   wrefresh(Levelw);
 }
 
-/* this one refreshes immediately and also ignores monsters */
-void drawandrefreshspot(x,y)
-int x,y;
-{
-  char c = getspot(x,y,FALSE);
-  int l;
-  if (c != Dungeon[Dlevel][x][y].showchar)
-    if (view_los_p(Player.x,Player.y,x,y)) {
-	Dungeon[Dlevel][x][y].seen = TRUE;
-	Dungeon[Dlevel][x][y].showchar = c;
-	putspot(x,y,c);
-      }
-  wrefresh(Levelw);
-}
 
 /* draws a particular spot under if in line-of-sight */
 void drawspot(x,y)
 int x,y;
 {
   char c = getspot(x,y,FALSE);
-  if (c != Dungeon[Dlevel][x][y].showchar)
+  if (c != Level->site[x][y].showchar)
     if (view_los_p(Player.x,Player.y,x,y)) {
-	Dungeon[Dlevel][x][y].seen = TRUE;
-	Dungeon[Dlevel][x][y].showchar = c;
-	putspot(x,y,c);
-      }
+      lset(x,y,SEEN);
+      Level->site[x][y].showchar = c;
+      putspot(x,y,c);
+    }
+}
+
+
+
+/* draws a particular spot regardless of line-of-sight */
+void dodrawspot(x,y)
+int x,y;
+{
+  char c = getspot(x,y,FALSE);
+  if (c != Level->site[x][y].showchar) {
+    lset(x,y,SEEN);
+    Level->site[x][y].showchar = c;
+    putspot(x,y,c);
+  }
 }
 
 /* write a blank to a spot if it is floor */
 void blankoutspot(i,j)
 int i,j;
 {
-  if (Dungeon[Dlevel][i][j].showchar == FLOOR) 
-    blotspot(i,j);
+  lreset(i,j,LIT);
+  if (Level->site[i][j].locchar == FLOOR)  {
+    Level->site[i][j].showchar = ' ';
+    putspot(i,j,' ');
+  }
 }
 
 /* blank out a spot regardless */
 void blotspot(i,j)
 int i,j;
 {
-  Dungeon[Dlevel][i][j].seen = FALSE;
-  Dungeon[Dlevel][i][j].showchar = SPACE;
+  lreset(i,j,SEEN);
+  Level->site[i][j].showchar = SPACE;
   if (! offscreen(j)) {
     wmove(Levelw,screenmod(j),i);
     wdelch(Levelw);
@@ -398,12 +512,14 @@ int i,j;
 void plotspot(x,y,showmonster)
 int x,y,showmonster;
 {
-  if (Dungeon[Dlevel][x][y].seen)
+  if (loc_statusp(x,y,SEEN))
     putspot(x,y,getspot(x,y,showmonster));
   else 
     putspot(x,y,' ');
 }
 
+
+/* Puts c at x,y on screen. No fuss, no bother. */
 void putspot(x,y,c)
 int x,y;
 char c;
@@ -430,73 +546,95 @@ void drawmonsters(display)
 int display;
 {
   pml ml;
-  for (ml=Mlist[Dlevel];ml!=NULL;ml=ml->next) {
-    if (display) {
-      if (view_los_p(Player.x,Player.y,ml->m->x,ml->m->y))
-	if (Player.status[TRUESIGHT] || (! m_statusp(ml->m,M_INVISIBLE)))
-	  putspot(ml->m->x,ml->m->y,ml->m->monchar);
+  for (ml=Level->mlist;ml!=NULL;ml=ml->next) {
+    if (ml->m->hp > 0) {
+      if (display) {
+	if (view_los_p(Player.x,Player.y,ml->m->x,ml->m->y)) {
+	  if (Player.status[TRUESIGHT] || (! m_statusp(ml->m,M_INVISIBLE))) {
+	    if ((ml->m->level > 5) &&
+		(ml->m->monchar != '@') &&
+		(ml->m->monchar != '|')) wstandout(Levelw);
+	    putspot(ml->m->x,ml->m->y,ml->m->monchar);
+	    wstandend(Levelw);
+	  }
+	}
+      }
+      else erase_monster(ml->m);
     }
-    else if (Dungeon[Dlevel][ml->m->x][ml->m->y].seen)
-      putspot(ml->m->x,
-	      ml->m->y,
-	      Dungeon[Dlevel][ml->m->x][ml->m->y].showchar);
-    else blotspot(ml->m->x,ml->m->y);
   }
+}
+
+/* replace monster with what would be displayed if monster weren't there */
+void erase_monster(m)
+struct monster *m;
+{
+  if (loc_statusp(m->x,m->y,SEEN))
+    putspot(m->x,m->y,getspot(m->x,m->y,FALSE));
+  else blotspot(m->x,m->y);
 }
 
 /* find apt char to display at some location */
 char getspot(x,y,showmonster)
 int x,y,showmonster;
 {
-  if (Dungeon[Dlevel][x][y].secret) return(WALL);
-  switch (Dungeon[Dlevel][x][y].locchar) {
-  case WHIRLWIND: 
-    return((Time % 2 == 1) ? WHIRLWIND2 : WHIRLWIND);
-    break;
+  if (loc_statusp(x,y,SECRET)) return(WALL);
+  else switch (Level->site[x][y].locchar) {
   case WATER:
-    if (Dungeon[Dlevel][x][y].creature == NULL) 
+    if (Level->site[x][y].creature == NULL) 
       return(WATER);
-    else if (m_statusp(Dungeon[Dlevel][x][y].creature,SWIMMING))
+    else if (m_statusp(Level->site[x][y].creature,SWIMMING))
       return(WATER);
-    else return(Dungeon[Dlevel][x][y].creature->monchar);
+    else return(Level->site[x][y].creature->monchar);
     break;
+  /* these sites never show anything but their location char's */
   case CLOSED_DOOR:
   case LAVA:
-  case HEDGE:
   case FIRE:
-  case PORTAL:
   case ABYSS:
-    return(Dungeon[Dlevel][x][y].locchar);
+    return(Level->site[x][y].locchar);
     break;
-  default:
-    if (showmonster && (Dungeon[Dlevel][x][y].creature != NULL)) {
-      if ((m_statusp(Dungeon[Dlevel][x][y].creature,M_INVISIBLE)) &&
+  /* rubble and hedge don't show items on their location */
+  case RUBBLE:
+  case HEDGE:
+    if (showmonster && (Level->site[x][y].creature != NULL)) {
+      if ((m_statusp(Level->site[x][y].creature,M_INVISIBLE)) &&
 	  (! Player.status[TRUESIGHT]))
 	return(getspot(x,y,FALSE));
-      else return (Dungeon[Dlevel][x][y].creature->monchar);
+      else return (Level->site[x][y].creature->monchar);
     }
-    else if (Dungeon[Dlevel][x][y].things != NULL) {
-      if (Dungeon[Dlevel][x][y].things->next != NULL)
+    else return(Level->site[x][y].locchar);
+    break;
+  /* everywhere else, first try to show monster, next show items, next show
+     location char */
+  default:
+    if (showmonster && (Level->site[x][y].creature != NULL)) {
+      if ((m_statusp(Level->site[x][y].creature,M_INVISIBLE)) &&
+	  (! Player.status[TRUESIGHT]))
+	return(getspot(x,y,FALSE));
+      else return (Level->site[x][y].creature->monchar);
+    }
+    else if (Level->site[x][y].things != NULL) {
+      if (Level->site[x][y].things->next != NULL)
 	return(PILE);
-      else return(Dungeon[Dlevel][x][y].things->thing->objchar);
+      else return(Level->site[x][y].things->thing->objchar);
     }
-    else return(Dungeon[Dlevel][x][y].locchar);
+    else return(Level->site[x][y].locchar);
     break;
   }
 }
 
 void commanderror()
 {
-  wclear(Msgw);
-  wrefresh(Msgw);
-  wprintw(Msgw,"%c : unknown command",Cmd);
-  wrefresh(Msgw);
+  wclear(Msg3w);
+  wprintw(Msg3w,"%c : unknown command",Cmd);
+  wrefresh(Msg3w);
 }
 
 void timeprint()
 {
   wclear(Timew);
-  wprintw(Timew,"%d",showhour());
+  wprintw(Timew,"%d:%d",showhour(),showminute());
+  if (showminute()==0) waddch(Timew,'0');
   wprintw(Timew,hour()>11 ? " PM \n" : " AM \n");
   wprintw(Timew,month());
   wprintw(Timew," the %d",day());
@@ -527,18 +665,7 @@ void dataprint()
 	  Player.dex,Player.maxdex,Player.agi,Player.maxagi,
 	  Player.iq,Player.maxiq,Player.pow,Player.maxpow);
   wrefresh(Dataw);
-}
-
-
-void displaystats(statpoints)
-int statpoints;
-{
-wclear(Dataw);
-wprintw(Dataw,"       Statistic Points Left: %d \n",statpoints);
-wprintw(Dataw,"STR:%d  CON:%d  DEX:%d  AGI:%d  INT:%d  POW:%d  ",
-	Player.maxstr,Player.maxcon,Player.maxdex,Player.maxagi,Player.maxiq,
-	Player.maxpow);
-wrefresh(Dataw);
+  wrefresh(Dataw);
 }
 
 
@@ -554,8 +681,8 @@ void xredraw()
 {
   wclear(Rightside);
   wrefresh(Rightside);
-  scrollok(Msgw,FALSE);
   touchwin(Msgw);
+  touchwin(Msg3w);
   touchwin(Levelw);
   touchwin(Timew);
   touchwin(Flagw);
@@ -563,8 +690,9 @@ void xredraw()
   touchwin(Locw);
   touchwin(Morew);
   touchwin(Phasew);
-  touchwin(Comwin);
+  touchwin(Comwin); 
   wrefresh(Msgw);
+  wrefresh(Msg3w);
   wrefresh(Levelw);
   wrefresh(Timew);
   wrefresh(Flagw);
@@ -573,7 +701,6 @@ void xredraw()
   wrefresh(Morew);
   wrefresh(Phasew);
   wrefresh(Comwin);
-  scrollok(Msgw,TRUE);
 }
 
 
@@ -581,100 +708,76 @@ void xredraw()
 void menuaddch(c)
 char c;
 {
-  selectmenu();
-  waddch(CurrentMenu,c);
-  wrefresh(CurrentMenu);
-}
-
-void stdmorewait()
-{
-  printw("\n---More---");
-  refresh();
-  while (wgetch(stdscr) != SPACE) { }
-}
-
-void menumorewait()
-{
-  wprintw(Menuw2,"\n ---More---");
-  wrefresh(Menuw2);
-  while (wgetch(Menuw2) != SPACE) { }
+  waddch(Menuw,c);
+  wrefresh(Menuw);
 }
 
 
-/* Neato the way it doesn't matter what display is set to, huh */
+
 void morewait()
 {
-  int display;
+  int display=TRUE;
+  char c;
   do {
     wclear(Morew);
     if (display) wprintw(Morew,"***  MORE  ***");
     else wprintw(Morew,"+++  MORE  +++");
     display = ! display;
     wrefresh(Morew);
-  } while (wgetch(Msgw) != SPACE);
+    c = wgetch(Msgw);
+  } while ((c != SPACE) && (c != RETURN));
   wclear(Morew);
   wrefresh(Morew);
 }
 
+int stillonblock()
+{
+  int display=TRUE;
+  char c;
+  do {
+    wclear(Morew);
+    if (display) wprintw(Morew,"<<<STAY?>>>");
+    else wprintw(Morew,">>>STAY?<<<");
+    display = ! display;
+    wrefresh(Morew);
+    c = wgetch(Msgw);
+  } while ((c != SPACE) && (c != ESCAPE));
+  wclear(Morew);
+  wrefresh(Morew);
+  return (c == SPACE);
+}
+
 void menuclear()
 {
-  wclear(Menuw1);
-  wclear(Menuw2);
-  wrefresh(Menuw1);
-  wrefresh(Menuw2);
-  CurrentMenu = Menuw1;
+  wclear(Menuw);
+  wrefresh(Menuw);
 }
 
 void menuspellprint(i)
 int i;
 {
-  selectmenu();
-  wprintw(CurrentMenu,spellid(i));
-  wprintw(CurrentMenu,"(%d)\n",Spells[i].powerdrain);
-  wrefresh(CurrentMenu);
+  int x,y;
+  getyx(Menuw,y,x);
+  if (y >= ScreenLength - 2) {
+    morewait();
+    wclear(Menuw);
+  }
+  wprintw(Menuw,spellid(i));
+  wprintw(Menuw,"(%d)\n",Spells[i].powerdrain);
+  wrefresh(Menuw);
 }  
 
 void menuprint(s)
 char *s;
 {
-  selectmenu();
-  wprintw(CurrentMenu,s);
-  wrefresh(CurrentMenu);
-}
-
-void menu_i_print(i)
-int i;
-{
-  menu_item_print(i,Player.possessions[i]);
-}
-
-void menuprintitem(i,s)
-int i;
-char *s;
-{
-  selectmenu();
-  wprintw(CurrentMenu,"%d",i);
-  waddch(CurrentMenu,':');
-  waddch(CurrentMenu,' ');
-  wprintw(CurrentMenu,s);
-  wprintw(CurrentMenu,"\n");
-  wrefresh(CurrentMenu);
-}
-
-void menu_item_print(i,item)
-int i;
-pob item;
-{
-  selectmenu();
-  waddch(CurrentMenu,((char) ('a' + i)));
-  waddch(CurrentMenu,':');
-  waddch(CurrentMenu,' ');
-  waddch(CurrentMenu,item->objchar);
-  waddch(CurrentMenu,' ');
-  wprintw(CurrentMenu,itemid(item));
-  if (item->used) wprintw(CurrentMenu," (in use)");
-  wprintw(CurrentMenu,"\n");
-  wrefresh(CurrentMenu);
+  int x,y;
+  getyx(Menuw,y,x);
+  if (y >= ScreenLength - 2) {
+    morewait();
+    wclear(Menuw);
+  }
+  wprintw(Menuw,s);
+  wrefresh(Menuw);
 }
 
 
@@ -719,7 +822,7 @@ int x,y;
 
 char *msgscanstring()
 {
-  char instring[80],byte='x';
+  static char instring[80],byte='x';
   int i=0;
 
   instring[0]=0;
@@ -757,10 +860,13 @@ char *s;
 void drawscreen()
 {
   int i,j;
-
-  for (i=0;i<WIDTH;i++)
+  if (Current_Environment == E_COUNTRYSIDE)
+    for (i=0;i<WIDTH;i++)
+      for(j=0;j<LENGTH;j++)
+	putspot(i,j,Country[i][j].current_terrain_type);
+  else for (i=0;i<WIDTH;i++)
     for(j=0;j<LENGTH;j++)
-      putspot(i,j,Dungeon[Dlevel][i][j].locchar);
+      putspot(i,j,Level->site[i][j].locchar);
   wrefresh(Levelw);
   morewait();
   xredraw();
@@ -775,7 +881,8 @@ int getnumber(range)
 
   if (range==1) return(1);
   else while (! done) {
-    printm("\nHow many? Change with < or >, ESCAPE to select:");
+    clearmsg1();
+    wprintw(Msg1w,"How many? Change with < or >, ESCAPE to select:");
     mnumprint(value);
     do atom=mgetc();
     while ((atom != '<')&&(atom != '>')&&(atom!=ESCAPE));
@@ -786,12 +893,11 @@ int getnumber(range)
   return(value);
 }
 
-/* reads a positive number up to 99999 */
+/* reads a positive number up to 999999 */
 int parsenum()
 {
-  int number[5];
+  int number[8];
   int place = -1;
-  int done=FALSE;
   int i,x,y,num=0,mult=1;
   char byte=' ';
 
@@ -808,13 +914,14 @@ int parsenum()
 	wrefresh(Msgw);
       }
     }
-    else if ((byte <= '9') && (byte >= '0') && (place < 4)) {
+    else if ((byte <= '9') && (byte >= '0') && (place < 7)) {
       place++;
       number[place]=byte;
       waddch(Msgw,byte);
       wrefresh(Msgw);
     }
-	   }
+  }
+  waddch(Msgw,' ');
   if (byte == ESCAPE) return(ABORT);
   else {
     for (i=place;i>=0;i--) {
@@ -848,7 +955,7 @@ char *source;
   printw("\n");
   printw(Str4);
   printw(".");
-  printw("\n\n\n\n\n\Hit any key to continue.");
+  printw("\n\n\n\n\nHit any key to continue.");
   refresh();
   wgetch(stdscr);
   clear();
@@ -863,15 +970,14 @@ void display_win()
   printw("\n\n\n\n");
   printw(Player.name);
   if (Player.status[ADEPT]) {
-    printw("is a total master of omega with %d points!",calc_points());
+    printw(" is a total master of omega with %d points!",FixedPoints);
     strcpy(Str4,"A total master of omega");
   }
   else {
     strcpy(Str4,"retired a winner");
     printw(" triumphed in omega with %d points!",calc_points());
-    printw("\nDeepest penetration was level %d.",Deepest);
   }
-  printw("\n\n\n\n\n\Hit any key to continue.");
+  printw("\n\n\n\n\nHit any key to continue.");
   refresh();
   wgetch(stdscr);
   clear();
@@ -887,9 +993,8 @@ void display_quit()
   printw("\n\n\n\n");
   printw(Player.name);
   strcpy(Str4,"A quitter.");
-  printw(" wimped out on level %d with %d points!",Dlevel,calc_points());
-  printw("\nDeepest penetration was level %d.",Deepest);
-  printw("\n\n\n\n\n\Hit any key to continue.");
+  printw(" wimped out with %d points!",calc_points());
+  printw("\n\n\n\n\nHit any key to continue.");
   refresh();
   wgetch(stdscr);
   clear();
@@ -898,9 +1003,28 @@ void display_quit()
 }
 
 
+void display_bigwin()
+{
+  clear();
+  printw("\n\n\n\n");
+  printw(Player.name);
+  strcpy(Str4,"retired, an Adept of Omega.");
+  printw(" retired, an Adept of Omega with %d points!",FixedPoints);
+  printw("\n\n\n\n\nHit any key to continue.");
+  refresh();
+  wgetch(stdscr);
+  clear();
+  refresh();
+  extendlog(Str4,BIGWIN);
+}
+
+
 void mnumprint(n)
 int n;
 {
+  char numstr[20];
+  sprintf(numstr,"%d",n);
+  buffercycle(numstr);
   wprintw(Msgw,"%d",n);
   wrefresh(Msgw);
 }
@@ -908,8 +1032,14 @@ int n;
 void menunumprint(n)
 int n;
 {
-  wprintw(CurrentMenu,"%d",n);
-  wrefresh(CurrentMenu);
+  int x,y;
+  getyx(Menuw,y,x);
+  if (y >= ScreenLength - 2) {
+    morewait();
+    wclear(Menuw);
+  }
+  wprintw(Menuw,"%d",n);
+  wrefresh(Menuw);
 }
 
 void dobackspace()
@@ -932,17 +1062,22 @@ void showflags()
 
   phaseprint();
   wclear(Flagw);
-  if (Player.food > 20)
-    wprintw(Flagw,"Satiated\n");
-  else if (Player.food < 0)
+  if (Player.food < 0)
     wprintw(Flagw,"Starving\n");
-  else if (Player.food < 2)
+  else if (Player.food <= 3)
     wprintw(Flagw,"Weak\n");
-  else if (Player.food < 4)
+  else if (Player.food <= 10)
+    wprintw(Flagw,"Ravenous\n");
+  else if (Player.food <= 20)
     wprintw(Flagw,"Hungry\n");
-  else if (Player.food < 8)
+  else if (Player.food <= 30)
     wprintw(Flagw,"A mite peckish\n");
-  else wprintw(Flagw,"Content\n");
+  else if (Player.food <= 36)
+    wprintw(Flagw,"Content\n");
+  else if (Player.food <= 44)
+    wprintw(Flagw,"Satiated\n");
+  else wprintw(Flagw,"Bloated\n");
+
 
   if (Player.status[POISONED]>0)
     wprintw(Flagw,"Poisoned\n");
@@ -952,6 +1087,10 @@ void showflags()
     wprintw(Flagw,"Diseased\n");
   else wprintw(Flagw,"Healthy\n");
 
+  if (gamestatusp(MOUNTED)) wprintw(Flagw,"Mounted\n");
+  else if (Player.status[LEVITATING]) wprintw(Flagw,"Levitating\n");
+  else wprintw(Flagw,"Afoot\n");
+
   wrefresh(Flagw);
 }
 
@@ -960,97 +1099,387 @@ void drawomega()
   int i;
   for(i=0;i<7;i++) {
   clear();
-  printw("\n                          *****");
-  printw("\n                     ******   ******");
-  printw("\n                   ***             ***");
-  printw("\n                 ***                 ***");
-  printw("\n                **                     **");
-  printw("\n               ***                     ***");
-  printw("\n               **                       **");
-  printw("\n               **                       **");
-  printw("\n               ***                     ***");
-  printw("\n                ***                   ***");
-  printw("\n                  **                 **");
-  printw("\n             *   ***                ***   *");
-  printw("\n              ****                    ****");
+  printw("\n\n\n");
+  printw("\n                                    *****");
+  printw("\n                               ******   ******");
+  printw("\n                             ***             ***");
+  printw("\n                           ***                 ***");
+  printw("\n                          **                     **");
+  printw("\n                         ***                     ***");
+  printw("\n                         **                       **");
+  printw("\n                         **                       **");
+  printw("\n                         ***                     ***");
+  printw("\n                          ***                   ***");
+  printw("\n                            **                 **");
+  printw("\n                       *   ***                ***   *");
+  printw("\n                        ****                    ****");
   refresh();
   clear();
-  printw("\n                          +++++");
-  printw("\n                     ++++++   ++++++");
-  printw("\n                   +++             +++");
-  printw("\n                 +++                 +++");
-  printw("\n                ++                     ++");
-  printw("\n               +++                     +++");
-  printw("\n               ++                       ++");
-  printw("\n               ++                       ++");
-  printw("\n               +++                     +++");
-  printw("\n                +++                   +++");
-  printw("\n                  ++                 ++");
-  printw("\n             +   +++                +++   +");
-  printw("\n              ++++                    ++++");
+  printw("\n\n\n");
+  printw("\n                                    +++++");
+  printw("\n                               ++++++   ++++++");
+  printw("\n                             +++             +++");
+  printw("\n                           +++                 +++");
+  printw("\n                          ++                     ++");
+  printw("\n                         +++                     +++");
+  printw("\n                         ++                       ++");
+  printw("\n                         ++                       ++");
+  printw("\n                         +++                     +++");
+  printw("\n                          +++                   +++");
+  printw("\n                            ++                 ++");
+  printw("\n                       +   +++                +++   +");
+  printw("\n                        ++++                    ++++");
   refresh();
   clear();
-  printw("\n                          .....");
-  printw("\n                     ......   ......");
-  printw("\n                   ...             ...");
-  printw("\n                 ...                 ...");
-  printw("\n                ..                     ..");
-  printw("\n               ...                     ...");
-  printw("\n               ..                       ..");
-  printw("\n               ..                       ..");
-  printw("\n               ...                     ...");
-  printw("\n                ...                   ...");
-  printw("\n                  ..                 ..");
-  printw("\n             .   ...                ...   .");
-  printw("\n              ....                    ....");
+  printw("\n\n\n");
+  printw("\n                                    .....");
+  printw("\n                               ......   ......");
+  printw("\n                             ...             ...");
+  printw("\n                           ...                 ...");
+  printw("\n                          ..                     ..");
+  printw("\n                         ...                     ...");
+  printw("\n                         ..                       ..");
+  printw("\n                         ..                       ..");
+  printw("\n                         ...                     ...");
+  printw("\n                          ...                   ...");
+  printw("\n                            ..                 ..");
+  printw("\n                       .   ...                ...   .");
+  printw("\n                        ....                    ....");
   refresh();
   }
-  xredraw();
 }               
 
+/* y is an absolute coordinate */
+/* ScreenOffset is the upper left hand corner of the current screen
+   in absolute coordinates */
 
 void screencheck(y)
 int y;
 {
-  if (y/16 != WhichScreen) {
-    WhichScreen = y/16;
-    show_screen(WhichScreen);
+  if (((y-ScreenOffset) < (ScreenLength/8)) ||
+      ((y-ScreenOffset) > (7*ScreenLength/8))) {
+    ScreenOffset = y - (ScreenLength/2);
+    show_screen();
   }
 }
 
 
 
-void show_license()
+
+void spreadroomlight(x,y,roomno)
+int x,y,roomno;
 {
-  Skipmonsters = TRUE;
-  clear();
-  printw("General Public License:\n\n");
-  printw("omega is copyright (C) 1987 by:\n");
-  printw("Laurence R. Brothers (brothers@paul.rutgers.edu)\n\n");
-  printw("All rights are reserved, save the following permissions:\n\n");
-  printw("Free copying: Anyone may make a copy of omega, and distribute\n");
-  printw("the copy, so long as this license remains accessible\n");
-  printw("(via the 'P' command). No charge will be levied for such copying\n");
-  printw("or distribution. The author will gladly accept any remuneration\n");
-  printw("that users may wish to provide, however.\n\n");
-  printw("Modification: No one may modify omega except inasmuch\n");
-  printw("as may be necessary to cause omega to function in any given\n");
-  printw("computer environment. 'Porting' is therefore freely allowed. Any\n");
-  printw("such modifications will be considered 'works for hire'\n");
-  printw("and the modifiers will have no rights of ownership over\n");
-  printw("such modifications. I specifically note that no compensation\n");
-  printw("in any form will be rendered to those who make such allowed\n");
-  printw("changes to omega. All other modifications are in violation of\n");
-  printw("this license.\n\n");
-  stdmorewait();
-  clear();
-  printw("Warranty: No warranty is made for omega's operation.\n");
-  printw("Any damages incurred in the use of omega or in its\n");
-  printw("implementation are solely the responsibility of the end-user.\n\n");
-  printw("Coverage: Anyone who compiles, runs, copies, or in any other way\n");
-  printw("manipulates any copy of omega's code, programs, or files shall\n");
-  printw("considered to be bound by this license.\n");
-  refresh();
-  stdmorewait();
-  xredraw();
+  lightspot(x,y);
+
+  if (inbounds(x+1,y)) {
+    if ((! loc_statusp(x+1,y,LIT)) && 
+	(Level->site[x+1][y].roomnumber == roomno)) 
+      spreadroomlight(x+1,y,roomno);
+    else lightspot(x+1,y);
+  }
+
+  if (inbounds(x,y+1)) {
+    if ((! loc_statusp(x,y+1,LIT)) && 
+	(Level->site[x][y+1].roomnumber == roomno)) 
+      spreadroomlight(x,y+1,roomno);
+    else lightspot(x,y+1);
+  }
+
+  if (inbounds(x-1,y)) {
+    if ((! loc_statusp(x-1,y,LIT)) && 
+	(Level->site[x-1][y].roomnumber == roomno)) 
+      spreadroomlight(x-1,y,roomno);
+    else lightspot(x-1,y);
+  }
+
+  if (inbounds(x,y-1)) {
+    if ((! loc_statusp(x,y-1,LIT)) && 
+	(Level->site[x][y-1].roomnumber == roomno)) 
+      spreadroomlight(x,y-1,roomno);
+    else lightspot(x,y-1);
+  }
+}
+
+/* illuminate one spot at x y */
+void lightspot(x,y)
+int x,y;
+{ 
+  char c;
+  lset(x,y,LIT);
+  lset(x,y,SEEN);
+  c = getspot(x,y,FALSE);
+  Level->site[x][y].showchar = c;
+  putspot(x,y,c);
+}
+
+
+
+void spreadroomdark(x,y,roomno)
+int x,y,roomno;
+{
+  if (inbounds(x,y))
+    if (loc_statusp(x,y,LIT) && (Level->site[x][y].roomnumber == roomno)) {
+      blankoutspot(x,y);
+      spreadroomdark(x+1,y,roomno);
+      spreadroomdark(x,y+1,roomno);
+      spreadroomdark(x-1,y,roomno);
+      spreadroomdark(x,y-1,roomno);
+    }
+}
+
+
+
+
+void display_pack()
+{
+  int i,x,y;
+  if (Player.packptr < 1) print3("Pack is empty.");
+  else {
+    wclear(Packw);
+    wprintw(Packw,"Items in Pack:");
+    for(i=0;i<Player.packptr;i++) {
+      wprintw(Packw,"\n");
+      getyx(Packw,y,x);
+      if (y >= ScreenLength - 2) {
+	wrefresh(Packw);
+	morewait();
+	wclear(Packw);
+      }
+      waddch(Packw,i+'A');
+      waddch(Packw,':');
+      wprintw(Packw,itemid(Player.pack[i]));
+    }
+    wrefresh(Packw);
+  }
+}
+
+
+void display_possessions()
+{
+  int i;
+  wclear(Menuw);
+  for(i=0;i<MAXITEMS;i++) 
+    display_inventory_slot(i,FALSE);
+  move_slot(1,0,MAXITEMS);
+  wrefresh(Menuw);
+}
+
+
+
+void display_inventory_slot(slotnum,topline)
+int slotnum;
+int topline;
+{
+  WINDOW *W;
+  char usechar = ')';
+  if (Player.possessions[slotnum] != NULL)
+    if (Player.possessions[slotnum]->used)
+      usechar = '>';
+  if (topline) W = Msg3w;
+  else {
+    W = Showline[slotnum];
+    hide_line(slotnum);
+  }
+  wclear(W);
+  switch(slotnum) {
+  case O_UP_IN_AIR:
+    wprintw(W,"-- Object 'up in air':",usechar);
+    break;
+  case O_READY_HAND:
+    wprintw(W,"-- a%c ready hand: ",usechar);
+    break;
+  case O_WEAPON_HAND:
+    wprintw(W,"-- b%c weapon hand: ",usechar);
+    break;
+  case O_LEFT_SHOULDER:
+    wprintw(W,"-- c%c left shoulder: ",usechar);
+    break;
+  case O_RIGHT_SHOULDER:
+    wprintw(W,"-- d%c right shoulder: ",usechar);
+    break;
+  case O_BELT1:
+    wprintw(W,"-- e%c belt: ",usechar);
+    break;
+  case O_BELT2:
+    wprintw(W,"-- f%c belt: ",usechar);
+    break;
+  case O_BELT3:
+    wprintw(W,"-- g%c belt: ",usechar);
+    break;
+  case O_SHIELD:
+    wprintw(W,"-- h%c shield: ",usechar);
+    break;
+  case O_ARMOR:
+    wprintw(W,"-- i%c armor: ",usechar);
+    break;
+  case O_BOOTS:
+    wprintw(W,"-- j%c boots: ",usechar);
+    break;
+  case O_CLOAK:
+    wprintw(W,"-- k%c cloak: ",usechar);
+    break;
+  case O_RING1:
+    wprintw(W,"-- l%c finger: ",usechar);
+    break;
+  case O_RING2:
+    wprintw(W,"-- m%c finger: ",usechar);
+    break;
+  case O_RING3:
+    wprintw(W,"-- n%c finger: ",usechar);
+    break;
+  case O_RING4:
+    wprintw(W,"-- o%c finger: ",usechar);
+    break;
+  }
+  if (Player.possessions[slotnum]== NULL)
+    wprintw(W,"(slot vacant)");
+  else wprintw(W,itemid(Player.possessions[slotnum]));
+  wrefresh(W);
+}
+
+int move_slot(oldslot,newslot,maxslot)
+int oldslot,newslot;
+{
+  if ((newslot >= 0) && (newslot < maxslot)){
+    wmove(Showline[oldslot],0,0);
+    waddstr(Showline[oldslot],"--");
+    wrefresh(Showline[oldslot]);
+    wmove(Showline[newslot],0,0);
+    wstandout(Showline[newslot]);
+    waddstr(Showline[newslot],">>");
+    wstandend(Showline[newslot]);
+    wrefresh(Showline[newslot]);
+    return(newslot);
+  }
+  else return(oldslot);
+}
+
+
+
+void display_option_slot(slot)
+int slot;
+{
+  hide_line(slot);
+  wclear(Showline[slot]);
+  switch(slot) {
+  case 1:
+    wprintw(Showline[slot],"-- Option BELLICOSE [TF]: ");
+    wprintw(Showline[slot], optionp(BELLICOSE) ? "(now T) " : "(now F) ");
+    break;
+  case 2:
+    wprintw(Showline[slot],"-- Option JUMPMOVE [TF]: ");
+    wprintw(Showline[slot], optionp(JUMPMOVE) ? "(now T) " : "(now F) ");
+    break;
+  case 3:
+    wprintw(Showline[slot],"-- Option RUNSTOP [TF]: ");
+    wprintw(Showline[slot], optionp(RUNSTOP) ? "(now T) " : "(now F) ");
+    break;
+  case 4:
+    wprintw(Showline[slot],"-- Option PICKUP [TF]: ");
+    wprintw(Showline[slot], optionp(PICKUP) ? "(now T) " : "(now F) ");
+    break;
+  case 5:
+    wprintw(Showline[slot],"-- Option CONFIRM [TF]: ");
+    wprintw(Showline[slot], optionp(CONFIRM) ? "(now T) " : "(now F) ");
+    break;
+  case 6:
+    wprintw(Showline[slot],"-- Option TOPINV [TF]: ");
+    wprintw(Showline[slot], optionp(TOPINV) ? "(now T) " : "(now F) ");
+    break;
+  case 7:
+    wprintw(Showline[slot],"-- Option PACKADD [TF]: ");
+    wprintw(Showline[slot], optionp(PACKADD) ? "(now T) " : "(now F) ");
+    break;
+  case 8:
+    wprintw(Showline[slot],
+	    "-- Option VERBOSITY [(T)erse,(M)edium,(V)erbose]: (now ");
+    if (Verbosity == VERBOSE) wprintw(Showline[slot],"Verbose)");
+    else if (Verbosity == MEDIUM) wprintw(Showline[slot],"Medium)");
+    else wprintw(Showline[slot],"Terse)");
+    break;
+  case 9:
+    wprintw(Showline[slot],"-- Option SEARCHNUM [0>x>10]: (now %d)",Searchnum);
+    break;
+  }
+  wrefresh(Showline[slot]);
+}
+
+
+void display_options()
+{
+  int i;
+  menuclear();
+  hide_line(0);
+  for(i=1;i<=NUMOPTIONS;i++)
+    display_option_slot(i);
+}
+
+
+/* nya ha ha ha ha haaaa.... */
+void deathprint()
+{
+  mgetc();
+  waddch(Msgw,'D');
+  mgetc();
+  waddch(Msgw,'e');
+  mgetc();
+  waddch(Msgw,'a');
+  mgetc();
+  waddch(Msgw,'t');
+  mgetc();
+  waddch(Msgw,'h');
+  mgetc();
+}
+  
+void clear_if_necessary()
+{
+  int x,y;
+  getyx(Msg1w,y,x);
+
+  if (x != 0) {
+    wclear(Msg1w);
+    wrefresh(Msg1w);
+  }  
+
+  getyx(Msg2w,y,x);
+
+  if (x != 0) {
+    wclear(Msg2w);
+    wrefresh(Msg2w);
+  }  
+
+  getyx(Msg3w,y,x);
+
+  if (x != 0) {
+    wclear(Msg3w);
+    wrefresh(Msg3w);
+  }
+
+}
+
+
+void buffercycle(s)
+char *s;
+{
+  int i;
+  for(i=9;i>0;i--)
+    strcpy(Stringbuffer[i], Stringbuffer[i-1]);
+  strcpy(Stringbuffer[0],s);
+}
+
+
+void bufferprint()
+{
+  int i = 0;
+  clearmsg();
+  wprintw(Msg1w,"^p for last message, anything else to quit.");
+  wrefresh(Msg1w);
+  do {
+    wclear(Msg2w);
+    wprintw(Msg2w,Stringbuffer[i]);
+    wrefresh(Msg2w);
+    if (++i > 9) i = 0;
+  } while (mgetc() == 16);
+  clearmsg();
+  showcursor(Player.x,Player.y);
 }

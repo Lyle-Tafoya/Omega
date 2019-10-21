@@ -1,0 +1,24 @@
+COUNTRYSIDE COMMAND LIST:
+______________________________________________________________________________
+key  : description                                                : time taken
+______________________________________________________________________________
+^p   : print previous message                                     : ---
+^r   : redraw screen                                              : ---
+d    : drop object (will be lost forever)                         : ---
+e    : eat something                                              : ---
+i    : inventory of things in pack (selected inventory mode)      : ---
+s    : search all around you for hidden traces                    : 1 hour
+w    : wield, wear, or otherwise employ an object                 : ---
+H    : hunt for food                                              : 3 hours
+I    : inventory of things in pack (alternate inventory mode)     : ---
+O    : set options                                                : ---
+P    : public license information                                 : ---
+Q    : quit                                                       : ---
+R    : rename character                                           : ---
+S    : save game and quit                                         : ---
+V    : version information                                        : ---
+>    : enter a village, city, dungeon, et al.                     : ---
+/    : identify the onscreen usage of some character              : ---
+vi keys & keypad numbers:                                         : variable w.
+       walk one space (about 20 kilometers)                         terrain
+?    : this list                                                  :     0

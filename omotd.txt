@@ -1,0 +1,18 @@
+			          *******
+			       *****   *****
+			    *****         *****
+                           ****   welcome   ****
+			  ***       t o       ***
+			   ***     omega     ***
+			    ****           ****
+			       ****    ****
+			    *    **    **    *
+			     *****      *****
+
+           omega is copyright (C) 1987,1988 by Laurence R. Brothers
+         Bug reports, suggestions, etc. to brothers@paul.rutgers.edu
+
+                               Current News:
+          *  This is version 0.71 (beta).
+          *  If you only know 0.60, you'd better read help and command lists!
+          *  'V' now prints last edit date to distinguish sub-versions

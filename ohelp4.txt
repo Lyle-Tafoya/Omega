@@ -1,0 +1,14 @@
+MOVEMENT
+========
+The mechanics of movement are much like rogue. You can use either the
+vi keys (hjklbnyu) or the numeric keypad to move; the capitalized vi
+keys or a keypad direction preceded by a 5 "run" in that direction
+until either an object is run into, or an "interesting" location is
+hit. More locations are "interesting" if the "RUNSTOP" option is set.
+In most environments, a single move takes but a few seconds of game
+time, depending on the player's "Spd" score, but some places movement
+takes longer. In the countryside environment, the scale is much larger
+than usual (say 5KM/move), so a single move can take hours. (Riding a
+horse can reduce the amount of time taken in the country, depending on
+the terrain being travelled). In the city or village environments, the
+scale is such that a move takes about 30 seconds or so of gametime.

@@ -1,105 +1,60 @@
-/* omega copyright (C) by Laurence Raphael Brothers, 1987 */
+/* omega copyright (C) by Laurence Raphael Brothers, 1987,1988 */
 /* ochar.c */
 /* Player generation */
 
-#include <stdio.h>
-#include <strings.h>
 #include "oglob.h"
 
-/* from oscr */
-extern void printm(),mprint(),displaystats(),menuclear(),menuprint(),xredraw();
-extern void menuaddch();
-extern char mgetc(),*msgscanstring(),menugetc();
-
-/* from oaux */
-extern void calc_melee(),optionset();
-
-/* from ocom */
-extern void setoptions();
-
-/* ochar functions */
-void initplayer(),initstats(),changestat(),save_omegarc();
-int calcmana(),fixnpc(),competence_check();
-FILE *omegarc_check();
-
-/* ofile functions */
-void filescanstring();
-
-/* olev functions */
-extern void write_int();
-extern int read_int();
 
 /* set player to begin with */
 void initplayer()
 {
    int i;
-   char option;
    int oldchar=FALSE;
    FILE *fd;
 
-   Player.x = -1;
-   Player.y = -1;
-   Player.str = Player.maxstr = 13;
-   Player.con = Player.maxcon = 13;
-   Player.dex = Player.maxdex = 13;
-   Player.agi = Player.maxagi = 13;
-   Player.iq = Player.maxiq = 13;
-   Player.pow = Player.maxpow = 13;
-   Player.defense = 0;
-   Player.absorption = 0;
-   Player.vision = 1;
+   strcpy(Player.name,getlogin());
    Player.itemweight = 0;
-   Player.armor = NULL;
-   Player.primary = NULL;
-   Player.secondary = NULL;
-   Player.cloak = NULL;
-   Player.boots = NULL;
-   Player.numrings = 0; 
-   Player.food = 19; 
+   Player.food = 36; 
+   Player.packptr = 0;
    Player.options = 0;
-   for (i=0;i<MAXITEMS;i++) Player.possessions[i] = NULL;
+   for (i=0;i<MAXITEMS;i++)
+     Player.possessions[i] = NULL;
+   for (i=0;i<MAXPACK;i++)
+     Player.pack[i] = NULL;
    for (i=0;i<NUMIMMUNITIES;i++) Player.immunity[i] = 0;
    for (i=0;i<NUMSTATI;i++) Player.status[i] = 0;
-   for (i=0;i<NUMRANKS;i++) Player.rank[i] = 0;
+   for (i=0;i<NUMRANKS;i++) {
+     Player.rank[i] = 0;
+     Player.guildxp[i] = 0;
+   }
    Player.alignment = 0;
+   Player.cash = 250;
    if ((fd=omegarc_check())!=NULL) {
-     oldchar = TRUE;
-     filescanstring(fd,Player.name);
-     Player.options=read_int(fd);
-     Searchnum=read_int(fd);
-     Player.str=read_int(fd);
-     Player.con=read_int(fd);
-     Player.dex=read_int(fd);
-     Player.agi=read_int(fd);
-     Player.iq=read_int(fd);
-     Player.pow=read_int(fd);
-     Player.preference = getc(fd);
-     fclose(fd);
-     Player.maxstr = Player.str;
-     Player.maxcon = Player.con;
-     Player.maxdex = Player.dex;
-     Player.maxagi = Player.agi;
-     Player.maxiq = Player.iq;
-     Player.maxpow = Player.pow;
-     if (Searchnum > 9) Searchnum = 9;
-     else if (Searchnum < 1) Searchnum = 1;
-     if (Player.str+Player.con+Player.dex+
-	 Player.agi+Player.iq+Player.pow > 78) {
-       mprint("Stats too high! You can't fool me, un-huh, un-huh, un-huh...");
-       oldchar = FALSE;
+     fread((char *)&i,sizeof(int),1,fd);
+     if (i != VERSION) {
+       print1("Out of date .omegarc! Make another!");
+       morewait();
      }
+     else {
+       oldchar = TRUE;
+       fread((char *)&Player,sizeof(Player),1,fd);
+       fread((char *)&Searchnum,sizeof(int),1,fd);
+       fread((char *)&Verbosity,sizeof(char),1,fd);
+       strcpy(Player.name,getlogin());
+     }
+     fclose(fd);
    }
    if (! oldchar) {
      initstats();
-     optionset(ASKME);
      optionset(RUNSTOP);
      optionset(CONFIRM);
    }
+   Searchnum = max(1,min(9,Searchnum));
    Player.hp = Player.maxhp = Player.maxcon;
-   Player.cash = 250;
    calc_melee();
    Player.mana = Player.maxmana = calcmana();
    Player.click = 1;
+   strcpy(Player.meleestr,"CCBC");
    dataprint();
  }
 
@@ -109,96 +64,46 @@ FILE *omegarc_check()
   FILE *fd;
   strcpy(Str3,".omegarc");
   if ((fd = fopen(Str3,"r")) != NULL) {
-    mprint("Use .omegarc in wd? [yn]");
-    if (ynq()!='y') fd = NULL;
+    print2("Use .omegarc in wd? [yn] ");
+    if (ynq2()!='y') fd = NULL;
   }
+  clearmsg();
   return(fd);
 }
 
 void initstats()
 {
-  int done = FALSE;
-  int statpoints = 0;
-
-  mprint("*********Character Generation Module*********");
-
-  menuclear();
-  menuprint("\n\nExpend points on statistics\n\n");
-  menuprint("s: lower strength     --- S: raise strength\n");
-  menuprint("c: lower constitution --- C: raise constitution\n");
-  menuprint("d: lower dexterity    --- D: raise dexterity\n");
-  menuprint("a: lower agility      --- A: raise agility\n");
-  menuprint("i: lower intelligence --- I: raise intelligence\n");
-  menuprint("p: lower power        --- P: raise power\n");
-  menuprint("\n\nESCAPE when you are satisfied with your statistics");
-  displaystats(statpoints);
-  while(! done) {
-    switch(mgetc()) {
-      case ESCAPE: done = TRUE; break;
-      case 's': changestat(&statpoints,&Player.maxstr,-1); break;
-      case 'S': changestat(&statpoints,&Player.maxstr,1); break;
-      case 'c': changestat(&statpoints,&Player.maxcon,-1); break;
-      case 'C': changestat(&statpoints,&Player.maxcon,1); break;
-      case 'd': changestat(&statpoints,&Player.maxdex,-1); break;
-      case 'D': changestat(&statpoints,&Player.maxdex,1); break;
-      case 'a': changestat(&statpoints,&Player.maxagi,-1); break;
-      case 'A': changestat(&statpoints,&Player.maxagi,1); break;
-      case 'i': changestat(&statpoints,&Player.maxiq,-1); break;
-      case 'I': changestat(&statpoints,&Player.maxiq,1); break;
-      case 'p': changestat(&statpoints,&Player.maxpow,-1); break;
-      case 'P': changestat(&statpoints,&Player.maxpow,1); break;
-    }
-    displaystats(statpoints);
+  char response;
+  print1("Do you want to run a character [c] or play yourself [p]?");
+  do response = mcigetc(); while ((response!='c')&&(response != 'p'));
+  if (response == 'c') omegan_character_stats();
+  else {
+    user_character_stats();
+    user_intro();
+    print1("Do you want to save this set-up to .omegarc in this wd? [yn] ");
+    if (ynq1()=='y')
+      save_omegarc();
   }
-  Player.str = Player.maxstr;
-  Player.hp = Player.maxhp = Player.con = Player.maxcon;
-  Player.dex = Player.maxdex;
-  Player.agi = Player.maxagi;
-  Player.iq = Player.maxiq;
-  Player.pow = Player.maxpow;
-  printm("\nPlease enter your character's name: ");
-  strcpy(Player.name,msgscanstring());
-  printm("\nWhat is your character's sexual preference? [mf] ");
-  do Player.preference = mgetc();
-  while ((Player.preference != 'm') && (Player.preference != 'f'));
-  printm("\nDo you want to save this set-up to .omegarc in this wd? [yn]");
-  if (ynq()=='y')
-    save_omegarc();
   xredraw();
 }
 
 void save_omegarc()
 {
   FILE *fd = fopen(".omegarc","w");
+  int i=VERSION;
   if (fd == NULL)
-    mprint("Sorry, couldn't save .omegarc for some reason.");
+    print1("Sorry, couldn't save .omegarc for some reason.");
   else {
-    mprint("First, set options.");
+    fwrite((char *)&i,sizeof(int),1,fd);
+    print1("First, set options.");
     setoptions();
-    fprintf(fd,"%s\n",Player.name);
-    write_int(fd,Player.options);
-    write_int(fd,Searchnum);
-    write_int(fd,Player.str);
-    write_int(fd,Player.con);
-    write_int(fd,Player.dex);
-    write_int(fd,Player.agi);
-    write_int(fd,Player.iq);
-    write_int(fd,Player.pow);
-    putc(Player.preference,fd);
+    fwrite((char *)&Player,sizeof(Player),1,fd);
+    fwrite((char *)&Searchnum,sizeof(int),1,fd);
+    fwrite((char *)&Verbosity,sizeof(char),1,fd);
     fclose(fd);
   }
 }
 
-
-void changestat(statpoints,stat,delta)
-int *statpoints,*stat,delta;
-{
-  if ((*statpoints > 0) || (delta == -1)) 
-    if ((*stat+delta < 19) && (*stat+delta > 2)) {
-      *statpoints -= delta;
-      *stat += delta;
-    }
-}
 
 
 int calcmana()
@@ -228,7 +133,8 @@ int status;
     npcbehavior+=3000; /* evil */
   }
   else {
-    printm("NPC Behavior Determination Module");
+    clearmsg();
+    print1("NPC Behavior Determination Module");
     menuclear();
     menuprint("Your overall NPC behavior is:");
     if (Player.alignment < -10) {
@@ -260,7 +166,8 @@ int status;
     npcbehavior+=10*(response - '0');
     npcbehavior+=100*competence_check(response-'0');
     response = '0';
-    menuprint("\n\n1: threaten");
+    menuclear();
+    menuprint("1: threaten");
     menuprint("\n2: greet");
     menuprint("\n3: aid");
     menuprint("\n4: beg");
@@ -314,3 +221,292 @@ int attack;
   if (ability > 9) ability = 9;
   return(ability);
 }
+
+void user_character_stats()
+{
+  int num,iqpts=0,numints=0,ok,agipts=0,dexpts=0,powpts=0,conpts=0;
+  print1("OK, now try to answer honestly the following questions:");
+  morewait();
+  print1("How many pounds can you bench press? ");
+  num = parsenum();
+  if (num < 30) Player.str = Player.maxstr = 3;
+  else if (num < 90) Player.str = Player.maxstr = num/10;
+  else Player.str = Player.maxstr = 9+((num-120)/30);
+  if (Player.str > 18) {
+    print2("Even if it's true, I don't believe it.");
+    morewait();
+    clearmsg();
+    Player.str = Player.maxstr = 18;
+  }
+  
+  print1("Took an official IQ test? [yn] ");
+  if (ynq1()=='y') {
+    print1("So, whadja get? ");
+    num = parsenum()/10;
+    if (num > 18) {
+      print2("Even if it's true, I don't believe it.");
+      morewait();
+      clearmsg();
+      num = 18;
+    }
+    iqpts+=num;
+    numints++;
+  }
+
+  print1("Took Undergraduate entrance exams? [yn] ");
+  if (ynq1()=='y') {
+    do {
+      print1("So, what percentile? ");
+      num = parsenum();
+      ok = (num < 100);
+      if (! ok) {
+	print2("That's impossible!");
+	morewait();
+	clearmsg();
+      }
+    } while (! ok);
+    iqpts += (int) ((((num - 49)/50.0)*9)+9);
+    numints++;
+  }
+  print1("Took Graduate entrance exams? [yn] ");
+  if (ynq1()=='y') {
+    do {
+      print1("So, what percentile? ");
+      num = parsenum();
+      ok = (num < 100);
+      if (! ok) {
+	print2("That's impossible!");
+	morewait();
+	clearmsg();
+      }
+    } while (! ok);
+    iqpts += (int) ((((num - 49)/50.0)*9)+9);
+    numints++;
+  }
+
+  if (numints == 0) {
+    print1("Pretty dumb, aren't you? [yn] ");
+    if (ynq1()=='y') {
+      Player.iq = random_range(3)+3;      
+      print2("I thought so....");
+    }
+    else {
+      Player.iq = random_range(6)+8;
+      print2("Well, not *that* dumb.");
+    }
+    morewait();
+    clearmsg();
+  }
+  else Player.iq = iqpts/numints;
+  Player.maxiq = Player.iq;
+  agipts = 0;
+  print1("Can you dance? [yn] ");
+  if (ynq1()=='y') {
+    agipts++;
+    nprint1(" Well? [yn] ");
+    if (ynq1()=='y') agipts+=2;
+  }
+  print1("Do you have training in a martial art or gymnastics? [yn] ");
+  if (ynq1()=='y') {
+    agipts+=2;
+    print2("Do you have dan rank or equivalent? [yn] ");
+    if (ynq2()=='y') agipts+=4;
+  }
+  clearmsg();
+  print1("Do you play some field sport? [yn] ");
+  if (ynq1()=='y') {
+    agipts++;
+    nprint1(" Are you good? [yn] ");
+    if (ynq1()=='y') agipts++;
+  }
+  print1("Do you cave, mountaineer, etc.? [yn] ");
+  if (ynq1()=='y')
+    agipts+=3;
+  print1("Do you skate or ski? [yn] ");
+  if (ynq1()=='y') {
+    agipts+=2;
+    nprint1(" Well? [yn] ");
+    if (ynq1()=='y') agipts+=2;
+  }
+  print1("Are you physically handicapped? [yn] ");
+  if (ynq1()=='y')
+    agipts-=4;
+  print1("Are you accident prone? [yn] ");
+  if (ynq1()=='y')
+    agipts-=4;
+  print1("Can you use a bicycle? [yn] ");
+  if (ynq1()!='y')
+    agipts-=4;
+  Player.agi = Player.maxagi = 9 + agipts/2;
+  print1("Do you play video games? [yn] ");
+  if (ynq1()=='y') {
+    dexpts+=2;
+    print2("Do you get high scores? [yn] ");
+    if (ynq2()=='y') dexpts+=4;
+  }
+  clearmsg();
+  print1("Are you an archer, fencer, or marksman? [yn] ");
+  if (ynq1()=='y') {
+    dexpts+=2;
+    print2("A good one? [yn] ");
+    if (ynq2()=='y') dexpts+=4;
+  }
+  clearmsg();
+  print1("Have you ever picked a lock? [yn] ");
+  if (ynq1()=='y') {
+    dexpts+=2;
+    print2("Really. Well, the police are being notified.");
+  }
+  morewait();
+  clearmsg();
+  print1("What's your typing speed (words per minute) ");
+  num = parsenum();
+  if (num > 125) {
+    print2("Tell me another one....");
+    morewait();
+    clearmsg();
+    num = 125;
+  }
+  dexpts += num/25;
+  print1("Hold your arm out. Tense your fist. Hand shaking? [yn] ");
+  if (ynq1()=='y')
+    dexpts-=3;
+  print1("Ambidextrous, are you? [yn] ");
+  if (ynq1()=='y')
+    dexpts+=4;
+  print1("Can you cut a deck of cards with one hand? [yn] ");
+  if (ynq1()=='y')
+    dexpts+=2;
+  print1("Can you tie your shoes blindfolded? [yn] ");
+  if (ynq1()!='y')
+    dexpts-=3;
+  Player.dex = Player.maxdex = 6 + dexpts/2;
+  print1("Do you ever get colds? [yn] ");
+  if (ynq1()!='y') 
+    conpts+=4;
+  else {
+    nprint1(" Frequently? [yn] ");
+    if (ynq1() == 'y') conpts -=4;
+  }
+  print1("Had any serious accident or illness this year? [yn] ");
+  if (ynq1()=='y') conpts -=4;
+  else conpts +=4;
+  print1("Have a chronic disease? [yn] ");
+  if (ynq1() =='y') conpts -=4;
+  print1("Overweight or underweight by more than 20 percent? [yn] ");
+  if (ynq1() =='y') conpts -=2;
+  print1("High Blood Pressure? [yn] ");
+  if (ynq1() =='y') conpts -=2;
+  print1("Smoke? [yn] ");
+  if (ynq1() =='y') conpts -=3;
+  print1("Take aerobics classes? [yn] ");
+  if (ynq1() =='y') conpts +=2;
+  print1("How many miles can you run? ");
+  num = parsenum();
+  if (num > 25) {
+    print2("Right. Sure. Give me a break.");
+    morewait();
+    clearmsg();
+    conpts += 8;
+  }
+  else if (num < 1) conpts -= 3;
+  else if (num < 5) conpts += 2;
+  else if (num < 10) conpts += 4;
+  else conpts += 8;
+  Player.con = Player.maxcon = 12 + conpts/3;
+  print1("Do animals react oddly to your presence? [yn] ");
+  if (ynq1()=='y') {
+    print2("How curious that must be.");
+    morewait();
+    clearmsg();
+    powpts += 2;
+  }
+  print1("Can you see auras? [yn] ");
+  if (ynq1()=='y') {
+    nprint1(" How strange.");
+    morewait();
+    powpts += 3;
+  }
+  print1("Ever have an out-of-body experience? [yn] ");
+  if (ynq1()=='y') {
+    print2("Wow, man. Fly the friendly skies....");
+    morewait();
+    clearmsg();
+    powpts += 3;
+  }
+  print1("Did you ever cast a spell? [yn] ");
+  if (ynq1()=='y') {
+    powpts += 3;
+    nprint1(" Did it work? [yn] ");
+    if (ynq1()=='y') {
+      powpts+=7;
+      print2("Sure it did.");
+      morewait();
+      clearmsg();
+    }
+  }
+  print1("Do you have ESP? [yn] ");
+  if (ynq1()=='y') {
+    powpts += 3;
+    print2("Yeah, tell me more.");
+    morewait();
+    clearmsg();
+  }
+  print1("Do you have PK? [yn] ");
+  if (ynq1()=='y') {
+    powpts+= 6;
+    print2("I can't tell you how much that moves me.");
+    morewait();
+    clearmsg();
+  }
+  print1("Do you believe in ghosts? [yn] ");
+  if (ynq1()=='y') {
+    powpts+=2;
+    print2("I do! I do! I do believe in ghosts!");
+    morewait();
+    clearmsg();
+  }
+  print1("Are you Irish? [yn] ");
+  if (ynq1()=='y') {
+    powpts+=2;
+    nprint1(" Is that blarney or what?");
+    morewait();
+  }
+  Player.pow = Player.maxpow = 3 + powpts/2;
+  print1("What is your sexual preference? [mf] ");
+  do Player.preference = mcigetc();
+  while ((Player.preference != 'm') && (Player.preference != 'f'));
+}
+
+
+
+void omegan_character_stats()
+{
+  int share1,share2,i=0;
+  print1("To reroll hit ESCAPE; hit any other key to accept these stats.");
+  print2("You have only 10 chances to reroll....");
+  do {
+    i++;
+    Player.iq = Player.maxiq = 4 + random_range(5)+
+      (share1 = random_range(6)) + (share2 = random_range(6));
+    Player.pow = Player.maxpow = 4 + random_range(5) + share1 +share2;
+    Player.dex = Player.maxdex = 4 + random_range(5)+
+      (share1 = random_range(6)) + (share2 = random_range(6));
+    Player.agi = Player.maxagi = 4 + random_range(5) + share1 +share2;
+    Player.str = Player.maxstr = 4 + random_range(5)+
+      (share1 = random_range(6)) + (share2 = random_range(6));
+    Player.con = Player.maxcon = 4 + random_range(5) + share1 +share2;
+    Player.cash = random_range(100)+random_range(100)+
+      random_range(100)+random_range(100)+random_range(100);
+    calc_melee();
+    dataprint();
+  } while ((i < 11) && (mgetc() == ESCAPE));
+  clearmsg();
+  print1("Please enter your character's name: ");
+  strcpy(Player.name,msgscanstring());
+  print1("What is your character's sexual preference? [mf] ");
+  do Player.preference = mcigetc();
+  while ((Player.preference != 'm') && (Player.preference != 'f'));
+
+}
+

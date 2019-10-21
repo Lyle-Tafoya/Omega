@@ -1,0 +1,78 @@
+INVENTORY CONTROL MODES
+=======================
+
+There are two type of inventory control: Display mode and Quick mode.
+Which mode you use by default can be toggled by the TOPLINE option
+settable with the 'O' command and in your .omegarc file.
+
+In Display mode, all the inventory slots are displayed in the menu
+window. In Quick mode, only the message lines above the main window
+are used, and therefore the slots are not all displayed, only
+one of them at a time. Additionally, the commands are slightly 
+different. The amount of time each action takes is indicated
+below. Dropping two items takes twice as long as dropping
+one item.
+
+Note that your pack is treated as a LIFO stack; the last object you
+put in is the easiest to get at.
+
+DISPLAY MODE:
+^l,^r: Redisplay inventory (if screen is munged). Takes no time.
+d:  Drop the item currently in the 'up-in-the-air' slot, or in the
+    'selected' slot if there is nothing 'up-in-the-air'.
+    Takes one second.
+p:  Put the 'up-in-the-air' item into your pack, or the 'selected'
+    item, if the 'up-in-the-air' item is vacant.
+    Takes 5 seconds.
+s:  Show the contents of your pack.
+    Takes 5 seconds.
+t:  Take an item from your pack and put into the 'selected' slot, or
+    if that is full, tries to put into the 'up-in-the-air' slot.
+    Takes 5 seconds + 1 second/item examined in pack. I.e., rummaging
+    at three items before taking one takes 8 seconds.
+x:  Exchange the 'up-in-the-air' slot with the 'selected' slot. This
+    will merge two quantities of an item together if possible.
+    Either the 'up-in-the-air' slot or the 'selected' slot can be vacant.
+    Takes 2 seconds.
+>:  Cause the next slot lower down to be the 'selected' one.
+    Takes no time.
+<:  Cause the next slot higher up to be the 'selected' one.
+    Takes no time.
+?:  Print this help.
+    Takes no time.
+ESCAPE: return to game, dropping any object in the 'up-in-the-air' slot.
+        Takes no time.
+
+In Display Mode, the 'selected' slot is the one with a highlighted
+'->' before it.
+
+QUICK MODE:
+d:  Drop an item (by default the one 'up-in-the-air').
+    Takes one second.
+e:  Examine some inventory slot.
+    Takes no time.
+p:  Put some item into your pack.
+    Takes 5 seconds.
+s:  Show the contents of your pack.
+    Takes 5 seconds.
+t:  Take an item from your pack and put into some inventory slot, or
+    into the 'up-in-the-air' slot if the one selected is full.
+    Takes 5 seconds + 1/item examined in pack.
+x:  Exchange the 'up-in-the-air' slot with some slot. This
+    will merge two quantities of an item together if possible.
+    Either the 'up-in-the-air' slot or the other slot can be vacant.
+    Takes 2 seconds.
+~:  Enter Display Mode.
+    Takes no time.
+?:  Print this help.
+    Takes no time.
+ESCAPE: return to game, dropping any object in the 'up-in-the-air' slot.
+        Takes no time.
+
+In quick mode, there is no 'selected' slot, instead the letter
+identifying the slot must be entered following the command.
+
+The 'x' command in both modes is the one you'll use most; it combines
+taking and putting from inventory slot to "up-in-air" where picked-up
+items will be, and where you will drop items from on leaving the
+inventory mode.

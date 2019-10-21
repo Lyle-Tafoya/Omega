@@ -1,0 +1,39 @@
+Version			Changes
+=======			=======
+
+0.57(alpha)		First public release
+
+0.58(alpha)		bugfixes, I forget what else
+
+0.59(alpha)		bugfixes, better tactical combat mode ^c trapping
+
+0.60(alpha)		bugfixes, filechecking,	cuserid changed to getlogin,
+			brothel on city level, more foods. this file
+			started. new time mechanism, new module otime.
+			12/5/87. 
+
+0.70(alpha)             architecture changed -- therefore most code
+			rewritten. Only large-scale changes detailed
+			here, otherwise too many to count.
+
+			Countryside; multiple dungeons; "special levels";
+			special screens for houses, the arena, and
+			countryside encounters; single combat mode
+			with different verbosity levels; no more
+			filechecking for saved games; many new
+			monsters; a few new items; new end game;
+			new inventory modes, effects of many commands
+			are different, some new commands added,
+			other old ones removed. Commands and
+			terrain characters have different meanings
+			in countryside. 3/22/88.
+  
+0.70.5(alpha)		First 0.70 version released via ftp. Many
+			bugs. Among other things, wouldn't work at all
+			on a vax. 3/22/88.
+		
+0.71 (beta)		Rather different version of 0.70 now about to
+			be released to usenet via comp.sources.games.
+			7/11/88.
+
+             

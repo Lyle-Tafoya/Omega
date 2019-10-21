@@ -1,0 +1,39 @@
+
+Select from the following maneuvers:
+
+A  --  ATTACK. This takes one maneuver and executes an ordinary attack
+       on whatever monster you attempt to move onto.
+
+B  --  BLOCK. This takes one maneuver and means you are prepared to
+       execute a defensive maneuver should any monster attack you.
+       One BLOCK can defend against any number of attacks.
+
+L  --  LUNGE. This take two maneuvers and executes an exceptional
+       attack with extra chances to hit, and a bonus to damage. One
+       LUNGE will probably not do as much damage as two ATTACKS,
+       assuming of course that both ATTACKS hit....
+
+R  --  RIPOSTE. This is the same as a block, except that should you
+       successfully block an attack with it, you get a free attack
+       back on the monster who attacked you. It takes two maneuvers
+       and can only be done with a thrusting-type weapon.
+
+Following the choice of the maneuver, you must select a line for the
+action: L (low), C (center), or H (high). Some monster will tend to
+attack in a given line (short/small monsters, for example, will
+tend to attack low), so this choice is meaningful. If you block or
+riposte low, when the attack is high, you will have wasted the effect
+of the block. On the other hand, if you block low twice, and the
+attack is low, you will defend doubly. If you don't block or riposte
+at all, it will be particularly easy for monsters to hit you.
+
+Keep on selecting maneuvers until you have no maneuver points left.
+Hitting the BACKSPACE or DELETE key will erase your current choices
+and let you start over. When you are satisfied, confirm your
+choice with the RETURN key. Once a choice is selected, it stays in
+effect until you change it; you need not reset it for each attack.
+Selecting combat maneuvers takes no time.
+
+If you are in VERBOSE mode (settable with the 'O' command) you'll see
+just what the monster is doing, whether the blocks are effective,
+and so on. Otherwise you'll just be told whether you hit or miss.

@@ -1,55 +1,111 @@
    File Name		Archive #	Description
 -----------------------------------------------------------
- MANIFEST                  1	This file
- Makefile                 15	sun makefile
- Makefile.orig             6	original sun makefile
- README                    1	guess what
- makefile.notsun           3	non-sun sample makefile
- o.c                      15	source files, *.c, *.h
- oaux1.c                  12	
- oaux2.c                  11	
- ochar.c                  10	
- ocity.c                  10	
- ocity.dat                15	city level
- ocom.c                    1	
- ocommands.txt            10	command list
- odefs.h                   8	
- odepths.c                 9	
- odepths.dat               1	bottom level
- oeffect1.c               13	
- oeffect2.c               14	
- oetc.c                    9	
- ofile.c                   2	
- ogen.c                   14	
- oglob.h                   7	
- oguild.c                  4	
- ohelp.txt                 5	help file
- oinititem1.c             11	
- oinititem2.c              8	
- oinitmon0to3.c            6	
- oinitmon4to7.c            5	
- oinitmon8to10.c           9	
- oinv.c                    3	
- oitem.c                  13	
- oitemf.c                  2	
- olev.c                   15	
- omega.compilation.notes  15	how to compile
- omega.hiscore             9	hiscore file
- omega.intro              13	cute intro
- omega.license            15	public license
- omega.log                12	npc log
- omega.lognum              1	number of log entries
- omega.motd                5	msg of the day
- omega.programming.notes   4	notes on the code
- omega.thanks             12	congrat
- omega.update.history      8	says it all
- omon.c                   10	
- omonf.c                   7	
- omove.c                   7	
- oscr.c                   12	
- oscroll1.txt              1	library scroll
- oscroll2.txt             14	library scroll
- osite.c                   3	
- ospell.c                  6	
- otime.c                  15	new module in 0.60
- outil.c                   4	
+ MANIFEST                   1	take a wild guess
+ Makefile                  19	makefile for suns (can be used as is)
+ README                     1	general README file
+ README2                    1	guide to compilation and game set-up
+ README3                    1	notes on programming
+ README4                    1	wizard mode and game maintenance notes
+ makefile.notsun           18	makefile for others (must be customized)
+ o.c                       12	c source file
+ oabyss.c                  13	c source file
+ oabyss.dat                 8	special level data file
+ oabyss.txt                18	game text file
+ oarena.dat                19	special level data file
+ oaux1.c                   12	c source file
+ oaux2.c                    5	c source file
+ ochar.c                   15	c source file
+ ocircle.dat               19	special level data file
+ ocity.c                   13	c source file
+ ocity.dat                 18	special level data file
+ ocmds.txt                 18	non-countryside command list
+ ocom1.c                   15	c source file
+ ocom2.c                   10	c source file
+ ocom3.c                    8	c source file
+ ocountry.c                16	c source file
+ ocountry.dat              18	special level data file
+ ocourt.dat                18	special level data file
+ odate.h                    7	define the last edit date.
+ odefs.h                   11	cpp header file, plus typedefs, etc.
+ odlair.dat                19	special level data file
+ oeffect1.c                10	c source file
+ oeffect2.c                12	c source file
+ oeffect3.c                 4	c source file
+ oenv.c                    17	c source file
+ oetc.c                    15	c source file
+ oextern.h                 14	extern function declarations
+ ofile.c                    5	c source file
+ ogen1.c                   11	c source file
+ ogen2.c                   16	c source file
+ oglob.h                   17	extern global and include file
+ oguild1.c                 14	c source file
+ oguild2.c                  7	c source file
+ ohelp1.txt                18	a help file (overview)
+ ohelp10.txt               19	a help file (saving and restoring)
+ ohelp11.txt               15	a help file (options)
+ ohelp12.txt               18	a help file (dungeon/city/other command list)
+ ohelp13.txt               18	a help file (countryside command list)
+ ohelp2.txt                18	a help file (characters)
+ ohelp3.txt                17	a help file (inventories)
+ ohelp4.txt                19	a help file (movement)
+ ohelp5.txt                17	a help file (combat)
+ ohelp6.txt                 3	a help file (bugs)
+ ohelp7.txt                19	a help file (magic)
+ ohelp8.txt                 4	a help file (the countryside environment)
+ ohelp9.txt                18	a help file (screen display)
+ ohome1.dat                19	special level data file
+ ohome2.dat                16	special level data file
+ ohome3.dat                19	special level data file
+ ohouse.c                  11	c source file
+ oiinit.h                   2	item initialization header file
+ ointro.txt                18	game text file
+ oinv.c                     1	c source file
+ oitem.c                    8	c source file
+ oitemf1.c                  9	c source file
+ oitemf2.c                 17	c source file
+ oitemf3.c                 14	c source file
+ olev.c                    13	c source file
+ olicense.txt              18	public license information
+ omaze1.dat                10	game data file
+ omaze2.dat                17	game data file
+ omaze3.dat                 9	game data file
+ omaze4.dat                19	game data file
+ omega.ad                  18	cute advert for omega
+ omega.hi                  19	high score file
+ omega.log                 18	log file
+ omegahi.bak                6	safety copy of high score file
+ ominit.h                   3	monster initialization header file
+ omisle.dat                19	special level data file
+ ommelee.c                 17	c source file
+ ommove.c                  14	c source file
+ omon.c                     6	c source file
+ omotd.txt                 19	message of the day (opening screen)
+ omove.c                    3	c source file
+ omovef.c                   9	c source file
+ omspec.c                   6	c source file
+ omstrike.c                18	c source file
+ omtalk.c                   4	c source file
+ opriest.c                 15	c source file
+ osave.c                   16	c source file
+ oscr.c                     2	c source file
+ oscroll1.txt              18	game text file
+ oscroll2.txt              18	game text file
+ oscroll3.txt              18	game text file
+ oscroll4.txt              11	game text file
+ osite1.c                   7	c source file
+ osite2.c                   9	c source file
+ ospeak.dat                19	special level data file
+ ospell.c                  13	c source file
+ otemple.dat               19	special level data file
+ othanks.txt               19	acknowledgements
+ otime.c                    6	c source file
+ otrap.c                   17	c source file
+ oupdate.txt               18	sketchy development history
+ outil.c                   16	c source file
+ ovillage.c                10	c source file
+ ovillage1.dat             19	special level data file
+ ovillage2.dat             19	special level data file
+ ovillage3.dat             19	special level data file
+ ovillage4.dat             19	special level data file
+ ovillage5.dat             19	special level data file
+ ovillage6.dat             19	special level data file

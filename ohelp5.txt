@@ -1,0 +1,90 @@
+COMBAT
+======
+As in most rogue-like games, you attack an adjacent monster by
+attempting to move onto it.
+
+At this time, your current real statistics on to-hit, damage, defense,
+and armor protection are always displayed. It is felt that the
+character would know (or quickly discover) how well any weapon, armor,
+etc. actually work. By comparing different weapons, armor, and shield
+combinations, you can decide what martial configuration is best for
+your character.  Keep in mind that cost of equipment does not
+necessarily indicate how good it is (though it is a good rule of
+thumb).
+
+The 'F' command allows you to select precisely which actions you will
+take in a combat round -- parry high, thrust low, etc.  You have
+several maneuver points for use in each combat round, depending on
+level, status as a gladiator, etc. At the beginning of the game, your
+combat options are already set for you, but as you progress, and
+possibly gain more maneuvers, the preset options will not be
+automatically updated, so remember to do it yourself periodically, as
+you may be losing the chance at more maneuvers if you do not.
+
+The following are your combat options:
+
+ATTACK: Punch, Cut, Strike, Shoot, or Thrust (depending on weapon) -- 1 pt.
+BLOCK: Prepare to block or parry enemy attack                      -- 1 pt.
+RIPOSTE: BLOCK/ATTACK (thrusting weapons only)                     -- 2 pts.
+LUNGE: More chance to hit than usual, does more damage             -- 2 pts.
+
+Keep on selecting maneuvers until you have no maneuver points left.
+It does absolutely no good to have points left over.
+
+Following the choice of the maneuver, you must select a line for the
+action: L (low), C (center), or H (high). Some monster will tend to
+attack in a given line (short/small monsters, for example, will
+tend to attack low), so this choice is meaningful. If you block or
+riposte low, when the attack is high, you will have wasted the effect
+of the block. On the other hand, if you block low twice, and the
+attack is low, you will defend doubly. If you don't block or riposte
+at all, it will be particularly easy for monsters to hit you.
+
+Keep on selecting maneuvers until you have no maneuver points left.
+Hitting the BACKSPACE or DELETE key will erase your current choices
+and let you start over. When you are satisfied, confirm your
+choice with the RETURN key. Once a choice is selected, it stays in
+effect until you change it; you need not reset it for each attack.
+Selecting combat maneuvers takes no time.
+
+If you are in VERBOSE mode (settable with the 'O' command) you'll see
+just what the monster is doing, whether the blocks are effective,
+and so on. Otherwise you'll just be told whether you hit or miss.
+
+If you select VERBOSE mode, you will be able to see just where your
+opponent attacks. Some monsters may show a particular sequence or
+location which they attack in; you can use this information to your
+advantage by setting your own attacks and blocks accordingly.
+
+You can try multiple identical maneuvers if you like. If you don't try
+any BLOCKS at all, it will be easier than usual for your opponent to
+hit.  Even if you don't get the location correct, a BLOCK still does
+some good. A RIPOSTE attacks in the same line as its block, if you got
+the line right. I.e., if you are attacked high, a high riposte will
+get a free attack back. If you are attacked high three times, a high
+riposte will get three free attacks back. Each block or riposte is
+good for your entire move; no matter how many monsters attack you you
+will be able to block or riposte each one. Naturally, each attack can
+only be used against one monster.
+
+Heavy edged weapons and smashing weapons do CUTTING or STRIKING
+damage. Your strength affects this, so if it is high you will do
+much more damage, and if low, much less.
+
+Light edged weapons, missile weapons, and pointed weapons do THRUSTING
+or SHOOTING attacks, whose chance to hit is greatly affected by your
+dexterity. Note that you can't use a missile weapon very well in
+ordinary combat (i.e. when you move adjacent to a monster) -- you
+would be using a crossbow as a club, for instance. Instead,
+use the 'f' command to fire missiles when at long range, and change
+to a melee weapon for close combat.
+
+A note on weapons use: A weapon is not prepared for combat unless
+it is in the "weapon hand" slot in your inventory. Anywhere else
+means you are just carrying it around.... Two-handed weapons will
+automatically take both hand slots, so remember to have both
+hands free if you want to wield such a weapon.
+
+Shields, of course, will only have effect in the "shield" slot,
+while armor is only considered to be worn if it is in the "armor"
+slot.

@@ -1,0 +1,61 @@
+omega compilation notes.
+
+PRERELEASE VERSION 0.7x:
+
+First I should note that omega is copyrighted; you are using this
+program under the terms of the license, hopefully included in the file
+omega.license.
+
+omega is set up for compilation under Sun's unix; some changes may be
+necessary for correct functioning under other unixes. I have included
+some ifdef lines in odefs.h that ought to have some positive influence.
+However, not having anything besides a sun to test omega on, I will
+have to rely on your feedback as to the effect.
+
+To implement omega on your system:
+
+-1) Make sure you have the files listed in the file called MANIFEST.
+If you don't have these files, you lose! Get them from somewhere. In
+particular, it is a violation of the license not to have a copy of
+olicense.txt.
+
+0) Feel free to change omotd.txt to say whatever you like, keeping
+in mind the constraints of the Sedition Act.
+
+1) Set up a directory for omega's data files. Protection must allow
+the general public to write to specified files. My personal prejudice
+is against setuid, but use it if you like. There is
+no need to have a special directory, but it is neater that way.
+
+2) Change the first few #define's in odefs.h to conform to the 
+data file directory, your user name, etc., as the comments in the file
+discuss.
+
+3) If you are compiling on a sun, just use the given Makefile. If not,
+take a look at makefile.notsun for a clue what to do. Basically, you
+just have to compile everything together, remembering to -lcurses and
+-ltermlib (termcap on some systems) where appropriate.  With Makefile,
+*.h, and *.c in one directory, make should produce an executable file
+omega. If you get errors, you'll have to work them out for
+yourself.... My Makefile uses -g; unless you are going to hack omega,
+remove the -g. If you like your optimizer, feel free to try -O.  I
+recommend using either cc and -g or gcc and -O; gcc really does seem
+to optimize pretty well on omega, but at least our version causes dbx to
+crash with -g....
+
+4) All the files which are not source code should have at
+the least public read access. The following files should have write
+access as well:
+
+omega.hi
+omega.log
+
+These files should be placed in the OMEGALIB directory defined in
+odefs.h
+
+5) At this point, omega should be ready to run. Some notes on maintaining
+the game can be found in README4.
+
+6) Send any questions to brothers@paul.rutgers.edu.
+
+7) Good luck -- and let's be careful out there, shall we?

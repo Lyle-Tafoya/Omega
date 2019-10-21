@@ -1,44 +1,30 @@
 # This makefile works on a Sun, but may not work on some other machines
-# It is pretty obviou what it does, though, just runs cc.
-# I use the -g flag for debugging info; if you don't intend to
-# hack omega you might change the -g's to -O's for optimization
-# Modified Makefile (add install section) by Bill Randle, 1/18/88
 
-BINDIR = /usr/games
-# Note: LIBDIR should refer to the directory specified in "odefs.h"
-LIBDIR = /usr/games/lib/omegalib
+# If you have gcc and don't intend to hack around with the game,
+# I recommend replacing cc with gcc and using -O instead of -g
+# in the flags.
 
-objects = o.o oaux1.o oaux2.o ochar.o ocity.o ocom.o odepths.o\
-	oeffect1.o oeffect2.o\
-	oetc.o ofile.o ogen.o oguild.o oinititem1.o oinititem2.o\
-	oinitmon0to3.o oinitmon4to7.o oinitmon8to10.o\
-	oinv.o oitem.o oitemf.o olev.o omon.o omonf.o omove.o\
-	oscr.o osite.o ospell.o otime.o outil.o
+objects = o.o oabyss.o oaux1.o oaux2.o oaux3.o ochar.o ocity.o\
+	ocom1.o ocom2.o ocom3.o\
+	ocountry.o oeffect1.o oeffect2.o oeffect3.o\
+	oetc.o oenv.o ofile.o ogen1.o ogen2.o oguild1.o oguild2.o ohouse.o\
+	oinv.o oitem.o oitemf1.o oitemf2.o oitemf3.o olev.o\
+	ommelee.o ommove.o omon.o omove.o omovef.o omspec.o\
+	omstrike.o omtalk.o opriest.o\
+	osave.o oscr.o osite1.o osite2.o\
+	ospell.o otime.o otrap.o outil.o ovillage.o
 
-AUXFILES = ocity.dat ocommands.txt odepths.dat ohelp.txt omega.hiscore\
-	omega.intro omega.log omega.lognum omega.motd\
-	oscroll1.txt oscroll2.txt
+sourceflags = -O -c
 
-WRITEABLEFILES = $(LIBDIR)/omega.saves $(LIBDIR)/omega.hiscore\
-	$(LIBDIR)/omega.log $(LIBDIR)/omega.lognum
-
-sourceflags = -c -O # -g
-
-objectflags = # -g
+objectflags = #-g
 
 libraries =  -lcurses -ltermlib
 
 omega: $(objects)
 	cc -o $@ $(objectflags) $(objects) $(libraries)
 
+clean:
+	rm -rf *.o omega
+
 $(objects): odefs.h oglob.h $(@:.o=.c)
 	cc $(sourceflags) $(@:.o=.c)
-
-install: omega $(AUXFILES)
-	-mkdir $(LIBDIR)
-	chmod 777 $(LIBDIR)
-	install -s omega $(BINDIR)
-	cp $(AUXFILES) $(LIBDIR)
-	cp /dev/null $(LIBDIR)/omega.saves
-	chmod 666 $(WRITEABLEFILES)
-

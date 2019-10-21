@@ -1,70 +1,84 @@
-/* omega copyright (c) 1987 by Laurence Raphael Brothers */
-
-/* this file deals with the passage of time in omega */
-/* This marks a change toward event-driven action */
+/* omega copyright (c) 1987,1988 by Laurence Raphael Brothers */
 /* otime.c */
 
-#include <strings.h>
+/* this file deals with the passage of time in omega */
+
 #include "oglob.h"
 
-/* from oscr */
-void drawmonsters(),dataprint();;
+/* This function coordinates monsters and player actions, as well as
+random events. Each tick is a second. There are therefore 60 ticks to
+the minute and 60 minutes to the hour.
+*/
 
-/* from omon */
-void m_pulse();
-
-/* from oaux */
-void move_status_check(),hourly_check();
-
-void time_clock();
-
-
-/* This function coordinates monsters and player actions,
-as well as random events.
-
-There are 10 clicks to the turn; depending on the speed rating of
-monsters and player, they may "go off" from any speed from 1/10 turns
-to 10 times per turn */
-
-void time_clock()
+void time_clock(reset)
+int reset;
 {
-  pml ml,tempml,prevml;
+  pml ml;
 
-  Tick = ((Tick+1) % 50);
-
-  if (Tick % 5 == 0) {
-    move_status_check(); /* see about some player statuses each turn */
-    Time++;
-    if (Time % 100 == 0) hourly_check(); /* 100 moves == 1 hour */
+  if (++Tick > 60) {
+    Tick = 0;
+    minute_status_check(); /* see about some player statuses each minute */
+    if (++Time % 10 == 0) tenminute_check();
   }
   
-  Skipmonsters = FALSE;
-  if (Tick == Player.click) {
-    Player.click = (Player.click + Player.speed) % 50;
-    if (! Skipplayer) do p_process(); while (Skipmonsters);
+  if (reset) Tick = (Player.click = 0);
+
+  while ((Tick == Player.click) && (Current_Environment != E_COUNTRYSIDE)) {
+    if (! gamestatusp(SKIP_PLAYER))
+      do {
+	resetgamestatus(SKIP_MONSTERS);
+	if ((! Player.status[SLEPT])  && 
+	    (Current_Environment != E_COUNTRYSIDE)) p_process(); 
+      } while (gamestatusp(SKIP_MONSTERS) && 
+	       (Current_Environment != E_COUNTRYSIDE));
+    else resetgamestatus(SKIP_PLAYER);
+    Player.click = (Player.click + Command_Duration) % 60;
   }
-  Skipplayer = FALSE;
 
-  drawmonsters(FALSE);
+  /* klugy but what the heck. w/o this line, if the player caused
+  a change-environment to the country, the monsters on the old Level
+  will still act, causing all kinds of anomalies and core dumps,
+  intermittently. However, any other environment change will reset
+  Level appropriately, so only have to check for countryside */
 
-  /* Check all monsters */
-  ml = Mlist[Dlevel];
-  prevml = ml;
-  while(ml != NULL) {
-    if (ml->m->hp < 1) {
-      tempml = ml;
-      if (ml == Mlist[Dlevel]) Mlist[Dlevel] = Mlist[Dlevel]->next;
-      else prevml->next = ml->next;
-      ml = ml->next;
-      free((char *) tempml->m);
-      free((char *) tempml);
-    }
-    else if (Tick == ml->m->click) {
-      ml->m->click = (ml->m->click + ml->m->speed) % 50;
-      m_pulse(ml->m);
-    }
-    prevml = ml;
-    ml = ml->next;
+  if (Current_Environment != E_COUNTRYSIDE) {
+
+    /* no longer search for dead monsters every round -- waste of time.
+     Instead, just skip dead monsters. Eventually, the whole level
+     will be freed, getting rid of the dead 'uns */
+
+    for(ml=Level->mlist;ml!=NULL;ml=ml->next) 
+      if (ml->m->hp > 0) {
+
+	/* following is a hack until I discover source of phantom monsters */
+	if (Level->site[ml->m->x][ml->m->y].creature != ml->m)
+	  fix_phantom(ml->m); 
+
+	if (Tick == ml->m->click) {
+	  ml->m->click += ml->m->speed;
+	  while (ml->m->click > 60) ml->m->click -= 60;
+	  m_pulse(ml->m);
+	}
+      }
   }
 }
 
+
+
+
+
+/* remedies occasional defective monsters */
+void fix_phantom(m)
+struct monster *m;
+{
+  if (Level->site[m->x][m->y].creature == NULL) {
+    mprint("You hear a sound like a sigh of relief....");
+    Level->site[m->x][m->y].creature = m;
+  }
+  else {
+    mprint("You hear a puff of displaced air....");
+    findspace(&(m->x),&(m->y),-1);
+    Level->site[m->x][m->y].creature = m;
+    m_death(m);
+  }
+}
