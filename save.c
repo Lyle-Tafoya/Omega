@@ -268,7 +268,7 @@ int save_level(fd,level)
 FILE *fd;
 plv level;
 {
-  int i, j, run;
+  size_t i, j, run;
   unsigned long int mask;
   int ok = 1;
 
@@ -416,9 +416,8 @@ pol ol;
 int save_country(fd)
 FILE *fd;
 {
-  int i, j;
+  size_t i, j, run;
   int ok = 1;
-  int run;
   unsigned long int mask;
 
   for (i = 0; i < MAXWIDTH; i++)

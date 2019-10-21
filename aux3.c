@@ -830,7 +830,8 @@ int first, last;
 
 int parsecitysite()
 {
-  int first, last, pos;
+  int first, last;
+  size_t pos;
   char byte, prefix[80];
   int found = 0;
   int f, l;
@@ -1189,7 +1190,7 @@ void default_maneuvers()
   print1("Warning, resetting your combat options to the default.");
   print2("Use the 'F' command to select which options you prefer.");
   morewait();
-  for(i=0;i<maneuvers();i+=2) {
+  for(i=0;(size_t)i<maneuvers();i+=2) {
     Player.meleestr[i*2]='A';
     Player.meleestr[(i*2)+1]='C';
     Player.meleestr[(i+1)*2]='B';

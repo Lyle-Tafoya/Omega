@@ -28,7 +28,7 @@ struct monster *m;
   int i=0;
   drawvision(Player.x,Player.y);
   transcribe_monster_actions(m);
-  while ((i < strlen(m->meleestr)) && (m->hp > 0)) {
+  while (((size_t)i < strlen(m->meleestr)) && (m->hp > 0)) {
     if (m->uniqueness == COMMON) {
       strcpy(Str4,"The ");
       strcat(Str4,m->monstring);
@@ -192,7 +192,7 @@ char hitloc;
 int bonus;
 {
   int i=0,blocks=FALSE,goodblocks=0,hit,riposte=FALSE;
-  while (i<strlen(Player.meleestr)) {
+  while ((size_t)i<strlen(Player.meleestr)) {
     if ((Player.meleestr[i] == 'B') || (Player.meleestr[i] == 'R')) {
       blocks = TRUE;
       if (hitloc == Player.meleestr[i+1]) {
@@ -238,7 +238,7 @@ struct monster *m;
 
   /* Find which area player blocks and attacks least in */
   i = 0;
-  while (i<strlen(Player.meleestr)) {
+  while ((size_t)i<strlen(Player.meleestr)) {
     if ((Player.meleestr[i] == 'B') ||
 	(Player.meleestr[i] == 'R')) {
       if (Player.meleestr[i+1] == 'H') p_blocks[0]++;
@@ -280,7 +280,7 @@ struct monster *m;
   }
 
   i = 0;
-  while (i<strlen(m->meleestr)) {
+  while ((size_t)i<strlen(m->meleestr)) {
     if ((m->meleestr[i] == 'A') || (m->meleestr[i] == 'L')) {
       if (m->meleestr[i+1] == '?') {
 	if (m->level+random_range(30) > Player.level+random_range(20))

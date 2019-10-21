@@ -732,7 +732,7 @@ void tacoptions()
       menuprint("Enter a combat maneuvers sequence.\n");
       menuprint("? for help, ! for default, backspace to start again,\n");
       menuprint(" RETURN to save sequence\n\n");
-      for(place=0;place<maneuvers();place++)
+      for(place=0;(size_t)place<maneuvers();place++)
 	if (place&1) { /* every 2nd time around */
 	    Player.meleestr[place*2] = 'B';
 	    Player.meleestr[(place*2)+1] = 'C';

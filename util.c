@@ -638,7 +638,8 @@ void findspace( int *x, int *y, int baux )
 int strprefix(prefix,s)
 char *prefix,*s;
 {
-  int i=0,matched=TRUE;
+  int matched=TRUE;
+  size_t i=0;
   if (strlen(prefix) > strlen(s)) return(FALSE);
   else {
     while (matched && (i<strlen(prefix))) {
@@ -666,7 +667,8 @@ int strmem(c,s)
 char c;
 char *s;
 {
-  int i,found=FALSE;
+  int found=FALSE;
+  size_t i=0;
   for(i=0;((i<strlen(s)) && (! found));i++)
     found = (s[i] == c);
   return(found);

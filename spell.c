@@ -765,7 +765,8 @@ int first, last;
 
 int spellparse()
 {
-  int first, last, pos;
+  int first, last;
+  size_t pos;
   char byte, prefix[80];
   int found = 0;
   int f, l;

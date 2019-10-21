@@ -897,7 +897,7 @@ code_int  code;
 	     * discover the size increase until after it has read it.
 	     */
 	    if ( offset > 0 ) {
-		if( fwrite( buf, 1, n_bits, outfile ) != n_bits)
+		if( fwrite( buf, 1, n_bits, outfile ) != (unsigned int)n_bits)
 			writeerr();
 		bytes_out += n_bits;
 	    }

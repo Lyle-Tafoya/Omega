@@ -66,7 +66,7 @@ void show_screen()
     for (j=top;j<bottom;j++) {
       wmove(Levelw,screenmod(j),0);
       for (i=0;i<WIDTH;i++) {
-	c = ((loc_statusp(i,j,SEEN)) ? getspot(i,j,FALSE):SPACE);
+	c = ((loc_statusp(i,j,SEEN)) ? getspot(i,j,FALSE):(int)SPACE);
         if (optionp(SHOW_COLOUR) && CHARATTR(c) != last_attr) {
           last_attr = CHARATTR(c);
           wattrset(Levelw,last_attr);
@@ -77,7 +77,7 @@ void show_screen()
   else for (j=top;j<bottom;j++)
       for (i=0;i<WIDTH;i++) {
 	wmove(Levelw,screenmod(j),i);
-        c = ((c_statusp(i,j,SEEN)) ? Country[i][j].current_terrain_type:SPACE);
+        c = ((c_statusp(i,j,SEEN)) ? Country[i][j].current_terrain_type:(int)SPACE);
         if (optionp(SHOW_COLOUR) && CHARATTR(c) != last_attr) {
           last_attr = CHARATTR(c);
           wattrset(Levelw,last_attr);
@@ -322,7 +322,7 @@ char *s;
   int x,y;
   if (! gamestatusp(SUPPRESS_PRINTING)) {
     getyx(Msgw,y,x);
-    if (x+strlen(s) >= WIDTH) {
+    if (x+strlen(s) >= (size_t)WIDTH) {
       buffercycle(s);
       if (Msgw == Msg1w) {
 	wclear(Msg2w);

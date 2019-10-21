@@ -638,7 +638,7 @@ struct monster *m;
 {
   int i=0;
 
-  while (i < strlen(Player.meleestr)) {
+  while ((size_t)i < strlen(Player.meleestr)) {
     if (m->hp > 0) {
       switch(Player.meleestr[i]) {
       case 't': case 'T':
@@ -700,7 +700,7 @@ struct monster *m;
 
     transcribe_monster_actions(m);
 
-    while (i<strlen(m->meleestr)) {
+    while ((size_t)i<strlen(m->meleestr)) {
       if ((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R')) {
 	blocks = TRUE;
 	if (hitloc == m->meleestr[i+1])
