@@ -280,22 +280,23 @@ int main (int argc, char **argv)
      * Emit .c file.
      */
     fp = emitopen (cfile, argv);
-    fprintf (fp, "\
-#include <curses.h>\n\
-#include <stdio.h>\n\
-#include <stdlib.h>\n\
 
-#include \"%s\"\n\
+    fprintf (fp,
+       "#include <curses.h>\n"
+       "#include <stdio.h>\n"
+       "#include <stdlib.h>\n"
 
-void clrgen_init (void)\n\
-""{\n\
-    if (%d > COLOR_PAIRS - 1) {\n\
-	endwin();
-	fputs (\"Too many color pairs!\\n\", stderr);\n\
-	exit (1);\n\
-    }\n\
-",
-	     hfile, ncpairs);
+       "#include \"%s\"\n"
+
+       "void clrgen_init (void)\n"
+       "{\n"
+       "   if (%d > COLOR_PAIRS - 1) {\n"
+       "     endwin();"
+       "   fputs (\"Too many color pairs!\\n\", stderr);\n"
+       "   exit (1);\n"
+       "}\n",
+       hfile, ncpairs);
+
     for (i = 0; i < ncpairs; i++)
 	fprintf (fp, "\
     init_pair (%d, COLOR_%s, COLOR_%s);\n\
