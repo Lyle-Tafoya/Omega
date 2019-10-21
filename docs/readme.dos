@@ -1,0 +1,88 @@
+								4/17/89
+
+This message was about an older version of Omega for the IBM-PC, 0.75.
+
+Read the comment near the start of COMPILE.DOS with respect to the current
+version, 0.80.  Note that the 'X' command and the '^o' command, outlined
+below, are available on the current version, too.
+
+----- begin original message -----
+
+This is the first new version since July '88, corresponding to the
+first general Omega release since then.
+
+You need a full 640K of memory and (almost certainly) a hard disk to play.
+The executable itself is too large to fit on one floppy, and during
+the course of the game large level files are created. If you don't have
+much space on the hard disk, you may also have problems.
+
+I have added the 'X' command which will tell you the state of the
+heap (-2 is ok) and how much memory is left. For me this usually
+starts out around 75K-80K.
+
+As the game progresses, more and more memory is allocated which
+isn't freed, though it is no longer needed. Consequently, you
+should probably do the X command once in a while, and save the
+game when it starts to get really low.
+
+The screen display may act differently in some places than it does
+when running under Unix, but I haven't found any places where
+it does something blatently wrong that the unix version doesn't also
+do.
+
+The '^P' command (reprint last message) has been moved to '^O'.  The
+reason has to do with using the printer, and the fact that Omega was
+meant to run in cbreak mode and not raw mode, and because Dos isn't
+as flexible as Unix.
+
+If you've only got the executable and associated files needed to run
+the game, you obviously can't configure Omega as to where to look for
+these files. Consequently you've got to have all the files in one
+directory and play the game from there. (If you've got the sources,
+you can change this.)
+
+Most general bug reports should probably be sent to the maintainer of
+Omega - see COMPILE.ALL for information about that.  Bugs which seem to
+be PC specific should probably be reported to me.
+
+				- Nathan Glasser
+				nathan@brokaw.lcs.mit.edu	(internet)
+				nathan@mit-eddie.uucp		(usenet)
+
+
+Recent bug fixes specific to PC users include:
+-	The house bug - Entering houses no longer screws up the game.
+-	The return bug - You can now use the "return" spell as documented.
+-	Level creation time - The time to create levels is reasonable again.
+
+Other comments:
+
+For those of you who feel lost without them, arrow keys and home and
+end may be used in some menus: inventory, options, and selecting the
+number of multiple items to drop.
+
+As long as you exit the game normally, all level files will be removed.
+
+The general version of the game performs saving/restoring in a strange way.
+Only the town level and the current level of the dungeon you're in (if any)
+are saved. I personally don't think this is the right thing to do, but
+have not changed this for the PC. Thus it is not a bug when previously
+visited levels disappear after saving the game.
+
+Also, there is still no way to set up the options to use every time
+you play without "playing yourself." This is obviously another area
+in which the game could be slightly improved, but it's not a bug
+that it doesn't do this.
+
+The game as a whole has always been fairly buggy, and there are even
+still some known bugs in the game which haven't been fixed, though
+it's much better than when the game was first introduced. Because of
+the overall bugginess, there are still (unknown?) bugs which manfest
+themselves on the PC by causing the machine to crash after quitting
+the game, forcing you to reboot. I've not seen anything worse than
+this in quite a while, but you never know what might still be lurking
+in there.
+
+				- Nathan Glasser
+				nathan@brokaw.lcs.mit.edu	(internet)
+				nathan@mit-eddie.uucp		(usenet)

@@ -1,0 +1,77 @@
+Note on compiling PC-Omega
+--------------------------
+The PC version was written for MSC5.0 and PC-Curses, and I used Ndmake
+to help with compilation. The PC-Curses I actually used was the
+one from Bjorn Larsson. Ndmake is from Don Kneller. Both are
+available from the simtel20 archives and elsewhere. MSC4.0 or MSC5.1
+will probably also work, but I make no guarantees.
+
+NB The sources have undergone considerable changes since the MSDOS
+#defines were put in, and as such all bets are off :)  If you wish to
+compile on an IBM, I recommend DJGPP as the compiler - see COMPILE.DJ
+
+This is a *very* large program. Be prepared to have around 4MB available
+on your disk to do this, plus whatever space is needed for backup copies
+and level files created when you run the game. Compilation from the
+start takes around 1.5 hrs on an AT-type machine.
+
+
+Use the makefile called makefile.dos.
+
+Set up a main directory for your compilation. Put the makefile and the
+header files (*.h) into this directory. Create a subdirectory called
+realc, and put the source files (*.c) in there. The object files and
+executable are going to be put in the main directory.
+
+You'll want to either put all the data files in the main directory with
+the header files, or create another subdirectory and put them in it.
+In the latter case you'll have to move the executable in there to
+run it (unless you've changed the source so that it's not necessary).
+
+You'll have to edit defs.h to change a few things to be specific
+for the pc and your system. The comment around NORANDOM should
+be removed, so that this macro is defined. Similarly the comment
+around EXCESSIVE_REDRAW should be removed. The OMEGALIB macro
+should be changed to reflect where all the data files will be.
+I usually set this to "./". WIZARD can be changed or not changed.
+If you change it to "pcuser", then wizard mode will work all the time;
+if not, it will never work.
+
+The progam fixstr should be compiled from fixstr.c directly. This is
+a utility program I wrote which is used in compilation, and compiling
+information for it does not appear in the makefile. "cl fixstr.c"
+should suffice. The executable should either be put into the PATH, or
+into the main directory.
+
+The reason for the elaborate setup with the realc subdirectory is
+because of the fact that there are so many string constants in the
+source, and that these all would get put in the same segment in
+memory. Because of this, the sources cannot link "as is." They have
+to be transformed using my "fixstr" program to alleviate this
+problem. 
+
+My setup (as described above) is to have a subdirectory, for example
+call it realc, which contains the real C sources (only the .c files).
+The headers and everything else are in your main directory. If you
+use my makefile, it copies the sources from realc into the main
+directory, modifies them using fixstr, and then compiles the modified
+files there.
+
+Depending on what variety of the make program you use, you may have
+some problems. The version I use (ndmake 4.3) has the problem that if
+you run make with everything set up as above the first time, it will
+copy all the .c files from realc into the main directory and run
+fixstr on them, but won't compile them. If you run make again, it
+does the compilation. In general this seems to happen when the .c
+files are missing from the main directory.  When I tried using a
+later version of this program, it did not work at all because the $@
+macro wouldn't work. Just a warning. If you use a completely independent
+version of make, there's no guaranteeing what will happen if it's buggy.
+
+All of the changes required in order for Omega to work on the IBM-PC
+under MSDOS have been done using #ifdef's for MSDOS, etc,. The macro
+MSDOS is automatically defined when using MSC.
+
+				- Nathan Glasser
+				nathan@brokaw.lcs.mit.edu	(internet)
+				nathan@mit-eddie.uucp		(usenet)

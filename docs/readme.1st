@@ -1,0 +1,19 @@
+Note that omega is copyrighted. See the public license in license.txt in
+the omegalib directory for what you can do with the code. 
+
+For directions on how to compile, see COMPILE.ALL (pc people see README.DOS
+or README.DJ, Amiga users see COMPILE.AMI)
+
+For information on how omega was written see README3
+
+Some tips on maintaining the game are in README4
+
+For directions how to play, see the help*.txt files in ../omegalib
+(cat them all together for a full document; this can be done from
+within the game).
+
+A manifest of omega files is in the file MANIFEST
+
+Have Fun, and Be Careful....
+
+-Laurence

@@ -1,0 +1,15 @@
+			          *******
+			       *****   *****
+			    *****         *****
+                           ****   welcome   ****
+			  ***       t o       ***
+			   ***     omega     ***
+			    ****           ****
+			       ****    ****
+			    *    **    **    *
+			     *****      *****
+
+            omega version 0.75 is copyright (C) 1987,1988,1989 by:
+	       Laurence R. Brothers (brothers@paul.rutgers.edu)
+
+	 PC version comments, bugs, etc. to nathan@brokaw.lcs.mit.edu
