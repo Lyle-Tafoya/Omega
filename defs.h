@@ -45,7 +45,7 @@ on save and restore. */
    This might usually be "/usr/games/lib/omegalib/", for unix,
    or something like "c:\\games\\omega\\omegalib\\" for msdos */
 
-#define OMEGALIB "/usr/local/games/omegalib/"
+#define OMEGALIB "./lib/"
 
 /* Comment the following line out if you want users to be able to override */
 /* the OMEGALIB define, above, by setting the environment variable OMEGALIB */
@@ -59,7 +59,7 @@ on save and restore. */
 
 /* set WIZARD to maintainers's username */
 
-#define WIZARD "sdossey"
+#define WIZARD "wtanksle"
 
 /* If CATCH_SIGNALS is set to 1, will not dump core, nicer for players. */
 /* dbx still intercepts the signals first, so it's ok for debugging */
@@ -71,7 +71,7 @@ on save and restore. */
 
 /* Don't change anything from here on (unless you know what you're doing) */
 #define VERSION 90
-#define VERSIONSTRING "omega version 0.90 prealpha 1"
+#define VERSIONSTRING "omega version 0.90"
 
 #ifndef AMIGA
 #ifndef MSDOS
@@ -83,7 +83,7 @@ on save and restore. */
 #endif
 #endif
 
-#if defined(MSDOS) && !defined(DJGPP)
+#if defined(MSDOS_SUPPORTED_ANTIQUE)
 #define SAVE_LEVELS
 #endif
 
@@ -117,10 +117,13 @@ on save and restore. */
 #define MAXPACK 26
 
 /* number of items in pawn shop. Should be <= 26 */
-#define PAWNITEMS 10
+#define PAWNITEMS 20 /* DG -- the more the merrier.  WDT -- I agree. */
 
 /* number of lines back strings are recalled */
-#define STRING_BUFFER_SIZE 20
+#define STRING_BUFFER_SIZE 25
+
+/* number of rerolls allowed +1 */  /* added by dagibbs (DG) */
+#define REROLLS 31
 
 /* Verbosity levels */
 #define TERSE 0
@@ -166,6 +169,10 @@ on save and restore. */
 #define ATTACKED_ORACLE		0x1000000
 #define UNDEAD_GUARDS		0x2000000
 
+/* non-existant environments for the random number seeding routine */
+ /* added 12/30/98 (DG) */
+#define E_RESTORE -2
+#define E_RANDOM -1
 /* general environment types */
 #define E_NEVER_NEVER_LAND 0
 #define E_COUNTRYSIDE 1
@@ -494,7 +501,12 @@ on save and restore. */
 #define RS_CORRIDOR 2
 #define RS_WALLSPACE 1
 
-#ifdef MSDOS
+#if defined(MSDOS_SUPPORTED_ANTIQUE) || defined(AMIGA)
+#define CLR(fg)		COL_##fg
+#define CLRS(fg,bg)	COL_##fg|COL_BG_##bg
+#endif
+
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 
 #define COL_BLACK 0x0000
 #define COL_BLUE 0x0100
@@ -527,7 +539,7 @@ on save and restore. */
 
 #include <curses210.h>
 
-/* unfortunately, this curses package only impliments 8 colours... */
+/* unfortunately, this curses package only implements 8 colours... */
 
 #define COL_WHITE 0x0100
 #define COL_BLACK COL_WHITE
@@ -554,106 +566,101 @@ on save and restore. */
 #define COL_BG_PURPLE (A_REVERSE<<8)
 #define COL_BG_BROWN (A_REVERSE<<8)
 #define COL_BG_BLUE (A_REVERSE<<8)
-#define COL_FG_BLINK 0x0000	/* not implimented :( */
+#define COL_FG_BLINK 0x0000	/* not implemented :( */
+/* WDT: thank goodness for that lack of implementation. */
+
+#else
+#include <curses.h>
+
+#define COL_FG_BLINK A_BLINK
+
+#ifdef COLOR_PAIR
+
+# ifdef OMEGA_CLRGEN
+#  define CLR(fg)	OMEGA_CLRGEN1 fg
+#  define CLRS(fg, bg)	OMEGA_CLRGEN2 fg bg
+# else
+#  include "clrgen.h"
+#  define CLR(fg)	CLR_##fg##_BLACK
+#  define CLRS(fg, bg)	CLR_##fg##_##bg
+# endif
 
 #else
 
-#define COL_BLACK 0
-#define COL_WHITE 0
-#define COL_BROWN 0
-#define COL_YELLOW 0
-#define COL_GREY 0
-#define COL_GREEN 0
-#define COL_BLUE 0
-#define COL_RED 0
-#define COL_CYAN 0
-#define COL_PURPLE 0
-#define COL_LIGHT_BLUE 0
-#define COL_LIGHT_GREEN 0
-#define COL_LIGHT_CYAN 0
-#define COL_LIGHT_RED 0
-#define COL_LIGHT_PURPLE 0
-#define COL_BRIGHT_WHITE 0
-#define COL_BG_BLACK 0
-#define COL_BG_BLUE 0
-#define COL_BG_GREEN 0
-#define COL_BG_CYAN 0
-#define COL_BG_RED 0
-#define COL_BG_PURPLE 0
-#define COL_BG_BROWN 0
-#define COL_BG_WHITE 0
-#define COL_FG_BLINK 0
+#define CLR(fg)		0
+#define CLRS(fg,bg)	0
 
+#endif
 #endif
 #endif
 
 /* objects, locations, and terrain; characters to draw */
 #define NULL_ITEM '\0'
-#define SPACE (' ' | COL_WHITE)
-#define WALL ('#' | COL_GREY)
-#define PORTCULLIS ('7' | COL_WHITE)
-#define OPEN_DOOR ('|' | COL_BROWN)
-#define CLOSED_DOOR ('-' | COL_BROWN)
-#define WHIRLWIND ('6' | COL_LIGHT_BLUE)
-#define ABYSS ('0' | COL_BLACK | COL_BG_BROWN)
-#define VOID_CHAR (' ' | COL_WHITE)
-#define LAVA ('`' | COL_RED)
-#define HEDGE ('\"' | COL_GREEN)
-#define WATER ('~' | COL_BLUE)
-#define FIRE (';' | COL_LIGHT_RED)
-#define TRAP ('^' | COL_RED)
-#define LIFT ('_' | COL_BRIGHT_WHITE)
-#define STAIRS_UP ('<' | COL_WHITE)
-#define STAIRS_DOWN ('>' | COL_WHITE)
-#define FLOOR ('.' | COL_BROWN)
-#define PLAYER ('@' | COL_WHITE)
-#define CORPSE ('+' | COL_RED)
-#define STATUE ('1' | COL_GREY)
-#define RUBBLE ('4' | COL_GREY)
-#define ALTAR ('8' | COL_LIGHT_BLUE)
-#define CASH ('$' | COL_YELLOW)		/* various kinds of money */
-#define PILE ('*' | COL_BRIGHT_WHITE)	/* several objects in one place */
-#define FOOD ('%' | COL_BROWN)
-#define WEAPON (')' | COL_GREY)
-#define MISSILEWEAPON ('(' | COL_BROWN)
-#define SCROLL ('?' | COL_YELLOW)
-#define POTION ('!' | COL_LIGHT_GREEN)
-#define ARMOR (']' | COL_GREY)
-#define SHIELD ('[' | COL_BROWN)
-#define CLOAK ('}' | COL_CYAN)
-#define BOOTS ('{' | COL_BROWN)
-#define STICK ('/' | COL_BROWN)
+#define SPACE (' ' | CLR(WHITE))
+#define WALL ('#' | CLR(GREY))
+#define PORTCULLIS ('7' | CLR(WHITE))
+#define OPEN_DOOR ('|' | CLR(BROWN))
+#define CLOSED_DOOR ('-' | CLR(BROWN))
+#define WHIRLWIND ('6' | CLR(LIGHT_BLUE))
+#define ABYSS ('0' | CLRS(BLACK,BROWN))
+#define VOID_CHAR (' ' | CLR(WHITE))
+#define LAVA ('`' | CLR(RED))
+#define HEDGE ('\"' | CLR(GREEN))
+#define WATER ('~' | CLR(BLUE))
+#define FIRE (';' | CLR(LIGHT_RED))
+#define TRAP ('^' | CLR(RED))
+#define LIFT ('_' | CLR(BRIGHT_WHITE))
+#define STAIRS_UP ('<' | CLR(WHITE))
+#define STAIRS_DOWN ('>' | CLR(WHITE))
+#define FLOOR ('.' | CLR(BROWN))
+#define PLAYER ('@' | CLR(WHITE))
+#define CORPSE ('+' | CLR(RED))
+#define STATUE ('1' | CLR(GREY))
+#define RUBBLE ('4' | CLR(GREY))
+#define ALTAR ('8' | CLR(LIGHT_BLUE))
+#define CASH ('$' | CLR(YELLOW))	/* various kinds of money */
+#define PILE ('*' | CLR(BRIGHT_WHITE))	/* several objects in one place */
+#define FOOD ('%' | CLR(BROWN))
+#define WEAPON (')' | CLR(GREY))
+#define MISSILEWEAPON ('(' | CLR(BROWN))
+#define SCROLL ('?' | CLR(YELLOW))
+#define POTION ('!' | CLR(LIGHT_GREEN))
+#define ARMOR (']' | CLR(GREY))
+#define SHIELD ('[' | CLR(BROWN))
+#define CLOAK ('}' | CLR(CYAN))
+#define BOOTS ('{' | CLR(BROWN))
+#define STICK ('/' | CLR(BROWN))
 
-#define RING ('=' | COL_YELLOW)
-#define THING ('\\' | COL_WHITE)
-#define ARTIFACT ('&' | COL_YELLOW)
+#define RING ('=' | CLR(YELLOW))
+#define THING ('\\' | CLR(WHITE))
+#define ARTIFACT ('&' | CLR(YELLOW))
 
 /* TERRAIN TYPES */
-#define PLAINS ('-' | COL_LIGHT_GREEN)
-#define TUNDRA ('_' | COL_GREY)
-#define ROAD ('.' | COL_BROWN)
-#define MOUNTAINS ('^' | COL_GREY)
-#define PASS ('v' | COL_BROWN)
-#define RIVER ('~' | COL_BLUE)
-#define CITY ('O' | COL_WHITE)
-#define VILLAGE ('o' | COL_WHITE)
-#define FOREST ('(' | COL_LIGHT_GREEN)
-#define JUNGLE (')' | COL_GREEN)
-#define SWAMP ('=' | COL_GREEN)
-#define VOLCANO ('!' | COL_RED)
-#define CASTLE ('%' | COL_GREY)
-#define TEMPLE ('X' | COL_BROWN)
-#define CAVES ('*' | COL_BLACK | COL_BG_BROWN)
-#define DESERT ('\"' | COL_YELLOW)
-#define CHAOS_SEA ('+' | COL_LIGHT_PURPLE)
-#define STARPEAK ('|' | COL_LIGHT_BLUE)
-#define DRAGONLAIR ('$' | COL_BROWN)
-#define MAGIC_ISLE ('&' | COL_PURPLE)
+#define PLAINS ('-' | CLR(LIGHT_GREEN))
+#define TUNDRA ('_' | CLR(GREY))
+#define ROAD ('.' | CLR(BROWN))
+#define MOUNTAINS ('^' | CLR(GREY))
+#define PASS ('v' | CLR(BROWN))
+#define RIVER ('~' | CLR(BLUE))
+#define CITY ('O' | CLR(WHITE))
+#define VILLAGE ('o' | CLR(WHITE))
+#define FOREST ('(' | CLR(LIGHT_GREEN))
+#define JUNGLE (')' | CLR(GREEN))
+#define SWAMP ('=' | CLR(GREEN))
+#define VOLCANO ('!' | CLR(RED))
+#define CASTLE ('%' | CLR(GREY))
+#define TEMPLE ('X' | CLR(BROWN))
+#define CAVES ('*' | CLRS(BLACK,BROWN))
+#define DESERT ('\"' | CLR(YELLOW))
+#define CHAOS_SEA ('+' | CLR(LIGHT_PURPLE))
+#define STARPEAK ('|' | CLR(LIGHT_BLUE))
+#define DRAGONLAIR ('$' | CLR(BROWN))
+#define MAGIC_ISLE ('&' | CLR(PURPLE))
 
-#define CHAIR ('5' | COL_BROWN)
-#define SAFE ('3' | COL_GREY)
-#define FURNITURE ('2' | COL_BROWN)
-#define BED ('9' | COL_CYAN)
+#define CHAIR ('5' | CLR(BROWN))
+#define SAFE ('3' | CLR(GREY))
+#define FURNITURE ('2' | CLR(BROWN))
+#define BED ('9' | CLR(CYAN))
 
 /* wow, all characters used! */
 
@@ -1010,67 +1017,188 @@ for example. */
 /* MLx -> number of monsters of level x or less */
 /* NML_x -> number of monsters of level x */
 /* NML-X must be changed whenever a monster is added */
+/* This whole thing MUST be repaired.  Monster levels must
+ * be represented elsewhere. */
 #define ML0 0
 #define NML_0 9
-#define ML1 (ML0 + NML_0)
+#define ML1 (ML0 + NML_0) /* 9 */
 #define NML_1 22
-#define ML2 (ML1 + NML_1)
+#define ML2 (ML1 + NML_1) /* 31 */
 #define NML_2 14
-#define ML3 (ML2 + NML_2)
+#define ML3 (ML2 + NML_2) /* 45 */
 #define NML_3 15
-#define ML4 (ML3 + NML_3)
+#define ML4 (ML3 + NML_3) /* 60 */
 #define NML_4 18
-#define ML5 (ML4 + NML_4)
+#define ML5 (ML4 + NML_4) /* 78 */
 #define NML_5 14
-#define ML6 (ML5 + NML_5)
+#define ML6 (ML5 + NML_5) /* 92 */
 #define NML_6 13
-#define ML7 (ML6 + NML_6)
+#define ML7 (ML6 + NML_6) /* 105 */
 #define NML_7 15
-#define ML8 (ML7 + NML_7)
+#define ML8 (ML7 + NML_7) /* 120 */
 #define NML_8 12
-#define ML9 (ML8 + NML_8)
+#define ML9 (ML8 + NML_8) /* 132 */
 #define NML_9 8
-#define ML10 (ML9 + NML_9)
+#define ML10 (ML9 + NML_9) /* 140 */
 #define NML_10 10
 
-#define NUMMONSTERS (ML10 + NML_10)
+#define NUMMONSTERS (ML10 + NML_10)  /* 150 */
 
 /* Some monster ID's : (Those that are explicitly named in code) */
 /* Actually, there are still many magic constants floating around. */
 /* Eventually I'll get around to making each monster's id a constant.... */
+/* done, thanks to David Given. */
 #define RANDOM -1
+#define HORNET (ML0+0)
+#define MEND_PRIEST (ML0+1)
+#define ITIN_MERCH (ML0+2)
+#define GUARD (ML0+3)
 #define NPC (ML0+4)
+#define SHEEP (ML0+5)
+#define MERCHANT (ML0+6)
+#define ZERO_NPC (ML0+7)
 #define HISCORE_NPC (ML0+8)
-#define BUNNY (ML0+5)
-#define BLACKSNAKE (ML1+14)
-#define HAWK (ML1+13)
-#define IMPALA (ML1+19)
-#define WOLF (ML2+10)
-#define LION (ML3+8)
-#define BRIGAND (ML3+9)
+#define GRUNT (ML1+0)
+#define TSETSE (ML1+1)
+#define FNORD (ML1+2)
+#define SEWER_RAT (ML1+3)
+#define AGGRAVATOR (ML1+4)
+#define BLIPPER (ML1+5)
+#define GOBLIN (ML1+6)
+#define PHANTASTICON (ML1+7)
+#define ROBOT (ML1+8)
+#define GEEK (ML1+9)
+#define BOROGROVE (ML1+10)
 #define QUAIL (ML1+11)
 #define BADGER (ML1+12)
+#define HAWK (ML1+13)
 #define DEER (ML1+14)
-#define BEAR (ML3+10)
+#define CAMEL (ML1+15)
 #define ANTEATER (ML1+16)
-#define PARROT (ML1+20)
-#define MAMBA (ML3+11)
-#define ANT (ML2+11)
-#define HYENA (ML1+21)
-#define ELEPHANT (ML2+12)
+#define BUNNY (ML1+17)
 #define TROUT (ML1+18)
 #define BASS (ML1+19)
-#define MANOWAR (ML3+12)
-#define CROC (ML4+8)
-#define BOGTHING (ML5+8)
-#define CAMEL (ML1+15)
-#define SHEEP (ML0+5)
+#define PARROT (ML1+20)
+#define HYENA (ML1+21)
+#define APPR_NINJA (ML2+0)
+#define NIGHT_GAUNT (ML2+1)
+#define SNEAK_THIEF (ML2+2)
+#define EYE (ML2+3)
+#define TOVE (ML2+4)
+#define NASTY (ML2+5)
 #define GHOST (ML2+6)
-#define HAUNT (ML4+5)
-#define SPECTRE (ML5+5)
-#define LICHE (ML6+5)
+#define ENCHANTOR (ML2+7)  /* use 'OR' to avoid conflict with circle rank */
+#define MURK (ML2+8)
+#define GOBLIN_CHIEF (ML2+9)
+#define WOLF (ML2+10)
+#define ANT (ML2+11)
+#define ELEPHANT (ML2+12)
 #define HORSE (ML2+13)
-
+#define SALAMANDER (ML3+0)
+#define CATOBLEPAS (ML3+1)
+#define L_FDEMON (ML3+2)
+#define ACID_CLOUD (ML3+3)
+#define PHANTOM (ML3+4)
+#define GOBLIN_KING (ML3+5)
+#define PTERODACTYL (ML3+6)
+#define GOBLIN_SHAMAN (ML3+7)
+#define LION (ML3+8)
+#define BRIGAND (ML3+9)
+#define BEAR (ML3+10)
+#define MAMBA (ML3+11)
+#define MANOWAR (ML3+12)
+#define WEREHUMAN (ML3+13)
+#define THOUGHTFORM (ML3+14)
+#define MANTICORE (ML4+0)
+#define TASMANIAN (ML4+1)
+#define AUTO_MINOR (ML4+2)
+#define DENEBIAN (ML4+3)
+#define JUBJUB (ML4+4)
+#define HAUNT (ML4+5)
+#define INCUBUS (ML4+6)
+#define SATYR (ML4+7)
+#define CROC (ML4+8)
+#define TORPOR (ML4+9)
+#define DOBERMAN (ML4+10)
+#define FUZZY (ML4+11)
+#define SERV_LAW (ML4+12)
+#define SERV_CHAOS (ML4+13)
+#define SWARM (ML4+14)
+#define BAN_SIDHE (ML4+15)
+#define GRUE (ML4+16)
+#define GENIN (ML4+17)
+#define DRAGONETTE (ML5+0)
+#define TESLA (ML5+1)
+#define WYVERN (ML5+2)
+#define CATEAGLE (ML5+3)
+#define FROST_DEMON (ML5+4)
+#define SPECTRE (ML5+5)
+#define NECROMANCER (ML5+6)
+#define SHADOW (ML5+7)
+#define BOGTHING (ML5+8)
+#define ASTRAL_VAMP (ML5+9)
+#define LAVA_WORM (ML5+10)
+#define MANABURST (ML5+11)
+#define OUTER_DEMON (ML5+12)
+#define MIRRORSHADE (ML5+13)
+#define FIRE_ELEM (ML6+0)
+#define AIR_ELEM (ML6+1)
+#define WATER_ELEM (ML6+2)
+#define EARTH_ELEM (ML6+3)
+#define BANDERSNATCH (ML6+4)
+#define LICHE (ML6+5)
+#define TRITON (ML6+6)
+#define MAST_THIEF (ML6+7)
+#define TRICER (ML6+8)
+#define RAKSHASA (ML6+9)
+#define DEMON_SERP (ML6+10)
+#define ANGEL (ML6+11)
+#define CHUNIN (ML6+12)
+#define BEHEMOTH (ML7+0)
+#define NAZGUL (ML7+1)
+#define UNICORN (ML7+2)
+#define ROUS (ML7+3)
+#define ILL_FIEND (ML7+4)
+#define GREAT_WYRM (ML7+5)
+#define FLAME_DEV (ML7+6)
+#define LURKER (ML7+7)
+#define SANDMAN (ML7+8)
+#define MIRRORMAST (ML7+9)
+#define ELDER_GRUE (ML7+10)
+#define LOATHLY (ML7+11)
+#define ZOMBIE (ML7+12)
+#define RICOCHET (ML7+13)
+#define INNER_DEMON (ML7+14)
+#define GOOD_FAIRY (ML8+0)
+#define BAD_FAIRY (ML8+1)
+#define AUTO_MAJOR (ML8+2)
+#define DRAGON (ML8+3)
+#define JABBERWOCK (ML8+4)
+#define FDEMON_L (ML8+5)
+#define TIGERSHARK (ML8+6)
+#define JONIN (ML8+7)
+#define SHADOW_SLAY (ML8+8)
+#define MIL_PRIEST (ML8+9)
+#define COMA (ML8+10)
+#define HIGH_ANGEL (ML8+11)
+#define JOTUN (ML9+0)
+#define INVIS_SLAY (ML9+1)
+#define KING_WYV (ML9+2)
+#define DEATHSTAR (ML9+3)
+#define THAUMATURGIST (ML9+4)
+#define VAMP_LORD (ML9+5)
+#define ARCHANGEL (ML9+6)
+#define DEMON_PRINCE (ML9+7)
+#define DEATH (ML10+0)
+#define EATER (ML10+1)
+#define LAWBRINGER (ML10+2)
+#define DRAGON_LORD (ML10+3)
+#define DEMON_EMP (ML10+4)
+#define LORD_EARTH (ML10+5)
+#define LORD_AIR (ML10+6)
+#define LORD_WATER (ML10+7)
+#define LORD_FIRE (ML10+8)
+#define ELEM_MASTER (ML10+9)
 
 /* location functions */
 #define L_NO_OP 0
@@ -1236,6 +1364,15 @@ for example. */
 #define O_RING3 14
 #define O_RING4 15
 
+/* typedefs needed by structs */
+
+#if defined(MSDOS_SUPPORTED_ANTIQUE) || defined(AMIGA)
+typedef short Symbol;
+#else
+typedef int Symbol;
+#endif
+
+
 /* structure definitions */
 
 struct room {
@@ -1264,7 +1401,7 @@ struct monster {
   unsigned char uniqueness;
   int talkf,movef,meleef,strikef,specialf;
   long status,immunity;
-  short monchar;
+  Symbol monchar;
   char *monstring,*corpsestr,*meleestr;
 };
 
@@ -1309,7 +1446,7 @@ struct object {
   unsigned char type,uniqueness;
   int usef;
   unsigned char level;
-  short objchar;
+  Symbol objchar;
   char *objstr,*truename,*cursestr;
 };
 
@@ -1324,8 +1461,8 @@ struct objectlist {
 
 /* terrain locations */
 struct terrain {
-  short base_terrain_type;
-  short current_terrain_type;
+  Symbol base_terrain_type;
+  Symbol current_terrain_type;
   char aux;
   char status;
 };
@@ -1335,8 +1472,8 @@ struct location {
   char p_locf; /* function executed when moved on */
   unsigned char lstatus; /* seen,stopsrun,lit,secret, */
   char roomnumber; /* so room can be named */
-  short locchar; /* terrain type */
-  short showchar; /*char instantaneously drawn for site */
+  Symbol locchar; /* terrain type */
+  Symbol showchar; /*char instantaneously drawn for site */
   int aux; /* signifies various things */
   unsigned char buildaux; /* used in constructing level */
   struct objectlist *things; 
@@ -1386,6 +1523,9 @@ typedef oltype *pol;
 
 #include <stdlib.h>
 
+/* The assert macro (for ANSI/ISO C).  Hopefully this will always work! */
+#include <assert.h>
+
 #ifdef MSDOS
 #include <time.h>
 #define getlogin() "pcuser"
@@ -1402,17 +1542,19 @@ typedef oltype *pol;
 #define abs(n) (((n) < 0) ? (-(n)) : (n))
 
 #ifdef NORANDOM
-#define RANDFUNCTION rand()
-#define SRANDFUNCTION srand((int)(Seed))
+#define RANDFUNCTION rand
+#define SRANDFUNCTION srand
 #endif
 
 #ifndef NORANDOM
-#define RANDFUNCTION random()
-#define SRANDFUNCTION srandom((int)(Seed))
+#define RANDFUNCTION random
+#define SRANDFUNCTION srandom
 #endif
 
 
-#define pow2(n) (1 << (n))
+/* WDT: This should be harmless under ANSI C, and will stop
+ * some errors under bizarre platforms. */
+#define pow2(n) (1L << (n))
 
 /* these bit operations were functions, but are faster as macros... */
 

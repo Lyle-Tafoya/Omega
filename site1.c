@@ -2,7 +2,7 @@
 /* site1.c */
 /* 1st half of site functions and aux functions to them */
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <unistd.h>
 #endif
 
@@ -22,8 +22,8 @@ void l_bank()
   else {
     print2("The proximity sensor activates the autoteller as you approach.");
     morewait();
+    clearmsg();
     while (! done) {
-      clearmsg();
       print1("Current Balance: ");
       mlongprint(Balance);
       nprint1("Au. ");
@@ -118,7 +118,7 @@ void l_bank()
       }
       else if ((response == 'W') && valid) {
 	clearmsg();
-	print2("Amount: ");
+	print1("Amount: ");
 	amount = get_money(Balance);
 	if (amount < 1) 
 	  print3("Transaction aborted.");
@@ -151,7 +151,6 @@ void l_bank()
       }
       else print3(" Illegal command.");
       dataprint();
-      morewait();
     }
   }
   xredraw();
@@ -284,6 +283,7 @@ void l_club()
 void l_gym()
 {
   int done=TRUE;
+  int trained=0;
   clearmsg();
   do {
     print1("The Rampart Gymnasium");
@@ -316,10 +316,19 @@ void l_gym()
       break;
     case ESCAPE:
       clearmsg();
-      print1("Well, it's your body you're depriving!"); 
+      if (trained == 0)
+	  print1("Well, it's your body you're depriving!"); 
+      else if (trained < 3)
+	  print1("You towel yourself off, and find the exit.");
+      else
+	  print1("A refreshing bath, and you're on your way.");
       done = TRUE;
       break;
+    default:
+      trained--;
+      break;
     }
+    trained++;
   } while (! done);
   xredraw();
   calc_melee();
@@ -383,9 +392,12 @@ int x,y;
 	(Current_Environment == E_CITY)) {
       print1("You hear the whirr of some mechanism.");
       print2("The statue glides smoothly into the floor!");
+      /* WDT HACK: I shouldn't be making this choice on a level
+       * where no stairs can be (or perhaps I should, and I should
+       * implement a bonus level!). */
       Level->site[x][y].locchar = STAIRS_DOWN;
       Level->site[x][y].p_locf = L_NO_OP;
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED|STOPS);
     }
     break;
   case 6:
@@ -677,7 +689,6 @@ void l_tavern()
       if (Player.cash < 1)
 	print2("Aw hell, have one on me.");
       else {
-	hinthour = hour();
 	Player.cash -= 1;
 	dataprint();
 	if (hinthour!=hour()) {
@@ -720,7 +731,7 @@ void l_tavern()
 	clearmsg();
 	switch(random_range(4)) {
 	case 0:
-	  print1("'You are a real pal. Say, have you heard.... ");
+	  print1("'You're a real pal. Say, have you heard.... ");
 	  hint();
 	  break;
 	case 1:
@@ -873,14 +884,20 @@ void l_dpw()
     print2("Do you want to go on the dole? [yn] ");
     if (ynq2()=='y') {
       print1("Well, ok, but spend it wisely.");
-      print2("Please enter your name for our records.");
-      if (strcmp(Player.name,msgscanstring()) != 0) {
+      morewait();
+      print1("Please enter your name for our records:");
+      strcpy(Str1, msgscanstring());
+      if (Str1[0] >= 'a' && Str1[0] <= 'z')
+	Str1[0] += 'A' - 'a';
+      if (Str1[0] == '\0')
+	print1("Maybe you should come back when you've learned to write.");
+      else if (strcmp(Player.name,Str1) != 0) {
 	print3("Aha! Welfare Fraud! It's off to gaol for you, lout!");
 	morewait();
 	send_to_jail();
       }
       else {
-	print1("Here's your handout, layabout!");
+	print2("Here's your handout, layabout!");
 	LastDay = Date;
 	Player.cash = 99;
 	dataprint();
@@ -893,6 +910,7 @@ void l_dpw()
 void l_library()
 {
   char response;
+  int studied=FALSE;
   int done=FALSE,fee = 1000;
   print1("Rampart Public Library.");
   if (nighttime())
@@ -918,70 +936,81 @@ void l_library()
 	}
 	else {
 	  Player.cash -= fee;
-	  dataprint();
-	  menuclear();
-	  menuprint("Peruse a scroll:\n");
-	  menuprint("a: Omegan Theology\n");
-	  menuprint("b: Guide to Rampart\n");
-	  menuprint("c: High Magick\n");
-	  menuprint("d: Odd Uncatalogued Document\n");
-	  menuprint("e: Attempt Advanced Research\n");
-	  menuprint("ESCAPE: Leave this font of learning.\n");
-	  showmenu();
-	  response = (char) mcigetc();
-	  if (response == 'a') {
-	    print1("You unfurl an ancient, yellowing scroll...");
-	    morewait();
-	    theologyfile();
-	  }
-	  else if (response == 'b') {
-	    print1("You unroll a slick four-color document...");
-	    morewait();
-	    cityguidefile();
-	  }
-	  else if (response == 'c') {
-	    print1("This scroll is written in a strange magical script...");
-	    morewait();
-	    wishfile();
-	  }
-	  else if (response == 'd') {
-	    print1("You find a strange document, obviously misfiled");
-	    print2("under the heading 'acrylic fungus painting technique'");
-	    morewait();
-	    adeptfile();
-	  }
-	  else if (response == 'e') {
-	    if (random_range(30) > Player.iq)  {
-	      print2("You feel more knowledgeable!");
-	      Player.iq++;
-	      Player.maxiq++;
-	      dataprint();
-	      if (Player.maxiq < 19 &&
-		fee != max(50,1000-(18-Player.maxiq)*125))
-		{
-		  morewait();
-		  clearmsg();
-		  print1("Your revised fee is: ");
-		  mnumprint(fee=max(50,1000-(18-Player.maxiq)*125));
-		  nprint1("Au.");
-		  morewait();
-		}
-	    }
-	    else {
-	      clearmsg1();
-	      print1("You find advice in an ancient tome: ");
+	  do {
+	    studied = TRUE;
+	    dataprint();
+	    menuclear();
+	    menuprint("Peruse a scroll:\n");
+	    menuprint("a: Omegan Theology\n");
+	    menuprint("b: Guide to Rampart\n");
+	    menuprint("c: High Magick\n");
+	    menuprint("d: Odd Uncatalogued Document\n");
+	    menuprint("e: Attempt Advanced Research\n");
+	    menuprint("ESCAPE: Leave this font of learning.\n");
+	    showmenu();
+	    response = (char) mcigetc();
+	    if (response == 'a') {
+	      print1("You unfurl an ancient, yellowing scroll...");
 	      morewait();
-	      hint();
-	      morewait();
+	      theologyfile();
 	    }
-	  }
-	  else done = (response == ESCAPE);
+	    else if (response == 'b') {
+	      print1("You unroll a slick four-color document...");
+	      morewait();
+	      cityguidefile();
+	    }
+	    else if (response == 'c') {
+	      print1("This scroll is written in a strange magical script...");
+	      morewait();
+	      wishfile();
+	    }
+	    else if (response == 'd') {
+	      print1("You find a strange document, obviously misfiled");
+	      print2("under the heading 'acrylic fungus painting technique'");
+	      morewait();
+	      adeptfile();
+	    }
+	    else if (response == 'e') {
+	      if (random_range(30) > Player.iq)  {
+		print2("You feel more knowledgeable!");
+		Player.iq++;
+		Player.maxiq++;
+		dataprint();
+		if (Player.maxiq < 19 &&
+		  fee != max(50,1000-(18-Player.maxiq)*125))
+		  {
+		    morewait();
+		    clearmsg();
+		    print1("Your revised fee is: ");
+		    mnumprint(fee=max(50,1000-(18-Player.maxiq)*125));
+		    nprint1("Au.");
+		    morewait();
+		  }
+	      }
+	      else {
+		clearmsg1();
+		print1("You find advice in an ancient tome: ");
+		morewait();
+		hint();
+		morewait();
+	      }
+	    }
+	    else if (response == ESCAPE) {
+	      done = TRUE;
+	      print1("That was an expensive browse...");
+	    }
+	    else
+	      studied = FALSE;
+	  } while (!studied);
 	}
       xredraw();
       }
       else {
 	done = TRUE;
-	print2("You philistine!");
+	if (studied)
+	  print2("Come back anytime we're open, 7am to 8pm.");
+	else
+	  print2("You philistine!");
       }
     }
   }
@@ -1014,8 +1043,7 @@ void l_pawn_shop()
           do {
             if (Pawnitems[i] != NULL)
               free(Pawnitems[i]);
-            do Pawnitems[i] = create_object(5);
-            while (!Pawnitems[i]);
+            Pawnitems[i] = create_object(5);
             Pawnitems[i]->known = 2;
           } while ((Pawnitems[i]->objchar == CASH) ||
                    (Pawnitems[i]->objchar == ARTIFACT) ||

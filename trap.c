@@ -32,16 +32,16 @@ void l_trap_siren()
     print1("Nobody answers the alarm.");
   else {
     if (Current_Environment == E_CIRCLE) {
-      summon(-1,ML9+7); /* prime circle demon */
-      summon(-1,ML9+7);
-      summon(-1,ML9+7);
+      summon(-1,DEMON_PRINCE); /* prime circle demon */
+      summon(-1,DEMON_PRINCE);
+      summon(-1,DEMON_PRINCE);
     }
     for(ml=Level->mlist;ml!=NULL;ml=ml->next) {
       m_status_set(ml->m,AWAKE);
       ml->m->sense *= 2;
       if ((Current_Environment == E_CIRCLE) ||
-	  ((Current_Environment == E_VILLAGE) && (ml->m->id == ML0+3)) ||
-	  ((Current_Environment == E_CITY) && (ml->m->id == ML0+3)))
+	  ((Current_Environment == E_VILLAGE) && (ml->m->id == GUARD)) ||
+	  ((Current_Environment == E_CITY) && (ml->m->id == GUARD)))
 	m_status_set(ml->m,HOSTILE);
     }
   }

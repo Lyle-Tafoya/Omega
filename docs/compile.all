@@ -1,0 +1,58 @@
+omega compilation notes.
+
+VERSION 0.80:
+
+First I should note that omega is copyrighted; you are using this
+program under the terms of the license, hopefully included in the file
+omega.license, in the omegalib directory.
+
+omega is set up for compilation under Sun's unix; some changes may be
+necessary for correct functioning under other unixes. I have included
+some ifdef lines in defs.h that ought to have some positive influence.
+However, not having anything besides a sun to test omega on, I will
+have to rely on your feedback as to the effect.
+
+To implement omega on your system:
+
+-1) Make sure you have the files listed in the file called MANIFEST.
+If you don't have these files, you lose! Get them from somewhere. In
+particular, it is a violation of the license not to have a copy of
+license.txt.
+
+0) Feel free to change motd.txt in the omegalib directory to say whatever
+you like, keeping in mind the constraints of the Sedition Act.
+
+1) Make a directory for omega's data files.  This will be the OMEGALIB path
+referred to later.  If you don't want to run omega setuid, you must allow
+the general public to write to certain files in this directory.  There is no
+need to have a special directory, but it is neater that way.
+
+2) Change the first few #define's in defs.h to conform to the 
+data file directory, your user name, etc., as the comments in the file
+discuss.
+
+3) Edit the first few lines of the Makefile, setting the BINDIR and LIBDIR
+as appropriate (in particular, LIBDIR should be the same as OMEGALIB in
+defs.h,) and making sure that the appropriate LIBS assignment for your
+machine is used.
+
+4) type 'make install' (or 'make install_not_suid', if you prefer omega to
+run without setuid)  This will move the data files into the LIBDIR, as well
+as compiling omega.  If you like, you can install omega manually, by typing
+'make omega' and then moving and setting the permissions of the data files
+yourself.  Basically, the files omegalib/*.txt (except scroll[1234].txt
+and abyss.txt) should have at the least public read access. If you are not
+using suid, omega.hi and omega.log should have write access as well.
+
+5) At this point, omega should be ready to run. Some notes on maintaining
+the game can be found in README4.
+
+6) Laurence Brothers (the author - you still haven't read license.txt, have
+you? :-) has graduated and gone on into the Real World, and isn't maintaining
+omega any more.  I can answer questions and deal with bug reports - email
+Erik Max Francis (omega@alcyone.darkside.com).
+
+   Tom O. Breton (tob@world.std.com) is currently working on a complete
+re-write - finger his account to see how work is progressing with that.
+
+7) Good luck -- and let's be careful out there, shall we?

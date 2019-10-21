@@ -1,0 +1,11 @@
+Report: In my inventory function, hitting 'v' is reported to crash the
+machine.  Appears to be a DOS symptom, but I bet it's caused by a memory
+allocation mistake on my part.  Can't reproduce, can't find problem.
+Solution: appears to be a bad download.  Symptom didn't recur when user
+re-downloaded.
+
+Report: Colors not correct on Macs.
+Solution: major work.  In progress.
+
+Report: Bright backgrounds blinking on PCs.
+Solution:  Oops.  Easy fix -- next version.

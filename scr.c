@@ -4,7 +4,7 @@
 /* plus a few file i/o stuff */
 /* also some in file.c */
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 # include "curses.h"
 #else
 # ifdef AMIGA
@@ -15,9 +15,16 @@
 # include <sys/types.h>
 #endif
 
+#if defined(MSDOS_SUPPORTED_ANTIQUE) || defined(AMIGA)
+# define CHARATTR(c)	((c) >> 8)
+#else
+# define CHARATTR(c)	((c) & ~0xff)
+#endif
+
 #include "glob.h"
 
 #ifdef EXCESSIVE_REDRAW
+#undef wclear
 #define wclear werase
 #endif
 
@@ -27,12 +34,6 @@
 WINDOW *Levelw,*Dataw,*Flagw,*Timew,*Menuw,*Locw,*Morew,*Phasew;
 WINDOW *Comwin,*Msg1w,*Msg2w,*Msg3w,*Msgw;
 WINDOW *Showline[MAXITEMS];
-
-#if defined(NOCOLOR)
-#define wattrset(w, a)
-#elif !defined(MSDOS) && !defined(AMIGA) && !defined(BSD)
-void wattrset ARGS((WINDOW *, int));
-#endif
 
 void phaseprint()
 {
@@ -65,8 +66,8 @@ void show_screen()
       wmove(Levelw,screenmod(j),0);
       for (i=0;i<WIDTH;i++) {
 	c = ((loc_statusp(i,j,SEEN)) ? getspot(i,j,FALSE):SPACE);
-        if (optionp(SHOW_COLOUR) && (c>>8) != last_attr) {
-          last_attr = c>>8;
+        if (optionp(SHOW_COLOUR) && CHARATTR(c) != last_attr) {
+          last_attr = CHARATTR(c);
           wattrset(Levelw,last_attr);
         }
         waddch(Levelw,c&0xff);
@@ -76,8 +77,8 @@ void show_screen()
       for (i=0;i<WIDTH;i++) {
 	wmove(Levelw,screenmod(j),i);
         c = ((c_statusp(i,j,SEEN)) ? Country[i][j].current_terrain_type:SPACE);
-        if (optionp(SHOW_COLOUR) && (c>>8) != last_attr) {
-          last_attr = c>>8;
+        if (optionp(SHOW_COLOUR) && CHARATTR(c) != last_attr) {
+          last_attr = CHARATTR(c);
           wattrset(Levelw,last_attr);
         }
         waddch(Levelw,c&0xff);
@@ -97,7 +98,7 @@ int mcigetc()
 {
   int c;
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 #ifndef DJGPP
   keypad(Msgw,TRUE);
 #endif
@@ -120,51 +121,63 @@ char lgetc()
 }
 
 
-char ynq()
+int ynq()
 {
-  char p='*';
-  while ((p != 'n') && (p != 'y') && (p != 'q') &&
-         (p != ESCAPE) && (p != ' '))
+  char p='*'; /* the user's choice; start with something impossible
+               * to prevent a loop. */
+  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) &&
+         (p != EOF) && (p != ' '))
     p = wgetch(Msgw);
   switch (p) {
     case 'y': wprintw(Msgw,"yes. "); break;
     case 'n': wprintw(Msgw,"no. "); break;
     
-    case ESCAPE: p = 'q';
-    case ' ': p = 'q';
+    case ESCAPE: p = 'q'; /* fall through to 'q' */
+    case ' ': p = 'q';    /* fall through to 'q' */
     case 'q': wprintw(Msgw,"quit. "); break;
+    default: assert( p == EOF );
     }
   wrefresh(Msgw);
   return(p);
 }
 
 
-char ynq1()
+int ynq1()
 {
-  char p=' ';
-  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE))
+  char p='*'; /* the user's choice; start with something impossible
+               * to prevent a loop. */
+  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) &&
+          (p != ' ') && (p != EOF))
     p = wgetch(Msg1w);
   switch (p) {
     case 'y': wprintw(Msg1w,"yes. "); break;
     case 'n': wprintw(Msg1w,"no. "); break;
-    case ESCAPE: p = 'q';
+    
+    case ESCAPE: p = 'q'; /* fall through to 'q' */
+    case ' ': p = 'q';    /* fall through to 'q' */
     case 'q': wprintw(Msg1w,"quit. "); break;
+    default: assert( p == EOF );
     }
   wrefresh(Msg1w);
   return(p);
 }
 
 
-char ynq2()
+int ynq2()
 {
-  char p=' ';
-  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE))
+  char p='*'; /* the user's choice; start with something impossible
+               * to prevent a loop. */
+  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) &&
+          (p != ' ') && (p != EOF))
     p = wgetch(Msg2w);
   switch (p) {
     case 'y': wprintw(Msg2w,"yes. "); break;
     case 'n': wprintw(Msg2w,"no. "); break;
-    case ESCAPE: p = 'q';
+    
+    case ESCAPE: p = 'q'; /* fall through to 'q' */
+    case ' ': p = 'q';    /* fall through to 'q' */
     case 'q': wprintw(Msg2w,"quit. "); break;
+    default: assert( p == EOF );
     }
   wrefresh(Msg2w);
   return(p);
@@ -335,13 +348,13 @@ char *s;
 
 
 
-void title()
+void omega_title()
 {
   showmotd();
   clear();
   touchwin(stdscr);
   refresh();  
-  showscores();
+/*  showscores();*/ /* DG */
 }
 
 
@@ -363,10 +376,13 @@ int i;
 void initgraf()
 {
   int i;
-#ifdef AMIGA
-  start_color();
-#endif
   initscr();
+#ifndef MSDOS_SUPPORTED_ANTIQUE
+  start_color();
+# ifndef AMIGA
+  clrgen_init();
+# endif
+#endif
   if (LINES < 24 || COLS < 80) {
     printf("Minimum Screen Size: 24 Lines by 80 Columns.");
     exit(0);
@@ -418,10 +434,10 @@ void initgraf()
 
   clear();
   touchwin(stdscr);
-  title();
-  clear();
-  touchwin(stdscr);
-  refresh();
+/*  omega_title();*/
+/*  clear();*/
+/*  touchwin(stdscr);*/
+/*  refresh();*/          /* DG */
 }
 
 
@@ -439,12 +455,12 @@ void drawplayer()
 	wmove(Levelw,screenmod(lasty),lastx);
         c = Country[lastx][lasty].current_terrain_type;
         if (optionp(SHOW_COLOUR))
-          wattrset(Levelw, c>>8);
+          wattrset(Levelw, CHARATTR(c));
         waddch(Levelw,(c&0xff));
     }
     wmove(Levelw,screenmod(Player.y),Player.x);
     if (optionp(SHOW_COLOUR))
-      wattrset(Levelw, PLAYER>>8);
+      wattrset(Levelw, CHARATTR(PLAYER));
     waddch(Levelw,(PLAYER&0xff));
   }
   else {
@@ -453,7 +469,7 @@ void drawplayer()
     wmove(Levelw,screenmod(Player.y),Player.x);
     if ((! Player.status[INVISIBLE]) || Player.status[TRUESIGHT]) {
       if (optionp(SHOW_COLOUR))
-        wattrset(Levelw, PLAYER>>8);
+        wattrset(Levelw, CHARATTR(PLAYER));
       waddch(Levelw,(PLAYER&0xff));
     }
   }
@@ -520,7 +536,7 @@ int x,y;
 	    wmove(Levelw,screenmod(y+j),x+i);
             c = Country[x+i][y+j].current_terrain_type;
             if (optionp(SHOW_COLOUR))
-              wattrset(Levelw, c>>8);
+              wattrset(Levelw, CHARATTR(c));
             waddch(Levelw,(c&0xff));
 	  }
 	}
@@ -549,7 +565,7 @@ void levelrefresh()
 void drawspot(x,y)
 int x,y;
 {
-  short c;
+  Symbol c;
   if (inbounds(x,y)) {
     c = getspot(x,y,FALSE);
     if (c != Level->site[x][y].showchar)
@@ -567,7 +583,7 @@ int x,y;
 void dodrawspot(x,y)
 int x,y;
 {
-  short c;
+  Symbol c;
   if (inbounds(x,y)) {
     c = getspot(x,y,FALSE);
     if (c != Level->site[x][y].showchar) {
@@ -601,7 +617,7 @@ int i,j;
     Level->site[i][j].showchar = SPACE;
     if (! offscreen(j)) {
       wmove(Levelw,screenmod(j),i);
-      wattrset(Levelw, SPACE>>8);
+      wattrset(Levelw, CHARATTR(SPACE));
       waddch(Levelw, SPACE&0xff);
     }
   }
@@ -622,12 +638,12 @@ int x,y,showmonster;
 /* Puts c at x,y on screen. No fuss, no bother. */
 void putspot(x,y,c)
 int x,y;
-short c;
+Symbol c;
 {
   if (! offscreen(y)) {
     wmove(Levelw,screenmod(y),x);
     if (optionp(SHOW_COLOUR))
-      wattrset(Levelw, c>>8);
+      wattrset(Levelw, CHARATTR(c));
     waddch(Levelw,(0xff&c));
   }
 }
@@ -640,7 +656,7 @@ struct monster *m;
   if (! offscreen(m->y)) {
     wmove(Levelw,screenmod(m->y),m->x);
     if (optionp(SHOW_COLOUR))
-      wattrset(Levelw, m->monchar>>8);
+      wattrset(Levelw, CHARATTR(m->monchar));
     waddch(Levelw,(m->monchar&0xff));
   }
 }
@@ -680,7 +696,7 @@ struct monster *m;
 }
 
 /* find apt char to display at some location */
-short getspot(x,y,showmonster)
+Symbol getspot(x,y,showmonster)
 int x,y,showmonster;
 {
   if (loc_statusp(x,y,SECRET)) return(WALL);
@@ -761,10 +777,12 @@ void comwinprint()
 void dataprint()
 {
   wclear(Dataw);
-  wprintw(Dataw,"HP:%d/%d MANA:%ld/%ld AU:%ld LEVEL:%d/%ld CARRY:%d/%d \n",
+  /* WDT HACK: I should make these fields spaced and appropriately justified.
+   * Maybe I don't feel like it right now. */
+  wprintw(Dataw,"Hp:%d/%d Mana:%ld/%ld Au:%ld Level:%d/%ld Carry:%d/%d \n",
 	  Player.hp,Player.maxhp,Player.mana,Player.maxmana,Player.cash,
 	  Player.level,Player.xp,Player.itemweight,Player.maxweight);
-  wprintw(Dataw,"STR:%d/%d CON:%d/%d DEX:%d/%d AGI:%d/%d INT:%d/%d POW:%d/%d   ",
+  wprintw(Dataw,"Str:%d/%d Con:%d/%d Dex:%d/%d Agi:%d/%d Int:%d/%d Pow:%d/%d   ",
 	  Player.str,Player.maxstr,Player.con,Player.maxcon,
 	  Player.dex,Player.maxdex,Player.agi,Player.maxagi,
 	  Player.iq,Player.maxiq,Player.pow,Player.maxpow);
@@ -818,7 +836,7 @@ char c;
 void morewait()
 {
   int display=TRUE;
-  char c;
+  int c;
   if (gamestatusp(SUPPRESS_PRINTING))
     return;
   do {
@@ -828,7 +846,7 @@ void morewait()
     display = ! display;
     wrefresh(Morew);
     c = wgetch(Msgw);
-  } while ((c != ' ') && (c != RETURN));
+  } while ((c != ' ') && (c != RETURN) && (c != EOF));
   wclear(Morew);
   wrefresh(Morew);
 }
@@ -836,7 +854,7 @@ void morewait()
 int stillonblock()
 {
   int display=TRUE;
-  char c;
+  int c;
   do {
     wclear(Morew);
     if (display) wprintw(Morew,"<<<STAY?>>>");
@@ -844,7 +862,7 @@ int stillonblock()
     display = ! display;
     wrefresh(Morew);
     c = wgetch(Msgw);
-  } while ((c != ' ') && (c != ESCAPE));
+  } while ((c != ' ') && (c != ESCAPE) && (c != EOF));
   wclear(Morew);
   wrefresh(Morew);
   return (c == ' ');
@@ -902,13 +920,13 @@ void endgraf()
 
 
 void plotchar(pyx,x,y)
-short pyx;
+Symbol pyx;
 int x,y;
 {
   if (! offscreen(y)) {
     wmove(Levelw,screenmod(y),x);
     if (optionp(SHOW_COLOUR))
-      wattrset(Levelw, pyx>>8);
+      wattrset(Levelw, CHARATTR(pyx));
     waddch(Levelw,(pyx&0xff));
     wrefresh(Levelw);
   }
@@ -917,7 +935,7 @@ int x,y;
 
 
 void draw_explosion(pyx,x,y)
-short pyx;
+Symbol pyx;
 int x,y;
 {
   int i,j;
@@ -1295,7 +1313,7 @@ void drawomega()
   for(i=0;i<7;i++) {
       move(1, 1);
       if (optionp(SHOW_COLOUR))
-        wattrset(stdscr, COL_LIGHT_BLUE>>8);
+        wattrset(stdscr, CHARATTR(CLR(LIGHT_BLUE)));
       printw("\n\n\n");
       printw("\n                                    *****");
       printw("\n                               ******   ******");
@@ -1314,7 +1332,7 @@ void drawomega()
       usleep(200000);
       move(1, 1);
       if (optionp(SHOW_COLOUR))
-        wattrset(stdscr, COL_CYAN>>8);
+        wattrset(stdscr, CHARATTR(CLR(CYAN)));
       printw("\n\n\n");
       printw("\n                                    +++++");
       printw("\n                               ++++++   ++++++");
@@ -1333,7 +1351,7 @@ void drawomega()
       usleep(200000);
       move(1, 1);
       if (optionp(SHOW_COLOUR))
-        wattrset(stdscr, COL_BLUE>>8);
+        wattrset(stdscr, CHARATTR(CLR(BLUE)));
       printw("\n\n\n");
       printw("\n                                    .....");
       printw("\n                               ......   ......");
@@ -1351,7 +1369,7 @@ void drawomega()
       refresh();
       usleep(200000);
   }
-  wattrset(stdscr, COL_WHITE>>8);
+  wattrset(stdscr, CHARATTR(CLR(WHITE)));
 }
 
 /* y is an absolute coordinate */
@@ -1392,7 +1410,7 @@ int x,y,roomno;
 void lightspot(x,y)
 int x,y;
 { 
-  short c;
+  Symbol c;
   lset(x,y,LIT);
   lset(x,y,SEEN);
   lset(x, y, CHANGED);
@@ -1539,7 +1557,7 @@ void colour_on()
 
 void colour_off()
 {
-  wattrset(Levelw, COL_WHITE>>8);
+  wattrset(Levelw, CHARATTR(CLR(WHITE)));
 }
 
 void display_option_slot(slot)
@@ -1583,10 +1601,8 @@ int slot;
 #endif
     break;
   case 9:
-#if defined(MSDOS) || defined(AMIGA)
     wprintw(Showline[slot],"-- Option COLOUR [TF]: ");
     wprintw(Showline[slot], optionp(SHOW_COLOUR) ? "(now T) " : "(now F) ");
-#endif
     break;
   case VERBOSITY_LEVEL:
     wprintw(Showline[slot],
@@ -1690,7 +1706,7 @@ void bufferprint()
 {
   int i = bufferpos - 1, c, finished = 0;
   clearmsg();
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
   wprintw(Msg1w,"^p for previous message, ^n for next, anything else to quit.");
 #else
   wprintw(Msg1w,"^o for last message, ^n for next, anything else to quit.");
@@ -1703,7 +1719,7 @@ void bufferprint()
     wprintw(Msg2w,Stringbuffer[i]);
     wrefresh(Msg2w);
     c = mgetc();
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
     if (c == 16)	/* ^p */
 #else
     if (c == 15)	/* ^o */
@@ -1724,11 +1740,3 @@ void clear_screen()
   touchwin(stdscr);
   refresh();
 }
-
-#if !defined(MSDOS) && !defined(AMIGA) && !defined(BSD)
-/* this function will never be called if we're neither MSDOS nor AMIGA, */
-/* but the linker needs something, naturally... */
-void wattrset(WINDOW *w, int s)
-{
-}
-#endif

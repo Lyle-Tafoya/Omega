@@ -254,8 +254,8 @@ void s_ritual()
 	case ROOMBASE+22: /* boudoir */
 	  mprint("A secret panel opens next to the bed....");
 	  if (random_range(2))
-	    summon(0,ML4+6); /* succubus/incubus */
-	  else summon(0,ML4+7); /* satyr/nymph */
+	    summon(0,INCUBUS); /* succubus/incubus */
+	  else summon(0,SATYR); /* satyr/nymph */
 	  break;
 	case ROOMBASE+26: /*shrine to high magic */
 	  mprint("A storm of mana coaelesces around you.");
@@ -316,7 +316,7 @@ void s_ritual()
 	    else if (random_range(3)==1) {
 	      mprint("You feel Fated.");
 	      gain_experience(Player.level*Player.level*10);
-	      Player.hp = Player.maxhp;
+	      Player.hp = max(Player.hp, Player.maxhp);
 	    }
 	    else if (random_range(2)) {
 	      mprint("You feel Doomed.");

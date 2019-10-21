@@ -16,4 +16,41 @@ It would be nice if I could control the duration of inventory mode.  For
 example, when picking something up I'd like to automatically leave inventory
 mode as soon as the up-in-air slot is empty (of course, this would not be
 the case when the user had deliberately entered inventory mode, only when
-they'd been pushed into it).
+they'd been pushed into it).  This isn't hard, but I have to find time...
+
+Wow.  I just got a MAJOR patch donated which makes color possible on Unix
+ncurses systems.  Tres cool.  Now to make it work on MSDOS, which
+unfortunately can't do color anymore.  If this can be done, I'm going to be
+able to postpone rewriting Omega's color 'graphics' (text, actually) system
+and get down to actually fixing problems and adding stuff.  Confirmation!
+It works, and works reasonably well.  It's not perfect -- the new system is
+something of a hack, and doesn't set up things like bright backgrounds
+(although it uses them, which makes things blink), but adding it makes the
+DOS code identical to the Unix code, which allows me to remove a huge
+amount of #ifdef code.  Yay!  This also makes the DOS version work under NT,
+which is a great victory.  Hack or not, this patch just made my job a LOT
+more fun.  Now I can concentrate on fixing the gameplay and later on writing
+a _REAL_ display subsystem (graphics, text, whatever), and I can skip
+worrying about fixing a broken subsystemm.
+
+I've just changed the license from its former status, which was essentially
+"don't make any money off of this, and ask my permission before you change
+this" to the GNU Library GPL.  This change has two purposes: first, to make
+it easier for programmers to change Omega (by not being _required_ to ask
+permission); and second, to make it possible to distribute later expansions
+to Omega without source code, so that puzzles and secret levels could be
+kept secret.  I have not included any clauses prohibiting making money from
+Omega; I believe that the (L)GPL gives sufficient incentive against that,
+while still allowing for value-added work, such as tech support and
+(profitable) CDROM distribution.  There are two important things to me:
+first, that people get to enjoy Omega for free; and second, that people get
+to make additions to Omega without having to release all the puzzles in
+those additions.
+
+In case you're wondering, I do have specific permission from Laurence to
+make this license change.  Laurence, if you have any problems with any
+aspect of this license, let me know and I'll post the correction.
+
+Future plan: modernize the source code by using a K&R-to-ANSI converter and
+going over it with a fine-toothed comb.  Are there any objections?  Any
+non-ANSI systems still out there?

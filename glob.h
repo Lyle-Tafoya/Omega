@@ -11,8 +11,14 @@
 
 #include "extern.h"
 
+#ifdef DEBUG /* Added by DG, naturally. */
+/* Debug log file */
+extern FILE *DG_debug_log;
+extern int DG_debug_flag;
+#endif
+
 /* This string holds the path to the library files */
-char *Omegalib;
+extern char *Omegalib;
 
 /* one of each monster */
 extern struct monster Monsters[NUMMONSTERS];
@@ -44,7 +50,7 @@ extern int ScreenLength;
 extern struct terrain Country[MAXWIDTH][MAXLENGTH];
 /* The countryside */
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 extern struct level TheLevel;
 #endif
 

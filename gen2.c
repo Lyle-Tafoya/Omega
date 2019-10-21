@@ -46,7 +46,7 @@ int fromlevel;
 
 
 void make_country_screen(terrain)
-short terrain;
+Symbol terrain;
 {
   int i,j;
   TempLevel = Level;
@@ -302,7 +302,7 @@ void room_level()
       Level->mlist->next = NULL;
       Level->mlist->m = 
 	Level->site[tx][ty].creature = 
-	  ((pmt) make_creature(ML7+5)); /* The Great Wyrm */
+	  ((pmt) make_creature(GREAT_WYRM)); /* The Great Wyrm */
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -321,7 +321,7 @@ void room_level()
       Level->mlist->next = NULL;
       Level->mlist->m = 
 	Level->site[tx][ty].creature = 
-	  ((pmt) make_creature(ML10+4)); /* The demon emp */
+	  ((pmt) make_creature(DEMON_EMP)); /* The demon emp */
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -410,11 +410,11 @@ void maze_level()
 	    break;
 	  }
     switch(Level->depth) {
-    case 1: mid = ML10+5; break; /* Elemental Lord of Earth */
-    case 2: mid = ML10+6; break; /* Elemental Lord of Air */
-    case 3: mid = ML10+7; break; /* Elemental Lord of Water */
-    case 4: mid = ML10+8; break; /* Elemental Lord of Fire */
-    case 5: mid = ML10+9; break; /* Elemental Master */
+    case 1: mid = LORD_EARTH; break; /* Elemental Lord of Earth */
+    case 2: mid = LORD_AIR; break; /* Elemental Lord of Air */
+    case 3: mid = LORD_WATER; break; /* Elemental Lord of Water */
+    case 4: mid = LORD_FIRE; break; /* Elemental Lord of Fire */
+    case 5: mid = ELEM_MASTER; break; /* Elemental Master */
     }
     if (Level->depth == 5) {
       findspace(&tx,&ty,-1);
@@ -439,7 +439,7 @@ void maze_level()
       Level->mlist->next = NULL;
       Level->mlist->m = 
 	Level->site[tx][ty].creature = 
-	  ((pmt) make_creature(ML10+4)); /* The demon emp */
+	  ((pmt) make_creature(DEMON_EMP)); /* The demon emp */
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }

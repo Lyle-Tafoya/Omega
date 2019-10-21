@@ -119,7 +119,7 @@ char fromlevel,tolevel,rewrite_level;
     install_specials();
     make_stairs(fromlevel);
     make_stairs(fromlevel);
-    initrand(-2, 0);
+    initrand(E_RESTORE, 0);
     populate_level(Current_Environment);
     stock_level();
   }
@@ -161,7 +161,7 @@ char levelnum;
 
 void straggle_corridor(fx,fy,tx,ty,loc,rsi)
 int fx,fy,tx,ty;
-short loc;
+Symbol loc;
 char rsi;
 {
   int dx,dy;
@@ -200,6 +200,7 @@ int x,y;
     lset(x+1,y,STOPS);
     lset(x-1,y,STOPS);
     lset(x,y-1,STOPS);
+    lset(x,y,STOPS);
   }
   Level->site[x][y].p_locf = L_NO_OP; 
   /* prevents water corridors from being instant death in sewers */
@@ -208,7 +209,7 @@ int x,y;
 
 void corridor_crawl(fx,fy,sx,sy,n,loc,rsi)
 int *fx,*fy,sx,sy,n;
-short loc;
+Symbol loc;
 char rsi;
 {
   int i;
@@ -324,7 +325,7 @@ char fromlevel;
 char tolevel;
 {
   int i,j,found=FALSE;
-  short sitechar;
+  Symbol sitechar;
   if (fromlevel > tolevel) sitechar = STAIRS_DOWN; else sitechar = STAIRS_UP;
   for(i=0;i<WIDTH;i++)
     for(j=0;j<LENGTH;j++) 
@@ -423,7 +424,7 @@ void cavern_level()
       Level->mlist->next = NULL;
       Level->mlist->m = 
 	Level->site[tx][ty].creature = 
-	  ((pmt) make_creature(ML3+5)); /* goblin king */
+	  ((pmt) make_creature(GOBLIN_KING)); /* goblin king */
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -435,7 +436,7 @@ void cavern_level()
       Level->mlist->next = NULL;
       Level->mlist->m = 
 	Level->site[tx][ty].creature = 
-	  ((pmt) make_creature(ML10+4)); /* The dark emp */
+	  ((pmt) make_creature(DEMON_EMP)); /* The dark emp */
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -452,7 +453,7 @@ void sewer_level()
 {
   int i,tx,ty,t,l,e;
   char rsi;
-  short lchar;
+  Symbol lchar;
 
   Level->numrooms = random_range(3)+3;
   rsi = RS_DRAINED_SEWER;
@@ -486,7 +487,7 @@ void sewer_level()
       Level->mlist->next = NULL;
       Level->mlist->m = 
 	Level->site[tx][ty].creature = 
-	  ((pmt) make_creature(ML7+5)); /* The Great Wyrm */
+	  ((pmt) make_creature(GREAT_WYRM)); /* The Great Wyrm */
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -497,7 +498,7 @@ void sewer_level()
 
 void sewer_corridor(x,y,dx,dy,locchar)
 int x,y,dx,dy;
-short locchar;
+Symbol locchar;
 {
   int continuing = TRUE;
   makedoor(x,y);

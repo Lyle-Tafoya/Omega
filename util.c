@@ -3,7 +3,7 @@
 
 /* Random utility functions called from all over */
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
@@ -24,8 +24,8 @@ int x,y;
 int random_range(k)
 int k;
 {
-  /*return( k==0 ? 0 : (int) RANDFUNCTION % k ) ;*/
-  return( k==0 ? 0 : (int) ((RANDFUNCTION%10000)*k)/10000);
+  /*return( k==0 ? 0 : (int) RANDFUNCTION() % k ) ;*/
+  return( k==0 ? 0 : (int) ((RANDFUNCTION()%10000)*k)/10000);
 }
 
 
@@ -177,7 +177,7 @@ int x,y;
 }
 
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* 8 moves in Dirs */
 void initdirs()
 {
@@ -210,7 +210,7 @@ void initdirs()
 /* x1 and x2 are pointers because as a side effect they are changed */
 /* to the final location of the pyx */
 void do_los(pyx,x1,y1,x2,y2)
-short pyx;
+Symbol pyx;
 int *x1,*y1,x2,y2;
 {
   int dx,dy,ox,oy;
@@ -269,7 +269,7 @@ int *x1,*y1,x2,y2;
 /* This is the same as do_los, except we stop before hitting nonliving
 obstructions */
 void do_object_los(pyx,x1,y1,x2,y2)
-short pyx;
+Symbol pyx;
 int *x1,*y1,x2,y2;
 {
   int dx,dy,ox,oy;
@@ -432,7 +432,7 @@ int x1,y1,x2,y2;
   return((x1==x2) && (y1==y2));
 }
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* returns the command direction from the index into Dirs */
 char inversedir(dirindex)
 int dirindex;	  
@@ -807,7 +807,7 @@ char *fstr;
 }
 #endif
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 /* ****Moved here from another file**** */
 /* returns a "level of difficulty" based on current environment
    and depth in dungeon. Is somewhat arbitrary. value between 1 and 10.
@@ -857,7 +857,7 @@ int user_uid;
 
 void init_perms()
 {
-#if defined(BSD) || defined(SYSV)
+#if (defined(BSD) || defined(SYSV)) && !defined(__DJGPP__)
     user_uid = getuid();
     game_uid = geteuid();
 #endif
@@ -871,7 +871,7 @@ void setreuid(int, int);
 
 void change_to_user_perms()
 {
-#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__)
+#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__) && !defined(__DJGPP__)
 #ifdef BSD
     setreuid(game_uid, user_uid);
 #else /* SYSV */
@@ -882,7 +882,7 @@ void change_to_user_perms()
 
 void change_to_game_perms()
 {
-#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__)
+#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__) && !defined(__DJGPP__)
 #ifdef BSD
     setreuid(user_uid, game_uid);
 #else /* SYSV */

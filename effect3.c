@@ -152,14 +152,14 @@ int blessing;
   if (blessing > 0) {
     if (Current_Environment == E_COUNTRYSIDE) {
 	clearmsg();
-	print1("A thousand bolts of lightning flash down for as far as you can see!!!");
+	print1("Bolts of lightning flash down for as far as you can see!!!");
 	morewait();
 	print1("There is a rain of small birds and insects from the sky, and you");
 	print2("notice that you can't hear any animal noises around here any more...");
 	Player.alignment -= 3;
     }
     else {
-      mprint("A thousand bolts of lightning flash throughout the level!!!");
+      mprint("Thousands of bolts of lightning flash throughout the level!!!");
       for(ml=Level->mlist;ml!=NULL;ml=ml->next)
 	if (ml->m != NULL && ml->m->hp > 0)
 	  m_death(ml->m);
@@ -576,6 +576,17 @@ int blessing;
 {
   int new_env;
 
+  /* WDT HACK: Game balance issue: the star gem is supposed to be the only
+   * way out of the astral plane (including the Circle of Sorcerors).  However,
+   * Hy Magic offers the Location wish, and some artifacts grant this
+   * as well.  Seems to me that Hy Magic ought to allow it, and nothing
+   * else (aside from the Star Gem, of course). */
+  if ((Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL) &&
+      !gamestatusp(CHEATED))
+  {
+    mprint("Some property of this eerie place interferes with the magic!\n");
+    return;
+  }
   mprint("Magic portals open up all around you!");
   if (blessing < 0) {
     morewait();
@@ -603,6 +614,8 @@ int blessing;
     menuprint("l: WoodHenge\n");
     menuprint("m: Temple of Destiny\n");
     menuprint("n: HellWell Volcano\n");
+    if (gamestatusp(CHEATED))
+      menuprint("z: Anywhere\n");
     menuprint("ANYTHING ELSE: Avoid entering a portal.");
     showmenu();
     switch((char) mcigetc()) {
@@ -815,21 +828,30 @@ void dispel(blessing)
 int blessing;     
 {
   int i,x=Player.x,y=Player.y;
-  if (blessing > -1) {
-    setspot(&x,&y);
-    if ((x==Player.x)&&(y==Player.y)) {
-      for(i=0;i<MAXITEMS;i++) {
-	if (Player.possessions[i]!=NULL)
-	  if ((Player.possessions[i]->used) &&
-	      (Player.possessions[i]->blessing < 0)) {
-	    if (blessing+1 + Player.possessions[i]->blessing >=0) {
-	      mprint("You hear a sighing sound from");
-	      mprint(itemid(Player.possessions[i]));
-	      Player.possessions[i]->blessing = 0;
-	    }
-	    else {
-	      mprint("You hear dark laughter from");
-	      mprint(itemid(Player.possessions[i]));
+  pob o;
+    if (blessing > -1) {
+      setspot(&x,&y);
+      if ((x==Player.x)&&(y==Player.y)) {
+        for(i=0;i<MAXITEMS;i++) {
+	o = Player.possessions[i];
+	if (o != NULL)
+	  if ((o->used) && (o->blessing < 0)) {
+	    if (blessing+1 + o->blessing >=0) {
+	      o->used = FALSE;
+	      setgamestatus(SUPPRESS_PRINTING);
+	      item_use(o);
+	      resetgamestatus(SUPPRESS_PRINTING);
+  	      mprint("You hear a sighing sound from");
+	      mprint(itemid(o));
+	      o->blessing = 0;
+	      o->used = TRUE;
+	      setgamestatus(SUPPRESS_PRINTING);
+	      item_use(o);
+	      resetgamestatus(SUPPRESS_PRINTING);
+  	    }
+  	    else {
+  	      mprint("You hear dark laughter from");
+	      mprint(itemid(o));
 	    }
 	  }
       }
@@ -894,7 +916,11 @@ int blessing;
   int x=Player.x,y=Player.y,newmonster;
   struct monster *m;
   setspot(&x,&y);
+  clearmsg();
   if ((x==Player.x)&&(y==Player.y)) {
+    /* WDT HACK: shouldn't this use one of the 'getarticle' functions
+     * to prevent things like "a elder grue" (should be "an elder grue")?
+     */
     mprint("You enjoy your new life as a");
     mprint(Monsters[random_range(NUMMONSTERS)].monstring);
     mprint("But your game is over....");
@@ -912,17 +938,22 @@ int blessing;
     else {
       if (blessing < 0) {
 	do newmonster = random_range(NUMMONSTERS);
-	while ((newmonster == ML0+4) ||
-	       (newmonster == ML7+3) ||
+	while ((newmonster == NPC) ||
+	       (newmonster == MAST_THIEF) ||
 	       (Monsters[newmonster].level <= m->level) ||
 	       (Monsters[newmonster].uniqueness != COMMON));
       }
       else {
 	do newmonster = random_range(NUMMONSTERS);
-	while ((newmonster == ML0+4) ||
-	       (newmonster == ML7+3) ||
+	while ((newmonster == NPC) ||
+	       (newmonster == MAST_THIEF) ||
 	       (Monsters[newmonster].uniqueness != COMMON));
       }
+      /* WDT HACK: most of this could (and should) be implemented by 
+       * the following line: "*m = Monsters[newmonster];".  The exception,
+       * of course, are the parts where the new monster inherits the old
+       * one's abilities.  This would be better because it would be robust
+       * even in the face of additions to the monster structure. */
       m->id = Monsters[newmonster].id;
       m->hp = max(m->hp,Monsters[newmonster].id);
       m->speed = Monsters[newmonster].speed;
@@ -1082,21 +1113,20 @@ void sanctuary()
 
 void shadowform()
 {
+  /* WDT HACK: this fix might work, but it seems like the immunity
+   * will be FAR too short.  It's obviously better than the old 
+   * situation, though... */
   if (!Player.status[SHADOWFORM]) {
     mprint("You feel like a shadow.");
-    Player.immunity[NORMAL_DAMAGE]+=Player.level;
-    Player.immunity[ACID]+=Player.level;
-    Player.immunity[THEFT]+=Player.level;
-    Player.immunity[INFECTION]+=Player.level;
-    Player.status[SHADOWFORM]+=Player.level;
-  }
-  else {
-    mprint("You feel even more shadowy.");
     Player.immunity[NORMAL_DAMAGE]++;
     Player.immunity[ACID]++;
     Player.immunity[THEFT]++;
     Player.immunity[INFECTION]++;
-    Player.status[SHADOWFORM]++;
+    Player.status[SHADOWFORM]+=Player.level;
+  }
+  else {
+    mprint("You feel even more shadowy.");
+    Player.status[SHADOWFORM]+=Player.level;
   }
 }
 

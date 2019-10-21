@@ -13,7 +13,7 @@ void hint()
   case 2:mprint("Unidentified Artifacts can be dangerous.");break;
   case 3:mprint("The higher form of mercury is desirable.");break;
   case 4:mprint("A sense of unease is a good thing to have.");break;
-  case 5:mprint("If you dig too much, you might cause a cave in!.");break;
+  case 5:mprint("If you dig too much, you might cause a cave-in!");break;
   case 6:mprint("Be Lawful: Live and Let Live.");break;
   case 7:mprint("Be Chaotic: Live and Let Die."); break;
   case 8:mprint("The world doesn't slow down; you speed up.");break;
@@ -110,9 +110,9 @@ void hint()
     break;
   case 92:mprint("Only a master of chaos would kill all the city guards!");
     break;
-  case 93:mprint("The Order depends on the force of the LawGiver");break;
-  case 94:mprint("City Guards are employees of the Order");break;
-  case 95:mprint("Disenchanted Artifacts can be restored"); break;
+  case 93:mprint("The Order depends on the force of the LawGiver.");break;
+  case 94:mprint("City Guards are employees of the Order.");break;
+  case 95:mprint("Disenchanted Artifacts can be restored."); break;
   }
 }
 

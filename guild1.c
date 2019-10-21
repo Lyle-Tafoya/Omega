@@ -83,7 +83,7 @@ void l_merc_guild()
       break;
     case COLONEL:
       if ((Player.level > Commandantlevel) &&
-	  find_and_remove_item(CORPSEID+0,ML10+4)) {  
+	  find_and_remove_item(CORPSEID,DEMON_EMP)) {  
 	print1("You liberated the Demon Emperor's Regalia!");
 	morewait();
 	clearmsg();
@@ -220,7 +220,7 @@ void l_castle()
       }
     }
     else if (Player.rank[NOBILITY]==COMMONER) {
-      if (find_and_remove_item(CORPSEID,ML3+5)) {
+      if (find_and_remove_item(CORPSEID,GOBLIN_KING)) {
 	print1("Good job, sirrah! I promote you to the rank of esquire.");
 	Player.rank[NOBILITY]=ESQUIRE;
 	gain_experience(100);
@@ -353,58 +353,58 @@ void l_arena()
     Arena_Victory = FALSE;
     switch(Arena_Opponent) {
     case 0: 
-      *Arena_Monster = Monsters[ML1+9];
+      *Arena_Monster = Monsters[GEEK];
       break;
     case 1:
-      *Arena_Monster = Monsters[ML0+0];
+      *Arena_Monster = Monsters[HORNET];
       break;
     case 2:
-      *Arena_Monster = Monsters[ML1+21];
+      *Arena_Monster = Monsters[HYENA];
       break;
     case 3:
-      *Arena_Monster = Monsters[ML1+6];
+      *Arena_Monster = Monsters[GOBLIN];
       break;
     case 4:
-      *Arena_Monster = Monsters[ML1+0];
+      *Arena_Monster = Monsters[GRUNT];
       break;
     case 5:
-      *Arena_Monster = Monsters[ML2+4];
+      *Arena_Monster = Monsters[TOVE];
       break;      
     case 6:
-      *Arena_Monster = Monsters[ML2+0];
+      *Arena_Monster = Monsters[APPR_NINJA];
       break;
     case 7:
-      *Arena_Monster = Monsters[ML3+0];
+      *Arena_Monster = Monsters[SALAMANDER];
       break;
     case 8:
-      *Arena_Monster = Monsters[ML2+11];
+      *Arena_Monster = Monsters[ANT];
       break;
     case 9:
-      *Arena_Monster = Monsters[ML4+0];
+      *Arena_Monster = Monsters[MANTICORE];
       break;
     case 10:
-      *Arena_Monster = Monsters[ML5+5];
+      *Arena_Monster = Monsters[SPECTRE];
       break;
     case 11:
-      *Arena_Monster = Monsters[ML6+4];
+      *Arena_Monster = Monsters[BANDERSNATCH];
       break;
     case 12:
-      *Arena_Monster = Monsters[ML6+5];
+      *Arena_Monster = Monsters[LICHE];
       break;
     case 13: 
-      *Arena_Monster = Monsters[ML8+2];
+      *Arena_Monster = Monsters[AUTO_MAJOR];
       break;
     case 14:
-      *Arena_Monster = Monsters[ML8+4];
+      *Arena_Monster = Monsters[JABBERWOCK];
       break;
     case 15:
-      *Arena_Monster = Monsters[ML9+0];
+      *Arena_Monster = Monsters[JOTUN];
       break;
     default:
       if ((Player.rank[ARENA] < 5) && (Player.rank[ARENA] > 0)) {
 	strcpy(Str1,Champion);
 	strcat(Str1,", the arena champion");
-	*Arena_Monster = Monsters[ML0+8];
+	*Arena_Monster = Monsters[HISCORE_NPC];
 	name = Arena_Monster->monstring = salloc(Str1);
 	strcpy(Str2,"The corpse of ");
 	strcat(Str2,Str1);
@@ -425,9 +425,11 @@ void l_arena()
       }
       else {
 	do 
-	  *Arena_Monster = Monsters[random_range(ML9-ML0)+ML0];
-	while ((Arena_Monster->uniqueness != COMMON) || 
-	       (Arena_Monster->dmg == 0));
+	  i = random_range(ML9 - ML0) + ML0;
+	while (i == NPC || i == HISCORE_NPC || i == ZERO_NPC ||
+	       (Monsters[i].uniqueness != COMMON) || 
+	       (Monsters[i].dmg == 0));
+	*Arena_Monster = Monsters[i];
       }
       break;
     }
@@ -461,12 +463,20 @@ void l_arena()
      * However, not freeing them is causing a couple of tiny memory leaks.
      * This should be fixed, probably by modifying the object destruction
      * procedures to account for this case.  I'm not really concerned. */
-#if 0
+    /* David Given has proposed a nicer solution, but it still causes a
+     * memory leak.  Obviously, we need a special field just for names
+     * in the monster struct.  Yadda yadda -- I'll mmark this with a 
+     * HACK!, and comme back to it later. */
     free(name);		/* hey - why waste space? */
-    free(corpse);
+    /* can not free the corpse string... it is referenced in the */
+    /* corpse string of the corpse object.  */
+    /* Unfortunately, this will cause a memory leak, but I don't see */
+    /* any way to avoid it.  This fixes the munged arena corpse names */
+    /* problem. -DAG */
+    /* free(corpse); */
+
     if (melee)
       free(melee);
-#endif
     if (! Arena_Victory) {
       print1("The crowd boos your craven behavior!!!");
       if (Player.rank[ARENA] > 0) {

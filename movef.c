@@ -196,7 +196,7 @@ int movef;
     }
 }
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 /* ****Moved here from another file**** */
 /* if signp is true, always print message, otherwise do so only sometimes */
 void sign_print(x,y,signp)

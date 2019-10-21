@@ -1,0 +1,38 @@
+Don't forget to read the file COMPILE.ALL as well as this one.
+
+If you're only interested in playing the game, an IBM executable-only
+version is available for anonymous ftp from monu1.cc.monash.edu.au
+[130.194.1.101] in /pub/omega
+
+This executable was compiled with djgpp.  As such, omega should compile
+pretty much "out of the box" under djgpp - there's even a makefile for djgpp
+in the src directory, makefile.dj.
+
+If you don't use that makefile, the one thing you should do is #define
+DJGPP somewhere, either with -DDJGPP as a command line option to gcc,
+or in defs.h.
+
+The only other strangeness is the way I got colour - by hacking the curses
+library that is available with djgpp (aecur102.zip).  This was probably a
+Bad Thing to do, but it simplified things greatly.  Below is the patch from
+the original to the modified version - you can simply pipe this file through
+'patch' (which will ignore all this stuff at the top) or patch a version of
+curses manually, referring to the patch below.  Basically, a function
+is being added to the end of the file 'curses.c' - the plus signs against
+the left margin below indicate which lines have been added.
+
+*** contrib/curses/src/curses.c	Tue Nov  5 05:56:52 1991
+--- curses.c	Thu Feb 10 22:49:28 1994
+***************
+*** 278,280 ****
+--- 278,287 ----
+      }
+      return OK;
+  }
++ 
++ wattrset(win, attrib)
++ WINDOW *win;
++ int attrib;
++ {
++     win->attrib = attrib;
++ }

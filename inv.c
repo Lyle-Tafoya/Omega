@@ -2,7 +2,7 @@
 /* inv.c */
 /* functions having to do with player item inventory */
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 # include "curses.h"
 #else
 # ifdef AMIGA
@@ -19,6 +19,7 @@ void drop_money()
 {
   pob money;
 
+  /* WDT HACK!  Let me guess -- this is yet another memory leak, right? */
   money = detach_money();
   if (money != NULL) {
     if (Current_Environment == E_CITY) {
@@ -106,22 +107,25 @@ int x,y;
  * any letters already used for commands.  Yes, there are more here
  * than could be needed, but I don't want to short myself for later.
  */
-char inventory_keymap[] = "-abcfghimnoqruvwyz";
+signed char inventory_keymap[] = "-abcfghimnoqruvwyz";
 int key_to_index(key)
-char key;
+signed char key;
 {
   int i;
+  assert( MAXITEMS>0 ); /* must have room for an item, or this loop will
+                         * die! */
+  
   for (i=0; i<MAXITEMS; i++) {
     if (key == inventory_keymap[i])
-      return i;
+      return (signed char)i;
   }
   return O_UP_IN_AIR;
 }
 
-char index_to_key(index)
-int index;
+signed char index_to_key(index)
+signed int index;
 {
-  if ( index >= 0 && index < MAXITEMS )
+  if ( index < MAXITEMS )
     return inventory_keymap[index];
   else return '-';
 }
@@ -375,7 +379,7 @@ struct monster *m;
 struct object *o;
 {
   /* special case -- give gem to LawBringer */
-  if ((m->id == ML10+2) && (o->id == ARTIFACTID+21)) {
+  if ((m->id == LAWBRINGER) && (o->id == ARTIFACTID+21)) {
     clearmsg();
     print1("The LawBringer accepts the gem reverently.");
     print2("He raises it above his head, where it bursts into lambent flame!");
@@ -542,7 +546,7 @@ listed in the possibilities.
 that type of item is acceptable or is listed */
 
 int getitem(itype)
-short itype;
+Symbol itype;
 {
   char invstr[64];
   char key;
@@ -593,7 +597,7 @@ short itype;
 	  ok = FALSE;
 	}
       }
-      else if (key_to_index(key)==-1 || (! strmem(key,invstr)))
+      else if ( !strmem(key,invstr) || key_to_index(key)==(signed char)-1 )
 	print3("Nope! Try again [? for inventory, ESCAPE to quit]:");
       else ok = TRUE;
     }
@@ -616,7 +620,7 @@ char slotchar;
 }
 
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* this takes the numerical index directly for the same effect as badobject*/
 int baditem(slotnum)
 int slotnum;
@@ -652,6 +656,16 @@ struct object *o;
   }
 }
 
+/* inserts the item at the start of the pack array */
+void push_pack(o)
+pob o;
+{
+  int i;
+  for (i = Player.packptr; i > 0; i--)
+    Player.pack[i] = Player.pack[i-1];
+  Player.pack[0] = o;
+  Player.packptr++;
+}
 
 /* Adds item to pack list */
 void add_to_pack(o)
@@ -662,11 +676,10 @@ pob o;
     drop_at(Player.x,Player.y,o);
   }
   else {
-    Player.pack[Player.packptr++] = o;
+    push_pack(o);
     print3("Putting item in pack.");
   }
 }
-
 
 /* Adds item to pack list, maybe going into inventory mode if pack is full */
 int get_to_pack(o)
@@ -678,7 +691,7 @@ pob o;
     return(FALSE);
   }
   else {
-    Player.pack[Player.packptr++] = o;
+    push_pack(o);
     print3("Putting item in pack.");
     return(TRUE);
   }
@@ -783,7 +796,7 @@ int slot;
     slot = O_UP_IN_AIR;
   if (Player.possessions[slot] != NULL) 
     print3("slot is not empty!");
-  else if (Player.packptr == 0)
+  else if (Player.packptr < 1)
     print3("Pack is empty!");
   else {
     pack_item = 0;
@@ -827,7 +840,8 @@ int slot;
       use_pack_item(response - 'a',slot);
     }
   }
-  display_possessions();
+  if ( optionp(TOPINV) )
+    display_possessions();
   return slot;
 }
 
@@ -880,7 +894,7 @@ int slot,display;
 }
 
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* General interface to inventory */
 void item_inventory(topline)
 int topline;
@@ -916,7 +930,7 @@ void inventory_control()
   int slot = 0,done=FALSE;
   int response;
   char letter;
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
   int simple = 0;
 #endif
   clearmsg3();
@@ -1168,11 +1182,13 @@ void top_inventory_control()
       break;
     case 'e':
       slot = get_inventory_slot();
+      if ( slot == O_UP_IN_AIR ) break;
       switch_to_slot(slot);
       Command_Duration+=2;
       break;
     case 'x':
       slot = get_inventory_slot();
+      if ( slot == O_UP_IN_AIR ) break;
       switch_to_slot(slot);
       Command_Duration+=2;
       done = (Player.possessions[O_UP_IN_AIR] == NULL);
@@ -1219,17 +1235,18 @@ void top_inventory_control()
 
 
 
-
-
+/* Let the user select a slot. */
 int get_inventory_slot()
 {
-  char response;
+  signed char response;
   do {
     clearmsg1();
     print1("Which inventory slot ['-'='up-in-air' slot]?");
-    response = (char) mcigetc(); 
-    response = key_to_index(response);
-  } while (response != -1);
+    response = (signed char)mcigetc();
+    if ( response == ESCAPE || response == '-' )
+      return O_UP_IN_AIR;
+    else response = key_to_index(response);
+  } while (response != O_UP_IN_AIR);
   return response;
 }
 
@@ -1679,7 +1696,7 @@ pob item;
   if (Player.packptr < MAXPACK) {
     print3("Putting extra items back in pack.");
     morewait();
-    Player.pack[Player.packptr++] = extra;
+    push_pack(extra);
   }
   else if (Player.possessions[O_UP_IN_AIR] == NULL) {
     print3("Extra copies of item are 'up in the air'");

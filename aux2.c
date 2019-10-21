@@ -452,6 +452,8 @@ void tenminute_status_check()
 void gain_level()
 {
   int gained=FALSE;
+  int hp_gain; /* FIXED! 12/30/98 */
+  
   if (gamestatusp(SUPPRESS_PRINTING))
     return;
   while (expval(Player.level+1) <= Player.xp) {
@@ -463,8 +465,17 @@ void gain_level()
     print2("You are now ");
     nprint2(getarticle(levelname(Player.level)));
     nprint2(levelname(Player.level));
-    Player.maxhp += random_range(Player.con)+1;
-    Player.mana = Player.maxmana = calcmana();
+    hp_gain = random_range(Player.con)+1; /* start fix 12/30/98 */
+    if (Player.hp < Player.maxhp )
+      Player.hp += hp_gain*Player.hp/Player.maxhp;
+    else if (Player.hp < Player.maxhp + hp_gain)
+      Player.hp = Player.maxhp + hp_gain;
+    /* else leave current hp alone */
+    Player.maxhp += hp_gain;
+    Player.maxmana = calcmana();
+    /* If the character was given a bonus, let him keep it.  Otherwise
+     * recharge him. */
+    Player.mana = max(Player.mana, Player.maxmana); /* end fix 12/30/98 */
     morewait();
   }
   if (gained) clearmsg();
@@ -755,7 +766,7 @@ int on;
 
 
 void enter_site(site)
-short site;
+Symbol site;
 {
   switch(site) {
   case CITY: change_environment(E_CITY); break;

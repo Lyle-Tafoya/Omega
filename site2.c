@@ -89,7 +89,11 @@ void l_condo()
 	  ol = ol->next;
 	}
       }
-      else if (response == 'c') weeksleep = TRUE;
+      else if (response == 'c') {
+	  weeksleep = TRUE;
+	  print1("You take a week off to rest...");
+	  morewait();
+      }
       else if (response == 'd') {
 	clearmsg();
 	print1("You sure you want to retire, now? [yn] ");
@@ -179,6 +183,7 @@ void cureforpay()
     Player.cash -= 250;
     Player.status[DISEASED] = 0;
     print2("Quarantine lifted....");
+    showflags();
   }
 }  
 
@@ -189,18 +194,18 @@ void pacify_guards()
   pml ml;
 
   for(ml=Level->mlist;ml!=NULL;ml=ml->next)
-    if ((ml->m->id == ML0+3) || /*guard*/
-	((ml->m->id == ML0+8) && (ml->m->aux2 == 15))) {/* justiciar */
+    if ((ml->m->id == GUARD) || /*guard*/
+	((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) {/* justiciar */
       m_status_reset(ml->m,HOSTILE);
       ml->m->specialf = M_NO_OP;
-      if (ml->m->id == ML0+3 && ml->m->hp > 0 && ml->m->aux1 > 0) {
+      if (ml->m->id == GUARD && ml->m->hp > 0 && ml->m->aux1 > 0) {
 	if (Level->site[ml->m->x][ml->m->y].creature == ml->m)
 	  Level->site[ml->m->x][ml->m->y].creature = NULL;
 	ml->m->x = ml->m->aux1;
 	ml->m->y = ml->m->aux2;
 	Level->site[ml->m->x][ml->m->y].creature = ml->m;
       }
-      else if (ml->m->id == ML0+8 && ml->m->hp > 0 &&
+      else if (ml->m->id == HISCORE_NPC && ml->m->hp > 0 &&
 	  Current_Environment == E_CITY) {
 	if (Level->site[ml->m->x][ml->m->y].creature == ml->m)
 	  Level->site[ml->m->x][ml->m->y].creature = NULL;
@@ -628,7 +633,7 @@ void l_brothel()
 
 
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* if signp is true, always print message, otherwise do so only sometimes */
 void sign_print(x,y,signp)
 int x,y,signp;
@@ -788,6 +793,12 @@ int x,y,signp;
 
 void l_countryside()
 {
+  if (optionp(CONFIRM)) {
+    clearmsg();
+    print1("Do you really want to return to the countryside? ");
+    if (ynq1() != 'y')
+      return;
+  }
   change_environment(E_COUNTRYSIDE);
 }
 
@@ -922,9 +933,7 @@ void l_safe()
     if (random_range(2) == 1) {
       print1("You find:");
       do {
-	newitem = NULL;
-	while (newitem == NULL)
-	  newitem = create_object(difficulty());
+	newitem = create_object(difficulty());
 	print2(itemid(newitem));
 	morewait();
 	gain_item(newitem);

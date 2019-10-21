@@ -144,14 +144,14 @@ int populate;
     site = getc(fd)^site;
   }
   fclose(fd);
-  initrand(-2, 0);
+  initrand(E_RESTORE, 0);
 }
 
 void make_guard(i,j)
 int i,j;
 {
   pml tml = ((pml) (checkmalloc(sizeof(mltype))));
-  tml->m = (Level->site[i][j].creature = make_creature(ML0+3));
+  tml->m = (Level->site[i][j].creature = make_creature(GUARD));
   tml->m->x = i;
   tml->m->y = j;
   tml->next = Level->mlist;
@@ -200,7 +200,7 @@ void make_merchant(i,j)
 int i,j;
 {
   pml tml = ((pml) (checkmalloc(sizeof(mltype))));
-  tml->m = (Level->site[i][j].creature = make_creature(ML0+6));
+  tml->m = (Level->site[i][j].creature = make_creature(MERCHANT));
   tml->m->x = i;
   tml->m->y = j;
   tml->next = Level->mlist;
@@ -233,7 +233,8 @@ int x,y,setup;
     lset(x+1,y,STOPS);
     lset(x-1,y,STOPS);
     lset(x,y-1,STOPS);
-    
+    lset(x,y,STOPS);
+
     
     switch(permutation[next++]) {
     case 0:

@@ -4,7 +4,6 @@
 #include "glob.h"
 
 /* make a random new object, returning pointer */
-/* may return NULL. */
 pob create_object(itemlevel)
 int itemlevel;
 {
@@ -35,7 +34,6 @@ int itemlevel;
     if (!ok)
     {
 	free((char *) new);
-	return NULL;
     }
   }
   if (new->uniqueness == UNIQUE_UNMADE) 
@@ -73,9 +71,13 @@ struct monster *m;
   new->known = 2;
   new->objstr = m->corpsestr;
   new->truename = new->cursestr = new->objstr;
+/* DG I_CANNIBAL not implemented... fall through to code in I_CORPSE */
+#if 0 /* WDT HACK, of course -- we need to implement I_CANNIBAL. */
   if ((m->monchar&0xff) == '@')
     new->usef = I_CANNIBAL;
-  else if (m_statusp(m,EDIBLE)) {
+  else 
+#endif
+  if (m_statusp(m,EDIBLE)) {
     new->usef = I_FOOD;
     new->aux = 6;
   }
@@ -83,49 +85,55 @@ struct monster *m;
     new->usef = I_POISON_FOOD;
   /* Special corpse-eating effects */
   else switch(m->id) {
-  case ML1+1: /*tse tse fly */
-  case ML4+9: /*torpor beast */
+  case TSETSE: /*tse tse fly */
+  case TORPOR: /*torpor beast */
     new->usef = I_SLEEP_SELF;
     break;
-  case ML2+5:
+  case NASTY:
     new->usef = I_INVISIBLE;
     break;
-  case ML1+5: /* blipper */
+  case BLIPPER:
     new->usef = I_TELEPORT;
     break;
-  case ML2+3: /* floating eye -- it's traditional.... */
+  case EYE: /* floating eye -- it's traditional.... */
     new->usef = I_CLAIRVOYANCE;
     break;
-  case ML4+11: /*astral fuzzy */
+  case FUZZY: /*astral fuzzy */
     new->usef = I_DISPLACE;
     break;
-  case ML4+12: /*s o law */
+  case SERV_LAW:
     new->usef = I_CHAOS;
     break;
-  case ML4+13: /*s o chaos */
+  case SERV_CHAOS:
     new->usef = I_LAW;
     break;
-  case ML5+9: /* astral vampire */
+  case ASTRAL_VAMP: /* astral vampire */
     new->usef = I_ENCHANT;
     break;
-  case ML5+11: /* manaburst */
+  case MANABURST:
     new->usef = I_SPELLS;
     break;
-  case ML6+9: /* rakshasa */
+  case RAKSHASA:
     new->usef = I_TRUESIGHT;
     break;
-  case ML7+0: /* behemoth */
+/* DG fall through to code in I_CORPSE and special case there */
+#if 0 /* WDT HACK? */
+  case BEHEMOTH:
     new->usef = I_HEAL;
     break;
-  case ML7+2: /* unicorn */
+  case UNICORN:
     new->usef = I_NEUTRALIZE_POISON;
     break;
-  case ML8+10: /*coma beast */
+#endif
+  case COMA: /*coma beast */
     new->usef = I_ALERT;
     break;
+/* DG I_INEDIBLE not implemented... fall through to code in I_CORPSE */
+#if 0 /* WDT HACK: yawn. */
   default:
     new->usef = I_INEDIBLE; 
     break;
+#endif
   }
 }
 
@@ -619,8 +627,8 @@ struct object *o;
     case I_POW: i_pow(o); break;
     case I_IMMUNE: i_immune(o); break;
     case I_POISON_FOOD: i_poison_food(o); break;
-    case I_PEPPER_FOOD: i_pepper_food(o); break;
     case I_CORPSE: i_corpse(o); break;
+    case I_PEPPER_FOOD: i_pepper_food(o); break;
 
     /* boots functions */
     case I_PERM_SPEED: i_perm_speed(o); break;
@@ -690,6 +698,13 @@ struct object *o;
     /* shield functions */
     case I_NORMAL_SHIELD: i_normal_shield(o); break;
     case I_PERM_DEFLECT: i_perm_deflect(o); break;
+#ifdef DEBUG /* WDT: good idea, DG.  I'll be using this often, I predict! */
+    /* looking for objects without, or with unimplemented, functions */
+    default:
+       fprintf(DG_debug_log, "tried to use a %s with o->usef %d\n",
+               itemid(o), o->usef); 
+       break;
+#endif
   }
 }
 

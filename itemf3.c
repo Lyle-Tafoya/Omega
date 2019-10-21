@@ -26,15 +26,23 @@ pob o;
 {
   if (HiMagicUse == Date) 
     print1("The Sceptre makes a sort of dull 'thut' noise.");
+  else if (Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL)
+  {
+    HiMagicUse = Date; /* WDT: this looks like it's a good place to use
+                        * the batteries. */
+    print1("The Sceptre warps strangely for a second, and then subsides.");
+    morewait();
+    print2("You smell ozone."); /* WDT: explain the battery use. */
+  }
   else {
     HiMagicUse = Date;
     print1("With a shriek of tearing aether, a magic portal appears!");
     print2("Step through? [yn] ");
     if (ynq()=='y') change_environment(E_COURT);
+    print1("The sceptre seems to subside. You hear a high whine, as of");
+    print2("capacitors beginning to recharge.");
+    morewait();
   }
-  print1("The sceptre seems to subside. You hear a high whine, as of");
-  print2("capacitors beginning to recharge.");
-  morewait();
 }
 
 

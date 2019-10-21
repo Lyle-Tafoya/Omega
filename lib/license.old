@@ -1,0 +1,69 @@
+omega
+=====
+
+General Public License:
+
+omega is copyright (C) 1987,1988,1989 by Laurence R. Brothers
+
+All rights are reserved, save the following permissions:
+
+Free copying: Anyone may make a copy of omega, and distribute the
+copy, so long as this license remains accessible (via the 'P'
+command). Distribution must be free of charge (except, possibly, for
+the physical medium).
+
+Modification: Modification to omega is freely permitted so long as the
+modifications are not distributed without my consent (i.e., you can
+hack freely). Any modifications are considered "works for hire" and
+ownership of omega will be retained by me. I specifically note that no
+compensation in any form will be rendered to those who make such
+modifications.
+
+Warranty: No warranty is made for omega's operation. Any damages
+incurred in the use of omega or in its implementation are solely the
+responsibility of the end-user.
+
+Compensation: I waive all rights to compensation for the use of omega
+by licensees.  However, those wishing to send money, international
+postal reply coupons, interesting postcards, marbles, grimoires, etc.
+will find their contributions freely accepted.
+
+Coverage: Anyone who compiles, runs, copies, or in any other way
+manipulates any copy of omega's code, programs, or files shall be
+considered to be bound by this license.
+
+Suggestions, fan mail, and money may be sent to the
+author at:
+
+        Laurence R. Brothers
+        Bell Communications Research
+        RRC 1H-225
+        444 Hoes Lane
+        Piscataway, NJ 08854
+        USA
+
+All the above save money may also be sent to:
+
+        brothers@paul.rutgers.edu
+
+Bug reports and suggestions can also be sent to the current maintainer
+of Omega.  Currently, this is
+	omega@alcyone.darkside.com (Erik Max Francis)
+Since Laurence has moved on and indicates that he is no longer interested
+in maintaining the game, you have a much greater chance of action if you
+email the maintainer.  Tom O. Breton (tob@world.std.com) is currently
+working on tehomega, a complete re-write of omega - finger his account to
+see how the project is progressing.
+
+PC version comments can be sent to Nathan Glasser:
+
+        nathan@brokaw.lcs.mit.edu
+
+
+The latest version of omega is available for anonymous ftp from
+monu1.cc.monash.edu.au [130.194.1.101] in /pub/omega.
+
+The earlier versions of omega used to be found in the directory
+~ftp/pub/brothers/newesttars on paul.rutgers.edu [128.6.5.60]. You
+can also try john, george, or ringo, if you have trouble with
+paul.

@@ -88,7 +88,8 @@ void indoors_random_event()
       break;
     case 7:
       print3("You catch your second wind....");
-      Player.hp = ++Player.maxhp;
+      Player.maxhp++;
+      Player.hp = max(Player.hp, Player.maxhp);
       Player.mana = max(Player.mana, calcmana());
       morewait();
       break;
@@ -105,8 +106,8 @@ void indoors_random_event()
       print3("You trip over something hidden in a shadow...");
       morewait();
       ol = ((pol) checkmalloc(sizeof(oltype)));
-      do ol->thing = create_object(difficulty());
-      while (!ol->thing);
+      ol->thing = create_object(difficulty()); /* FIXED!  12/30/98 */
+      assert(ol->thing); /* WDT I want to make sure... */
       ol->next = Level->site[Player.x][Player.y].things;
       Level->site[Player.x][Player.y].things = ol;
       pickup();
@@ -214,15 +215,18 @@ void outdoors_random_event()
       morewait();
       mprint("You feel average...");
       morewait();
+      toggle_item_use(TRUE); /* FIXED! 12/30/98 */
       Player.str = Player.maxstr = Player.con = Player.maxcon =
 	Player.dex = Player.maxdex = Player.agi = Player.maxagi =
 	  Player.iq = Player.maxiq = Player.pow = Player.maxpow =
 	    ((Player.maxstr+Player.maxcon+Player.maxdex+Player.maxagi+
 	      Player.maxiq+Player.maxpow+12)/6);
+      toggle_item_use(FALSE); /* FIXED! 12/30/98 */
     }
     else if (num < 30) {
       mprint("Your entire body glows with an eerie flickering light.");
       morewait();
+      toggle_item_use(TRUE); /* FIXED! 12/30/98 */
       for(i=1;i<MAXITEMS;i++)
 	if (Player.possessions[i] != NULL) {
 	  Player.possessions[i]->plus++;
@@ -230,6 +234,7 @@ void outdoors_random_event()
 	    Player.possessions[i]->charge+=10;
 	  Player.possessions[i]->blessing+=10;
 	}
+      toggle_item_use(FALSE); /* FIXED! 12/30/98 */
       cleanse(1);
       mprint("You feel filled with energy!");
       morewait();
@@ -407,9 +412,6 @@ int hostile_magic;
   }
   else return(FALSE);
 }
-
-
-
 
 
 void terrain_check(takestime)
@@ -725,7 +727,7 @@ void countrysearch()
 }
 
 char *countryid(terrain)
-short terrain;
+Symbol terrain;
 {
   switch(terrain&0xff) {
   case MOUNTAINS&0xff:
@@ -1077,8 +1079,8 @@ void alert_guards()
   pml ml;
   int suppress = 0;
   for(ml=Level->mlist;ml!=NULL;ml=ml->next)
-    if (((ml->m->id == ML0+3) ||  /*guard*/
-	 ((ml->m->id == ML0+8) && (ml->m->aux2 == 15))) && /*justiciar*/
+    if (((ml->m->id == GUARD) ||
+	 ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) && /*justiciar*/
 	(ml->m->hp > 0)) {
       foundguard=TRUE;
       m_status_set(ml->m,AWAKE);
@@ -1155,7 +1157,7 @@ void destroy_order()
 	  Level->site[i][j].creature->hp = -1;
 	  Level->site[i][j].creature = NULL;
 	}
-	make_site_monster(i,j,ML2+6);
+	make_site_monster(i,j,GHOST);
 	Level->site[i][j].creature->monstring = "ghost of a Paladin";
 	m_status_set(Level->site[i][j].creature,HOSTILE);
       }

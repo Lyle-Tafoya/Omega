@@ -251,9 +251,11 @@ struct monster *m;
   }
   else if (m->meleef != M_MELEE_SPIRIT) {
     if (m->level > random_range(10)) {
-      Player.hp = min(Player.maxhp,Player.hp+m->hp);
+      if( Player.hp < Player.maxhp )
+        Player.hp = min(Player.maxhp,Player.hp+m->hp);
       Player.str++;
-      Player.pow = min(Player.maxpow,Player.pow+m->level);
+      if( Player.pow < Player.maxpow )
+        Player.pow = min(Player.maxpow,Player.pow+m->level);
       m_death(m);
       mprint("You feel a surge of raw power from Demonblade!");
     }

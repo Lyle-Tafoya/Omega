@@ -1,0 +1,48 @@
+omega wizard's guide.
+
+OMEGA MAINTENANCE
+=================
+
+There should be little need for the wizard to actively maintain the
+game. But.....
+
+After years of play, the file omega.log may get unwieldy and overlarge.
+This file can simply be truncated as follows. Log records are now
+one line at a time, so just delete as many lines as you like, making
+sure there are no blank lines, and that the file ends on an end of
+line.
+
+You can even remove omega.log completely as long as you replace it
+with a null file of the same name. If you opt to make omega not setuid,
+omega.log must be publically writeable.
+
+The file omega.hi is a high score list. This file can't be truncated
+or removed, but you can edit it as you feel to be appropriate. If you
+look in file.c you can figure out what those numbers in the
+file actually mean; usually one is NPC level and one is NPC behavior,
+but some entries have another entry such as alignment. The
+distribution comes with a "safety" version of the original high
+score file; if anything happens to the original you can just
+copy omegahi.bak to omega.hi.  Again, people running omega not setuid
+must make sure omega.hi has public write access.
+
+If you don't run omega suid, anyone can mung the log and hiscore files
+simply by writing to them. In my opinion, people who hack score files
+can very easily be taken care of by deleting their accounts; if that
+doesn't work, shoot them.
+
+WIZARD MODE
+===========
+
+If you are the WIZARD as defined in defs.h, you can enter wizard mode
+by hitting ^g. If you ever set wizard mode, your high scores and npc
+will not be saved.
+
+In wizard mode, ^x gives you a wish. ^w draws the current level, ^k
+allows you to set an arbitrary game status bit, meanings of the bits
+are given in defs.h. The possible wishes are listed in scroll3.txt,
+and the code for them is in effect1.c  I've added some additional
+utilities to the Wizard mode - ^w in the city also marks all locations
+as visited, so you can Move to them, and wishing for Location allows
+you to go to an arbitrary environment number - not very useful except
+for debugging, really...

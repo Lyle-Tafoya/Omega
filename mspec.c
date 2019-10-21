@@ -71,7 +71,7 @@ struct monster *m;
   int mid;
 
   if (random_range(2)) {
-    if ((m->id != ML4+6) && /*succubi don't give fear */
+    if ((m->id != INCUBUS) && /*succubi don't give fear */
 	los_p(m->x,m->y,Player.x,Player.y) &&
 	(random_range(30) > Player.level+10) &&
 	(Player.status[AFRAID] == 0)) {
@@ -85,13 +85,13 @@ struct monster *m;
     mprint("The demon uses its waning lifeforce to summon help!");
     m->hp = 1;
     switch(m->level) {
-    case 3: mid = ML2+1; break; /* night gaunt */
+    case 3: mid = NIGHT_GAUNT; break;
     case 4:
-    case 5: mid = ML3+2; break; /* lesser frost demon */
-    case 6: mid = ML5+4; break; /* frost demon */
-    case 7: mid = ML5+12; break; /* outer circle demon */
-    case 8: mid = ML6+10; break; /* demon serpent */
-    case 9: mid = ML7+14; break; /* inner circle demon */
+    case 5: mid = L_FDEMON; break; /* lesser frost demon */
+    case 6: mid = FROST_DEMON; break;
+    case 7: mid = OUTER_DEMON; break; /* outer circle demon */
+    case 8: mid = DEMON_SERP; break; /* demon serpent */
+    case 9: mid = INNER_DEMON; break; /* inner circle demon */
     }
     summon(-1,mid);
     summon(-1,mid);
@@ -157,12 +157,24 @@ struct monster *m;
       cure(-1);
       break;
     case 4:
-      lball(m->x,m->y,Player.x,Player.y,20);
+      /* WDT: I'd like to make this (and "case 5" below) dependant on
+       * the monster's IQ in some way -- dumb but powerful monsters
+       * deserve what they get :).  No rush. */
+      if (m_immunityp(m, ELECTRICITY) ||
+	  distance(m->x,m->y,Player.x,Player.y) > 2)
+	lball(m->x,m->y,Player.x,Player.y,20);
+      else
+        lbolt(m->x,m->y,Player.x,Player.y,m->hit,20);
       break;
     case 5:
-      enchant(-1);
+      if (m_immunityp(m, COLD) ||
+	  distance(m->x,m->y,Player.x,Player.y) > 2)
+	snowball(m->x,m->y,Player.x,Player.y,30);
+      else
+        icebolt(m->x,m->y,Player.x,Player.y,m->hit,30);
+      break;
     case 6:
-      snowball(m->x,m->y,Player.x,Player.y,30);
+      enchant(-1);
       break;
     case 7:
       bless(0-m->level);
@@ -398,9 +410,13 @@ struct monster *m;
   int mid;
   if (m_statusp(m,HOSTILE) || (Phase == 6)) {
     do mid = random_range(ML9-NML_0)+ML1;
-    while ((Monsters[mid].uniqueness != COMMON) ||
+    /* log npc, 0th level npc, high score npc or were-creature */
+    while (mid == NPC || mid == ZERO_NPC ||
+	   mid == HISCORE_NPC || mid == WEREHUMAN ||
+	   (Monsters[mid].uniqueness != COMMON) ||
 	   (! m_statusp(&(Monsters[mid]),MOBILE)) ||
-	   (! m_statusp(&(Monsters[mid]),HOSTILE)));
+	   (! m_statusp(&(Monsters[mid]),HOSTILE))
+	   );
     m->id = Monsters[mid].id;
     m->hp += Monsters[mid].hp;
     m->status |= Monsters[mid].status;
@@ -432,9 +448,9 @@ struct monster *m;
 void m_sp_servant(m)
 struct monster *m;
 {
-  if ((m->id == ML4+12) && (Player.alignment < 0))
+  if ((m->id == SERV_LAW) && (Player.alignment < 0))
     m_status_set(m,HOSTILE);
-  else if ((m->id == ML4+13) && (Player.alignment > 0))
+  else if ((m->id == SERV_CHAOS) && (Player.alignment > 0))
     m_status_set(m,HOSTILE);
 }
 
@@ -489,10 +505,10 @@ struct monster *m;
   if (m_statusp(m,HOSTILE)) {
     mprint("The angel summons a heavenly host!");
     switch(m->level) {
-    case 9: mid = ML8+11; break; /* high angel */
-    case 8: mid = ML6+11; break; /* angel */
+    case 9: mid = HIGH_ANGEL; break;
+    case 8: mid = ANGEL; break;
     default:
-    case 6: mid = ML3+4; break; /* phantom */
+    case 6: mid = PHANTOM; break;
     }
     summon(-1,mid);
     summon(-1,mid);
@@ -511,7 +527,7 @@ struct monster *m;
     if (view_los_p(m->x,m->y,Player.x,Player.y))
       mprint("The swarm expands!");
     else mprint("You hear an aggravating humming noise.");
-    summon(-1,ML4+14);
+    summon(-1,SWARM);
   }
 }
 
@@ -594,7 +610,7 @@ void m_illusion(m)
 struct monster *m;
 {
   int i = random_range(NUMMONSTERS);
-  if (i==NPC || i==HISCORE_NPC) i = m->id; /* can't imitate NPC */
+  if (i==NPC || i==HISCORE_NPC || i==ZERO_NPC) i = m->id; /* can't imitate NPC */
   if (Player.status[TRUESIGHT]) {
     m->monchar = Monsters[m->id].monchar;
     m->monstring = Monsters[m->id].monstring;
@@ -733,7 +749,7 @@ struct monster *m;
       if (ml->m->hp > 0 && ml->m->specialf == M_SP_LAIR) {
 	m_status_set(ml->m,HOSTILE);
 	fbolt(ml->m->x,ml->m->y,Player.x,Player.y,100,100);
-	if (ml->m->id == ML10+3)
+	if (ml->m->id == DRAGON_LORD)
 	  ml->m->specialf = M_SP_DRAGONLORD;
 	else
 	  ml->m->specialf = M_STRIKE_FBOLT;
@@ -748,10 +764,10 @@ struct monster *m;
   if (m_statusp(m,HOSTILE)) {
     mprint("The prime sorceror gestures and a pentacular gate opens!");
     mprint("You are surrounded by demons!");
-    summon(-1,ML9+7);
-    summon(-1,ML9+7);
-    summon(-1,ML9+7);
-    summon(-1,ML9+7);
+    summon(-1,DEMON_PRINCE);
+    summon(-1,DEMON_PRINCE);
+    summon(-1,DEMON_PRINCE);
+    summon(-1,DEMON_PRINCE);
   }
   m->specialf = M_SP_SPELL;
 }

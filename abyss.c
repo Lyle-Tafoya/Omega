@@ -2,7 +2,7 @@
 /* abyss.c */
 /* some functions to make the abyss level and run the final challenge */
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 #include <sys/types.h>
 #include <malloc.h>
 #ifdef SAVE_LEVELS

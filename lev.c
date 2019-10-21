@@ -9,11 +9,13 @@ level structure generation */
 
 /* monsters for tactical encounters */
 void make_country_monsters(terrain)
-short terrain;
+Symbol terrain;
 {
   pml tml,ml=NULL;
   static int plains[10] = 
-    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};
+    {BUNNY,BUNNY,HORNET,QUAIL,HAWK,DEER,WOLF,LION,BRIGAND,RANDOM};
+/*    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};*/
+  /* DG changed (WDT: I'd like to see a blacksnake). */
   static int forest[10] =
    {BUNNY,QUAIL,HAWK,BADGER,DEER,DEER,WOLF,BEAR,BRIGAND,RANDOM};
   static int jungle[10] =
@@ -92,74 +94,74 @@ int monstertype;
     switch(monstertype) {
     case E_CAVES:
       if (Level->depth*10+random_range(100) > 150) 
-	monsterid = ML3+7; /* Goblin Shaman*/
+	monsterid = GOBLIN_SHAMAN;
       else if (Level->depth*10+random_range(100) > 100) 
-	monsterid = ML2+9; /* Goblin Chieftain */
-      else if (random_range(100) > 50) monsterid = ML1+6; /* Goblin */
-      else monsterid = -1; /* IE, random monster */
+	monsterid = GOBLIN_CHIEF; /* Goblin Chieftain */
+      else if (random_range(100) > 50) monsterid = GOBLIN;
+      else monsterid = RANDOM; /* IE, random monster */
       break;
     case E_SEWERS:
       if (! random_range(3)) monsterid = -1;
       else switch(random_range(Level->depth+3)) {
-      case 0: monsterid = ML1+3; break; /* sewer rat */
-      case 1: monsterid = ML1+4; break; /* aggravator fungus */
-      case 2: monsterid = ML1+5; break; /* blipper rat */
-      case 3: monsterid = ML2+1; break; /* night gaunt */
-      case 4: monsterid = ML2+5; break; /* transparent nasty */
-      case 5: monsterid = ML2+8; break; /* murk fungus */
-      case 6: monsterid = ML3+1; break; /* catoblepas */
-      case 7: monsterid = ML3+3; break; /* acid cloud */
-      case 8: monsterid = ML4+3; break; /* denebian slime devil */
-      case 9: monsterid = ML4+8; break; /* giant crocodile */
-      case 10: monsterid = ML5+1; break; /* tesla monster */
-      case 11: monsterid = ML5+7; break; /* shadow spirit */
-      case 12: monsterid = ML5+8; break; /* bogthing */
-      case 13: monsterid = ML6+2; break; /* water elemental */
-      case 14: monsterid = ML6+6; break; /* triton */
-      case 15: monsterid = ML7+3; break; /* ROUS */
-      default: monsterid = -1; break;
+      case 0: monsterid = SEWER_RAT; break;
+      case 1: monsterid = AGGRAVATOR; break; /* aggravator fungus */
+      case 2: monsterid = BLIPPER; break; /* blipper rat */
+      case 3: monsterid = NIGHT_GAUNT; break;
+      case 4: monsterid = NASTY; break; /* transparent nasty */
+      case 5: monsterid = MURK; break; /* murk fungus */
+      case 6: monsterid = CATOBLEPAS; break;
+      case 7: monsterid = ACID_CLOUD; break;
+      case 8: monsterid = DENEBIAN; break; /* denebian slime devil */
+      case 9: monsterid = CROC; break; /* giant crocodile */
+      case 10: monsterid = TESLA; break; /* tesla monster */
+      case 11: monsterid = SHADOW; break; /* shadow spirit */
+      case 12: monsterid = BOGTHING; break; /* bogthing */
+      case 13: monsterid = WATER_ELEM; break; /* water elemental */
+      case 14: monsterid = TRITON; break;
+      case 15: monsterid = ROUS; break;
+      default: monsterid = RANDOM; break; /* whatever seems good */
       }
       break;
     case E_ASTRAL:
       if (random_range(2)) /* random astral creatures */
 	switch(random_range(12)) {
-	case 0: monsterid = ML3+14; break; /* thought form */
-	case 1: monsterid = ML4+11; break; /* astral fuzzy */
-	case 2: monsterid = ML4+15; break; /* ban sidhe */
-	case 3: monsterid = ML4+16; break; /* astral grue */
-	case 4: monsterid = ML5+7; break; /* shadow spirit */
-	case 5: monsterid = ML5+9; break; /* astral vampire */
-	case 6: monsterid = ML5+11; break; /* manaburst */
-	case 7: monsterid = ML6+9; break; /* rakshasa */
-	case 8: monsterid = ML7+4; break; /* illusory fiend */
-	case 9: monsterid = ML7+9; break; /* mirror master */
-	case 10: monsterid = ML7+10; break; /* elder etheric grue */
-	case 11: monsterid = ML8+8; break; /* shadow slayer */
+	case 0: monsterid = THOUGHTFORM; break;
+	case 1: monsterid = FUZZY; break; /* astral fuzzy */
+	case 2: monsterid = BAN_SIDHE; break;
+	case 3: monsterid = GRUE; break; /* astral grue */
+	case 4: monsterid = SHADOW; break; /* shadow spirit */
+	case 5: monsterid = ASTRAL_VAMP; break; /* astral vampire */
+	case 6: monsterid = MANABURST; break;
+	case 7: monsterid = RAKSHASA; break;
+	case 8: monsterid = ILL_FIEND; break; /* illusory fiend */
+	case 9: monsterid = MIRRORMAST; break; /* mirror master */
+	case 10: monsterid = ELDER_GRUE; break; /* elder etheric grue */
+	case 11: monsterid = SHADOW_SLAY; break; /* shadow slayer */
 	}
       else if (random_range(2) && (Level->depth == 1)) /* plane of earth */
-	monsterid = ML6+3; /* earth elemental */
+	monsterid = EARTH_ELEM; /* earth elemental */
       else if (random_range(2) && (Level->depth == 2)) /* plane of air */
-	monsterid = ML6+1;  /* air elemental */
+	monsterid = AIR_ELEM;  /* air elemental */
       else if (random_range(2) && (Level->depth == 3)) /* plane of water */
-	monsterid = ML6+2;  /* water elemental */
+	monsterid = WATER_ELEM;  /* water elemental */
       else if (random_range(2) && (Level->depth == 4)) /* plane of fire */
-	monsterid = ML6+0;  /* fire elemental */
+	monsterid = FIRE_ELEM;  /* fire elemental */
       else if (random_range(2) && (Level->depth == 5)) /* deep astral */
 	switch (random_range(12)) {
-	case 0:monsterid = ML2+1; break; /* night gaunt */
-	case 1:monsterid = ML4+12; break; /* servant of law */
-	case 2:monsterid = ML4+13; break; /* servant of chaos */
-	case 3:monsterid = ML5+4; break; /* lesser frost demon */
-	case 4:monsterid = ML5+12; break; /* outer circle demon */
-	case 5:monsterid = ML6+10; break; /* demon serpent */
-	case 6:monsterid = ML6+11; break; /* angel */
-	case 7:monsterid = ML7+14; break; /* inner circle demon */
-	case 8:monsterid = ML8+5; break; /* frost demon lord */
-	case 9:monsterid = ML8+11; break; /* high angel */
-	case 10:monsterid = ML9+7; break; /* prime circle demon */
-	case 11:monsterid = ML9+6; break; /* archangel */
+	case 0:monsterid = NIGHT_GAUNT; break;
+	case 1:monsterid = SERV_LAW; break; /* servant of law */
+	case 2:monsterid = SERV_CHAOS; break; /* servant of chaos */
+	case 3:monsterid = FROST_DEMON; break; /* lesser frost demon */
+	case 4:monsterid = OUTER_DEMON; break; /* outer circle demon */
+	case 5:monsterid = DEMON_SERP; break; /* demon serpent */
+	case 6:monsterid = ANGEL; break;
+	case 7:monsterid = INNER_DEMON; break; /* inner circle demon */
+	case 8:monsterid = FDEMON_L; break; /* frost demon lord */
+	case 9:monsterid = HIGH_ANGEL; break;
+	case 10:monsterid = DEMON_PRINCE; break; /* prime circle demon */
+	case 11:monsterid = ARCHANGEL; break;
 	}
-      else monsterid = -1;
+      else monsterid = RANDOM;
       break;
     case E_VOLCANO:
       if (random_range(2)) {
@@ -167,51 +169,52 @@ int monstertype;
 	while (Monsters[monsterid].uniqueness != COMMON);
       }
       else switch(random_range(Level->depth/2+2)) { /* evil & fire creatures */
-      case 0: monsterid = ML4+5; break;
-      case 1: monsterid = ML4+6; break;
-      case 2: monsterid = ML5+0; break;
-      case 3: monsterid = ML5+4; break;
-      case 4: monsterid = ML5+5; break;
-      case 5: monsterid = ML5+10; break;
-      case 6: monsterid = ML6+0; break;
-      case 7: monsterid = ML6+5; break;
-      case 8: monsterid = ML6+9; break;
-      case 9: monsterid = ML6+10; break;
-      case 10: monsterid = ML7+1; break;
-      case 11: monsterid = ML7+6; break;
-      case 12: monsterid = ML7+11; break;
-      case 13: monsterid = ML7+12; break;
-      case 14: monsterid = ML7+14; break;
-      case 15: monsterid = ML7+3; break; 
-      case 16: monsterid = ML8+3; break; 
-      case 17: monsterid = ML8+5; break; 
-      case 18: monsterid = ML8+8; break; 
-      case 19: monsterid = ML7+3; break; 
-      case 20: monsterid = ML9+5; break; 
-      case 21: monsterid = ML9+7; break; 
-      default: monsterid = -1; break;
+      case 0: monsterid = HAUNT; break;
+      case 1: monsterid = INCUBUS; break;
+      case 2: monsterid = DRAGONETTE; break;
+      case 3: monsterid = FROST_DEMON; break;
+      case 4: monsterid = SPECTRE; break;
+      case 5: monsterid = LAVA_WORM; break;
+      case 6: monsterid = FIRE_ELEM; break;
+      case 7: monsterid = LICHE; break;
+      case 8: monsterid = RAKSHASA; break;
+      case 9: monsterid = DEMON_SERP; break;
+      case 10: monsterid = NAZGUL; break;
+      case 11: monsterid = FLAME_DEV; break;
+      case 12: monsterid = LOATHLY; break;
+      case 13: monsterid = ZOMBIE; break;
+      case 14: monsterid = INNER_DEMON; break;
+      case 15: monsterid = BAD_FAIRY; break; 
+      case 16: monsterid = DRAGON; break; 
+      case 17: monsterid = FDEMON_L; break; 
+      case 18: monsterid = SHADOW_SLAY; break; 
+      case 19: monsterid = DEATHSTAR; break; 
+      case 20: monsterid = VAMP_LORD; break; 
+      case 21: monsterid = DEMON_PRINCE; break; 
+      default: monsterid = RANDOM; break;
       }
       break;      
     case E_CASTLE: 
       if (random_range(4)==1) {
 	if (difficulty() < 5)
-	  monsterid = ML2+7;
+	  monsterid = ENCHANTOR;
 	else if (difficulty() < 6)
-	  monsterid = ML5+6;
+	  monsterid = NECROMANCER;
 	else if (difficulty() < 8)
-	  monsterid = ML6+0;
-	else monsterid = ML9+4;
+	  monsterid = FIRE_ELEM;
+	else monsterid = THAUMATURGIST;
       }
-      else monsterid = -1;
+      else monsterid = RANDOM;
     break;
 
-    default: monsterid = -1; break;
+    default: monsterid = RANDOM; break;
     }
     
-    if (monsterid > -1)
+    assert( RANDOM == -1 ); /* WDT: the following test slightly assumes
+                             * this. */
+    if (monsterid > RANDOM)
       Level->site[i][j].creature = make_creature(monsterid);
     else Level->site[i][j].creature = m_create(i,j,TRUE,difficulty());
-
 
     Level->site[i][j].creature->x = i;
     Level->site[i][j].creature->y = j;
@@ -320,7 +323,7 @@ int mid;
 
   if (mid == -1) mid = random_range(ML9);
   *newmonster = Monsters[mid];
-  if ((mid == ML6+11) || (mid == ML8+11) || (mid == ML9+6)) {
+  if ((mid == ANGEL) || (mid == HIGH_ANGEL) || (mid == ARCHANGEL)) {
     /* aux1 field of an angel is its deity */
     if (Current_Environment == E_TEMPLE)
       newmonster->aux1 = Country[LastCountryLocX][LastCountryLocY].aux;
@@ -337,7 +340,7 @@ int mid;
     }
     newmonster->monstring = salloc(Str3);
   }
-  else if (mid == ML0+7 || mid == ML3+13) { 
+  else if (mid == ZERO_NPC || mid == WEREHUMAN) { 
     /* generic 0th level human, or a were-human */
     newmonster->monstring = mantype();
     strcpy(Str1,"dead ");
@@ -348,16 +351,16 @@ int mid;
     /* the nymph/satyr and incubus/succubus */
     if (Player.preference == 'f' ||
 	(Player.preference != 'm' && random_range(2))) {
-      newmonster->monchar = 'n'|COL_RED;
+      newmonster->monchar = 'n'|CLR(RED);
       newmonster->monstring = "nymph";
       newmonster->corpsestr = "dead nymph";
     }
     else {
-      newmonster->monchar = 's'|COL_RED;
+      newmonster->monchar = 's'|CLR(RED);
       newmonster->monstring = "satyr";
       newmonster->corpsestr = "dead satyr";
     }
-    if (newmonster->id == ML4+6) {
+    if (newmonster->id == INCUBUS) {
       if ((newmonster->monchar&0xff) == 'n')
 	newmonster->corpsestr = "dead succubus";
       else newmonster->corpsestr = "dead incubus";
@@ -380,7 +383,8 @@ int mid;
     for(i=0;i<treasures;i++) {
       do {
         ob = (pob) (create_object(newmonster->level));
-        if (ob && ob->uniqueness != COMMON) {
+        if (ob->uniqueness != COMMON) {
+          Objects[ob->id].uniqueness = UNIQUE_UNMADE;
           free(ob);
           ob = NULL;
         }
@@ -437,8 +441,7 @@ void make_site_treasure(i,j,itemlevel)
 int i,j,itemlevel;
 {
   pol tmp = ((pol) checkmalloc(sizeof(oltype)));
-  do tmp->thing = ((pob) create_object(itemlevel));
-  while (!tmp->thing);
+  tmp->thing = ((pob) create_object(itemlevel));
   tmp->next = Level->site[i][j].things;
   Level->site[i][j].things = tmp;
 }
@@ -459,7 +462,7 @@ int i,j,itemid;
 
 
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* returns a "level of difficulty" based on current environment
    and depth in dungeon. Is somewhat arbitrary. value between 1 and 10.
    May not actually represent real difficulty, but instead level

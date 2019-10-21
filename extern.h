@@ -19,7 +19,7 @@ void signalsave ARGS((void));
 
 /* abyss.c functions */
 
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
 void check_memory ARGS((void));
 void kill_all_levels ARGS((void));
 void kill_levels ARGS((char *));
@@ -66,7 +66,7 @@ int statmod ARGS((int));
 void break_weapon ARGS((void));
 void change_environment ARGS((char));
 void drop_weapon ARGS((void));
-void enter_site ARGS((short));
+void enter_site ARGS((Symbol));
 void gain_level ARGS((void));
 void minute_status_check ARGS((void));
 void moon_check ARGS((void));
@@ -85,7 +85,7 @@ void weapon_use ARGS((int,pob,struct monster *));
 /* aux3.c functions */
 
 char *citysiteid ARGS((int));
-char *countryid ARGS((short));
+char *countryid ARGS((Symbol));
 char getlocation ARGS((void));
 int hostilemonstersnear ARGS((void));
 int magic_resist ARGS((int));
@@ -170,7 +170,7 @@ void examine ARGS((void));
 void fire ARGS((void));
 void frobgamestatus ARGS((void));
 void help ARGS((void));
-void hunt ARGS((short));
+void hunt ARGS((Symbol));
 void nap ARGS((void));
 void pickpocket ARGS((void));
 void quit ARGS((void));
@@ -323,19 +323,19 @@ void build_square_room ARGS((int,int,int,char,int));
 void cavern_level ARGS((void));
 void change_level ARGS((char,char,char));
 void clear_level ARGS((struct level *));
-void corridor_crawl ARGS((int *,int *,int,int,int,short,char));
+void corridor_crawl ARGS((int *,int *,int,int,int,Symbol,char));
 void find_stairs ARGS((char,char));
 void free_dungeon ARGS((void));
 void install_specials ARGS((void));
 void install_traps ARGS((void));
 void makedoor ARGS((int,int));
-void sewer_corridor ARGS((int,int,int,int,short));
+void sewer_corridor ARGS((int,int,int,int,Symbol));
 void sewer_level ARGS((void));
-void straggle_corridor ARGS((int,int,int,int,short,char));
+void straggle_corridor ARGS((int,int,int,int,Symbol,char));
 
 /* gen2.c functions */
 
-void make_country_screen ARGS((short));
+void make_country_screen ARGS((Symbol));
 void make_general_map ARGS((char *));
 void make_forest ARGS((void));
 void make_jungle ARGS((void));
@@ -372,8 +372,8 @@ void make_mansion_npc ARGS((int,int));
 /* inv.c functions */
 
 void do_inventory_control ARGS((void));
-int  key_to_index ARGS((char));
-char index_to_key ARGS((int));
+int  key_to_index ARGS((signed char));
+signed char index_to_key ARGS((int));
 long get_money ARGS((long));
 char *cashstr ARGS((void));
 char *itemid ARGS((pob));
@@ -385,7 +385,7 @@ int find_item ARGS((pob *,int,int));
 int get_inventory_slot ARGS((void));
 int get_item_number ARGS((pob));
 int get_to_pack ARGS((pob));
-int getitem ARGS((short));
+int getitem ARGS((Symbol));
 int item_useable ARGS((pob,int));
 int objequal ARGS((struct object *,struct object *));
 int slottable ARGS((pob,int));
@@ -593,7 +593,7 @@ void i_symbol ARGS((pob));
 int difficulty ARGS((void));	/* this function in util.c if MSDOS defined */
 pmt m_create ARGS((int,int,int,int));
 pmt make_creature ARGS((int));
-void make_country_monsters ARGS((short));
+void make_country_monsters ARGS((Symbol));
 void make_site_monster ARGS((int,int,int));
 void make_site_treasure ARGS((int,int,int));
 void make_specific_treasure ARGS((int,int,int));
@@ -809,14 +809,16 @@ void make_hp ARGS((pob));
 
 /* save.c functions */
 
+int ok_outdated ARGS((int));
 int restore_game ARGS((char *));
+void restore_hiscore_npc ARGS((pmt, int));
+pob restore_item ARGS((FILE *, int));
+pol restore_itemlist ARGS((FILE *, int));
+void restore_country ARGS((FILE *, int));
+void restore_level ARGS((FILE *, int));
+void restore_monsters ARGS((FILE *,plv, int));
+void restore_player ARGS((FILE *, int));
 int save_game ARGS((int,char *));
-pob restore_item ARGS((FILE *));
-pol restore_itemlist ARGS((FILE *));
-void restore_country ARGS((FILE *));
-void restore_level ARGS((FILE *));
-void restore_monsters ARGS((FILE *,plv));
-void restore_player ARGS((FILE *));
 int save_country ARGS((FILE *));
 int save_item ARGS((FILE *,pob));
 int save_itemlist ARGS((FILE *,pol));
@@ -830,13 +832,13 @@ void signalsave ARGS((void));
 int mcigetc ARGS((void));
 long parsenum ARGS((void));
 char *msgscanstring ARGS((void));
-short getspot ARGS((int,int,int));
+Symbol getspot ARGS((int,int,int));
 char lgetc ARGS((void));
 char menugetc ARGS((void));
 char mgetc ARGS((void));
-char ynq ARGS((void));
-char ynq1 ARGS((void));
-char ynq2 ARGS((void));
+int ynq ARGS((void));
+int ynq1 ARGS((void));
+int ynq2 ARGS((void));
 int getnumber ARGS((int));
 int litroom ARGS((int,int));
 int move_slot ARGS((int,int,int));
@@ -869,7 +871,7 @@ void display_quit ARGS((void));
 void display_win ARGS((void));
 void dobackspace ARGS((void));
 void dodrawspot ARGS((int,int));
-void draw_explosion ARGS((short,int,int));
+void draw_explosion ARGS((Symbol,int,int));
 void drawmonsters ARGS((int));
 void drawomega ARGS((void));
 void drawplayer ARGS((void));
@@ -900,13 +902,13 @@ void nprint1 ARGS((char *));
 void nprint2 ARGS((char *));
 void nprint3 ARGS((char *));
 void phaseprint ARGS((void));
-void plotchar ARGS((short,int,int));
+void plotchar ARGS((Symbol,int,int));
 void plotmon ARGS((struct monster *));
 void plotspot ARGS((int,int,int));
 void print1 ARGS((char *));
 void print2 ARGS((char *));
 void print3 ARGS((char *));
-void putspot ARGS((int,int,short));
+void putspot ARGS((int,int,Symbol));
 void redraw ARGS((void));
 void screencheck ARGS((int));
 void setlastxy ARGS((int, int));
@@ -1069,8 +1071,8 @@ int view_unblocked ARGS((int,int));
 void calc_weight ARGS((void));
 void change_to_game_perms ARGS((void));
 void change_to_user_perms ARGS((void));
-void do_los ARGS((short,int *,int *,int,int));
-void do_object_los ARGS((short,int *,int *,int,int));
+void do_los ARGS((Symbol,int *,int *,int,int));
+void do_object_los ARGS((int,int *,int *,int,int));
 void findspace ARGS((int *,int *,int));
 void initdirs ARGS((void));
 #ifdef NO_USLEEP

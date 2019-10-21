@@ -9,9 +9,12 @@
                               *    **    **    *
                                *****      *****
 
-            omega version 0.80 is copyright (C) 1987,1988,1989 by:
+            omega version 0.90-pa2 is copyright (C) 1987,1988,1989 by:
                              Laurence R. Brothers
-         Maintained by: Erik Max Francis (omega@alcyone.darkside.com)
+              Maintained by: William Tanksley (wtanksle@ucsd.edu).
+             Send suggestions and complaints about this prealpha to
+                 William Tanksley (wtanksle@ucsd.edu), or visit
+                http://dolphin.openprojects.net/~wtanksle/omega/.
 
           This product includes software developed by the University
                of California, Berkeley and its contributors

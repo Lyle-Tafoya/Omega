@@ -259,7 +259,7 @@ struct monster *m;
     attack_loc = 'L';
   else if ((p_blocks[1] <= p_blocks[2]) &&
 	   (p_blocks[1] <= p_blocks[0]))
-    block_loc = 'C';
+    attack_loc = 'C'; /* DG 12/31/98 */
   else attack_loc = 'H';
   if ((p_attacks[2] <= p_attacks[1]) &&
       (p_attacks[2] <= p_attacks[0]))

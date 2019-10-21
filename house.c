@@ -157,7 +157,7 @@ int populate;
 	Level->site[i][j].locchar = FLOOR;
 	Level->site[i][j].roomnumber = RS_CORRIDOR;
 	if (populate)
-	  make_site_monster(i,j,ML4+10); /* dog */
+	  make_site_monster(i,j,DOBERMAN);
 	break;
       case 'a':
 	Level->site[i][j].locchar = FLOOR;
@@ -168,7 +168,7 @@ int populate;
 	Level->site[i][j].locchar = FLOOR;
 	Level->site[i][j].roomnumber = RS_CORRIDOR;
 	if (populate)
-	  make_site_monster(i,j,ML4+2); /* automaton */
+	  make_site_monster(i,j,AUTO_MINOR); /* automaton */
 	break;
       }
       Level->site[i][j].showchar = ' ';
@@ -176,7 +176,7 @@ int populate;
     site = getc(fd)^site;
   }
   fclose(fd);
-  initrand(-2, 0);
+  initrand(E_RESTORE, 0);
 }
 
 

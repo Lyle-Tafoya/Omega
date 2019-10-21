@@ -1,0 +1,33 @@
+.:
+MANIFEST     omega.ad
+Makefile      command3.c    fixstr.c	  itemf2.c	omega.c
+Makefile.ami  compress.c    gen1.c	  itemf3.c	priest.c
+Makefile.dj   country.c	    gen2.c	  lev.c		save.c
+Makefile.dos  date.h	    glob.h	  minit.h	scr.c
+abyss.c	      defs.h	    guild1.c	  mmelee.c	site1.c
+aux1.c	      effect1.c	    guild2.c	  mmove.c	site2.c
+aux2.c	      effect2.c	    house.c	  mon.c		spell.c
+aux3.c	      effect3.c	    iinit.h	  move.c	time.c
+char.c	      env.c	    init.c	  movef.c	trap.c
+city.c	      etc.c	    inv.c	  mspec.c	util.c
+command1.c    extern.h	    item.c	  mstrike.c	village.c
+command2.c    file.c	    itemf1.c	  mtalk.c
+
+docs:
+compile.all  compile.dj	  omega.6      readme.1st   readme3
+compile.ami  compile.dos  omega.txt    readme.dos   readme4
+
+omegalib:
+abyss.dat     help11.txt    help9.txt	  misle.dat	temple.dat
+abyss.txt     help12.txt    home1.dat	  motd.txt	thanks.txt
+arena.dat     help13.txt    home2.dat	  omega.hi	update.txt
+circle.dat    help2.txt	    home3.dat	  omega.log	village1.dat
+city.dat      help3.txt	    intro.txt	  omegahi.bak	village2.dat
+country.dat   help4.txt	    license.txt	  scroll1.txt	village3.dat
+court.dat     help5.txt	    maze1.dat	  scroll2.txt	village4.dat
+dlair.dat     help6.txt	    maze2.dat	  scroll3.txt	village5.dat
+help1.txt     help7.txt	    maze3.dat	  scroll4.txt	village6.dat
+help10.txt    help8.txt	    maze4.dat	  speak.dat
+
+tools:
+crypt.c	   decrypt.c  makefile

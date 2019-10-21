@@ -168,14 +168,14 @@ int populate;
       case 'D':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty) {
-	  make_site_monster(i,j,ML10+3); /* dlord */
+	  make_site_monster(i,j,DRAGON_LORD);
 	  Level->site[i][j].creature->specialf = M_SP_LAIR;
 	}
 	break;
       case 'd':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty) {
-	  make_site_monster(i,j,ML8+3); /* elite dragons */
+	  make_site_monster(i,j,DRAGON); /* elite dragons, actually */
 	  Level->site[i][j].creature->specialf = M_SP_LAIR;
 	  Level->site[i][j].creature->hit *= 2;
 	  Level->site[i][j].creature->dmg *= 2;
@@ -184,12 +184,12 @@ int populate;
       case 'W':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty)
-	  make_site_monster(i,j,ML9+2);
+	  make_site_monster(i,j,KING_WYV);
 	break;
       case 'M':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty)
-	  make_site_monster(i,j,-1);
+	  make_site_monster(i,j,RANDOM);
 	break;
       case 'S':
 	Level->site[i][j].locchar = FLOOR;
@@ -301,14 +301,14 @@ int populate;
       case 'L':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty) {
-	  make_site_monster(i,j,ML10+2); /* lawbringer */
+	  make_site_monster(i,j,LAWBRINGER);
 	  if (safe) m_status_reset(Level->site[i][j].creature,HOSTILE);
 	}
 	break;
       case 's':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty) {
-	  make_site_monster(i,j,ML4+12); /* servant of law */
+	  make_site_monster(i,j,SERV_LAW); /* servant of law */
 	  if (safe) m_status_reset(Level->site[i][j].creature,HOSTILE);
 	}
 	break;
@@ -420,17 +420,17 @@ int populate;
       case 'E':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty)
-	  make_site_monster(i,j,ML10+1); /* eater of magic */
+	  make_site_monster(i,j,EATER); /* eater of magic */
 	break;
       case 'm':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty)
-	  make_site_monster(i,j,ML8+9); /* militant priest */
+	  make_site_monster(i,j,MIL_PRIEST); /* militant priest */
 	break;
       case 'n':
 	Level->site[i][j].locchar = FLOOR;
 	if (! empty)
-	  make_site_monster(i,j,ML7+1); /* nazgul */
+	  make_site_monster(i,j,NAZGUL);
 	break;
       case 'X':
 	Level->site[i][j].locchar = FLOOR;
@@ -478,8 +478,11 @@ int populate;
   char site;
   pml ml;
   FILE *fd;
-
-  initrand(Current_Environment, deity);
+  
+  /* WDT HACK: I don't know why this is wrong.  Shrug.  David Givens
+   * suggested removing it, and he has more experience with Omega
+   * than I, so... */
+/*  initrand(Current_Environment, deity); */ /* FIXED! 12/30/98 */
   TempLevel = Level;
   if (ok_to_free(TempLevel)) {
 #ifndef SAVE_LEVELS
@@ -538,12 +541,12 @@ int populate;
       case 'm':
 	Level->site[i][j].locchar = FLOOR;
 	if (populate)
-	  make_site_monster(i,j,ML8+9); /* militant priest */
+	  make_site_monster(i,j,MIL_PRIEST); /* militant priest */
 	break;
       case 'd':
 	Level->site[i][j].locchar = FLOOR;
 	if (populate)
-	  make_site_monster(i,j,ML4+10); /* doberman death hound */
+	  make_site_monster(i,j,DOBERMAN); /* doberman death hound */
 	break;
       case 'X':
 	Level->site[i][j].locchar = FLOOR;
@@ -589,7 +592,7 @@ int populate;
     for(ml=Level->mlist;ml!=NULL;ml=ml->next) 
       m_status_reset(ml->m,HOSTILE);
   fclose(fd);
-  initrand(-2, 0);
+/*  initrand(-2, 0); */ /* FIXED! 12/30/98 */
 }
 
 void random_temple_site(i,j,deity,populate)
@@ -598,26 +601,26 @@ int i,j,deity,populate;
   switch(random_range(12)) {
   case 0:
     if (populate)
-      make_site_monster(i,j,ML0+1);
+      make_site_monster(i,j,MEND_PRIEST);
     break; /* mendicant priest */
   case 1:
     Level->site[i][j].locchar = WATER;
     Level->site[i][j].p_locf = L_MAGIC_POOL;
   case 2:
     if (populate)
-      make_site_monster(i,j,ML7+14);
+      make_site_monster(i,j,INNER_DEMON);
     break; /* inner circle demon */
   case 3: 
     if (populate)
-      make_site_monster(i,j,ML6+11);
+      make_site_monster(i,j,ANGEL);
     break; /* angel of apropriate sect */
   case 4: 
     if (populate)
-      make_site_monster(i,j,ML8+11);
+      make_site_monster(i,j,HIGH_ANGEL);
     break; /* high angel of apropriate sect */
   case 5: 
     if (populate)
-      make_site_monster(i,j,ML9+6);
+      make_site_monster(i,j,ARCHANGEL);
     break; /* archangel of apropriate sect */
   }
 }

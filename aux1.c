@@ -254,7 +254,7 @@ int x,y;
       if ((Level->site[x][y].locchar==OPEN_DOOR) ||
 	  (Level->site[x][y].locchar==CLOSED_DOOR)) {
 	mprint("You find a secret door!");
-	for(i=0;i<8;i++) {
+	for(i=0;i<=8;i++) { /* FIXED! 12/25/98 */
 	  lset(x+Dirs[0][i],y+Dirs[1][i],STOPS);
 	  lset(x+Dirs[0][i], y+Dirs[1][i], CHANGED);
 	}
@@ -413,8 +413,8 @@ pob o;
       morewait();
       annihilate(1);
       print3("You seem to gain strength in the chaotic glare of magic!");
-      Player.str = Player.maxstr + 5;
-      Player.pow = Player.maxpow + 5;
+      Player.str = max(Player.str, Player.maxstr + 5); /* FIXED! 12/25/98 */
+      Player.pow = max(Player.pow, Player.maxpow + 5); /* ditto */
       Player.alignment -= 200;
       dispose_lost_objects(1,o);
     }
@@ -423,6 +423,12 @@ pob o;
       print1("The shards coalesce back together again, and vanish");
       print2("with a muted giggle.");
       dispose_lost_objects(1,o);
+      Objects[o->id].uniqueness = UNIQUE_UNMADE; /* FIXED! 12/30/98 */
+      /* WDT HACK: the above is correct only if UNIQUE_UNMADE means that
+       * the artifact hasn't been generated yet.  (Clearly, Omega is a
+       * little buggy in that regard with respect to artifacts in general
+       * -- it's almost trivial to force two identical artefacts to be
+       * generated right now.) */
     }
     return 1;
   }
@@ -744,7 +750,7 @@ void foodcheck()
 void roomcheck()
 {
   static int oldroomno = -1;
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
   static int oldlevel = -1;
 #else
   static plv oldlevel = NULL;
@@ -767,14 +773,14 @@ void roomcheck()
       levelrefresh();
     }
   if ((oldroomno != roomno) ||
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
       (oldlevel != Level->depth)) {
 #else
       (oldlevel != Level)) {
 #endif
     showroom(roomno);
     oldroomno = roomno;
-#ifdef MSDOS
+#ifdef MSDOS_SUPPORTED_ANTIQUE
     oldlevel = Level->depth;
 #else
     oldlevel = Level;
@@ -799,7 +805,7 @@ struct monster *m;
   case 2: print1("You beg for mercy."); break;
   case 3: print1("You yield to the monster."); break;
   }
-  if (m->id == ML0+3) {
+  if (m->id == GUARD) {
     if (m_statusp(m,HOSTILE))
       monster_talk(m);
     else {
@@ -854,7 +860,7 @@ struct monster *m;
       m_status_set(m,HOSTILE);
       m_status_reset(m,GREEDY);
     }
-    else if (m->id == ML0+0 || m->id == ML0+3)
+    else if (m->id == HORNET || m->id == GUARD)
       print1("It continues to attack you. ");
     else {
       print1("The monster leaves, chuckling to itself....");
@@ -876,6 +882,7 @@ struct monster *m;
   case 2:mprint("You attempt to bluster it into submission."); break;
   case 3:mprint("You try to cow it with your awesome presence."); break;
   }
+  morewait(); /* FIXED! 12/25/98 */
   if (! m_statusp(m,HOSTILE)) {
     print3("You only annoy it with your futile demand.");
     m_status_set(m,HOSTILE);

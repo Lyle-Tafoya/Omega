@@ -170,7 +170,7 @@ int populate;
       case 'G':
 	Level->site[i][j].locchar = FLOOR;
 	if (populate) {
-	  make_site_monster(i,j,ML0+3);
+	  make_site_monster(i,j,GUARD);
 	  Level->site[i][j].creature->aux1 = i;
 	  Level->site[i][j].creature->aux2 = j;
 	}
@@ -296,7 +296,7 @@ int populate;
     ml->m->wakeup = 2;
   }
   fclose(fd);
-  initrand(-2, 0);
+  initrand(E_RESTORE, 0);
 }
 
 
@@ -314,7 +314,7 @@ int x,y;
   lset(x+1,y,STOPS);
   lset(x-1,y,STOPS);
   lset(x,y-1,STOPS);
-
+  lset(x,y,STOPS); /* FIXED! 12/30/98 */
 
   if (setup == 0) {
     setup = 1;
@@ -484,7 +484,7 @@ void resurrect_guards()
     for(i=0;i<WIDTH;i++) {
       site = getc(fd)^site;
       if (site == 'G') {
-	make_site_monster(i,j,ML0+3);
+	make_site_monster(i,j,GUARD);
 	Level->site[i][j].creature->monstring = "undead guardsman";
 	Level->site[i][j].creature->meleef = M_MELEE_SPIRIT;
 	Level->site[i][j].creature->movef = M_MOVE_SPIRIT;
@@ -585,8 +585,8 @@ void make_minor_undead(i,j)
 int i,j;
 {
   int mid;
-  if (random_range(2)) mid = ML2+6; /*ghost */
-  else mid = ML4+5; /*haunt*/
+  if (random_range(2)) mid = GHOST;
+  else mid = HAUNT;
   make_site_monster(i,j,mid);
   m_status_reset(Level->site[i][j].creature,AWAKE);
   m_status_reset(Level->site[i][j].creature,HOSTILE);
@@ -597,8 +597,8 @@ void make_major_undead(i,j)
 int i,j;
 {
   int mid;
-  if (random_range(2)) mid = ML6+5; /* lich */
-  else mid = ML9+5; /*vampire lord*/
+  if (random_range(2)) mid = LICHE; /* lich */
+  else mid = VAMP_LORD; /*vampire lord*/
   make_site_monster(i,j,mid);
   m_status_reset(Level->site[i][j].creature,AWAKE);
   m_status_reset(Level->site[i][j].creature,HOSTILE);

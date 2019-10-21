@@ -237,7 +237,7 @@ struct monster *m;
   mprint(Str2);
   Level->site[m->x][m->y].creature = NULL;
   erase_monster(m);
-  m->hp = -1; /* signals "death" -- no credit to payer, though */
+  m->hp = -1; /* signals "death" -- no credit to player, though */
 }
 
 /* monster still in play */
@@ -263,18 +263,18 @@ struct monster *m;
   }
   else if (distance(m->x,m->y,m->aux1,m->aux2) > 5) {
     if (Level->site[m->aux1][m->aux2].creature != NULL) {
-      /* some other monster is where the chain starts */
-      if (Level->site[m->aux1][m->aux2].creature->uniqueness == COMMON) {
-	strcpy(Str1, "The ");
-	strcat(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
+      if (los_p(Player.x,Player.y,m->aux1,m->aux2)) {
+	/* some other monster is where the chain starts */
+	if (Level->site[m->aux1][m->aux2].creature->uniqueness == COMMON) {
+	  strcpy(Str1, "The ");
+	  strcat(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
+	}
+	else
+	  strcpy(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
+	strcat(Str1, " releases the dog's chain!");
+	mprint(Str1);
       }
-      else
-	strcpy(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
-      strcat(Str1, " releases the dog's chain!");
-      mprint(Str1);
       m->movef = M_MOVE_NORMAL;
-      m->aux1 = m->x;
-      m->aux2 = m->y;
       /* otherwise, we'd lose either the dog or the other monster. */
     }
     else if (los_p(Player.x,Player.y,m->x,m->y)) {

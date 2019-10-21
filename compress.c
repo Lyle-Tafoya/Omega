@@ -174,8 +174,13 @@ char_type magic_header[] = { "\037\235" };	/* 1F 9D */
  *		James A. Woods		(decvax!ihnp4!ames!jaw)
  *		Joe Orost		(decvax!vax135!petsd!joe)
  *
- * $Header: compress.c,v 4.0 85/07/30 12:50:00 joe Release $
- * $Log:	compress.c,v $
+ * $Header: /home/wtanksle/cvs/omega/compress.c,v 1.2 1998/08/08 10:47:56 wtanksle Exp $
+ * $Log: compress.c,v $
+ * Revision 1.2  1998/08/08 10:47:56  wtanksle
+ * Added a MAJOR (contributed) patch which permitted color under ncurses
+ * systems.  VERY impressive, and credit will be given (if only I could remember
+ * the author's name right now!).
+ *
  * Revision 4.0  85/07/30  12:50:00  joe
  * Removed ferror() calls in output routine on every output except first.
  * Prepared for release to the world.
@@ -286,7 +291,7 @@ char_type magic_header[] = { "\037\235" };	/* 1F 9D */
  * Add variable bit length output.
  *
  */
-static char rcs_ident[] = "$Header: compress.c,v 4.0 85/07/30 12:50:00 joe Release $";
+static char rcs_ident[] = "$Header: /home/wtanksle/cvs/omega/compress.c,v 1.2 1998/08/08 10:47:56 wtanksle Exp $";
 
 #include <stdio.h>
 #include <ctype.h>

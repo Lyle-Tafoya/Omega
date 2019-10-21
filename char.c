@@ -2,7 +2,7 @@
 /* char.c */
 /* Player generation */
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <sys/types.h>
 #include <unistd.h>
 #include <pwd.h>
@@ -79,9 +79,7 @@ void initplayer()
 #ifdef COMPRESS_SAVE_FILES
     optionset(COMPRESS_OPTION);
 #endif
-#if defined(MSDOS) || defined(AMIGA)
     optionset(SHOW_COLOUR);
-#endif
     initstats();
   }
   Searchnum = max(1,min(9,Searchnum));
@@ -99,7 +97,7 @@ FILE *omegarc_check()
   FILE *fd;
 #if defined(MSDOS) || defined(AMIGA)
   if ((fd = fopen("omega.rc","rb")) != NULL) {
-    print2("Use omega.rc in current directory? [yn] ");
+    print2("Use omega.rc charcter record in current directory? [yn] ");
 #else
   sprintf(Str1, "%s/.omegarc", getenv("HOME"));
   if ((fd = fopen(Str1,"r")) != NULL) {
@@ -550,8 +548,8 @@ void omegan_character_stats()
   print1("To reroll hit ESCAPE; hit any other key to accept these stats.");
   do {
     i++;
-    sprintf(Str1, "You have only %d chance%s to reroll... ", 11 - i,
-	(i == 10) ? "":"s");
+    sprintf(Str1, "You have only %d chance%s to reroll... ", REROLLS - i,
+            (i == (REROLLS-1) ) ? "":"s");
     print2(Str1);
     Player.iq = Player.maxiq = 4 + random_range(5)+
       (share1 = random_range(6)) + (share2 = random_range(6));
@@ -566,7 +564,7 @@ void omegan_character_stats()
       random_range(100)+random_range(100)+random_range(100);
     calc_melee();
     dataprint();
-  } while ((i < 11) && (mgetc() == ESCAPE));
+  } while ((i < REROLLS) && (mgetc() == ESCAPE));
   clearmsg();
   print1("Please enter your character's name: ");
   strcpy(Player.name,msgscanstring());

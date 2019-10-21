@@ -555,11 +555,11 @@ struct monster *m;
   m->specialf = M_SP_DEMON;
 
   if ((m->monchar&0xff) == 's') {
-    m->monchar = 'I'|COL_RED;
+    m->monchar = 'I'|CLR(RED);
     m->monstring = "incubus";
   }
   else {
-    m->monchar = 'S'|COL_RED;
+    m->monchar = 'S'|CLR(RED);
     m->monstring = "succubus";
   }
   if (m->uniqueness == COMMON) {
@@ -614,13 +614,13 @@ void m_talk_servant(m)
 struct monster *m;
 {
   int target,x=Player.x,y=Player.y;
-  if (m->id == ML4+12) {
-    target = ML4+13;
+  if (m->id == SERV_LAW) {
+    target = SERV_CHAOS;
     mprint("The Servant of Law pauses in thought for a moment.");
     mprint("You are asked: Are there any Servants of Chaos hereabouts? [yn] ");
   }
   else {
-    target = ML4+12;
+    target = SERV_LAW;
     mprint("The Servant of Chaos grins mischievously at you.");
     mprint("You are asked: Are there any Servants of Law hereabouts? [yn] ");
   }

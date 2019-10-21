@@ -3,7 +3,7 @@
 
 /* This file contains toplevel commands called from command1.c */
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <unistd.h>
 #include <ctype.h>
 #endif
@@ -190,7 +190,7 @@ int *searchval;
  }
 
 
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* floor inventory */
 void floor_inv()
 {
@@ -597,10 +597,6 @@ void setoptions()
       if (to == 8)	/* COMPRESS_OPTION */
 	to = 9;
 #endif
-#if !defined(MSDOS) && !defined(AMIGA)
-      if (to == 9)	/* SHOW_COLOUR */
-	to = 10;
-#endif
       slot = move_slot(slot,to,NUMOPTIONS+1);
       break;
     case 'k':
@@ -609,10 +605,6 @@ void setoptions()
     case KEY_UP:
 #endif
       to = slot - 1;
-#if !defined(MSDOS) && !defined(AMIGA)
-      if (to == 9)	/* SHOW_COLOUR */
-	to = 8;
-#endif
 #ifndef COMPRESS_SAVE_FILES
       if (to == 8)	/* COMPRESS_OPTION */
 	to = 7;
@@ -670,7 +662,7 @@ void setoptions()
     colour_on();
   else
     colour_off();
-#if !defined(MSDOS) && !defined(AMIGA)
+#if !defined(MSDOS_SUPPORTED_ANTIQUE) && !defined(AMIGA)
   xredraw();
 #endif
 }

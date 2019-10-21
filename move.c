@@ -359,6 +359,12 @@ void l_no_op()
 
 void l_tactical_exit()
 {
+  if (optionp(CONFIRM)) {
+    clearmsg();
+    print1("Do you really want to leave this place? ");
+    if (ynq1() != 'y')
+      return;
+  }
   /* Free up monsters and items, and the level, if not SAVE_LEVELS */
   free_level(Level);
   Level = NULL;
@@ -462,7 +468,7 @@ void l_raise_portcullis()
 void l_arena_exit()
 {
   resetgamestatus(ARENA_MODE);
-#ifndef MSDOS
+#ifndef MSDOS_SUPPORTED_ANTIQUE
   free_level(Level);
 #endif
   Level = NULL;
@@ -472,7 +478,13 @@ void l_arena_exit()
 
 void l_house_exit()
 {
-#ifndef MSDOS
+  if (optionp(CONFIRM)) {
+    clearmsg();
+    print1("Do you really want to leave this abode? ");
+    if (ynq1() != 'y')
+      return;
+  }
+#ifndef MSDOS_SUPPORTED_ANTIQUE
   free_level(Level);
 #endif
   Level = NULL;
@@ -679,7 +691,7 @@ void stationcheck()
     print1("Death coughs apologetically. He seems a little embarrassed.");
     print2("A voice peals out:");
     print3("'An Adept must be able to conquer Death himself....");
-    make_site_monster(32,4,ML10+0);
+    make_site_monster(32,4,DEATH);
   }
 }
 
@@ -1067,9 +1079,9 @@ void l_voidstone()
     print1("You feel negated.");
     morewait();
     Player.mana = 0;
+    toggle_item_use(TRUE);
     for(i=0;i<NUMSTATI;i++)
       Player.status[i] = 0;
-    toggle_item_use(TRUE);
     for(i=0;i<MAXITEMS;i++) 
       if (Player.possessions[i] != NULL) {
 	Player.possessions[i]->blessing = 0;
@@ -1116,7 +1128,7 @@ void l_sacrificestone()
       print1("You manage to wrench yourself off the ancient altar!");
       print2("You leave some skin behind, though....");
       morewait();
-      if ((Player.maxhp > 10) && (Player.maxhp < 3 * oldmaxhp/4)) {
+      if ((oldmaxhp > 10) && (Player.maxhp < 3 * oldmaxhp/4)) {
 	print1("A strange red glow arises from the altar.");
 	print2("The glow surrounds you.... You sense gratitude.");
 	Player.pow += sacrifice;
