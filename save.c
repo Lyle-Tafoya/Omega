@@ -302,7 +302,7 @@ plv level;
       }
       mask >>= 1;
       if (level->site[i][j].lstatus&SEEN)
-	mask |= (1<<(sizeof(long int)*8 - 1));
+	mask |= ((long int)1<<(sizeof(long int)*8 - 1));
       run--;
     }
   if (run < 8*sizeof(long int))
@@ -442,7 +442,7 @@ FILE *fd;
       }
       mask >>= 1;
       if (c_statusp(i, j, SEEN))
-	mask |= (1<<(sizeof(long int)*8 - 1));
+	mask |= ((long int)1<<(sizeof(long int)*8 - 1));
       run--;
     }
   if (run < 8*sizeof(long int))
