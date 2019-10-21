@@ -1,0 +1,60 @@
+# Makefile for omega for IBM-PC
+
+MODEL = L
+CFLAGS = -A$(MODEL) -Os -Gs -Gt10
+LIBS = lcurses
+LFLAGS = /noigno /cp:1 /seg:256 /stack:0x1000
+# Don't add in the /exepack flag if you value your sanity!
+# Run exepack separately yourself if you want to.
+
+CFILESEXCEPTO = abyss.c aux1.c aux2.c aux3.c char.c city.c \
+	command1.c command2.c command3.c \
+	country.c effect1.c effect2.c effect3.c \
+	env.c etc.c file.c gen1.c gen2.c \
+	guild1.c guild2.c house.c init.c \
+	inv.c item.c itemf1.c itemf2.c itemf3.c lev.c \
+	mmelee.c mmove.c mon.c move.c movef.c mspec.c \
+	mstrike.c mtalk.c priest.c \
+	save.c scr.c site1.c site2.c \
+	spell.c time.c trap.c util.c village.c compress.c
+
+OBJS =	omega.obj abyss.obj aux1.obj aux2.obj aux3.obj char.obj city.obj \
+	command1.obj command2.obj command3.obj country.obj \
+	effect1.obj effect2.obj effect3.obj env.obj etc.obj file.obj\
+	gen1.obj gen2.obj guild1.obj guild2.obj house.obj init.obj\
+	inv.obj item.obj itemf1.obj itemf2.obj itemf3.obj lev.obj \
+	mmelee.obj mmove.obj mon.obj move.obj movef.obj mspec.obj \
+	mstrike.obj mtalk.obj priest.obj \
+	save.obj scr.obj site1.obj site2.obj \
+	spell.obj time.obj trap.obj util.obj village.obj compress.obj
+
+OFILES = omega (abyss) aux1 aux2 aux3 (char) (city + lev + village) \
+	command1 command2 command3 \
+	(country) (effect1) (effect2) (effect3) (env)\
+	etc (file) (gen1 + gen2) (guild1) (guild2) (house) (init) \
+	inv item (itemf1) (itemf2) (itemf3) \
+	mmelee mmove mon move movef (mspec) \
+	(mstrike) (mtalk) (priest) \
+	(save) scr (site1) (site2) \
+	spell time (trap) util compress
+
+omega.exe: $(OBJS)
+	link $(LFLAGS) $(OFILES),omega,,$(LIBS)
+
+$(OBJS): defs.h extern.h glob.h
+
+$(OBJS):	$*.c
+
+ocommand3.obj:	date.h
+
+
+REAL = realc
+
+omega.c:	$(REAL)\$@
+	copy $? .
+
+$(CFILESEXCEPTO):	$(REAL)\$@
+	copy $? .
+	fixstr $@
+
+oinit.obj:	iinit.h minit.h

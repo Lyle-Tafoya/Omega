@@ -1,0 +1,70 @@
+Version		Changes
+=======		=======
+
+0.57(alpha)	First public release
+
+0.58(alpha)	bugfixes, I forget what else
+
+0.59(alpha)	bugfixes, better tactical combat mode ^c trapping
+
+0.60(alpha)	bugfixes, filechecking,	cuserid changed to getlogin, brothel
+		on city level, more foods. this file started. new time
+		mechanism, new module otime.
+		12/5/87. 
+
+0.70(alpha)     architecture changed -- therefore most code rewritten. Only
+		large-scale changes detailed here, otherwise too many to count.
+
+		Countryside; multiple dungeons; "special levels"; special
+		screens for houses, the arena, and countryside encounters;
+		single combat mode with different verbosity levels; no more
+		filechecking for saved games; many new monsters; a few new
+		items; new end game; new inventory modes, effects of many
+		commands are different, some new commands added, other old
+		ones removed. Commands and terrain characters have different
+		meanings in countryside.
+		3/22/88.
+
+0.70.5(alpha)	First 0.70 version released via ftp. Many bugs.  Among other
+		things, wouldn't work at all on a vax.
+		3/22/88.
+
+0.71 (beta)	Rather different version of 0.70 now about to be released to
+		usenet via comp.sources.games.
+		7/11/88.
+
+0.75		Somewhat bugfixed version of 0.71, with MS-DOS cpp code and
+		makefile courtesy Nathan Glasser.
+		5/4/89.
+		---------------
+0.78		Rather more bugfixed version from 0.75, by Robert Rendell.
+		Put in support for uid swapping so omega may run suid. 
+		Removed the high scores from the player save file (weird...) 
+		Put in file locking on the high score file so file isn't
+		corrupted by simultanious updates.  Fixed many sundry bugs.
+		3 Sept 93.
+
+0.78.1		Fixed a number of bugs reported by various people.
+		3 Oct 93.
+
+0.79		Fixed a number of bugs, largely cosmetic, but also some
+		serious ones, like the Justiciar restoring hostile to the
+		player if the game was restored with the player in the
+		country.  Also closed possible avenue of gross cheating -
+		someone in wizard mode could reset any game status bit,
+		including the wizard bit, thus re-enableing their score...
+		11 Feb 94.
+
+0.80		Major changes, including merging the DJGPP and mainstream
+		versions.  Also saved games - I changed levels so only the
+		seed and the changes made to the level are saved - the space
+		saving achieved means that saving the entire dungeon is now
+		feasable.  Many other bugs fixed
+		16 June 94.
+
+0.80.1		Patch 1, fixing a few careless bugs in 0.80 - help files were
+		changed in name and not all references to the old name updated,
+		files were created that didn't adhere to MSDOS's stupid 8.3
+		filename limit.  Also fixed setoptions so it didn't crash
+		when called from the character creation routines.
+		28 June 94.

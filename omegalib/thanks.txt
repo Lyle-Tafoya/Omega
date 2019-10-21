@@ -1,0 +1,31 @@
+Thanks to:
+
+Ben, Greg, Hammy, Izchak, Nathan, and Silver, for bug reports,
+playtesting, suggestions, debugging, and general advice.
+
+Thanks to the army of players and debuggers of versions 0.6
+and 0.7; I predict a lot more work for you now....
+
+More thanks to Nathan Glasser for the PC port, bugfixes, etc., without
+whose enthusiasm there would be no version 0.75
+
+A number of people have sent patches and constructive criticism for
+version 0.78.  Thanks go to John Green, Daniel Packman,
+Tero Jyri Michael Pelander, Rupert G. Goldie, Chris Herborth and
+Charles William Swiger.
+
+Also, a few thanks to the people who reported problems with 0.78.1,
+making 0.79 possible: Geoff Dunbar and Mark G. Rodenkirch.
+
+The list of people who sent me bug reports and patches allowing 0.80
+is quite long.  Firstly, I must thank Julian Neil for playtesting
+omega 0.80, not even complaining when told "this change will invalidate
+your save file... again."
+Thanks also go to: Morten V. Christiansen, Stuart Craig, William Flynn,
+David Gibbs, Peter Hill, Ken Iwasa, Stefan Krabbe, Aaron Mandelbaum,
+Mark Morgan, Kent Peterson, Bryan Rendell, Zik Saleeba, Craig Sanders,
+Jeremy Seip, Billy Tanksley and Patrick A Walsh.
+
+For the patches to 0.80, thanks go to: John O'Hare, Daniel Phillips,
+Ian Richards, John Tomicich.
+

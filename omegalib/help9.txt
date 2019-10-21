@@ -1,0 +1,77 @@
+WHAT YOU SEE ON THE SCREEN 
+==========================
+
+Map: The large central area represents a map of the current
+environment.  On it, the highlighted @ always represents the player,
+letters represent monsters, non-highlighted @'s represent other
+humans, and other characters represent either objects or terrain
+features.  The map will take up as much of the screen as is possible,
+so if you are running in a windowing system make the omega window as
+large as it can be.
+
+Since the same character can represent different things or entities
+(even in the same environment), a good command to remember is 'x'
+(examine), which will tell you precisely what you are dealing with in
+any situation. This is especially helpful before you have terrain
+types like deep pools and lava pits (!) memorized.... You can use the
+CONFIRM option to avoid walking absent-mindedly into a trap, pool,
+etc.  The '/' command will give you more general help, for example
+telling you that the ')' character represents a weapon. The '?'
+command can give you either a command list or this file. The command
+lists will differ depending whether you are in the countryside, or a
+dungeon or city.
+
+Messages: Directly above the map window is a three line area that
+shows current messages from the game describing what is going on.
+The ^p command, or ^o for IBM users, shows old messages.
+
+Location: Directly beneath the map window is a one line description
+of your current location or environment.
+
+Statistics: Beneath the Location line are two lines that show
+the current state of the player's statistics such as strength,
+dexterity, constitution, agility, intelligence, power, mana,
+gold pieces, carrying capacity, etc. When the value given looks
+like  number1 / number2, number1 represents the current value,
+and number2 represents a maximum value.
+
+Flags: In the upper right corner of the omega display, below the date
+and time, and phase of the moon, you will see four flags: The top
+describes your food status, the second describes your status with
+respect to poison, the third your health (diseased or healthy), and
+the fourth, your mode of transportation.  While you are diseased you
+will not regain hit points naturally. While you are poisoned you will
+take damage periodically until cured or killed (or the poison's effect
+can naturally fade).  When your food runs out, and you start starving,
+you will take more and more damage as time passes until finally you
+die of starvation. It's always a good idea to stock up at the
+Commandant's.... If you manage to acquire a horse, your SPEED will
+probably improve (unless you were very fast already). Regardless of
+SPEED, having a horse will save some time in countryside movement, and
+may also help out your combat strength. However, horses tend not to
+enjoy going into dungeons....
+
+Combat Abilities: In the lower right of the display, your current
+combat abilities are displayed. These are:
+
+Hit: is your current chance to hit with the weapon currently wielded,
+     the higher the better. This factor varies with your DEXTERITY,
+     experience level, and the weapon wielded.
+Dmg: is the maximum amount of damage you can do with a hit. This factor
+     varies with your STRENGTH and the weapon wielded.
+Def: is your defensive rating, how hard it is for monsters to hit you. This
+     factor varies with your AGILITY and experience level, and with
+     the shield being used.
+Arm: is your armor rating, how much damage is absorbed when a monster
+     hits you before you take damage. Armor only absorbs normal damage;
+     various effects and forms of magic may penetrate armor. This factor
+     varies with the armor worn.
+Spd: is a speed factor, how quickly or how slowly you move. This factor is
+     calculated about a base of 1.00; 2.00 means you move twice as fast;
+     0.50 means you move twice as slowly as normal. This factor varies
+     with your AGILITY and the amount of weight you are carrying.
+     Every monster has its own speed factor. The maximum speed is 5.0;
+     the minimum is infinitesimal.
+
+Magic spells, special items, and monster effects can affect all these factors,
+positively and negatively.

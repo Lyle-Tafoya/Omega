@@ -1,0 +1,55 @@
+OMEGA OVERVIEW
+==============
+omega is a complex rogue-style game of dungeon exploration.  Unlike
+other such games, there are a number of ways to "win", depending on
+various actions taken during play. The ways you can get your name on
+the hiscore board include becoming the highest ranked head of a guild,
+sect, college, etc., as well as gaining the most points figured from
+possessions and experience. The game (via the oracle) may impose some
+structure on your exploration, but you need not follow all of the
+oracle's advice. There *is* a "total winner" status, by the way.
+
+omega offers a richness of playing detail that goes beyond a simple
+game like rogue. However, the majority of gameplay is very similar to
+rogue, hack, ultrarogue, larn, and other such games. The player is
+represented by the highlighted "@" symbol, objects and terrain
+features are represented by non-alphabetic symbols, monsters are
+represented by the various upper and lower case letters, and other
+humans are represented by a non-highlighted "@". It is recommended
+that the novice read the man pages for rogue or some other such game
+and perhaps play a few games before playing omega. 
+
+omega currently consists of a countryside in which are sited a city,
+various villages, several dungeons, and some "special" sites, such as
+the temple HQ's of the various priesthoods. The game starts in the
+city of Rampart, where all the guilds have headquarters. As a dungeon
+is explored, all generated levels are saved in memory. However, only
+one dungeon is "remembered" at a time, so if you enter two dungeons,
+the first will be forgotten (it will be regenerated should you wish to
+enter it again). However, if a dungeon is "completed", this fact will
+be remembered, basically meaning that the unique monster at the bottom
+will not be regenerated if you've killed him already.
+
+You will first want to explore the city of Rampart. Although the
+architecture and important sites remain the same from game to game,
+details such as the precise position of certain shops, etc. will
+change. Rampart is relatively safe if you don't wander into places
+that are obviously dangerous or do things like breaking and entering.
+If you are reckless, it is quite possible to get killed before ever
+finding the dungeons. The 'M' command now allows you to return
+immediately to any establishment you have already visited that game,
+and is preset to "know" the permanent locations of Rampart.
+
+Many Rampart establishments are only open in the daytime, but some are
+only active at night. Due to the stringent anti-crime measures taken
+by the Duke, it is usually safe to sleep in the streets. You will find
+it far more rewarding, however, to rent or purchase your own lodgings,
+if you can afford them.
+
+The point of omega, though, is dungeon exploration. There are a number
+of dungeons hidden about the countryside. These dungeons are at
+different levels of difficulty and have various idiosyncratic
+differences. The easiest are the Caves of the Goblin King, which is
+due south of Rampart, in the nearby mountains. The caves must be
+searched for with 's' command unless you are lucky enough to move
+directly onto them.

@@ -1,0 +1,69 @@
+CHARACTER CREATION AND DEVELOPMENT
+==================================
+You will have the opportunity to create a new character each time you
+start up omega. A random selection of statistics will be generated.
+To discourage sitting around trying to get an "optimal" character,
+you can only "reroll" 9 times before having to reload the game. Since
+your statistics tend to go up as you play, it isn't fatal to
+have low statistics when you start out. On the other hand, high stats
+don't hurt, either....
+
+Each statistic is very important, but depending what sort of character
+you wish to play, different statistics will stand out. Combat is
+helped by Strength and Dexterity, Magic-use is aided by Intelligence
+and Power. Agility helps you avoid getting hit and avoid traps, while
+Constitution determines how many hits you can take before dying.
+
+A new option for omega is to "play yourself". By answering a sequence
+of personal questions, omega arrives at what your personal statistics
+should be. It is in seriously bad taste to lie.... Only the character
+you create in this mode can be saved to the omegarc. The questions are
+set up so that a "renaissance man" type of person will probably have
+stats generally around 14-15. The rest of us will stay around 9-12 on
+average. If you are really impressively good at something you can
+start out with a stat of up to 18, but this is pretty unlikely for
+most of us.
+
+As you continue to play, you will hopefully accumulate experience and
+treasure. You can gain skills and abilities through various means,
+the most important being training in one of the Rampart establishments
+devoted to self-improvement. Thus, you can choose to work out at the
+gym, study at the Collegium Magii, meditate at a Temple, and
+so on. Certain skills and abilities may only be gained through
+adventuring, and others are mutually exclusive. For example, you can
+only be a priest of one particular deity. One of the appeals of
+omega is the variety of different types of characters you can play,
+each with its own set of goals and benefits.
+
+Another aspect of your character is alignment. Characters are aligned
+towards the primal forces of Chaos and Law, or they can be neutral.
+Various actions affect this factor; killing peaceful monsters, or
+committing burgalry, for example, are chaotic acts.  Alignment
+determines which guilds will let you in, the behavior of some
+artifacts and monsters, as well as much else.
+
+Your character will gain various statuses, abilities, immunities,
+etc., both harmful and beneficial. Most of the time these are kept
+hidden from you, but there are various ways of discovering the truth
+-- self-knowledge is very useful in omega. Remember, the oracle
+knows all, sees all....
+
+Experience is accrued for skillful actions in the game. As in rogue,
+one of the main methods of acquiring experience is defeating monsters.
+You need not kill an opponent to defeat it (you can use the 'threaten'
+option of the 't' command, sometimes).  There are many other ways of
+gaining experience, though, including learning spells, deactivating
+traps, using artifacts correctly, etc. 
+
+Experience goes towards two kinds of character development. First,
+in the bizarre tradition of role-playing games like * & *, hit
+points and combat capabilities go up as experience is gained.
+
+Secondly, experience gained is shared out to each of the guilds,
+priesthoods, etc. that the character belongs to. The more guilds
+the character is a member of, the slower promotion will be
+(except in the City Nobility, and among the Gladiators, where
+promotion is not based on experience, but on quests and combats,
+respectively). Regardless of the number of guilds the character
+is a member of, the first type of experience (overall character
+level) will not be adversely affected.

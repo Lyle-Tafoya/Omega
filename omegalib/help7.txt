@@ -1,0 +1,13 @@
+MAGIC
+=====
+Your character may be taught spells by his or her guild or priesthood,
+at the collegium magii, by the sorceror's guild, or pick them up from
+a scroll of spells. Every spell costs some amount of mana to cast.
+Mana is not normally regenerated except when the player goes up an
+experience level, but various magic items augment mana, and the
+sorceror's guild will recharge you for a fee. If you learn the same
+spell multiple times, the effective power drain to cast the spell is
+lowered. Some spells have a constant effect, while others vary
+according to your level.  The spell of ritual magic has a variety of
+different effects depending on the circumstances under which it is
+cast. The spell of high magic is the most powerful, by the way.

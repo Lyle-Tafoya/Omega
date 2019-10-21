@@ -1,0 +1,23 @@
+SAVING AND RESTORING
+==================== 
+Since omega's dungeon is quite large, only the current dungeon and
+the city level will be saved; other dungeons you may have entered
+previously will be regenerated as you re-enter them. If you know the
+spell of Return, however, (learnable at the Explorers' Club) you will
+be able to warp to your deepest excursion in any dungeon without
+having to retraverse the old levels in between. Some other shortcuts
+exist for "warping" from one locale or level to another.
+
+Games can be restored by giving the save file as a command line argument
+as in:
+
+% omega quasar.sav
+
+To at least simulate the continuity of character in the game, saved
+files will be unlinked on restoration. Of course, you *can* copy them.
+
+Save files are automatically compressed unless the flag
+COMPRESS_SAVE_FILES is undefined in odefs.h. This doubles the amount
+of time taken to save, but reduces the typical save file by a factor
+of more than 10.  If you feel that the wait is too long, and have space
+to burn, you can turn off save-file compression in the Options menu.

@@ -1,0 +1,17 @@
+                                  *******
+                               *****   *****
+                            *****         *****
+                           ****   welcome   ****
+                          ***       t o       ***
+                           ***     omega     ***
+                            ****           ****
+                               ****    ****
+                            *    **    **    *
+                             *****      *****
+
+            omega version 0.80 is copyright (C) 1987,1988,1989 by:
+                           Laurence R. Brothers
+   Maintained until July 1994 by: Robert Rendell (rendell@cs.monash.edu.au)
+
+           This product includes software developed by the University
+               of California, Berkeley and its contributors

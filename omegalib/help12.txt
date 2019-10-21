@@ -1,0 +1,68 @@
+DUNGEON/CITY COMMAND LIST:
+______________________________________________________________________________
+key  : description                                                : # seconds
+______________________________________________________________________________
+^f   : abort the spell of shadow form                             :     0
+^g   : enter wizard mode (WIZARD only)                            :     0
+^i   : list items in pack                                         :     5
+^l   : redraw screen (redraw each window)                         :     0
+^p   : print previous message (more or less)                      :     0
+^o   : print previous message (IBM version)                       :     0
+^r   : redraw screen (redraw curscr)                              :     0
+^x   : make a wish (wizard mode and Adepts only)                  :     0
+^w   : magic-map screen (wizard mode only)                        :     0
+a    : activate a wand, staff, or rod                             :     10*
+c    : close door                                                 :     2*
+d    : drop object at current location                            :     5*
+e    : eat something                                              :     30
+f    : fire/throw something                                       :     5*
+g    : pick up object at current location                         :     10*
+i    : primary inventory mode (as per TOPINV option)              :  variable
+m    : cast a magic spell                                         :     20
+o    : open door                                                  :     5*
+p    : pick the pocket of an adjacent monster                     :     20*
+q    : quaff a potion                                             :     10
+r    : read a scroll                                              :     30*
+s    : search all around you, # of times = SEARCHNUM              :     20
+t    : talk to an adjacent monster                                :     10
+v    : vault over a few intervening spaces                        :     10*
+x    : examine a location                                         :     1
+z    : bash something (adjacent location)                         :     10
+A    : activate an item or artifact                               :     10
+C    : call an item something                                     :     0
+D    : disarm an adjacent trap                                    :     30
+E    : dismount (exit?) from your horse                           :     10*
+F    : set combat action sequence                                 :     0
+G    : give something to an adjacent monster                      :     15
+I    : secondary inventory mode (as per TOPINV option)            :  variable
+M    : move quickly to some discovered site (city only)           :  variable
+O    : set options                                                :     0
+P    : public license information                                 :     0
+Q    : quit                                                       :     0
+R    : rename character                                           :     0
+S    : save game and quit                                         :     0
+T    : dig a tunnel through a wall                                :     30*
+V    : version information                                        :     0
+Z    : bash something (item carried)                              :     10*
+.    : rest a turn                                                :     10
+,    : sleep some number of minutes                               :  60..6000
+@    : stay in current location, activating any local effect here :     5
+>    : go down a level                                            :     0~
+<    : go up a level                                              :     0~
+/    : identify the onscreen usage of some character              :     0
+
+vi keys (hjklbnyu) & keypad number: 
+       walk one space or fight adjacent monster (Regular Combat
+       Mode), pick up things if PICKUP option set                 :     5*+
+
+capitalized vi keys (HJKLBNYU) or 5 followed by keypad number:
+       run in that direction, fight adjacent monster if
+       BELLIGERENT option set,don't display slowly if JUMPMOVE 
+       option set, stop for doorways, etc. if RUNSTOP option 
+       set.                                                       :     4*+
+
+?    : display or copy help files                                 :     0
+
+* Actual time taken varies according to SPEED factor.
++ Takes longer in City or Village (different scale for movement)
+~ Reduced to 0 time by popular demand
