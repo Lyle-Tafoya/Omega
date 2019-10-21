@@ -294,6 +294,8 @@ char_type magic_header[] = { "\037\235" };	/* 1F 9D */
 static char rcs_ident[] = "$Header: /home/wtanksle/cvs/omega/compress.c,v 1.2 1998/08/08 10:47:56 wtanksle Exp $";
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include <signal.h>
 #include <fcntl.h>
@@ -302,6 +304,9 @@ static char rcs_ident[] = "$Header: /home/wtanksle/cvs/omega/compress.c,v 1.2 19
 #ifdef notdef
 #include <sys/ioctl.h>
 #endif
+#include <unistd.h>
+#include <utime.h>
+
 
 int n_bits;				/* number of bits/code */
 int maxbits = BITS;			/* user settable max # bits/code */
@@ -459,6 +464,10 @@ FILE *infile, *outfile;
  * deterministic, and can be done on the fly.  Thus, the decompression
  * procedure needs no input table, but tracks the way the table was built.
  */
+
+void compress();
+void decompress();
+void copystat(char *ifname, char *ofname);
 
 void do_compression( decomp, file )
 int decomp;
@@ -662,6 +671,12 @@ long int out_count = 0;			/* # of codes output (for debugging) */
  * file size for noticeable speed improvement on small files.  Please direct
  * questions about this implementation to ames!jaw.
  */
+
+void writeerr();
+void cl_hash(count_int hsize);
+void output(code_int code);
+void cl_block();
+void prratio(FILE *stream, long int num, long int den);
 
 void compress()
 {
@@ -1093,19 +1108,6 @@ getcode() {
     return code;
 }
 
-#ifndef __GO32__
-char *
-rindex(s, c)		/* For those who don't have it in libc.a */
-register char *s, c;
-{
-	char *p;
-	for (p = NULL; *s; s++)
-	    if (*s == c)
-		p = s;
-	return(p);
-}
-#endif
-
 #ifdef DEBUG
 printcodes()
 {
@@ -1220,7 +1222,7 @@ in_stack(c, stack_top)
 }
 #endif /* DEBUG */
 
-writeerr()
+void writeerr()
 {
     perror ( ofname );
     unlink ( ofname );
@@ -1232,7 +1234,7 @@ char *ifname, *ofname;
 {
     struct stat statbuf;
     int mode;
-    time_t timep[2];
+    struct utimbuf timep;
 
     fclose(outfile);
     if (stat(ifname, &statbuf)) {		/* Get stat on input file */
@@ -1263,9 +1265,9 @@ char *ifname, *ofname;
 	    perror(ofname);
 #endif
 	chown(ofname, statbuf.st_uid, statbuf.st_gid);	/* Copy ownership */
-	timep[0] = statbuf.st_atime;
-	timep[1] = statbuf.st_mtime;
-	utime(ofname, timep);	/* Update last accessed and modified times */
+	timep.actime = statbuf.st_atime;
+	timep.modtime = statbuf.st_mtime;
+	utime(ofname, &timep);	/* Update last accessed and modified times */
 #if 0
 	if (unlink(ifname))	/* Remove input file */
 	    perror(ifname);
