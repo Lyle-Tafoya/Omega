@@ -4,6 +4,7 @@
 
 #include "glob.h"
 
+void icebolt(int fx, int fy, int tx, int ty, int hit, int dmg);
 
 void m_sp_mp(m)
 struct monster *m;
