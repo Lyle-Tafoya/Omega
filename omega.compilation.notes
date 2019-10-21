@@ -1,0 +1,81 @@
+First I should note that omega is copyrighted; you are using this
+program under the terms of the license, hopefully included in the file
+omega.license.
+
+omega is set up for compilation under Sun's unix; some changes may be
+necessary for correct functioning under other unixes. I have included
+some ifdef lines in odefs.h that ought to have some positive effect.
+However, not having anything besides a sun to test omega on, I will
+have to rely on your feedback as to the effect.
+
+For some reason, some systems have <string.h> instead of <strings.h>
+so you may have to include the former instead of the latter in
+most modules.
+
+To implement omega on your system:
+
+0) Make sure you have the files listed in the file called MANIFEST.
+If you don't have these files, you lose! Get them from somewhere. In
+particular, it is a violation of the license not to have a copy of
+omega.license.
+
+0) Change omega.motd to say whatever you like. Create a null file
+called omega.saves, publically readable and writeable. 
+
+1) Set up a directory for omega's data files. Protection must allow the
+general public to create files in it, and otherwise can allow access
+as per file protection. omega does not use setuid.
+
+2) Change the first few #define's in odefs.h to conform to the 
+data file directory, your user name, etc, as the comments in the file
+discuss.
+
+3) with Makefile, *.h, and *.c in one directory, make should produce
+an executable file omega. If you get errors, you'll have to work them
+out for yourself....
+
+4) All the files which are not *.h, *.c, and Makefile should have at
+the least public read access. The following files should have write
+access as well:
+
+omega.saves
+omega.hiscores
+omega.log
+omega.lognum
+
+5) At this point, omega should be ready to run.
+
+6) As the implementor (or whoever's user name is defined as WIZARD in
+odefs.h), you have the ability to toggle wizard mode with ^g (^x
+will then give you a wish, and ^w will display the current dungeon
+level), and you also have the ability to restore games that omega
+thinks have been copied. If someone wants you to restore a game for
+them, simply restore the game as usual, and then save it again. This
+saved game should be restorable by anyone.
+
+7) Send any questions to brothers@paul.rutgers.edu.
+
+Good luck -- and let's be careful out there, shall we?
+
+
+
+NOTES TO THE WIZARD
+===================
+
+^g toggles wizard mode during game play. If you ever set wizard mode, your
+high score and npc will not be saved.
+
+In wizard mode, ^x gives you a wish. ^w draws the current level.
+
+The wizard is allowed to restore games regardless of the settings of
+DESTRUCTIVE_RESTORE and how many times the file has been copied.
+Therefore, if you want to restore a game for some user, simply restore
+from their file and immediately save again. Details like inode and
+userid are not saved with the file, so the user will be able to simply
+copy the file you just saved. 
+
+Note that it is possible for some random person to maliciously restore
+someone else's saved game (if it is not protected), causing
+omega.saves to think that it should not allow that game to be restored
+when the rightful file owner tries to do it. This could be easily
+fixed if I wasn't so lazy, but shouldn't happen anyway.

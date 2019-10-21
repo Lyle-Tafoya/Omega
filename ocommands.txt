@@ -1,0 +1,51 @@
+key  : description                                                : # turns
+______________________________________________________________________________
+^p   : print previous message                                     :     0
+^r   : redraw screen                                              :     0
+a    : activate a wand, staff, or rod                             :     1
+c    : close door                                                 :     1
+d    : drop object at current location                            :     1
+e    : eat something                                              :     1
+f    : fire/throw something                                       :     1
+g    : pick up object at current location                         :     1
+i    : inventory of things in pack                                :     0
+m    : cast a magic spell                                         :     1
+o    : open door                                                  :     1
+p    : pick the pocket of an adjacent monster                     :     1
+q    : quaff a potion                                             :     1
+r    : read a scroll                                              :     1
+s    : search all around you, time depends on SEARCHNUM option    :   1...9
+t    : talk to an adjacent monster                                :     1
+v    : vault over a few intervening spaces                        :     1
+w    : wield, wear, or otherwise employ an object                 :     1
+x    : examine a location                                         :     0
+z    : bash something (adjacent location)                         :     1
+A    : activate an artifact                                       :     1
+C    : call an item something                                     :     0
+D    : disarm an adjacent trap                                    :     1
+F    : fight an adjacent monster (Enter Tactical Combat Mode)     :     1
+G    : give something to an adjacent monster                      :     1
+I    : inventory of things on ground                              :     0
+O    : set options                                                :     0
+P    : public license information                                 :     0
+Q    : quit                                                       :     -
+R    : rename character                                           :     0
+S    : save game and quit                                         :     -
+T    : dig a tunnel through a wall                                :     1
+V    : version information                                        :     0
+W    : unwield, remove, or stop using an object                   :     1
+Z    : bash something (item carried)                              :     1
+.    : rest a turn                                                :     1
+,    : sleep some number of turns (100 turns/hour)                :   1...1000
+>    : go down a level                                            :     1
+<    : go up a level                                              :     1
+/    : identify the onscreen usage of some character              :     0
+vi keys & keypad number: 
+       walk one space or fight adjacent monster (Regular Combat
+       Mode), pick up things if PICKUP option set                 :     1
+capitalized vi keys, or 5 followed by keypad number:
+       run in that direction, fight adjacent monster if
+       BELLIGERENT option set,don't display slowly if JUMPMOVE 
+       option set, stop for doorways, etc. if RUNSTOP option 
+       set                                                        :  variable 
+?    : this list                                                  :     0

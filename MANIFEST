@@ -1,0 +1,55 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ MANIFEST                  1	This file
+ Makefile                 15	sun makefile
+ Makefile.orig             6	original sun makefile
+ README                    1	guess what
+ makefile.notsun           3	non-sun sample makefile
+ o.c                      15	source files, *.c, *.h
+ oaux1.c                  12	
+ oaux2.c                  11	
+ ochar.c                  10	
+ ocity.c                  10	
+ ocity.dat                15	city level
+ ocom.c                    1	
+ ocommands.txt            10	command list
+ odefs.h                   8	
+ odepths.c                 9	
+ odepths.dat               1	bottom level
+ oeffect1.c               13	
+ oeffect2.c               14	
+ oetc.c                    9	
+ ofile.c                   2	
+ ogen.c                   14	
+ oglob.h                   7	
+ oguild.c                  4	
+ ohelp.txt                 5	help file
+ oinititem1.c             11	
+ oinititem2.c              8	
+ oinitmon0to3.c            6	
+ oinitmon4to7.c            5	
+ oinitmon8to10.c           9	
+ oinv.c                    3	
+ oitem.c                  13	
+ oitemf.c                  2	
+ olev.c                   15	
+ omega.compilation.notes  15	how to compile
+ omega.hiscore             9	hiscore file
+ omega.intro              13	cute intro
+ omega.license            15	public license
+ omega.log                12	npc log
+ omega.lognum              1	number of log entries
+ omega.motd                5	msg of the day
+ omega.programming.notes   4	notes on the code
+ omega.thanks             12	congrat
+ omega.update.history      8	says it all
+ omon.c                   10	
+ omonf.c                   7	
+ omove.c                   7	
+ oscr.c                   12	
+ oscroll1.txt              1	library scroll
+ oscroll2.txt             14	library scroll
+ osite.c                   3	
+ ospell.c                  6	
+ otime.c                  15	new module in 0.60
+ outil.c                   4	

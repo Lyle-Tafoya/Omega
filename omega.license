@@ -1,0 +1,29 @@
+omega
+=====
+
+General Public License:
+
+omega is copyright (C) 1987 by Laurence R. Brothers
+
+All rights are reserved, save the following permissions:
+
+Free copying: Anyone may make a copy of omega, and distribute the
+copy, so long as this license remains accessible (via the 'P'
+command).
+
+Modification: No one may modify omega except inasmuch as may be
+necessary to cause omega to function in any given computer
+environment.  'Porting' is therefore freely allowed. Any such
+modifications will be considered 'works for hire' and the modifiers
+will have no rights of ownership over such modifications. I
+specifically note that no compensation in any form will be rendered to
+those who make such allowed changes to omega. All other modifications
+are in violation of this license.
+
+Warranty: No warranty is made for omega's operation. Any damages
+incurred in the use of omega or in its implementation are solely the
+responsibility of the end-user.
+
+Coverage: Anyone who compiles, runs, copies, or in any other way
+manipulates any copy of omega's code, programs, or files shall be
+considered to be bound by this license.

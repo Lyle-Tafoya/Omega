@@ -1,0 +1,30 @@
+# This is a sample makefile submitted by an omega player 
+# not on a sun. You will have to at the least change the
+# BINDIR and LIBDIR lines.
+
+CFLAGS = -O
+LDFLAGS = -s
+LIBS = -lcurses -ltermlib
+BINDIR = /u/kyrimis/bin/games
+LIBDIR = /u/kyrimis/games/omega
+
+OBJ = o.o oaux1.o oaux2.o ochar.o ocity.o ocom.o odepths.o \
+      oeffect1.o oeffect2.o \
+      oetc.o ofile.o ogen.o oguild.o oinititem1.o oinititem2.o \
+      oinitmon0to3.o oinitmon4to7.o oinitmon8to10.o \
+      oinv.o oitem.o oitemf.o olev.o omon.o omonf.o omove.o \
+      oscr.o osite.o ospell.o otime.o outil.o
+
+omega: $(OBJ)
+	cc $(LDFLAGS) $(OBJ) $(LIBS) -o omega
+
+install: omega
+	mv omega $(BINDIR)
+	chmod u+s $(BINDIR)/omega
+	cp omega.* *.dat *.txt $(LIBDIR)
+
+clean:
+	rm -rf *.o omega
+
+$(OBJ): odefs.h	oglob.h
+

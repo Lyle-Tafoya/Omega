@@ -1,0 +1,79 @@
+PRERELEASE VERSION: 0.xx (alpha).
+
+These versions should basically be considered a "sampler". While it is
+certainly playable, and more or less bug-free (ha!), the final version
+will be much better, as well as probably being about 3/2 the size,
+even considering the savings when my space-consuming ugly code is
+cleaned up. In general, the final version will have more
+"intelligence" than this version, as well as having features such as
+multiple dungeons, more player interaction, smarter monsters, etc.
+
+Despite my best intentions, I have to admit that this program is a
+hack.  Hopefully future releases will have cleaner code, but 'til then
+you will see a melange of poor programming practices, misfeatures, and
+downright bugs. In particular, the code is rather comment-free....
+
+
+Notes on the Code:
+
+As far as I can tell, all this should work on any Unix* system, but
+I've never tried it on anything but a Sun-3, not having enough disk
+space to my name anywhere else to try.... It uses curses for I/O, and
+tries to use as few OS-dependent functions as it can elsewhere. It
+should be pretty easy to port to any Unix* variant that has curses.
+
+CONSTANTS are all #defined in odefs.h
+Globals are all defined in o.c and externally declared in oglob.h
+other identifiers look out for themselves
+
+I have attempted to keep extremely system-dependent stuff segregated
+from the rest of the code.
+
+For example, all screen manipulation functions are in oscr.c, for
+those of you who want to port omega to something that doesn't have
+curses. (Well, there's a little in ofile.c)
+
+Almost all file manipulation is done in ofile.c, and I have attempted
+to keep this simple and consistent.
+
+Unfortunately, commenting is pretty minimal, mostly stupid things like:
+
+  /* this routine shows a monster */
+  void showmonster(m)
+
+...and abstruse reminders to myself. As I clean the code up for the
+final release version, this will improve. I usually try to avoid
+cleverness in my c code, preferring two assignments and an if
+statement to a single complex line with three nested conditional
+expressions. Still, there are some places where the code is pretty
+opaque... sorry about that. 
+
+Each module has a short description of its contents at the top, and
+mostly functions tend to stay where it is reasonable to find them.
+There are a few grab-bag modules, though, such as oaux1 and oaux2
+(utility functions for ocom and other modules), oetc (total grab-bag),
+and outil (mostly more general utility functions used by everything).
+
+All functions are seperately defined, declared, and extern defined in
+each module that it is appropriate to do so, that's something. At
+least lint will not complain about my code.... not much, anyhow.
+
+Those of you wishing to port omega to machines without virtual memory
+will probably want to keep only one dungeon level in memory at a time
+(the whole 40x64x64 dungeon is in memory right now); you ought to be
+able to use the save_level and restore_level routines in olev.c to get
+that working.
+
+I can always answer any questions you have, of course....
+
+-Laurence,
+
+			 Laurence R. Brothers
+		      brothers@paul.rutgers.edu
+            {anywhere}!rutgers!paul.rutgers.edu!brothers
+		       "One life -- one arrow."
+
+
+* Ha, I bet you were expecting some different message. Well, this is not
+a commercial document or a public net announcement, so I don't see
+why I have to credit Bell Labs or UCB. So there.

@@ -1,0 +1,354 @@
+You are a novice adventurer, who has recently set off in search of
+fame, fortune, glory, and a good time. In your travels, you have come
+upon the ruined city of some mysterious elder civilization. In the
+center of the city is a large bluestone sculpture shaped like:
+
+                              ****
+                            **    **
+                           *        *
+                           *        *
+                            *      *
+                             *    *
+                          ****    ****
+
+Touching the figure was a bad move; an eerie violet glow arose, and
+you blacked out. Waking up, you found yourself in the city of Rampart
+on a world called LOCUS. You have a paltry few gold pieces in your
+pockets, and you realize survival will be a priority....
+
+
+
+
+
+
+
+
+			      omega
+
+...is a complex rogue-style game of dungeon exploration.  Unlike other
+such games, there are a number of ways to win, depending on various
+actions taken during play. The ways you can get your name on the
+hiscore board include becoming the highest ranked head of a guild,
+sect, college, etc., as well as gaining the most points figured from
+possessions and experience.  Hint: There is a way to become a "total
+winner", various paths can lead to this ultimate goal.
+
+omega offers a richness of playing detail that goes beyond a simple
+game like rogue. However, the majority of gameplay is very similar to
+rogue, hack, ultrarogue, larn, and other such games. The player is
+represented by the "@" symbol, objects and terrain features are
+represented by non-alphabetic symbols, and monsters and non-player
+characters (NPC's) are represented by the various upper and lower case
+letters. It is recommended that the novice read the man pages for
+rogue or some other such game and perhaps play a few games before
+playing omega. The remainder of this document assumes a basic
+familiarity with rogue-style games.
+
+
+OMEGA STRUCTURE
+===============
+
+Omega currently consists of a city level (Rampart) above a number of
+dungeon levels. There are several entrances to the dungeons concealed
+about the city. Obviously they are not just sitting around open on the
+street (In this respect, Rampart is quite unlike New York City). A thorough
+search of the city will find the entrances, which remain fixed from game
+to game. In addition, various hints will also lead to these entrances.
+Although the dungeon levels may be constructed according to one of four
+protocols, each has at least four staircases, two going up, two going
+down. Some staircases go up or down more than one level, so be
+careful about going too deep before you are ready....
+
+Future versions of omega will have multiple dungeons and cities
+scattered about a countryside.
+
+CHARACTER CREATION AND DEVELOPMENT
+==================================
+You will have the opportunity to create a new character each time you
+start up omega. You can apportion points among Strength, Constitution,
+Dexterity, Agility, Intelligence, and Power. Each of these is very
+important, but depending what sort of character you wish to play,
+different statistics will stand out. Combat is helped by Strength and
+Dexterity, Magic-use is aided by Intelligence and Power. Agility
+helps you avoid getting hit and avoid traps, while Constitution
+determines how many hits you can take before dying.
+
+Each time you create a character, you will have the opportunity to
+save the set up in a file .omegarc which will make it easier to start
+the game in the future. omega will check for a .omegarc in your wd.
+You need not use your .omegarc if it is there. The .omegarc stores
+starting statistics, starting options settings, name, and sexual
+preference. You can rename your character with the 'R' command, so if
+that is the only change you tend to make you need not always be saving
+new .omegarc's.
+
+As you continue to play, you will hopefully accumulate experience and
+treasure. You can gain skills and abilities through various means,
+the most important being training in one of the Rampart establishments
+devoted to self-improvement. Thus, you can choose to work out at the
+gym, study at the Collegium Magii, meditate at a Temple, and
+so on. Certain skills and abilities may only be gained through
+adventuring, and others are mutually exclusive. For example, you can
+only be a servant of one particular deity. One of the appeals of
+omega is the variety of different types of characters you can play,
+each with its own set of goals and benefits.
+
+Another aspect of your character is alignment. Characters are aligned
+towards the primal forces of Chaos and Law, or they can be neutral.
+Various actions affect this factor; killing peaceful monsters, or
+committing burgalry, for example, are chaotic acts.  Alignment
+determines which guilds will let you in, the behavior of some
+artifacts and monsters, as well as much else.
+
+Your character will gain various statuses, abilities, immunities,
+etc., both harmful and beneficial. Most of the time these are kept
+hidden from you, but there are various ways of discovering the truth
+-- self-knowledge is very useful in omega.
+
+EXPERIENCE 
+========== 
+Experience is accrued for skillful actions in the game. As in rogue,
+one of the main methods of acquiring experience is defeating monsters.
+You need not kill an opponent to defeat it (see the T command).  There
+are many other ways of gaining experience, though, including learning
+spells, deactivating traps, using artifacts correctly, etc.  As
+experience is gained, the character will increase in hit points,
+combat ability, and spellcasting potential, and will eventually be
+able to increase his rank in the various guilds. Gaining an
+experience level increases maximum hit points but not current
+hit points so you cannot suddenly save yourself in a large battle
+by going up in rank. 
+
+GAMEPLAY
+======== 
+The mechanics are much like rogue, hack, etc. A variety of options are
+available to customize the interface. The command list is always
+useful to have around, but is also accessible from the '?' command.
+
+There are a number of windows used in the game. The main (central)
+window shows the current map of the dungeon, city or wilderness. A
+single level is typically one screen in width and four in length, for
+a 64 x 64 level. The top line is a message window describing what is
+now going on. The bottom two lines form a window showing various
+player statistics. The right-hand column is a status window showing
+current conditions, and another line below the map describes the
+current environment. A menu window will sometimes overlap the rest of
+the screen for various reasons.
+
+COMBAT
+======
+The player has two defensive statistics, "Defense" and "Protection".
+Defense determines how hard it is to hit the player and is determined
+mostly by a combination of agility and level.  Protection is the
+protection from damage offered by armor. The higher the statistic, the
+better.  Note that most forms of armor raise Protection at the cost of
+Defense.  Shields raise Defense without affecting Protection. There
+are also various forms of magic and magic items that affect these
+statistics, which are visible in the mode line.
+
+The Player also has two offensive statistics, "Accuracy" and "Damage".
+Accuracy is determined by the Player's dexterity, level, and the
+weapon used. Damage is the amount of damage done on a successful hit to
+an opponent and is determined by the Player's strength and the weapon
+used.
+
+omega has two combat modes. In some circumstances it may be more advantageous
+to use one over the other; in others you will have no choice.
+
+Regular Combat Mode:
+
+RCM is just like in rogue, hack, et al. A move that would place you on
+a monster is construed as an attack. omega additionally offers
+Tactical Combat Mode, which can be used via the 'F' command, or is
+used automatically in some special situations, like in the Arena.
+
+Tactical Combat Mode:
+
+TCM allows you to select precisely which actions you will choose in a
+given combat round -- parry high, thrust low, etc.  You have several
+maneuver points for use in each TCM round, depending on level, status
+as a gladiator, etc.
+
+ATTACK: Cut, Strike, Shoot, or Thrust (depending on weapon)     -- 1 pt.
+BLOCK: Prepare to block enemy attack                            -- 1 pt.
+RIPOSTE: BLOCK/ATTACK (thrusting weapons only)                  -- 2 pts.
+LUNGE: More chance to hit than usual, does more damage          -- 2 pts.
+GET: Pick up an item on the ground                              -- All pts.
+WIELD: Use an item (weapon, typically) already owned            -- All pts.
+MAGIC: Cast a spell                                             -- All pts.
+DISENGAGE: Try to get out of Tactical Mode (helped by AGILITY)  -- All pts.
+
+You can try multiple identical maneuvers if you like. If you don't try
+any BLOCKS, it will be easier than usual for your opponent to hit.
+Even if you don't get the location correct, a BLOCK still does some
+good. A riposte attacks in the same line as its block, if you got the
+line right. I.e., if you are attacked high, a high riposte will get a
+free attack back. If you are attacked high three times, a high riposte
+will get three free attacks back.
+
+It should be noted that it is disadvantageous to block in the same line
+as an attack, as your block tends to get in the way of the attack. You
+may wish to do something like blocking in two lines and attacking in
+the other, or vice versa.
+
+Heavy edged weapons and smashing weapons do CUTTING or STRIKING
+damage. Your strength affects this, so if it is high you will do
+much more damage, and if low, much less.
+
+Light edged weapons, missile weapons, and pointed weapons do THRUSTING
+or SHOOTING attacks, whose chance to hit is greatly affected by your
+dexterity.
+
+Naturally, TCM takes much longer to work out, but it may prove
+helpful, particularly when one monster's characteristic form of attack
+or defense is learned. All monsters are happy to oblige you with
+combat in either mode. Later versions will hopefully show more
+intelligence in this mode. At present, some monsters are easier
+to deal with in RCM, and some in TCM.
+
+
+MAGIC 
+===== 
+Your character may be taught spells by his or her guilds, at the
+collegium magii, or pick them up from a scroll of spells. Every spell
+costs some amount of mana to cast. Mana is not normally regenerated
+except when the player goes up an experience level, but various magic
+items augment mana, and the sorceror's guild also will recharge you
+for a fee. If you learn the same spell multiple times, the effective
+power drain to cast the spell is lowered.
+
+
+GETTING INFORMATION
+===================
+To be successful at omega, you must uncover secrets and solve
+mysteries.  You can get information in a number of ways (reading the
+source code is strictly discouraged :-), but one of the most important
+ways is "talking" to monsters and NPC's.  Even if you don't get any
+useful info, you may still find out something about the creature
+you're talking to. In particular human beings are usually on the
+screen as "m" or "w" (depending on sex), and you maybe able to
+figure out just who you are dealing with by talking to them. The
+usual course of action is to "greet" strangers. Threatening them
+is often counterproductive, but may induce weaker or injured
+opponents to give up. Threatening is a lawful action if you would
+otherwise wind up killing your opponent. On the other hand you
+may be able to "yield" to stronger opponents who, if they are
+merciful, will let you go after relieving you of some treasure.
+Warning: Monsters who defeat you will grow stronger as they too
+gain experience....
+
+
+RANDOM DETAILS
+==============
+Starting the Game:
+
+You will first want to explore the city of Rampart. Although the
+architecture and important sites remain the same from game to game,
+details such as the precise position of certain shops, etc. will
+change. Rampart is relatively safe if you don't wander into places
+that are obviously dangerous or do things like breaking and entering.
+If you are reckless, it is quite possible to get killed before ever
+finding the dungeon. The dungeon entrance(s) are concealed around
+Rampart. You wouldn't expect them to be out in the open, now,
+would you?
+
+Many Rampart establishments are only open in the daytime, but some
+are only active at night. Due to the stringent anti-crime measures
+taken by the Duke, it is usually safe to sleep in the streets. You
+will find it far more rewarding, however, to rent or purchase your
+own lodgings, if you can afford them.
+
+
+Dungeon Map Example:
+
+##########    
+#........#    This bit of a screen represents a room. The walls are "#",
+#..@...g.-    the floor is ".", there is a staircase in the lower lefthand
+#....)...#    corner, and a closed door in the right wall. A goblin is menacing
+#>......~#    the player, and a weapon lies on the floor not far away. There
+##########    is a pool in the lower righthand corner.
+
+Since the same character can represent different things or entities, a
+good command to remember is 'x' (examine), which will tell you
+precisely what you are dealing with in any situation. This is
+especially helpful before you have terrain types like deep pools and
+lava pits (!) memorized.... You can use the CONFIRM option to avoid
+walking absent-mindedly into a trap, pool, etc.  The '/' command will
+give you more general help, for example telling you that the ')'
+character represents a weapon. The '?' command can give you either a
+command list or this file.
+
+
+Saving and Restoring: 
+
+Since omega's dungeon is quite large, only the current dungeon level
+and the city level will be saved; others will be regenerated as you
+re-enter them. You might simply consider that the "actual" levels are
+far larger than is apparent, and you are just traversing a different
+part on each restore.... If you know the spell of Return, however,
+(learnable at the Explorers' Club) you will be able to warp to your
+deepest excursion in the dungeons without having to retraverse the old
+levels in between.
+
+Games can be restored by giving the save file as a command line argument
+as in:
+
+% omega quasar.sav
+
+The implementor will decide whether to enable filechecking routines
+to ensure that characters are not copied. It's in poor taste, though,
+to clone a character....
+
+
+Option Settings:
+
+Options may be set with the 'O' command. The options are:
+
+(F) BELLICOSE: Automatically attack things you run into.
+(F) JUMPMOVE: Don't display things until the end of a run.
+(T) ASKME: Automatically pick things up when you move over them.
+(T) RUNSTOP: Stop a run when something like a door is passed.
+(T) CONFIRM: Ask confirmation before you do some dangerous things.
+(1) SEARCHNUM: the number of turns spent searching when you hit the 's' key.
+
+The default values are parenthesized. These options will be recovered from
+your .omegarc if you use one.
+
+
+Flags:
+
+In the upper right corner of the omega display, below the date and
+time, and phase of the moon, you will see three flags: The top
+describes your food status, the middle describes your status with
+respect to poison, and the bottom your health (diseased or healthy).
+While you are diseased you will not regain hit points naturally. While
+you are poisoned you will take damage each round until cured or killed
+(or the poison's effect can naturally fade).  When your food runs out,
+and you start starving, you will take more and more damage as time
+passes until finally you die of starvation.  It's always a good idea
+to stock up at the Commandant's....
+
+
+Combat Abilities:
+
+In the lower right of the display, your current combat abilities
+are displayed.
+
+Hit: is your current chance to hit with the weapon currently wielded,
+     the higher the better. This factor varies with your dexterity,
+     experience level, and the weapon wielded.
+Dmg: is the maximum amount of damage you can do with a hit. This factor
+     varies with your strength and the weapon wielded.
+Def: is your defensive rating, how hard it is for monsters to hit you. This
+     factor varies with your agility and experience level.
+Arm: is your armor rating, how much damage is absorbed when a monster
+     hits you before you take damage. Armor only absorbs normal damage;
+     various effects and forms of magic may penetrate armor. This factor
+     varies with the armor worn.
+Spd: is a speed factor, how quickly or how slowly you move. This factor is
+     calculated about a base of 1.00; 2.00 means you move twice as fast;
+     0.50 means you move twice as slowly. This factor varies with your
+     agility and the amount of weight you are carrying.
+
+Magic spells, special items, and monster effects can affect all these factors,
+positively and negatively.
