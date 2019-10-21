@@ -104,7 +104,7 @@ static char sccsid[] = "@(#)compress.c	5.12 (Berkeley) 6/1/90";
 #ifdef PBITS		/* Preferred BITS for this memory size */
 # ifndef BITS
 #  define BITS PBITS
-# endif BITS
+# endif /* not BITS */
 #endif /* PBITS */
 
 #if BITS == 16
@@ -347,7 +347,7 @@ unsigned short codetab [HSIZE];
 #else
 count_int htab [HSIZE];
 unsigned short codetab [HSIZE];
-#endif sel
+#endif /* sel */
 
 #define htabof(i)	htab[i]
 #define codetabof(i)	codetab[i]
