@@ -227,6 +227,7 @@ char *argv[];
   else return(FALSE);
 }
 
+void omega_title();
 
 int main(argc,argv)
 int argc;
