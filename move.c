@@ -2,6 +2,7 @@
 /* move.c */
 /* general functions for player moving */
 
+#include <unistd.h>
 #include "glob.h"
 
 
