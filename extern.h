@@ -89,7 +89,7 @@ char *countryid ARGS((Symbol));
 char getlocation ARGS((void));
 int hostilemonstersnear ARGS((void));
 int magic_resist ARGS((int));
-int maneuvers ARGS((void));
+size_t maneuvers ARGS((void));
 int parsecitysite ARGS((void));
 int stonecheck ARGS((int));
 void alert_guards ARGS((void));

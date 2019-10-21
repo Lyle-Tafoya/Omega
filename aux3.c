@@ -1165,7 +1165,7 @@ void destroy_order()
 
 
 
-int maneuvers()
+size_t maneuvers()
 {
   int m;
 
