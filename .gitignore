@@ -1,0 +1,5 @@
+*.o
+omega
+clrgen.c
+clrgen.h
+*.swp
