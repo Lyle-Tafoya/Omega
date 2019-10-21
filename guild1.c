@@ -455,10 +455,18 @@ void l_arena()
     while (Current_Environment == E_ARENA) 
       time_clock(FALSE);
 
+    /* WDT -- Sheldon Simms points out that these objects are not
+     * wastes of space; on the contrary, they can be carried out of the
+     * arena.  Freeing them was causing subtle and hard to find problems.
+     * However, not freeing them is causing a couple of tiny memory leaks.
+     * This should be fixed, probably by modifying the object destruction
+     * procedures to account for this case.  I'm not really concerned. */
+#if 0
     free(name);		/* hey - why waste space? */
     free(corpse);
     if (melee)
       free(melee);
+#endif
     if (! Arena_Victory) {
       print1("The crowd boos your craven behavior!!!");
       if (Player.rank[ARENA] > 0) {

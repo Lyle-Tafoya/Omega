@@ -28,7 +28,9 @@ WINDOW *Levelw,*Dataw,*Flagw,*Timew,*Menuw,*Locw,*Morew,*Phasew;
 WINDOW *Comwin,*Msg1w,*Msg2w,*Msg3w,*Msgw;
 WINDOW *Showline[MAXITEMS];
 
-#if !defined(UNIX) && !defined(MSDOS) && !defined(AMIGA)
+#if defined(NOCOLOR)
+#define wattrset(w, a)
+#elif !defined(MSDOS) && !defined(AMIGA) && !defined(BSD)
 void wattrset ARGS((WINDOW *, int));
 #endif
 
@@ -120,13 +122,16 @@ char lgetc()
 
 char ynq()
 {
-  char p=' ';
-  while ((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE))
+  char p='*';
+  while ((p != 'n') && (p != 'y') && (p != 'q') &&
+         (p != ESCAPE) && (p != ' '))
     p = wgetch(Msgw);
   switch (p) {
     case 'y': wprintw(Msgw,"yes. "); break;
     case 'n': wprintw(Msgw,"no. "); break;
+    
     case ESCAPE: p = 'q';
+    case ' ': p = 'q';
     case 'q': wprintw(Msgw,"quit. "); break;
     }
   wrefresh(Msgw);
@@ -1443,7 +1448,7 @@ int slotnum;
 int topline;
 {
   WINDOW *W;
-  char usechar = ')';
+  char usechar = ')', idchar = '-';
   if (Player.possessions[slotnum] != NULL)
     if (Player.possessions[slotnum]->used)
       usechar = '>';
@@ -1452,6 +1457,7 @@ int topline;
     W = Showline[slotnum];
     hide_line(slotnum);
   }
+  idchar = index_to_key(slotnum);
   touchwin(W);
   wclear(W);
   switch(slotnum) {
@@ -1459,49 +1465,49 @@ int topline;
     wprintw(W,"-- Object 'up in air':",usechar);
     break;
   case O_READY_HAND:
-    wprintw(W,"-- a%c ready hand: ",usechar);
+    wprintw(W,"-- %c%c ready hand: ",idchar,usechar);
     break;
   case O_WEAPON_HAND:
-    wprintw(W,"-- b%c weapon hand: ",usechar);
+    wprintw(W,"-- %c%c weapon hand: ",idchar,usechar);
     break;
   case O_LEFT_SHOULDER:
-    wprintw(W,"-- c%c left shoulder: ",usechar);
+    wprintw(W,"-- %c%c left shoulder: ",idchar,usechar);
     break;
   case O_RIGHT_SHOULDER:
-    wprintw(W,"-- d%c right shoulder: ",usechar);
+    wprintw(W,"-- %c%c right shoulder: ",idchar,usechar);
     break;
   case O_BELT1:
-    wprintw(W,"-- e%c belt: ",usechar);
+    wprintw(W,"-- %c%c belt: ",idchar,usechar);
     break;
   case O_BELT2:
-    wprintw(W,"-- f%c belt: ",usechar);
+    wprintw(W,"-- %c%c belt: ",idchar,usechar);
     break;
   case O_BELT3:
-    wprintw(W,"-- g%c belt: ",usechar);
+    wprintw(W,"-- %c%c belt: ",idchar,usechar);
     break;
   case O_SHIELD:
-    wprintw(W,"-- h%c shield: ",usechar);
+    wprintw(W,"-- %c%c shield: ",idchar,usechar);
     break;
   case O_ARMOR:
-    wprintw(W,"-- i%c armor: ",usechar);
+    wprintw(W,"-- %c%c armor: ",idchar,usechar);
     break;
   case O_BOOTS:
-    wprintw(W,"-- j%c boots: ",usechar);
+    wprintw(W,"-- %c%c boots: ",idchar,usechar);
     break;
   case O_CLOAK:
-    wprintw(W,"-- k%c cloak: ",usechar);
+    wprintw(W,"-- %c%c cloak: ",idchar,usechar);
     break;
   case O_RING1:
-    wprintw(W,"-- l%c finger: ",usechar);
+    wprintw(W,"-- %c%c finger: ",idchar,usechar);
     break;
   case O_RING2:
-    wprintw(W,"-- m%c finger: ",usechar);
+    wprintw(W,"-- %c%c finger: ",idchar,usechar);
     break;
   case O_RING3:
-    wprintw(W,"-- n%c finger: ",usechar);
+    wprintw(W,"-- %c%c finger: ",idchar,usechar);
     break;
   case O_RING4:
-    wprintw(W,"-- o%c finger: ",usechar);
+    wprintw(W,"-- %c%c finger: ",idchar,usechar);
     break;
   }
   if (Player.possessions[slotnum]== NULL)
@@ -1719,12 +1725,10 @@ void clear_screen()
   refresh();
 }
 
-#if 0 /* ncurses comes with wattrset */
-#if !defined(MSDOS) && !defined(AMIGA)
+#if !defined(MSDOS) && !defined(AMIGA) && !defined(BSD)
 /* this function will never be called if we're neither MSDOS nor AMIGA, */
 /* but the linker needs something, naturally... */
 void wattrset(WINDOW *w, int s)
 {
 }
-#endif
 #endif

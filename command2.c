@@ -431,10 +431,15 @@ void give()
 	obj->used = FALSE;
 	conform_lost_objects(1,Player.possessions[index]);
 	obj->number = 1;
-	givemonster(m,obj);
 	print2("Given: ");
 	nprint2(itemid(obj));
 	morewait();
+        /* WDT bug fix: I moved the print above the givemonster
+         * call.  If that turns out looking ugly, I should change it to
+         * a sprintf or strcat.  At any rate, it was wrong before because
+         * it was accessing an object which had already been freed as part
+         * of givemonster. */
+	givemonster(m,obj);
 	calc_melee();
       }
       else {

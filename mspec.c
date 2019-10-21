@@ -324,7 +324,7 @@ struct monster *m;
 	Constriction *=2;
       }
       else {
-	mprint("The dragonlord hurls you to the ground!");
+	mprint("The Dragonlord hurls you to the ground!");
 	p_damage(2*Constriction,NORMAL_DAMAGE,"the Dragonlord");
 	Constriction = 0;
       }

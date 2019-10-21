@@ -1,0 +1,19 @@
+My own (Billy's) observations:
+
+Inventory still contains some messages which cling onto the screen for far
+too long (such as "You add the item to your pack.").  inv.c
+
+The messages which are sometimes given while you're travelling need to have
+a morewait() after them.  aux3.c
+
+It would be really, really nice if confirmation would default to a no. It'll
+probably work to change ynq() in util.c to accept spaces and default to
+'quit', but I don't know whether that will work...  I'll try, though.  It
+seems to be working OK.  There are some situations where a 'quit' response
+seems to waste a turn, though; I'll have to puzzle that out.
+
+It would be nice if I could control the duration of inventory mode.  For
+example, when picking something up I'd like to automatically leave inventory
+mode as soon as the up-in-air slot is empty (of course, this would not be
+the case when the user had deliberately entered inventory mode, only when
+they'd been pushed into it).

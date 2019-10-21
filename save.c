@@ -348,8 +348,13 @@ pml ml;
 	  ok &= (fprintf(fd,"%s\n",tml->m->monstring) >= 0);
 	if (type&2)
 	  ok &= (fprintf(fd,"%s\n",tml->m->corpsestr) >= 0);
-	ok &= save_itemlist(fd,tml->m->possessions);
+        /* WDT: line moved from here... */
       }	/* else it'll be reloaded from the hiscore file on restore */
+      /* WDT: to here.  This bug fix is Sheldon Simm's suggestion
+       * to fix the well-known 'Star Gem' bug; it should allow the
+       * possessions of hiscore NPCs to be restored from the savefile.
+       * See also the complementary change in restore_monsters. */
+      ok &= save_itemlist(fd,tml->m->possessions);
     }
   }
   return ok;
@@ -880,9 +885,13 @@ plv level;
       }
       else
 	ml->m->corpsestr = Monsters[ml->m->id].corpsestr;
-      ml->m->possessions = restore_itemlist(fd);
+      /* WDT: As suggested by Sheldon Simms, I'm moving this line...
+      ml->m->possessions = restore_itemlist(fd);*/
       ml->m->meleestr = Monsters[ml->m->id].meleestr;
     }
+    /* WDT: ...to here, so that all creatures will have their stuff
+     * restored to them. */
+    ml->m->possessions = restore_itemlist(fd);
     level->site[ml->m->x][ml->m->y].creature = ml->m;
     ml->next = level->mlist;
     level->mlist = ml;

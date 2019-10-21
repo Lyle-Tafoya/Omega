@@ -6,13 +6,16 @@
 
 
 
+/*               Revised function                   */ 
+/* WDT: code contributed by David J. Robertson */
 /* consider one monster's action */
 void m_pulse(m)
 struct monster *m;
 {
   int range = distance(m->x, m->y, Player.x,Player.y);
+  int STRIKE=FALSE;
   pol prev;
-
+ 
   if (Time % 10 == 0) 
     if (m->hp < Monsters[m->id].hp)
       m->hp++;
@@ -25,46 +28,44 @@ struct monster *m;
   if (m_statusp(m,AWAKE)) {
     if (m_statusp(m,WANDERING)) {
       if (m_statusp(m,MOBILE)) m_random_move(m);
-      if (range <= m->sense && (m_statusp(m, HOSTILE) || m_statusp(m, NEEDY)))
-	m_status_reset(m,WANDERING);
+      if (range <= m->sense && (m_statusp(m, HOSTILE) || 
+          m_statusp(m, NEEDY)))
+        m_status_reset(m,WANDERING);
     }
     else /* not wandering */ {
-      if (m_statusp(m,HOSTILE)) {
-	if ((range > 2) && (range < m->sense) && (random_range(2) == 1))
-	  if (los_p(m->x,m->y,Player.x,Player.y) &&
-	      (Player.status[INVISIBLE] == 0)) monster_strike(m);
-      }
+      if (m_statusp(m,HOSTILE))
+        if ((range > 2) && (range < m->sense) && (random_range(2) == 1))
+          if (los_p(m->x,m->y,Player.x,Player.y) &&
+              (Player.status[INVISIBLE] == 0)) {
+            STRIKE=TRUE;
+            monster_strike(m);
+          }
+      
       if ((m_statusp(m,HOSTILE) || m_statusp(m,NEEDY))
-	  && (range > 1)
-	  && m_statusp(m,MOBILE)) {
-	monster_move(m);
-
-      }
-      if (m_statusp(m,HOSTILE) && (range ==1)) {
-	resetgamestatus(FAST_MOVE);
-	tacmonster(m);
-      }
+          && (range > 1) && m_statusp(m,MOBILE) &&
+          (!STRIKE || (random_range(2) == 1)))
+        monster_move(m);
+      else
+        if (m_statusp(m,HOSTILE) && (range ==1)) {
+          resetgamestatus(FAST_MOVE);
+          tacmonster(m);
+        }
     }
     /* if monster is greedy, picks up treasure it finds */
-    if (m_statusp(m,GREEDY))
+    if (m_statusp(m,GREEDY) && (m->hp >0) )
       while (Level->site[m->x][m->y].things != NULL) {
-	m_pickup(m,Level->site[m->x][m->y].things->thing);
-	prev = Level->site[m->x][m->y].things;
-	Level->site[m->x][m->y].things =
-	  Level->site[m->x][m->y].things->next;
-	free((char *) prev);
+        m_pickup(m,Level->site[m->x][m->y].things->thing);
+        prev = Level->site[m->x][m->y].things;
+        Level->site[m->x][m->y].things =
+          Level->site[m->x][m->y].things->next;
+        free((char *) prev);
       }
     /* prevents monsters from casting spells from other side of dungeon */
-    if (range < max(5,m->level)) 
+    if ((range < max(5,m->level)) && (m->hp > 0) &&
+        (random_range(2) == 1))
       monster_special(m);
   }
 }
-    
-
-
-
-
-
 
 /* actually make a move */
 void movemonster(m,newx,newy)

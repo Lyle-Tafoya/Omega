@@ -371,6 +371,9 @@ void make_mansion_npc ARGS((int,int));
 
 /* inv.c functions */
 
+void do_inventory_control ARGS((void));
+int  key_to_index ARGS((char));
+char index_to_key ARGS((int));
 long get_money ARGS((long));
 char *cashstr ARGS((void));
 char *itemid ARGS((pob));

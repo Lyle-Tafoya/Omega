@@ -70,11 +70,7 @@ void p_process()
       Command_Duration = Player.speed*10/5; 
       break;
     case 'i': 
-      if (optionp(TOPINV)) top_inventory_control();
-      else {
-	display_possessions();
-	inventory_control();
-      }
+      do_inventory_control();
       break;
     case 'm': magic();
       Command_Duration = 12;
@@ -282,12 +278,7 @@ void p_country_process()
     case 'd': drop();  break;
     case 'e': eat();  break;
     case 'i': 
-      if (optionp(TOPINV)) top_inventory_control();
-      else {
-	menuclear();
-	display_possessions();
-	inventory_control();
-      }
+      do_inventory_control();
       break;
     case 's': countrysearch(); break;
     case 'x': examine(); break;

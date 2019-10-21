@@ -1,15 +1,15 @@
 # These two definitions are used if you 'make install'
 # the value of LIBDIR should be the same as OMEGALIB in defs.h
-BINDIR = /usr/games
-LIBDIR = /usr/games/lib/omegalib
+BINDIR = /usr/local/games/omega/
+LIBDIR = /usr/local/games/omegalib/
 
 # One of these should be uncommented, as appropriate, unless your compiler
 # does it for you.  You can test this by simply trying to 'make' omega -
 # it will fail if none of them are defined.  If you do uncomment
 # one, make sure you comment out the other definition of CFLAGS lower down
 
-#CFLAGS = -DBSD -O
-CFLAGS = -DUNIX -DSYSV -O
+CFLAGS = -DBSD -DNOCOLOR -ggdb
+#CFLAGS = -DSYSV -O
 # I also had to define -cckr (K&R style C) for system V
 #CFLAGS = -DMSDOS -O
 #CFLAGS = -DAMIGA -O
@@ -18,13 +18,14 @@ CFLAGS = -DUNIX -DSYSV -O
 # I recommend setting CC to gcc and using -O (as the CFLAGS).
 
 #CFLAGS = -O
-LDFLAGS = -s
-CC = gcc -I/usr/include/ncurses
+#LDFLAGS = -s
+CC = gcc
 
 # comment out one of the following two, after establishing whether your
 # machine uses termcap (most BSD machines) or terminfo (System-V)
-LIBS = -lncurses -ltermcap
+#LIBS = -lcurses -ltermcap
 #LIBS = -lcurses -ltermlib
+LIBS = -lcurses
 
 #################### that's it for changing the Makefile ####################
 

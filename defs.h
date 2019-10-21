@@ -45,7 +45,7 @@ on save and restore. */
    This might usually be "/usr/games/lib/omegalib/", for unix,
    or something like "c:\\games\\omega\\omegalib\\" for msdos */
 
-#define OMEGALIB "./omegalib/"
+#define OMEGALIB "/usr/local/games/omegalib/"
 
 /* Comment the following line out if you want users to be able to override */
 /* the OMEGALIB define, above, by setting the environment variable OMEGALIB */
@@ -55,11 +55,11 @@ on save and restore. */
 /* It would be downright insecure to comment this line out in a multi-user */
 /* environment, especially if you're going to run omega setuid.) */
 
-#define FIXED_OMEGALIB
+/*#define FIXED_OMEGALIB*/
 
 /* set WIZARD to maintainers's username */
 
-#define WIZARD "max"
+#define WIZARD "sdossey"
 
 /* If CATCH_SIGNALS is set to 1, will not dump core, nicer for players. */
 /* dbx still intercepts the signals first, so it's ok for debugging */
@@ -70,8 +70,8 @@ on save and restore. */
 /*---------------------------SYSTEM DEFINITIONS---------------------------*/
 
 /* Don't change anything from here on (unless you know what you're doing) */
-#define VERSION 8021
-#define VERSIONSTRING "omega version 0.80.2a"
+#define VERSION 90
+#define VERSIONSTRING "omega version 0.90 prealpha 1"
 
 #ifndef AMIGA
 #ifndef MSDOS

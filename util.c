@@ -573,29 +573,63 @@ char *month()
 }
 
 
-/* finds floor space on level with buildaux not equal to baux, 
+/* WDT: code for the following two functions contributed by Sheldon 
+ * Simms. */
+/* finds floor space on level with buildaux not equal to baux,
 sets x,y there. There must *be* floor space somewhere on level.... */
-
-void findspace(x,y,baux)
-int *x,*y, baux;
+int spaceok( int i, int j, int baux )
 {
-  int i,j,k,l,done=FALSE;
-  i = k = random_range(WIDTH);
-  j = l = random_range(LENGTH);
+  return (( Level->site[ i ][ j ].locchar == FLOOR ) &&
+          ( Level->site[ i ][ j ].creature == NULL ) &&
+          ( !loc_statusp( i, j, SECRET )) &&
+          ( Level->site[ i ][ j ].buildaux != baux ));
+}
+
+void findspace( int *x, int *y, int baux )
+{
+  int i, j, tog = TRUE, done = FALSE;
+  
   do {
-    i++;
-    if (i >= WIDTH) {
-      i = 0;
-      j++;
-      if (j > LENGTH)
-	j = 0;
-      done = ((i == k) && (j == l));
+    i = random_range( WIDTH );
+    j = random_range( LENGTH );
+    if ( spaceok( i, j, baux ))
+    {
+      done = TRUE;
     }
-    done = done || 
-      ((Level->site[i][j].locchar == FLOOR) &&
-       (Level->site[i][j].creature == NULL) &&
-       (Level->site[i][j].buildaux != baux));
-  } while (! done);
+    else
+    {
+      if ( tog )
+      {
+        tog = !tog;
+        while( 1 )
+        {
+          i++;
+          if ( i >= WIDTH )
+            break;
+          else if ( spaceok( i, j, baux ))
+          {
+            done = TRUE;
+            break;
+          }
+        }
+      }
+      else
+      {
+        tog = !tog;
+        while( 1 )
+        {
+          j++;
+          if ( j >= LENGTH )
+            break;
+          else if ( spaceok( i, j, baux ))
+          {
+            done = TRUE;
+            break;
+          }
+        }
+      }
+    }
+  } while ( !done );
   *x = i;
   *y = j;
 }
@@ -829,9 +863,11 @@ void init_perms()
 #endif
 }
 
+/*
 #ifdef BSD
 void setreuid(int, int);
 #endif
+*/
 
 void change_to_user_perms()
 {

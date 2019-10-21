@@ -1,0 +1,625 @@
+Received: from future.atlcom.net by owl.csusm.edu (AIX 4.1/UCB 5.64/4.03)
+          id AA14118; Mon, 6 Jan 1997 04:24:45 -0800
+Received: from lpm2-10.atlcom.net by future.atlcom.net with SMTP (5.65/1.2-eef)
+	id AA20605; Mon, 6 Jan 97 07:33:45 -0500
+Return-Path: <sheldon@atlcom.net>
+Message-Id: <32D0F245.5510@atlcom.net>
+Date: Mon, 06 Jan 1997 07:38:29 -0500
+From: Sheldon Simms <sheldon@atlcom.net>
+X-Mailer: Mozilla 2.0 (Macintosh; I; 68K)
+Mime-Version: 1.0
+To: wtanksle@mailhost2.csusm.edu
+Subject: More Omega
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Status:   
+X-Status: A
+
+Since I was looking through old mail... This is a message I sent
+to Erik Max Francis in late November
+
+I was trying to find out why I sometimes encoutered tangible (!m_statusp( m,
+INTANGIBLE )) monsters sitting on unrevealed secret passages. The way this
+looks to the player is that he sees a tangible monster, like a goblin,
+sitting there but when he tries to attack, Omega prints "Ouch!".
+
+The function m_unblocked() in util.c determines whether a monster can move
+onto a space. It explicitly disallows tangible monsters from moving onto a
+secret space unless they are smart, in which case they can "open" the secret
+door or passage, which then becomes non-secret.
+
+So I thought that tangible monsters might be getting put on secret walls
+when the level is populated. After tracking down the code, I found that the
+function findspace() (also in util.c) finds a space to put a new monster
+when the level is being populated. findspace() didn't care whether a space
+was secret, only whether the locchar was FLOOR, which it is for secret
+passages. So I figured (and still think) that modifying findspace() to
+disallow secret spaces has solved that problem.
+
+However, as I read findspace() I immediately thought about Laurence's
+comment about monsters having a party because the findspace was written,
+this was very likely to happen. Basically it picked a random space on the
+level and if that space wasn't ok, it started searching across and down for
+the first acceptable empty space. So if the uppermost room or corridor on a
+level was on (for example) row 16, with every row above that being filled
+with WALLs, 25% (16/64) of all the monsters on the level will be in the
+upper-left-most room or corridor - they're having a party!
+
+The reason I'm telling you all this is that I rewrote findspace() to
+eliminate the party effect. In my new findspace(), if the randomly chosen
+space is not ok, it searches either across or down (alternating each time a
+space is selected at random). If it finds no acceptable space in the row or
+column it searched, it tries another random space. Obviously it could try
+one random space after another, but I was wary of the possibility that such
+a loop might run for quite a while.
+
+Anyway, the code follows for inclusion in the official source, if you choose
+to use it:
+
+/* finds floor space on level with buildaux not equal to baux,
+sets x,y there. There must *be* floor space somewhere on level.... */
+
+int spaceok( int i, int j, int baux )
+{
+    return (( Level->site[ i ][ j ].locchar == FLOOR ) &&
+            ( Level->site[ i ][ j ].creature == NULL ) &&
+            ( !loc_statusp( i, j, SECRET )) &&
+            ( Level->site[ i ][ j ].buildaux != baux ));
+}
+
+void findspace( int *x, int *y, int baux )
+{
+    int i, j, tog = TRUE, done = FALSE;
+
+    do {
+        i = random_range( WIDTH );
+        j = random_range( LENGTH );
+        if ( spaceok( i, j, baux ))
+        {
+            done = TRUE;
+        }
+        else
+        {
+            if ( tog )
+            {
+                tog = !tog;
+                while( 1 )
+                {
+                    i++;
+                    if ( i >= WIDTH )
+                        break;
+                    else if ( spaceok( i, j, baux ))
+                    {
+                        done = TRUE;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                tog = !tog;
+                while( 1 )
+                {
+                    j++;
+                    if ( j >= LENGTH )
+                        break;
+                    else if ( spaceok( i, j, baux ))
+                    {
+                        done = TRUE;
+                        break;
+                    }
+                }
+            }
+        }
+    } while ( !done );
+    *x = i;
+    *y = j;
+}
+
+
+--
+W. Sheldon Simms III
+sheldon@atlcom.net
+
+
+-- 
+W. Sheldon Simms III
+sheldon@atlcom.net
+Received: from future.atlcom.net by owl.csusm.edu (AIX 4.1/UCB 5.64/4.03)
+          id AA07766; Mon, 6 Jan 1997 04:28:38 -0800
+Received: from lpm2-10.atlcom.net by future.atlcom.net with SMTP (5.65/1.2-eef)
+	id AA20687; Mon, 6 Jan 97 07:37:38 -0500
+Return-Path: <sheldon@atlcom.net>
+Message-Id: <32D0F32E.74F@atlcom.net>
+Date: Mon, 06 Jan 1997 07:42:22 -0500
+From: Sheldon Simms <sheldon@atlcom.net>
+X-Mailer: Mozilla 2.0 (Macintosh; I; 68K)
+Mime-Version: 1.0
+To: wtanksle@mailhost2.csusm.edu
+Subject: Still More Omega
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Status:   
+X-Status: R
+
+here's another mail I sent to Max in November:
+
+
+    I just want to tell you about a few of the more dangerous bugs I have
+found in Omega.
+
+1) In inv.c, the function givemonster(), when grain is given to a
+   horse, the grain object is freed:
+
+       else
+           nprint1( "...and now seems satiated." );
+       morewait();
+       free( (char *)o );
+
+   This is a bug because when givemonster() returns to give() in
+   command2.c, give() tries to access the object:
+
+       givemonster( m, obj );
+       print2( "Given: " );
+       nprint2( itemid( obj ));
+
+   This sometimes caused "bus error" crashes on my Mac. I have
+   simply commented out the free() statement for now. I'll probably
+   leave it that way and simply accept the memory leak.
+
+2) In guild1.c in the function l_arena(), after you kill your arena
+   opponent, the monster is freed:
+
+       print1( "Let the battle begin...." );
+
+       time_clock( TRUE );
+       while ( Current_Environment == E_ARENA )
+           time_clock( FALSE );
+
+       free(name);        /* <- bad */
+       free(corpse);      /* <- bad */
+       if (melee)         /* <- bad */
+           free(melee);   /* <- bad */
+
+    This is incorrect because the dead monster can be picked up and
+    carried out of the arena. The four lines marked "bad" should be
+    removed.
+
+3) The star-gem bug. This happens in save.c because the possessions of
+   hiscore_npc monsters are not saved. It is easily fixed by moving one
+   line in each of the functions save_monsters() and restore_monsters().
+   In save_monsters():
+
+       if ( tml->m->id != HISCORE_NPC )
+       {
+           /* several lines snipped */
+
+           /* ok &= save_itemlist( fd, tml->m->possessions ); <- move this */
+       } /* else it'll be reloaded from the hiscore file on restore */
+       ok &= save_itemlist( fd, tml->m->possessions );     /* <- to here */
+
+   This change causes possessions to be saved for all monsters. The change
+   to restore_monsters() complements the change to save_monsters():
+
+       if ( ml->m->id == HISCORE_NPC )
+       {
+           /* stuff deleted */
+       }
+       else
+       {
+           /* more stuff deleted */
+
+           /* ml->m->possessions = restore_itemlist( fd ); <- move this */
+           ml->m->meleestr = Monsters[ ml->m->id ].meleestr;
+       }
+       ml->m->possessions = restore_itemlist( fd );     /* <- to here */
+
+4) There is also another bug that I haven't fixed yet. This involves
+   the time when you bash a statue and it glides into the floor leaving a
+   stairway down. When this happens on levels where there is not supposed
+   to be stairway down, taking the created stairway can cause problems. I
+   just encountered this problem on the 5th level of the astral plane (the
+   high astral plane). Trying to take the stairway down caused a crash.
+
+-- 
+W. Sheldon Simms III
+sheldon@atlcom.net
+Received: from mail.Virginia.EDU by owl.csusm.edu (AIX 4.1/UCB 5.64/4.03)
+          id AA16322; Mon, 20 Jan 1997 06:20:52 -0800
+Received: from uva.pcmail.virginia.edu by mail.virginia.edu id aa25972;
+          20 Jan 97 9:31 EST
+Received: (from root@localhost) by uva.pcmail.virginia.edu (8.7.6/8.6.6) id JAA04707 for wtanksle@owl.csusm.edu; Mon, 20 Jan 1997 09:31:03 -0500 (EST)
+Message-Id: <199701201431.JAA04707@uva.pcmail.virginia.edu>
+From: Kent Peterson <kmp2x@uva.pcmail.virginia.edu>
+Date: Mon, 20 Jan 97 09:30:48 EST
+X-Mailer: UVa PCMail 1.9.0
+To: wtanksle@mailhost2.csusm.edu
+Subject: Omega bugs
+Status:   
+X-Status: R
+
+l_safe - siren goes off, need morewait afterwards
+
+send_to_jail - two of the release options have the x/y coords 
+        reversed (subtle!)
+
+l_tavern - sleeping needs to change the date, drinking needs to 
+        pass time
+
+l_library - cost of studying should be moved so as to apply only 
+        to option e, not any of the others
+
+1) m_talk_druid - non-druid characters always have their alignment 
+        *decreased* by neutralization?  that's what seems to be
+        happening here ...
+
+2) m_sp_mb - manaburst explosion doesn't kill it, anything that 
+        explodes itself should die by my lights.
+
+3) m_sp_dragonlord - dragonlord should be capitalized everywhere
+
+4) boots/spells of heroism should give immunity to fear
+
+5) l_void - need a morewait after "Death peers quizzically ..." etc
+
+6) l_escalator - need a morewait after stairs start moving
+
+7) m_simple_move - if blocked on straight line and both diagonals,
+        try moving randomly once
+
+8) casino closed for investigation - need to make this last the 
+        entire day
+
+9) what is the difference between m_smart_move and m_normal_move? 
+        A planned one?
+
+10) transcribe_monster_actions - when figuring attacks, when deciding
+        to attack center, it blocks instead
+
+11) void i_symbol - for loop cutting hp and for loop cutting items 
+        should be 2 separate loops (?)
+        also, if you use the symbol twice on the same hour on 
+        succeeding days, your god gets angry; there should be a 
+        SymbolDay variable as well
+        (same with crystal ball) (and in i_enchantment)
+        (and i_helm)
+
+12) holy hand grenade (i_antioch) - count>3 / count<3 are the wrong
+        way around; should be count>3 for monster to have time to
+        throw it back
+
+13) Sceptre of High Magic - we need 2 HiMagic variables here, one for
+        the sceptre and one for the throneroom (same for the 
+        throne's routine)
+
+14) berserk attacks while shadowformed - indefinitely
+
+15) i_perm_breathing fun - check p_drown to make sure it gives you 
+        the normal chance to drop/bash/etc to survive
+
+16) surrendering to an undead guardsman
+
+17) saving in countryside is broken
+
+18) area effect (snowball) targeted on edge square (so that part of 
+        the area is off the edge of the map) 
+
+19) pressing escape while targetting staff (of disruption) is broken
+
+20) "Really.  Well the police are being notified" - more always 
+        appears, shouldn't
+
+21) killing a monster with riposte does not leave the normal treasure 
+        pile that monsters carry; the * character gets printed, 
+        but there's nothing there
+
+22) restoring from a save when near a monster often will make the 
+        monster "sleep" for a dozen rounds while you whack away 
+        safely at it
+
+23) Slowness - should be temporary (a dozen rounds/seconds/minutes).  Right
+        now it's so crippling it's better to save/restore than go
+        through it.
+        (correction, it *is* temporary.  tested it.  it's just 
+        way too long-lasting.)
+
+24) Shadow Form - should lose immunities at end (plain bug)
+        when the spell aborts, the various immunities should be 
+        set to 0, rather than being decremented 
+        (same thing with slowness?)
+
+25) breathing stat (powered armor etc) - when this 
+        gets cursed or reversed, it ought to call the drown 
+        function rather than simply killing you 
+
+26) dispel - should also remove slowness and/or shadowform
+
+27) names for several temples should be reconciled between strategic
+        teleports and *roomname
+
+28) hint something about how azoth needs to be blessed
+        "They say blessings can really change an item's attitude."
+
+29) Encounters - fewer high-powered magical beasties on roads and plains;
+        wolves and lions are bad enough.  Too easy to die while
+        traveling.  
+
+30) Sacrificing - lower curve of required values; it's too hard to get
+        something worth giving as it stands (wands/staves should be
+        possible), especially at middle levels.  Reasonable values would
+        be 200 gp at level 10, current values are more like 2-3 thousand
+
+31) Fire resistance - should be partial (depending on pluses), rather than
+        total (too easy to kill dragons & Elemental Lord of Fire)
+        (same with deflection - missile attacks become laughable, 
+        should depend on plusses to shield, or total value of 
+        spell cast - the longer the spell has to last, the more 
+        effective it is?)
+        resistance to electricity/cold damage probably also 
+        applies here; fire really stands out though
+
+32) DragonLord - should have a chance of waking up every round someone's in
+        the inner cave; it's too easy to steal repeatedly
+        Also, when games are saved and restored within the cave, the
+        portcullis should restore as down
+
+33) Prime Sorceror - should always be created with the Star Gem when in the
+        Circle plane, even if game saved/restored while in Astral
+
+34) Law/Chaos worship stones - these should depend a lot more on alignment;
+        as it stands it seems like even if you're very lawful the Star
+        View stone has pretty good chances of feeding you something
+        nasty; on the other hand, the reward shouldn't be as big (make
+        the stat increase random, 1-6?)
+
+35) Gym training - far too expensive; I *always* save/restore to make sure
+        the training pays off because I can't afford to throw away that
+        kind of money.  A cost of 300-800 is more like it, or 
+        maybe 1000 with half to 3/4 of your money back if your 
+        ability doesn't improve.  (or maybe the refund gets added 
+        to your credit)
+
+36) 7 league boots - each time used, add 1 to fragility, when reaches
+        terminal, "your boots dissolve into dust with a soft sigh"
+        (right now they break the game - the countryside becomes 
+        irrelevant) (esp. when combined with robbing the DragonLord)
+
+37) Gambling - should take time (~10 mins per game), and should be more
+        detailed (what the heck does it *do*, besides randomly rolling
+        electronic dice to see if you gain or lose money?  what are the
+        rules of the game?)
+
+38) Tavern - have drinking take time (1 drink = 2-10 minutes, a round 
+        = 10-30 minutes) - we need to be able to while away the 
+        night hours
+
+39) Explorer's Club - needs to sell more stuff - maybe stimtabs/nutritabs/
+        powtabs/immunotabs, for appropriate prices? (100/200/1000/50)
+        Also, the "listen for rumors" option could be expanded to
+        something more like a daytime tavern; you could have a
+        drink/snack and hear the rumors meanwhile (and have it take ~5
+        minutes)
+
+40) The mercenary legion should sell crossbows/longbows/arrows/bolts, 
+        at 1/10 price to legion members - then they WOULD be the 
+        "best equipped" (arrows and bolts especially, those are hard
+        to find)
+
+41) boots of leather/cloaks of wool ought to add 1 to defense, to 
+        have a reason to use them aside from defense from 
+        disintegration
+
+
+Kent Peterson                 It is easier to ask for forgiveness
+kmp2x@virginia.edu                 than to ask for permission.
+kent@dirac.physics.jmu.edu
+          Abortions should be safe, legal, early, and rare.
+Received: from Tree.EGR.UH.EDU by owl.csusm.edu (AIX 4.1/UCB 5.64/4.03)
+          id AA20516; Thu, 13 Feb 1997 16:12:26 -0800
+Received: from lonestar by tree.egr.uh.edu (NX5.67f2/NX3.0M)
+	id AA11355; Thu, 13 Feb 97 18:23:29 -0600
+From: David J Robertson <djr98665@tree.egr.uh.edu>
+Message-Id: <9702140023.AA11355@tree.egr.uh.edu>
+Received: by lonestar.egr.uh.edu (NX5.67e/NX3.0X)
+	id AA08345; Thu, 13 Feb 97 18:23:28 -0600
+Subject: Re: Omega: Bug reports
+To: wtanksle@mailhost2.csusm.edu
+Date: Thu, 13 Feb 1997 18:23:27 -0600 (CST)
+In-Reply-To: <WQ7/ygUEFd7V089yn@owl.csusm.edu> from "William Tanksley" at Feb 10, 97 06:49:42 pm
+X-Mailer: ELM [version 2.4 PL23]
+Content-Type: text
+Content-Length: 6580      
+Status: RO
+X-Status: R
+
+> 
+> David, thank you!  That was a perfect bug report for me -- even gave the way
+> to fix it :).
+  
+  No problem.  
+> 
+> I've got some good news of my own -- it just MIGHT take a little less time
+> to do this than I'd thought.  Someone else had already started it :).
+> That's real good news; not only does it mean less work from me, but it also
+> means everyone gets the game sooner.
+
+   Cool!
+> 
+> As for your suggestion -- I don't know.  The first one (have "know all
+> spells" effects give MORE knowledge of already-known spells) makes sense,
+
+  Hmm, the only "know all spells" effect I know of is using the
+key that was lost.  For this item, I agree that reducing the cost
+in addition might be too good.  I was really talking about the
+extra spells you get from the guilds.  They don't help the spell
+cost if you already know the spell they teach you.
+
+  Well, here is another bug/suggestion.  Have fun. :)
+
+
+I was trying to track down a bug with ghost items/no items being
+left on a monsters death, and found it.  The following is pseudo
+code for m_pulse in mon.c.
+ 
+m_pulse(m){
+  gain a hit point every so often
+  if asleep, wake up if player is in range
+  if awake
+   if wandering
+    move around, then reset wandering if in range
+   else
+    do the monster mstrike 1/2 the time if more than 1 space away
+    (some) monsters move toward the player if more than 1 space away
+(1) hostile monsters attack the player if 1 space away 
+(2)greedy monsters pick up stuff
+   do monsters special function (if in range)
+ }
+ 
+  Now the problem is in lines (1) and (2).  During the attack the
+ player phase, the monster can be killed by a riposete.  If this
+ happens, then the monster drops its stuff, and its hp are set to
+ -1.  Then the code returns to m_pulse.  The (dead) monster picks
+ up everything it dropped, including its corpse.  Then the (dead)
+ monster does its special attack.  Then, back in time_clock in
+ time.c, the monster is deallocated.  However the stuff it picked
+ up is lost, since the code in time_clock assumes that the monster
+ dropped everything on death, leading to a memory leak.
+ 
+  When I was looking at the m_pulse, I also notice that the monsters
+ can do an awful lot in each melee round, with the worst situation
+ occuring when it is two spaces away.  Then it can:
+ 
+   (1) do a ranged attack (1/2 the time)
+   (2) move next to you
+   (3) do a melee attack
+   (4) do its special attack (even if dead)
+ 
+  I think it would be good idea to change the flow code so that
+ if the monster does a ranged attack, it won't move (or maybe it
+ should only have a chance at moving).  Then if the monster does
+ move, it shouldn't get a chance to do a melee attack.  There 
+ should be a random chance for the special attack to occur.
+ There should also be a hitpoint check placed on all monster 
+ actions after the tacmonster function has a chance of being 
+ called, to prevent the bugs I mentioned above.
+ 
+  I've enclosed a revised m_pulse function below (the original
+m_pulse follows it).
+ 
+/*               Revised function                   */ 
+/* consider one monster's action */
+void m_pulse(m)
+struct monster *m;
+{
+  int range = distance(m->x, m->y, Player.x,Player.y)
+  int STRIKE=FALSE;
+  pol prev;
+ 
+  if (Time % 10 == 0) 
+    if (m->hp < Monsters[m->id].hp)
+      m->hp++;
+  
+  if ((! m_statusp(m,AWAKE)) && (range <= m->wakeup)) {
+    m_status_set(m,AWAKE);
+    resetgamestatus(FAST_MOVE);
+  }
+  
+  if (m_statusp(m,AWAKE)) {
+    if (m_statusp(m,WANDERING)) {
+      if (m_statusp(m,MOBILE)) m_random_move(m);
+      if (range <= m->sense && (m_statusp(m, HOSTILE) || 
+          m_statusp(m, NEEDY)))
+        m_status_reset(m,WANDERING);
+    }
+    else /* not wandering */ {
+      if (m_statusp(m,HOSTILE))
+        if ((range > 2) && (range < m->sense) && (random_range(2) == 1)
+            (los_p(m->x,m->y,Player.x,Player.y) &&
+            (Player.status[INVISIBLE] == 0)) {
+           STRIKE=TRUE;
+           monster_strike(m);
+        }
+ 
+      if ((m_statusp(m,HOSTILE) || m_statusp(m,NEEDY))
+          && (range > 1) && m_statusp(m,MOBILE)) &&
+           (!STRIKE || (random_range(2) == 1))
+        monster_move(m);
+      else
+        if (m_statusp(m,HOSTILE) && (range ==1)) {
+          resetgamestatus(FAST_MOVE);
+          tacmonster(m);
+        }
+    }
+    /* if monster is greedy, picks up treasure it finds */
+    if (m_statusp(m,GREEDY) && (m->hp >0) )
+      while (Level->site[m->x][m->y].things != NULL) {
+        m_pickup(m,Level->site[m->x][m->y].things->thing);
+        prev = Level->site[m->x][m->y].things;
+        Level->site[m->x][m->y].things =
+          Level->site[m->x][m->y].things->next;
+        free((char *) prev);
+      }
+    /* prevents monsters from casting spells from other side of dungeon */
+    if ((range < max(5,m->level)) && (m->hp > 0) &&
+        (random_range(2) == 1))
+      monster_special(m);
+  }
+}
+    
+ 
+/*                 Original Function                     */ 
+/* consider one monster's action */
+void m_pulse(m)
+struct monster *m;
+{
+  int range = distance(m->x, m->y, Player.x,Player.y);
+  pol prev;
+ 
+  if (Time % 10 == 0) 
+    if (m->hp < Monsters[m->id].hp)
+      m->hp++;
+  
+  if ((! m_statusp(m,AWAKE)) && (range <= m->wakeup)) {
+    m_status_set(m,AWAKE);
+    resetgamestatus(FAST_MOVE);
+  }
+  
+  if (m_statusp(m,AWAKE)) {
+    if (m_statusp(m,WANDERING)) {
+      if (m_statusp(m,MOBILE)) m_random_move(m);
+      if (range <= m->sense && (m_statusp(m, HOSTILE) || m_statusp(m, NEEDY)))
+        m_status_reset(m,WANDERING);
+    }
+    else /* not wandering */ {
+      if (m_statusp(m,HOSTILE)) {
+        if ((range > 2) && (range < m->sense) && (random_range(2) == 1))
+          if (los_p(m->x,m->y,Player.x,Player.y) &&
+              (Player.status[INVISIBLE] == 0)) monster_strike(m);
+     }
+      if ((m_statusp(m,HOSTILE) || m_statusp(m,NEEDY))
+          && (range > 1)
+          && m_statusp(m,MOBILE)) {
+        monster_move(m);
+ 
+      }
+      if (m_statusp(m,HOSTILE) && (range ==1)) {
+        resetgamestatus(FAST_MOVE);
+        tacmonster(m);
+      }
+    }
+    /* if monster is greedy, picks up treasure it finds */
+    if (m_statusp(m,GREEDY))
+      while (Level->site[m->x][m->y].things != NULL) {
+        m_pickup(m,Level->site[m->x][m->y].things->thing);
+        prev = Level->site[m->x][m->y].things;
+        Level->site[m->x][m->y].things =
+          Level->site[m->x][m->y].things->next;
+        free((char *) prev);
+      }
+    /* prevents monsters from casting spells from other side of dungeon */
+    if (range < max(5,m->level)) 
+      monster_special(m);
+  }
+}
+
+David Robertson

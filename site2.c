@@ -936,6 +936,7 @@ void l_safe()
     print3("Your attempt at burglary failed!");
     if (attempt == -1) {
       print1("A siren goes off! You see flashing red lights everywhere!");
+      morewait();
       if (Last_Environment == E_CITY) {
 	print2("The city guard shows up! They collar you in no time flat!");
 	change_environment(E_CITY);

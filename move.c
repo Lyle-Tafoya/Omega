@@ -489,6 +489,7 @@ void l_void()
   print1("You leap into the void.");
   if (Level->mlist) {
     print2("Death peers over the edge and gazes quizzically at you....");
+    morewait();
     print3("'Bye-bye,' he says... 'We'll meet again.'");
   }
   morewait();
