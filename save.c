@@ -12,7 +12,7 @@
 /*The game remembers various player information, the city level,
 the country level, and the last or current dungeon level */
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE) || defined(AMIGA)
+#if defined(MSDOS_SUPPORTED_ANTIQUE)
 void do_compression(int, char *);
 #endif
 
@@ -121,7 +121,7 @@ char *savestr;
 #ifdef COMPRESS_SAVE_FILES
     if (writeok && compress) {
       print2("Compressing Save File....");
-# if defined(MSDOS) || defined(AMIGA)
+# if defined(MSDOS)
       do_compression(0, savestr);
       strcpy(temp, savestr);
       strcat(temp, "Z");
@@ -507,7 +507,7 @@ char *savestr;
   fclose(fd);
   if (VERSION != version && !ok_outdated(version)) {
     print1("Uncompressing Save File....");
-#if defined(MSDOS) || defined(AMIGA)
+#if defined(MSDOS)
     strcpy(temp, savestr);
     strcat(temp, "Z");
     rename(savestr, temp);

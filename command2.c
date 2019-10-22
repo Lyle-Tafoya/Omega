@@ -662,7 +662,7 @@ void setoptions()
     colour_on();
   else
     colour_off();
-#if !defined(MSDOS_SUPPORTED_ANTIQUE) && !defined(AMIGA)
+#if !defined(MSDOS_SUPPORTED_ANTIQUE)
   xredraw();
 #endif
 }

@@ -5,11 +5,7 @@
 #ifdef MSDOS_SUPPORTED_ANTIQUE
 # include "curses.h"
 #else
-# ifdef AMIGA
-#  include <curses210.h>
-# else
-#  include <curses.h>
-# endif
+# include <curses.h>
 #endif
 
 #include "glob.h"

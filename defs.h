@@ -491,7 +491,7 @@ on save and restore. */
 #define RS_CORRIDOR 2
 #define RS_WALLSPACE 1
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE) || defined(AMIGA)
+#if defined(MSDOS_SUPPORTED_ANTIQUE)
 #define CLR(fg)		COL_##fg
 #define CLRS(fg,bg)	COL_##fg|COL_BG_##bg
 #endif
@@ -525,41 +525,7 @@ on save and restore. */
 #define COL_FG_BLINK 0x8000
 
 #else
-#ifdef AMIGA
 
-#include <curses210.h>
-
-/* unfortunately, this curses package only implements 8 colours... */
-
-#define COL_WHITE 0x0100
-#define COL_BLACK COL_WHITE
-	    /* this assumes that all things with black fg have white bg */
-#define COL_BROWN 0x0200
-#define COL_YELLOW 0x0300
-#define COL_GREY 0x0400
-#define COL_GREEN 0x0500
-#define COL_BLUE 0x0600
-#define COL_RED 0x0700
-#define COL_CYAN 0x0500		/* = green */
-#define COL_PURPLE 0x0700	/* = red */
-#define COL_LIGHT_BLUE 0x0600	/* = blue */
-#define COL_LIGHT_GREEN 0x0500	/* = green */
-#define COL_LIGHT_CYAN 0x0500	/* = green */
-#define COL_LIGHT_RED 0x0700	/* = red */
-#define COL_LIGHT_PURPLE 0x0100	/* = white */
-#define COL_BRIGHT_WHITE 0x0100	/* = white */
-#define COL_BG_BLACK 0x0000
-#define COL_BG_WHITE (A_REVERSE<<8)
-#define COL_BG_GREEN (A_REVERSE<<8)
-#define COL_BG_CYAN (A_REVERSE<<8)
-#define COL_BG_RED (A_REVERSE<<8)
-#define COL_BG_PURPLE (A_REVERSE<<8)
-#define COL_BG_BROWN (A_REVERSE<<8)
-#define COL_BG_BLUE (A_REVERSE<<8)
-#define COL_FG_BLINK 0x0000	/* not implemented :( */
-/* WDT: thank goodness for that lack of implementation. */
-
-#else
 #include <curses.h>
 
 #define COL_FG_BLINK A_BLINK
@@ -580,7 +546,6 @@ on save and restore. */
 #define CLR(fg)		0
 #define CLRS(fg,bg)	0
 
-#endif
 #endif
 #endif
 
@@ -1356,7 +1321,7 @@ for example. */
 
 /* typedefs needed by structs */
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE) || defined(AMIGA)
+#if defined(MSDOS_SUPPORTED_ANTIQUE)
 typedef short Symbol;
 #else
 typedef int Symbol;

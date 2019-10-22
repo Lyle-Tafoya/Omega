@@ -6,11 +6,7 @@
 #ifdef MSDOS_SUPPORTED_ANTIQUE
 # include "curses.h"
 #else
-# ifdef AMIGA
-#  include <curses210.h>
-# else
-#  include <curses.h>
-# endif
+# include <curses.h>
 # include <sys/types.h>
 # include <unistd.h>
 # include <sys/file.h>
@@ -354,7 +350,7 @@ int npc;
   fclose(infile);
   fclose(outfile);
   unlink(Str1);
-#if defined(MSDOS) || defined(AMIGA)
+#if defined(MSDOS)
   rename(Str2, Str1);
 #else
   link(Str2, Str1);

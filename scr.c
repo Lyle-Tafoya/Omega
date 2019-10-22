@@ -7,15 +7,11 @@
 #ifdef MSDOS_SUPPORTED_ANTIQUE
 # include "curses.h"
 #else
-# ifdef AMIGA
-#  include <curses210.h>
-# else
-#  include <curses.h>
-# endif
+# include <curses.h>
 # include <sys/types.h>
 #endif
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE) || defined(AMIGA)
+#if defined(MSDOS_SUPPORTED_ANTIQUE)
 # define CHARATTR(c)	((c) >> 8)
 #else
 # define CHARATTR(c)	((c) & ~0xff)
@@ -375,24 +371,12 @@ void initgraf()
   initscr();
 #ifndef MSDOS_SUPPORTED_ANTIQUE
   start_color();
-# ifndef AMIGA
   clrgen_init();
-# endif
 #endif
   if (LINES < 24 || COLS < 80) {
     printf("Minimum Screen Size: 24 Lines by 80 Columns.");
     exit(0);
   }
-#ifdef AMIGA
-  init_color(1, 800, 800, 800); /* white */
-  init_color(2, 644, 164, 164); /* brown */
-  init_color(3, 800, 800, 0); /* yellow */
-  init_color(4, 200, 200, 200); /* grey */
-  init_color(5, 0, 1000, 0); /* green */
-  init_color(6, 0, 0, 1000); /* blue */
-  init_color(7, 1000, 0, 0); /* red */
-  LINES -= 2;	/* ugly, but neccessary with this curses package... */
-#endif
   ScreenLength = LINES - 6;
   Msg1w = newwin(1,80,0,0);
   scrollok(Msg1w, 0);	/* DJGPP curses defaults to scrollable new windows */

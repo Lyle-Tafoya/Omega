@@ -159,14 +159,14 @@ void help()
   menuprint("k: Options Settings\n");
   menuprint("l: Dungeon/City/Other Command List\n");
   menuprint("m: Countryside Command List\n");
-#if !defined(MSDOS) && !defined(AMIGA)
+#if !defined(MSDOS)
   menuprint("n: Everything\n");
 #endif
   menuprint("ESCAPE: Forget the whole thing.");
   showmenu();
   do 
     c = (char) mcigetc();
-#if defined(MSDOS) || defined(AMIGA)
+#if defined(MSDOS)
   while ((c < 'a' || c > 'm') && c != ESCAPE);
   if (c != ESCAPE) {
     sprintf(filestr, "%shelp%d.txt", Omegalib, c+1-'a');

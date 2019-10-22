@@ -129,7 +129,7 @@ void p_process()
       Command_Duration = 10;
       break;
     case 'O': setoptions();
-#if defined(AMIGA) || defined(MSDOS_SUPPORTED_ANTIQUE)
+#if defined(MSDOS_SUPPORTED_ANTIQUE)
       show_screen();
       xredraw();
 #endif
