@@ -810,7 +810,7 @@ void setreuid(int, int);
 
 void change_to_user_perms()
 {
-#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__)
+#if (defined( BSD ) || defined( SYSV ))
 #ifdef BSD
     setreuid(game_uid, user_uid);
 #else /* SYSV */
@@ -821,7 +821,7 @@ void change_to_user_perms()
 
 void change_to_game_perms()
 {
-#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__)
+#if (defined( BSD ) || defined( SYSV ))
 #ifdef BSD
     setreuid(user_uid, game_uid);
 #else /* SYSV */
