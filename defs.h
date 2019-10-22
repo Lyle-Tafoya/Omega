@@ -73,16 +73,6 @@ on save and restore. */
 #define VERSION 90
 #define VERSIONSTRING "omega version 0.90"
 
-#ifndef AMIGA
-#ifndef MSDOS
-#ifndef BSD
-#ifndef SYSV
-    ERROR! - One of these should be set - edit the makefile appropriately
-#endif
-#endif
-#endif
-#endif
-
 #if defined(MSDOS_SUPPORTED_ANTIQUE)
 #define SAVE_LEVELS
 #endif
