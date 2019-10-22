@@ -982,15 +982,6 @@ int compress, force;
       print1(Str1);
       ok = FALSE;
     }
-#ifdef SYSV
-    if (strlen(fname) > 14 - EXT_LENGTH - 1)
-    {
-      sprintf(Str1, "Save name longer than %d characters - Save aborted.",
-	14 - EXT_LENGTH - 1);
-      print1(Str1);
-      ok = FALSE;
-    }
-#endif
     if (ok)
     {
       if (save_game(compress,fname)) {

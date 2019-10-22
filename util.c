@@ -796,10 +796,8 @@ int user_uid;
 
 void init_perms()
 {
-#if (defined(BSD) || defined(SYSV))
     user_uid = getuid();
     game_uid = geteuid();
-#endif
 }
 
 /*
@@ -810,24 +808,20 @@ void setreuid(int, int);
 
 void change_to_user_perms()
 {
-#if (defined( BSD ) || defined( SYSV ))
 #ifdef BSD
     setreuid(game_uid, user_uid);
-#else /* SYSV */
+#else
     seteuid(user_uid);
 #endif /* BSD */
-#endif /* BSD || SYSV */
 }
 
 void change_to_game_perms()
 {
-#if (defined( BSD ) || defined( SYSV ))
 #ifdef BSD
     setreuid(user_uid, game_uid);
-#else /* SYSV */
+#else
     seteuid(game_uid);
 #endif /* BSD */
-#endif /* BSD || SYSV */
 }
 
 #ifdef NO_USLEEP

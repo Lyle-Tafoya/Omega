@@ -438,11 +438,6 @@ char *file;
 
     fileptr = &file;
 
-#ifdef BSD4_2
-    /* 4.2BSD dependent - take it out if not */
-    setlinebuf( stderr );
-#endif /* BSD4_2 */
-
     do_decomp = decomp;
 
     if(maxbits < INIT_BITS) maxbits = INIT_BITS;
@@ -521,7 +516,6 @@ char *file;
 
 		/* Generate output filename */
 		strcpy(ofname, *fileptr);
-#ifndef BSD4_2		/* Short filenames */
 		if ((cp=rindex(ofname,'/')) != NULL)	cp++;
 		else					cp = ofname;
 		if (strlen(cp) > 12) {
@@ -529,7 +523,6 @@ char *file;
 		    fclose(infile);
 		    return;
 		}
-#endif  /* BSD4_2		Long filenames allowed */
 		strcat(ofname, "Z");
 	    }
 	    /* Check for overwrite of existing file */
