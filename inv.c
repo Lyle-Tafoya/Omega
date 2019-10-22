@@ -791,7 +791,7 @@ int aux_take_from_pack(slot)
 int slot;
 {
   char response,pack_item, last_item;
-  int i,quit = FALSE,ok=TRUE;
+  int quit = FALSE,ok=TRUE;
   if (Player.possessions[slot] != NULL) 
     slot = O_UP_IN_AIR;
   if (Player.possessions[slot] != NULL) 
@@ -851,8 +851,7 @@ int aux_top_take_from_pack(slot,display)
 int slot,display;
 {
   char response;
-  int i,quit = FALSE,ok=TRUE,displayed=FALSE;
-  pob item;
+  int quit = FALSE,ok=TRUE,displayed=FALSE;
   if (Player.possessions[slot] != NULL) 
     slot = O_UP_IN_AIR;
   if (Player.possessions[slot] != NULL) 

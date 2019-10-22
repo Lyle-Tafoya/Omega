@@ -880,7 +880,6 @@ void restore_hiscore_npc(npc, npcid)
 pmt npc;
 int npcid;
 {
-  pob ob;
   int level, behavior;
   long status;
 

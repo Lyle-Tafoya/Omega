@@ -295,7 +295,6 @@ struct monster *m;
 void m_sp_eater(m)
 struct monster *m;
 {
-  int i;
   if (Player.rank[COLLEGE]) m_status_set(m,HOSTILE);
   if (m_statusp(m,HOSTILE))
     if (los_p(m->x,m->y,Player.x,Player.y)) {

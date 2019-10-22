@@ -27,10 +27,6 @@ char copyright[] =
  All rights reserved.\n";
 #endif /* not lint */
 
-#ifndef lint
-static char sccsid[] = "@(#)compress.c	5.12 (Berkeley) 6/1/90";
-#endif /* not lint */
-
 /* This version of Compress has been hacked around considerably - May 1994 */
 
 /* 
@@ -291,7 +287,6 @@ char_type magic_header[] = { "\037\235" };	/* 1F 9D */
  * Add variable bit length output.
  *
  */
-static char rcs_ident[] = "$Header: /home/wtanksle/cvs/omega/compress.c,v 1.2 1998/08/08 10:47:56 wtanksle Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>

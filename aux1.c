@@ -397,7 +397,6 @@ struct monster *m;
 int damage_item(o)
 pob o;     
 {
-  int i;
   /* special case -- break star gem */
   if (o->id == ARTIFACTID+21) {
     print1("The Star Gem shatters into a million glistening shards....");
