@@ -200,6 +200,7 @@ pob o;
 {
   pol tmp; 
   if (Current_Environment != E_COUNTRYSIDE) 
+  {
     if ((Level->site[x][y].locchar != VOID_CHAR) &&
 	(Level->site[x][y].locchar != ABYSS)) {
       tmp = ((pol) checkmalloc(sizeof(oltype)));
@@ -215,6 +216,7 @@ pob o;
     }
     else if (Level->site[x][y].p_locf == L_VOID_STATION)
       setgamestatus(PREPARED_VOID);
+  }
 }  
 
 

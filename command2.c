@@ -1011,6 +1011,7 @@ int compress, force;
 # endif
 #endif
     if (ok)
+    {
       if (save_game(compress,fname)) {
 	print3("Bye!");
 	sleep(2);
@@ -1019,6 +1020,7 @@ int compress, force;
       }
       else
 	print1("Save Aborted.");
+    }
   }
   if (force) {
     morewait();

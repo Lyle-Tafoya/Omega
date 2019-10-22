@@ -187,13 +187,15 @@ void l_thieves_guild()
 	  mnumprint(max(count*fee,fee));
 	  nprint1("Au. Pay it? [yn] ");
 	  if (ynq1()=='y')
-	  if (Player.cash < max(count*fee,fee))
-	    print2("Try again when you have the cash.");
-	  else {
-	    Player.cash -= max(count*fee,fee);
-	    dataprint();
-	    identify(1);
-	  }
+          {
+            if (Player.cash < max(count*fee,fee))
+              print2("Try again when you have the cash.");
+            else {
+              Player.cash -= max(count*fee,fee);
+              dataprint();
+              identify(1);
+            }
+          }
 	}
       }
       else if (action == 'd') {
