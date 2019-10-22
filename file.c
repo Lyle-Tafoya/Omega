@@ -634,7 +634,7 @@ char *filestr;
 void copyfile(srcstr)
 char *srcstr;
 {
-  char deststr[80];
+  char deststr[STRING_LEN-36];
   char buffer[STRING_LEN];
   FILE *in, *out;
 
