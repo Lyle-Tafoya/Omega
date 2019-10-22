@@ -713,7 +713,7 @@ int pack_item_cost(int index)
 }
 
 /* WDT -- 'response' must be an index into the pack. */
-int use_pack_item(response,slot)
+void use_pack_item(response,slot)
 int response,slot;
 {
   pob item; int i;
@@ -890,8 +890,8 @@ int slot,display;
 int take_from_pack(slot,display)
 int slot,display;
 {
-  if (optionp(TOPINV)) aux_top_take_from_pack(slot,display);
-  else aux_take_from_pack(slot);
+  if (optionp(TOPINV)) return aux_top_take_from_pack(slot,display);
+  else return aux_take_from_pack(slot);
 }
 
 
