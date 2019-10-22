@@ -563,13 +563,11 @@ char *filestr;
 {
   FILE *fd = checkfopen(filestr,"r");
   int c,d=' ';
-  int x,y;
   clear();
   refresh();
   c = fgetc(fd);
   while ((c != EOF)&&((char) d != 'q')&&((char) d!=ESCAPE)) {
-    getyx(stdscr,y,x);
-    if (y > ScreenLength) { 
+    if (getcury(stdscr) > ScreenLength) { 
       standout();
       printw("\n-More-");
       standend();
@@ -598,15 +596,13 @@ char *filestr;
 {
   FILE *fd = checkfopen(filestr,"rb");
   int c,d=' ';
-  int x,y;
   char key = 100;
 
   clear();
   refresh();
   c = fgetc(fd);
   while ((c != EOF)&&((char) d != 'q')&&((char) d!=ESCAPE)) {
-    getyx(stdscr,y,x);
-    if (y > ScreenLength) { 
+    if (getcury(stdscr) > ScreenLength) { 
       standout();
       printw("\n-More-");
       standend();

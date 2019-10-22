@@ -302,7 +302,7 @@ void l_arena()
   char response;
   pob newitem;
   int i,prize,monsterlevel;
-  char *name, *corpse, *melee = NULL;
+  char *name, *melee = NULL;
 
   print1("Rampart Coliseum");
   if (Player.rank[ARENA] == 0) {
@@ -420,7 +420,7 @@ void l_arena()
       name = Arena_Monster->monstring = salloc(Str1);
       strcpy(Str2,"The corpse of ");
       strcat(Str2,Str1);
-      corpse = Arena_Monster->corpsestr = salloc(Str2);
+      Arena_Monster->corpsestr = salloc(Str2);
       Arena_Monster->level = 20;
       Arena_Monster->hp = Championlevel*Championlevel*5;
       Arena_Monster->hit = Championlevel*4;
@@ -442,7 +442,7 @@ void l_arena()
       name = Arena_Monster->monstring = salloc(Str1);
       strcpy(Str2,"The corpse of ");
       strcat(Str2,Str1);
-      corpse = Arena_Monster->corpsestr = salloc(Str2);
+      Arena_Monster->corpsestr = salloc(Str2);
     }
     Arena_Monster->uniqueness = UNIQUE_MADE;
     print1("You have a challenger: ");

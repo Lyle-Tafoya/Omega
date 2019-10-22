@@ -185,10 +185,7 @@ int ynq2()
 /* puts up a morewait to allow reading if anything in top two lines */
 void checkclear()
 {
-  int x1,y,x2;
-  getyx(Msg1w,x1,y);
-  getyx(Msg2w,x2,y);  
-  if ((x1 != 0) || (x2 != 0)) {
+  if ((getcurx(Msg1w) != 0) || (getcurx(Msg2w) != 0)) {
     morewait();
     wclear(Msg1w);
     wclear(Msg2w);
@@ -317,9 +314,9 @@ it should morewait and clear window */
 void mprint(s)
 char *s;
 {
-  int x,y;
+  int x;
   if (! gamestatusp(SUPPRESS_PRINTING)) {
-    getyx(Msgw,y,x);
+    x = getcurx(Msgw);
     if (x+strlen(s) >= (size_t)WIDTH) {
       buffercycle(s);
       if (Msgw == Msg1w) {
@@ -877,9 +874,7 @@ void menuclear()
 void menuspellprint(i)
 int i;
 {
-  int x,y;
-  getyx(Menuw,y,x);
-  if (y >= ScreenLength - 2) {
+  if (getcury(Menuw) >= ScreenLength - 2) {
     wrefresh(Menuw);
     morewait();
     wclear(Menuw);
@@ -892,9 +887,7 @@ int i;
 void menuprint(s)
 char *s;
 {
-  int x,y;
-  getyx(Menuw,y,x);
-  if (y >= ScreenLength - 2) {
+  if (getcury(Menuw) >= ScreenLength - 2) {
     wrefresh(Menuw);
     morewait();
     wclear(Menuw);
@@ -1226,9 +1219,7 @@ long n;
 void menunumprint(n)
 int n;
 {
-  int x,y;
-  getyx(Menuw,y,x);
-  if (y >= ScreenLength - 2) {
+  if (getcury(Menuw) >= ScreenLength - 2) {
     wrefresh(Menuw);
     morewait();
     wclear(Menuw);
@@ -1240,9 +1231,7 @@ int n;
 void menulongprint(n)
 long n;
 {
-  int x,y;
-  getyx(Menuw,y,x);
-  if (y >= ScreenLength - 2) {
+  if (getcury(Menuw) >= ScreenLength - 2) {
     wrefresh(Menuw);
     morewait();
     wclear(Menuw);
@@ -1651,24 +1640,17 @@ void deathprint()
   
 void clear_if_necessary()
 {
-  int x,y;
-  getyx(Msg1w,y,x);
-
-  if (x != 0) {
+  if (getcurx(Msg1w) != 0) {
     wclear(Msg1w);
     wrefresh(Msg1w);
   }  
 
-  getyx(Msg2w,y,x);
-
-  if (x != 0) {
+  if (getcurx(Msg2w) != 0) {
     wclear(Msg2w);
     wrefresh(Msg2w);
   }  
 
-  getyx(Msg3w,y,x);
-
-  if (x != 0) {
+  if (getcurx(Msg3w) != 0) {
     wclear(Msg3w);
     wrefresh(Msg3w);
   }

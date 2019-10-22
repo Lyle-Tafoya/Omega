@@ -1228,7 +1228,6 @@ void copystat(ifname, ofname)
 char *ifname, *ofname;
 {
     struct stat statbuf;
-    int mode;
     struct utimbuf timep;
 
     fclose(outfile);
@@ -1254,7 +1253,6 @@ char *ifname, *ofname;
 		fprintf(stderr, " -- file unchanged");
     } else {			/* ***** Successful Compression ***** */
 	exit_stat = 0;
-	mode = statbuf.st_mode & 07777;
 #if 0
 	if (chmod(ofname, mode))		/* Copy modes */
 	    perror(ofname);
