@@ -2,11 +2,7 @@
 /* inv.c */
 /* functions having to do with player item inventory */
 
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-# include "curses.h"
-#else
-# include <curses.h>
-#endif
+#include <curses.h>
 
 #include "glob.h"
 
@@ -618,7 +614,6 @@ char slotchar;
 }
 
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* this takes the numerical index directly for the same effect as badobject*/
 int baditem(slotnum)
 int slotnum;
@@ -626,7 +621,6 @@ int slotnum;
   if ((slotnum<1) || (slotnum >= MAXITEMS)) return(TRUE);
   else return(Player.possessions[slotnum] == NULL);
 }
-#endif
     
 
 
@@ -891,7 +885,6 @@ int slot,display;
 }
 
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* General interface to inventory */
 void item_inventory(topline)
 int topline;
@@ -902,7 +895,6 @@ int topline;
   }
   else top_inventory_control();
 }
-#endif
 
 
 void do_inventory_control()
@@ -927,9 +919,6 @@ void inventory_control()
   int slot = 0,done=FALSE;
   int response;
   char letter;
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-  int simple = 0;
-#endif
   clearmsg3();
   checkclear();
   print1("Action [d,e,l,p,s,t,x,>,<,?,ESCAPE]:");

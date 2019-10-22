@@ -749,11 +749,7 @@ void foodcheck()
 void roomcheck()
 {
   static int oldroomno = -1;
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-  static int oldlevel = -1;
-#else
   static plv oldlevel = NULL;
-#endif
   int roomno = Level->site[Player.x][Player.y].roomnumber;
 
   if ((roomno == RS_CAVERN) ||
@@ -772,18 +768,10 @@ void roomcheck()
       levelrefresh();
     }
   if ((oldroomno != roomno) ||
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-      (oldlevel != Level->depth)) {
-#else
       (oldlevel != Level)) {
-#endif
     showroom(roomno);
     oldroomno = roomno;
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-    oldlevel = Level->depth;
-#else
     oldlevel = Level;
-#endif
   }
 }
 

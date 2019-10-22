@@ -635,7 +635,6 @@ void l_brothel()
 
 
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* if signp is true, always print message, otherwise do so only sometimes */
 void sign_print(x,y,signp)
 int x,y,signp;
@@ -789,7 +788,6 @@ int x,y,signp;
     break;
   }
 }
-#endif
   
 
 

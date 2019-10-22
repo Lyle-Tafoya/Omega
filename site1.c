@@ -2,9 +2,7 @@
 /* site1.c */
 /* 1st half of site functions and aux functions to them */
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <unistd.h>
-#endif
 
 #include "glob.h"
 

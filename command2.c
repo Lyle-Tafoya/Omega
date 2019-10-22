@@ -3,10 +3,8 @@
 
 /* This file contains toplevel commands called from command1.c */
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <unistd.h>
 #include <ctype.h>
-#endif
 
 #include "glob.h"
 
@@ -190,7 +188,6 @@ int *searchval;
  }
 
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* floor inventory */
 void floor_inv()
 {
@@ -209,7 +206,6 @@ void floor_inv()
   morewait();
   xredraw();
 }
-#endif
 
 
 
@@ -662,9 +658,7 @@ void setoptions()
     colour_on();
   else
     colour_off();
-#if !defined(MSDOS_SUPPORTED_ANTIQUE)
   xredraw();
-#endif
 }
 
 
@@ -980,27 +974,15 @@ int compress, force;
       print1("No save file entered - save aborted.");
       ok = FALSE;
     }
-#ifdef MSDOS
-    for (pos = 0; fname[pos] && isalnum(fname[pos]); pos++)
-      ;
-#else
     for (pos = 0; fname[pos] && isprint(fname[pos]) && !isspace(fname[pos]);
       pos++)
       ;
-#endif
     if (fname[pos]) {
       sprintf(Str1, "Illegal character '%c' in filename - Save aborted.", fname[pos]);
       print1(Str1);
       ok = FALSE;
     }
-#ifdef MSDOS
-    if (strlen(fname) > 7)
-    {
-      print1("Save name longer than 7 characters - Save aborted.");
-      ok = FALSE;
-    }
-#else
-# ifdef SYSV
+#ifdef SYSV
     if (strlen(fname) > 14 - EXT_LENGTH - 1)
     {
       sprintf(Str1, "Save name longer than %d characters - Save aborted.",
@@ -1008,7 +990,6 @@ int compress, force;
       print1(Str1);
       ok = FALSE;
     }
-# endif
 #endif
     if (ok)
     {

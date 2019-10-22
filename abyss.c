@@ -2,15 +2,6 @@
 /* abyss.c */
 /* some functions to make the abyss level and run the final challenge */
 
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-#include <sys/types.h>
-#include <malloc.h>
-#ifdef SAVE_LEVELS
-#include <sys/timeb.h>
-#include <dos.h>
-#endif
-#endif
-
 #include "glob.h"
 
 /* loads the abyss level into Level*/
@@ -199,19 +190,4 @@ int newenv,newdepth;
     return(NULL);
 }
 
-#endif
-
-#ifdef DJGPP
-
-void check_memory()
-{
-  clear_screen();
-  print1("There should be over 300 K free on the drive.");  
-  print2("Save _before_ the free space gets below 300 K.");
-  morewait();
-  system("dir");
-  morewait();
-  clear_screen();
-  xredraw();
-}
 #endif

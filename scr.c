@@ -4,18 +4,10 @@
 /* plus a few file i/o stuff */
 /* also some in file.c */
 
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-# include "curses.h"
-#else
-# include <curses.h>
-# include <sys/types.h>
-#endif
+#include <curses.h>
+#include <sys/types.h>
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE)
-# define CHARATTR(c)	((c) >> 8)
-#else
-# define CHARATTR(c)	((c) & ~0xff)
-#endif
+#define CHARATTR(c)	((c) & ~0xff)
 
 #include <unistd.h>
 #include "glob.h"
@@ -95,11 +87,6 @@ int mcigetc()
 {
   int c;
 
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-#ifndef DJGPP
-  keypad(Msgw,TRUE);
-#endif
-#endif
   c = wgetch(Msgw);
   if ((c>=(int)'A') && (c<=(int)'Z'))
     return(c+(int)('a'-'A'));
@@ -369,10 +356,8 @@ void initgraf()
 {
   int i;
   initscr();
-#ifndef MSDOS_SUPPORTED_ANTIQUE
   start_color();
   clrgen_init();
-#endif
   if (LINES < 24 || COLS < 80) {
     printf("Minimum Screen Size: 24 Lines by 80 Columns.");
     exit(0);
@@ -995,47 +980,11 @@ int range;
     clearmsg();
     wprintw(Msg1w,"How many? Change with < or >, ESCAPE to select:");
     mnumprint(value);
-#ifndef MSDOS
     do atom=mcigetc();
     while ((atom != '<')&&(atom != '>')&&(atom!=ESCAPE));
     if ((atom=='>') && (value < range)) value++;
     else if ((atom=='<') && (value > 1)) value--;
     else if (atom==ESCAPE) done = TRUE;
-#else
-    atom=mcigetc();
-    switch (atom)
-    {
-      case '>':
-      case 'k':
-#ifdef KEY_UP
-      case KEY_UP:
-#endif
-        if (value < range)
-	  value++;
-	break;
-      case '<':
-      case 'j':
-#ifdef KEY_DOWN
-      case KEY_DOWN:
-#endif
-        if (value > 1)
-	  value--;
-	break;
-#ifdef KEY_HOME
-      case KEY_HOME:
-#endif
-        value = 1;
-        break;
-#ifdef KEY_LL
-      case KEY_LL:
-#endif
-        value = range;
-        break;
-      case ESCAPE:
-      	done = TRUE;
-	break;
-    }
-#endif
   }
   return(value);
 }
@@ -1671,11 +1620,7 @@ void bufferprint()
 {
   int i = bufferpos - 1, c, finished = 0;
   clearmsg();
-#ifndef MSDOS_SUPPORTED_ANTIQUE
   wprintw(Msg1w,"^p for previous message, ^n for next, anything else to quit.");
-#else
-  wprintw(Msg1w,"^o for last message, ^n for next, anything else to quit.");
-#endif
   wrefresh(Msg1w);
   do {
     if (i >= STRING_BUFFER_SIZE) i = 0;
@@ -1684,11 +1629,7 @@ void bufferprint()
     wprintw(Msg2w,Stringbuffer[i]);
     wrefresh(Msg2w);
     c = mgetc();
-#ifndef MSDOS_SUPPORTED_ANTIQUE
     if (c == 16)	/* ^p */
-#else
-    if (c == 15)	/* ^o */
-#endif
       i--;
     else if (c == 14)	/* ^n */
       i++;

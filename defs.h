@@ -73,10 +73,6 @@ on save and restore. */
 #define VERSION 90
 #define VERSIONSTRING "omega version 0.90"
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE)
-#define SAVE_LEVELS
-#endif
-
 #ifdef COMPRESS_SAVE_FILES
 # ifdef USE_GZIP
 # define COMPRESSOR "gzip"
@@ -491,41 +487,6 @@ on save and restore. */
 #define RS_CORRIDOR 2
 #define RS_WALLSPACE 1
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE)
-#define CLR(fg)		COL_##fg
-#define CLRS(fg,bg)	COL_##fg|COL_BG_##bg
-#endif
-
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-
-#define COL_BLACK 0x0000
-#define COL_BLUE 0x0100
-#define COL_GREEN 0x0200
-#define COL_CYAN 0x0300
-#define COL_RED 0x0400
-#define COL_PURPLE 0x0500
-#define COL_BROWN 0x0600
-#define COL_WHITE 0x0700
-#define COL_GREY 0x0800
-#define COL_LIGHT_BLUE 0x0900
-#define COL_LIGHT_GREEN 0x0a00
-#define COL_LIGHT_CYAN 0x0b00
-#define COL_LIGHT_RED 0x0c00
-#define COL_LIGHT_PURPLE 0x0d00
-#define COL_YELLOW 0x0e00
-#define COL_BRIGHT_WHITE 0x0f00
-#define COL_BG_BLACK 0x0000
-#define COL_BG_BLUE 0x1000
-#define COL_BG_GREEN 0x2000
-#define COL_BG_CYAN 0x3000
-#define COL_BG_RED 0x4000
-#define COL_BG_PURPLE 0x5000
-#define COL_BG_BROWN 0x6000
-#define COL_BG_WHITE 0x7000
-#define COL_FG_BLINK 0x8000
-
-#else
-
 #include <curses.h>
 
 #define COL_FG_BLINK A_BLINK
@@ -546,7 +507,6 @@ on save and restore. */
 #define CLR(fg)		0
 #define CLRS(fg,bg)	0
 
-#endif
 #endif
 
 /* objects, locations, and terrain; characters to draw */
@@ -1321,11 +1281,7 @@ for example. */
 
 /* typedefs needed by structs */
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE)
-typedef short Symbol;
-#else
 typedef int Symbol;
-#endif
 
 
 /* structure definitions */
@@ -1480,11 +1436,6 @@ typedef oltype *pol;
 
 /* The assert macro (for ANSI/ISO C).  Hopefully this will always work! */
 #include <assert.h>
-
-#ifdef MSDOS
-#include <time.h>
-#define getlogin() "pcuser"
-#endif
 
 #undef sign
 #undef max

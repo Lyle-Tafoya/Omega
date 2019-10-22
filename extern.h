@@ -19,13 +19,6 @@ void signalsave ARGS((void));
 
 /* abyss.c functions */
 
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-void check_memory ARGS((void));
-void kill_all_levels ARGS((void));
-void kill_levels ARGS((char *));
-void msdos_init ARGS((void));
-plv msdos_changelevel ARGS((plv,int,int));
-#endif
 void load_abyss ARGS((void));
 
 /* aux1.c functions */
@@ -287,10 +280,8 @@ void learnclericalspells ARGS((int,int));
 
 /* file.c functions */
 
-#ifndef MSDOS
 void lock_score_file ARGS((void));
 void unlock_score_file ARGS((void));
-#endif
 FILE *checkfopen ARGS((char *,char *));
 int filecheck ARGS((void));
 int test_file_access ARGS((char *, char));

@@ -1,10 +1,8 @@
 /* omega copyright (c) 1987,1988,1989 by Laurence Raphael Brothers */
 /* save.c */
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <unistd.h>
 #include <stdlib.h>
-#endif
 
 #include "glob.h"
 
@@ -12,9 +10,6 @@
 /*The game remembers various player information, the city level,
 the country level, and the last or current dungeon level */
 
-#if defined(MSDOS_SUPPORTED_ANTIQUE)
-void do_compression(int, char *);
-#endif
 
 /**************** SAVE FUNCTIONS */
 
@@ -36,7 +31,6 @@ char *savestr;
   plv current, save;
   char temp[200];
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
   if (access(savestr, R_OK) == 0)
     if (access(savestr, W_OK) == 0)
     {
@@ -64,7 +58,6 @@ char *savestr;
 	savestr[slashpos] = '/';
     }
   }
-#endif
   change_to_user_perms();
   if (writeok) {
     fd = fopen(savestr,"wb");
@@ -121,12 +114,6 @@ char *savestr;
 #ifdef COMPRESS_SAVE_FILES
     if (writeok && compress) {
       print2("Compressing Save File....");
-# if defined(MSDOS)
-      do_compression(0, savestr);
-      strcpy(temp, savestr);
-      strcat(temp, "Z");
-      rename(temp, savestr);
-# else
       strcpy(temp,COMPRESSOR);
       strcat(temp," ");
       strcat(temp,savestr);
@@ -135,7 +122,6 @@ char *savestr;
       unlink(savestr);
       link(temp, savestr);
       unlink(temp);	/* renames, but sys-V doesn't have rename()... */
-# endif
     }
 #endif
     morewait();
@@ -483,7 +469,6 @@ char *savestr;
   char temp[200];
   FILE *fd;
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
   if (access(savestr, F_OK|R_OK|W_OK) == -1) /* access uses real uid */
   {
     print1("Unable to access save file: ");
@@ -491,7 +476,6 @@ char *savestr;
     morewait();
     return FALSE;
   }
-#endif
   change_to_user_perms();
 #ifdef COMPRESS_SAVE_FILES
   fd = fopen(savestr,"rb");
@@ -507,12 +491,6 @@ char *savestr;
   fclose(fd);
   if (VERSION != version && !ok_outdated(version)) {
     print1("Uncompressing Save File....");
-#if defined(MSDOS)
-    strcpy(temp, savestr);
-    strcat(temp, "Z");
-    rename(savestr, temp);
-    do_compression(1, savestr);
-#else
     sprintf(temp, "%s.%s", savestr, COMPRESS_EXT);
     unlink(temp);
     link(savestr, temp);
@@ -521,7 +499,6 @@ char *savestr;
     strcat(temp," ");
     strcat(temp,savestr);
     system(temp);
-#endif
     print2("Save file uncompressed.");
     morewait();
   }

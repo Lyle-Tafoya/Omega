@@ -462,7 +462,6 @@ int i,j,itemid;
 
 
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* returns a "level of difficulty" based on current environment
    and depth in dungeon. Is somewhat arbitrary. value between 1 and 10.
    May not actually represent real difficulty, but instead level
@@ -494,4 +493,3 @@ int difficulty()
   default: return(3);
   }
 }
-#endif

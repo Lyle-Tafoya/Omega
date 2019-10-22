@@ -3,13 +3,11 @@
 
 /* Random utility functions called from all over */
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <stdlib.h>
-#endif
 
 #include "glob.h"
 
@@ -177,7 +175,6 @@ int x,y;
 }
 
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* 8 moves in Dirs */
 void initdirs()
 {
@@ -200,7 +197,6 @@ void initdirs()
   Dirs[1][7] = -1;
   Dirs[1][8] = 0;
 }
-#endif
 
 
 
@@ -432,7 +428,6 @@ int x1,y1,x2,y2;
   return((x1==x2) && (y1==y2));
 }
 
-#ifndef MSDOS_SUPPORTED_ANTIQUE
 /* returns the command direction from the index into Dirs */
 char inversedir(dirindex)
 int dirindex;	  
@@ -449,7 +444,6 @@ int dirindex;
     default:return('\0');
   }
 }
-#endif
 
 
 long calc_points()
@@ -787,63 +781,6 @@ char *str;
   return(s);
 }
 
-#ifdef MSDOS
-/* ****Moved here from another file**** */
-/* reads a string from a file. If it is a line with more than 80 char's,
-   then remainder of line to \n is consumed */
-void filescanstring(fd,fstr)
-FILE *fd;
-char *fstr;
-{
-  int i= -1;
-  int byte='x';
-  while ((i<80) && (byte != '\n') && (byte != EOF)) {
-    i++;
-    byte=fgetc(fd);
-    fstr[i] = byte;
-  } 
-  if (byte != '\n')
-    while((byte!='\n') && (byte != EOF))
-      byte=fgetc(fd);
-  fstr[i]=0;
-}
-#endif
-
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-/* ****Moved here from another file**** */
-/* returns a "level of difficulty" based on current environment
-   and depth in dungeon. Is somewhat arbitrary. value between 1 and 10.
-   May not actually represent real difficulty, but instead level
-   of items, monsters encountered.    */
-int difficulty()
-{
-  int depth = 1;
-  if (Level != NULL) depth = Level->depth;
-  switch(Current_Environment) {
-  case E_COUNTRYSIDE: return(7);
-  case E_CITY: return(3);
-  case E_VILLAGE: return(1);
-  case E_TACTICAL_MAP: return(7);
-  case E_SEWERS: return(depth/6)+3;
-  case E_CASTLE: return(depth/4)+4;
-  case E_CAVES: return(depth/3)+1;
-  case E_VOLCANO: return(depth/4)+5;
-  case E_ASTRAL: return(8);
-  case E_ARENA: return(5);
-  case E_HOVEL: return(3);
-  case E_MANSION: return(7);
-  case E_HOUSE: return(5);
-  case E_DLAIR: return(9);
-  case E_ABYSS: return(10);
-  case E_STARPEAK: return(9);
-  case E_CIRCLE: return(8);
-  case E_MAGIC_ISLE: return(8);
-  case E_TEMPLE: return(8);
-  default: return(3);
-  }
-}
-#endif
-
 char cryptkey(fname)
 char *fname;
 {
@@ -859,7 +796,7 @@ int user_uid;
 
 void init_perms()
 {
-#if (defined(BSD) || defined(SYSV)) && !defined(__DJGPP__)
+#if (defined(BSD) || defined(SYSV))
     user_uid = getuid();
     game_uid = geteuid();
 #endif
@@ -873,7 +810,7 @@ void setreuid(int, int);
 
 void change_to_user_perms()
 {
-#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__) && !defined(__DJGPP__)
+#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__)
 #ifdef BSD
     setreuid(game_uid, user_uid);
 #else /* SYSV */
@@ -884,7 +821,7 @@ void change_to_user_perms()
 
 void change_to_game_perms()
 {
-#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__) && !defined(__DJGPP__)
+#if (defined( BSD ) || defined( SYSV )) && !defined(__EMX__)
 #ifdef BSD
     setreuid(user_uid, game_uid);
 #else /* SYSV */

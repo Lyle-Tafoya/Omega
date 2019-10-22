@@ -11,7 +11,6 @@ LIBDIR = /home/sdossey/omega/lib/
 CFLAGS = -DBSD -g
 #CFLAGS = -DSYSV -O
 # I also had to define -cckr (K&R style C) for system V
-#CFLAGS = -DMSDOS -O
 
 # CPP should contain the command to run the C preprocessor.
 #CPP = cc -E

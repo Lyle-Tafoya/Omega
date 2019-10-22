@@ -50,9 +50,6 @@ extern int ScreenLength;
 extern struct terrain Country[MAXWIDTH][MAXLENGTH];
 /* The countryside */
 
-#ifdef MSDOS_SUPPORTED_ANTIQUE
-extern struct level TheLevel;
-#endif
 
 extern struct level *City;
 /* The city of Rampart */

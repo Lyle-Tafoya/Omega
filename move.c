@@ -469,9 +469,7 @@ void l_raise_portcullis()
 void l_arena_exit()
 {
   resetgamestatus(ARENA_MODE);
-#ifndef MSDOS_SUPPORTED_ANTIQUE
   free_level(Level);
-#endif
   Level = NULL;
   change_environment(E_CITY);
 }
@@ -485,9 +483,7 @@ void l_house_exit()
     if (ynq1() != 'y')
       return;
   }
-#ifndef MSDOS_SUPPORTED_ANTIQUE
   free_level(Level);
-#endif
   Level = NULL;
   change_environment(Last_Environment);
 }
