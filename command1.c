@@ -36,7 +36,7 @@ void p_process()
     case 6: abortshadowform(); break; /* ^f */
     case 7: wizard(); break; /* ^g */
     case 9: display_pack(); morewait(); xredraw(); break; /* ^i */
-    case 11: if (gamestatusp(CHEATED)) frobgamestatus();
+    case 11: if (gamestatusp(CHEATED)) frobgamestatus(); __attribute__ ((fallthrough));
     case 12: xredraw(); setgamestatus(SKIP_MONSTERS); break; /* ^l */
 #ifndef MSDOS_SUPPORTED_ANTIQUE
     case 16: bufferprint(); setgamestatus(SKIP_MONSTERS); break; /* ^p */ 

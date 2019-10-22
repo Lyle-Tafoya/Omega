@@ -132,9 +132,8 @@ int ynq()
   switch (p) {
     case 'y': wprintw(Msgw,"yes. "); break;
     case 'n': wprintw(Msgw,"no. "); break;
-    
-    case ESCAPE: p = 'q'; /* fall through to 'q' */
-    case ' ': p = 'q';    /* fall through to 'q' */
+    case ESCAPE: p = 'q'; __attribute__ ((fallthrough));
+    case ' ': p = 'q'; __attribute__ ((fallthrough));
     case 'q': wprintw(Msgw,"quit. "); break;
     default: assert( p == EOF );
     }
@@ -154,8 +153,8 @@ int ynq1()
     case 'y': wprintw(Msg1w,"yes. "); break;
     case 'n': wprintw(Msg1w,"no. "); break;
     
-    case ESCAPE: p = 'q'; /* fall through to 'q' */
-    case ' ': p = 'q';    /* fall through to 'q' */
+    case ESCAPE: p = 'q'; __attribute__ ((fallthrough));
+    case ' ': p = 'q'; __attribute__ ((fallthrough));
     case 'q': wprintw(Msg1w,"quit. "); break;
     default: assert( p == EOF );
     }
@@ -174,9 +173,8 @@ int ynq2()
   switch (p) {
     case 'y': wprintw(Msg2w,"yes. "); break;
     case 'n': wprintw(Msg2w,"no. "); break;
-    
-    case ESCAPE: p = 'q'; /* fall through to 'q' */
-    case ' ': p = 'q';    /* fall through to 'q' */
+    case ESCAPE: p = 'q'; __attribute__ ((fallthrough));
+    case ' ': p = 'q'; __attribute__ ((fallthrough));
     case 'q': wprintw(Msg2w,"quit. "); break;
     default: assert( p == EOF );
     }

@@ -994,6 +994,7 @@ char new_environment;
 	break;
       default: 
 	print3("Very strange, a nonexistent village.");
+        __attribute__ ((fallthrough));
       case 2:
 	Player.x = 39;
 	Player.y = 15;

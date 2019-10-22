@@ -606,6 +606,7 @@ int i,j,deity,populate;
   case 1:
     Level->site[i][j].locchar = WATER;
     Level->site[i][j].p_locf = L_MAGIC_POOL;
+    __attribute__ ((fallthrough));
   case 2:
     if (populate)
       make_site_monster(i,j,INNER_DEMON);

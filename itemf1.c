@@ -743,6 +743,7 @@ pob o;
     mprint("Oh, yuck. The 'food' seems to be tainted.");
     mprint("You feel very sick. You throw up.");
     Player.food = min(Player.food, 4);
+    __attribute__ ((fallthrough));
   default: mprint("It proved completely inedible, but you tried anyhow.");
   }
 }

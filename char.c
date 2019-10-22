@@ -256,6 +256,7 @@ int attack;
   switch(attack) {
   case 1: /* melee */
     ability += statmod(Player.str);
+    __attribute__ ((fallthrough));
   case 2: /* missle */
     ability += statmod(Player.dex);
     ability += Player.rank[LEGION];
