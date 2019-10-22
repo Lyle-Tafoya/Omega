@@ -119,16 +119,6 @@ char copyright[] =
 # define HSIZE	5003		/* 80% occupancy */
 #endif
 
-#ifdef M_XENIX			/* Stupid compiler can't handle arrays with */
-# if BITS == 16			/* more than 65535 bytes - so we fake it */
-#  define XENIX_16
-# else
-#  if BITS > 13			/* Code only handles BITS = 12, 13, or 16 */
-#   define BITS	13
-#  endif
-# endif
-#endif
-
 /*
  * a code_int must be able to hold 2**BITS values of type int, and also -1
  */
@@ -313,32 +303,6 @@ code_int maxmaxcode = 1 << BITS;	/* should NEVER generate this code */
 # define MAXCODE(n_bits)	((1 << (n_bits)) - 1)
 #endif /* COMPATIBLE */
 
-#ifdef XENIX_16
-count_int htab0[8192];
-count_int htab1[8192];
-count_int htab2[8192];
-count_int htab3[8192];
-count_int htab4[8192];
-count_int htab5[8192];
-count_int htab6[8192];
-count_int htab7[8192];
-count_int htab8[HSIZE-65536];
-count_int * htab[9] = {
-	htab0, htab1, htab2, htab3, htab4, htab5, htab6, htab7, htab8 };
-
-#define htabof(i)	(htab[(i) >> 13][(i) & 0x1fff])
-unsigned short code0tab[16384];
-unsigned short code1tab[16384];
-unsigned short code2tab[16384];
-unsigned short code3tab[16384];
-unsigned short code4tab[16384];
-unsigned short * codetab[5] = {
-	code0tab, code1tab, code2tab, code3tab, code4tab };
-
-#define codetabof(i)	(codetab[(i) >> 14][(i) & 0x3fff])
-
-#else	/* Normal machine */
-
 #ifdef sel	/* gould base register braindamage */
 /*NOBASE*/
 count_int htab [HSIZE];
@@ -351,7 +315,6 @@ unsigned short codetab [HSIZE];
 
 #define htabof(i)	htab[i]
 #define codetabof(i)	codetab[i]
-#endif	/* XENIX_16 */
 code_int hsize = HSIZE;			/* for dynamic table sizing */
 count_int fsize;
 
@@ -365,13 +328,8 @@ count_int fsize;
  */
 
 #define tab_prefixof(i)	codetabof(i)
-#ifdef XENIX_16
-# define tab_suffixof(i)	((char_type *)htab[(i)>>15])[(i) & 0x7fff]
-# define de_stack		((char_type *)(htab2))
-#else	/* Normal machine */
 # define tab_suffixof(i)	((char_type *)(htab))[i]
 # define de_stack		((char_type *)&tab_suffixof(1<<BITS))
-#endif	/* XENIX_16 */
 
 code_int free_ent = 0;			/* first unused entry */
 int exit_stat = 0;			/* per-file status */
@@ -679,11 +637,7 @@ void compress()
     register code_int i = 0;
     register int c;
     register code_int ent;
-#ifdef XENIX_16
-    register code_int disp;
-#else	/* Normal machine */
     register int disp;
-#endif
     register code_int hsize_reg;
     register int hshift;
 
@@ -1339,28 +1293,11 @@ void cl_block ()		/* table clear for block compress */
 void cl_hash(hsize)		/* reset code table */
 	register count_int hsize;
 {
-#ifndef XENIX_16	/* Normal machine */
 	register count_int *htab_p = htab+hsize;
-#else
-	register j;
-	register long k = hsize;
-	register count_int *htab_p;
-#endif
 	register long i;
 	register long m1 = -1;
 
-#ifdef XENIX_16
-    for(j=0; j<=8 && k>=0; j++,k-=8192) {
-	i = 8192;
-	if(k < 8192) {
-		i = k;
-	}
-	htab_p = &(htab[j][i]);
-	i -= 16;
-	if(i > 0) {
-#else
 	i = hsize - 16;
-#endif
  	do {				/* might use Sys V memset(3) here */
 		*(htab_p-16) = m1;
 		*(htab_p-15) = m1;
@@ -1380,10 +1317,6 @@ void cl_hash(hsize)		/* reset code table */
 		*(htab_p-1) = m1;
 		htab_p -= 16;
 	} while ((i -= 16) >= 0);
-#ifdef XENIX_16
-	}
-    }
-#endif
     	for ( i += 16; i > 0; i-- )
 		*--htab_p = m1;
 }
