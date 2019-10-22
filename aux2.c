@@ -572,10 +572,12 @@ void p_drown()
 	setgamestatus(SUPPRESS_PRINTING);
 	for(i=0;i<MAXPACK;i++) {
 	  if (Player.pack[i] != NULL)
+          {
 	    if (Level->site[Player.x][Player.y].p_locf != L_WATER)
 	      p_drop_at(Player.x,Player.y,Player.pack[i]->number,Player.pack[i]);
 	    free((char *) Player.pack[i]);
-	  Player.pack[i] = NULL;
+            Player.pack[i] = NULL;
+          }
 	}
 	if (Level->site[Player.x][Player.y].p_locf == L_WATER)
 	  mprint("It sinks without a trace.");

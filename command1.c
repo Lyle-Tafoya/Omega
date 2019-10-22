@@ -273,8 +273,7 @@ void p_country_process()
 #endif
     case 18: redraw(); no_op = TRUE; break; /* ^r */
     case 23: if (gamestatusp(CHEATED)) drawscreen();  break; /* ^w */
-    case 24: if (gamestatusp(CHEATED) || 
-		 Player.rank[ADEPT]) wish(1);  break; /* ^x */
+    case 24: if (gamestatusp(CHEATED) || Player.rank[ADEPT]) wish(1);  break; /* ^x */
     case 'd': drop();  break;
     case 'e': eat();  break;
     case 'i': 
