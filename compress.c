@@ -59,23 +59,6 @@ char copyright[] =
 #define SIGNED_COMPARE_SLOW	/* signed compare is slower than unsigned */
 #endif
 
-#ifdef pdp11
-# define BITS 	12	/* max bits/code for 16-bit machine */
-# define NO_UCHAR	/* also if "unsigned char" functions as signed char */
-# undef USERMEM 
-#endif /* pdp11 */	/* don't forget to compile with -i */
-
-#ifdef z8000
-# define BITS 	12
-# undef vax		/* weird preprocessor */
-# undef USERMEM 
-#endif /* z8000 */
-
-#ifdef pcxt
-# define BITS   12
-# undef USERMEM
-#endif /* pcxt */
-
 #ifdef USERMEM
 # if USERMEM >= (433484+SACREDMEM)
 #  define PBITS	16
