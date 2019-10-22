@@ -9,7 +9,7 @@ LIBDIR = /home/sdossey/omega/lib/
 # one, make sure you comment out the other definition of CFLAGS lower down
 
 #CFLAGS = -DBSD -ggdb
-CFLAGS = -DSYSV -O -Wextra -Wall
+CFLAGS = -DSYSV -O -Wextra -Wall -Wno-unused-parameter
 # I also had to define -cckr (K&R style C) for system V
 #CFLAGS = -DMSDOS -O
 #CFLAGS = -DAMIGA -O
