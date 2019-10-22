@@ -44,7 +44,7 @@ pob o;
     case 2:nprint1("CLOAKS");j = CLOAKID; k = BOOTID; break;
     case 3:nprint1("BOOTS");j = BOOTID; k = RINGID; break;
     case 4:nprint1("RINGS");j = RINGID; k = STICKID; break;
-    case 5:nprint1("STICKS");j = STICKID; k = ARTIFACTID; break;
+    default:nprint1("STICKS");j = STICKID; k = ARTIFACTID;
   }
   menuclear();
   menuprint("You could probably now recognise:\n");

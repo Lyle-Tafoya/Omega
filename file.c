@@ -152,7 +152,7 @@ void showmotd()
 void lock_score_file()
 {
 #ifndef MSDOS
-    int lock, attempts, thispid, lastpid = 0;
+    int lock, attempts = 0, thispid, lastpid = 0;
     FILE *lockfile;
 
     strcpy(Str1,Omegalib);

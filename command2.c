@@ -108,7 +108,7 @@ void activate()
   if (response != ESCAPE) {
     if (response == 'i')
       index = getitem(THING);
-    else if (response == 'a')
+    else
       index = getitem(ARTIFACT);
     if (index != ABORT) {
       clearmsg();

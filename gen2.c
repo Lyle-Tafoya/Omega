@@ -378,7 +378,7 @@ void maze_level()
     case 2: rsi = RS_AIRPLANE; break;
     case 3: rsi = RS_WATERPLANE; break;
     case 4: rsi = RS_FIREPLANE; break;
-    case 5: rsi = RS_HIGHASTRAL; break;
+    default: rsi = RS_HIGHASTRAL;
     }
   else rsi = RS_VOLCANO;
   maze_corridor(random_range(WIDTH-1)+1,
@@ -414,7 +414,7 @@ void maze_level()
     case 2: mid = LORD_AIR; break; /* Elemental Lord of Air */
     case 3: mid = LORD_WATER; break; /* Elemental Lord of Water */
     case 4: mid = LORD_FIRE; break; /* Elemental Lord of Fire */
-    case 5: mid = ELEM_MASTER; break; /* Elemental Master */
+    default: mid = ELEM_MASTER; /* Elemental Master */
     }
     if (Level->depth == 5) {
       findspace(&tx,&ty,-1);

@@ -401,40 +401,41 @@ void l_arena()
       *Arena_Monster = Monsters[JOTUN];
       break;
     default:
-      if ((Player.rank[ARENA] < 5) && (Player.rank[ARENA] > 0)) {
-	strcpy(Str1,Champion);
-	strcat(Str1,", the arena champion");
+      if ((Player.rank[ARENA] < 6) && (Player.rank[ARENA] > 0))
 	*Arena_Monster = Monsters[HISCORE_NPC];
-	name = Arena_Monster->monstring = salloc(Str1);
-	strcpy(Str2,"The corpse of ");
-	strcat(Str2,Str1);
-	corpse = Arena_Monster->corpsestr = salloc(Str2);
-	Arena_Monster->level = 20;
-	Arena_Monster->hp = Championlevel*Championlevel*5;
-	Arena_Monster->hit = Championlevel*4;
-	Arena_Monster->ac = Championlevel*3;
-	Arena_Monster->dmg = 100+Championlevel*2;
-	Arena_Monster->xpv = Championlevel*Championlevel*5;
-	Arena_Monster->speed = 3;
-	melee = Arena_Monster->meleestr = (char *) checkmalloc(30*sizeof(char));
-	strcpy(Arena_Monster->meleestr,"");
-	for(i=0;i<Championlevel/5;i++)
-	  strcat(Arena_Monster->meleestr,"L?R?");
-	m_status_set(Arena_Monster, MOBILE);
-	m_status_set(Arena_Monster, HOSTILE);
-      }
       else {
 	do 
 	  i = random_range(ML9 - ML0) + ML0;
-	while (i == NPC || i == HISCORE_NPC || i == ZERO_NPC ||
-	       (Monsters[i].uniqueness != COMMON) || 
-	       (Monsters[i].dmg == 0));
+	while (i == NPC || i == HISCORE_NPC || i == ZERO_NPC || (Monsters[i].uniqueness != COMMON) || (Monsters[i].dmg == 0));
 	*Arena_Monster = Monsters[i];
       }
       break;
     }
+
     monsterlevel = Arena_Monster->level;
-    if (Arena_Monster->level != 20) {
+    if (Arena_Monster->id == HISCORE_NPC)
+    {
+      strcpy(Str1,Champion);
+      strcat(Str1,", the arena champion");
+      name = Arena_Monster->monstring = salloc(Str1);
+      strcpy(Str2,"The corpse of ");
+      strcat(Str2,Str1);
+      corpse = Arena_Monster->corpsestr = salloc(Str2);
+      Arena_Monster->level = 20;
+      Arena_Monster->hp = Championlevel*Championlevel*5;
+      Arena_Monster->hit = Championlevel*4;
+      Arena_Monster->ac = Championlevel*3;
+      Arena_Monster->dmg = 100+Championlevel*2;
+      Arena_Monster->xpv = Championlevel*Championlevel*5;
+      Arena_Monster->speed = 3;
+      melee = Arena_Monster->meleestr = (char *) checkmalloc(30*sizeof(char));
+      strcpy(Arena_Monster->meleestr,"");
+      for(i=0;i<Championlevel/5;i++)
+        strcat(Arena_Monster->meleestr,"L?R?");
+      m_status_set(Arena_Monster, MOBILE);
+      m_status_set(Arena_Monster, HOSTILE);
+    }
+    else {
       strcpy(Str1,nameprint());
       strcat(Str1," the ");
       strcat(Str1,Arena_Monster->monstring);

@@ -935,11 +935,10 @@ int npcid;
     level = Lawlordlevel;
     behavior = Lawlordbehavior;
     break;
-  case 15:
+  default:
     strcpy(Str2,Justiciar);
     level = Justiciarlevel;
     behavior = Justiciarbehavior;
-    break;
   }
   npc->monstring = salloc(Str2);
   strcpy(Str1,"The body of ");

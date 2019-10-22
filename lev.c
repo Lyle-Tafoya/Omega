@@ -136,7 +136,7 @@ int monstertype;
 	case 8: monsterid = ILL_FIEND; break; /* illusory fiend */
 	case 9: monsterid = MIRRORMAST; break; /* mirror master */
 	case 10: monsterid = ELDER_GRUE; break; /* elder etheric grue */
-	case 11: monsterid = SHADOW_SLAY; break; /* shadow slayer */
+	default: monsterid = SHADOW_SLAY; /* shadow slayer */
 	}
       else if (random_range(2) && (Level->depth == 1)) /* plane of earth */
 	monsterid = EARTH_ELEM; /* earth elemental */
@@ -159,7 +159,7 @@ int monstertype;
 	case 8:monsterid = FDEMON_L; break; /* frost demon lord */
 	case 9:monsterid = HIGH_ANGEL; break;
 	case 10:monsterid = DEMON_PRINCE; break; /* prime circle demon */
-	case 11:monsterid = ARCHANGEL; break;
+	default:monsterid = ARCHANGEL;
 	}
       else monsterid = RANDOM;
       break;

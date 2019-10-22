@@ -92,7 +92,7 @@ struct monster *m;
     case 6: mid = FROST_DEMON; break;
     case 7: mid = OUTER_DEMON; break; /* outer circle demon */
     case 8: mid = DEMON_SERP; break; /* demon serpent */
-    case 9: mid = INNER_DEMON; break; /* inner circle demon */
+    default: mid = INNER_DEMON; break; /* inner circle demon */
     }
     summon(-1,mid);
     summon(-1,mid);
