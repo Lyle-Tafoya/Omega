@@ -194,6 +194,7 @@ void pacify_guards()
   pml ml;
 
   for(ml=Level->mlist;ml!=NULL;ml=ml->next)
+  {
     if ((ml->m->id == GUARD) || /*guard*/
 	((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) {/* justiciar */
       m_status_reset(ml->m,HOSTILE);
@@ -214,8 +215,9 @@ void pacify_guards()
 	Level->site[ml->m->x][ml->m->y].creature = ml->m;
       }
     }
-    if (Current_Environment == E_CITY)
-      Level->site[40][60].p_locf = L_ORDER; /* undoes action in alert_guards */
+  }
+  if (Current_Environment == E_CITY)
+    Level->site[40][60].p_locf = L_ORDER; /* undoes action in alert_guards */
 }
 
 void send_to_jail()
