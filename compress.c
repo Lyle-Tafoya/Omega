@@ -1245,7 +1245,7 @@ char *ifname, *ofname;
     } else if (statbuf.st_nlink > 1) {
 	if(quiet)
 	    	fprintf(stderr, "%s: ", ifname);
-	fprintf(stderr, " -- has %d other links: unchanged",
+	fprintf(stderr, " -- has %ld other links: unchanged",
 		statbuf.st_nlink - 1);
 	exit_stat = 1;
 	perm_stat = 1;
