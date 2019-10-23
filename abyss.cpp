@@ -107,8 +107,7 @@ void kill_all_levels()
     kill_levels("om*.lev");
 }
 
-void kill_levels(str)
-char *str;
+void kill_levels(char * str)
 {
     int i;
     struct find_t buf;
@@ -149,8 +148,7 @@ void check_memory()
     mprint(Str1);
 }
 
-static FILE *open_levfile(env,depth,rw)
-int env,depth,rw;
+static FILE *open_levfile(int env, int depth, int rw)
 {
     sprintf(Str1,"%som%03d%03d.lev",Omegalib,env,depth);
     return(fopen(Str1,(rw) ? "wb" : "rb"));
@@ -158,9 +156,7 @@ int env,depth,rw;
 
 /* Saves oldlevel (unless NULL), and reads in the new level,
    unless depth is < 0. */
-plv msdos_changelevel(oldlevel,newenv,newdepth)
-plv oldlevel;
-int newenv,newdepth;
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth)
 {
     FILE *fp;
 
