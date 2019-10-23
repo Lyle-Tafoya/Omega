@@ -1,4 +1,5 @@
 *.o
+genclr
 omega
 clrgen.cpp
 clrgen.h
