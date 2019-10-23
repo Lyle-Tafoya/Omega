@@ -8,21 +8,20 @@ LIBDIR = /home/sdossey/omega/lib/
 # it will fail if none of them are defined.  If you do uncomment
 # one, make sure you comment out the other definition of CFLAGS lower down
 
-#CFLAGS = -DBSD -ggdb
-CFLAGS = -O -Wextra -Wall -Wno-unused-parameter
+#CPPFLAGS = -DBSD -ggdb
+CPPFLAGS = -Wall -Wextra -Wno-write-strings
 # I also had to define -cckr (K&R style C) for system V
 
-# CPP should contain the command to run the C preprocessor.
 #CPP = cc -E
 #CPP = /lib/cpp
-CPP = gcc -E
+CPP = g++ -E
 
 # If you have gcc and don't intend to hack around with the game,
 # I recommend setting CC to gcc and using -O (as the CFLAGS).
 
 #CFLAGS = -O
 #LDFLAGS = -s
-CC = gcc
+CC = g++
 
 # comment out one of the following two, after establishing whether your
 # machine uses termcap (most BSD machines) or terminfo (System-V)
@@ -69,9 +68,9 @@ clean:
 
 $(OBJ): clrgen.h defs.h extern.h glob.h
 
-clrgen.h clrgen.c: genclr.c minit.h defs.h
+clrgen.h clrgen.cpp: genclr.cpp minit.h defs.h
 	$(MAKE) genclr
-	$(CPP) -DOMEGA_CLRGEN *.[ch] | ./genclr clrgen.c clrgen.h
+	$(CPP) -DOMEGA_CLRGEN *.{cpp,h} | ./genclr clrgen.cpp clrgen.h
 
 genclr: genclr.o
 	$(CC) $(LDFLAGS) genclr.o -o genclr

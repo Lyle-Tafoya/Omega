@@ -14,8 +14,7 @@ int game_restore ARGS((int,char *[]));
 void init_world ARGS((void));
 void inititem ARGS((int));
 void initrand ARGS((int, int));
-void signalexit ARGS((void));
-void signalsave ARGS((void));
+void signalexit ARGS((int=0));
 
 /* abyss.c functions */
 
@@ -166,7 +165,7 @@ void help ARGS((void));
 void hunt ARGS((Symbol));
 void nap ARGS((void));
 void pickpocket ARGS((void));
-void quit ARGS((void));
+void quit ARGS((int=0));
 void rename_player ARGS((void));
 void tacoptions ARGS((void));
 void tunnel ARGS((void));
@@ -816,7 +815,7 @@ int save_itemlist ARGS((FILE *,pol));
 int save_level ARGS((FILE *,plv));
 int save_monsters ARGS((FILE *,pml));
 int save_player ARGS((FILE *));
-void signalsave ARGS((void));
+void signalsave ARGS((int=0));
 
 /* scr.c functions */
 
@@ -836,7 +835,7 @@ int move_slot ARGS((int,int,int));
 int stillonblock ARGS((void));
 void blankoutspot ARGS((int,int));
 void blotspot ARGS((int,int));
-void buffercycle ARGS((char *));
+void buffercycle ARGS((char const*));
 int bufferappend ARGS((char *));
 void bufferprint ARGS((void));
 void checkclear ARGS((void));
@@ -896,7 +895,7 @@ void phaseprint ARGS((void));
 void plotchar ARGS((Symbol,int,int));
 void plotmon ARGS((struct monster *));
 void plotspot ARGS((int,int,int));
-void print1 ARGS((char *));
+void print1 ARGS((char const*));
 void print2 ARGS((char *));
 void print3 ARGS((char *));
 void putspot ARGS((int,int,Symbol));
