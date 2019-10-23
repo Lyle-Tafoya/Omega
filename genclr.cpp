@@ -51,9 +51,9 @@
 /*
  * Return whether a character could be part of a C identifier
  */
-#define ISCID(c)	((c) >= 'A' && (c) <= 'Z' || \
-			 (c) >= 'a' && (c) <= 'z' || \
-			 (c) >= '0' && (c) <= '9' || \
+#define ISCID(c)	(((c) >= 'A' && (c) <= 'Z') || \
+			 ((c) >= 'a' && (c) <= 'z') || \
+			 ((c) >= '0' && (c) <= '9') || \
 			 (c) == '_')
 
 /*
@@ -122,10 +122,10 @@ static char *clr_scan (char *p, char **curses, unsigned int *bold, char **end)
      * If the Omega color is unrecognized, issue an error and exit.
      */
     char c, *start, *omega;
-    for (; c = *p; p++) {
+    for (; (c = *p); p++) {
 	if (!ISCID (c))
 	    continue;
-	for (start = p++; c = *p; p++) {
+	for (start = p++; (c = *p); p++) {
 	    if (ISCID (c))
 		continue;
 	    *p = '\0';
@@ -226,7 +226,7 @@ int main (int argc, char **argv)
      */
     opairs = (ClrPair *)malloc (opairslen * sizeof (ClrPair));
     while (fgets (line, 1024, stdin)) {
-	for (p = line; p = strstr (p, PREFIX);) {
+	for (p = line; (p = strstr (p, PREFIX));) {
 	    p += sizeof (PREFIX) - 1;
 	    if (nopairs == opairslen) {
 		opairslen *= 2;
