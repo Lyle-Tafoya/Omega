@@ -2,6 +2,7 @@
 /* site2.c */
 /* 2nd half of site functions and aux functions to them */
 
+#include <algorithm>
 #include "glob.h"
 
 void l_condo() {
@@ -534,12 +535,12 @@ void l_brothel() {
             Player.hp = Player.maxhp;
             /* reduce temporary stat gains to max stat levels */
             toggle_item_use(TRUE);
-            Player.str = min(Player.str, Player.maxstr);
-            Player.con = min(Player.con, Player.maxcon);
-            Player.agi = min(Player.agi, Player.maxagi);
-            Player.dex = min(Player.dex, Player.maxdex);
-            Player.iq = min(Player.iq, Player.maxiq);
-            Player.pow = min(Player.pow, Player.maxpow);
+            Player.str = std::min(Player.str, Player.maxstr);
+            Player.con = std::min(Player.con, Player.maxcon);
+            Player.agi = std::min(Player.agi, Player.maxagi);
+            Player.dex = std::min(Player.dex, Player.maxdex);
+            Player.iq = std::min(Player.iq, Player.maxiq);
+            Player.pow = std::min(Player.pow, Player.maxpow);
             toggle_item_use(FALSE);
             if (Player.preference == 'n')
               Player.iq++; /* whatever :-) */
@@ -983,7 +984,7 @@ void l_charity() {
       print2("'Go stick your head in a pig.'");
     else if (donation > Player.cash)
       print2("'I'm afraid you're charity is bigger than your purse!'");
-    else if (donation < max(100, Player.level * Player.level * 100)) {
+    else if (donation < std::max(100, Player.level * Player.level * 100)) {
       print2("'Oh, can't you do better than that?'");
       print3("'Well, I guess we'll take it....'");
       if (Player.alignment < 10)

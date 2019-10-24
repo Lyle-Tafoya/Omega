@@ -2,6 +2,7 @@
 /* aux1.c */
 /* auxiliary functions for those in com.c, also see aux2.c and aux3.c */
 
+#include <algorithm>
 #include "glob.h"
 
 /* check to see if too much tunneling has been done in this level */
@@ -275,7 +276,7 @@ void calc_melee() {
   Player.defense = 2 * statmod(Player.agi) + (Player.level / 2);
   Player.hit = Player.level + statmod(Player.dex) + 1;
   Player.dmg = statmod(Player.str) + 3;
-  Player.speed = 5 - min(4, (statmod(Player.agi) / 2));
+  Player.speed = 5 - std::min(4, (statmod(Player.agi) / 2));
   if (Player.status[HASTED] > 0)
     Player.speed = Player.speed / 2;
   if (Player.status[SLOWED] > 0)
@@ -307,7 +308,7 @@ void calc_melee() {
   if (Player.status[HERO])
     Player.speed = Player.speed / 2;
 
-  Player.speed = max(1, min(25, Player.speed));
+  Player.speed = std::max(1, std::min(25, Player.speed));
 
   if (gamestatusp(MOUNTED)) {
     Player.speed = 3;
@@ -405,8 +406,8 @@ int damage_item(pob o) {
       morewait();
       annihilate(1);
       print3("You seem to gain strength in the chaotic glare of magic!");
-      Player.str = max(Player.str, Player.maxstr + 5); /* FIXED! 12/25/98 */
-      Player.pow = max(Player.pow, Player.maxpow + 5); /* ditto */
+      Player.str = std::max(Player.str, Player.maxstr + 5); /* FIXED! 12/25/98 */
+      Player.pow = std::max(Player.pow, Player.maxpow + 5); /* ditto */
       Player.alignment -= 200;
       dispose_lost_objects(1, o);
     } else {
@@ -484,7 +485,7 @@ void p_damage(int dmg, int dtype, char *fromstring) {
       resetgamestatus(FAST_MOVE);
     }
     if (dtype == NORMAL_DAMAGE)
-      Player.hp -= max(1, (dmg - Player.absorption));
+      Player.hp -= std::max(1, (dmg - Player.absorption));
     else
       Player.hp -= dmg;
     if (Player.hp < 1)
@@ -665,7 +666,7 @@ void gain_experience(int amount) {
   for (i = 0; i < NUMRANKS; i++)
     if (Player.guildxp[i] > 0)
       count++;
-  share = amount / (max(count, 1));
+  share = amount / (std::max(count, 1));
   for (i = 0; i < NUMRANKS; i++)
     if (Player.guildxp[i] > 0)
       Player.guildxp[i] += share;
@@ -834,9 +835,9 @@ void surrender(struct monster *m) {
       Player.possessions[bestitem] = NULL;
     }
     print2("You feel less experienced... ");
-    Player.xp = max(0, Player.xp - m->xpv);
+    Player.xp = std::max(0l, Player.xp - m->xpv);
     nprint2("The monster seems more experienced!");
-    m->level = (min(10, m->level + 1));
+    m->level = (std::min(10, m->level + 1));
     m->hp += m->level * 20;
     m->hit += m->level;
     m->dmg += m->level;

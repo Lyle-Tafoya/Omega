@@ -2,6 +2,7 @@
 /* mspec.c */
 /* monster special functions */
 
+#include <algorithm>
 #include "glob.h"
 
 void icebolt(int fx, int fy, int tx, int ty, int hit, int dmg);
@@ -16,7 +17,7 @@ void m_sp_mp(struct monster *m) {
     mprint("You feel impressed...");
     Player.alignment += 5;
     if (Player.alignment > 20)
-      Player.hp = max(Player.hp, Player.maxhp);
+      Player.hp = std::max(Player.hp, Player.maxhp);
     m_vanish(m);
   }
 }
@@ -415,7 +416,7 @@ void m_sp_servant(struct monster *m) {
 void m_sp_av(struct monster *m) {
   if (Player.mana > 0) {
     mprint("You feel a sudden loss of mana!");
-    Player.mana -= (max(0, 10 - distance(m->x, m->y, Player.x, Player.y)));
+    Player.mana -= (std::max(0, 10 - distance(m->x, m->y, Player.x, Player.y)));
     dataprint();
   }
 }
@@ -518,8 +519,8 @@ void m_sp_mb(struct monster *m) {
     } else {
       mprint("You feel toasty warm inside!");
       Player.pow++;
-      Player.mana = max(Player.mana, calcmana());
-      Player.hp = max(Player.hp, ++Player.maxhp);
+      Player.mana = std::max(Player.mana, calcmana());
+      Player.hp = std::max(Player.hp, ++Player.maxhp);
     }
     m->hp = 0;
   }

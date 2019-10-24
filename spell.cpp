@@ -2,6 +2,7 @@
 /* spell.c */
 /* functions having to do with spellcasting */
 
+#include <algorithm>
 #include "glob.h"
 
 void s_wish() {
@@ -227,11 +228,11 @@ void s_ritual() {
                 gain_item(symbol);
                 mprint("You feel uplifted.");
               } else
-                gain_experience(min(1000, Player.xp));
+                gain_experience(std::min(1000l, Player.xp));
             } else if (random_range(3) == 1) {
               mprint("You feel Fated.");
               gain_experience(Player.level * Player.level * 10);
-              Player.hp = max(Player.hp, Player.maxhp);
+              Player.hp = std::max(Player.hp, Player.maxhp);
             } else if (random_range(2)) {
               mprint("You feel Doomed.");
               Player.hp = 1;

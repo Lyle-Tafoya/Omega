@@ -3,6 +3,7 @@
 
 /* various item functions: potions,scrolls,boots,cloaks,things,food */
 
+#include <algorithm>
 #include "glob.h"
 
 /* general item functions */
@@ -508,7 +509,7 @@ void i_pick(pob o) {
           mprint("You picked the lock!");
           Level->site[ox][oy].aux = UNLOCKED;
           lset(ox, oy, CHANGED);
-          gain_experience(max(3, Level->depth));
+          gain_experience(std::max(3, static_cast<int>(Level->depth)));
         } else
           mprint("You failed to pick the lock.");
       } else
@@ -589,7 +590,7 @@ void i_corpse(pob o) {
     break;
   case BEHEMOTH:
     mprint("You feel infinitely more virile now.");
-    Player.str = max(Player.str, Player.maxstr + 10);
+    Player.str = std::max(Player.str, Player.maxstr + 10);
     Player.food = 24;
     foodcheck();
     break;
@@ -631,7 +632,7 @@ void i_corpse(pob o) {
   case EATER:
     mprint("Oh, yuck. The 'food' seems to be tainted.");
     mprint("You feel very sick. You throw up.");
-    Player.food = min(Player.food, 4);
+    Player.food = std::min(Player.food, 4);
     __attribute__((fallthrough));
   default:
     mprint("It proved completely inedible, but you tried anyhow.");
@@ -803,7 +804,7 @@ void i_perm_illuminate(pob o) {
   if (o->used)
     Player.status[ILLUMINATION] += 1500;
   else
-    Player.status[ILLUMINATION] = max(0, Player.status[ILLUMINATION] - 1500);
+    Player.status[ILLUMINATION] = std::max(0, Player.status[ILLUMINATION] - 1500);
 }
 
 void i_trap(pob o) {

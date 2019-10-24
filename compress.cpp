@@ -37,7 +37,6 @@ char copyright[] =
  * machine variants which require cc -Dmachine:  pdp11, z8000, pcxt
  */
 
-#define min(a, b) ((a > b) ? b : a)
 
 /*
  * Set USERMEM to the maximum amount of physical user memory available
@@ -260,6 +259,7 @@ char_type magic_header[] = {"\037\235"}; /* 1F 9D */
  *
  */
 
+#include <algorithm>
 #include <ctype.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -502,15 +502,15 @@ void do_compression(int decomp, char *file) {
      */
     hsize = HSIZE;
     if (fsize < (1 << 12))
-      hsize = min(5003, HSIZE);
+      hsize = std::min(5003, HSIZE);
     else if (fsize < (1 << 13))
-      hsize = min(9001, HSIZE);
+      hsize = std::min(9001, HSIZE);
     else if (fsize < (1 << 14))
-      hsize = min(18013, HSIZE);
+      hsize = std::min(18013, HSIZE);
     else if (fsize < (1 << 15))
-      hsize = min(35023, HSIZE);
+      hsize = std::min(35023, HSIZE);
     else if (fsize < 47000)
-      hsize = min(50021, HSIZE);
+      hsize = std::min(50021, HSIZE);
 
     /* Generate output filename */
     strcpy(ofname, *fileptr);

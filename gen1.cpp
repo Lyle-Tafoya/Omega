@@ -2,6 +2,7 @@
 /* gen1.c */
 /* level generator functions */
 
+#include <algorithm>
 #include "glob.h"
 #include <time.h>
 
@@ -61,7 +62,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level) {
   Player.sy = -1; /* sanctuary effect dispelled */
 #ifndef SAVE_LEVELS
   thislevel = findlevel(Dungeon, tolevel);
-  deepest[Current_Environment] = max(deepest[Current_Environment], tolevel);
+  deepest[Current_Environment] = std::max(deepest[Current_Environment], static_cast<int>(tolevel));
   if (thislevel == NULL) {
     thislevel = ((plv)checkmalloc(sizeof(levtype)));
 #else

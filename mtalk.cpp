@@ -2,6 +2,7 @@
 /* mtalk.c */
 /* monster talk functions */
 
+#include <algorithm>
 #include "glob.h"
 
 /* The druid's altar is in the northern forest */
@@ -60,7 +61,7 @@ void m_talk_druid(struct monster *m) {
           Player.alignment = 0;
           Player.mana = calcmana();
         } else
-          Player.alignment -= Player.alignment * max(0, 10 - Player.level) / 10;
+          Player.alignment -= Player.alignment * std::max(0, 10 - Player.level) / 10;
         /* the higher level the character is, the more set in his/her ways */
         Time += 60;
         hourly_check();
@@ -266,11 +267,11 @@ void m_talk_im(struct monster *m) {
     mprint("I have a fine");
     mprint(itemid(m->possessions->thing));
     mprint("for only");
-    mlongprint(max(10, 4 * true_item_value(m->possessions->thing)));
+    mlongprint(std::max(10l, 4 * true_item_value(m->possessions->thing)));
     mprint("Au.");
     mprint("Want it? [yn] ");
     if (ynq() == 'y') {
-      if (Player.cash < (max(10, 4 * true_item_value(m->possessions->thing)))) {
+      if (Player.cash < (std::max(10l, 4 * true_item_value(m->possessions->thing)))) {
         if (Player.alignment > 10) {
           mprint("Well, I'll let you have it for what you've got.");
           Player.cash = 0;
@@ -280,7 +281,7 @@ void m_talk_im(struct monster *m) {
           mprint("Beat it, you deadbeat!");
       } else {
         mprint("Here you are. Have a good day.");
-        Player.cash -= max(10, (4 * item_value(m->possessions->thing)));
+        Player.cash -= std::max(10l, (4 * item_value(m->possessions->thing)));
         gain_item(m->possessions->thing);
         m->possessions = NULL;
       }
@@ -459,8 +460,8 @@ void m_talk_gf(struct monster *m) {
     }
   }
   mprint("In a flash of sweet-smelling light, the fairy vanishes....");
-  Player.hp = max(Player.hp, Player.maxhp);
-  Player.mana = max(Player.mana, calcmana());
+  Player.hp = std::max(Player.hp, Player.maxhp);
+  Player.mana = std::max(Player.mana, calcmana());
   mprint("You feel mellow.");
   m_vanish(m);
 }

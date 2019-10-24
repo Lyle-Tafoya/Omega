@@ -2,6 +2,7 @@
 /* mmove.c */
 /* monster move functions */
 
+#include <algorithm>
 #include "glob.h"
 
 /* like m_normal_move, but can open doors */
@@ -31,7 +32,7 @@ void m_simple_move(struct monster *m) {
     } else
       strcat(Str2, " flees!");
     mprint(Str2);
-    m->speed = min(2, m->speed - 1);
+    m->speed = std::min(2, m->speed - 1);
   }
   if ((!m_statusp(m, HOSTILE) && !m_statusp(m, NEEDY)) ||
       (Player.status[INVISIBLE] > 0))

@@ -2,8 +2,9 @@
 /* move.c */
 /* general functions for player moving */
 
-#include "glob.h"
+#include <algorithm>
 #include <unistd.h>
+#include "glob.h"
 
 /* various miscellaneous location functions */
 void l_water() {
@@ -66,8 +67,8 @@ void l_chaos() {
       onewithchaos = 1;
       print2("You achieve oneness of Chaos....");
     }
-    Player.mana = max(Player.mana, calcmana());
-    Player.hp = max(Player.hp, Player.maxhp);
+    Player.mana = std::max(Player.mana, calcmana());
+    Player.hp = std::max(Player.hp, Player.maxhp);
   } else if (Player.rank[PRIESTHOOD] && (!saved)) {
     print2("A mysterious force protects you from the Chaos!");
     print3("Wow.... You feel a bit smug.");
@@ -362,8 +363,8 @@ void l_portcullis_trap() {
 
   print3("Click.");
   morewait();
-  for (i = max(Player.x - 5, 0); i < min(Player.x + 6, WIDTH); i++)
-    for (j = max(Player.y - 5, 0); j < min(Player.y + 6, LENGTH); j++) {
+  for (i = std::max(Player.x - 5, 0); i < std::min(Player.x + 6, WIDTH); i++)
+    for (j = std::max(Player.y - 5, 0); j < std::min(Player.y + 6, LENGTH); j++) {
       if ((Level->site[i][j].p_locf == L_PORTCULLIS) &&
           (Level->site[i][j].locchar != PORTCULLIS)) {
         Level->site[i][j].locchar = PORTCULLIS;
@@ -913,7 +914,7 @@ void l_chaostone() {
     morewait();
     if (stonecheck(-1)) {
       print2("You feel stronger!");
-      Player.maxstr = min(Player.maxstr + 10, max(30, Player.maxstr));
+      Player.maxstr = std::min(Player.maxstr + 10, std::max(30, Player.maxstr));
       dataprint();
     }
   } else
@@ -973,7 +974,7 @@ void l_lawstone() {
     morewait();
     if (stonecheck(1)) {
       print2("You feel more vigorous!");
-      Player.maxcon = min(Player.maxcon + 10, max(Player.maxcon, 30));
+      Player.maxcon = std::min(Player.maxcon + 10, std::max(Player.maxcon, 30));
       dataprint();
     }
   } else
@@ -1080,7 +1081,7 @@ void l_mindstone() {
     morewait();
     if (stonecheck(0)) {
       print1("Your mind has been enhanced by the experience!");
-      Player.maxiq = min(Player.maxiq + 10, max(Player.maxiq, 30));
+      Player.maxiq = std::min(Player.maxiq + 10, std::max(Player.maxiq, 30));
       dataprint();
     }
   } else {

@@ -2,6 +2,7 @@
 /* char.c */
 /* Player generation */
 
+#include <algorithm>
 #include <pwd.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -71,7 +72,7 @@ void initplayer() {
     optionset(SHOW_COLOUR);
     initstats();
   }
-  Searchnum = max(1, min(9, Searchnum));
+  Searchnum = std::max(1, std::min(9, Searchnum));
   Player.hp = Player.maxhp = Player.maxcon;
   Player.mana = Player.maxmana = calcmana();
   Player.click = 1;
@@ -150,7 +151,7 @@ int fixnpc(int status) {
   if (status == 1) { /* player is dead, all undead are chaotic */
     npcbehavior += CHAOTIC;
     npcbehavior += 10; /* melee */
-    npcbehavior += 100 * min(9, ((int)(Player.level / 3)));
+    npcbehavior += 100 * std::min(9, ((int)(Player.level / 3)));
     npcbehavior += 1000; /* threaten */
   } else if (Behavior >= 0)
     npcbehavior = Behavior;

@@ -2,6 +2,7 @@
 /* priest.c */
 /* functions for clerics. */
 
+#include <algorithm>
 #include "glob.h"
 
 /* prayer occurs at altars, hence name of function */
@@ -135,9 +136,9 @@ int check_sacrilege(int deity) {
           morewait();
           print2("The bolt warps your feeble frame....");
           Player.maxcon = Player.maxcon / 2;
-          Player.con = min(Player.con, Player.maxcon);
+          Player.con = std::min(Player.con, Player.maxcon);
           Player.maxstr = Player.maxstr / 2;
-          Player.con = min(Player.str, Player.maxstr);
+          Player.con = std::min(Player.str, Player.maxstr);
         }
       }
       morewait();
@@ -178,7 +179,7 @@ int check_sacrilege(int deity) {
         if (Player.hp > 0) {
           print2("The beams leach you of magical power!");
           Player.maxpow = Player.maxpow / 5;
-          Player.pow = min(Player.pow, Player.maxpow);
+          Player.pow = std::min(Player.pow, Player.maxpow);
           for (i = 0; i < NUMSPELLS; i++)
             Spells[i].known = FALSE;
         }
@@ -201,7 +202,7 @@ int check_sacrilege(int deity) {
           Player.maxhp = Player.hp = Player.con;
           print2("Your power is reduced by the blast!!!");
           Player.pow = Player.maxpow = Player.maxpow / 3;
-          Player.mana = min(Player.mana, calcmana());
+          Player.mana = std::min(Player.mana, calcmana());
         }
       }
       morewait();
@@ -233,7 +234,7 @@ int increase_priest_rank(int deity) {
     switch (deity) {
     default:
       print2("Some nameless god blesses you....");
-      Player.hp = max(Player.hp, Player.maxhp);
+      Player.hp = std::max(Player.hp, Player.maxhp);
       morewait();
       print2("The altar crumbles to dust and blows away.");
       Level->site[Player.x][Player.y].locchar = FLOOR;
@@ -327,7 +328,7 @@ int increase_priest_rank(int deity) {
       print1("You have swerved from the One True Path!");
       print2("Your deity is greatly displeased...");
       Player.xp -= Player.level * Player.level;
-      Player.xp = max(0, Player.xp);
+      Player.xp = std::max(0l, Player.xp);
     } else if (Player.rank[PRIESTHOOD] == HIGHPRIEST)
       return 0;
     else if (Player.rank[PRIESTHOOD] == SPRIEST) {

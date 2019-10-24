@@ -1,6 +1,7 @@
 /* omega copyright (C) by Laurence Raphael Brothers, 1987,1988,1989 */
 /* effect3.c */
 
+#include <algorithm>
 #include "glob.h"
 
 /* if know id, then summon that monster; else (if < 0) get one. */
@@ -845,17 +846,17 @@ void polymorph(int blessing) {
        * one's abilities.  This would be better because it would be robust
        * even in the face of additions to the monster structure. */
       m->id = Monsters[newmonster].id;
-      m->hp = max(m->hp, Monsters[newmonster].id);
+      m->hp = std::max(m->hp, Monsters[newmonster].id);
       m->speed = Monsters[newmonster].speed;
       m->hit = Monsters[newmonster].hit;
       m->ac = Monsters[newmonster].ac;
       m->dmg = Monsters[newmonster].dmg;
       m->sense = Monsters[newmonster].sense;
       m->wakeup = Monsters[newmonster].wakeup;
-      m->level = max(m->level, Monsters[newmonster].level);
+      m->level = std::max(m->level, Monsters[newmonster].level);
       m->status = Monsters[newmonster].status;
       m->immunity = (m->immunity | Monsters[newmonster].immunity);
-      m->xpv = max(m->xpv, Monsters[newmonster].wakeup);
+      m->xpv = std::max(m->xpv, static_cast<long>(Monsters[newmonster].wakeup));
       m->transformid = Monsters[newmonster].transformid;
       m->corpsevalue = Monsters[newmonster].corpsevalue;
       m->corpseweight = Monsters[newmonster].corpseweight;
@@ -918,10 +919,10 @@ void drain(int blessing) {
     if ((blessing > -1) && (!m_immunityp(m, NEGENERGY))) {
       mprint("The monster seems weaker...");
       m_damage(m, m->level * m->level, NEGENERGY);
-      m->hit = max(m->hit - m->level, 1);
-      m->dmg = max(m->dmg - m->level * m->level, 1);
-      m->ac = max(m->ac - m->level, 1);
-      m->level = max(1, m->level - 1);
+      m->hit = std::max(m->hit - m->level, 1);
+      m->dmg = std::max(m->dmg - m->level * m->level, 1);
+      m->ac = std::max(m->ac - m->level, 1);
+      m->level = std::max(1, m->level - 1);
       mprint("You feel stronger...");
       gain_experience(m->level * 5);
       Player.hp += (m->level * m->level / 2);
@@ -934,7 +935,7 @@ void drain(int blessing) {
       m->ac += Player.level;
       m->level++;
       mprint("You feel weaker...");
-      Player.mana = min(0, Player.level * Player.level);
+      Player.mana = std::min(0, Player.level * Player.level);
       level_drain(m->level, "negative energy conflict");
     }
   } else if (blessing < 0) {
@@ -1067,7 +1068,7 @@ void inflict_fear(int x, int y) {
       strcat(Str2, m->monstring);
     } else
       strcpy(Str2, m->monstring);
-    m->speed = max(2, m->speed - 1);
+    m->speed = std::max(2, m->speed - 1);
     if (m_immunityp(m, FEAR))
       strcat(Str2, "seems enraged!");
     else {

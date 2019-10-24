@@ -4,6 +4,7 @@
 /* plus a few file i/o stuff */
 /* also some in file.c */
 
+#include <algorithm>
 #include <curses.h>
 #include <sys/types.h>
 
@@ -64,8 +65,8 @@ void show_screen() {
   wclear(Levelw);
   top = ScreenOffset;
   bottom = ScreenOffset + ScreenLength;
-  top = max(0, top);
-  bottom = min(bottom, LENGTH);
+  top = std::max(0, top);
+  bottom = std::min(bottom, LENGTH);
   if (Current_Environment != E_COUNTRYSIDE)
     for (j = top; j < bottom; j++) {
       wmove(Levelw, screenmod(j), 0);

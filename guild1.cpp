@@ -6,6 +6,7 @@
 /* They are all l_ functions since they are basically activated*/
 /* at some site or other. */
 
+#include <algorithm>
 #include "glob.h"
 
 void l_merc_guild() {
@@ -502,7 +503,7 @@ void l_arena() {
       clearmsg();
       print1("Good fight! ");
       nprint1("Your prize is: ");
-      prize = max(25, monsterlevel * 50);
+      prize = std::max(25, monsterlevel * 50);
       if (Player.rank[ARENA] > 0)
         prize *= 2;
       mnumprint(prize);

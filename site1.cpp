@@ -2,6 +2,7 @@
 /* site1.c */
 /* 1st half of site functions and aux functions to them */
 
+#include <algorithm>
 #include <unistd.h>
 
 #include "glob.h"
@@ -750,12 +751,12 @@ void l_tavern() {
         Player.food = 40;
         /* reduce temporary stat gains to max stat levels */
         toggle_item_use(TRUE);
-        Player.str = min(Player.str, Player.maxstr);
-        Player.con = min(Player.con, Player.maxcon);
-        Player.agi = min(Player.agi, Player.maxagi);
-        Player.dex = min(Player.dex, Player.maxdex);
-        Player.iq = min(Player.iq, Player.maxiq);
-        Player.pow = min(Player.pow, Player.maxpow);
+        Player.str = std::min(Player.str, Player.maxstr);
+        Player.con = std::min(Player.con, Player.maxcon);
+        Player.agi = std::min(Player.agi, Player.maxagi);
+        Player.dex = std::min(Player.dex, Player.maxdex);
+        Player.iq = std::min(Player.iq, Player.maxiq);
+        Player.pow = std::min(Player.pow, Player.maxpow);
         toggle_item_use(FALSE);
         timeprint();
         dataprint();
@@ -824,14 +825,14 @@ void l_alchemist() {
           else {
             mlevel = Monsters[obj->charge].level;
             print1("It'll cost you ");
-            mnumprint(max(10, obj->basevalue * 2));
+            mnumprint(std::max(10l, obj->basevalue * 2));
             nprint1("Au for the transformation. Pay it? [yn] ");
             if (ynq1() == 'y') {
-              if (Player.cash < max(10, obj->basevalue * 2))
+              if (Player.cash < std::max(10l, obj->basevalue * 2))
                 print2("You can't afford it!");
               else {
                 print1("Voila! A tap of the Philosopher's Stone...");
-                Player.cash -= max(10, obj->basevalue * 2);
+                Player.cash -= std::max(10l, obj->basevalue * 2);
                 *obj = Objects[Monsters[obj->charge].transformid];
                 if ((obj->id >= STICKID) && (obj->id < STICKID + NUMSTICKS))
                   obj->charge = 20;
@@ -895,7 +896,7 @@ void l_library() {
       morewait();
       clearmsg();
       print1("Your revised fee is: ");
-      mnumprint(fee = max(50, 1000 - (18 - Player.maxiq) * 125));
+      mnumprint(fee = std::max(50, 1000 - (18 - Player.maxiq) * 125));
       nprint1("Au.");
     }
     morewait();
@@ -944,11 +945,11 @@ void l_library() {
                 Player.maxiq++;
                 dataprint();
                 if (Player.maxiq < 19 &&
-                    fee != max(50, 1000 - (18 - Player.maxiq) * 125)) {
+                    fee != std::max(50, 1000 - (18 - Player.maxiq) * 125)) {
                   morewait();
                   clearmsg();
                   print1("Your revised fee is: ");
-                  mnumprint(fee = max(50, 1000 - (18 - Player.maxiq) * 125));
+                  mnumprint(fee = std::max(50, 1000 - (18 - Player.maxiq) * 125));
                   nprint1("Au.");
                   morewait();
                 }
@@ -985,7 +986,7 @@ void l_pawn_shop() {
   if (nighttime())
     print1("Shop Closed: Have a Nice (K)Night");
   else {
-    limit = min(5, Date - Pawndate);
+    limit = std::min(5, Date - Pawndate);
     Pawndate = Date;
     for (k = 0; k < limit; k++) {
       if (Pawnitems[0] != NULL) {

@@ -1415,14 +1415,8 @@ typedef oltype *pol;
 #include <assert.h>
 
 #undef sign
-#undef max
-#undef min
-#undef abs
 /* These must be made to work for both longs and ints */
 #define sign(n) (((n) < 0) ? -1 : (((n) > 0) ? 1 : 0))
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#define abs(n) (((n) < 0) ? (-(n)) : (n))
 
 #ifdef NORANDOM
 #define RANDFUNCTION rand

@@ -4,6 +4,7 @@
 /* This file contains some more top level command functions
    called from command1.c */
 
+#include <algorithm>
 #include <pwd.h>
 #include <unistd.h>
 
@@ -568,7 +569,7 @@ void vault() {
     else if (Player.itemweight > Player.maxweight)
       print3("You are too burdened to jump anywhere.");
     else if (distance(x, y, Player.x, Player.y) >
-             max(2, statmod(Player.agi) + 2) + jumper)
+             std::max(2, statmod(Player.agi) + 2) + jumper)
       print3("The jump is too far for you.");
     else if (Level->site[x][y].creature != NULL)
       print3("You can't jump on another creature.");

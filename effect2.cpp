@@ -1,6 +1,7 @@
 /* omega copyright (C) by Laurence Raphael Brothers, 1987,1988,1989 */
 /* effect2.c */
 
+#include <algorithm>
 #include "glob.h"
 
 void knowledge(int blessing) {
@@ -431,32 +432,32 @@ void recover_stat(int blessing) {
     mprint("You feel a cold surge!");
     switch (random_range(6)) {
     case 0:
-      Player.str = min(Player.str - 1, Player.maxstr - 1);
+      Player.str = std::min(Player.str - 1, Player.maxstr - 1);
       break;
     case 1:
-      Player.con = min(Player.con - 1, Player.maxcon - 1);
+      Player.con = std::min(Player.con - 1, Player.maxcon - 1);
       break;
     case 2:
-      Player.dex = min(Player.dex - 1, Player.maxdex - 1);
+      Player.dex = std::min(Player.dex - 1, Player.maxdex - 1);
       break;
     case 3:
-      Player.agi = min(Player.agi - 1, Player.maxagi - 1);
+      Player.agi = std::min(Player.agi - 1, Player.maxagi - 1);
       break;
     case 4:
-      Player.iq = min(Player.iq - 1, Player.maxiq - 1);
+      Player.iq = std::min(Player.iq - 1, Player.maxiq - 1);
       break;
     case 5:
-      Player.pow = min(Player.pow - 1, Player.maxpow - 1);
+      Player.pow = std::min(Player.pow - 1, Player.maxpow - 1);
       break;
     }
   } else {
     mprint("You feel a warm tingle!");
-    Player.str = max(Player.str, Player.maxstr);
-    Player.con = max(Player.con, Player.maxcon);
-    Player.dex = max(Player.dex, Player.maxdex);
-    Player.agi = max(Player.agi, Player.maxagi);
-    Player.iq = max(Player.iq, Player.maxiq);
-    Player.pow = max(Player.pow, Player.maxpow);
+    Player.str = std::max(Player.str, Player.maxstr);
+    Player.con = std::max(Player.con, Player.maxcon);
+    Player.dex = std::max(Player.dex, Player.maxdex);
+    Player.agi = std::max(Player.agi, Player.maxagi);
+    Player.iq = std::max(Player.iq, Player.maxiq);
+    Player.pow = std::max(Player.pow, Player.maxpow);
   }
   calc_melee();
 }
@@ -466,54 +467,54 @@ void augment(int blessing) {
     mprint("You feel a cold surge!");
     switch (random_range(6)) {
     case 0:
-      Player.str = min(Player.str - 1, Player.maxstr - 1);
+      Player.str = std::min(Player.str - 1, Player.maxstr - 1);
       break;
     case 1:
-      Player.con = min(Player.con - 1, Player.maxcon - 1);
+      Player.con = std::min(Player.con - 1, Player.maxcon - 1);
       break;
     case 2:
-      Player.dex = min(Player.dex - 1, Player.maxdex - 1);
+      Player.dex = std::min(Player.dex - 1, Player.maxdex - 1);
       break;
     case 3:
-      Player.agi = min(Player.agi - 1, Player.maxagi - 1);
+      Player.agi = std::min(Player.agi - 1, Player.maxagi - 1);
       break;
     case 4:
-      Player.iq = min(Player.iq - 1, Player.maxiq - 1);
+      Player.iq = std::min(Player.iq - 1, Player.maxiq - 1);
       break;
     case 5:
-      Player.pow = min(Player.pow - 1, Player.maxpow - 1);
+      Player.pow = std::min(Player.pow - 1, Player.maxpow - 1);
       break;
     }
   } else if (blessing == 0) {
     mprint("You feel a warm tingle!");
     switch (random_range(6)) {
     case 0:
-      Player.str = max(Player.str + 1, Player.maxstr + 1);
+      Player.str = std::max(Player.str + 1, Player.maxstr + 1);
       break;
     case 1:
-      Player.con = max(Player.con + 1, Player.maxcon + 1);
+      Player.con = std::max(Player.con + 1, Player.maxcon + 1);
       break;
     case 2:
-      Player.dex = max(Player.dex + 1, Player.maxdex + 1);
+      Player.dex = std::max(Player.dex + 1, Player.maxdex + 1);
       break;
     case 3:
-      Player.agi = max(Player.agi + 1, Player.maxagi + 1);
+      Player.agi = std::max(Player.agi + 1, Player.maxagi + 1);
       break;
     case 4:
-      Player.iq = max(Player.iq + 1, Player.maxiq + 1);
+      Player.iq = std::max(Player.iq + 1, Player.maxiq + 1);
       break;
     case 5:
-      Player.pow = max(Player.pow + 1, Player.maxpow + 1);
+      Player.pow = std::max(Player.pow + 1, Player.maxpow + 1);
       break;
     }
   } else {
     mprint("You feel a hot flash!");
-    Player.str = max(Player.str + 1, Player.maxstr + 1);
-    Player.con = max(Player.con + 1, Player.maxcon + 1);
-    Player.dex = max(Player.dex + 1, Player.maxdex + 1);
-    Player.agi = max(Player.agi + 1, Player.maxagi + 1);
-    Player.iq = max(Player.iq + 1, Player.maxiq + 1);
-    Player.pow = max(Player.pow + 1, Player.maxpow + 1);
+    Player.str = std::max(Player.str + 1, Player.maxstr + 1);
+    Player.con = std::max(Player.con + 1, Player.maxcon + 1);
+    Player.dex = std::max(Player.dex + 1, Player.maxdex + 1);
+    Player.agi = std::max(Player.agi + 1, Player.maxagi + 1);
+    Player.iq = std::max(Player.iq + 1, Player.maxiq + 1);
+    Player.pow = std::max(Player.pow + 1, Player.maxpow + 1);
   }
   calc_melee();
 }

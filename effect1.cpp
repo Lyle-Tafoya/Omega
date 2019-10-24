@@ -1,6 +1,7 @@
 /* omega copyright (C) by Laurence Raphael Brothers, 1987,1988,1989 */
 /* effect1.c */
 
+#include <algorithm>
 #include "glob.h"
 
 /* enchant */
@@ -568,7 +569,7 @@ void wish(int blessing) {
     if (gamestatusp(CHEATED))
       gain_experience(10000);
     else
-      gain_experience(min(10000, Player.xp));
+      gain_experience(std::min(10000l, Player.xp));
   } else if (strcmp(wishstr, "Wealth") == 0) {
     print2("You are submerged in shower of gold pieces!");
     Player.cash += 10000;
@@ -587,12 +588,12 @@ void wish(int blessing) {
     print2("You feel more knowledgeable.");
     i = random_range(NUMSPELLS);
     if (Spells[i].known)
-      Spells[i].powerdrain = (max(1, Spells[i].powerdrain / 2));
+      Spells[i].powerdrain = (std::max(1, Spells[i].powerdrain / 2));
     else
       Spells[i].known = TRUE;
   } else if (strcmp(wishstr, "Health") == 0) {
     print2("You feel vigorous");
-    Player.hp = max(Player.hp, Player.maxhp);
+    Player.hp = std::max(Player.hp, Player.maxhp);
     Player.status[DISEASED] = 0;
     Player.status[POISONED] = 0;
   } else if (strcmp(wishstr, "Destruction") == 0)

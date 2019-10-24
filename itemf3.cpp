@@ -3,6 +3,7 @@
 
 /* mostly artifact and stick functions */
 
+#include <algorithm>
 #include "glob.h"
 
 /* amulet of the planes */
@@ -11,7 +12,7 @@ void i_planes(pob) {
     print1("The amulet spits some multicolored sparks.");
   else {
     print1("You focus mana into the amulet....");
-    Player.mana = max(0, Player.mana - 100);
+    Player.mana = std::max(0l, Player.mana - 100);
     dataprint();
     morewait();
     strategic_teleport(1);
@@ -85,7 +86,7 @@ void i_stargem(pob o) {
 void i_fear(pob o) {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   setspot(&x, &y);
   if (o->blessing < 0) {
     x = Player.x;
@@ -184,7 +185,7 @@ void i_symbol(pob o) {
     SymbolUseHour = hour();
     cleanse(1);
     heal(10);
-    Player.mana = max(Player.mana, calcmana());
+    Player.mana = std::max(Player.mana, calcmana());
   }
 }
 
@@ -501,7 +502,7 @@ void i_dispel(pob o) {
 
 /* wand of apportation */
 void i_apport(pob o) {
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
   apport(o->blessing);
 }
@@ -509,7 +510,7 @@ void i_apport(pob o) {
 /* staff of firebolts */
 void i_firebolt(pob o) {
   int x = Player.x, y = Player.y;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
   setspot(&x, &y);
   if (o->blessing < 0) {
@@ -521,7 +522,7 @@ void i_firebolt(pob o) {
 
 void i_disintegrate(pob o) {
   int x = Player.x, y = Player.y;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
   setspot(&x, &y);
   if (o->blessing < 0) {
@@ -533,7 +534,7 @@ void i_disintegrate(pob o) {
 
 void i_disrupt(pob o) {
   int x = Player.x, y = Player.y;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
   setspot(&x, &y);
   if (o->blessing < 0) {
@@ -546,7 +547,7 @@ void i_disrupt(pob o) {
 /* staff of lightning bolts */
 void i_lbolt(pob o) {
   int x = Player.x, y = Player.y;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
   setspot(&x, &y);
   if (o->blessing < 0) {
@@ -559,7 +560,7 @@ void i_lbolt(pob o) {
 /* wand of magic missiles */
 void i_missile(pob o) {
   int x = Player.x, y = Player.y;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
   setspot(&x, &y);
   if (o->blessing < 0) {
@@ -573,7 +574,7 @@ void i_missile(pob o) {
 void i_fireball(pob o) {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   setspot(&x, &y);
   if (o->blessing < 0) {
     x = Player.x;
@@ -586,7 +587,7 @@ void i_fireball(pob o) {
 void i_snowball(pob o) {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   setspot(&x, &y);
   if (o->blessing < 0) {
     x = Player.x;
@@ -599,7 +600,7 @@ void i_snowball(pob o) {
 void i_lball(pob o) {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   setspot(&x, &y);
   if (o->blessing < 0) {
     x = Player.x;
@@ -611,7 +612,7 @@ void i_lball(pob o) {
 /* staff of sleep */
 void i_sleep_other(pob o) {
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   sleep_monster(o->blessing);
 }
 
@@ -619,20 +620,20 @@ void i_sleep_other(pob o) {
 /* rod of summoning now always summons as if cursed */
 void i_summon(pob o) {
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   summon(-1, -1);
 }
 
 void i_hide(pob o) {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   setspot(&x, &y);
   hide(x, y);
 }
 
 void i_polymorph(pob o) {
   Objects[o->id].known = 1;
-  o->known = max(1, o->known);
+  o->known = std::max(1, static_cast<int>(o->known));
   polymorph(o->blessing);
 }

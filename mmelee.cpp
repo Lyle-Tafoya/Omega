@@ -2,6 +2,7 @@
 /* mmelee */
 /* various functions to do with monster melee */
 
+#include <algorithm>
 #include "glob.h"
 
 void m_hit(struct monster *m, int dtype) {
@@ -152,7 +153,7 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
             break;
           case 2:
             strcat(Str2, " seems seriously confused.");
-            m->speed = min(30, m->speed * 2);
+            m->speed = std::min(30, m->speed * 2);
             break;
           default:
             strcat(Str2, " missed you.");
@@ -175,7 +176,7 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
           break;
         case 4:
           strcat(Str2, " seems seriously confused.");
-          m->speed = min(30, m->speed * 2);
+          m->speed = std::min(30, m->speed * 2);
           break;
         case 5:
           strcat(Str2, " is seriously ashamed.");

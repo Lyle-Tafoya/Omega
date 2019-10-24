@@ -3,6 +3,7 @@
 
 /* mostly ring, armor, and weapon functions */
 
+#include <algorithm>
 #include "glob.h"
 
 /* ring functions */
@@ -194,10 +195,10 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m) {
   } else if (m->meleef != M_MELEE_SPIRIT) {
     if (m->level > random_range(10)) {
       if (Player.hp < Player.maxhp)
-        Player.hp = min(Player.maxhp, Player.hp + m->hp);
+        Player.hp = std::min(Player.maxhp, Player.hp + m->hp);
       Player.str++;
       if (Player.pow < Player.maxpow)
-        Player.pow = min(Player.maxpow, Player.pow + m->level);
+        Player.pow = std::min(Player.maxpow, Player.pow + m->level);
       m_death(m);
       mprint("You feel a surge of raw power from Demonblade!");
     } else
@@ -334,7 +335,7 @@ void weapon_desecrate(int dmgmod, pob o, struct monster *m) {
     Player.alignment--;
     if (Player.hp < Player.maxhp) {
       mprint("You feel a thrill of power surging up your blade!");
-      Player.hp = min(Player.maxhp, Player.hp + Player.dmg + dmgmod);
+      Player.hp = std::min(Player.maxhp, Player.hp + Player.dmg + dmgmod);
     }
   } else {
     mprint("Your blade turns in your hands and hits you!");
@@ -349,7 +350,7 @@ void weapon_desecrate(int dmgmod, pob o, struct monster *m) {
 void weapon_firestar(int dmgmod, pob o, struct monster *m) {
   if (random_range(3) == 1) {
     o->known = 2;
-    fball(Player.x, Player.y, Player.x, Player.y, max(Player.dmg, 25));
+    fball(Player.x, Player.y, Player.x, Player.y, std::max(Player.dmg, 25));
   }
   if (m->hp > 0)
     weapon_normal_hit(dmgmod, o, m);

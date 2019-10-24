@@ -6,6 +6,7 @@
 /* They are all l_ functions since they are basically activated*/
 /* at some site or other. */
 
+#include <algorithm>
 #include "glob.h"
 
 void l_thieves_guild() {
@@ -63,7 +64,7 @@ void l_thieves_guild() {
         else {
           dues += dues * (12 - Player.dex) / 9;
           dues += Player.alignment * 5;
-          dues = max(100, dues);
+          dues = std::max(100, dues);
           clearmsg();
           mprint("Dues are");
           mnumprint(dues);
@@ -178,13 +179,13 @@ void l_thieves_guild() {
                 count++;
           clearmsg();
           print1("The fee will be: ");
-          mnumprint(max(count * fee, fee));
+          mnumprint(std::max(count * fee, fee));
           nprint1("Au. Pay it? [yn] ");
           if (ynq1() == 'y') {
-            if (Player.cash < max(count * fee, fee))
+            if (Player.cash < std::max(count * fee, fee))
               print2("Try again when you have the cash.");
             else {
-              Player.cash -= max(count * fee, fee);
+              Player.cash -= std::max(count * fee, fee);
               dataprint();
               identify(1);
             }
@@ -484,7 +485,7 @@ void l_sorcerors() {
         else {
           fee += Player.alignment * 100;
           fee += fee * (12 - Player.pow) / 9;
-          fee = max(100, fee);
+          fee = std::max(100, fee);
           clearmsg();
           mprint("For you, there is an initiation fee of");
           mnumprint(fee);

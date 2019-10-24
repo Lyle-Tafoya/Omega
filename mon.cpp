@@ -2,6 +2,7 @@
 /* mon.c */
 /* various functions to do with monsters */
 
+#include <algorithm>
 #include "glob.h"
 
 /*               Revised function                   */
@@ -53,7 +54,7 @@ void m_pulse(struct monster *m) {
         free((char *)prev);
       }
     /* prevents monsters from casting spells from other side of dungeon */
-    if ((range < max(5, m->level)) && (m->hp > 0) && (random_range(2) == 1))
+    if ((range < std::max(5, m->level)) && (m->hp > 0) && (random_range(2) == 1))
       monster_special(m);
   }
 }
@@ -1255,13 +1256,13 @@ char *mantype() {
 void strengthen_death(struct monster *m) {
   pol ol = ((pol)checkmalloc(sizeof(oltype)));
   pob scythe = ((pob)checkmalloc(sizeof(objtype)));
-  m->xpv += min(10000, m->xpv + 1000);
-  m->hit += min(1000, m->hit + 10);
-  m->dmg = min(10000, m->dmg * 2);
-  m->ac += min(1000, m->ac + 10);
-  m->speed = max(m->speed - 1, 1);
+  m->xpv += std::min(10000l, m->xpv + 1000);
+  m->hit += std::min(1000, m->hit + 10);
+  m->dmg = std::min(10000, m->dmg * 2);
+  m->ac += std::min(1000, m->ac + 10);
+  m->speed = std::max(m->speed - 1, 1);
   m->movef = M_MOVE_SMART;
-  m->hp = min(100000, 100 + m->dmg * 10);
+  m->hp = std::min(100000, 100 + m->dmg * 10);
   *scythe = Objects[WEAPONID + 39];
   ol->thing = scythe;
   ol->next = NULL;

@@ -5,6 +5,7 @@
    aux1.c and omega.c, as well as elsewhere. It is mainly here so aux1.c
    and aux2.c are not huge */
 
+#include <algorithm>
 #include "glob.h"
 
 /* check every ten minutes */
@@ -17,7 +18,7 @@ void tenminute_check() {
     minute_status_check();
     tenminute_status_check();
     if ((Player.status[DISEASED] < 1) && (Player.hp < Player.maxhp))
-      Player.hp = min(Player.maxhp, Player.hp + Player.level + 1);
+      Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
     if (Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
       indoors_random_event();
   }
@@ -40,7 +41,7 @@ void hourly_check() {
   minute_status_check();
   tenminute_status_check();
   if ((Player.status[DISEASED] == 0) && (Player.hp < Player.maxhp))
-    Player.hp = min(Player.maxhp, Player.hp + Player.level + 1);
+    Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
   if (Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
     indoors_random_event();
 }
@@ -71,7 +72,7 @@ void indoors_random_event() {
     for (ml = Level->mlist; ml != NULL; ml = ml->next)
       if (ml->m->hp > 0)
         ml->m->hp = Monsters[ml->m->id].hp;
-    Player.hp = max(Player.hp, Player.maxhp);
+    Player.hp = std::max(Player.hp, Player.maxhp);
     break;
   case 5:
     print3("You discover an itch just where you can't scratch it.");
@@ -85,8 +86,8 @@ void indoors_random_event() {
   case 7:
     print3("You catch your second wind....");
     Player.maxhp++;
-    Player.hp = max(Player.hp, Player.maxhp);
-    Player.mana = max(Player.mana, calcmana());
+    Player.hp = std::max(Player.hp, Player.maxhp);
+    Player.mana = std::max(Player.mana, calcmana());
     morewait();
     break;
   case 8:
@@ -1259,7 +1260,7 @@ size_t maneuvers() {
     m *= 2;
   if (Player.status[SLOWED])
     m /= 2;
-  m = min(8, max(1, m));
+  m = std::min(8, std::max(1, m));
 
   return (m);
 }

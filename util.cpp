@@ -3,6 +3,7 @@
 
 /* Random utility functions called from all over */
 
+#include <algorithm>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -43,7 +44,7 @@ int hitp(int hit, int ac) {
 
 /* number of moves from x1,y1 to x2,y2 */
 int distance(int x1, int y1, int x2, int y2) {
-  return (max(abs(x2 - x1), abs(y2 - y1)));
+  return (std::max(abs(x2 - x1), abs(y2 - y1)));
 }
 
 /* can you shoot, or move monsters through a spot? */

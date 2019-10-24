@@ -3,6 +3,7 @@
 
 /* This file contains toplevel commands called from command1.c */
 
+#include <algorithm>
 #include <ctype.h>
 #include <unistd.h>
 
@@ -143,7 +144,7 @@ void eat() {
       nprint3(itemid(obj));
     } else {
       if (obj->usef == I_FOOD)
-        Player.food = max(0, Player.food + obj->aux);
+        Player.food = std::max(0, Player.food + obj->aux);
       item_use(obj);
       dispose_lost_objects(1, obj);
       if (Current_Dungeon == E_COUNTRYSIDE) {
@@ -758,7 +759,7 @@ void bash_location() {
           } else {
             print1("Crash! The door holds.");
             if (random_range(30) > Player.str)
-              p_damage(max(1, statmod(Player.str)), UNSTOPPABLE, "a door");
+              p_damage(std::max(1, statmod(Player.str)), UNSTOPPABLE, "a door");
           }
         } else {
           Player.x = ox;
@@ -805,7 +806,7 @@ void bash_location() {
           print2("Zzzzap! A bolt of godsfire strikes!");
           if (Player.rank[PRIESTHOOD] > 0)
             print3("Your own deity's aegis defends you from the bolt!");
-          p_damage(max(0, random_range(100) - Player.rank[PRIESTHOOD] * 20),
+          p_damage(std::max(0, random_range(100) - Player.rank[PRIESTHOOD] * 20),
                    UNSTOPPABLE, "a bolt of godsfire");
           if (Player.rank[PRIESTHOOD] * 20 + Player.pow + Player.level >
               random_range(200)) {

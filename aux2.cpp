@@ -5,6 +5,7 @@
    aux1.c and omega.c, as well as elsewhere. It is mainly here so aux1.c
    and aux3.c are not huge */
 
+#include <algorithm>
 #include "glob.h"
 
 /* Player stats like str, agi, etc give modifications to various abilities
@@ -448,7 +449,7 @@ void gain_level() {
     Player.maxmana = calcmana();
     /* If the character was given a bonus, let him keep it.  Otherwise
      * recharge him. */
-    Player.mana = max(Player.mana, Player.maxmana); /* end fix 12/30/98 */
+    Player.mana = std::max(Player.mana, Player.maxmana); /* end fix 12/30/98 */
     morewait();
   }
   if (gained)
