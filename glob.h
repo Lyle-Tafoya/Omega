@@ -2,7 +2,7 @@
 
 /* this file contains extern declarations of global variables used
    throughout the program */
-/* it includes the other header files, so every program module 
+/* it includes the other header files, so every program module
 (except o.c) can just include this file. */
 
 /* glob.h */
@@ -24,7 +24,7 @@ extern char *Omegalib;
 extern struct monster Monsters[NUMMONSTERS];
 
 /* one of each spell */
-extern struct spell Spells[NUMSPELLS+1];
+extern struct spell Spells[NUMSPELLS + 1];
 
 /* one of each item */
 extern struct object Objects[TOTALITEMS];
@@ -32,7 +32,7 @@ extern struct object Objects[TOTALITEMS];
 /* locations of city sites [0] - found, [1] - x, [2] - y */
 extern int CitySiteList[NUMCITYSITES][3];
 
-extern struct player Player;                 
+extern struct player Player;
 /* the player */
 
 extern int LENGTH;
@@ -50,7 +50,6 @@ extern int ScreenLength;
 extern struct terrain Country[MAXWIDTH][MAXLENGTH];
 /* The countryside */
 
-
 extern struct level *City;
 /* The city of Rampart */
 
@@ -67,7 +66,7 @@ extern int Current_Dungeon;
 /* What is Dungeon now (an E_ constant) */
 
 extern int Villagenum;
-/* Current Village number */ 
+/* Current Village number */
 
 extern int ScreenOffset;
 /* Offset of displayed screen to level */
@@ -81,10 +80,10 @@ extern int Current_Environment;
 extern int Last_Environment;
 /* Which environment were we in last (an E_ constant) */
 
-extern int Dirs[2][9];                       
+extern int Dirs[2][9];
 /* 9 xy directions */
 
-extern char Cmd;                         
+extern char Cmd;
 /* last player command */
 
 extern int Command_Duration;
@@ -129,7 +128,7 @@ extern int ZapHour;
 extern int HelmHour;
 /* helm of teleportation use marker*/
 
-extern int SymbolUseHour;                
+extern int SymbolUseHour;
 /* holy symbol use marker */
 
 extern int Constriction;
@@ -156,7 +155,7 @@ extern int Chaostone;
 extern int Mindstone;
 /* magic stone counter */
 
-extern int Searchnum;                    
+extern int Searchnum;
 /* number of times to search on 's' */
 
 extern int Verbosity;
@@ -165,7 +164,7 @@ extern int Verbosity;
 extern int Behavior;
 /* NPC behavior, if entered */
 
-extern char Seed;                            
+extern char Seed;
 /* random seed */
 
 extern long Time;
@@ -190,7 +189,7 @@ extern int HiMagicUse;
 /* last date of high magic use */
 
 extern int HiMagic;
-/* current level for l_throne */ 
+/* current level for l_throne */
 
 extern long Balance;
 /* bank account */
@@ -216,23 +215,23 @@ extern char Password[64];
 extern pol Condoitems;
 /* items in condo */
 
-extern char Str1[100],Str2[100],Str3[100],Str4[100];
+extern char Str1[100], Str2[100], Str3[100], Str4[100];
 /* Some string space, random uses */
-
-
 
 /* high score names, levels, behavior */
 
-extern int Shadowlordbehavior,Archmagebehavior,Primebehavior,Justiciarbehavior;
-extern int Commandantbehavior,Chaoslordbehavior,Lawlordbehavior;
-extern int Championbehavior,Priestbehavior[7],Hibehavior,Dukebehavior;
-extern char Shadowlord[80],Archmage[80],Prime[80],Commandant[80],Duke[80];
-extern char Champion[80],Priest[7][80],Hiscorer[80],Hidescrip[80];
-extern char Chaoslord[80],Lawlord[80],Justiciar[80];
-extern int Shadowlordlevel,Archmagelevel,Primelevel,Commandantlevel,Dukelevel;
-extern int Championlevel,Priestlevel[7],Hilevel,Justiciarlevel;
+extern int Shadowlordbehavior, Archmagebehavior, Primebehavior,
+    Justiciarbehavior;
+extern int Commandantbehavior, Chaoslordbehavior, Lawlordbehavior;
+extern int Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
+extern char Shadowlord[80], Archmage[80], Prime[80], Commandant[80], Duke[80];
+extern char Champion[80], Priest[7][80], Hiscorer[80], Hidescrip[80];
+extern char Chaoslord[80], Lawlord[80], Justiciar[80];
+extern int Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel,
+    Dukelevel;
+extern int Championlevel, Priestlevel[7], Hilevel, Justiciarlevel;
 extern long Hiscore;
-extern int Chaoslordlevel,Lawlordlevel,Chaos,Law;
+extern int Chaoslordlevel, Lawlordlevel, Chaos, Law;
 
 /* New globals which used to be statics */
 extern int twiddle;

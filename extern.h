@@ -9,12 +9,12 @@
 
 /* omega.c functions */
 
-int main ARGS((int,char *[]));
-int game_restore ARGS((int,char *[]));
+int main ARGS((int, char *[]));
+int game_restore ARGS((int, char *[]));
 void init_world ARGS((void));
 void inititem ARGS((int));
 void initrand ARGS((int, int));
-void signalexit ARGS((int=0));
+void signalexit ARGS((int = 0));
 
 /* abyss.c functions */
 
@@ -27,8 +27,8 @@ char *mstatus_string ARGS((struct monster *));
 char *trapid ARGS((int));
 int getdir ARGS((void));
 int goberserk ARGS((void));
-int p_country_moveable ARGS((int,int));
-int p_moveable ARGS((int,int));
+int p_country_moveable ARGS((int, int));
+int p_moveable ARGS((int, int));
 int player_on_sanctuary ARGS((void));
 void calc_melee ARGS((void));
 int damage_item ARGS((pob));
@@ -36,11 +36,11 @@ void describe_player ARGS((void));
 void fight_monster ARGS((struct monster *));
 void foodcheck ARGS((void));
 void gain_experience ARGS((int));
-void p_damage ARGS((int,int,char *));
+void p_damage ARGS((int, int, char *));
 void p_death ARGS((char *));
 void roomcheck ARGS((void));
-void searchat ARGS((int,int));
-void setspot ARGS((int *,int *));
+void searchat ARGS((int, int));
+void setspot ARGS((int *, int *));
 void showroom ARGS((int));
 void surrender ARGS((struct monster *));
 void threaten ARGS((struct monster *));
@@ -53,7 +53,7 @@ long item_value ARGS((pob));
 long true_item_value ARGS((pob));
 char *actionlocstr ARGS((char));
 int p_immune ARGS((int));
-int player_hit ARGS((int,char,struct monster *));
+int player_hit ARGS((int, char, struct monster *));
 int statmod ARGS((int));
 void break_weapon ARGS((void));
 void change_environment ARGS((char));
@@ -62,17 +62,17 @@ void enter_site ARGS((Symbol));
 void gain_level ARGS((void));
 void minute_status_check ARGS((void));
 void moon_check ARGS((void));
-void movecursor ARGS((int *,int *,int,int));
+void movecursor ARGS((int *, int *, int, int));
 void p_drown ARGS((void));
 void p_fumble ARGS((int));
-void p_hit  ARGS((struct monster *,int,int));
+void p_hit ARGS((struct monster *, int, int));
 void p_win ARGS((void));
-void player_miss ARGS((struct monster *,int));
+void player_miss ARGS((struct monster *, int));
 void tacplayer ARGS((struct monster *));
 void tenminute_status_check ARGS((void));
 void toggle_item_use ARGS((int));
 void torch_check ARGS((void));
-void weapon_use ARGS((int,pob,struct monster *));
+void weapon_use ARGS((int, pob, struct monster *));
 
 /* aux3.c functions */
 
@@ -109,13 +109,13 @@ void user_character_stats ARGS((void));
 
 /* city.c functions */
 
-void assign_city_function ARGS((int,int));
+void assign_city_function ARGS((int, int));
 void load_city ARGS((int));
-void make_justiciar ARGS((int,int));
-void make_major_undead ARGS((int,int));
-void make_minor_undead ARGS((int,int));
-void mazesite ARGS((int,int,int));
-void randommazesite ARGS((int,int,int));
+void make_justiciar ARGS((int, int));
+void make_major_undead ARGS((int, int));
+void make_minor_undead ARGS((int, int));
+void mazesite ARGS((int, int, int));
+void randommazesite ARGS((int, int, int));
 void repair_jail ARGS((void));
 void resurrect_guards ARGS((void));
 
@@ -126,7 +126,7 @@ void p_process ARGS((void));
 
 /* command2.c functions */
 
- void pickup ARGS((void));
+void pickup ARGS((void));
 void activate ARGS((void));
 void bash_item ARGS((void));
 void bash_location ARGS((void));
@@ -139,8 +139,8 @@ void eat ARGS((void));
 void floor_inv ARGS((void));
 void give ARGS((void));
 void magic ARGS((void));
-void movepincountry ARGS((int,int));
-void moveplayer ARGS((int,int));
+void movepincountry ARGS((int, int));
+void moveplayer ARGS((int, int));
 void opendoor ARGS((void));
 void peruse ARGS((void));
 void quaff ARGS((void));
@@ -165,7 +165,7 @@ void help ARGS((void));
 void hunt ARGS((Symbol));
 void nap ARGS((void));
 void pickpocket ARGS((void));
-void quit ARGS((int=0));
+void quit ARGS((int = 0));
 void rename_player ARGS((void));
 void tacoptions ARGS((void));
 void tunnel ARGS((void));
@@ -176,32 +176,32 @@ void wizard ARGS((void));
 /* country.c functions */
 
 void load_country ARGS((void));
-void load_dlair ARGS((int,int));
-void load_misle ARGS((int,int));
-void load_speak ARGS((int,int));
-void load_temple ARGS((int,int));
-void make_high_priest ARGS((int,int,int));
-void random_temple_site ARGS((int,int,int,int));
+void load_dlair ARGS((int, int));
+void load_misle ARGS((int, int));
+void load_speak ARGS((int, int));
+void load_temple ARGS((int, int));
+void make_high_priest ARGS((int, int, int));
+void random_temple_site ARGS((int, int, int, int));
 
 /* effect1.c functions */
 
 int random_item ARGS((void));
 void acquire ARGS((int));
-void ball ARGS((int,int,int,int,int,int));
+void ball ARGS((int, int, int, int, int, int));
 void bless ARGS((int));
-void bolt ARGS((int,int,int,int,int,int,int));
+void bolt ARGS((int, int, int, int, int, int, int));
 void enchant ARGS((int));
-void fball ARGS((int,int,int,int,int));
-void fbolt ARGS((int,int,int,int,int,int));
+void fball ARGS((int, int, int, int, int));
+void fbolt ARGS((int, int, int, int, int, int));
 void heal ARGS((int));
 void identify ARGS((int));
-void lball ARGS((int,int,int,int,int));
-void lbolt ARGS((int,int,int,int,int,int));
-void manastorm ARGS((int,int,int));
+void lball ARGS((int, int, int, int, int));
+void lbolt ARGS((int, int, int, int, int, int));
+void manastorm ARGS((int, int, int));
 void mondet ARGS((int));
-void nbolt ARGS((int,int,int,int,int,int));
+void nbolt ARGS((int, int, int, int, int, int));
 void objdet ARGS((int));
-void snowball ARGS((int,int,int,int,int));
+void snowball ARGS((int, int, int, int, int));
 void wish ARGS((int));
 
 /* effect2.c functions */
@@ -224,7 +224,7 @@ void warp ARGS((int));
 
 /* effect3.c functions */
 
-int itemlist ARGS((int,int));
+int itemlist ARGS((int, int));
 int monsterlist ARGS((void));
 void acid_cloud ARGS((void));
 void aggravate ARGS((void));
@@ -236,18 +236,18 @@ void cleanse ARGS((int));
 void cure ARGS((int));
 void deflection ARGS((int));
 void disease ARGS((int));
-void disintegrate ARGS((int,int));
+void disintegrate ARGS((int, int));
 void dispel ARGS((int));
-void disrupt ARGS((int,int,int));
+void disrupt ARGS((int, int, int));
 void drain ARGS((int));
 void drain_life ARGS((int));
-void hellfire ARGS((int,int,int));
+void hellfire ARGS((int, int, int));
 void hero ARGS((int));
-void hide ARGS((int,int));
+void hide ARGS((int, int));
 void illuminate ARGS((int));
-void inflict_fear ARGS((int,int));
+void inflict_fear ARGS((int, int));
 void learnspell ARGS((int));
-void level_drain ARGS((int,char *));
+void level_drain ARGS((int, char *));
 void level_return ARGS((void));
 void levitate ARGS((int));
 void p_poison ARGS((int));
@@ -258,7 +258,7 @@ void shadowform ARGS((void));
 void sleep_monster ARGS((int));
 void sleep_player ARGS((int));
 void strategic_teleport ARGS((int));
-void summon ARGS((int,int));
+void summon ARGS((int, int));
 void truesight ARGS((int));
 
 /* env.c functions */
@@ -266,8 +266,8 @@ void truesight ARGS((int));
 void load_arena ARGS((void));
 void load_circle ARGS((int));
 void load_court ARGS((int));
-void make_archmage ARGS((int,int));
-void make_prime ARGS((int,int));
+void make_archmage ARGS((int, int));
+void make_prime ARGS((int, int));
 
 /* etc.c functions */
 
@@ -275,26 +275,26 @@ char *nameprint ARGS((void));
 char *slotstr ARGS((int));
 char *wordnum ARGS((int));
 void hint ARGS((void));
-void learnclericalspells ARGS((int,int));
+void learnclericalspells ARGS((int, int));
 
 /* file.c functions */
 
 void lock_score_file ARGS((void));
 void unlock_score_file ARGS((void));
-FILE *checkfopen ARGS((char *,char *));
+FILE *checkfopen ARGS((char *, char *));
 int filecheck ARGS((void));
 int test_file_access ARGS((char *, char));
 void abyss_file ARGS((void));
 void adeptfile ARGS((void));
-void checkhigh ARGS((char *,int));
+void checkhigh ARGS((char *, int));
 void cityguidefile ARGS((void));
 void combat_help ARGS((void));
 void commandlist ARGS((void));
 void copyfile ARGS((char *));
 void displayfile ARGS((char *));
 void displaycryptfile ARGS((char *));
-void extendlog ARGS((char *,int));
-void filescanstring ARGS((FILE *,char *));	/* in util.c if MSDOS defined */
+void extendlog ARGS((char *, int));
+void filescanstring ARGS((FILE *, char *)); /* in util.c if MSDOS defined */
 void inv_help ARGS((void));
 void save_hiscore_npc ARGS((int));
 void show_license ARGS((void));
@@ -307,21 +307,21 @@ void wishfile ARGS((void));
 /* gen1.c functions */
 
 char *roomname ARGS((int));
-plv findlevel ARGS((struct level *,char));
-void build_room ARGS((int,int,int,char,int));
-void build_square_room ARGS((int,int,int,char,int));
+plv findlevel ARGS((struct level *, char));
+void build_room ARGS((int, int, int, char, int));
+void build_square_room ARGS((int, int, int, char, int));
 void cavern_level ARGS((void));
-void change_level ARGS((char,char,char));
+void change_level ARGS((char, char, char));
 void clear_level ARGS((struct level *));
-void corridor_crawl ARGS((int *,int *,int,int,int,Symbol,char));
-void find_stairs ARGS((char,char));
+void corridor_crawl ARGS((int *, int *, int, int, int, Symbol, char));
+void find_stairs ARGS((char, char));
 void free_dungeon ARGS((void));
 void install_specials ARGS((void));
 void install_traps ARGS((void));
-void makedoor ARGS((int,int));
-void sewer_corridor ARGS((int,int,int,int,Symbol));
+void makedoor ARGS((int, int));
+void sewer_corridor ARGS((int, int, int, int, Symbol));
 void sewer_level ARGS((void));
-void straggle_corridor ARGS((int,int,int,int,Symbol,char));
+void straggle_corridor ARGS((int, int, int, int, Symbol, char));
 
 /* gen2.c functions */
 
@@ -335,9 +335,9 @@ void make_river ARGS((void));
 void make_road ARGS((void));
 void make_stairs ARGS((int));
 void make_swamp ARGS((void));
-void maze_corridor ARGS((int,int,int,int,char,char));
+void maze_corridor ARGS((int, int, int, int, char, char));
 void maze_level ARGS((void));
-void room_corridor ARGS((int,int,int,int,int));
+void room_corridor ARGS((int, int, int, int, int));
 void room_level ARGS((void));
 
 /* guild1.c functions */
@@ -355,14 +355,14 @@ void l_thieves_guild ARGS((void));
 
 /* house.c functions */
 
-void load_house ARGS((int,int));
-void make_house_npc ARGS((int,int));
-void make_mansion_npc ARGS((int,int));
+void load_house ARGS((int, int));
+void make_house_npc ARGS((int, int));
+void make_mansion_npc ARGS((int, int));
 
 /* inv.c functions */
 
 void do_inventory_control ARGS((void));
-int  key_to_index ARGS((signed char));
+int key_to_index ARGS((signed char));
 signed char index_to_key ARGS((int));
 long get_money ARGS((long));
 char *cashstr ARGS((void));
@@ -370,24 +370,24 @@ char *itemid ARGS((pob));
 int baditem ARGS((int));
 int badobject ARGS((char));
 int cursed ARGS((pob));
-int find_and_remove_item ARGS((int,int));
-int find_item ARGS((pob *,int,int));
+int find_and_remove_item ARGS((int, int));
+int find_item ARGS((pob *, int, int));
 int get_inventory_slot ARGS((void));
 int get_item_number ARGS((pob));
 int get_to_pack ARGS((pob));
 int getitem ARGS((Symbol));
-int item_useable ARGS((pob,int));
-int objequal ARGS((struct object *,struct object *));
-int slottable ARGS((pob,int));
-int take_from_pack ARGS((int,int));
+int item_useable ARGS((pob, int));
+int objequal ARGS((struct object *, struct object *));
+int slottable ARGS((pob, int));
+int take_from_pack ARGS((int, int));
 pob detach_money ARGS((void));
-pob split_item ARGS((int,pob));
+pob split_item ARGS((int, pob));
 void add_to_pack ARGS((pob));
 void conform_lost_object ARGS((pob));
-void conform_lost_objects ARGS((int,pob));
+void conform_lost_objects ARGS((int, pob));
 void conform_unused_object ARGS((pob));
-void dispose_lost_objects ARGS((int,pob));
-void drop_at ARGS((int,int,pob));
+void dispose_lost_objects ARGS((int, pob));
+void drop_at ARGS((int, int, pob));
 void drop_from_slot ARGS((int));
 void drop_money ARGS((void));
 void fixpack ARGS((void));
@@ -398,20 +398,20 @@ void inventory_control ARGS((void));
 void item_inventory ARGS((int));
 void lose_all_items ARGS((void));
 void merge_item ARGS((int));
-void p_drop_at ARGS((int,int,int,pob));
+void p_drop_at ARGS((int, int, int, pob));
 void pack_extra_items ARGS((pob));
-void pickup_at ARGS((int,int));
+void pickup_at ARGS((int, int));
 void put_to_pack ARGS((int));
-void setchargestr ARGS((pob,char *));
-void setnumstr ARGS((pob,char *));
-void setplustr ARGS((pob,char *));
-void show_inventory_slot ARGS((int,int));
+void setchargestr ARGS((pob, char *));
+void setnumstr ARGS((pob, char *));
+void setplustr ARGS((pob, char *));
+void show_inventory_slot ARGS((int, int));
 void switch_to_slot ARGS((int));
 void top_inventory_control ARGS((void));
 
 /* item.c functions */
 
-void shuffle ARGS((int [], int));
+void shuffle ARGS((int[], int));
 char *bootname ARGS((int));
 char *cloakname ARGS((int));
 char *grotname ARGS((void));
@@ -580,13 +580,13 @@ void i_symbol ARGS((pob));
 
 /* lev.c functions */
 
-int difficulty ARGS((void));	/* this function in util.c if MSDOS defined */
-pmt m_create ARGS((int,int,int,int));
+int difficulty ARGS((void)); /* this function in util.c if MSDOS defined */
+pmt m_create ARGS((int, int, int, int));
 pmt make_creature ARGS((int));
 void make_country_monsters ARGS((Symbol));
-void make_site_monster ARGS((int,int,int));
-void make_site_treasure ARGS((int,int,int));
-void make_specific_treasure ARGS((int,int,int));
+void make_site_monster ARGS((int, int, int));
+void make_site_treasure ARGS((int, int, int));
+void make_specific_treasure ARGS((int, int, int));
 void populate_level ARGS((int));
 void stock_level ARGS((void));
 void wandercheck ARGS((void));
@@ -594,9 +594,9 @@ void wandercheck ARGS((void));
 /* mmelee.c functions */
 
 char random_loc ARGS((void));
-int monster_hit ARGS((struct monster *,char,int));
-void m_hit ARGS((struct monster *,int));
-void monster_melee ARGS((struct monster *,char,int));
+int monster_hit ARGS((struct monster *, char, int));
+void m_hit ARGS((struct monster *, int));
+void monster_melee ARGS((struct monster *, char, int));
 void tacmonster ARGS((struct monster *));
 void transcribe_monster_actions ARGS((struct monster *));
 
@@ -619,16 +619,16 @@ void m_move_leash ARGS((struct monster *));
 /* mon.c functions */
 
 char *mantype ARGS((void));
-void determine_npc_behavior ARGS((pmt,int,int));
+void determine_npc_behavior ARGS((pmt, int, int));
 void m_abyss ARGS((struct monster *));
 void m_altar ARGS((struct monster *));
-void m_damage ARGS((struct monster *,int,int));
+void m_damage ARGS((struct monster *, int, int));
 void m_death ARGS((struct monster *));
 void m_dropstuff ARGS((struct monster *));
 void m_fire ARGS((struct monster *));
 void m_lava ARGS((struct monster *));
 void m_no_op ARGS((struct monster *));
-void m_pickup ARGS((struct monster *,struct object *));
+void m_pickup ARGS((struct monster *, struct object *));
 void m_pulse ARGS((struct monster *));
 void m_trap_abyss ARGS((struct monster *));
 void m_trap_acid ARGS((struct monster *));
@@ -643,14 +643,14 @@ void m_trap_sleepgas ARGS((struct monster *));
 void m_trap_snare ARGS((struct monster *));
 void m_trap_teleport ARGS((struct monster *));
 void m_water ARGS((struct monster *));
-void make_hiscore_npc ARGS((pmt,int));
+void make_hiscore_npc ARGS((pmt, int));
 void make_log_npc ARGS((struct monster *));
-void monster_action ARGS((struct monster *,int));
+void monster_action ARGS((struct monster *, int));
 void monster_move ARGS((struct monster *));
 void monster_special ARGS((struct monster *));
 void monster_strike ARGS((struct monster *));
 void monster_talk ARGS((struct monster *));
-void movemonster ARGS((struct monster *,int,int));
+void movemonster ARGS((struct monster *, int, int));
 void strengthen_death ARGS((struct monster *));
 
 /* move.c functions */
@@ -699,9 +699,10 @@ void stationcheck ARGS((void));
 
 /* movef.c functions */
 
-void m_movefunction ARGS((struct monster *,int));
+void m_movefunction ARGS((struct monster *, int));
 void p_movefunction ARGS((int));
-void sign_print ARGS((int,int,int));	/* this function in site1.c if MSDOS defined */
+void sign_print ARGS((int, int,
+                      int)); /* this function in site1.c if MSDOS defined */
 
 /* mspec.c functions */
 
@@ -806,23 +807,23 @@ pob restore_item ARGS((FILE *, int));
 pol restore_itemlist ARGS((FILE *, int));
 void restore_country ARGS((FILE *, int));
 void restore_level ARGS((FILE *, int));
-void restore_monsters ARGS((FILE *,plv, int));
+void restore_monsters ARGS((FILE *, plv, int));
 void restore_player ARGS((FILE *, int));
-int save_game ARGS((int,char *));
+int save_game ARGS((int, char *));
 int save_country ARGS((FILE *));
-int save_item ARGS((FILE *,pob));
-int save_itemlist ARGS((FILE *,pol));
-int save_level ARGS((FILE *,plv));
-int save_monsters ARGS((FILE *,pml));
+int save_item ARGS((FILE *, pob));
+int save_itemlist ARGS((FILE *, pol));
+int save_level ARGS((FILE *, plv));
+int save_monsters ARGS((FILE *, pml));
 int save_player ARGS((FILE *));
-void signalsave ARGS((int=0));
+void signalsave ARGS((int = 0));
 
 /* scr.c functions */
 
 int mcigetc ARGS((void));
 long parsenum ARGS((void));
 char *msgscanstring ARGS((void));
-Symbol getspot ARGS((int,int,int));
+Symbol getspot ARGS((int, int, int));
 char lgetc ARGS((void));
 char menugetc ARGS((void));
 char mgetc ARGS((void));
@@ -830,12 +831,12 @@ int ynq ARGS((void));
 int ynq1 ARGS((void));
 int ynq2 ARGS((void));
 int getnumber ARGS((int));
-int litroom ARGS((int,int));
-int move_slot ARGS((int,int,int));
+int litroom ARGS((int, int));
+int move_slot ARGS((int, int, int));
 int stillonblock ARGS((void));
-void blankoutspot ARGS((int,int));
-void blotspot ARGS((int,int));
-void buffercycle ARGS((char const*));
+void blankoutspot ARGS((int, int));
+void blotspot ARGS((int, int));
+void buffercycle ARGS((char const *));
 int bufferappend ARGS((char *));
 void bufferprint ARGS((void));
 void checkclear ARGS((void));
@@ -852,7 +853,7 @@ void dataprint ARGS((void));
 void deathprint ARGS((void));
 void display_bigwin ARGS((void));
 void display_death ARGS((char *));
-void display_inventory_slot ARGS((int,int));
+void display_inventory_slot ARGS((int, int));
 void display_option_slot ARGS((int));
 void display_options ARGS((void));
 void display_pack ARGS((void));
@@ -860,21 +861,21 @@ void display_possessions ARGS((void));
 void display_quit ARGS((void));
 void display_win ARGS((void));
 void dobackspace ARGS((void));
-void dodrawspot ARGS((int,int));
-void draw_explosion ARGS((Symbol,int,int));
+void dodrawspot ARGS((int, int));
+void draw_explosion ARGS((Symbol, int, int));
 void drawmonsters ARGS((int));
 void drawomega ARGS((void));
 void drawplayer ARGS((void));
 void drawscreen ARGS((void));
-void drawspot ARGS((int,int));
-void drawvision ARGS((int,int));
+void drawspot ARGS((int, int));
+void drawvision ARGS((int, int));
 void endgraf ARGS((void));
 void erase_level ARGS((void));
 void erase_monster ARGS((struct monster *));
 void hide_line ARGS((int));
 void initgraf ARGS((void));
 void levelrefresh ARGS((void));
-void lightspot ARGS((int,int));
+void lightspot ARGS((int, int));
 void locprint ARGS((char *));
 void maddch ARGS((char));
 void menuaddch ARGS((char));
@@ -892,28 +893,28 @@ void nprint1 ARGS((char *));
 void nprint2 ARGS((char *));
 void nprint3 ARGS((char *));
 void phaseprint ARGS((void));
-void plotchar ARGS((Symbol,int,int));
+void plotchar ARGS((Symbol, int, int));
 void plotmon ARGS((struct monster *));
-void plotspot ARGS((int,int,int));
-void print1 ARGS((char const*));
+void plotspot ARGS((int, int, int));
+void print1 ARGS((char const *));
 void print2 ARGS((char *));
 void print3 ARGS((char *));
-void putspot ARGS((int,int,Symbol));
+void putspot ARGS((int, int, Symbol));
 void redraw ARGS((void));
 void screencheck ARGS((int));
 void setlastxy ARGS((int, int));
 void show_screen ARGS((void));
-void omshowcursor ARGS((int,int));
+void omshowcursor ARGS((int, int));
 void showflags ARGS((void));
-void spreadroomdark ARGS((int,int,int));
-void spreadroomlight ARGS((int,int,int));
+void spreadroomdark ARGS((int, int, int));
+void spreadroomlight ARGS((int, int, int));
 void timeprint ARGS((void));
 void title ARGS((void));
 void xredraw ARGS((void));
 
 /* site1.c functions */
 
-void buyfromstock ARGS((int,int));
+void buyfromstock ARGS((int, int));
 void l_alchemist ARGS((void));
 void l_armorer ARGS((void));
 void l_bank ARGS((void));
@@ -929,13 +930,13 @@ void l_library ARGS((void));
 void l_pawn_shop ARGS((void));
 void l_statue_wake ARGS((void));
 void l_tavern ARGS((void));
-void statue_random ARGS((int,int));
-void wake_statue ARGS((int,int,int));
+void statue_random ARGS((int, int));
+void wake_statue ARGS((int, int, int));
 
 /* site2.c functions */
 
 void cureforpay ARGS((void));
-void gymtrain ARGS((int *,int *));
+void gymtrain ARGS((int *, int *));
 void healforpay ARGS((void));
 void l_adept ARGS((void));
 void l_brothel ARGS((void));
@@ -1034,14 +1035,14 @@ char *salloc ARGS((char *));
 char inversedir ARGS((int));
 void init_perms ARGS((void));
 int confirmation ARGS((void));
-char cryptkey ARGS((char*));
+char cryptkey ARGS((char *));
 int day ARGS((void));
-int distance ARGS((int,int,int,int));
-int hitp ARGS((int,int));
+int distance ARGS((int, int, int, int));
+int hitp ARGS((int, int));
 int hour ARGS((void));
-int inbounds ARGS((int,int));
-int los_p ARGS((int,int,int,int));
-int m_unblocked ARGS((struct monster *,int,int));
+int inbounds ARGS((int, int));
+int los_p ARGS((int, int, int, int));
+int m_unblocked ARGS((struct monster *, int, int));
 int nighttime ARGS((void));
 int offscreen ARGS((int));
 int ok_to_free ARGS((plv));
@@ -1053,17 +1054,17 @@ int random_range ARGS((int));
 int screenmod ARGS((int));
 int showhour ARGS((void));
 int showminute ARGS((void));
-int strmem ARGS((char,char *));
-int strprefix ARGS((char *,char *));
-int unblocked ARGS((int,int));
-int view_los_p ARGS((int,int,int,int));
-int view_unblocked ARGS((int,int));
+int strmem ARGS((char, char *));
+int strprefix ARGS((char *, char *));
+int unblocked ARGS((int, int));
+int view_los_p ARGS((int, int, int, int));
+int view_unblocked ARGS((int, int));
 void calc_weight ARGS((void));
 void change_to_game_perms ARGS((void));
 void change_to_user_perms ARGS((void));
-void do_los ARGS((Symbol,int *,int *,int,int));
-void do_object_los ARGS((int,int *,int *,int,int));
-void findspace ARGS((int *,int *,int));
+void do_los ARGS((Symbol, int *, int *, int, int));
+void do_object_los ARGS((int, int *, int *, int, int));
+void findspace ARGS((int *, int *, int));
 void initdirs ARGS((void));
 #ifdef NO_USLEEP
 void usleep ARGS((int));
@@ -1071,11 +1072,11 @@ void usleep ARGS((int));
 
 /* village.c functions */
 
-void assign_village_function ARGS((int,int,int));
+void assign_village_function ARGS((int, int, int));
 void load_village ARGS((int, int));
-void make_food_bin ARGS((int,int));
-void make_guard ARGS((int,int));
-void make_horse ARGS((int,int));
-void make_merchant ARGS((int,int));
-void make_sheep ARGS((int,int));
-void special_village_site ARGS((int,int,int));
+void make_food_bin ARGS((int, int));
+void make_guard ARGS((int, int));
+void make_horse ARGS((int, int));
+void make_merchant ARGS((int, int));
+void make_sheep ARGS((int, int));
+void special_village_site ARGS((int, int, int));
