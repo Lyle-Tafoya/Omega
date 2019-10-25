@@ -1,6 +1,8 @@
 /* omega copyright (c) 1987,1988,1989 by Laurence Raphael Brothers */
 /* extern.h -- function declarations */
 
+#include <string>
+
 #ifdef __STDC__
 #define ARGS(x) x
 #else
@@ -836,8 +838,8 @@ int move_slot ARGS((int, int, int));
 int stillonblock ARGS((void));
 void blankoutspot ARGS((int, int));
 void blotspot ARGS((int, int));
-void buffercycle ARGS((char const *));
-int bufferappend ARGS((char *));
+void buffercycle ARGS((const std::string &));
+int bufferappend ARGS((const std::string &));
 void bufferprint ARGS((void));
 void checkclear ARGS((void));
 void clear_if_necessary ARGS((void));
@@ -852,7 +854,7 @@ void comwinprint ARGS((void));
 void dataprint ARGS((void));
 void deathprint ARGS((void));
 void display_bigwin ARGS((void));
-void display_death ARGS((char *));
+void display_death ARGS((const std::string &));
 void display_inventory_slot ARGS((int, int));
 void display_option_slot ARGS((int));
 void display_options ARGS((void));
@@ -876,29 +878,29 @@ void hide_line ARGS((int));
 void initgraf ARGS((void));
 void levelrefresh ARGS((void));
 void lightspot ARGS((int, int));
-void locprint ARGS((char *));
+void locprint ARGS((const std::string &));
 void maddch ARGS((char));
 void menuaddch ARGS((char));
 void menuclear ARGS((void));
 void menulongprint ARGS((long));
 void menunumprint ARGS((int));
-void menuprint ARGS((char *));
+void menuprint ARGS((const std::string &));
 void menuspellprint ARGS((int));
 void showmenu ARGS((void));
 void mlongprint ARGS((long));
 void mnumprint ARGS((int));
 void morewait ARGS((void));
-void mprint ARGS((char *));
-void nprint1 ARGS((char *));
-void nprint2 ARGS((char *));
-void nprint3 ARGS((char *));
+void mprint ARGS((const std::string &));
+void nprint1 ARGS((const std::string &));
+void nprint2 ARGS((const std::string &));
+void nprint3 ARGS((const std::string &));
 void phaseprint ARGS((void));
 void plotchar ARGS((Symbol, int, int));
 void plotmon ARGS((struct monster *));
 void plotspot ARGS((int, int, int));
-void print1 ARGS((char const *));
-void print2 ARGS((char *));
-void print3 ARGS((char *));
+void print1 ARGS((const std::string &));
+void print2 ARGS((const std::string &));
+void print3 ARGS((const std::string &));
 void putspot ARGS((int, int, Symbol));
 void redraw ARGS((void));
 void screencheck ARGS((int));

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cassert>
 #include <curses.h>
+#include <string>
 #include <sys/types.h>
 
 #define CHARATTR(c) ((c) & ~0xff)
@@ -241,40 +242,40 @@ void erase_level() {
 }
 
 /* direct print to first msg line */
-void print1(char const *s) {
+void print1(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING)) {
     buffercycle(s);
     wclear(Msg1w);
-    wprintw(Msg1w, s);
+    wprintw(Msg1w, s.c_str());
     wrefresh(Msg1w);
   }
 }
 
 /* for run on-messages -- print1 clears first.... */
-void nprint1(char *s) {
+void nprint1(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING)) {
     if (bufferappend(s)) {
-      wprintw(Msg1w, s);
+      wprintw(Msg1w, s.c_str());
       wrefresh(Msg1w);
     }
   }
 }
 
 /* direct print to second msg line */
-void print2(char *s) {
+void print2(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING)) {
     buffercycle(s);
     wclear(Msg2w);
-    wprintw(Msg2w, s);
+    wprintw(Msg2w, s.c_str());
     wrefresh(Msg2w);
   }
 }
 
 /* for run on-messages -- print2 clears first.... */
-void nprint2(char *s) {
+void nprint2(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING)) {
     if (bufferappend(s)) {
-      wprintw(Msg2w, s);
+      wprintw(Msg2w, s.c_str());
       wrefresh(Msg2w);
     }
   }
@@ -282,20 +283,20 @@ void nprint2(char *s) {
 
 /* msg line 3 is not part of the region that mprint or printm can reach */
 /* typical use of print3 is for "you can't do that" type error messages */
-void print3(char *s) {
+void print3(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING)) {
     buffercycle(s);
     wclear(Msg3w);
-    wprintw(Msg3w, s);
+    wprintw(Msg3w, s.c_str());
     wrefresh(Msg3w);
   }
 }
 
 /* for run on-messages -- print3 clears first.... */
-void nprint3(char *s) {
+void nprint3(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING)) {
     if (bufferappend(s)) {
-      wprintw(Msg3w, s);
+      wprintw(Msg3w, s.c_str());
       wrefresh(Msg3w);
     }
   }
@@ -303,11 +304,11 @@ void nprint3(char *s) {
 
 /* prints wherever cursor is in window, but checks to see if
 it should morewait and clear window */
-void mprint(char *s) {
+void mprint(const std::string &s) {
   int x;
   if (!gamestatusp(SUPPRESS_PRINTING)) {
     x = getcurx(Msgw);
-    if (x + strlen(s) >= (size_t)WIDTH) {
+    if (x + s.length() >= static_cast<size_t>(WIDTH)) {
       buffercycle(s);
       if (Msgw == Msg1w) {
         wclear(Msg2w);
@@ -323,7 +324,7 @@ void mprint(char *s) {
       bufferappend(s);
     else
       buffercycle(s);
-    wprintw(Msgw, s);
+    wprintw(Msgw, s.c_str());
     waddch(Msgw, ' ');
     wrefresh(Msgw);
   }
@@ -792,14 +793,14 @@ void menuspellprint(int i) {
   wprintw(Menuw, "(%d)\n", Spells[i].powerdrain);
 }
 
-void menuprint(char *s) {
+void menuprint(const std::string &s) {
   if (getcury(Menuw) >= ScreenLength - 2) {
     wrefresh(Menuw);
     morewait();
     wclear(Menuw);
     touchwin(Menuw);
   }
-  wprintw(Menuw, s);
+  wprintw(Menuw, s.c_str());
 }
 
 void showmenu() { wrefresh(Menuw); }
@@ -862,9 +863,9 @@ char *msgscanstring() {
   return (instring);
 }
 
-void locprint(char *s) {
+void locprint(const std::string &s) {
   wclear(Locw);
-  wprintw(Locw, s);
+  wprintw(Locw, s.c_str());
   wrefresh(Locw);
 }
 
@@ -955,7 +956,7 @@ void maddch(char c) {
   wrefresh(Msgw);
 }
 
-void display_death(char *source) {
+void display_death(const std::string &source) {
   clear();
   touchwin(stdscr);
   printw("\n\n\n\n");
@@ -963,7 +964,7 @@ void display_death(char *source) {
   printw(Player.name);
   printw(" (%ld points)", calc_points());
   strcpy(Str4, "Killed by ");
-  strcat(Str4, source);
+  strcat(Str4, source.c_str());
   printw("\n");
   printw(Str4);
   printw(".");
@@ -1460,19 +1461,19 @@ void clear_if_necessary() {
 
 int bufferpos = 0;
 
-void buffercycle(char const *s) {
-  strcpy(Stringbuffer[bufferpos++], s);
+void buffercycle(const std::string &s) {
+  strcpy(Stringbuffer[bufferpos++], s.c_str());
   if (bufferpos >= STRING_BUFFER_SIZE)
     bufferpos = 0;
 }
 
-int bufferappend(char *s) {
+int bufferappend(const std::string &s) {
   int pos = bufferpos - 1;
 
   if (pos < 0)
     pos = STRING_BUFFER_SIZE - 1;
-  if (strlen(Stringbuffer[pos]) + strlen(s) < 80 - 1) {
-    strcat(Stringbuffer[pos], s);
+  if (strlen(Stringbuffer[pos]) + s.length() < 80 - 1) {
+    strcat(Stringbuffer[pos], s.c_str());
     return 1;
   } else
     return 0;
