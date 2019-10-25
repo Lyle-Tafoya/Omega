@@ -41,7 +41,7 @@ OBJ = omega.o abyss.o aux1.o aux2.o aux3.o char.o city.o\
       mmelee.o mmove.o mon.o move.o movef.o mspec.o\
       mstrike.o mtalk.o priest.o\
       save.o scr.o site1.o site2.o\
-      spell.o time.o trap.o util.o village.o compress.o
+      spell.o time.o trap.o util.o village.o
 
 omega: $(OBJ)
 	$(CC) $(LDFLAGS) $(OBJ) $(LIBS) -o omega

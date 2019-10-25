@@ -28,11 +28,6 @@ on save and restore. */
 
 #define COMPRESS_SAVE_FILES
 
-/* If your system has gzip, I recommend using it instead of compress */
-/* (try just typing 'gzip' at the shell prompt) */
-
-#define USE_GZIP
-
 /* If your system doesn't have the usleep call, uncomment this line */
 /* (try man usleep) */
 
@@ -73,17 +68,10 @@ on save and restore. */
 #define VERSIONSTRING "omega version 0.90"
 
 #ifdef COMPRESS_SAVE_FILES
-#ifdef USE_GZIP
 #define COMPRESSOR "gzip"
 #define UNCOMPRESSOR "gunzip"
 #define COMPRESS_EXT "gz"
 #define EXT_LENGTH 2
-#else
-#define COMPRESSOR "compress"
-#define UNCOMPRESSOR "uncompress"
-#define COMPRESS_EXT "Z"
-#define EXT_LENGTH 1
-#endif
 #endif
 
 #define VACANT 0
