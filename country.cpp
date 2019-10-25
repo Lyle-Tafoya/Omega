@@ -302,7 +302,7 @@ void load_speak(int empty, int populate) {
         if (!empty) {
           make_site_monster(i, j, LAWBRINGER);
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case 's':
@@ -310,7 +310,7 @@ void load_speak(int empty, int populate) {
         if (!empty) {
           make_site_monster(i, j, SERV_LAW); /* servant of law */
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case 'M':
@@ -318,7 +318,7 @@ void load_speak(int empty, int populate) {
         if (!empty) {
           make_site_monster(i, j, -1);
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case '$':
@@ -594,7 +594,7 @@ void load_temple(int deity, int populate) {
   /* Main Temple is peaceful for player of same sect,druids always peaceful. */
   if ((Player.patron == deity) || (deity == DRUID))
     for (ml = Level->mlist; ml != NULL; ml = ml->next)
-      m_status_reset(ml->m, HOSTILE);
+      m_status_reset(*ml->m, HOSTILE);
   fclose(fd);
   /*  initrand(-2, 0); */ /* FIXED! 12/30/98 */
 }

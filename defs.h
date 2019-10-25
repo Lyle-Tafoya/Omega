@@ -1438,8 +1438,10 @@ inline bool m_statusp(const monster &m, int status) {
 inline void m_status_set(monster &m, int status) {
   m.status |= status;
 }
+inline void m_status_reset(monster &m, int status) {
+  m.status &= ~(status);
+}
 
-#define m_status_reset(m, s) ((m)->status &= ~(s))
 #define m_immunityp(m, s) (((m)->immunity & pow2(s)) ? 1 : 0)
 
 #define gamestatusp(flag) ((GameStatus & (flag)) ? 1 : 0)

@@ -364,9 +364,9 @@ void givemonster(struct monster *m, struct object *o) {
         nprint1("...and looks chasteningly at you.");
       else {
         nprint1("...and seems happy with it.");
-        m_status_reset(m, HOSTILE);
-        m_status_reset(m, GREEDY);
-        m_status_reset(m, NEEDY);
+        m_status_reset(*m, HOSTILE);
+        m_status_reset(*m, GREEDY);
+        m_status_reset(*m, NEEDY);
       }
     } else if (m_statusp(*m, HUNGRY)) {
 
@@ -375,8 +375,8 @@ void givemonster(struct monster *m, struct object *o) {
            ((o->usef == I_FOOD) || (o->usef == I_POISON_FOOD)))) {
         strcat(Str3, " wolfs down your food ... ");
         print1(Str3);
-        m_status_reset(m, HUNGRY);
-        m_status_reset(m, HOSTILE);
+        m_status_reset(*m, HUNGRY);
+        m_status_reset(*m, HOSTILE);
         if (o->usef == I_POISON_FOOD) {
           Player.alignment -= 2;
           nprint1("...and chokes on the poisoned ration!");

@@ -35,7 +35,7 @@ void summon(int blessing, int id) {
     tml = ((pml)checkmalloc(sizeof(mltype)));
     tml->m = Level->site[x][y].creature;
     if (blessing > 0)
-      m_status_reset(tml->m, HOSTILE);
+      m_status_reset(*tml->m, HOSTILE);
     else if (blessing < 0)
       m_status_set(*tml->m, HOSTILE);
     tml->next = Level->mlist;
@@ -174,7 +174,7 @@ void sleep_monster(int blessing) {
   else if (blessing > 0) {
     mprint("A silence pervades the area.");
     for (ml = Level->mlist; ml != NULL; ml = ml->next) {
-      m_status_reset(ml->m, AWAKE);
+      m_status_reset(*ml->m, AWAKE);
       ml->m->wakeup = 0;
     }
   } else {
@@ -187,7 +187,7 @@ void sleep_monster(int blessing) {
         strcpy(Str1, target->monstring);
       if (!m_immunityp(target, SLEEP)) {
         strcat(Str1, " seems to have fallen asleep.");
-        m_status_reset(target, AWAKE);
+        m_status_reset(*target, AWAKE);
         target->wakeup = 0;
       } else
         strcat(Str1, " is bright eyed, and bushy tailed!");
@@ -762,8 +762,8 @@ void dispel(int blessing) {
           Level->site[x][y].creature->meleef = M_MELEE_NORMAL;
         Level->site[x][y].creature->strikef = M_NO_OP;
         Level->site[x][y].creature->immunity = 0;
-        m_status_reset(Level->site[x][y].creature, M_INVISIBLE);
-        m_status_reset(Level->site[x][y].creature, INTANGIBLE);
+        m_status_reset(*Level->site[x][y].creature, M_INVISIBLE);
+        m_status_reset(*Level->site[x][y].creature, INTANGIBLE);
       } else
         mprint("The monster ignores the effect!");
     } else if ((Level->site[x][y].p_locf == L_TRAP_FIRE) ||

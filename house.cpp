@@ -210,7 +210,7 @@ void make_house_npc(int i, int j) {
   Level->mlist = ml;
   m_status_set(*ml->m, HOSTILE);
   if (nighttime())
-    m_status_reset(ml->m, AWAKE);
+    m_status_reset(*ml->m, AWAKE);
   else
     m_status_set(*ml->m, AWAKE);
   if (ml->m->startthing > -1) {
@@ -235,7 +235,7 @@ void make_mansion_npc(int i, int j) {
   Level->mlist = ml;
   m_status_set(*ml->m, HOSTILE);
   if (nighttime())
-    m_status_reset(ml->m, AWAKE);
+    m_status_reset(*ml->m, AWAKE);
   else
     m_status_set(*ml->m, AWAKE);
 }

@@ -127,7 +127,7 @@ void load_circle(int populate) {
         if (populate) {
           make_site_monster(i, j, DEMON_PRINCE); /* prime circle demon */
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
           Level->site[i][j].creature->specialf = M_SP_COURT;
         }
         break;
@@ -137,7 +137,7 @@ void load_circle(int populate) {
           make_site_monster(i, j, SERV_CHAOS); /* servant of chaos */
           Level->site[i][j].creature->specialf = M_SP_COURT;
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case 'e':
@@ -146,7 +146,7 @@ void load_circle(int populate) {
           make_site_monster(i, j, ENCHANTOR); /* enchanter */
           Level->site[i][j].creature->specialf = M_SP_COURT;
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case 'n':
@@ -155,7 +155,7 @@ void load_circle(int populate) {
           make_site_monster(i, j, NECROMANCER); /* necromancer */
           Level->site[i][j].creature->specialf = M_SP_COURT;
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case 'T':
@@ -164,7 +164,7 @@ void load_circle(int populate) {
           make_site_monster(i, j, THAUMATURGIST); /* High Thaumaturgist */
           Level->site[i][j].creature->specialf = M_SP_COURT;
           if (safe)
-            m_status_reset(Level->site[i][j].creature, HOSTILE);
+            m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case '#':
@@ -262,15 +262,15 @@ void load_court(int populate) {
         if (populate) {
           make_specific_treasure(i, j, ARTIFACTID + 22);
           make_archmage(i, j);
-          m_status_reset(Level->site[i][j].creature, HOSTILE);
-          m_status_reset(Level->site[i][j].creature, MOBILE);
+          m_status_reset(*Level->site[i][j].creature, HOSTILE);
+          m_status_reset(*Level->site[i][j].creature, MOBILE);
         }
         break;
       case 'e':
         Level->site[i][j].locchar = FLOOR;
         if (populate) {
           make_site_monster(i, j, ENCHANTOR); /* enchanter */
-          m_status_reset(Level->site[i][j].creature, HOSTILE);
+          m_status_reset(*Level->site[i][j].creature, HOSTILE);
           Level->site[i][j].creature->specialf = M_SP_COURT;
         }
         break;
@@ -278,7 +278,7 @@ void load_court(int populate) {
         Level->site[i][j].locchar = FLOOR;
         if (populate) {
           make_site_monster(i, j, NECROMANCER); /* necromancer */
-          m_status_reset(Level->site[i][j].creature, HOSTILE);
+          m_status_reset(*Level->site[i][j].creature, HOSTILE);
           Level->site[i][j].creature->specialf = M_SP_COURT;
         }
         break;
@@ -286,7 +286,7 @@ void load_court(int populate) {
         Level->site[i][j].locchar = FLOOR;
         if (populate) {
           make_site_monster(i, j, THAUMATURGIST); /* High Thaumaturgist */
-          m_status_reset(Level->site[i][j].creature, HOSTILE);
+          m_status_reset(*Level->site[i][j].creature, HOSTILE);
           Level->site[i][j].creature->specialf = M_SP_COURT;
         }
         break;
@@ -299,7 +299,7 @@ void load_court(int populate) {
         Level->site[i][j].locchar = FLOOR;
         if (populate) {
           make_site_monster(i, j, GUARD); /* guard */
-          m_status_reset(Level->site[i][j].creature, HOSTILE);
+          m_status_reset(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case '<':

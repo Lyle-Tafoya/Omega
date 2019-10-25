@@ -294,7 +294,7 @@ void load_city(int populate) {
   /* to prevent players from being molested by vicious monsters on */
   /* the streets */
   for (ml = Level->mlist; ml != NULL; ml = ml->next) {
-    m_status_reset(ml->m, AWAKE);
+    m_status_reset(*ml->m, AWAKE);
     ml->m->wakeup = 2;
   }
   fclose(fd);
@@ -467,7 +467,7 @@ void make_justiciar(int i, int j) {
   ml->m->click = (Tick + 1) % 60;
   ml->next = Level->mlist;
   Level->mlist = ml;
-  m_status_reset(ml->m, AWAKE);
+  m_status_reset(*ml->m, AWAKE);
 }
 
 /* loads the city level */
@@ -587,8 +587,8 @@ void make_minor_undead(int i, int j) {
   else
     mid = HAUNT;
   make_site_monster(i, j, mid);
-  m_status_reset(Level->site[i][j].creature, AWAKE);
-  m_status_reset(Level->site[i][j].creature, HOSTILE);
+  m_status_reset(*Level->site[i][j].creature, AWAKE);
+  m_status_reset(*Level->site[i][j].creature, HOSTILE);
 }
 
 /* undead are not hostile unless disturbed.... */
@@ -599,8 +599,8 @@ void make_major_undead(int i, int j) {
   else
     mid = VAMP_LORD; /*vampire lord*/
   make_site_monster(i, j, mid);
-  m_status_reset(Level->site[i][j].creature, AWAKE);
-  m_status_reset(Level->site[i][j].creature, HOSTILE);
+  m_status_reset(*Level->site[i][j].creature, AWAKE);
+  m_status_reset(*Level->site[i][j].creature, HOSTILE);
 }
 
 static char jail[5][11] = {

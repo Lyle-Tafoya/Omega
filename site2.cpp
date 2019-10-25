@@ -180,7 +180,7 @@ void pacify_guards() {
   for (ml = Level->mlist; ml != NULL; ml = ml->next) {
     if ((ml->m->id == GUARD) ||                                /*guard*/
         ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) { /* justiciar */
-      m_status_reset(ml->m, HOSTILE);
+      m_status_reset(*ml->m, HOSTILE);
       ml->m->specialf = M_NO_OP;
       if (ml->m->id == GUARD && ml->m->hp > 0 && ml->m->aux1 > 0) {
         if (Level->site[ml->m->x][ml->m->y].creature == ml->m)

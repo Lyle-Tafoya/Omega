@@ -76,7 +76,7 @@ void m_talk_druid(struct monster *m) {
     if (ynq()) {
       mprint("'I certainly hope so!' says the ArchDruid.");
       for (curr = Level->mlist; curr; curr = curr->next)
-        m_status_reset(curr->m, HOSTILE);
+        m_status_reset(*curr->m, HOSTILE);
       m_vanish(m);
     } else {
       mprint("'Idiot.' mutters the ArchDruid.");

@@ -852,7 +852,7 @@ void surrender(struct monster *m) {
     if ((m->talkf == M_TALK_EVIL) && random_range(10)) {
       print1("It continues to attack you, laughing evilly!");
       m_status_set(*m, HOSTILE);
-      m_status_reset(m, GREEDY);
+      m_status_reset(*m, GREEDY);
     } else if (m->id == HORNET || m->id == GUARD)
       print1("It continues to attack you. ");
     else {

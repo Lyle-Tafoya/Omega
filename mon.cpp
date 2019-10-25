@@ -27,7 +27,7 @@ void m_pulse(struct monster *m) {
       if (m_statusp(*m, MOBILE))
         m_random_move(m);
       if (range <= m->sense && (m_statusp(*m, HOSTILE) || m_statusp(*m, NEEDY)))
-        m_status_reset(m, WANDERING);
+        m_status_reset(*m, WANDERING);
     } else /* not wandering */ {
       if (m_statusp(*m, HOSTILE))
         if ((range > 2) && (range < m->sense) && (random_range(2) == 1))
@@ -281,8 +281,8 @@ void m_death(struct monster *m) {
             ml->m->x = x;
             ml->m->y = y;
             ml->m->click = (Tick + 1) % 60;
-            m_status_reset(ml->m, AWAKE);
-            m_status_reset(ml->m, HOSTILE);
+            m_status_reset(*ml->m, AWAKE);
+            m_status_reset(*ml->m, HOSTILE);
           } else {
             mprint("materializes, sheds a tear, and leaves.");
             morewait();
@@ -679,7 +679,7 @@ void make_hiscore_npc(pmt npc, int npcid) {
     if (npcid == DRUID)
       npc->talkf = M_TALK_DRUID;
     if (Player.patron == npcid)
-      m_status_reset(npc, HOSTILE);
+      m_status_reset(*npc, HOSTILE);
     break;
   case 7:
     strcpy(Str2, Shadowlord);
@@ -689,15 +689,15 @@ void make_hiscore_npc(pmt npc, int npcid) {
     strcpy(Str2, Commandant);
     determine_npc_behavior(npc, Commandantlevel, Commandantbehavior);
     if (Player.rank[LEGION])
-      m_status_reset(npc, HOSTILE);
+      m_status_reset(*npc, HOSTILE);
     break;
   case 9:
     strcpy(Str2, Archmage);
     determine_npc_behavior(npc, Archmagelevel, Archmagebehavior);
     st = ARTIFACTID + 9; /* kolwynia */
     npc->talkf = M_TALK_ARCHMAGE;
-    m_status_reset(npc, WANDERING);
-    m_status_reset(npc, HOSTILE);
+    m_status_reset(*npc, WANDERING);
+    m_status_reset(*npc, HOSTILE);
     break;
   case 10:
     strcpy(Str2, Prime);
@@ -705,13 +705,13 @@ void make_hiscore_npc(pmt npc, int npcid) {
     npc->talkf = M_TALK_PRIME;
     npc->specialf = M_SP_PRIME;
     if (Player.alignment < 0)
-      m_status_reset(npc, HOSTILE);
+      m_status_reset(*npc, HOSTILE);
     break;
   case 11:
     strcpy(Str2, Champion);
     determine_npc_behavior(npc, Championlevel, Championbehavior);
     if (Player.rank[ARENA])
-      m_status_reset(npc, HOSTILE);
+      m_status_reset(*npc, HOSTILE);
     break;
   case 12:
     strcpy(Str2, Duke);
@@ -721,13 +721,13 @@ void make_hiscore_npc(pmt npc, int npcid) {
     strcpy(Str2, Chaoslord);
     determine_npc_behavior(npc, Chaoslordlevel, Chaoslordbehavior);
     if (Player.alignment < 0 && random_range(2))
-      m_status_reset(npc, HOSTILE);
+      m_status_reset(*npc, HOSTILE);
     break;
   case 14:
     strcpy(Str2, Lawlord);
     determine_npc_behavior(npc, Lawlordlevel, Lawlordbehavior);
     if (Player.alignment > 0)
-      m_status_reset(npc, HOSTILE);
+      m_status_reset(*npc, HOSTILE);
     break;
   case 15:
     strcpy(Str2, Justiciar);
@@ -735,8 +735,8 @@ void make_hiscore_npc(pmt npc, int npcid) {
     st = THINGID + 16; /* badge */
     npc->talkf = M_TALK_GUARD;
     npc->specialf = M_SP_WHISTLEBLOWER;
-    m_status_reset(npc, WANDERING);
-    m_status_reset(npc, HOSTILE);
+    m_status_reset(*npc, WANDERING);
+    m_status_reset(*npc, HOSTILE);
     break;
   }
   if (st > -1 && Objects[st].uniqueness == UNIQUE_MADE) {
@@ -910,7 +910,7 @@ void m_trap_pit(struct monster *m) {
     lset(m->x, m->y, CHANGED, *Level);
   }
   if (!m_statusp(*m, INTANGIBLE))
-    m_status_reset(m, MOBILE);
+    m_status_reset(*m, MOBILE);
   m_damage(m, difficulty() * 5, NORMAL_DAMAGE);
 }
 
@@ -966,7 +966,7 @@ void m_trap_snare(struct monster *m) {
     mprint(Str1);
   }
   if (!m_statusp(*m, INTANGIBLE))
-    m_status_reset(m, MOBILE);
+    m_status_reset(*m, MOBILE);
 }
 
 void m_trap_blade(struct monster *m) {
@@ -1067,7 +1067,7 @@ void m_trap_sleepgas(struct monster *m) {
     lset(m->x, m->y, CHANGED, *Level);
   }
   if (!m_immunityp(m, SLEEP))
-    m_status_reset(m, AWAKE);
+    m_status_reset(*m, AWAKE);
 }
 
 void m_trap_acid(struct monster *m) {

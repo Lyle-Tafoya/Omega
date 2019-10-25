@@ -168,7 +168,7 @@ void i_perm_breathing(pob o) {
 void weapon_acidwhip(int dmgmod, pob, struct monster *m) {
   if ((random_range(2) == 1) && (!m_immunityp(m, NORMAL_DAMAGE))) {
     mprint("You entangle the monster!");
-    m_status_reset(m, MOBILE);
+    m_status_reset(*m, MOBILE);
   }
   p_hit(m, Player.dmg + dmgmod, ACID);
 }
@@ -243,7 +243,7 @@ void weapon_lightsabre(int, pob o, struct monster *m) {
 void weapon_tangle(int dmgmod, pob, struct monster *m) {
   if ((random_range(2) == 1) && (!m_immunityp(m, NORMAL_DAMAGE))) {
     mprint("You entangle the monster!");
-    m_status_reset(m, MOBILE);
+    m_status_reset(*m, MOBILE);
   }
   p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
 }

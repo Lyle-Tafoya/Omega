@@ -224,10 +224,10 @@ void m_sp_surprise(struct monster *m) {
         }
         morewait();
         setgamestatus(SKIP_PLAYER);
-        m_status_reset(m, M_INVISIBLE);
+        m_status_reset(*m, M_INVISIBLE);
       } else {
         mprint("You alertly sense the presence of an attacker!");
-        m_status_reset(m, M_INVISIBLE);
+        m_status_reset(*m, M_INVISIBLE);
       }
     }
   }
@@ -615,7 +615,7 @@ void m_aggravate(struct monster *m) {
     strcat(Str2, " emits an irritating humming sound.");
     mprint(Str2);
     aggravate();
-    m_status_reset(m, HOSTILE);
+    m_status_reset(*m, HOSTILE);
   }
 }
 

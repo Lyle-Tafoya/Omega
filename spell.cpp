@@ -208,7 +208,7 @@ void s_ritual() {
           mprint("A smoky form begins to coalesce....");
           summon(-1, -1);
           mprint("Fortunately, it seems confined to the pentagram.");
-          m_status_reset(Level->mlist->m, MOBILE);
+          m_status_reset(*Level->mlist->m, MOBILE);
           break;
         case ROOMBASE + 29: /* blue omega room */
           mprint("The Lords of Destiny look upon you....");
