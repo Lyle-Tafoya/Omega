@@ -67,7 +67,7 @@ void make_country_monsters(Symbol terrain) {
     tml = ((pml)checkmalloc(sizeof(mltype)));
     tml->m = ((pmt)checkmalloc(sizeof(montype)));
     if (monsters == NULL)
-      tml->m = m_create(random_range(WIDTH), random_range(LENGTH), TRUE,
+      tml->m = m_create(random_range(WIDTH), random_range(LENGTH), true,
                         difficulty());
     else {
       tml->m = make_creature(*(monsters + random_range(10)));
@@ -370,7 +370,7 @@ void populate_level(int monstertype) {
     if (monsterid > RANDOM)
       Level->site[i][j].creature = make_creature(monsterid);
     else
-      Level->site[i][j].creature = m_create(i, j, TRUE, difficulty());
+      Level->site[i][j].creature = m_create(i, j, true, difficulty());
 
     Level->site[i][j].creature->x = i;
     Level->site[i][j].creature->y = j;

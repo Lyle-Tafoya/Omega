@@ -573,7 +573,7 @@ void m_talk_horse(struct monster *m) {
     if (ynq() == 'y') {
       m->hp = -1;
       Level->site[m->x][m->y].creature = NULL;
-      putspot(m->x, m->y, getspot(m->x, m->y, FALSE));
+      putspot(m->x, m->y, getspot(m->x, m->y, false));
       setgamestatus(MOUNTED, GameStatus);
       calc_melee();
       mprint("You are now equitating!");
@@ -601,7 +601,7 @@ void m_talk_servant(struct monster *m) {
   if (ynq() == 'y') {
     print1("Show me.");
     show_screen();
-    drawmonsters(TRUE);
+    drawmonsters(true);
     setspot(&x, &y);
     if (Level->site[x][y].creature != NULL) {
       if (Level->site[x][y].creature->id == target) {

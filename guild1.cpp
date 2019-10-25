@@ -103,7 +103,7 @@ void l_merc_guild() {
         save_hiscore_npc(8);
         clearmsg();
         print1("You now know the Spell of Regeneration.");
-        Spells[S_REGENERATE].known = TRUE;
+        Spells[S_REGENERATE].known = true;
         Player.rank[LEGION] = COMMANDANT;
         Player.maxstr += 2;
         Player.str += 2;
@@ -137,7 +137,7 @@ void l_merc_guild() {
         morewait();
         clearmsg();
         print1("You have been taught the spell of heroism!");
-        Spells[S_HERO].known = TRUE;
+        Spells[S_HERO].known = true;
         Player.rank[LEGION] = COLONEL;
         Player.maxstr++;
         Player.str++;
@@ -337,7 +337,7 @@ void l_arena() {
     print1("OK, we're arranging a match....");
     morewait();
     Arena_Monster = ((pmt)checkmalloc(sizeof(montype)));
-    Arena_Victory = FALSE;
+    Arena_Victory = false;
     switch (Arena_Opponent) {
     case 0:
       *Arena_Monster = Monsters[GEEK];
@@ -433,16 +433,16 @@ void l_arena() {
     Arena_Monster->uniqueness = UNIQUE_MADE;
     print1("You have a challenger: ");
     print2(Arena_Monster->monstring);
-    Arena_Monster->attacked = TRUE;
+    Arena_Monster->attacked = true;
     m_status_set(*Arena_Monster, HOSTILE);
     morewait();
     clearmsg();
     change_environment(E_ARENA);
     print1("Let the battle begin....");
 
-    time_clock(TRUE);
+    time_clock(true);
     while (Current_Environment == E_ARENA)
-      time_clock(FALSE);
+      time_clock(false);
 
     /* WDT -- Sheldon Simms points out that these objects are not
      * wastes of space; on the contrary, they can be carried out of the

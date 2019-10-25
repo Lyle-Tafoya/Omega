@@ -75,7 +75,7 @@ int ViewHour = -1;       /* crystal ball use marker */
 int ZapHour = -1;        /* staff of enchantment use marker */
 int HelmHour = -1;       /* helm of teleportation use marker*/
 int Constriction = 0;    /* Dragonlord Attack State */
-int Blessing = FALSE;    /* Altar Blessing State */
+int Blessing = false;    /* Altar Blessing State */
 int LastDay = -1;        /* DPW date of dole */
 int RitualHour = -1;     /* last use of ritual magic */
 int RitualRoom = -1;     /* last room of ritual magic */
@@ -118,9 +118,9 @@ long Hiscore = 0L;
 int Chaoslordlevel = 0, Lawlordlevel = 0, Chaos = 0, Law = 0;
 
 /* New globals which used to be statics */
-int twiddle = FALSE;
-int saved = FALSE;
-int onewithchaos = FALSE;
+int twiddle = false;
+int saved = false;
+int onewithchaos = false;
 int club_hinthour = 0;
 int winnings = 0;
 int tavern_hinthour;
@@ -176,9 +176,9 @@ int game_restore(int argc, char *argv[]) {
     change_to_user_perms();
     unlink(savestr);
     change_to_game_perms();
-    return (TRUE);
+    return (true);
   } else
-    return (FALSE);
+    return (false);
 }
 
 void omega_title();
@@ -265,7 +265,7 @@ int main(int argc, char *argv[]) {
   /* monsters initialized in game_restore if game is being restored */
   /* items initialized in game_restore if game is being restored */
   if (!continuing) {
-    inititem(TRUE);
+    inititem(true);
     Date = random_range(360);
     Phase = random_range(24);
     strcpy(Password, "");
@@ -280,7 +280,7 @@ int main(int argc, char *argv[]) {
   if (Current_Environment != E_COUNTRYSIDE)
     showroom(Level->site[Player.x][Player.y].roomnumber);
   else
-    terrain_check(FALSE);
+    terrain_check(false);
 
   if (optionp(SHOW_COLOUR, Player))
     colour_on();
@@ -291,12 +291,12 @@ int main(int argc, char *argv[]) {
 
   /* game cycle */
   if (!continuing)
-    time_clock(TRUE);
-  while (TRUE) {
+    time_clock(true);
+  while (true) {
     if (Current_Environment == E_COUNTRYSIDE)
       p_country_process();
     else
-      time_clock(FALSE);
+      time_clock(false);
   }
 }
 
@@ -309,7 +309,7 @@ void signalexit(int) {
   mprint("Want to try and save the game?");
   reply = ynq();
   if (reply == 'y')
-    save(FALSE, TRUE); /* don't compress, force save */
+    save(false, true); /* don't compress, force save */
   else if (reply == EOF)
     signalsave();
   mprint("Bye!");
@@ -326,8 +326,8 @@ void init_world() {
     level_seed[env] = RANDFUNCTION();
   load_country();
   for (i = 0; i < NUMCITYSITES; i++)
-    CitySiteList[i][0] = FALSE;
-  load_city(TRUE);
+    CitySiteList[i][0] = false;
+  load_city(true);
   WIDTH = 64;
   LENGTH = 64;
   Player.x = 62;

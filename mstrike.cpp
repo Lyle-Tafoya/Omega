@@ -40,7 +40,7 @@ void m_blind_strike(struct monster *m) {
       mprint("You've been blinded!");
       Player.status[BLINDED] = random_range(4) + 1;
       for (ml = Level->mlist; ml != NULL; ml = ml->next)
-        plotspot(ml->m->x, ml->m->y, FALSE);
+        plotspot(ml->m->x, ml->m->y, false);
     } else
       mprint("You gaze steadily back....");
   }

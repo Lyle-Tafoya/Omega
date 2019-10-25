@@ -157,26 +157,26 @@ void m_follow_move(struct monster *m) {
 
 /* allows monsters to fall into pools, revealed traps, etc */
 void m_confused_move(struct monster *m) {
-  int i, nx, ny, done = FALSE;
+  int i, nx, ny, done = false;
   erase_monster(m);
   for (i = 0; ((i < 8) && (!done)); i++) {
     nx = m->x + random_range(3) - 1;
     ny = m->y + random_range(3) - 1;
     if (unblocked(nx, ny) && ((nx != Player.x) || (ny != Player.y))) {
-      done = TRUE;
+      done = true;
       movemonster(m, nx, ny);
     }
   }
 }
 
 void m_random_move(struct monster *m) {
-  int i, nx, ny, done = FALSE;
+  int i, nx, ny, done = false;
   erase_monster(m);
   for (i = 0; ((i < 8) && (!done)); i++) {
     nx = m->x + random_range(3) - 1;
     ny = m->y + random_range(3) - 1;
     if (m_unblocked(m, nx, ny) && ((nx != Player.x) || (ny != Player.y))) {
-      done = TRUE;
+      done = true;
       movemonster(m, nx, ny);
     }
   }
@@ -201,7 +201,7 @@ void m_teleport(struct monster *m) {
   erase_monster(m);
   if (m_statusp(*m, AWAKE)) {
     Level->site[m->x][m->y].creature = NULL;
-    putspot(m->x, m->y, getspot(m->x, m->y, FALSE));
+    putspot(m->x, m->y, getspot(m->x, m->y, false));
     findspace(&(m->x), &(m->y), -1);
     Level->site[m->x][m->y].creature = m;
   }
@@ -228,7 +228,7 @@ void m_move_leash(struct monster *m) {
       /* otherwise, we'd lose either the dog or the other monster. */
     } else if (los_p(Player.x, Player.y, m->x, m->y)) {
       mprint("You see the dog jerked back by its chain!");
-      plotspot(m->x, m->y, FALSE);
+      plotspot(m->x, m->y, false);
     } else
       mprint("You hear a strangled sort of yelp!");
     Level->site[m->x][m->y].creature = NULL;

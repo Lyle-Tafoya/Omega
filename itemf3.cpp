@@ -136,7 +136,7 @@ void i_juggernaut(pob o) {
           m_death(Level->site[x][y].creature);
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
-        plotspot(x, y, FALSE);
+        plotspot(x, y, false);
         omshowcursor(x, y);
       }
       if (not_seen > 6)
@@ -270,7 +270,7 @@ void i_kolwynia(pob o) {
     print1("You seem to have gained complete mastery of magic.");
     Player.pow = Player.maxpow = 2 * Player.maxpow;
     for (i = 0; i < NUMSPELLS; i++)
-      Spells[i].known = TRUE;
+      Spells[i].known = true;
   }
   dispose_lost_objects(1, o);
 }
@@ -354,7 +354,7 @@ void i_orbfire(pob o) {
     o->known = 1;
   } else {
     print1("The Orb of Fire flares a brilliant red!");
-    Spells[S_FIREBOLT].known = TRUE;
+    Spells[S_FIREBOLT].known = true;
     gain_experience(10000);
     Player.immunity[FLAME] += 100;
     print2("You feel fiery!");
@@ -373,7 +373,7 @@ void i_orbwater(pob o) {
     o->known = 1;
   } else {
     print1("The Orb of Water pulses a deep green!");
-    Spells[S_DISRUPT].known = TRUE;
+    Spells[S_DISRUPT].known = true;
     Player.immunity[POISON] += 100;
     gain_experience(10000);
     print2("You feel wet!");
@@ -408,7 +408,7 @@ void i_orbearth(pob o) {
     }
   } else {
     print1("The Orb of Earth emanates a brownish aura!");
-    Spells[S_DISINTEGRATE].known = TRUE;
+    Spells[S_DISINTEGRATE].known = true;
     gain_experience(10000);
     Player.immunity[NEGENERGY] += 100;
     print2("You feel earthy!");
@@ -427,7 +427,7 @@ void i_orbair(pob o) {
     o->known = 1;
   } else {
     print1("The Orb of Air flashes blue!");
-    Spells[S_LBALL].known = TRUE; /* lball */
+    Spells[S_LBALL].known = true; /* lball */
     gain_experience(10000);
     print2("You feel airy!");
     Player.immunity[ELECTRICITY] += 100;
@@ -479,7 +479,7 @@ void i_orbdead(pob) {
   int i;
   print1("The burnt-out orb drains all your energy!");
   for (i = 0; i < NUMSPELLS; i++)
-    Spells[i].known = FALSE;
+    Spells[i].known = false;
   print2("You feel not at all like a mage.");
   for (i = 0; i < MAXITEMS; i++) {
     if (Player.possessions[i] != NULL) {

@@ -7,7 +7,7 @@
 
 void l_condo() {
   pol ol, prev = NULL;
-  int i, done = FALSE, over = FALSE, weeksleep = FALSE;
+  int i, done = false, over = false, weeksleep = false;
   char response;
 
   if (!gamestatusp(SOLD_CONDO, GameStatus)) {
@@ -33,7 +33,7 @@ void l_condo() {
         if (Player.cash < 1000)
           print2("Hey, pay the rent or out you go....");
         else {
-          weeksleep = TRUE;
+          weeksleep = true;
           Player.cash -= 1000;
           dataprint();
         }
@@ -79,12 +79,12 @@ void l_condo() {
             else if (prev != NULL)
               prev->next = ol->next;
           } else if (response == 'q')
-            over = TRUE;
+            over = true;
           prev = ol;
           ol = ol->next;
         }
       } else if (response == 'c') {
-        weeksleep = TRUE;
+        weeksleep = true;
         print1("You take a week off to rest...");
         morewait();
       } else if (response == 'd') {
@@ -94,7 +94,7 @@ void l_condo() {
           p_win();
         }
       } else if (response == ESCAPE)
-        done = TRUE;
+        done = true;
     }
     xredraw();
   }
@@ -102,7 +102,7 @@ void l_condo() {
     clearmsg();
     print1("Taking a week off to rest...");
     morewait();
-    toggle_item_use(TRUE);
+    toggle_item_use(true);
     Player.hp = Player.maxhp;
     Player.str = Player.maxstr;
     Player.agi = Player.maxagi;
@@ -113,7 +113,7 @@ void l_condo() {
     for (i = 0; i < NUMSTATI; i++)
       if (Player.status[i] < 1000)
         Player.status[i] = 0;
-    toggle_item_use(FALSE);
+    toggle_item_use(false);
     Player.food = 36;
     print2("You're once again fit and ready to continue your adventure.");
     Time += 60 * 24 * 7;
@@ -343,7 +343,7 @@ void l_adept() {
 }
 
 void l_trifid() {
-  int damage = 0, stuck = TRUE;
+  int damage = 0, stuck = true;
   print1("The hedge comes alive with a surge of alien growth!");
   while (stuck) {
     dataprint();
@@ -357,7 +357,7 @@ void l_trifid() {
       Level->site[Player.x][Player.y].p_locf = L_NO_OP;
       lset(Player.x, Player.y, CHANGED, *Level);
       gain_experience(1000);
-      stuck = FALSE;
+      stuck = false;
     } else {
       p_damage(damage, UNSTOPPABLE, "a trifid");
       morewait();
@@ -375,7 +375,7 @@ void l_trifid() {
         if (Player.str > random_range(200)) {
           print1("Amazing! You're now free.");
           print2("The trifid writhes hungrily at you.");
-          stuck = FALSE;
+          stuck = false;
         } else
           print1("Well, THAT didn't work.");
         break;
@@ -387,7 +387,7 @@ void l_trifid() {
             (Player.rank[PRIESTHOOD] > random_range(5))) {
           print1("A shaft of golden light bathes the alien plant");
           print2("which grudginly lets you go....");
-          stuck = FALSE;
+          stuck = false;
         } else
           print1("You receive no divine aid as yet.");
         break;
@@ -534,14 +534,14 @@ void l_brothel() {
             Player.status[POISONED] = 0;
             Player.hp = Player.maxhp;
             /* reduce temporary stat gains to max stat levels */
-            toggle_item_use(TRUE);
+            toggle_item_use(true);
             Player.str = std::min(Player.str, Player.maxstr);
             Player.con = std::min(Player.con, Player.maxcon);
             Player.agi = std::min(Player.agi, Player.maxagi);
             Player.dex = std::min(Player.dex, Player.maxdex);
             Player.iq = std::min(Player.iq, Player.maxiq);
             Player.pow = std::min(Player.pow, Player.maxpow);
-            toggle_item_use(FALSE);
+            toggle_item_use(false);
             if (Player.preference == 'n')
               Player.iq++; /* whatever :-) */
             else
@@ -589,7 +589,7 @@ void l_brothel() {
 void sign_print(int x, int y, int signp) {
   if ((Level->site[x][y].p_locf >= CITYSITEBASE) &&
       (Level->site[x][y].p_locf < CITYSITEBASE + NUMCITYSITES))
-    CitySiteList[Level->site[x][y].p_locf - CITYSITEBASE][0] = TRUE;
+    CitySiteList[Level->site[x][y].p_locf - CITYSITEBASE][0] = true;
   switch (Level->site[x][y].p_locf) {
   case L_CHARITY:
     print1(

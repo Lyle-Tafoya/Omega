@@ -436,7 +436,7 @@ void m_sp_lw(struct monster *m) {
 }
 
 void m_sp_angel(struct monster *m) {
-  int mid, hostile = FALSE;
+  int mid, hostile = false;
   switch (m->aux1) {
   case ATHENA:
   case ODIN:

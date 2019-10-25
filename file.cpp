@@ -33,7 +33,7 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
     else {
       print2("Sorry 'bout that.... Saving character, then quitting.");
       morewait();
-      save(optionp(COMPRESS_OPTION, Player), TRUE);
+      save(optionp(COMPRESS_OPTION, Player), true);
       endgraf();
       exit(0);
     }
@@ -420,7 +420,7 @@ const char *optional_file_list[] = {
 /* Checks existence of omega data files */
 /* Returns 1 if OK, 0 if impossible to run, -1 if possible but not OK */
 int filecheck() {
-  int impossible = FALSE, badbutpossible = FALSE;
+  int impossible = false, badbutpossible = false;
   int endpos;
   int file;
 
@@ -431,17 +431,17 @@ int filecheck() {
     if ((strcmp(required_file_list[file], "omega.hi") == 0 ||
          strcmp(required_file_list[file], "omega.log") == 0) &&
         test_file_access(Str1, 'w') == 0) {
-      impossible = TRUE;
+      impossible = true;
       printf("\nError! File not appendable or accessible: %s", Str1);
     } else if (test_file_access(Str1, 'r') == 0) {
-      impossible = TRUE;
+      impossible = true;
       printf("\nError! File not accessible: %s", Str1);
     }
   }
   for (file = 0; optional_file_list[file]; file++) {
     strcpy(&(Str1[endpos]), optional_file_list[file]);
     if (test_file_access(Str1, 'r') == 0) {
-      badbutpossible = TRUE;
+      badbutpossible = true;
       printf("\nWarning! File not accessible: %s", Str1);
     }
   }

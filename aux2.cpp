@@ -429,7 +429,7 @@ void tenminute_status_check() {
 
 /* Increase in level at appropriate experience gain */
 void gain_level() {
-  int gained = FALSE;
+  int gained = false;
   int hp_gain; /* FIXED! 12/30/98 */
 
   if (gamestatusp(SUPPRESS_PRINTING, GameStatus))
@@ -437,7 +437,7 @@ void gain_level() {
   while (expval(Player.level + 1) <= Player.xp) {
     if (!gained)
       morewait();
-    gained = TRUE;
+    gained = true;
     Player.level++;
     print1("You have attained a new experience level!");
     print2("You are now ");
@@ -722,10 +722,10 @@ void tacplayer(struct monster *m) {
 
 /* checks to see if player hits with hitmod vs. monster m at location hitloc */
 int player_hit(int hitmod, char hitloc, struct monster *m) {
-  int i = 0, blocks = FALSE, goodblocks = 0, hit;
+  int i = 0, blocks = false, goodblocks = 0, hit;
   if (m->hp < 1) {
     mprint("Unfortunately, your opponent is already dead!");
-    return (FALSE);
+    return false;
   } else {
     if (hitloc == 'X')
       hitloc = random_loc();
@@ -734,7 +734,7 @@ int player_hit(int hitmod, char hitloc, struct monster *m) {
 
     while ((size_t)i < strlen(m->meleestr)) {
       if ((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R')) {
-        blocks = TRUE;
+        blocks = true;
         if (hitloc == m->meleestr[i + 1])
           goodblocks++;
       }
@@ -759,7 +759,7 @@ int player_hit(int hitmod, char hitloc, struct monster *m) {
 }
 
 /* This function is used to undo all items temporarily, should
-always be used in pairs with on being TRUE and FALSE, and may cause
+always be used in pairs with on being true and false, and may cause
 anomalous stats and item-usage if used indiscriminately */
 
 void toggle_item_use(int on) {
@@ -768,10 +768,10 @@ void toggle_item_use(int on) {
   setgamestatus(SUPPRESS_PRINTING, GameStatus);
   if (on)
     for (i = 0; i < MAXITEMS; i++) {
-      used[i] = FALSE;
+      used[i] = false;
       if (Player.possessions[i] != NULL) {
-        if ((used[i] = Player.possessions[i]->used) == TRUE) {
-          Player.possessions[i]->used = FALSE;
+        if ((used[i] = Player.possessions[i]->used) == true) {
+          Player.possessions[i]->used = false;
           item_use(Player.possessions[i]);
         }
       }
@@ -779,7 +779,7 @@ void toggle_item_use(int on) {
   else {
     for (i = 1; i < MAXITEMS; i++)
       if (used[i]) {
-        Player.possessions[i]->used = TRUE;
+        Player.possessions[i]->used = true;
         item_use(Player.possessions[i]);
       }
     calc_melee();
@@ -827,7 +827,7 @@ void enter_site(Symbol site) {
 
 /* Switches context dungeon/countryside/city, etc */
 void change_environment(char new_environment) {
-  int i, emerging = FALSE;
+  int i, emerging = false;
 
   Player.sx = -1;
   Player.sy = -1;        /* reset sanctuary if there was one */
@@ -853,7 +853,7 @@ void change_environment(char new_environment) {
              ((new_environment == E_CITY) || (new_environment == E_VILLAGE))) {
     Player.x = LastTownLocX;
     Player.y = LastTownLocY;
-    emerging = TRUE;
+    emerging = true;
   }
 
   Current_Environment = new_environment;
@@ -884,7 +884,7 @@ void change_environment(char new_environment) {
     WIDTH = 64;
     Player.x = 32;
     Player.y = 14;
-    load_circle(TRUE);
+    load_circle(true);
     if (Objects[ARTIFACTID + 21].uniqueness == UNIQUE_TAKEN) {
       print1("A bemused voice says:");
       print2("'Why are you here? You already have the Star Gem!'");
@@ -925,14 +925,14 @@ void change_environment(char new_environment) {
     Player.y = 2;
     LastCountryLocX = 6;
     LastCountryLocY = 1;
-    load_court(TRUE);
+    load_court(true);
     ScreenOffset = 0;
     show_screen();
     break;
   case E_MANSION:
     WIDTH = 64;
     LENGTH = 16;
-    load_house(E_MANSION, TRUE);
+    load_house(E_MANSION, true);
     Player.y = 8;
     Player.x = 2;
     ScreenOffset = 0;
@@ -941,7 +941,7 @@ void change_environment(char new_environment) {
   case E_HOUSE:
     WIDTH = 64;
     LENGTH = 16;
-    load_house(E_HOUSE, TRUE);
+    load_house(E_HOUSE, true);
     Player.y = 13;
     Player.x = 2;
     ScreenOffset = 0;
@@ -950,7 +950,7 @@ void change_environment(char new_environment) {
   case E_HOVEL:
     WIDTH = 64;
     LENGTH = 16;
-    load_house(E_HOVEL, TRUE);
+    load_house(E_HOVEL, true);
     Player.y = 9;
     Player.x = 2;
     ScreenOffset = 0;
@@ -961,7 +961,7 @@ void change_environment(char new_environment) {
     LENGTH = 16;
     Player.y = 9;
     Player.x = 2;
-    load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), TRUE);
+    load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), true);
     ScreenOffset = 0;
     show_screen();
     break;
@@ -970,7 +970,7 @@ void change_environment(char new_environment) {
     LENGTH = 16;
     Player.y = 9;
     Player.x = 2;
-    load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), TRUE);
+    load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), true);
     ScreenOffset = 0;
     show_screen();
     break;
@@ -979,14 +979,14 @@ void change_environment(char new_environment) {
     LENGTH = 16;
     Player.y = 14;
     Player.x = 62;
-    load_misle(gamestatusp(KILLED_EATER, GameStatus), TRUE);
+    load_misle(gamestatusp(KILLED_EATER, GameStatus), true);
     ScreenOffset = 0;
     show_screen();
     break;
   case E_TEMPLE:
     WIDTH = 64;
     LENGTH = 16;
-    load_temple(Country[Player.x][Player.y].aux, TRUE);
+    load_temple(Country[Player.x][Player.y].aux, true);
     Player.y = 15;
     Player.x = 32;
     ScreenOffset = 0;
@@ -997,14 +997,14 @@ void change_environment(char new_environment) {
     LENGTH = 64;
     if (emerging) {
       print1("You emerge onto the street.");
-      emerging = FALSE;
+      emerging = false;
     } else {
       print1("You pass through the massive gates of Rampart, the city.");
       Player.x = 62;
       Player.y = 21;
     }
     if (City == NULL)
-      load_city(TRUE);
+      load_city(true);
 #ifdef SAVE_LEVELS
     else
       msdos_changelevel(Level, new_environment, 0);
@@ -1055,9 +1055,9 @@ void change_environment(char new_environment) {
       }
     }
     if ((!emerging) || (TempLevel == NULL))
-      load_village(Villagenum, TRUE);
+      load_village(Villagenum, true);
     else if (TempLevel->environment != E_VILLAGE)
-      load_village(Villagenum, TRUE);
+      load_village(Villagenum, true);
     else {
 #ifdef SAVE_LEVELS
       msdos_changelevel(Level, new_environment, 0);
@@ -1066,7 +1066,7 @@ void change_environment(char new_environment) {
     }
     if (emerging) {
       print1("You emerge onto the street.");
-      emerging = FALSE;
+      emerging = false;
     } else
       print1("You enter a small rural village.");
     ScreenOffset = 0;
@@ -1094,7 +1094,7 @@ void change_environment(char new_environment) {
       Level = NULL;
       Current_Dungeon = E_CAVES;
     }
-    change_level(0, 1, FALSE);
+    change_level(0, 1, false);
     break;
   case E_VOLCANO:
     WIDTH = 64;
@@ -1117,7 +1117,7 @@ void change_environment(char new_environment) {
       Level = NULL;
       Current_Dungeon = E_VOLCANO;
     }
-    change_level(0, 1, FALSE);
+    change_level(0, 1, false);
     break;
   case E_ASTRAL:
     WIDTH = 64;
@@ -1138,7 +1138,7 @@ void change_environment(char new_environment) {
       Level = NULL;
       Current_Dungeon = E_ASTRAL;
     }
-    change_level(0, 1, FALSE);
+    change_level(0, 1, false);
     break;
   case E_CASTLE:
     WIDTH = 64;
@@ -1160,7 +1160,7 @@ void change_environment(char new_environment) {
       Level = NULL;
       Current_Dungeon = E_CASTLE;
     }
-    change_level(0, 1, FALSE);
+    change_level(0, 1, false);
     break;
   case E_SEWERS:
     WIDTH = 64;
@@ -1180,7 +1180,7 @@ void change_environment(char new_environment) {
       Level = NULL;
       Current_Dungeon = E_SEWERS;
     }
-    change_level(0, 1, FALSE);
+    change_level(0, 1, false);
     break;
   case E_COUNTRYSIDE:
     WIDTH = 64;
@@ -1233,5 +1233,5 @@ void change_environment(char new_environment) {
   if (Current_Environment != E_COUNTRYSIDE)
     showroom(Level->site[Player.x][Player.y].roomnumber);
   else
-    terrain_check(FALSE);
+    terrain_check(false);
 }

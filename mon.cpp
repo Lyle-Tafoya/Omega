@@ -10,7 +10,7 @@
 /* consider one monster's action */
 void m_pulse(struct monster *m) {
   int range = distance(m->x, m->y, Player.x, Player.y);
-  int STRIKE = FALSE;
+  int STRIKE = false;
   pol prev;
 
   if (Time % 10 == 0)
@@ -33,7 +33,7 @@ void m_pulse(struct monster *m) {
         if ((range > 2) && (range < m->sense) && (random_range(2) == 1))
           if (los_p(m->x, m->y, Player.x, Player.y) &&
               (Player.status[INVISIBLE] == 0)) {
-            STRIKE = TRUE;
+            STRIKE = true;
             monster_strike(m);
           }
 
@@ -112,7 +112,7 @@ void m_damage(struct monster *m, int dmg, int dtype) {
 void m_death(struct monster *m) {
   pob corpse;
   pml ml;
-  int x, y, found = FALSE;
+  int x, y, found = false;
   pol curr, prev = NULL;
 
   m->hp = -1;
@@ -169,13 +169,13 @@ void m_death(struct monster *m) {
   } else {
     Level->site[m->x][m->y].creature = NULL;
     if (m == Arena_Monster)
-      Arena_Victory = TRUE; /* won this round of arena combat */
+      Arena_Victory = true; /* won this round of arena combat */
     if (random_range(2) || (m->uniqueness != COMMON)) {
       corpse = ((pob)checkmalloc(sizeof(objtype)));
       make_corpse(corpse, m);
       drop_at(m->x, m->y, corpse);
     }
-    plotspot(m->x, m->y, FALSE);
+    plotspot(m->x, m->y, false);
     switch (m->id) {
     case HISCORE_NPC:
       switch (m->aux2) {

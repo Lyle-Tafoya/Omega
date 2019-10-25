@@ -59,7 +59,7 @@ void load_city(int populate) {
       case 't':
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].p_locf = L_TEMPLE;
-        CitySiteList[L_TEMPLE - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_TEMPLE - CITYSITEBASE][0] = true;
         CitySiteList[L_TEMPLE - CITYSITEBASE][1] = i;
         CitySiteList[L_TEMPLE - CITYSITEBASE][2] = j;
         break;
@@ -81,28 +81,28 @@ void load_city(int populate) {
       case 'C':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_COLLEGE;
-        CitySiteList[L_COLLEGE - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_COLLEGE - CITYSITEBASE][0] = true;
         CitySiteList[L_COLLEGE - CITYSITEBASE][1] = i;
         CitySiteList[L_COLLEGE - CITYSITEBASE][2] = j;
         break;
       case 's':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_SORCERORS;
-        CitySiteList[L_SORCERORS - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_SORCERORS - CITYSITEBASE][0] = true;
         CitySiteList[L_SORCERORS - CITYSITEBASE][1] = i;
         CitySiteList[L_SORCERORS - CITYSITEBASE][2] = j;
         break;
       case 'M':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_MERC_GUILD;
-        CitySiteList[L_MERC_GUILD - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_MERC_GUILD - CITYSITEBASE][0] = true;
         CitySiteList[L_MERC_GUILD - CITYSITEBASE][1] = i;
         CitySiteList[L_MERC_GUILD - CITYSITEBASE][2] = j;
         break;
       case 'c':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_CASTLE;
-        CitySiteList[L_CASTLE - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_CASTLE - CITYSITEBASE][0] = true;
         CitySiteList[L_CASTLE - CITYSITEBASE][1] = i;
         CitySiteList[L_CASTLE - CITYSITEBASE][2] = j;
         break;
@@ -112,14 +112,14 @@ void load_city(int populate) {
       case 'P':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_ORDER;
-        CitySiteList[L_ORDER - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_ORDER - CITYSITEBASE][0] = true;
         CitySiteList[L_ORDER - CITYSITEBASE][1] = i;
         CitySiteList[L_ORDER - CITYSITEBASE][2] = j;
         break;
       case 'H':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_CHARITY;
-        CitySiteList[L_CHARITY - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_CHARITY - CITYSITEBASE][0] = true;
         CitySiteList[L_CHARITY - CITYSITEBASE][1] = i;
         CitySiteList[L_CHARITY - CITYSITEBASE][2] = j;
         break;
@@ -135,14 +135,14 @@ void load_city(int populate) {
       case 'A':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_ARENA;
-        CitySiteList[L_ARENA - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_ARENA - CITYSITEBASE][0] = true;
         CitySiteList[L_ARENA - CITYSITEBASE][1] = i;
         CitySiteList[L_ARENA - CITYSITEBASE][2] = j;
         break;
       case 'B':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].p_locf = L_BANK;
-        CitySiteList[L_BANK - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_BANK - CITYSITEBASE][0] = true;
         CitySiteList[L_BANK - CITYSITEBASE][1] = i;
         CitySiteList[L_BANK - CITYSITEBASE][2] = j;
         lset(i, j + 1, STOPS, *Level);
@@ -153,7 +153,7 @@ void load_city(int populate) {
       case 'X':
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].p_locf = L_COUNTRYSIDE;
-        CitySiteList[L_COUNTRYSIDE - CITYSITEBASE][0] = TRUE;
+        CitySiteList[L_COUNTRYSIDE - CITYSITEBASE][0] = true;
         CitySiteList[L_COUNTRYSIDE - CITYSITEBASE][1] = i;
         CitySiteList[L_COUNTRYSIDE - CITYSITEBASE][2] = j;
         break;
@@ -307,7 +307,7 @@ void assign_city_function(int x, int y) {
   static int permutation[64]; /* number of x's in city map */
   int i, j, k, l;
 
-  Level->site[x][y].aux = TRUE;
+  Level->site[x][y].aux = true;
 
   lset(x, y + 1, STOPS, *Level);
   lset(x + 1, y, STOPS, *Level);

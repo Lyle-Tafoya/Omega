@@ -10,7 +10,7 @@
 #include "glob.h"
 
 void l_thieves_guild() {
-  int fee, count, i, number, done = FALSE, dues = 1000;
+  int fee, count, i, number, done = false, dues = 1000;
   char c, action;
   pob lockpick;
   print1("You have penetrated to the Lair of the Thieves' Guild.");
@@ -32,7 +32,7 @@ void l_thieves_guild() {
       save_hiscore_npc(7);
       clearmsg();
       print1("You learn the Spell of Shadowform.");
-      Spells[S_SHADOWFORM].known = TRUE;
+      Spells[S_SHADOWFORM].known = true;
       morewait();
       clearmsg();
       Player.rank[THIEVES] = SHADOWLORD;
@@ -54,9 +54,9 @@ void l_thieves_guild() {
       showmenu();
       action = mgetc();
       if (action == ESCAPE)
-        done = TRUE;
+        done = true;
       else if (action == 'a') {
-        done = TRUE;
+        done = true;
         if (Player.rank[THIEVES] > 0)
           print2("You are already a member!");
         else if (Player.alignment > 10)
@@ -83,7 +83,7 @@ void l_thieves_guild() {
               print1("As a special bonus, you get a free lockpick.");
               print2("You are taught the spell of Object Detection.");
               morewait();
-              Spells[S_OBJ_DET].known = TRUE;
+              Spells[S_OBJ_DET].known = true;
               lockpick = ((pob)checkmalloc(sizeof(objtype)));
               *lockpick = Objects[THINGID + 2]; /* lock pick */
               gain_item(lockpick);
@@ -120,7 +120,7 @@ void l_thieves_guild() {
             morewait();
             clearmsg();
             print1("The Justiciar's office is just south of the gaol.");
-            Spells[S_APPORT].known = TRUE;
+            Spells[S_APPORT].known = true;
             Player.rank[THIEVES] = TMASTER;
             Player.maxagi++;
             Player.maxdex++;
@@ -133,7 +133,7 @@ void l_thieves_guild() {
           else {
             print1("You are now a ranking Thief of the Guild!");
             print2("You learn the Spell of Invisibility.");
-            Spells[S_INVISIBLE].known = TRUE;
+            Spells[S_INVISIBLE].known = true;
             Player.rank[THIEVES] = THIEF;
             Player.agi++;
             Player.maxagi++;
@@ -144,7 +144,7 @@ void l_thieves_guild() {
           else {
             print1("You are now an Apprentice Thief!");
             print2("You are taught the Spell of Levitation.");
-            Spells[S_LEVITATE].known = TRUE;
+            Spells[S_LEVITATE].known = true;
             Player.rank[THIEVES] = ATHIEF;
             Player.dex++;
             Player.maxdex++;
@@ -211,7 +211,7 @@ void l_thieves_guild() {
                 number = getnumber(Player.possessions[i]->number);
                 if ((number >= Player.possessions[i]->number) &&
                     Player.possessions[i]->used) {
-                  Player.possessions[i]->used = FALSE;
+                  Player.possessions[i]->used = false;
                   item_use(Player.possessions[i]);
                 }
                 Player.cash +=
@@ -261,7 +261,7 @@ void l_thieves_guild() {
 
 void l_college() {
   char action;
-  int done = FALSE, enrolled = FALSE;
+  int done = false, enrolled = false;
   print1("The Collegium Magii. Founded 16937, AOF.");
   if (nighttime())
     print2("The Registration desk is closed at night....");
@@ -295,7 +295,7 @@ void l_college() {
       showmenu();
       action = mgetc();
       if (action == ESCAPE)
-        done = TRUE;
+        done = true;
       else if (action == 'a') {
         if (Player.rank[COLLEGE] > 0)
           print2("You are already enrolled!");
@@ -307,7 +307,7 @@ void l_college() {
           if (Player.iq > 17) {
             print2("You are given a scholarship!");
             morewait();
-            enrolled = TRUE;
+            enrolled = true;
           } else {
             print1("Tuition is 1000Au. ");
             nprint1("Pay it? [yn] ");
@@ -316,7 +316,7 @@ void l_college() {
                 print2("You don't have the funds!");
               else {
                 Player.cash -= 1000;
-                enrolled = TRUE;
+                enrolled = true;
                 dataprint();
               }
             }
@@ -377,7 +377,7 @@ void l_college() {
             clearmsg();
             print1("Your position allows you to research 4 spells.");
             Spellsleft += 4;
-            Spells[S_RITUAL].known = TRUE;
+            Spells[S_RITUAL].known = true;
             Player.rank[COLLEGE] = PRECEPTOR;
             Player.maxiq += 1;
             Player.iq += 1;
@@ -394,7 +394,7 @@ void l_college() {
             clearmsg();
             print1("Thesis research credit is 2 spells.");
             Spellsleft += 2;
-            Spells[S_IDENTIFY].known = TRUE;
+            Spells[S_IDENTIFY].known = true;
             Player.rank[COLLEGE] = STUDENT;
             Player.maxiq += 1;
             Player.iq += 1;
@@ -435,7 +435,7 @@ void l_college() {
 
 void l_sorcerors() {
   char action;
-  int done = FALSE, fee = 3000;
+  int done = false, fee = 3000;
   long total;
   print1("The Circle of Sorcerors.");
   if (Player.rank[CIRCLE] == -1) {
@@ -460,7 +460,7 @@ void l_sorcerors() {
         print1("You learn the Spell of Disintegration!");
         morewait();
         clearmsg();
-        Spells[S_DISINTEGRATE].known = TRUE;
+        Spells[S_DISINTEGRATE].known = true;
         Player.rank[CIRCLE] = PRIME;
         Player.maxpow += 10;
         Player.pow += 10;
@@ -474,7 +474,7 @@ void l_sorcerors() {
       showmenu();
       action = mgetc();
       if (action == ESCAPE)
-        done = TRUE;
+        done = true;
       else if (action == 'a') {
         if (Player.rank[CIRCLE] > 0)
           print2("You are already an initiate!");
@@ -501,7 +501,7 @@ void l_sorcerors() {
               morewait();
               clearmsg();
               print1("You learn the Spell of Magic Missiles.");
-              Spells[S_MISSILE].known = TRUE;
+              Spells[S_MISSILE].known = true;
               Player.cash -= fee;
               dataprint();
               Player.rank[CIRCLE] = INITIATE;
@@ -532,7 +532,7 @@ void l_sorcerors() {
           bless(-1);
           print3("Die, false sorceror!");
           p_damage(25, UNSTOPPABLE, "a sorceror's curse");
-          done = TRUE;
+          done = true;
         } else if (Player.rank[CIRCLE] == PRIME)
           print2("You are at the pinnacle of mastery in the Circle.");
         else if (Player.rank[CIRCLE] == HIGHSORCEROR) {
@@ -550,7 +550,7 @@ void l_sorcerors() {
             clearmsg();
             print1("To advance you must return with the LawBringer's Crown!");
             print2("The LawBringer resides on Star Peak.");
-            Spells[S_DISRUPT].known = TRUE;
+            Spells[S_DISRUPT].known = true;
             Player.rank[CIRCLE] = HIGHSORCEROR;
             Player.maxpow += 5;
             Player.pow += 5;
@@ -561,7 +561,7 @@ void l_sorcerors() {
           else {
             print1("You are now a member of the Circle of Sorcerors!");
             print2("You learn the Spell of Ball Lightning!");
-            Spells[S_LBALL].known = TRUE;
+            Spells[S_LBALL].known = true;
             Player.rank[CIRCLE] = SORCEROR;
             Player.maxpow += 2;
             Player.pow += 2;
@@ -572,14 +572,14 @@ void l_sorcerors() {
           else {
             print1("You are now a member of the Circle of Enchanters!");
             print2("You learn the Spell of Firebolts.");
-            Spells[S_FIREBOLT].known = TRUE;
+            Spells[S_FIREBOLT].known = true;
             Player.rank[CIRCLE] = ENCHANTER;
             Player.maxpow += 2;
             Player.pow += 2;
           }
         }
       } else if (action == 'c') {
-        done = TRUE;
+        done = true;
         fee = Player.level * 100;
         if (Player.rank[CIRCLE])
           fee = fee / 2;
@@ -731,7 +731,7 @@ void l_order() {
         print1("The Oracle will send you to the Astral Plane if you");
         print2("prove yourself worthy to her.");
         morewait();
-        Spells[S_HERO].known = TRUE;
+        Spells[S_HERO].known = true;
         Player.rank[ORDER] = PALADIN;
       }
     } else if (Player.rank[ORDER] == GUARDIAN) {

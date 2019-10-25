@@ -58,7 +58,7 @@ void make_country_screen(Symbol terrain) {
 #endif
   clear_level(Level);
   Level->environment = E_TACTICAL_MAP;
-  Level->generated = TRUE;
+  Level->generated = true;
   switch (terrain) {
   case FOREST:
     make_forest();
@@ -307,7 +307,7 @@ void room_level() {
 /* goes from f to t unless it hits a site which is not a wall and doesn't
    have buildaux field == baux */
 void room_corridor(int fx, int fy, int tx, int ty, int baux) {
-  int dx, dy, continuing = TRUE;
+  int dx, dy, continuing = true;
 
   dx = sign(tx - fx);
   dy = sign(ty - fy);

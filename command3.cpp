@@ -18,7 +18,7 @@ extern void kill_all_levels();
 /* look at some spot */
 void examine() {
   pol ol;
-  int x = Player.x, y = Player.y, drewmenu = FALSE;
+  int x = Player.x, y = Player.y, drewmenu = false;
 
   clearmsg();
 
@@ -159,7 +159,7 @@ void examine() {
         if (ol->next == NULL)
           print3(itemid(ol->thing));
         else {
-          drewmenu = TRUE;
+          drewmenu = true;
           menuclear();
           menuprint("Things on floor:\n");
           while (ol != NULL) {
@@ -171,7 +171,7 @@ void examine() {
         }
       }
       morewait();
-      sign_print(x, y, TRUE);
+      sign_print(x, y, true);
     }
   }
   if (drewmenu)
@@ -271,7 +271,7 @@ void fire() {
     Player.possessions[O_WEAPON_HAND]->aux = LOADED;
   } else {
     if (Player.possessions[index]->used) {
-      Player.possessions[index]->used = FALSE;
+      Player.possessions[index]->used = false;
       item_use(Player.possessions[index]);
     }
     obj = Player.possessions[index];
@@ -325,7 +325,7 @@ void fire() {
         p_drop_at(x1, y1, 1, obj);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         conform_lost_objects(1, obj);
-        plotspot(x1, y1, TRUE);
+        plotspot(x1, y1, true);
       }
     }
   }
@@ -379,17 +379,17 @@ void nap() {
 
 void charid() {
   char id;
-  int countryside = FALSE;
+  int countryside = false;
   char cstr[80];
 
   clearmsg();
   mprint("Character to identify: ");
   id = mgetc();
   if (Current_Environment == E_COUNTRYSIDE) {
-    countryside = TRUE;
+    countryside = true;
     strcpy(cstr, countryid(id));
     if (strcmp(cstr, "I have no idea.") == 0)
-      countryside = FALSE;
+      countryside = false;
     else
       mprint(cstr);
   }
@@ -605,7 +605,7 @@ void tacoptions() {
 
   setgamestatus(SKIP_MONSTERS, GameStatus);
 
-  done = FALSE;
+  done = false;
   actionsleft = maneuvers();
   place = 0;
   do {
@@ -760,7 +760,7 @@ void tacoptions() {
     case RETURN:
     case LINEFEED:
     case ESCAPE:
-      done = TRUE;
+      done = true;
       break;
     }
     /*    if (actionsleft < 1) morewait(); */ /* FIXED 12/30/98 */
@@ -1024,7 +1024,7 @@ void dismount_steed() {
 }
 
 void city_move() {
-  int site, x = Player.x, y = Player.y, toggle = FALSE;
+  int site, x = Player.x, y = Player.y, toggle = false;
   clearmsg();
   if (Current_Environment != E_CITY) {
     print3("This command only works in the city!");

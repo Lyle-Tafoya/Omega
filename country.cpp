@@ -140,7 +140,7 @@ void load_dlair(int empty, int populate) {
   }
 
   if (!populate)
-    empty = TRUE;
+    empty = true;
   TempLevel = Level;
   if (ok_to_free(TempLevel)) {
 #ifndef SAVE_LEVELS
@@ -263,7 +263,7 @@ void load_speak(int empty, int populate) {
   }
 
   if (!populate)
-    empty = TRUE;
+    empty = true;
 
   TempLevel = Level;
   if (ok_to_free(TempLevel)) {
@@ -387,7 +387,7 @@ void load_misle(int empty, int populate) {
   }
 
   if (!populate)
-    empty = TRUE;
+    empty = true;
 
   TempLevel = Level;
   if (ok_to_free(TempLevel)) {

@@ -184,7 +184,7 @@ void p_process() {
       rename_player();
       break;
     case 'S':
-      save(optionp(COMPRESS_OPTION, Player), FALSE);
+      save(optionp(COMPRESS_OPTION, Player), false);
       break;
     case 'T':
       tunnel();
@@ -338,28 +338,28 @@ void p_country_process() {
 
   drawvision(Player.x, Player.y);
   do {
-    no_op = FALSE;
+    no_op = false;
     Cmd = mgetc();
     clear_if_necessary();
     switch (Cmd) {
     case ' ':
     case 13:
-      no_op = TRUE;
+      no_op = true;
       break;
     case 7:
       wizard();
       break; /* ^g */
     case 12:
       xredraw();
-      no_op = TRUE;
+      no_op = true;
       break; /* ^l */
     case 16:
       bufferprint();
-      no_op = TRUE;
+      no_op = true;
       break; /* ^p */
     case 18:
       redraw();
-      no_op = TRUE;
+      no_op = true;
       break; /* ^r */
     case 23:
       if (gamestatusp(CHEATED, GameStatus))
@@ -412,7 +412,7 @@ void p_country_process() {
       rename_player();
       break;
     case 'S':
-      save(optionp(COMPRESS_OPTION, Player), FALSE);
+      save(optionp(COMPRESS_OPTION, Player), false);
       break;
     case 'V':
       version();
@@ -422,11 +422,11 @@ void p_country_process() {
       break;
     case '/':
       charid();
-      no_op = TRUE;
+      no_op = true;
       break;
     case '?':
       help();
-      no_op = TRUE;
+      no_op = true;
       break;
     case '4':
     case 'h':
@@ -462,7 +462,7 @@ void p_country_process() {
       break;
     default:
       commanderror();
-      no_op = TRUE;
+      no_op = true;
       break;
     }
   } while (no_op);

@@ -7,7 +7,7 @@
 void p_movefunction(int movef) {
   /* loc functs above traps should be activated whether levitating or not */
   drawvision(Player.x, Player.y);
-  sign_print(Player.x, Player.y, FALSE);
+  sign_print(Player.x, Player.y, false);
   if (Player.status[SHADOWFORM])
     switch (movef) { /* player in shadow form is unable to do most things */
     case L_CHAOS:

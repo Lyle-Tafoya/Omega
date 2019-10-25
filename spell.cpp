@@ -16,7 +16,7 @@ void s_wish() {
     if (Spells[S_WISH].known) {
       mprint("The power of the spell is too much for you to withstand!");
       mprint("All memory of the spell is expunged from your brain.");
-      Spells[S_WISH].known = FALSE;
+      Spells[S_WISH].known = false;
     }
   }
 }
@@ -116,15 +116,15 @@ void s_ritual() {
   mprint("You begin your ritual....");
   mprint("You enter a deep trance. Time Passes...");
   setgamestatus(SKIP_PLAYER, GameStatus);
-  time_clock(FALSE);
+  time_clock(false);
   setgamestatus(SKIP_PLAYER, GameStatus);
-  time_clock(FALSE);
+  time_clock(false);
   setgamestatus(SKIP_PLAYER, GameStatus);
-  time_clock(FALSE);
+  time_clock(false);
   setgamestatus(SKIP_PLAYER, GameStatus);
-  time_clock(FALSE);
+  time_clock(false);
   setgamestatus(SKIP_PLAYER, GameStatus);
-  time_clock(FALSE);
+  time_clock(false);
   if (RitualHour == hour())
     mprint("Your mental fatigue prevents from completing the ritual!");
   else if (random_range(100) > Player.iq + Player.pow + Player.level)
@@ -133,15 +133,15 @@ void s_ritual() {
     mprint("You charge the ritual with magical energy and focus your will.");
     mprint("Time Passes...");
     setgamestatus(SKIP_PLAYER, GameStatus);
-    time_clock(FALSE);
+    time_clock(false);
     setgamestatus(SKIP_PLAYER, GameStatus);
-    time_clock(FALSE);
+    time_clock(false);
     setgamestatus(SKIP_PLAYER, GameStatus);
-    time_clock(FALSE);
+    time_clock(false);
     setgamestatus(SKIP_PLAYER, GameStatus);
-    time_clock(FALSE);
+    time_clock(false);
     setgamestatus(SKIP_PLAYER, GameStatus);
-    time_clock(FALSE);
+    time_clock(false);
     RitualHour = hour();
     /* set of random conditions for different ritual effects */
     if (Current_Environment == E_CITY) {
@@ -409,7 +409,7 @@ void initspells() {
   int i;
 
   for (i = 0; i < NUMSPELLS; i++)
-    Spells[i].known = FALSE;
+    Spells[i].known = false;
 
   Spells[S_MON_DET].powerdrain = 3;
   Spells[S_MON_DET].id = S_MON_DET;
@@ -722,13 +722,13 @@ static int spell_ids[] =
      S_WISH};
 
 void showknownspells(int first, int last) {
-  int i, printed = FALSE;
+  int i, printed = false;
 
   menuclear();
   menuprint("\nPossible Spells:\n");
   for (i = first; i <= last; i++)
     if (Spells[spell_ids[i]].known) {
-      printed = TRUE;
+      printed = true;
       menuprint(spell_names[i]);
       menuprint(" (");
       menunumprint(Spells[spell_ids[i]].powerdrain);

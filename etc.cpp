@@ -306,86 +306,86 @@ void learnclericalspells(int deity, int level) {
   switch (level) {
   case LAY:
     if (deity == ODIN)
-      Spells[S_MISSILE].known = TRUE;
+      Spells[S_MISSILE].known = true;
     else if (deity == SET)
-      Spells[S_INVISIBLE].known = TRUE;
+      Spells[S_INVISIBLE].known = true;
     else if (deity == ATHENA)
-      Spells[S_IDENTIFY].known = TRUE;
+      Spells[S_IDENTIFY].known = true;
     else if (deity == HECATE)
-      Spells[S_DRAIN].known = TRUE;
+      Spells[S_DRAIN].known = true;
     else if (deity == DRUID) {
-      Spells[S_KNOWLEDGE].known = TRUE;
-      Spells[S_MON_DET].known = TRUE;
+      Spells[S_KNOWLEDGE].known = true;
+      Spells[S_MON_DET].known = true;
     }
     break;
   case ACOLYTE:
     if (deity == ODIN) {
-      Spells[S_LBALL].known = TRUE;
-      Spells[S_TRUESIGHT].known = TRUE;
+      Spells[S_LBALL].known = true;
+      Spells[S_TRUESIGHT].known = true;
     } else if (deity == SET) {
-      Spells[S_SUMMON].known = TRUE;
-      Spells[S_FIREBOLT].known = TRUE;
+      Spells[S_SUMMON].known = true;
+      Spells[S_FIREBOLT].known = true;
     } else if (deity == ATHENA) {
-      Spells[S_HEAL].known = TRUE;
-      Spells[S_SANCTUARY].known = TRUE;
+      Spells[S_HEAL].known = true;
+      Spells[S_SANCTUARY].known = true;
     } else if (deity == HECATE) {
-      Spells[S_SLEEP].known = TRUE;
-      Spells[S_DISPEL].known = TRUE;
+      Spells[S_SLEEP].known = true;
+      Spells[S_DISPEL].known = true;
     } else if (deity == DRUID) {
-      Spells[S_HEAL].known = TRUE;
-      Spells[S_CURE].known = TRUE;
+      Spells[S_HEAL].known = true;
+      Spells[S_CURE].known = true;
     } else if (deity == DESTINY)
       mprint("An acolyte of the Lords of Destiny. Gee whiz.");
     break;
   case PRIEST:
-    Spells[S_SANCTIFY].known = TRUE;
+    Spells[S_SANCTIFY].known = true;
     if (deity == ODIN) {
-      Spells[S_HERO].known = TRUE;
-      Spells[S_HEAL].known = TRUE;
+      Spells[S_HERO].known = true;
+      Spells[S_HEAL].known = true;
     } else if (deity == SET) {
-      Spells[S_INVISIBLE].known = TRUE;
-      Spells[S_DISPEL].known = TRUE;
+      Spells[S_INVISIBLE].known = true;
+      Spells[S_DISPEL].known = true;
     } else if (deity == ATHENA) {
-      Spells[S_REGENERATE].known = TRUE;
-      Spells[S_ACCURACY].known = TRUE;
+      Spells[S_REGENERATE].known = true;
+      Spells[S_ACCURACY].known = true;
     } else if (deity == HECATE) {
-      Spells[S_SHADOWFORM].known = TRUE;
-      Spells[S_CURE].known = TRUE;
+      Spells[S_SHADOWFORM].known = true;
+      Spells[S_CURE].known = true;
     } else if (deity == DRUID) {
-      Spells[S_DISRUPT].known = TRUE;
-      Spells[S_ALERT].known = TRUE;
-      Spells[S_CLAIRVOYANCE].known = TRUE;
+      Spells[S_DISRUPT].known = true;
+      Spells[S_ALERT].known = true;
+      Spells[S_CLAIRVOYANCE].known = true;
     } else if (deity == DESTINY)
       mprint("How useless, a new priest of the Lords of Destiny.");
     break;
   case SPRIEST:
-    Spells[S_BLESS].known = TRUE;
+    Spells[S_BLESS].known = true;
     if (deity == ODIN)
-      Spells[S_ACCURACY].known = TRUE;
+      Spells[S_ACCURACY].known = true;
     else if (deity == SET)
-      Spells[S_SHADOWFORM].known = TRUE;
+      Spells[S_SHADOWFORM].known = true;
     else if (deity == ATHENA)
-      Spells[S_HERO].known = TRUE;
+      Spells[S_HERO].known = true;
     else if (deity == HECATE)
-      Spells[S_POLYMORPH].known = TRUE;
+      Spells[S_POLYMORPH].known = true;
     else if (deity == DRUID) {
-      Spells[S_POLYMORPH].known = TRUE;
-      Spells[S_LEVITATE].known = TRUE;
+      Spells[S_POLYMORPH].known = true;
+      Spells[S_LEVITATE].known = true;
     } else if (deity == DESTINY)
       mprint("Wow, a new senior priest of the Lords of Destiny.");
     break;
   case HIGHPRIEST:
     if (deity == ODIN)
-      Spells[S_RESTORE].known = TRUE;
+      Spells[S_RESTORE].known = true;
     else if (deity == SET)
-      Spells[S_HELLFIRE].known = TRUE;
+      Spells[S_HELLFIRE].known = true;
     else if (deity == ATHENA)
-      Spells[S_HELLFIRE].known = TRUE;
+      Spells[S_HELLFIRE].known = true;
     else if (deity == HECATE)
-      Spells[S_DESECRATE].known = TRUE;
+      Spells[S_DESECRATE].known = true;
     else if (deity == DRUID) {
-      Spells[S_DISINTEGRATE].known = TRUE;
-      Spells[S_HERO].known = TRUE;
+      Spells[S_DISINTEGRATE].known = true;
+      Spells[S_HERO].known = true;
     } else if (deity == DESTINY) {
       mprint("So you're now the high priest of the Lords of Destiny.");
       mprint("You didn't think you were going to get anything, did you?");

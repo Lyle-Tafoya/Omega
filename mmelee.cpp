@@ -202,14 +202,14 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
 
 /* checks to see if player hits with hitmod vs. monster m at location hitloc */
 int monster_hit(struct monster *m, char hitloc, int bonus) {
-  int i = 0, blocks = FALSE, goodblocks = 0, hit, riposte = FALSE;
+  int i = 0, blocks = false, goodblocks = 0, hit, riposte = false;
   while ((size_t)i < strlen(Player.meleestr)) {
     if ((Player.meleestr[i] == 'B') || (Player.meleestr[i] == 'R')) {
-      blocks = TRUE;
+      blocks = true;
       if (hitloc == Player.meleestr[i + 1]) {
         goodblocks++;
         if (Player.meleestr[i] == 'R')
-          riposte = TRUE;
+          riposte = true;
       }
     }
     i += 2;

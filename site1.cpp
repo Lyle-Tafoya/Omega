@@ -9,7 +9,7 @@
 
 /* the bank; can be broken into (!) */
 void l_bank() {
-  int done = FALSE, valid = FALSE;
+  int done = false, valid = false;
   long amount;
   char response;
   char passwd[64];
@@ -48,7 +48,7 @@ void l_bank() {
         strcpy(passwd, msgscanstring());
         valid = (strcmp(passwd, Password) == 0);
         if (!valid) {
-          done = TRUE;
+          done = true;
           menuclear();
           menuprint("Alert! Alert! Invalid Password!\n");
           menuprint("The police are being summoned!\n");
@@ -126,7 +126,7 @@ void l_bank() {
       } else if (response == 'X') {
         clearmsg();
         print1("Bye!");
-        done = TRUE;
+        done = true;
       } else if ((response == 'O') && (strcmp(Password, "") == 0)) {
         clearmsg();
         print1("Opening new account.");
@@ -134,10 +134,10 @@ void l_bank() {
         strcpy(Password, msgscanstring());
         if (strcmp(Password, "") == 0) {
           print3("Illegal to use null password -- aborted.");
-          done = TRUE;
+          done = true;
         } else {
           print2("Password validated; account saved.");
-          valid = TRUE;
+          valid = true;
         }
       } else
         print3(" Illegal command.");
@@ -148,7 +148,7 @@ void l_bank() {
 }
 
 void l_armorer() {
-  int done = FALSE;
+  int done = false;
   char action;
   if (hour() == 12)
     print3("Unfortunately, this is Julie's lunch hour -- try again later.");
@@ -160,7 +160,7 @@ void l_armorer() {
       print1("Julie's: Buy Armor, Weapons, or Leave [a,w,ESCAPE] ");
       action = mgetc();
       if (action == ESCAPE)
-        done = TRUE;
+        done = true;
       else if (action == 'a')
         buyfromstock(ARMORID, 10);
       else if (action == 'w')
@@ -231,7 +231,7 @@ void l_club() {
           clearmsg();
           print1("will transport you down to the lowest level");
           print2("you have explored, and vice versa.");
-          Spells[S_RETURN].known = TRUE;
+          Spells[S_RETURN].known = true;
           Player.cash -= 100;
           setgamestatus(CLUB_MEMBER, GameStatus);
         }
@@ -261,7 +261,7 @@ void l_club() {
 #undef hinthour
 
 void l_gym() {
-  int done = TRUE;
+  int done = true;
   int trained = 0;
   clearmsg();
   do {
@@ -271,7 +271,7 @@ void l_gym() {
       mlongprint(Gymcredit);
       nprint1("Au.");
     }
-    done = FALSE;
+    done = false;
     menuclear();
     menuprint("Train for 2000 Au. Choose:\n");
     menuprint("\na: work out in the weight room");
@@ -301,7 +301,7 @@ void l_gym() {
         print1("You towel yourself off, and find the exit.");
       else
         print1("A refreshing bath, and you're on your way.");
-      done = TRUE;
+      done = true;
       break;
     default:
       trained--;
@@ -344,7 +344,7 @@ void statue_random(int x, int y) {
     print1("The statue crumbles with a clatter of gravel.");
     Level->site[x][y].locchar = RUBBLE;
     Level->site[x][y].p_locf = L_RUBBLE;
-    plotspot(x, y, TRUE);
+    plotspot(x, y, true);
     lset(x, y, CHANGED, *Level);
     break;
   case 1:
@@ -354,7 +354,7 @@ void statue_random(int x, int y) {
     print1("The statue crumbles with a clatter of gravel.");
     Level->site[x][y].locchar = RUBBLE;
     Level->site[x][y].p_locf = L_RUBBLE;
-    plotspot(x, y, TRUE);
+    plotspot(x, y, true);
     lset(x, y, CHANGED, *Level);
     make_site_treasure(x, y, difficulty());
     break;
@@ -418,7 +418,7 @@ void l_statue_wake() {
   int i;
   int x = Player.x, y = Player.y;
   for (i = 0; i < 9; i++)
-    wake_statue(x + Dirs[0][i], y + Dirs[1][i], TRUE);
+    wake_statue(x + Dirs[0][i], y + Dirs[1][i], true);
 }
 
 void wake_statue(int x, int y, int first) {
@@ -437,12 +437,12 @@ void wake_statue(int x, int y, int first) {
     tml->next = Level->mlist;
     Level->mlist = tml;
     for (i = 0; i < 8; i++)
-      wake_statue(x + Dirs[0][i], y + Dirs[1][i], FALSE);
+      wake_statue(x + Dirs[0][i], y + Dirs[1][i], false);
   }
 }
 
 void l_casino() {
-  int i, done = FALSE, a, b, c, match;
+  int i, done = false, a, b, c, match;
   char response;
   print1("Rampart Mithril Nugget Casino.");
   if (random_range(10) == 1)
@@ -570,7 +570,7 @@ void l_casino() {
           }
         }
       } else if (response == ESCAPE)
-        done = TRUE;
+        done = true;
     }
   }
 }
@@ -750,14 +750,14 @@ void l_tavern() {
         Player.status[DISEASED] = 0;
         Player.food = 40;
         /* reduce temporary stat gains to max stat levels */
-        toggle_item_use(TRUE);
+        toggle_item_use(true);
         Player.str = std::min(Player.str, Player.maxstr);
         Player.con = std::min(Player.con, Player.maxcon);
         Player.agi = std::min(Player.agi, Player.maxagi);
         Player.dex = std::min(Player.dex, Player.maxdex);
         Player.iq = std::min(Player.iq, Player.maxiq);
         Player.pow = std::min(Player.pow, Player.maxpow);
-        toggle_item_use(FALSE);
+        toggle_item_use(false);
         timeprint();
         dataprint();
         showflags();
@@ -777,7 +777,7 @@ void l_tavern() {
 #undef hinthour
 
 void l_alchemist() {
-  int i, done = FALSE, mlevel;
+  int i, done = false, mlevel;
   char response;
   pob obj;
   print1("Ambrosias' Potions et cie.");
@@ -793,7 +793,7 @@ void l_alchemist() {
       response = (char)mcigetc();
       if (response == 'a') {
         clearmsg();
-        done = TRUE;
+        done = true;
         i = getitem(CORPSE);
         if ((i != ABORT) && (Player.possessions[i] != NULL)) {
           obj = Player.possessions[i];
@@ -816,7 +816,7 @@ void l_alchemist() {
           print2("So nu?");
       } else if (response == 'b') {
         clearmsg();
-        done = TRUE;
+        done = true;
         i = getitem(CORPSE);
         if ((i != ABORT) && (Player.possessions[i] != NULL)) {
           obj = Player.possessions[i];
@@ -847,7 +847,7 @@ void l_alchemist() {
         } else
           print2("So nu?");
       } else if (response == ESCAPE)
-        done = TRUE;
+        done = true;
     }
 }
 
@@ -883,8 +883,8 @@ void l_dpw() {
 
 void l_library() {
   char response;
-  int studied = FALSE;
-  int done = FALSE, fee = 1000;
+  int studied = false;
+  int done = false, fee = 1000;
   print1("Rampart Public Library.");
   if (nighttime())
     print2("CLOSED");
@@ -905,11 +905,11 @@ void l_library() {
       if (ynq1() == 'y') {
         if (Player.cash < fee) {
           print2("No payee, No studee.");
-          done = TRUE;
+          done = true;
         } else {
           Player.cash -= fee;
           do {
-            studied = TRUE;
+            studied = true;
             dataprint();
             menuclear();
             menuprint("Peruse a scroll:\n");
@@ -961,15 +961,15 @@ void l_library() {
                 morewait();
               }
             } else if (response == ESCAPE) {
-              done = TRUE;
+              done = true;
               print1("That was an expensive browse...");
             } else
-              studied = FALSE;
+              studied = false;
           } while (!studied);
         }
         xredraw();
       } else {
-        done = TRUE;
+        done = true;
         if (studied)
           print2("Come back anytime we're open, 7am to 8pm.");
         else
@@ -980,7 +980,7 @@ void l_library() {
 }
 
 void l_pawn_shop() {
-  int i, j, k, limit, number, done = FALSE;
+  int i, j, k, limit, number, done = false;
   char item, action;
 
   if (nighttime())
@@ -1025,7 +1025,7 @@ void l_pawn_shop() {
       showmenu();
       action = (char)mcigetc();
       if (action == ESCAPE)
-        done = TRUE;
+        done = true;
       else if (action == 'b') {
         print2("Purchase which item? [ESCAPE to quit] ");
         item = ' ';
@@ -1080,7 +1080,7 @@ void l_pawn_shop() {
               number = getnumber(Player.possessions[i]->number);
               if ((number >= Player.possessions[i]->number) &&
                   Player.possessions[i]->used) {
-                Player.possessions[i]->used = FALSE;
+                Player.possessions[i]->used = false;
                 item_use(Player.possessions[i]);
               }
               Player.cash += number * item_value(Player.possessions[i]) / 2;

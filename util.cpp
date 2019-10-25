@@ -36,11 +36,11 @@ int offscreen(int y) {
 int hitp(int hit, int ac) {
   int roll = random_range(20);
   if (roll == 0)
-    return (TRUE);
+    return (true);
   else if (roll == 19)
-    return (FALSE);
+    return (false);
   else
-    return ((roll < (hit - ac)) ? TRUE : FALSE);
+    return ((roll < (hit - ac)) ? true : false);
 }
 
 /* number of moves from x1,y1 to x2,y2 */
@@ -57,18 +57,18 @@ int unblocked(int x, int y) {
       (Level->site[x][y].locchar == HEDGE) ||
       (Level->site[x][y].locchar == CLOSED_DOOR) || loc_statusp(x, y, SECRET, *Level) ||
       ((x == Player.x) && (y == Player.y)))
-    return (FALSE);
+    return (false);
   else
-    return (TRUE);
+    return (true);
 }
 
 /* do monsters want to move through a spot */
 int m_unblocked(struct monster *m, int x, int y) {
   if ((!inbounds(x, y)) || ((x == Player.x) && (y == Player.y)))
-    return (FALSE);
+    return (false);
   else if ((Level->site[x][y].creature != NULL) ||
            (Level->site[x][y].locchar == SPACE))
-    return (FALSE);
+    return (false);
   else if (m_statusp(*m, ONLYSWIM))
     return (Level->site[x][y].locchar == WATER);
   else if (loc_statusp(x, y, SECRET, *Level)) {
@@ -81,12 +81,12 @@ int m_unblocked(struct monster *m, int x, int y) {
         mprint("You hear a door creak open, and then close again.");
       /* smart monsters would close secret doors behind them if the */
       /* player didn't see them using it */
-      return (TRUE);
+      return (true);
     } else
       return (m_statusp(*m, INTANGIBLE));
   } else if ((Level->site[x][y].locchar == FLOOR) ||
              (Level->site[x][y].locchar == OPEN_DOOR))
-    return (TRUE);
+    return (true);
   else if ((Level->site[x][y].locchar == PORTCULLIS) ||
            (Level->site[x][y].locchar == WALL) ||
            (Level->site[x][y].locchar == STATUE))
@@ -99,12 +99,12 @@ int m_unblocked(struct monster *m, int x, int y) {
       mprint("You hear a door creak open.");
       Level->site[x][y].locchar = OPEN_DOOR;
       lset(x, y, CHANGED, *Level);
-      return (TRUE);
+      return (true);
     } else if (random_range(m->dmg) > random_range(100)) {
       mprint("You hear a door shattering.");
       Level->site[x][y].locchar = RUBBLE;
       lset(x, y, CHANGED, *Level);
-      return (TRUE);
+      return (true);
     } else
       return (m_statusp(*m, INTANGIBLE));
   } else if (Level->site[x][y].locchar == LAVA)
@@ -118,22 +118,22 @@ int m_unblocked(struct monster *m, int x, int y) {
     return ((m->movef == M_MOVE_CONFUSED) || m_statusp(*m, INTANGIBLE) ||
             m_statusp(*m, FLYING));
   else
-    return (TRUE);
+    return (true);
 }
 
 /* can you see through a spot? */
 int view_unblocked(int x, int y) {
   if (!inbounds(x, y))
-    return (FALSE);
+    return (false);
   else if ((Level->site[x][y].locchar == WALL) ||
            (Level->site[x][y].locchar == STATUE) ||
            (Level->site[x][y].locchar == HEDGE) ||
            (Level->site[x][y].locchar == FIRE) ||
            (Level->site[x][y].locchar == CLOSED_DOOR) ||
            loc_statusp(x, y, SECRET, *Level))
-    return (FALSE);
+    return (false);
   else
-    return (TRUE);
+    return (true);
 }
 
 /* 8 moves in Dirs */
@@ -213,10 +213,10 @@ void do_los(Symbol pyx, int *x1, int *y1, int x2, int y2) {
     }
     Level->site[*x1][*y1].showchar = pyx;
     plotchar(pyx, *x1, *y1);
-    plotspot(ox, oy, TRUE);
+    plotspot(ox, oy, true);
     usleep(50000);
   } while ((*x1 != x2 || *y1 != y2) && !blocked);
-  plotspot(*x1, *y1, TRUE);
+  plotspot(*x1, *y1, true);
   levelrefresh();
 }
 
@@ -272,7 +272,7 @@ void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2) {
       error += 2 * step;
       blocked = !unblocked(*x1, *y1);
     }
-    plotspot(ox, oy, TRUE);
+    plotspot(ox, oy, true);
     if (unblocked(*x1, *y1)) {
       plotchar(pyx, *x1, *y1);
       Level->site[*x1][*y1].showchar = pyx;
@@ -283,7 +283,7 @@ void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2) {
     *x1 = ox;
     *y1 = oy;
   }
-  plotspot(*x1, *y1, TRUE);
+  plotspot(*x1, *y1, true);
   levelrefresh();
 }
 
@@ -318,7 +318,7 @@ int los_p(int x1, int y1, int x2, int y2) {
     delta = 2 * abs(x2 - x1);
   }
   if (major == -1) /* x1,y2 already == x2,y2 */
-    return TRUE;
+    return true;
   error = 0;
   do {
     x1 += Dirs[0][major];
@@ -371,7 +371,7 @@ int view_los_p(int x1, int y1, int x2, int y2) {
     delta = 2 * abs(x2 - x1);
   }
   if (major == -1) /* x1,y2 already == x2,y2 */
-    return TRUE;
+    return true;
   error = 0;
   do {
     x1 += Dirs[0][major];
@@ -562,13 +562,13 @@ int spaceok(int i, int j, int baux) {
 }
 
 void findspace(int *x, int *y, int baux) {
-  int i, j, tog = TRUE, done = FALSE;
+  int i, j, tog = true, done = false;
 
   do {
     i = random_range(WIDTH);
     j = random_range(LENGTH);
     if (spaceok(i, j, baux)) {
-      done = TRUE;
+      done = true;
     } else {
       if (tog) {
         tog = !tog;
@@ -577,7 +577,7 @@ void findspace(int *x, int *y, int baux) {
           if (i >= WIDTH)
             break;
           else if (spaceok(i, j, baux)) {
-            done = TRUE;
+            done = true;
             break;
           }
         }
@@ -588,7 +588,7 @@ void findspace(int *x, int *y, int baux) {
           if (j >= LENGTH)
             break;
           else if (spaceok(i, j, baux)) {
-            done = TRUE;
+            done = true;
             break;
           }
         }
@@ -601,10 +601,10 @@ void findspace(int *x, int *y, int baux) {
 
 /* is prefix a prefix of s? */
 int strprefix(const std::string &prefix, const std::string &s) {
-  int matched = TRUE;
+  int matched = true;
   size_t i = 0;
   if (prefix.length() > s.length())
-    return (FALSE);
+    return (false);
   else {
     while (matched && (i < prefix.length())) {
       matched = (prefix[i] == s[i]);
@@ -634,7 +634,7 @@ int confirmation() {
 
 /* is character c a member of string s */
 int strmem(char c, const std::string &s) {
-  int found = FALSE;
+  int found = false;
   size_t i = 0;
   for (i = 0; ((i < s.length()) && (!found)); i++)
     found = (s[i] == c);
@@ -661,7 +661,7 @@ void calc_weight() {
 /* returns true if its ok to get rid of a level */
 int ok_to_free(plv level) {
   if (level == NULL)
-    return (FALSE);
+    return (false);
   else
     return ((level->environment != E_CITY) &&
             (level->environment != E_VILLAGE) &&
@@ -729,7 +729,7 @@ void *checkmalloc(unsigned int bytes) {
   else {
     print1("Out of memory!  Saving and quitting.");
     morewait();
-    save(FALSE, TRUE);
+    save(false, true);
     endgraf();
     exit(0);
   }

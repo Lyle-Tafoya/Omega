@@ -63,7 +63,7 @@ void l_altar() {
           cleanse(1);
           heal(10);
           bless(1);
-          Blessing = FALSE;
+          Blessing = false;
           increase_priest_rank(deity);
         } else {
           print1("Your ardent plea is ignored.");
@@ -88,18 +88,18 @@ void l_altar() {
           dispose_lost_objects(1, Player.possessions[i]);
           print2("A violet nimbus settles around your head and slowly fades.");
           morewait();
-          Blessing = TRUE;
+          Blessing = true;
         } else {
           print1("A darkling glow envelopes your offering!");
           print2("The glow slowly fades....");
           morewait();
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           if (Player.possessions[i]->used) {
-            Player.possessions[i]->used = FALSE;
+            Player.possessions[i]->used = false;
             item_use(Player.possessions[i]);
             Player.possessions[i]->blessing =
                 -1 - abs(Player.possessions[i]->blessing);
-            Player.possessions[i]->used = TRUE;
+            Player.possessions[i]->used = true;
             item_use(Player.possessions[i]);
           } else
             Player.possessions[i]->blessing =
@@ -117,9 +117,9 @@ void l_altar() {
 }
 
 int check_sacrilege(int deity) {
-  int i, sacrilege = FALSE;
+  int i, sacrilege = false;
   if ((Player.patron != deity) && (Player.patron > 0)) {
-    sacrilege = TRUE;
+    sacrilege = true;
     Player.pow--;
     Player.maxpow--;
     switch (Player.patron) {
@@ -128,7 +128,7 @@ int check_sacrilege(int deity) {
       morewait();
       if (deity == ATHENA) {
         print2("However, Athena intercedes on your behalf.");
-        sacrilege = FALSE;
+        sacrilege = false;
       } else {
         print2("You are struck by a thunderbolt!");
         p_damage(Player.level * 5, UNSTOPPABLE, "Odin's wrath");
@@ -149,7 +149,7 @@ int check_sacrilege(int deity) {
       if (deity == HECATE) {
         print1("But since you pray to a friendly deity,");
         print2("Set decides not to punish you.");
-        sacrilege = FALSE;
+        sacrilege = false;
       } else {
         print2("You are blasted by a shaft of black fire!");
         p_damage(Player.level * 5, UNSTOPPABLE, "Set's anger");
@@ -172,7 +172,7 @@ int check_sacrilege(int deity) {
       morewait();
       if (deity == SET) {
         print1("But ignores the affront since she likes Set.");
-        sacrilege = FALSE;
+        sacrilege = false;
       } else {
         print1("You are zapped by dark moonbeams!");
         p_damage(Player.level * 5, UNSTOPPABLE, "Hecate's malice");
@@ -181,7 +181,7 @@ int check_sacrilege(int deity) {
           Player.maxpow = Player.maxpow / 5;
           Player.pow = std::min(Player.pow, Player.maxpow);
           for (i = 0; i < NUMSPELLS; i++)
-            Spells[i].known = FALSE;
+            Spells[i].known = false;
         }
       }
       morewait();
@@ -191,7 +191,7 @@ int check_sacrilege(int deity) {
       morewait();
       if (deity == ODIN) {
         print2("But lets you off this time since Odin is also Lawful.");
-        sacrilege = FALSE;
+        sacrilege = false;
       } else {
         print2("You are zorched by godsfire!");
         if (Player.hp > 0) {
@@ -209,7 +209,7 @@ int check_sacrilege(int deity) {
       break;
     case DESTINY:
       print2("The Lords of Destiny ignore your lack of faith.");
-      sacrilege = FALSE;
+      sacrilege = false;
       morewait();
       break;
     case DRUID:

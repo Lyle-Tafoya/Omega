@@ -562,7 +562,7 @@ on save and restore. */
 /* total number of player options */
 #define NUMOPTIONS 11
 
-/* number of options with TRUE/FALSE values */
+/* number of options with true/false values */
 #define NUMTFOPTIONS 9
 
 /* The slot number of the two options not in Player.options */
@@ -1474,9 +1474,4 @@ inline void optionreset(int option, player &p) {
 
 #ifndef STRING
 #include <strings.h>
-#endif
-
-#ifndef TRUE
-#define TRUE 1
-#define FALSE 0
 #endif

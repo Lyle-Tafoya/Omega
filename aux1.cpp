@@ -134,25 +134,25 @@ void showroom(int i) {
 
 int player_on_sanctuary() {
   if ((Player.x == Player.sx) && (Player.y == Player.sy))
-    return (TRUE);
+    return true;
   else {
     if (Player.patron) {
       if ((Level->site[Player.x][Player.y].locchar == ALTAR) &&
           (Level->site[Player.x][Player.y].aux == Player.patron))
-        return (TRUE);
+        return true;
       else
-        return (FALSE);
+        return false;
     } else
-      return (FALSE);
+      return false;
   }
 }
 
-/* check a move attempt, maybe attack something, return TRUE if ok to move. */
+/* check a move attempt, maybe attack something, return true if ok to move. */
 /* x y is the proposed place to move to */
 int p_moveable(int x, int y) {
   setgamestatus(SKIP_MONSTERS, GameStatus);
   if (!inbounds(x, y))
-    return (FALSE);
+    return false;
   else if (Player.status[SHADOWFORM]) {
     switch (Level->site[x][y].p_locf) {
     case L_CHAOS:
@@ -161,19 +161,19 @@ int p_moveable(int x, int y) {
       return confirmation();
     default:
       resetgamestatus(SKIP_MONSTERS, GameStatus);
-      return (TRUE);
+      return true;
     }
   } else if (loc_statusp(x, y, SECRET, *Level)) {
     if (!gamestatusp(FAST_MOVE, GameStatus))
       print3("Ouch!");
-    return (FALSE);
+    return false;
   } else if (Level->site[x][y].creature != NULL) {
     if (!gamestatusp(FAST_MOVE, GameStatus)) {
       fight_monster(Level->site[x][y].creature);
       resetgamestatus(SKIP_MONSTERS, GameStatus);
-      return (FALSE);
+      return false;
     } else
-      return (FALSE);
+      return false;
   } else if ((Level->site[x][y].locchar == WALL) ||
              (Level->site[x][y].locchar == STATUE) ||
              (Level->site[x][y].locchar == PORTCULLIS) ||
@@ -190,7 +190,7 @@ int p_moveable(int x, int y) {
                (Level->site[x][y].locchar == TRAP)))) {
     if (!gamestatusp(FAST_MOVE, GameStatus))
       print3("Ouch!");
-    return (FALSE);
+    return false;
   } else if (optionp(CONFIRM, Player)) {
     if ((Level->site[x][y].locchar == HEDGE) ||
         (Level->site[x][y].locchar == LAVA) ||
@@ -208,9 +208,9 @@ int p_moveable(int x, int y) {
             Level->site[x][y].p_locf != L_WATER) {
           print1("You can't convince your steed to continue.");
           setgamestatus(SKIP_MONSTERS, GameStatus);
-          return (FALSE);
+          return false;
         } else
-          return (TRUE);
+          return true;
       } else if (confirmation())
         resetgamestatus(SKIP_MONSTERS, GameStatus);
       else
@@ -218,26 +218,26 @@ int p_moveable(int x, int y) {
       return (!gamestatusp(SKIP_MONSTERS, GameStatus));
     } else {
       resetgamestatus(SKIP_MONSTERS, GameStatus);
-      return (TRUE);
+      return true;
     }
   } else {
     resetgamestatus(SKIP_MONSTERS, GameStatus);
-    return (TRUE);
+    return true;
   }
 }
 
 /* check a move attempt in the countryside */
 int p_country_moveable(int x, int y) {
   if (!inbounds(x, y))
-    return (FALSE);
+    return false;
   else if (optionp(CONFIRM, Player)) {
     if ((Country[x][y].current_terrain_type == CHAOS_SEA) ||
         (Country[x][y].current_terrain_type == MOUNTAINS))
       return (confirmation());
     else
-      return (TRUE);
+      return true;
   } else
-    return (TRUE);
+    return true;
 }
 
 /* search once particular spot */
@@ -356,24 +356,24 @@ void calc_melee() {
 /* player attacks monster m */
 void fight_monster(struct monster *m) {
   int hitmod = 0;
-  int reallyfight = TRUE;
+  int reallyfight = true;
 
   if (Player.status[AFRAID]) {
     print3("You are much too afraid to fight!");
-    reallyfight = FALSE;
+    reallyfight = false;
   } else if (player_on_sanctuary()) {
     print3("You restrain yourself from desecrating this holy place.");
-    reallyfight = FALSE;
+    reallyfight = false;
   } else if (Player.status[SHADOWFORM]) {
     print3("Your attack has no effect in your shadowy state.");
-    reallyfight = FALSE;
+    reallyfight = false;
   } else if ((Player.status[BERSERK] < 1) && (!m_statusp(*m, HOSTILE))) {
     if (optionp(BELLICOSE, Player))
-      reallyfight = TRUE;
+      reallyfight = true;
     else
       reallyfight = confirmation();
   } else
-    reallyfight = TRUE;
+    reallyfight = true;
 
   if (reallyfight) {
 
@@ -386,7 +386,7 @@ void fight_monster(struct monster *m) {
       Player.alignment -= 2; /* chaotic action */
     m_status_set(*m, AWAKE);
     m_status_set(*m, HOSTILE);
-    m->attacked = TRUE;
+    m->attacked = true;
     Player.hit += hitmod;
     tacplayer(m);
     Player.hit -= hitmod;
@@ -677,17 +677,17 @@ void gain_experience(int amount) {
 }
 
 /* try to hit a monster in an adjacent space. If there are none
-   return FALSE. Note if you're berserk you get to attack ALL
+   return false. Note if you're berserk you get to attack ALL
    adjacent monsters! */
 int goberserk() {
-  int wentberserk = FALSE, i;
+  int wentberserk = false, i;
   char meleestr[80];
   strcpy(meleestr, Player.meleestr);
   strcpy(Player.meleestr, "lLlClH");
   for (i = 0; i < 8; i++)
     if (Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature !=
         NULL) {
-      wentberserk = TRUE;
+      wentberserk = true;
       fight_monster(
           Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
       morewait();
@@ -909,7 +909,7 @@ void threaten(struct monster *m) {
       m_dropstuff(m);
       m->hp = -1;
       Level->site[m->x][m->y].creature = NULL;
-      putspot(m->x, m->y, getspot(m->x, m->y, FALSE));
+      putspot(m->x, m->y, getspot(m->x, m->y, false));
     } else {
       Player.alignment += 2;
       print2("'If you love something set it free ... '");
@@ -920,7 +920,7 @@ void threaten(struct monster *m) {
       print3("It departs with a renewed sense of its own mortality.");
       m->hp = -1;
       Level->site[m->x][m->y].creature = NULL;
-      putspot(m->x, m->y, getspot(m->x, m->y, FALSE));
+      putspot(m->x, m->y, getspot(m->x, m->y, false));
     }
   }
 }

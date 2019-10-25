@@ -404,7 +404,7 @@ void give() {
       else if (!cursed(Player.possessions[index])) {
         obj = ((pob)checkmalloc(sizeof(objtype)));
         *obj = *(Player.possessions[index]);
-        obj->used = FALSE;
+        obj->used = false;
         conform_lost_objects(1, Player.possessions[index]);
         obj->number = 1;
         print2("Given: ");
@@ -501,7 +501,7 @@ void upstairs() {
       else
         change_environment(E_COUNTRYSIDE);
     } else
-      change_level(Level->depth, Level->depth - 1, FALSE);
+      change_level(Level->depth, Level->depth - 1, false);
     roomcheck();
   }
   setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -519,7 +519,7 @@ void downstairs() {
       print2("You manage to get your horse downstairs.");
     if (Current_Environment == Current_Dungeon) {
       print1("You descend a level.");
-      change_level(Level->depth, Level->depth + 1, FALSE);
+      change_level(Level->depth, Level->depth + 1, false);
       roomcheck();
     } else if ((Current_Environment == E_CITY) || (Last_Environment == E_CITY))
       change_environment(E_SEWERS);
@@ -532,7 +532,7 @@ void downstairs() {
 /* set various player options */
 /* have to redefine in odefs for next full recompile */
 void setoptions() {
-  int slot = 1, to, done = FALSE;
+  int slot = 1, to, done = false;
   int response;
 
   clearmsg();
@@ -623,7 +623,7 @@ void setoptions() {
         print3("A number is meaningless for this option.");
       break;
     case ESCAPE:
-      done = TRUE;
+      done = true;
       break;
     default:
       print3("That response is meaningless for this option.");
@@ -871,7 +871,7 @@ void bash_item() {
 /* if force is true, exiting due to some problem - don't bomb out */
 void save(int compress, int force) {
   char fname[100];
-  int pos, ok = TRUE;
+  int pos, ok = true;
 
   clearmsg();
   if (gamestatusp(ARENA_MODE, GameStatus)) {
@@ -881,7 +881,7 @@ void save(int compress, int force) {
     } else {
       print3("Can't save the game in the arena!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
-      ok = FALSE;
+      ok = false;
     }
   } else if (Current_Environment == E_ABYSS) {
     if (force)
@@ -889,7 +889,7 @@ void save(int compress, int force) {
     else {
       print3("Can't save the game in the Adept's Challenge!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
-      ok = FALSE;
+      ok = false;
     }
   } else if (Current_Environment == E_TACTICAL_MAP) {
     if (force)
@@ -897,7 +897,7 @@ void save(int compress, int force) {
     else {
       print3("Can't save the game in the tactical map!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
-      ok = FALSE;
+      ok = false;
     }
   }
   if (!force && ok) {
@@ -909,7 +909,7 @@ void save(int compress, int force) {
     strcpy(fname, msgscanstring());
     if (fname[0] == '\0') {
       print1("No save file entered - save aborted.");
-      ok = FALSE;
+      ok = false;
     }
     for (pos = 0; fname[pos] && isprint(fname[pos]) && !isspace(fname[pos]);
          pos++)
@@ -918,7 +918,7 @@ void save(int compress, int force) {
       sprintf(Str1, "Illegal character '%c' in filename - Save aborted.",
               fname[pos]);
       print1(Str1);
-      ok = FALSE;
+      ok = false;
     }
     if (ok) {
       if (save_game(compress, fname)) {
@@ -1026,7 +1026,7 @@ void moveplayer(int dx, int dy) {
 
 /* handle a h,j,k,l, etc. */
 void movepincountry(int dx, int dy) {
-  int i, takestime = TRUE;
+  int i, takestime = true;
   if ((Player.maxweight < Player.itemweight) && random_range(2) &&
       (!Player.status[LEVITATING])) {
     if (gamestatusp(MOUNTED, GameStatus)) {
@@ -1068,7 +1068,7 @@ void movepincountry(int dx, int dy) {
         Player.y += dy;
         if ((!gamestatusp(MOUNTED, GameStatus)) && (Player.possessions[O_BOOTS] != NULL)) {
           if (Player.possessions[O_BOOTS]->usef == I_BOOTS_7LEAGUE) {
-            takestime = FALSE;
+            takestime = false;
             if (Player.possessions[O_BOOTS]->blessing < 0) {
               print1("Whooah! -- Your boots launch you into the sky....");
               print2("You come down in a strange location....");

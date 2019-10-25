@@ -73,7 +73,7 @@ void l_chaos() {
     print2("A mysterious force protects you from the Chaos!");
     print3("Wow.... You feel a bit smug.");
     gain_experience(500);
-    saved = TRUE;
+    saved = true;
   } else {
     print2("Uh oh....");
     if (saved)
@@ -168,7 +168,7 @@ void l_abyss() {
         print1("The All-In-One must have taken pity on you.");
         print2("A transdimensional portal appears...");
         morewait();
-        change_level(Level->depth, Level->depth + 1, FALSE);
+        change_level(Level->depth, Level->depth + 1, false);
         gain_experience(2000);
         Player.alignment -= 50;
       }
@@ -200,7 +200,7 @@ void l_abyss() {
         print2("You built up some velocity during your fall, though....");
         morewait();
         p_damage(i * 5, NORMAL_DAMAGE, "a fall through the abyss");
-        change_level(Level->depth, Level->depth + i, FALSE);
+        change_level(Level->depth, Level->depth + i, false);
         gain_experience(i * i * 50);
       }
     }
@@ -261,7 +261,7 @@ void l_lift() {
     change_level(
         Level->depth,
         (response == 'd' ? Level->depth + levelnum : Level->depth - levelnum),
-        FALSE);
+        false);
     roomcheck();
   }
 }
@@ -359,7 +359,7 @@ void l_rubble() {
 
 /* Drops all portcullises in 5 moves */
 void l_portcullis_trap() {
-  int i, j, slam = FALSE;
+  int i, j, slam = false;
 
   print3("Click.");
   morewait();
@@ -375,7 +375,7 @@ void l_portcullis_trap() {
           morewait();
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
         }
-        slam = TRUE;
+        slam = true;
       }
     }
   if (slam)
@@ -384,7 +384,7 @@ void l_portcullis_trap() {
 
 /* drops every portcullis on level, then kills itself and all similar traps. */
 void l_drop_every_portcullis() {
-  int i, j, slam = FALSE;
+  int i, j, slam = false;
 
   print3("Click.");
   morewait();
@@ -403,7 +403,7 @@ void l_drop_every_portcullis() {
           morewait();
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
         }
-        slam = TRUE;
+        slam = true;
       }
     }
   if (slam)
@@ -411,14 +411,14 @@ void l_drop_every_portcullis() {
 }
 
 void l_raise_portcullis() {
-  int i, j, open = FALSE;
+  int i, j, open = false;
   for (i = 0; i < WIDTH; i++)
     for (j = 0; j < LENGTH; j++) {
       if (Level->site[i][j].locchar == PORTCULLIS) {
         Level->site[i][j].locchar = FLOOR;
         lset(i, j, CHANGED, *Level);
         putspot(i, j, FLOOR);
-        open = TRUE;
+        open = true;
       }
     }
   if (open)
@@ -609,7 +609,7 @@ void l_earth_station() {
 }
 
 void stationcheck() {
-  int stationsleft = FALSE;
+  int stationsleft = false;
   int i, j;
   morewait();
   clearmsg();
@@ -622,7 +622,7 @@ void stationcheck() {
           (Level->site[i][j].locchar == HEDGE) ||
           (Level->site[i][j].locchar == WHIRLWIND) ||
           (Level->site[i][j].locchar == FIRE))
-        stationsleft = TRUE;
+        stationsleft = true;
   if (!stationsleft) {
     print1("There is a noise like a wild horse's neigh.");
     print2("You spin around, and don't see anyone around at all");
@@ -642,7 +642,7 @@ void stationcheck() {
    be dropped, then the void must be entered. */
 
 void l_void_station() {
-  int i, something = FALSE;
+  int i, something = false;
   print1("You are at the brink of an endless void. Enter it? [yn] ");
   if (ynq() == 'y') {
     if (Level->mlist == NULL) {
@@ -661,7 +661,7 @@ void l_void_station() {
       if (!something)
         for (i = 0; ((i < MAXITEMS) && (!something)); i++)
           if (Player.possessions[i] != NULL)
-            something = TRUE;
+            something = true;
       if (something) {
         print1("The flow of power is disrupted by something!");
         print2("The power is unbalanced! You lose control!");
@@ -789,7 +789,7 @@ void l_throne() {
       print2("You find, to your horror, that you cannot get up!");
       print3("You feel an abstract sucking sensation...");
       for (i = 0; i < NUMSPELLS; i++)
-        Spells[i].known = FALSE;
+        Spells[i].known = false;
       Player.pow = 3;
       Player.mana = 0;
       Player.hp = 1;
@@ -845,7 +845,7 @@ void l_throne() {
             morewait();
             print1("You hear a distant voice....");
             print2("'You may now tread the path of High Magic.'");
-            Spells[S_WISH].known = TRUE;
+            Spells[S_WISH].known = true;
           }
           break;
         case 17:
@@ -992,7 +992,7 @@ void l_voidstone() {
     print1("You feel negated.");
     morewait();
     Player.mana = 0;
-    toggle_item_use(TRUE);
+    toggle_item_use(true);
     for (i = 0; i < NUMSTATI; i++)
       Player.status[i] = 0;
     for (i = 0; i < MAXITEMS; i++)
@@ -1001,7 +1001,7 @@ void l_voidstone() {
         Player.possessions[i]->plus = 0;
         Player.possessions[i]->usef = I_NOTHING;
       }
-    toggle_item_use(FALSE);
+    toggle_item_use(false);
     calc_melee();
   } else
     print1("You back away from the strange rock.");

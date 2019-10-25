@@ -27,7 +27,7 @@ int save_game(int compress, char *savestr) {
 #ifdef SAVE_LEVELS
   int tmpdepth;
 #endif
-  int i, writeok = TRUE;
+  int i, writeok = true;
   plv current, save;
   char temp[200];
 
@@ -37,7 +37,7 @@ int save_game(int compress, char *savestr) {
       writeok = (ynq() == 'y');
     } else {
       mprint(" File already exists.");
-      writeok = FALSE;
+      writeok = false;
     }
   else {
     for (slashpos = strlen(savestr); slashpos > 0 && savestr[slashpos] != '/';
@@ -47,7 +47,7 @@ int save_game(int compress, char *savestr) {
       savestr[slashpos] = '\0';
       if (access(savestr, W_OK) == -1) {
         mprint(" Unable to save to that directory.");
-        writeok = FALSE;
+        writeok = false;
       }
       savestr[slashpos] = '/';
     }
@@ -56,7 +56,7 @@ int save_game(int compress, char *savestr) {
   if (writeok) {
     fd = fopen(savestr, "wb");
     if (fd == NULL) {
-      writeok = FALSE;
+      writeok = false;
       mprint(" Error opening file.");
     }
   }
@@ -89,7 +89,7 @@ int save_game(int compress, char *savestr) {
     for (i = 0, current = save; current; current = current->next, i++)
       ;
     if (!fwrite((char *)&i, sizeof(int), 1, fd))
-      writeok = FALSE;
+      writeok = false;
 #ifdef SAVE_LEVELS
     Level = msdos_changelevel(NULL, Current_Environment, tmpdepth);
 #endif
@@ -127,7 +127,7 @@ int save_game(int compress, char *savestr) {
 /* no longer tries to compress, which hangs */
 void signalsave(int) {
   change_to_user_perms();
-  save_game(FALSE, "Omega.Sav");
+  save_game(false, "Omega.Sav");
 #ifdef COMPRESS_SAVE_FILES
   print1("Signal - Saving uncompressed file 'Omega.Sav'.");
   print2("You can compress it yourself, if you like.");
@@ -411,28 +411,28 @@ int save_country(FILE *fd) {
   return ok;
 }
 
-/* returns TRUE if the given version can be restored by this version */
+/* returns true if the given version can be restored by this version */
 int ok_outdated(int version) {
   switch (version) {
   case 80:
     print1("Converting version 0.80 savefile to current.");
     morewait();
-    return TRUE;
+    return true;
     break;
   case 81:
     print1("Loading version 0.81 savefile.");
     morewait();
-    return TRUE;
+    return true;
     break;
   default:
-    return FALSE;
+    return false;
     break;
   }
 }
 
 /* read player data, city level, dungeon level,
    check on validity of save file, etc.
-   return TRUE if game restored, FALSE otherwise */
+   return true if game restored, false otherwise */
 
 int restore_game(char *savestr) {
   int i, version;
@@ -444,7 +444,7 @@ int restore_game(char *savestr) {
     print1("Unable to access save file: ");
     nprint1(savestr);
     morewait();
-    return FALSE;
+    return false;
   }
   change_to_user_perms();
 #ifdef COMPRESS_SAVE_FILES
@@ -455,7 +455,7 @@ int restore_game(char *savestr) {
     nprint2(savestr);
     morewait();
     change_to_game_perms();
-    return (FALSE);
+    return (false);
   }
   fread((char *)&version, sizeof(int), 1, fd);
   fclose(fd);
@@ -482,7 +482,7 @@ int restore_game(char *savestr) {
     nprint2(savestr);
     morewait();
     change_to_game_perms();
-    return (FALSE);
+    return (false);
   } else {
     print1("Restoring...");
 
@@ -498,7 +498,7 @@ int restore_game(char *savestr) {
       nprint2(".");
       mnumprint(version % 100);
       morewait();
-      return (FALSE);
+      return (false);
     }
     restore_player(fd, version);
     restore_country(fd, version);
@@ -544,7 +544,7 @@ int restore_game(char *savestr) {
     ScreenOffset = -1000; /* to force a redraw */
     setgamestatus(SKIP_MONSTERS, GameStatus);
     change_to_game_perms();
-    return (TRUE);
+    return (true);
   }
 }
 
@@ -633,7 +633,7 @@ void restore_player(FILE *fd, int version) {
   fread((char *)level_seed, sizeof(int), E_MAX + 1, fd);
 
   /* Set up the strings for the id's */
-  inititem(FALSE);
+  inititem(false);
 
   for (i = 0; i < MAXITEMS; i++)
     Player.possessions[i] = restore_item(fd, version);
@@ -687,15 +687,15 @@ pob restore_item(FILE *fd, int) {
 
 pol restore_itemlist(FILE *fd, int version) {
   pol ol = NULL, cur = NULL, new_pol = NULL;
-  int i, numitems, firsttime = TRUE;
+  int i, numitems, firsttime = true;
   fread((char *)&numitems, sizeof(int), 1, fd);
   for (i = 0; i < numitems; i++) {
     new_pol = ((pol)checkmalloc(sizeof(oltype)));
     new_pol->thing = restore_item(fd, version);
     new_pol->next = NULL;
-    if (firsttime == TRUE) {
+    if (firsttime == true) {
       ol = cur = new_pol;
-      firsttime = FALSE;
+      firsttime = false;
     } else {
       cur->next = new_pol;
       cur = new_pol;
@@ -715,7 +715,7 @@ void restore_level(FILE *fd, int version) {
   fread((char *)&Level->numrooms, sizeof(char), 1, fd);
   fread((char *)&Level->tunnelled, sizeof(char), 1, fd);
   fread((char *)&Level->environment, sizeof(int), 1, fd);
-  Level->generated = TRUE;
+  Level->generated = true;
   temp_env = Current_Environment;
   Current_Environment = Level->environment;
   switch (Level->environment) {
@@ -723,10 +723,10 @@ void restore_level(FILE *fd, int version) {
     load_country();
     break;
   case E_CITY:
-    load_city(FALSE);
+    load_city(false);
     break;
   case E_VILLAGE:
-    load_village(Country[LastCountryLocX][LastCountryLocY].aux, FALSE);
+    load_village(Country[LastCountryLocX][LastCountryLocY].aux, false);
     break;
   case E_CAVES:
     initrand(Current_Environment, Level->depth);
@@ -767,25 +767,25 @@ void restore_level(FILE *fd, int version) {
   case E_HOVEL:
   case E_MANSION:
   case E_HOUSE:
-    load_house(Level->environment, FALSE);
+    load_house(Level->environment, false);
     break;
   case E_DLAIR:
-    load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), FALSE);
+    load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), false);
     break;
   case E_STARPEAK:
-    load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), FALSE);
+    load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), false);
     break;
   case E_MAGIC_ISLE:
-    load_misle(gamestatusp(KILLED_EATER, GameStatus), FALSE);
+    load_misle(gamestatusp(KILLED_EATER, GameStatus), false);
     break;
   case E_TEMPLE:
-    load_temple(Country[LastCountryLocX][LastCountryLocY].aux, FALSE);
+    load_temple(Country[LastCountryLocX][LastCountryLocY].aux, false);
     break;
   case E_CIRCLE:
-    load_circle(FALSE);
+    load_circle(false);
     break;
   case E_COURT:
-    load_court(FALSE);
+    load_court(false);
     break;
   default:
     print3("This dungeon not implemented!");

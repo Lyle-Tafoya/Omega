@@ -241,9 +241,9 @@ void i_azoth(pob o) {
       heal(10);
       cleanse(1);
       Player.mana = calcmana() * 3;
-      toggle_item_use(TRUE);
+      toggle_item_use(true);
       Player.str = (Player.maxstr++) * 3;
-      toggle_item_use(FALSE);
+      toggle_item_use(false);
     }
   }
 }
@@ -484,7 +484,7 @@ void i_fear_resist(pob o) {
 void i_pick(pob o) {
   int dir;
   int ox, oy;
-  o->used = FALSE;
+  o->used = false;
   if ((!o->known) && (!Player.rank[THIEVES]))
     mprint("You have no idea what do with a piece of twisted metal.");
   else {
@@ -522,7 +522,7 @@ void i_pick(pob o) {
 void i_key(pob o) {
   int dir;
   int ox, oy;
-  o->used = FALSE;
+  o->used = false;
   mprint("Unlock door: ");
   dir = getdir();
   if (dir == ABORT)

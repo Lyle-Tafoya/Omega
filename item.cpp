@@ -8,7 +8,7 @@
 pob create_object(int itemlevel) {
   pob o;
   int r;
-  int ok = FALSE;
+  int ok = false;
 
   while (!ok) {
     o = ((pob)checkmalloc(sizeof(objtype)));
@@ -657,9 +657,9 @@ int twohandedp(int id) {
   case WEAPONID + 36:
   case WEAPONID + 38:
   case WEAPONID + 39:
-    return (TRUE);
+    return (true);
   default:
-    return (FALSE);
+    return (false);
   }
 }
 

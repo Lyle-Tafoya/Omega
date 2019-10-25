@@ -12,7 +12,7 @@
 /* set player to begin with */
 void initplayer() {
   int i;
-  int oldchar = FALSE;
+  int oldchar = false;
   FILE *fd;
   char *lname;
   struct passwd *dastuff;
@@ -52,7 +52,7 @@ void initplayer() {
       print1("Out of date .omegarc! Make another!");
       morewait();
     } else {
-      oldchar = TRUE;
+      oldchar = true;
       fread((char *)&Player, sizeof(Player), 1, fd);
       fread((char *)&Searchnum, sizeof(int), 1, fd);
       fread((char *)&Verbosity, sizeof(char), 1, fd);

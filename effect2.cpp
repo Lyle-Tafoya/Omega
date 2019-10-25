@@ -348,9 +348,9 @@ void flux(int) {
   else {
     mprint("You stagger as the very nature of reality warps!");
     erase_level();
-    Level->generated = FALSE;
+    Level->generated = false;
     mprint("The fabric of spacetime reknits....");
-    change_level(Level->depth - 1, Level->depth, TRUE);
+    change_level(Level->depth - 1, Level->depth, true);
   }
 }
 
@@ -387,7 +387,7 @@ void warp(int blessing) {
       newlevel = random_range(MaxDungeonLevels - 1) + 1;
     }
     mprint("You dematerialize...");
-    change_level(Level->depth, newlevel, FALSE);
+    change_level(Level->depth, newlevel, false);
   }
   roomcheck();
 }
