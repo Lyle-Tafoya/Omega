@@ -12,11 +12,6 @@ string.h instead of strings.h (try man string) */
 
 #define STRING
 
-/* Implementor should uncomment the following if random and srandom
-   are not available  (try man random) */
-
-/* #define NORANDOM */
-
 /* Implementor should uncomment the following if omega appears to
 redraw the screen excessively. */
 
@@ -1400,16 +1395,6 @@ typedef oltype *pol;
 #undef sign
 /* These must be made to work for both longs and ints */
 #define sign(n) (((n) < 0) ? -1 : (((n) > 0) ? 1 : 0))
-
-#ifdef NORANDOM
-#define RANDFUNCTION rand
-#define SRANDFUNCTION srand
-#endif
-
-#ifndef NORANDOM
-#define RANDFUNCTION random
-#define SRANDFUNCTION srandom
-#endif
 
 /* WDT: This should be harmless under ANSI C, and will stop
  * some errors under bizarre platforms. */

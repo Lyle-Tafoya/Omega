@@ -4,24 +4,22 @@
 /* Random utility functions called from all over */
 
 #include <algorithm>
-#include <cstdlib>
+#include <random>
 #include <string>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 #include "glob.h"
+
+std::mt19937 generator;
 
 /* x and y on level? */
 int inbounds(int x, int y) {
   return ((x >= 0) && (y >= 0) && (x < WIDTH) && (y < LENGTH));
 }
 
-/* RANDFUNCTION is defined in odefs.h */
 int random_range(int k) {
-  /*return( k==0 ? 0 : (int) RANDFUNCTION() % k ) ;*/
-  return (k == 0 ? 0 : static_cast<int>((RANDFUNCTION() % 10000) * k) / 10000);
+  std::uniform_int_distribution<> distribution(0, k-1);
+  return distribution(generator);
 }
 
 /* modify absolute y coord relative to which part of level we are on */

@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <fcntl.h>
+#include <random>
 #include <unistd.h>
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */
@@ -16,6 +17,8 @@
 #ifdef SAVE_LEVELS
 extern void msdos_init();
 #endif
+
+extern std::mt19937 generator;
 
 /* most globals originate in omega.c */
 
@@ -134,8 +137,6 @@ int boot_ids[30];
 int deepest[E_MAX + 1];
 int level_seed[E_MAX + 1]; /* random number seed that generated level */
 
-/* This may be implementation dependent */
-/* SRANDFUNCTION is defined in odefs.h */
 /* environment is the environment about to be generated, or -1 for the first */
 /* time, or -2 if we want to restore the random number point */
 void initrand(int environment, int level) {
@@ -143,7 +144,7 @@ void initrand(int environment, int level) {
   int seed;
 
   if (environment >= 0)
-    store = RANDFUNCTION();
+    store = random_range(RAND_MAX);
   /* Pseudo Random Seed */
   if (environment == E_RANDOM)
     seed = (int)time((long *)NULL);
@@ -151,7 +152,7 @@ void initrand(int environment, int level) {
     seed = store;
   else
     seed = level_seed[environment] + 1000 * level;
-  SRANDFUNCTION(seed);
+  generator.seed(seed);
 }
 
 int game_restore(int argc, char *argv[]) {
@@ -323,7 +324,7 @@ void init_world() {
 
   City = Level = TempLevel = Dungeon = NULL;
   for (env = 0; env <= E_MAX; env++)
-    level_seed[env] = RANDFUNCTION();
+    level_seed[env] = random_range(RAND_MAX);
   load_country();
   for (i = 0; i < NUMCITYSITES; i++)
     CitySiteList[i][0] = false;
