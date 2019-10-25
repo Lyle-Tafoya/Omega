@@ -5,6 +5,10 @@
 #include <algorithm>
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern void kill_all_levels();
+#endif
+
 /* check to see if too much tunneling has been done in this level */
 void tunnelcheck() {
   if ((Level->depth == 0 && Current_Environment != E_DLAIR) ||

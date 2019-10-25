@@ -4,6 +4,11 @@
 
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern struct level TheLevel;
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+#endif
+
 /* loads the village level into Level*/
 void load_village(int villagenum, int populate) {
   int i, j;
@@ -23,11 +28,11 @@ void load_village(int villagenum, int populate) {
 
   assign_village_function(0, 0, TRUE);
 
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_VILLAGE;

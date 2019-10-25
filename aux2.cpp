@@ -8,6 +8,10 @@
 #include <algorithm>
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+#endif
+
 /* Player stats like str, agi, etc give modifications to various abilities
    chances to do things, etc. Positive is good, negative bad. */
 int statmod(int stat) { return ((stat - 10) / 2); }
@@ -1054,15 +1058,12 @@ void change_environment(char new_environment) {
       load_village(Villagenum, TRUE);
     else if (TempLevel->environment != E_VILLAGE)
       load_village(Villagenum, TRUE);
-#ifndef SAVE_LEVELS
-    else
-      Level = TempLevel;
-#else
     else {
+#ifdef SAVE_LEVELS
       msdos_changelevel(Level, new_environment, 0);
+#endif
       Level = TempLevel;
     }
-#endif
     if (emerging) {
       print1("You emerge onto the street.");
       emerging = FALSE;

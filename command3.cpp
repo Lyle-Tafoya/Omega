@@ -11,6 +11,10 @@
 #include "date.h"
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern void kill_all_levels();
+#endif
+
 /* look at some spot */
 void examine() {
   pol ol;

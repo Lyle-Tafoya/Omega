@@ -13,6 +13,10 @@
 
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern void msdos_init();
+#endif
+
 /* most globals originate in omega.c */
 
 char *Omegalib; /* contains the path to the library files */

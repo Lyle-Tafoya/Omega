@@ -2,7 +2,70 @@
 /* abyss.c */
 /* some functions to make the abyss level and run the final challenge */
 
+#include <filesystem>
+#include <regex>
+#include <malloc.h>
 #include "glob.h"
+
+#ifdef SAVE_LEVELS
+/* This stuff is in this file because the file was really small. */
+extern struct level TheLevel;
+
+void kill_levels(const std::string &str) {
+
+  /* Remove old level files laying around */
+  for(auto &p : std::filesystem::directory_iterator(Omegalib)) {
+    if(std::filesystem::is_regular_file(p) && std::regex_match(p.path().filename().string(), std::regex(str))) {
+      std::filesystem::remove(p.path());
+    }
+  }
+}
+
+void kill_all_levels() { kill_levels("om.*.lev"); }
+
+void msdos_init() {
+  /* Allocate the inner level of pointers for TheLevel */
+  for (int i = 0; i < MAXWIDTH; i++)
+    TheLevel.site[i] = (plc)checkmalloc(MAXLENGTH * sizeof(loctype));
+
+  /* Remove old level files */
+  kill_all_levels();
+}
+
+
+static FILE *open_levfile(int env, int depth, int rw) {
+  sprintf(Str1, "%som%03d%03d.lev", Omegalib, env, depth);
+  return (fopen(Str1, (rw) ? "wb" : "rb"));
+}
+
+/* Saves oldlevel (unless NULL), and reads in the new level,
+   unless depth is < 0. */
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth) {
+  FILE *fp;
+
+  if (oldlevel != NULL) {
+    if (oldlevel->environment == newenv && oldlevel->depth == newdepth)
+      return (oldlevel);
+    if ((fp = open_levfile(oldlevel->environment, oldlevel->depth, 1)) !=
+        NULL) {
+      save_level(fp, oldlevel);
+      fclose(fp);
+    } else
+      mprint("Cannot save level!!!");
+    /* Free up monsters and items */
+    free_level(oldlevel);
+  }
+  if (newdepth >= 0) {
+    if ((fp = open_levfile(newenv, newdepth, 0)) == NULL)
+      return (NULL);
+    restore_level(fp, VERSION);
+    fclose(fp);
+    return (Level);
+  }
+  return (NULL);
+}
+
+#endif
 
 /* loads the abyss level into Level*/
 void load_abyss() {
@@ -84,94 +147,3 @@ void load_abyss() {
   }
   fclose(fd);
 }
-
-#ifdef SAVE_LEVELS
-/* This stuff is in this file because the file was really small. */
-
-void msdos_init() {
-  int i;
-
-  /* Allocate the inner level of pointers for TheLevel */
-  for (i = 0; i < MAXWIDTH; i++)
-    TheLevel.site[i] = (plc)checkmalloc(MAXLENGTH * sizeof(loctype));
-
-  /* Remove old level files */
-  kill_all_levels();
-}
-
-void kill_all_levels() { kill_levels("om*.lev"); }
-
-void kill_levels(char *str) {
-  int i;
-  struct find_t buf;
-
-  /* Remove old level files laying around */
-  sprintf(Str1, "%s%s", Omegalib, str);
-  for (i = _dos_findfirst(Str1, _A_NORMAL, &buf); !i; i = _dos_findnext(&buf)) {
-    sprintf(Str2, "%s%s", Omegalib, buf.name);
-    remove(Str2);
-  }
-}
-
-#define MEM_CHECK_AMOUNT 0xf000
-void check_memory() {
-  char *mems[50];
-  long amount = 0;
-  int num_mems = 0;
-  unsigned try
-    ;
-
-  sprintf(Str1, "Heapchk returned %d.", _heapchk());
-  mprint(Str1);
-
-  try
-    = MEM_CHECK_AMOUNT;
-  while (try > 10000) {
-    while (try > 0 && (mems[num_mems] = checkmalloc(try)) == NULL)
-      try
-        -= 0x400;
-    amount += try
-      ;
-    num_mems++;
-  }
-  while (--num_mems >= 0)
-    if (mems[num_mems] != NULL)
-      free(mems[num_mems]);
-
-  sprintf(Str1, "Free mem approx %dK", (int)(amount / 0x400));
-  mprint(Str1);
-}
-
-static FILE *open_levfile(int env, int depth, int rw) {
-  sprintf(Str1, "%som%03d%03d.lev", Omegalib, env, depth);
-  return (fopen(Str1, (rw) ? "wb" : "rb"));
-}
-
-/* Saves oldlevel (unless NULL), and reads in the new level,
-   unless depth is < 0. */
-plv msdos_changelevel(plv oldlevel, int newenv, int newdepth) {
-  FILE *fp;
-
-  if (oldlevel != NULL) {
-    if (oldlevel->environment == newenv && oldlevel->depth == newdepth)
-      return (oldlevel);
-    if ((fp = open_levfile(oldlevel->environment, oldlevel->depth, 1)) !=
-        NULL) {
-      save_level(fp, oldlevel);
-      fclose(fp);
-    } else
-      mprint("Cannot save level!!!");
-    /* Free up monsters and items */
-    free_level(oldlevel);
-  }
-  if (newdepth >= 0) {
-    if ((fp = open_levfile(newenv, newdepth, 0)) == NULL)
-      return (NULL);
-    restore_level(fp);
-    fclose(fp);
-    return (Level);
-  }
-  return (NULL);
-}
-
-#endif

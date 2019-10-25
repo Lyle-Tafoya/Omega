@@ -6,6 +6,10 @@
 
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+#endif
+
 /*Various functions for doing game saves and restores */
 /*The game remembers various player information, the city level,
 the country level, and the last or current dungeon level */

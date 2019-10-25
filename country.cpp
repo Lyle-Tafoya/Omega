@@ -5,6 +5,11 @@
 
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern struct level TheLevel;
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+#endif
+
 /* loads the countryside level from the data file */
 void load_country() {
   int i, j;
@@ -143,11 +148,11 @@ void load_dlair(int empty, int populate) {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_DLAIR;
@@ -267,11 +272,11 @@ void load_speak(int empty, int populate) {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_STARPEAK;
@@ -391,11 +396,11 @@ void load_misle(int empty, int populate) {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_MAGIC_ISLE;
@@ -479,11 +484,11 @@ void load_temple(int deity, int populate) {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_TEMPLE;

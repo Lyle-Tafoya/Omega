@@ -4,6 +4,11 @@
 
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern struct level TheLevel;
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+#endif
+
 /* For each level, there should be one stairway going up and one down.
 fromlevel determines whether the player is placed on the up or the down
 staircase. The aux value is currently unused elsewhere, but is set
@@ -45,11 +50,11 @@ void make_country_screen(Symbol terrain) {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_TACTICAL_MAP;

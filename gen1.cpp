@@ -6,20 +6,26 @@
 #include <ctime>
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern struct level TheLevel;
+void kill_levels(const std::string &str);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+#endif
+
 /* Deallocate current dungeon */
 void free_dungeon() {
-#ifndef SAVE_LEVELS
+#ifdef SAVE_LEVELS
+  if (Dungeon != NULL) {
+    sprintf(Str2, "om%d.*.lev", Dungeon->environment);
+    kill_levels(Str2);
+  }
+#else
   plv tlv;
 
   while (Dungeon != NULL) {
     tlv = Dungeon;
     Dungeon = Dungeon->next;
     free_level(tlv);
-  }
-#else
-  if (Dungeon != NULL) {
-    sprintf(Str2, "om%d*.lev", Dungeon->environment);
-    kill_levels(Str2);
   }
 #endif
 }
@@ -60,16 +66,17 @@ void change_level(char fromlevel, char tolevel, char rewrite_level) {
   struct level *thislevel = NULL;
   Player.sx = -1;
   Player.sy = -1; /* sanctuary effect dispelled */
-#ifndef SAVE_LEVELS
+#ifdef SAVE_LEVELS
+  thislevel = msdos_changelevel(Level, Current_Environment, tolevel);
+#else
   thislevel = findlevel(Dungeon, tolevel);
+#endif
   deepest[Current_Environment] = std::max(deepest[Current_Environment], static_cast<int>(tolevel));
   if (thislevel == NULL) {
-    thislevel = ((plv)checkmalloc(sizeof(levtype)));
-#else
-  thislevel = msdos_changelevel(Level, Current_Environment, tolevel);
-  deepest[Current_Environment] = max(deepest[Current_Environment], tolevel);
-  if (thislevel == NULL) {
+#ifdef SAVE_LEVELS
     thislevel = &TheLevel;
+#else
+    thislevel = ((plv)checkmalloc(sizeof(levtype)));
 #endif
     clear_level(thislevel);
     Level = thislevel;

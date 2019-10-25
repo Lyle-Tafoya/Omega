@@ -1373,11 +1373,11 @@ struct location {
 struct level {
   char depth;         /* which level is this */
   struct level *next; /* pointer to next level in dungeon */
-#ifndef SAVE_LEVELS
-  struct location site[MAXWIDTH][MAXLENGTH]; /* dungeon data */
-#else
+#ifdef SAVE_LEVELS
   /* Over 64K worth of data! */
   struct location *site[MAXWIDTH]; /* dungeon data */
+#else
+  struct location site[MAXWIDTH][MAXLENGTH]; /* dungeon data */
 #endif
   char generated;            /* has the level been made (visited) yet? */
   char numrooms;             /* number of rooms on level */
@@ -1464,8 +1464,4 @@ typedef oltype *pol;
 #ifndef TRUE
 #define TRUE 1
 #define FALSE 0
-#endif
-
-#ifdef SAVE_LEVELS
-plv msdos_changelevel();
 #endif

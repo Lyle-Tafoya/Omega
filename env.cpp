@@ -4,6 +4,11 @@
 
 #include "glob.h"
 
+#ifdef SAVE_LEVELS
+extern struct level TheLevel;
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+#endif
+
 /* loads the arena level into Level*/
 void load_arena() {
   int i, j;
@@ -20,11 +25,11 @@ void load_arena() {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_ARENA;
@@ -89,11 +94,11 @@ void load_circle(int populate) {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_CIRCLE;
@@ -232,11 +237,11 @@ void load_court(int populate) {
 #endif
     TempLevel = NULL;
   }
-#ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
-#else
+#ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
+#else
+  Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
   Level->environment = E_COURT;
