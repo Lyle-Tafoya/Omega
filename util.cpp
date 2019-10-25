@@ -108,10 +108,10 @@ int m_unblocked(struct monster *m, int x, int y) {
     } else
       return (m_statusp(*m, INTANGIBLE));
   } else if (Level->site[x][y].locchar == LAVA)
-    return ((m_immunityp(m, FLAME) && m_statusp(*m, SWIMMING)) ||
+    return ((m_immunityp(*m, FLAME) && m_statusp(*m, SWIMMING)) ||
             m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING));
   else if (Level->site[x][y].locchar == FIRE)
-    return (m_statusp(*m, INTANGIBLE) || m_immunityp(m, FLAME));
+    return (m_statusp(*m, INTANGIBLE) || m_immunityp(*m, FLAME));
   else if ((Level->site[x][y].locchar == TRAP) ||
            (Level->site[x][y].locchar == HEDGE) ||
            (Level->site[x][y].locchar == ABYSS))

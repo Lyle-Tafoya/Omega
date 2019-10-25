@@ -185,7 +185,7 @@ void sleep_monster(int blessing) {
         strcat(Str1, target->monstring);
       } else
         strcpy(Str1, target->monstring);
-      if (!m_immunityp(target, SLEEP)) {
+      if (!m_immunityp(*target, SLEEP)) {
         strcat(Str1, " seems to have fallen asleep.");
         m_status_reset(*target, AWAKE);
         target->wakeup = 0;
@@ -312,7 +312,7 @@ void disrupt(int x, int y, int amount) {
         strcat(Str1, target->monstring);
       } else
         strcpy(Str1, target->monstring);
-      if (!m_immunityp(target, NORMAL_DAMAGE)) {
+      if (!m_immunityp(*target, NORMAL_DAMAGE)) {
         strcat(Str1, " was blasted!");
         mprint(Str1);
         m_damage(target, amount, NORMAL_DAMAGE);
@@ -822,7 +822,7 @@ void polymorph(int blessing) {
   } else if ((m = Level->site[x][y].creature) == NULL)
     mprint("Nothing happens.");
   else {
-    if (m_immunityp(m, OTHER_MAGIC) || (m->level > random_range(12))) {
+    if (m_immunityp(*m, OTHER_MAGIC) || (m->level > random_range(12))) {
       strcpy(Str1, "The ");
       strcat(Str1, m->monstring);
       strcat(Str1, " resists the change!");
@@ -916,7 +916,7 @@ void drain(int blessing) {
     mprint("Uh, oh, positive feedback....");
     level_drain(Player.level, "self-vampirism");
   } else if ((m = Level->site[x][y].creature) != NULL) {
-    if ((blessing > -1) && (!m_immunityp(m, NEGENERGY))) {
+    if ((blessing > -1) && (!m_immunityp(*m, NEGENERGY))) {
       mprint("The monster seems weaker...");
       m_damage(m, m->level * m->level, NEGENERGY);
       m->hit = std::max(m->hit - m->level, 1);
@@ -1069,7 +1069,7 @@ void inflict_fear(int x, int y) {
     } else
       strcpy(Str2, m->monstring);
     m->speed = std::max(2, m->speed - 1);
-    if (m_immunityp(m, FEAR))
+    if (m_immunityp(*m, FEAR))
       strcat(Str2, "seems enraged!");
     else {
       strcat(Str2, "is terrorized!");

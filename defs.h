@@ -1441,8 +1441,11 @@ inline void m_status_set(monster &m, int status) {
 inline void m_status_reset(monster &m, int status) {
   m.status &= ~(status);
 }
+inline bool m_immunityp(const monster &m, int status) {
+  return ((m.immunity & pow2(status)) ? true : false);
+}
 
-#define m_immunityp(m, s) (((m)->immunity & pow2(s)) ? 1 : 0)
+//#define m_immunityp(m, s) (((m)->immunity & pow2(s)) ? 1 : 0)
 
 #define gamestatusp(flag) ((GameStatus & (flag)) ? 1 : 0)
 #define setgamestatus(flag) (GameStatus |= (flag))

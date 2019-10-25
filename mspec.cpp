@@ -146,14 +146,14 @@ void m_sp_spell(struct monster *m) {
         /* WDT: I'd like to make this (and "case 5" below) dependant on
          * the monster's IQ in some way -- dumb but powerful monsters
          * deserve what they get :).  No rush. */
-        if (m_immunityp(m, ELECTRICITY) ||
+        if (m_immunityp(*m, ELECTRICITY) ||
             distance(m->x, m->y, Player.x, Player.y) > 2)
           lball(m->x, m->y, Player.x, Player.y, 20);
         else
           lbolt(m->x, m->y, Player.x, Player.y, m->hit, 20);
         break;
       case 5:
-        if (m_immunityp(m, COLD) ||
+        if (m_immunityp(*m, COLD) ||
             distance(m->x, m->y, Player.x, Player.y) > 2)
           snowball(m->x, m->y, Player.x, Player.y, 30);
         else

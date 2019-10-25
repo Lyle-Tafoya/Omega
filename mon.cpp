@@ -94,7 +94,7 @@ void m_dropstuff(struct monster *m) {
 void m_damage(struct monster *m, int dmg, int dtype) {
   m_status_set(*m, AWAKE);
   m_status_set(*m, HOSTILE);
-  if (m_immunityp(m, dtype)) {
+  if (m_immunityp(*m, dtype)) {
     if (los_p(Player.x, Player.y, m->x, m->y)) {
       if (m->uniqueness != COMMON)
         strcpy(Str1, m->monstring);
@@ -1066,7 +1066,7 @@ void m_trap_sleepgas(struct monster *m) {
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
-  if (!m_immunityp(m, SLEEP))
+  if (!m_immunityp(*m, SLEEP))
     m_status_reset(*m, AWAKE);
 }
 
@@ -1140,7 +1140,7 @@ void m_abyss(struct monster *m) {
 
 void m_lava(struct monster *m) {
   char Str1[80];
-  if ((!m_immunityp(m, FLAME)) ||
+  if ((!m_immunityp(*m, FLAME)) ||
       ((!m_statusp(*m, SWIMMING)) && (!m_statusp(*m, ONLYSWIM)))) {
     if (los_p(m->x, m->y, Player.x, Player.y)) {
       if (m->uniqueness != COMMON)

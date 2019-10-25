@@ -166,7 +166,7 @@ void i_perm_breathing(pob o) {
 /* weapons functions */
 
 void weapon_acidwhip(int dmgmod, pob, struct monster *m) {
-  if ((random_range(2) == 1) && (!m_immunityp(m, NORMAL_DAMAGE))) {
+  if ((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE))) {
     mprint("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
@@ -229,11 +229,11 @@ void weapon_lightsabre(int, pob o, struct monster *m) {
     o->known = 1;
   } else {
     /* test prevents confusing immunity messages.... */
-    if (!m_immunityp(m, NORMAL_DAMAGE)) {
+    if (!m_immunityp(*m, NORMAL_DAMAGE)) {
       mprint("Vzzzzmmm!");
       m_damage(m, 20, NORMAL_DAMAGE);
     }
-    if ((m->hp > 0) && (!m_immunityp(m, FLAME))) {
+    if ((m->hp > 0) && (!m_immunityp(*m, FLAME))) {
       mprint("Zzzzap!");
       m_damage(m, 20, FLAME);
     }
@@ -241,7 +241,7 @@ void weapon_lightsabre(int, pob o, struct monster *m) {
 }
 
 void weapon_tangle(int dmgmod, pob, struct monster *m) {
-  if ((random_range(2) == 1) && (!m_immunityp(m, NORMAL_DAMAGE))) {
+  if ((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE))) {
     mprint("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
@@ -316,7 +316,7 @@ void i_lightsabre(pob o) {
 void i_mace_disrupt(pob) { mprint("That's a damned heavy mace!"); }
 
 void weapon_vorpal(int dmgmod, pob o, struct monster *m) {
-  if ((random_range(10) < 3) && (!m_immunityp(m, NORMAL_DAMAGE))) {
+  if ((random_range(10) < 3) && (!m_immunityp(*m, NORMAL_DAMAGE))) {
     o->known = 2;
     if (random_range(2) == 1)
       mprint("One Two! One Two! And through and through!");
