@@ -1431,8 +1431,6 @@ inline void c_set(int x, int y, int stat, terrain (&country)[MAXWIDTH][MAXLENGTH
   country[x][y].status |= (stat);
 }
 
-#define c_reset(x, y, stat) (Country[x][y].status &= ~(stat))
-
 #define m_statusp(m, s) (((m)->status & (s)) ? 1 : 0)
 #define m_status_set(m, s) ((m)->status |= (s))
 #define m_status_reset(m, s) ((m)->status &= ~(s))
