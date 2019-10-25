@@ -1074,7 +1074,7 @@ void inflict_fear(int x, int y) {
     else {
       strcat(Str2, "is terrorized!");
       m_dropstuff(m);
-      if (m_statusp(m, MOBILE))
+      if (m_statusp(*m, MOBILE))
         m->movef = M_MOVE_SCAREDY;
     }
   } else

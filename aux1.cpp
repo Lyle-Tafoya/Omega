@@ -367,7 +367,7 @@ void fight_monster(struct monster *m) {
   } else if (Player.status[SHADOWFORM]) {
     print3("Your attack has no effect in your shadowy state.");
     reallyfight = FALSE;
-  } else if ((Player.status[BERSERK] < 1) && (!m_statusp(m, HOSTILE))) {
+  } else if ((Player.status[BERSERK] < 1) && (!m_statusp(*m, HOSTILE))) {
     if (optionp(BELLICOSE))
       reallyfight = TRUE;
     else
@@ -611,7 +611,7 @@ int getdir() {
 
 /* functions describes monster m's state for examine function */
 char *mstatus_string(struct monster *m) {
-  if (m_statusp(m, M_INVISIBLE) && !Player.status[TRUESIGHT])
+  if (m_statusp(*m, M_INVISIBLE) && !Player.status[TRUESIGHT])
     strcpy(Str2, "Some invisible creature");
   else if (m->uniqueness == COMMON) {
     if (m->hp < Monsters[m->id].hp / 3)
@@ -801,7 +801,7 @@ void surrender(struct monster *m) {
     break;
   }
   if (m->id == GUARD) {
-    if (m_statusp(m, HOSTILE))
+    if (m_statusp(*m, HOSTILE))
       monster_talk(m);
     else {
       print2("The guard (bored): Have you broken a law? [yn] ");
@@ -881,7 +881,7 @@ void threaten(struct monster *m) {
     break;
   }
   morewait(); /* FIXED! 12/25/98 */
-  if (!m_statusp(m, HOSTILE)) {
+  if (!m_statusp(*m, HOSTILE)) {
     print3("You only annoy it with your futile demand.");
     m_status_set(m, HOSTILE);
   } else if (((m->level * 2 > Player.level) && (m->hp > Player.dmg)) ||

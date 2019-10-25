@@ -10,7 +10,7 @@ void m_talk_druid(struct monster *m) {
   int i;
   pml curr;
 
-  if (!m_statusp(m, HOSTILE)) {
+  if (!m_statusp(*m, HOSTILE)) {
     print1("The Archdruid raises a hand in greeting.");
     if (!gamestatusp(SPOKE_TO_DRUID)) {
       setgamestatus(SPOKE_TO_DRUID);
@@ -187,7 +187,7 @@ void m_talk_hungry(struct monster *m) {
 }
 
 void m_talk_guard(struct monster *m) {
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     print1("'Surrender in the name of the Law!'");
     print2("Do it? [yn] ");
     if (ynq2() == 'y') {
@@ -430,7 +430,7 @@ void m_talk_hint(struct monster *m) {
     strcat(Str2, m->monstring);
   } else
     strcpy(Str2, m->monstring);
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     strcat(Str2, " only sneers at you. ");
     mprint(Str2);
   } else {
@@ -560,9 +560,9 @@ void m_talk_demonlover(struct monster *m) {
 }
 
 void m_talk_horse(struct monster *m) {
-  if (m_statusp(m, HOSTILE))
+  if (m_statusp(*m, HOSTILE))
     mprint("The horse neighs angrily at you.");
-  else if (m_statusp(m, HUNGRY))
+  else if (m_statusp(*m, HUNGRY))
     mprint("The horse noses curiously at your pack.");
   else if (gamestatusp(MOUNTED))
     mprint("The horse and your steed don't seem to get along.");
@@ -646,7 +646,7 @@ void m_talk_scream(struct monster *m) {
 }
 
 void m_talk_archmage(struct monster *m) {
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     mprint("The Archmage ignores your attempt at conversation");
     mprint("and concentrates on his spellcasting....");
   } else if (Current_Environment == E_COURT) {
@@ -667,7 +667,7 @@ void m_talk_archmage(struct monster *m) {
 }
 
 void m_talk_merchant(struct monster *m) {
-  if (!m_statusp(m, HOSTILE)) {
+  if (!m_statusp(*m, HOSTILE)) {
     if (Current_Environment == E_VILLAGE) {
       mprint("The merchant asks you if you want to buy a horse for 250GP.");
       mprint("Pay the merchant? [yn] ");
@@ -696,7 +696,7 @@ void m_talk_merchant(struct monster *m) {
 }
 
 void m_talk_prime(struct monster *m) {
-  if (!m_statusp(m, HOSTILE)) {
+  if (!m_statusp(*m, HOSTILE)) {
     if (Current_Environment == E_CIRCLE) {
       print1("The Prime nods brusquely at you, removes a gem from his");
       print2("sleeve, places it on the floor, and vanishes wordlessly.");

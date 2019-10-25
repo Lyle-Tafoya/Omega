@@ -352,14 +352,14 @@ void givemonster(struct monster *m, struct object *o) {
     } else
       strcpy(Str3, m->monstring);
 
-    if (m_statusp(m, GREEDY) || m_statusp(m, NEEDY)) {
+    if (m_statusp(*m, GREEDY) || m_statusp(*m, NEEDY)) {
       m_pickup(m, o);
       strcat(Str3, " takes your gift");
       print1(Str3);
       Player.alignment++;
-      if (m_statusp(m, GREEDY) && (true_item_value(o) < (long)m->level * 100))
+      if (m_statusp(*m, GREEDY) && (true_item_value(o) < (long)m->level * 100))
         nprint1("...but does not appear satisfied.");
-      else if (m_statusp(m, NEEDY) &&
+      else if (m_statusp(*m, NEEDY) &&
                (true_item_value(o) < (long)Level->depth * Level->depth))
         nprint1("...and looks chasteningly at you.");
       else {
@@ -368,7 +368,7 @@ void givemonster(struct monster *m, struct object *o) {
         m_status_reset(m, GREEDY);
         m_status_reset(m, NEEDY);
       }
-    } else if (m_statusp(m, HUNGRY)) {
+    } else if (m_statusp(*m, HUNGRY)) {
 
       if (((m->id == HORSE) && (o->id == FOODID + 15)) || /* grain */
           ((m->id != HORSE) &&

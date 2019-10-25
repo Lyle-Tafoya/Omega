@@ -78,10 +78,10 @@ void make_corpse(pob o, struct monster *m) {
     o->usef = I_CANNIBAL;
   else
 #endif
-  if (m_statusp(m, EDIBLE)) {
+  if (m_statusp(*m, EDIBLE)) {
     o->usef = I_FOOD;
     o->aux = 6;
-  } else if (m_statusp(m, POISONOUS))
+  } else if (m_statusp(*m, POISONOUS))
     o->usef = I_POISON_FOOD;
   /* Special corpse-eating effects */
   else

@@ -17,19 +17,19 @@ void m_pulse(struct monster *m) {
     if (m->hp < Monsters[m->id].hp)
       m->hp++;
 
-  if ((!m_statusp(m, AWAKE)) && (range <= m->wakeup)) {
+  if ((!m_statusp(*m, AWAKE)) && (range <= m->wakeup)) {
     m_status_set(m, AWAKE);
     resetgamestatus(FAST_MOVE);
   }
 
-  if (m_statusp(m, AWAKE)) {
-    if (m_statusp(m, WANDERING)) {
-      if (m_statusp(m, MOBILE))
+  if (m_statusp(*m, AWAKE)) {
+    if (m_statusp(*m, WANDERING)) {
+      if (m_statusp(*m, MOBILE))
         m_random_move(m);
-      if (range <= m->sense && (m_statusp(m, HOSTILE) || m_statusp(m, NEEDY)))
+      if (range <= m->sense && (m_statusp(*m, HOSTILE) || m_statusp(*m, NEEDY)))
         m_status_reset(m, WANDERING);
     } else /* not wandering */ {
-      if (m_statusp(m, HOSTILE))
+      if (m_statusp(*m, HOSTILE))
         if ((range > 2) && (range < m->sense) && (random_range(2) == 1))
           if (los_p(m->x, m->y, Player.x, Player.y) &&
               (Player.status[INVISIBLE] == 0)) {
@@ -37,16 +37,16 @@ void m_pulse(struct monster *m) {
             monster_strike(m);
           }
 
-      if ((m_statusp(m, HOSTILE) || m_statusp(m, NEEDY)) && (range > 1) &&
-          m_statusp(m, MOBILE) && (!STRIKE || (random_range(2) == 1)))
+      if ((m_statusp(*m, HOSTILE) || m_statusp(*m, NEEDY)) && (range > 1) &&
+          m_statusp(*m, MOBILE) && (!STRIKE || (random_range(2) == 1)))
         monster_move(m);
-      else if (m_statusp(m, HOSTILE) && (range == 1)) {
+      else if (m_statusp(*m, HOSTILE) && (range == 1)) {
         resetgamestatus(FAST_MOVE);
         tacmonster(m);
       }
     }
     /* if monster is greedy, picks up treasure it finds */
-    if (m_statusp(m, GREEDY) && (m->hp > 0))
+    if (m_statusp(*m, GREEDY) && (m->hp > 0))
       while (Level->site[m->x][m->y].things != NULL) {
         m_pickup(m, Level->site[m->x][m->y].things->thing);
         prev = Level->site[m->x][m->y].things;
@@ -909,7 +909,7 @@ void m_trap_pit(struct monster *m) {
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
-  if (!m_statusp(m, INTANGIBLE))
+  if (!m_statusp(*m, INTANGIBLE))
     m_status_reset(m, MOBILE);
   m_damage(m, difficulty() * 5, NORMAL_DAMAGE);
 }
@@ -965,7 +965,7 @@ void m_trap_snare(struct monster *m) {
     strcat(Str1, " was caught in a snare!");
     mprint(Str1);
   }
-  if (!m_statusp(m, INTANGIBLE))
+  if (!m_statusp(*m, INTANGIBLE))
     m_status_reset(m, MOBILE);
 }
 
@@ -1107,8 +1107,8 @@ void m_trap_manadrain(struct monster *m) {
 
 void m_water(struct monster *m) {
   char Str1[80];
-  if ((!m_statusp(m, INTANGIBLE)) && (!m_statusp(m, SWIMMING)) &&
-      (!m_statusp(m, ONLYSWIM))) {
+  if ((!m_statusp(*m, INTANGIBLE)) && (!m_statusp(*m, SWIMMING)) &&
+      (!m_statusp(*m, ONLYSWIM))) {
     if (los_p(m->x, m->y, Player.x, Player.y)) {
       if (m->uniqueness != COMMON)
         strcpy(Str1, m->monstring);
@@ -1141,7 +1141,7 @@ void m_abyss(struct monster *m) {
 void m_lava(struct monster *m) {
   char Str1[80];
   if ((!m_immunityp(m, FLAME)) ||
-      ((!m_statusp(m, SWIMMING)) && (!m_statusp(m, ONLYSWIM)))) {
+      ((!m_statusp(*m, SWIMMING)) && (!m_statusp(*m, ONLYSWIM)))) {
     if (los_p(m->x, m->y, Player.x, Player.y)) {
       if (m->uniqueness != COMMON)
         strcpy(Str1, m->monstring);
@@ -1171,7 +1171,7 @@ void m_altar(struct monster *m) {
     strcat(Str1, " walks next to an altar...");
     mprint(Str1);
   }
-  if (!m_statusp(m, HOSTILE))
+  if (!m_statusp(*m, HOSTILE))
     reaction = 0;
   else if (m->id == HISCORE_NPC && m->aux2 == altar)
     reaction = 1; /* high priest of same deity */

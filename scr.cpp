@@ -586,7 +586,7 @@ void drawmonsters(int display) {
     if (ml->m->hp > 0) {
       if (display) {
         if (view_los_p(Player.x, Player.y, ml->m->x, ml->m->y)) {
-          if (Player.status[TRUESIGHT] || (!m_statusp(ml->m, M_INVISIBLE))) {
+          if (Player.status[TRUESIGHT] || (!m_statusp(*ml->m, M_INVISIBLE))) {
             if (!optionp(SHOW_COLOUR) && (ml->m->level > 5) &&
                 ((ml->m->monchar & 0xff) != '@') &&
                 ((ml->m->monchar & 0xff) != '|'))
@@ -619,7 +619,7 @@ Symbol getspot(int x, int y, int showmonster) {
     case WATER:
       if (Level->site[x][y].creature == NULL)
         return (WATER);
-      else if (m_statusp(Level->site[x][y].creature, SWIMMING))
+      else if (m_statusp(*Level->site[x][y].creature, SWIMMING))
         return (WATER);
       else if (showmonster)
         return (Level->site[x][y].creature->monchar);
@@ -635,7 +635,7 @@ Symbol getspot(int x, int y, int showmonster) {
     case RUBBLE:
     case HEDGE:
       if (showmonster && (Level->site[x][y].creature != NULL)) {
-        if ((m_statusp(Level->site[x][y].creature, M_INVISIBLE)) &&
+        if ((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) &&
             (!Player.status[TRUESIGHT]))
           return (getspot(x, y, FALSE));
         else
@@ -646,7 +646,7 @@ Symbol getspot(int x, int y, int showmonster) {
        location char */
     default:
       if (showmonster && (Level->site[x][y].creature != NULL)) {
-        if ((m_statusp(Level->site[x][y].creature, M_INVISIBLE)) &&
+        if ((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) &&
             (!Player.status[TRUESIGHT]))
           return (getspot(x, y, FALSE));
         else

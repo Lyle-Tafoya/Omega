@@ -69,7 +69,7 @@ int m_unblocked(struct monster *m, int x, int y) {
   else if ((Level->site[x][y].creature != NULL) ||
            (Level->site[x][y].locchar == SPACE))
     return (FALSE);
-  else if (m_statusp(m, ONLYSWIM))
+  else if (m_statusp(*m, ONLYSWIM))
     return (Level->site[x][y].locchar == WATER);
   else if (loc_statusp(x, y, SECRET, *Level)) {
     if (m->movef == M_MOVE_SMART) {
@@ -83,17 +83,17 @@ int m_unblocked(struct monster *m, int x, int y) {
       /* player didn't see them using it */
       return (TRUE);
     } else
-      return (m_statusp(m, INTANGIBLE));
+      return (m_statusp(*m, INTANGIBLE));
   } else if ((Level->site[x][y].locchar == FLOOR) ||
              (Level->site[x][y].locchar == OPEN_DOOR))
     return (TRUE);
   else if ((Level->site[x][y].locchar == PORTCULLIS) ||
            (Level->site[x][y].locchar == WALL) ||
            (Level->site[x][y].locchar == STATUE))
-    return (m_statusp(m, INTANGIBLE));
+    return (m_statusp(*m, INTANGIBLE));
   else if (Level->site[x][y].locchar == WATER)
-    return (m_statusp(m, SWIMMING) || m_statusp(m, ONLYSWIM) ||
-            m_statusp(m, INTANGIBLE) || m_statusp(m, FLYING));
+    return (m_statusp(*m, SWIMMING) || m_statusp(*m, ONLYSWIM) ||
+            m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING));
   else if (Level->site[x][y].locchar == CLOSED_DOOR) {
     if (m->movef == M_MOVE_SMART) {
       mprint("You hear a door creak open.");
@@ -106,17 +106,17 @@ int m_unblocked(struct monster *m, int x, int y) {
       lset(x, y, CHANGED, *Level);
       return (TRUE);
     } else
-      return (m_statusp(m, INTANGIBLE));
+      return (m_statusp(*m, INTANGIBLE));
   } else if (Level->site[x][y].locchar == LAVA)
-    return ((m_immunityp(m, FLAME) && m_statusp(m, SWIMMING)) ||
-            m_statusp(m, INTANGIBLE) || m_statusp(m, FLYING));
+    return ((m_immunityp(m, FLAME) && m_statusp(*m, SWIMMING)) ||
+            m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING));
   else if (Level->site[x][y].locchar == FIRE)
-    return (m_statusp(m, INTANGIBLE) || m_immunityp(m, FLAME));
+    return (m_statusp(*m, INTANGIBLE) || m_immunityp(m, FLAME));
   else if ((Level->site[x][y].locchar == TRAP) ||
            (Level->site[x][y].locchar == HEDGE) ||
            (Level->site[x][y].locchar == ABYSS))
-    return ((m->movef == M_MOVE_CONFUSED) || m_statusp(m, INTANGIBLE) ||
-            m_statusp(m, FLYING));
+    return ((m->movef == M_MOVE_CONFUSED) || m_statusp(*m, INTANGIBLE) ||
+            m_statusp(*m, FLYING));
   else
     return (TRUE);
 }

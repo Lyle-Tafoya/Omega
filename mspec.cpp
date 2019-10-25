@@ -12,7 +12,7 @@ void m_sp_mp(struct monster *m) {
     mprint("You feel cursed!");
     p_damage(10, UNSTOPPABLE, "a mendicant priest's curse");
     m_vanish(m);
-  } else if (!m_statusp(m, NEEDY)) {
+  } else if (!m_statusp(*m, NEEDY)) {
     mprint("The mendicant priest makes a mystical gesture....");
     mprint("You feel impressed...");
     Player.alignment += 5;
@@ -95,17 +95,17 @@ void m_sp_demon(struct monster *m) {
 }
 
 void m_sp_acid_cloud(struct monster *m) {
-  if (m_statusp(m, HOSTILE) && (distance(m->x, m->y, Player.x, Player.y) < 3))
+  if (m_statusp(*m, HOSTILE) && (distance(m->x, m->y, Player.x, Player.y) < 3))
     acid_cloud();
 }
 
 void m_sp_escape(struct monster *m) {
-  if (m_statusp(m, HOSTILE))
+  if (m_statusp(*m, HOSTILE))
     m_vanish(m);
 }
 
 void m_sp_ghost(struct monster *m) {
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     mprint("The ghost moans horribly....");
     p_damage(1, FEAR, "a ghost-inspired heart attack");
     mprint("You've been terrorized!");
@@ -119,7 +119,7 @@ void m_sp_ghost(struct monster *m) {
 /* random spell cast by monster */
 void m_sp_spell(struct monster *m) {
   char action[80];
-  if (m_statusp(m, HOSTILE) && los_p(Player.x, Player.y, m->x, m->y)) {
+  if (m_statusp(*m, HOSTILE) && los_p(Player.x, Player.y, m->x, m->y)) {
     if (m->uniqueness == COMMON)
       strcpy(action, "The ");
     else
@@ -203,8 +203,8 @@ void m_sp_spell(struct monster *m) {
    attack */
 void m_sp_surprise(struct monster *m) {
   if (m->attacked) {
-    if (m_statusp(m, HOSTILE) && (!Player.status[TRUESIGHT]) &&
-        m_statusp(m, M_INVISIBLE)) {
+    if (m_statusp(*m, HOSTILE) && (!Player.status[TRUESIGHT]) &&
+        m_statusp(*m, M_INVISIBLE)) {
       m->monchar = Monsters[m->id].monchar;
       if (!Player.status[ALERT]) {
         switch (random_range(4)) {
@@ -234,14 +234,14 @@ void m_sp_surprise(struct monster *m) {
 }
 
 void m_sp_whistleblower(struct monster *m) {
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     alert_guards();
     m->specialf = M_MELEE_NORMAL;
   }
 }
 
 void m_sp_seductor(struct monster *m) {
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     if (m->uniqueness == COMMON) {
       strcpy(Str2, "The ");
       strcat(Str2, m->monstring);
@@ -265,7 +265,7 @@ void m_sp_demonlover(struct monster *m) {
 void m_sp_eater(struct monster *m) {
   if (Player.rank[COLLEGE])
     m_status_set(m, HOSTILE);
-  if (m_statusp(m, HOSTILE))
+  if (m_statusp(*m, HOSTILE))
     if (los_p(m->x, m->y, Player.x, Player.y)) {
       mprint("A strange numbing sensation comes over you...");
       morewait();
@@ -285,7 +285,7 @@ void m_sp_eater(struct monster *m) {
 }
 
 void m_sp_dragonlord(struct monster *m) {
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     if (distance(m->x, m->y, Player.x, Player.y) < 2) {
       if (!Player.status[IMMOBILE]) {
         mprint("A gust of wind from the Dragonlord's wings knocks you down!");
@@ -370,14 +370,14 @@ void m_sp_bogthing(struct monster *m) {
 
 void m_sp_were(struct monster *m) {
   int mid;
-  if (m_statusp(m, HOSTILE) || (Phase == 6)) {
+  if (m_statusp(*m, HOSTILE) || (Phase == 6)) {
     do
       mid = random_range(ML9 - NML_0) + ML1;
     /* log npc, 0th level npc, high score npc or were-creature */
     while (mid == NPC || mid == ZERO_NPC || mid == HISCORE_NPC ||
            mid == WEREHUMAN || (Monsters[mid].uniqueness != COMMON) ||
-           (!m_statusp(&(Monsters[mid]), MOBILE)) ||
-           (!m_statusp(&(Monsters[mid]), HOSTILE)));
+           (!m_statusp(Monsters[mid], MOBILE)) ||
+           (!m_statusp(Monsters[mid], HOSTILE)));
     m->id = Monsters[mid].id;
     m->hp += Monsters[mid].hp;
     m->status |= Monsters[mid].status;
@@ -452,7 +452,7 @@ void m_sp_angel(struct monster *m) {
   }
   if (hostile)
     m_status_set(m, HOSTILE);
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     mprint("The angel summons a heavenly host!");
     switch (m->level) {
     case 9:
@@ -505,7 +505,7 @@ void m_sp_raise(struct monster *m) {
 void m_sp_mb(struct monster *m) {
   if (distance(m->x, m->y, Player.x, Player.y) == 1) {
     mprint("The manaburst explodes!");
-    if (m_statusp(m, HOSTILE)) {
+    if (m_statusp(*m, HOSTILE)) {
       mprint("You get blasted!");
       p_damage(random_range(100), UNSTOPPABLE, "a manaburst");
       mprint("You feel cold all over!");
@@ -558,7 +558,7 @@ void m_illusion(struct monster *m) {
 }
 
 void m_huge_sounds(struct monster *m) {
-  if (m_statusp(m, AWAKE) && (!los_p(m->x, m->y, Player.x, Player.y)) &&
+  if (m_statusp(*m, AWAKE) && (!los_p(m->x, m->y, Player.x, Player.y)) &&
       (random_range(10) == 1))
     mprint("The dungeon shakes!");
 }
@@ -606,7 +606,7 @@ void m_summon(struct monster *m) {
 
 void m_aggravate(struct monster *m) {
 
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     if (m->uniqueness == COMMON) {
       strcpy(Str2, "The ");
       strcat(Str2, m->monstring);
@@ -621,7 +621,7 @@ void m_aggravate(struct monster *m) {
 
 void m_sp_merchant(struct monster *m) {
   pml ml;
-  if (m_statusp(m, HOSTILE))
+  if (m_statusp(*m, HOSTILE))
     if (Current_Environment == E_VILLAGE) {
       mprint("The merchant screams: 'Help! Murder! Guards! Help!'");
       mprint("You hear the sound of police whistles and running feet.");
@@ -637,7 +637,7 @@ void m_sp_merchant(struct monster *m) {
 /* and the sorcerors' circle */
 void m_sp_court(struct monster *m) {
   pml ml;
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     mprint("A storm of spells hits you!");
     for (ml = Level->mlist; ml != NULL; ml = ml->next) {
       m_status_set(ml->m, HOSTILE);
@@ -651,7 +651,7 @@ void m_sp_court(struct monster *m) {
 /* The special function of the dragons in the dragons' lair */
 void m_sp_lair(struct monster *m) {
   pml ml;
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     mprint("You notice a number of dragons waking up....");
     mprint("You are struck by a quantity of firebolts.");
     morewait();
@@ -668,7 +668,7 @@ void m_sp_lair(struct monster *m) {
 }
 
 void m_sp_prime(struct monster *m) {
-  if (m_statusp(m, HOSTILE)) {
+  if (m_statusp(*m, HOSTILE)) {
     mprint("The prime sorceror gestures and a pentacular gate opens!");
     mprint("You are surrounded by demons!");
     summon(-1, DEMON_PRINCE);

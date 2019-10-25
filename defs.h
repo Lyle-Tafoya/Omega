@@ -1415,23 +1415,27 @@ typedef oltype *pol;
  * some errors under bizarre platforms. */
 #define pow2(n) (1L << (n))
 
-inline bool loc_statusp(int x, int y, int stat, const level &lvl) {
-  return ((lvl.site[x][y].lstatus & (stat)) ? true : false);
+inline bool loc_statusp(int x, int y, int status, const level &lvl) {
+  return ((lvl.site[x][y].lstatus & (status)) ? true : false);
 }
-inline void lset(int x, int y, int stat, level &lvl) {
-  lvl.site[x][y].lstatus |= (stat);
+inline void lset(int x, int y, int status, level &lvl) {
+  lvl.site[x][y].lstatus |= (status);
 }
-inline void lreset(int x, int y, int stat, level &lvl) {
-  lvl.site[x][y].lstatus &= ~(stat);
-}
-inline bool c_statusp(int x, int y, int stat, const terrain (&country)[MAXWIDTH][MAXLENGTH]) {
-  return ((country[x][y].status & (stat)) ? true : false);
-}
-inline void c_set(int x, int y, int stat, terrain (&country)[MAXWIDTH][MAXLENGTH]) {
-  country[x][y].status |= (stat);
+inline void lreset(int x, int y, int status, level &lvl) {
+  lvl.site[x][y].lstatus &= ~(status);
 }
 
-#define m_statusp(m, s) (((m)->status & (s)) ? 1 : 0)
+inline bool c_statusp(int x, int y, int status, const terrain (&country)[MAXWIDTH][MAXLENGTH]) {
+  return ((country[x][y].status & (status)) ? true : false);
+}
+inline void c_set(int x, int y, int status, terrain (&country)[MAXWIDTH][MAXLENGTH]) {
+  country[x][y].status |= (status);
+}
+
+inline bool m_statusp(const monster &m, int status) {
+  return ((m.status & status) ? true : false);
+}
+
 #define m_status_set(m, s) ((m)->status |= (s))
 #define m_status_reset(m, s) ((m)->status &= ~(s))
 #define m_immunityp(m, s) (((m)->immunity & pow2(s)) ? 1 : 0)

@@ -34,7 +34,7 @@ void m_simple_move(struct monster *m) {
     mprint(Str2);
     m->speed = std::min(2, m->speed - 1);
   }
-  if ((!m_statusp(m, HOSTILE) && !m_statusp(m, NEEDY)) ||
+  if ((!m_statusp(*m, HOSTILE) && !m_statusp(*m, NEEDY)) ||
       (Player.status[INVISIBLE] > 0))
     m_random_move(m);
   else {
@@ -64,7 +64,7 @@ void m_simple_move(struct monster *m) {
 }
 
 void m_move_animal(struct monster *m) {
-  if (m_statusp(m, HOSTILE))
+  if (m_statusp(*m, HOSTILE))
     m_normal_move(m);
   else
     m_scaredy_move(m);
@@ -149,7 +149,7 @@ void m_flutter_move(struct monster *m) {
 }
 
 void m_follow_move(struct monster *m) {
-  if (!m_statusp(m, HOSTILE))
+  if (!m_statusp(*m, HOSTILE))
     m_normal_move(m);
   else
     m_scaredy_move(m);
@@ -199,7 +199,7 @@ void m_vanish(struct monster *m) {
 /* monster still in play */
 void m_teleport(struct monster *m) {
   erase_monster(m);
-  if (m_statusp(m, AWAKE)) {
+  if (m_statusp(*m, AWAKE)) {
     Level->site[m->x][m->y].creature = NULL;
     putspot(m->x, m->y, getspot(m->x, m->y, FALSE));
     findspace(&(m->x), &(m->y), -1);

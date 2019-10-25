@@ -902,7 +902,7 @@ void restore_hiscore_npc(pmt npc, int npcid) {
   strcpy(Str1, "The body of ");
   strcat(Str1, Str2);
   npc->corpsestr = salloc(Str1);
-  if (!m_statusp(npc, HOSTILE)) {
+  if (!m_statusp(*npc, HOSTILE)) {
     status = npc->status;
     determine_npc_behavior(npc, level, behavior);
     npc->status = status;

@@ -967,7 +967,7 @@ int hostilemonstersnear() {
     for (j = Player.y - 2; ((j < Player.y + 3) && (!hostile)); j++)
       if (inbounds(i, j))
         if (Level->site[i][j].creature != NULL)
-          hostile = m_statusp(Level->site[i][j].creature, HOSTILE);
+          hostile = m_statusp(*Level->site[i][j].creature, HOSTILE);
 
   return (hostile);
 }
