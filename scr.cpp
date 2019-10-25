@@ -85,7 +85,7 @@ void show_screen() {
     for (j = top; j < bottom; j++)
       for (i = 0; i < WIDTH; i++) {
         wmove(Levelw, screenmod(j), i);
-        c = ((c_statusp(i, j, SEEN)) ? Country[i][j].current_terrain_type
+        c = ((c_statusp(i, j, SEEN, Country)) ? Country[i][j].current_terrain_type
                                      : (int)SPACE);
         if (optionp(SHOW_COLOUR) && CHARATTR(c) != last_attr) {
           last_attr = CHARATTR(c);

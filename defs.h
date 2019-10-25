@@ -1416,7 +1416,7 @@ typedef oltype *pol;
 #define pow2(n) (1L << (n))
 
 inline bool loc_statusp(int x, int y, int stat, const level &lvl) {
-  return ((lvl.site[x][y].lstatus & (stat)) ? 1 : 0);
+  return ((lvl.site[x][y].lstatus & (stat)) ? true : false);
 }
 inline void lset(int x, int y, int stat, level &lvl) {
   lvl.site[x][y].lstatus |= (stat);
@@ -1424,8 +1424,10 @@ inline void lset(int x, int y, int stat, level &lvl) {
 inline void lreset(int x, int y, int stat, level &lvl) {
   lvl.site[x][y].lstatus &= ~(stat);
 }
+inline bool c_statusp(int x, int y, int stat, const terrain (&country)[MAXWIDTH][MAXLENGTH]) {
+  return ((country[x][y].status & (stat)) ? true : false);
+}
 
-#define c_statusp(x, y, stat) ((Country[x][y].status & (stat)) ? 1 : 0)
 #define c_set(x, y, stat) (Country[x][y].status |= (stat))
 #define c_reset(x, y, stat) (Country[x][y].status &= ~(stat))
 

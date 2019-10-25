@@ -38,7 +38,7 @@ void examine() {
   if (inbounds(x, y)) {
     clearmsg();
     if (Current_Environment == E_COUNTRYSIDE) {
-      if (!c_statusp(x, y, SEEN))
+      if (!c_statusp(x, y, SEEN, Country))
         print3("How should I know what that is?");
       else {
         mprint("That terrain is:");

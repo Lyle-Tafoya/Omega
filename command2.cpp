@@ -1085,7 +1085,7 @@ void movepincountry(int dx, int dy) {
           }
         }
         if (gamestatusp(LOST) && (Precipitation < 1) &&
-            c_statusp(Player.x, Player.y, SEEN)) {
+            c_statusp(Player.x, Player.y, SEEN, Country)) {
           print3("Ah! Now you know where you are!");
           morewait();
           resetgamestatus(LOST);

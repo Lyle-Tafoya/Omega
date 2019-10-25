@@ -383,7 +383,7 @@ int save_country(FILE *fd) {
 
   for (i = 0; i < MAXWIDTH; i++)
     for (j = 0; j < MAXLENGTH; j++)
-      if (c_statusp(i, j, CHANGED)) {
+      if (c_statusp(i, j, CHANGED, Country)) {
         ok &= (fwrite((char *)&i, sizeof(int), 1, fd) > 0);
         ok &= (fwrite((char *)&j, sizeof(int), 1, fd) > 0);
         ok &=
@@ -402,7 +402,7 @@ int save_country(FILE *fd) {
         mask = 0;
       }
       mask >>= 1;
-      if (c_statusp(i, j, SEEN))
+      if (c_statusp(i, j, SEEN, Country))
         mask |= ((long int)1 << (sizeof(long int) * 8 - 1));
       run--;
     }
