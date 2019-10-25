@@ -33,12 +33,12 @@ void l_trap_siren() {
       summon(-1, DEMON_PRINCE);
     }
     for (ml = Level->mlist; ml != NULL; ml = ml->next) {
-      m_status_set(ml->m, AWAKE);
+      m_status_set(*ml->m, AWAKE);
       ml->m->sense *= 2;
       if ((Current_Environment == E_CIRCLE) ||
           ((Current_Environment == E_VILLAGE) && (ml->m->id == GUARD)) ||
           ((Current_Environment == E_CITY) && (ml->m->id == GUARD)))
-        m_status_set(ml->m, HOSTILE);
+        m_status_set(*ml->m, HOSTILE);
     }
   }
 }

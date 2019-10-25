@@ -1174,8 +1174,8 @@ void alert_guards() {
          ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) && /*justiciar*/
         (ml->m->hp > 0)) {
       foundguard = TRUE;
-      m_status_set(ml->m, AWAKE);
-      m_status_set(ml->m, HOSTILE);
+      m_status_set(*ml->m, AWAKE);
+      m_status_set(*ml->m, HOSTILE);
     }
   if (foundguard) {
     mprint("You hear a whistle and the sound of running feet!");
@@ -1247,7 +1247,7 @@ void destroy_order() {
         }
         make_site_monster(i, j, GHOST);
         Level->site[i][j].creature->monstring = "ghost of a Paladin";
-        m_status_set(Level->site[i][j].creature, HOSTILE);
+        m_status_set(*Level->site[i][j].creature, HOSTILE);
       }
 }
 

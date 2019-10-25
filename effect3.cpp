@@ -37,7 +37,7 @@ void summon(int blessing, int id) {
     if (blessing > 0)
       m_status_reset(tml->m, HOSTILE);
     else if (blessing < 0)
-      m_status_set(tml->m, HOSTILE);
+      m_status_set(*tml->m, HOSTILE);
     tml->next = Level->mlist;
     Level->mlist = tml;
   }
@@ -237,8 +237,8 @@ void aggravate() {
   pml tm;
 
   for (tm = Level->mlist; tm != NULL; tm = tm->next) {
-    m_status_set(tm->m, AWAKE);
-    m_status_set(tm->m, HOSTILE);
+    m_status_set(*tm->m, AWAKE);
+    m_status_set(*tm->m, HOSTILE);
   }
 }
 
@@ -826,7 +826,7 @@ void polymorph(int blessing) {
       strcpy(Str1, "The ");
       strcat(Str1, m->monstring);
       strcat(Str1, " resists the change!");
-      m_status_set(m, HOSTILE);
+      m_status_set(*m, HOSTILE);
     } else {
       if (blessing < 0) {
         do
@@ -869,7 +869,7 @@ void polymorph(int blessing) {
       m->meleef = Monsters[newmonster].meleef;
       m->strikef = Monsters[newmonster].strikef;
       m->specialf = Monsters[newmonster].specialf;
-      m_status_set(m, HOSTILE);
+      m_status_set(*m, HOSTILE);
     }
   }
 }
@@ -891,7 +891,7 @@ void hellfire(int x, int y, int blessing) {
       m->hp += 1000;
       m->hit += 20;
       m->dmg += 100;
-      m_status_set(m, HOSTILE);
+      m_status_set(*m, HOSTILE);
     } else {
       if (m->uniqueness == COMMON) {
         mprint("and is utterly annihilated. Only a greasy spot remains...");

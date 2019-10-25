@@ -208,11 +208,11 @@ void make_house_npc(int i, int j) {
   ml->m->click = (Tick + 1) % 50;
   ml->next = Level->mlist;
   Level->mlist = ml;
-  m_status_set(ml->m, HOSTILE);
+  m_status_set(*ml->m, HOSTILE);
   if (nighttime())
     m_status_reset(ml->m, AWAKE);
   else
-    m_status_set(ml->m, AWAKE);
+    m_status_set(*ml->m, AWAKE);
   if (ml->m->startthing > -1) {
     ob = ((pob)checkmalloc(sizeof(objtype)));
     *ob = Objects[ml->m->startthing];
@@ -233,9 +233,9 @@ void make_mansion_npc(int i, int j) {
   ml->m->click = (Tick + 1) % 50;
   ml->next = Level->mlist;
   Level->mlist = ml;
-  m_status_set(ml->m, HOSTILE);
+  m_status_set(*ml->m, HOSTILE);
   if (nighttime())
     m_status_reset(ml->m, AWAKE);
   else
-    m_status_set(ml->m, AWAKE);
+    m_status_set(*ml->m, AWAKE);
 }

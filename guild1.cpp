@@ -419,8 +419,8 @@ void l_arena() {
       strcpy(Arena_Monster->meleestr, "");
       for (i = 0; i < Championlevel / 5; i++)
         strcat(Arena_Monster->meleestr, "L?R?");
-      m_status_set(Arena_Monster, MOBILE);
-      m_status_set(Arena_Monster, HOSTILE);
+      m_status_set(*Arena_Monster, MOBILE);
+      m_status_set(*Arena_Monster, HOSTILE);
     } else {
       strcpy(Str1, nameprint());
       strcat(Str1, " the ");
@@ -434,7 +434,7 @@ void l_arena() {
     print1("You have a challenger: ");
     print2(Arena_Monster->monstring);
     Arena_Monster->attacked = TRUE;
-    m_status_set(Arena_Monster, HOSTILE);
+    m_status_set(*Arena_Monster, HOSTILE);
     morewait();
     clearmsg();
     change_environment(E_ARENA);

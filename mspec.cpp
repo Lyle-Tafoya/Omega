@@ -264,7 +264,7 @@ void m_sp_demonlover(struct monster *m) {
 
 void m_sp_eater(struct monster *m) {
   if (Player.rank[COLLEGE])
-    m_status_set(m, HOSTILE);
+    m_status_set(*m, HOSTILE);
   if (m_statusp(*m, HOSTILE))
     if (los_p(m->x, m->y, Player.x, Player.y)) {
       mprint("A strange numbing sensation comes over you...");
@@ -408,9 +408,9 @@ void m_sp_were(struct monster *m) {
 
 void m_sp_servant(struct monster *m) {
   if ((m->id == SERV_LAW) && (Player.alignment < 0))
-    m_status_set(m, HOSTILE);
+    m_status_set(*m, HOSTILE);
   else if ((m->id == SERV_CHAOS) && (Player.alignment > 0))
-    m_status_set(m, HOSTILE);
+    m_status_set(*m, HOSTILE);
 }
 
 void m_sp_av(struct monster *m) {
@@ -451,7 +451,7 @@ void m_sp_angel(struct monster *m) {
     break;
   }
   if (hostile)
-    m_status_set(m, HOSTILE);
+    m_status_set(*m, HOSTILE);
   if (m_statusp(*m, HOSTILE)) {
     mprint("The angel summons a heavenly host!");
     switch (m->level) {
@@ -626,8 +626,8 @@ void m_sp_merchant(struct monster *m) {
       mprint("The merchant screams: 'Help! Murder! Guards! Help!'");
       mprint("You hear the sound of police whistles and running feet.");
       for (ml = Level->mlist; ml != NULL; ml = ml->next) {
-        m_status_set(ml->m, AWAKE);
-        m_status_set(ml->m, HOSTILE);
+        m_status_set(*ml->m, AWAKE);
+        m_status_set(*ml->m, HOSTILE);
       }
       m->specialf = M_NO_OP;
     }
@@ -640,7 +640,7 @@ void m_sp_court(struct monster *m) {
   if (m_statusp(*m, HOSTILE)) {
     mprint("A storm of spells hits you!");
     for (ml = Level->mlist; ml != NULL; ml = ml->next) {
-      m_status_set(ml->m, HOSTILE);
+      m_status_set(*ml->m, HOSTILE);
       m_sp_spell(ml->m);
       if (ml->m->specialf == M_SP_COURT)
         ml->m->specialf = M_SP_SPELL;
@@ -657,7 +657,7 @@ void m_sp_lair(struct monster *m) {
     morewait();
     for (ml = Level->mlist; ml != NULL; ml = ml->next)
       if (ml->m->hp > 0 && ml->m->specialf == M_SP_LAIR) {
-        m_status_set(ml->m, HOSTILE);
+        m_status_set(*ml->m, HOSTILE);
         fbolt(ml->m->x, ml->m->y, Player.x, Player.y, 100, 100);
         if (ml->m->id == DRAGON_LORD)
           ml->m->specialf = M_SP_DRAGONLORD;

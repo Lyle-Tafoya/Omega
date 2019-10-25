@@ -495,8 +495,8 @@ void resurrect_guards() {
         Level->site[i][j].creature->hit *= 2;
         Level->site[i][j].creature->dmg *= 2;
         Level->site[i][j].creature->ac *= 2;
-        m_status_set(Level->site[i][j].creature, HOSTILE);
-        m_status_set(Level->site[i][j].creature, AWAKE);
+        m_status_set(*Level->site[i][j].creature, HOSTILE);
+        m_status_set(*Level->site[i][j].creature, AWAKE);
       }
     }
     site = getc(fd) ^ site;

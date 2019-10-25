@@ -294,7 +294,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype) {
         break;
       }
       mprint(Str1);
-      m_status_set(target, HOSTILE);
+      m_status_set(*target, HOSTILE);
       m_damage(target, random_range(dmg), dtype);
     } else {
       if (target->uniqueness == COMMON) {
@@ -423,7 +423,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype) {
         }
         mprint(Str1);
       }
-      m_status_set(target, HOSTILE);
+      m_status_set(*target, HOSTILE);
       m_damage(target, random_range(dmg), dtype);
     }
     if (Level->site[ex][ey].locchar == HEDGE)

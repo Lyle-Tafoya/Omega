@@ -381,7 +381,7 @@ void givemonster(struct monster *m, struct object *o) {
           Player.alignment -= 2;
           nprint1("...and chokes on the poisoned ration!");
           morewait();
-          m_status_set(m, HOSTILE);
+          m_status_set(*m, HOSTILE);
           m_damage(m, 100, POISON);
         } else
           nprint1("...and now seems satiated.");

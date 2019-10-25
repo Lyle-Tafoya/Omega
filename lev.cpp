@@ -475,7 +475,7 @@ pmt m_create(int x, int y, int kind, int level) {
 
   /* no duplicates of unique monsters */
   if (kind == WANDERING)
-    m_status_set(newmonster, WANDERING);
+    m_status_set(*newmonster, WANDERING);
   newmonster->x = x;
   newmonster->y = y;
   return (newmonster);
@@ -550,7 +550,7 @@ pmt make_creature(int mid) {
     make_hiscore_npc(newmonster, random_range(15));
   else {
     if (newmonster->sleep < random_range(100))
-      m_status_set(newmonster, AWAKE);
+      m_status_set(*newmonster, AWAKE);
     if (newmonster->startthing > -1 &&
         Objects[newmonster->startthing].uniqueness <= UNIQUE_MADE) {
       ob = ((pob)checkmalloc(sizeof(objtype)));

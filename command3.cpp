@@ -807,7 +807,7 @@ void pickpocket() {
       } else if (m->possessions == NULL) {
         mprint("You couldn't find anything worth taking!");
         mprint("But you managed to annoy it...");
-        m_status_set(m, HOSTILE);
+        m_status_set(*m, HOSTILE);
       } else if (Player.dex * 5 + Player.rank[THIEVES] * 20 +
                      random_range(100) >
                  random_range(100) + m->level * 20) {

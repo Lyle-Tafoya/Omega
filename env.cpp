@@ -69,7 +69,7 @@ void load_arena() {
   Arena_Monster->y = 7;
   Arena_Monster->sense = 50;
   m_pickup(Arena_Monster, box);
-  m_status_set(Arena_Monster, AWAKE);
+  m_status_set(*Arena_Monster, AWAKE);
   Level->mlist = (pml)checkmalloc(sizeof(mltype));
   Level->mlist->m = Arena_Monster;
   Level->mlist->next = NULL;
@@ -119,7 +119,7 @@ void load_circle(int populate) {
           make_prime(i, j); /* prime sorceror */
           Level->site[i][j].creature->specialf = M_SP_PRIME;
           if (!safe)
-            m_status_set(Level->site[i][j].creature, HOSTILE);
+            m_status_set(*Level->site[i][j].creature, HOSTILE);
         }
         break;
       case 'D':

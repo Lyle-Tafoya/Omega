@@ -384,8 +384,8 @@ void fight_monster(struct monster *m) {
 
     if (!m->attacked)
       Player.alignment -= 2; /* chaotic action */
-    m_status_set(m, AWAKE);
-    m_status_set(m, HOSTILE);
+    m_status_set(*m, AWAKE);
+    m_status_set(*m, HOSTILE);
     m->attacked = TRUE;
     Player.hit += hitmod;
     tacplayer(m);
@@ -851,7 +851,7 @@ void surrender(struct monster *m) {
     clearmsg();
     if ((m->talkf == M_TALK_EVIL) && random_range(10)) {
       print1("It continues to attack you, laughing evilly!");
-      m_status_set(m, HOSTILE);
+      m_status_set(*m, HOSTILE);
       m_status_reset(m, GREEDY);
     } else if (m->id == HORNET || m->id == GUARD)
       print1("It continues to attack you. ");
@@ -883,7 +883,7 @@ void threaten(struct monster *m) {
   morewait(); /* FIXED! 12/25/98 */
   if (!m_statusp(*m, HOSTILE)) {
     print3("You only annoy it with your futile demand.");
-    m_status_set(m, HOSTILE);
+    m_status_set(*m, HOSTILE);
   } else if (((m->level * 2 > Player.level) && (m->hp > Player.dmg)) ||
              (m->uniqueness != COMMON))
     print1("It sneers contemptuously at you.");

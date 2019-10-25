@@ -18,7 +18,7 @@ void m_pulse(struct monster *m) {
       m->hp++;
 
   if ((!m_statusp(*m, AWAKE)) && (range <= m->wakeup)) {
-    m_status_set(m, AWAKE);
+    m_status_set(*m, AWAKE);
     resetgamestatus(FAST_MOVE);
   }
 
@@ -92,8 +92,8 @@ void m_dropstuff(struct monster *m) {
 }
 
 void m_damage(struct monster *m, int dmg, int dtype) {
-  m_status_set(m, AWAKE);
-  m_status_set(m, HOSTILE);
+  m_status_set(*m, AWAKE);
+  m_status_set(*m, HOSTILE);
   if (m_immunityp(m, dtype)) {
     if (los_p(Player.x, Player.y, m->x, m->y)) {
       if (m->uniqueness != COMMON)
@@ -344,7 +344,7 @@ void m_death(struct monster *m) {
     switch (m->specialf) {
     case M_SP_COURT:
     case M_SP_LAIR:
-      m_status_set(m, HOSTILE);
+      m_status_set(*m, HOSTILE);
       monster_action(m, m->specialf);
     }
   }

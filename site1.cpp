@@ -433,7 +433,7 @@ void wake_statue(int x, int y, int first) {
     lset(x, y, CHANGED, *Level);
     tml = ((pml)checkmalloc(sizeof(mltype)));
     tml->m = (Level->site[x][y].creature = m_create(x, y, 0, difficulty() + 1));
-    m_status_set(Level->site[x][y].creature, HOSTILE);
+    m_status_set(*Level->site[x][y].creature, HOSTILE);
     tml->next = Level->mlist;
     Level->mlist = tml;
     for (i = 0; i < 8; i++)
