@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <string>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -20,7 +21,7 @@ int inbounds(int x, int y) {
 /* RANDFUNCTION is defined in odefs.h */
 int random_range(int k) {
   /*return( k==0 ? 0 : (int) RANDFUNCTION() % k ) ;*/
-  return (k == 0 ? 0 : (int)((RANDFUNCTION() % 10000) * k) / 10000);
+  return (k == 0 ? 0 : static_cast<int>((RANDFUNCTION() % 10000) * k) / 10000);
 }
 
 /* modify absolute y coord relative to which part of level we are on */
@@ -469,10 +470,10 @@ long calc_points() {
 }
 
 /* returns the 24 hour clock hour */
-int hour() { return ((int)(((Time + 720) / 60) % 24)); }
+int hour() { return static_cast<int>(((Time + 720) / 60) % 24); }
 
 /* returns 0, 10, 20, 30, 40, or 50 */
-int showminute() { return ((int)((Time % 60) / 10) * 10); }
+int showminute() { return static_cast<int>(((Time % 60) / 10) * 10); }
 
 /* returns the 12 hour clock hour */
 int showhour() {
@@ -487,7 +488,7 @@ int showhour() {
 /* nighttime is defined from 9 PM to 6AM */
 int nighttime() { return ((hour() > 20) || (hour() < 7)); }
 
-char *getarticle(char *str) {
+const char *getarticle(const std::string &str) {
   if ((str[0] == 'a') || (str[0] == 'A') || (str[0] == 'e') ||
       (str[0] == 'E') || (str[0] == 'i') || (str[0] == 'I') ||
       (str[0] == 'o') || (str[0] == 'O') || (str[0] == 'u') ||
@@ -501,7 +502,7 @@ char *getarticle(char *str) {
 
 int day() { return ((Date % 30) + 1); }
 
-char *ordinal(int number) {
+const char *ordinal(int number) {
   if ((number == 11) || (number == 12) || (number == 13))
     return ("th");
   else
@@ -517,7 +518,7 @@ char *ordinal(int number) {
     }
 }
 
-char *month() {
+const char *month() {
   switch ((Date % 360) / 30) {
   case 0:
     return ("Freeze");
@@ -599,13 +600,13 @@ void findspace(int *x, int *y, int baux) {
 }
 
 /* is prefix a prefix of s? */
-int strprefix(char *prefix, char *s) {
+int strprefix(const std::string &prefix, const std::string &s) {
   int matched = TRUE;
   size_t i = 0;
-  if (strlen(prefix) > strlen(s))
+  if (prefix.length() > s.length())
     return (FALSE);
   else {
-    while (matched && (i < strlen(prefix))) {
+    while (matched && (i < prefix.length())) {
       matched = (prefix[i] == s[i]);
       i++;
     }
@@ -632,10 +633,10 @@ int confirmation() {
 }
 
 /* is character c a member of string s */
-int strmem(char c, char *s) {
+int strmem(char c, const std::string &s) {
   int found = FALSE;
   size_t i = 0;
-  for (i = 0; ((i < strlen(s)) && (!found)); i++)
+  for (i = 0; ((i < s.length()) && (!found)); i++)
     found = (s[i] == c);
   return (found);
 }
@@ -741,10 +742,10 @@ char *salloc(char *str) {
   return (s);
 }
 
-char cryptkey(char *fname) {
-  int pos, key = 0;
+char cryptkey(const std::string &fname) {
+  int key = 0;
 
-  for (pos = 0; fname[pos]; pos++)
+  for (int pos = 0; fname[pos]; pos++)
     key += 3 * (fname[pos] - ' ');
   return (key & 0xff);
 }
