@@ -1194,7 +1194,7 @@ void change_environment(char new_environment) {
       Player.y = LastCountryLocY;
     }
     for (i = 0; i < 9; i++)
-      c_set(Player.x + Dirs[0][i], Player.y + Dirs[1][i], SEEN);
+      c_set(Player.x + Dirs[0][i], Player.y + Dirs[1][i], SEEN, Country);
     ScreenOffset = Player.y - (ScreenLength / 2);
     show_screen();
     break;

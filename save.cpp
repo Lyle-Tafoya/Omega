@@ -982,7 +982,7 @@ void restore_country(FILE *fd, int) {
         fread((char *)&mask, sizeof(long int), 1, fd);
       }
       if (mask & 1)
-        c_set(i, j, SEEN);
+        c_set(i, j, SEEN, Country);
       mask >>= 1;
       run--;
     }

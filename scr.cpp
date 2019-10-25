@@ -476,7 +476,7 @@ void drawvision(int x, int y) {
     for (i = -1; i < 2; i++)
       for (j = -1; j < 2; j++)
         if (inbounds(x + i, y + j)) {
-          c_set(x + i, y + j, SEEN);
+          c_set(x + i, y + j, SEEN, Country);
           if (!offscreen(y + j)) {
             wmove(Levelw, screenmod(y + j), x + i);
             c = Country[x + i][y + j].current_terrain_type;
@@ -875,7 +875,7 @@ void drawscreen() {
   if (Current_Environment == E_COUNTRYSIDE)
     for (i = 0; i < WIDTH; i++)
       for (j = 0; j < LENGTH; j++)
-        c_set(i, j, SEEN);
+        c_set(i, j, SEEN, Country);
   else
     for (i = 0; i < WIDTH; i++)
       for (j = 0; j < LENGTH; j++)

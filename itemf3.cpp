@@ -77,7 +77,7 @@ void i_stargem(pob o) {
     locprint("Star Peak");
     Country[Player.x][Player.y].current_terrain_type =
         Country[Player.x][Player.y].base_terrain_type;
-    c_set(Player.x, Player.y, CHANGED);
+    c_set(Player.x, Player.y, CHANGED, Country);
     print2("The Star Gem's brilliance seems to fade.");
   }
 }

@@ -322,10 +322,10 @@ void outdoors_random_event() {
     for (i = Player.x - 5; i < Player.x + 6; i++)
       for (j = Player.y - 5; j < Player.y + 6; j++)
         if (inbounds(i, j)) {
-          c_set(i, j, SEEN);
+          c_set(i, j, SEEN, Country);
           if (Country[i][j].current_terrain_type !=
               Country[i][j].base_terrain_type) {
-            c_set(i, j, CHANGED);
+            c_set(i, j, CHANGED, Country);
             Country[i][j].current_terrain_type =
                 Country[i][j].base_terrain_type;
           }
@@ -747,7 +747,7 @@ void countrysearch() {
           clearmsg();
           mprint("Your search was fruitful!");
           Country[x][y].current_terrain_type = Country[x][y].base_terrain_type;
-          c_set(x, y, CHANGED);
+          c_set(x, y, CHANGED, Country);
           mprint("You discovered:");
           mprint(countryid(Country[x][y].base_terrain_type));
         }

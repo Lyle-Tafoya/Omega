@@ -1095,7 +1095,7 @@ void movepincountry(int dx, int dy) {
         }
         if (Precipitation > 0)
           Precipitation--;
-        c_set(Player.x, Player.y, SEEN);
+        c_set(Player.x, Player.y, SEEN, Country);
         terrain_check(takestime);
       }
     }

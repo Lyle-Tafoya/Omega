@@ -960,11 +960,11 @@ void l_cartographer() {
           if ((i >= 0) && (i < 64) && (j >= 0) && (j < 64)) {
             if (Country[i][j].current_terrain_type !=
                 Country[i][j].base_terrain_type) {
-              c_set(i, j, CHANGED);
+              c_set(i, j, CHANGED, Country);
               Country[i][j].current_terrain_type =
                   Country[i][j].base_terrain_type;
             }
-            c_set(i, j, SEEN);
+            c_set(i, j, SEEN, Country);
           }
     }
   } else

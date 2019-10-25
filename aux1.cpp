@@ -42,7 +42,7 @@ void tunnelcheck() {
       }
       Country[Player.x][Player.y].base_terrain_type =
           Country[Player.x][Player.y].current_terrain_type;
-      c_set(Player.x, Player.y, CHANGED);
+      c_set(Player.x, Player.y, CHANGED, Country);
       print1("In your shadowy state, you float back up to the surface.");
       return;
     }

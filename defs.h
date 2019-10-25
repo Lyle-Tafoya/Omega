@@ -1427,8 +1427,10 @@ inline void lreset(int x, int y, int stat, level &lvl) {
 inline bool c_statusp(int x, int y, int stat, const terrain (&country)[MAXWIDTH][MAXLENGTH]) {
   return ((country[x][y].status & (stat)) ? true : false);
 }
+inline void c_set(int x, int y, int stat, terrain (&country)[MAXWIDTH][MAXLENGTH]) {
+  country[x][y].status |= (stat);
+}
 
-#define c_set(x, y, stat) (Country[x][y].status |= (stat))
 #define c_reset(x, y, stat) (Country[x][y].status &= ~(stat))
 
 #define m_statusp(m, s) (((m)->status & (s)) ? 1 : 0)
