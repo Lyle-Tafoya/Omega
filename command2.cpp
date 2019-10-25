@@ -693,7 +693,7 @@ void opendoor() {
         p_damage(Player.str, UNSTOPPABLE, "a portcullis");
       }
     } else if ((Level->site[ox][oy].locchar != CLOSED_DOOR) ||
-               loc_statusp(ox, oy, SECRET)) {
+               loc_statusp(ox, oy, SECRET, *Level)) {
       print3("You can't open that!");
       setgamestatus(SKIP_MONSTERS);
     } else if (Level->site[ox][oy].aux == LOCKED)
@@ -742,7 +742,7 @@ void bash_location() {
         p_movefunction(Level->site[Player.x][Player.y].p_locf);
         setgamestatus(SKIP_MONSTERS); /* monsters are surprised... */
       } else if (Level->site[ox][oy].locchar == CLOSED_DOOR) {
-        if (loc_statusp(ox, oy, SECRET)) {
+        if (loc_statusp(ox, oy, SECRET, *Level)) {
           print1("You found a secret door!");
           lreset(ox, oy, SECRET);
           lset(ox, oy, CHANGED);
@@ -1011,7 +1011,7 @@ void moveplayer(int dx, int dy) {
       if (Current_Environment != E_COUNTRYSIDE) {
         if (gamestatusp(FAST_MOVE))
           if ((Level->site[Player.x][Player.y].things != NULL) ||
-              (optionp(RUNSTOP) && loc_statusp(Player.x, Player.y, STOPS)))
+              (optionp(RUNSTOP) && loc_statusp(Player.x, Player.y, STOPS, *Level)))
             resetgamestatus(FAST_MOVE);
         if ((Level->site[Player.x][Player.y].things != NULL) &&
             (optionp(PICKUP)))

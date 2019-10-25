@@ -73,7 +73,7 @@ void show_screen() {
     for (j = top; j < bottom; j++) {
       wmove(Levelw, screenmod(j), 0);
       for (i = 0; i < WIDTH; i++) {
-        c = ((loc_statusp(i, j, SEEN)) ? getspot(i, j, FALSE) : (int)SPACE);
+        c = ((loc_statusp(i, j, SEEN, *Level)) ? getspot(i, j, FALSE) : (int)SPACE);
         if (optionp(SHOW_COLOUR) && CHARATTR(c) != last_attr) {
           last_attr = CHARATTR(c);
           wattrset(Levelw, last_attr);
@@ -439,7 +439,7 @@ int litroom(int x, int y) {
   if (Level->site[x][y].roomnumber < ROOMBASE)
     return (FALSE);
   else
-    return (loc_statusp(x, y, LIT) || Player.status[ILLUMINATION]);
+    return (loc_statusp(x, y, LIT, *Level) || Player.status[ILLUMINATION]);
 }
 
 void drawvision(int x, int y) {
@@ -553,7 +553,7 @@ void blotspot(int i, int j) {
 
 /* for displaying activity specifically at some point */
 void plotspot(int x, int y, int showmonster) {
-  if (loc_statusp(x, y, SEEN))
+  if (loc_statusp(x, y, SEEN, *Level))
     putspot(x, y, getspot(x, y, showmonster));
   else
     putspot(x, y, SPACE);
@@ -604,7 +604,7 @@ void drawmonsters(int display) {
 
 /* replace monster with what would be displayed if monster weren't there */
 void erase_monster(struct monster *m) {
-  if (loc_statusp(m->x, m->y, SEEN))
+  if (loc_statusp(m->x, m->y, SEEN, *Level))
     putspot(m->x, m->y, getspot(m->x, m->y, FALSE));
   else
     blotspot(m->x, m->y);
@@ -612,7 +612,7 @@ void erase_monster(struct monster *m) {
 
 /* find apt char to display at some location */
 Symbol getspot(int x, int y, int showmonster) {
-  if (loc_statusp(x, y, SECRET))
+  if (loc_statusp(x, y, SECRET, *Level))
     return (WALL);
   else
     switch (Level->site[x][y].locchar) {
@@ -1210,7 +1210,7 @@ void screencheck(int y) {
 }
 
 void spreadroomlight(int x, int y, int roomno) {
-  if (inbounds(x, y) && !loc_statusp(x, y, LIT) &&
+  if (inbounds(x, y) && !loc_statusp(x, y, LIT, *Level) &&
       Level->site[x][y].roomnumber == roomno) {
     lightspot(x, y);
     spreadroomlight(x + 1, y, roomno);
@@ -1233,7 +1233,7 @@ void lightspot(int x, int y) {
 
 void spreadroomdark(int x, int y, int roomno) {
   if (inbounds(x, y))
-    if (loc_statusp(x, y, LIT) && (Level->site[x][y].roomnumber == roomno)) {
+    if (loc_statusp(x, y, LIT, *Level) && (Level->site[x][y].roomnumber == roomno)) {
       blankoutspot(x, y);
       spreadroomdark(x + 1, y, roomno);
       spreadroomdark(x, y + 1, roomno);

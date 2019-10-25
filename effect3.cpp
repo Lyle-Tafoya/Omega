@@ -1004,7 +1004,7 @@ void illuminate(int blessing) {
   int r = Level->site[Player.x][Player.y].roomnumber;
   if (blessing > -1) {
     if (r > ROOMBASE) {
-      if (loc_statusp(Player.x, Player.y, LIT))
+      if (loc_statusp(Player.x, Player.y, LIT, *Level))
         mprint("A glow surrounds you.");
       else {
         mprint("The room lights up!");
@@ -1016,7 +1016,7 @@ void illuminate(int blessing) {
       mprint("You see a faint glimmer of light which quickly fades.");
   } else {
     if (r > ROOMBASE) {
-      if (!loc_statusp(Player.x, Player.y, LIT))
+      if (!loc_statusp(Player.x, Player.y, LIT, *Level))
         mprint("Nothing much happens.");
       else {
         mprint("The room darkens!");

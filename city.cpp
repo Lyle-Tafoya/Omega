@@ -279,8 +279,8 @@ void load_city(int populate) {
         morewait();
       }
 
-      if (loc_statusp(i, j, SEEN)) {
-        if (loc_statusp(i, j, SECRET))
+      if (loc_statusp(i, j, SEEN, *Level)) {
+        if (loc_statusp(i, j, SECRET, *Level))
           Level->site[i][j].showchar = WALL;
         else
           Level->site[i][j].showchar = Level->site[i][j].locchar;

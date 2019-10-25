@@ -268,7 +268,7 @@ void l_castle() {
               Level->site[x][y].p_locf = L_NO_OP;
               lset(x, y, CHANGED);
             }
-            if (x >= 12 && loc_statusp(x, y, SECRET)) {
+            if (x >= 12 && loc_statusp(x, y, SECRET, *Level)) {
               lreset(x, y, SECRET);
               lset(x, y, CHANGED);
             }

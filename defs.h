@@ -1417,7 +1417,9 @@ typedef oltype *pol;
 
 /* these bit operations were functions, but are faster as macros... */
 
-#define loc_statusp(x, y, stat) ((Level->site[x][y].lstatus & (stat)) ? 1 : 0)
+constexpr bool loc_statusp(int x, int y, int stat, const level &Level) {
+  return ((Level.site[x][y].lstatus & (stat)) ? 1 : 0);
+}
 #define lset(x, y, stat) (Level->site[x][y].lstatus |= (stat))
 #define lreset(x, y, stat) (Level->site[x][y].lstatus &= ~(stat))
 

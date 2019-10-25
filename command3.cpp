@@ -52,7 +52,7 @@ void examine() {
         mprint(mstatus_string(Level->site[x][y].creature));
       else if ((Player.x == x) && (Player.y == y))
         describe_player();
-      if (loc_statusp(x, y, SECRET))
+      if (loc_statusp(x, y, SECRET, *Level))
         print2("An age-worn stone wall.");
       else
         switch (Level->site[x][y].locchar) {
@@ -155,7 +155,7 @@ void examine() {
           break;
         }
       if ((ol = Level->site[x][y].things) != NULL &&
-          !loc_statusp(x, y, SECRET)) {
+          !loc_statusp(x, y, SECRET, *Level)) {
         if (ol->next == NULL)
           print3(itemid(ol->thing));
         else {
@@ -863,7 +863,7 @@ void tunnel() {
   else {
     ox = Player.x + Dirs[0][dir];
     oy = Player.y + Dirs[1][dir];
-    if (loc_statusp(ox, oy, SECRET))
+    if (loc_statusp(ox, oy, SECRET, *Level))
       mprint("You have no success as yet.");
     else if (Level->site[ox][oy].locchar != WALL) {
       print3("You can't tunnel through that!");

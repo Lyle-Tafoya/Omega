@@ -194,7 +194,7 @@ void makedoor(int x, int y) {
     Level->site[x][y].locchar = OPEN_DOOR;
     Level->site[x][y].aux = UNLOCKED;
   }
-  if (!loc_statusp(x, y, SECRET)) {
+  if (!loc_statusp(x, y, SECRET, *Level)) {
     lset(x, y + 1, STOPS);
     lset(x + 1, y, STOPS);
     lset(x - 1, y, STOPS);

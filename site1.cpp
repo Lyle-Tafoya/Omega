@@ -404,7 +404,7 @@ void statue_random(int x, int y) {
     for (i = 0; i < WIDTH; i++)
       for (j = 0; j < LENGTH; j++) {
         lset(i, j, SEEN);
-        if (loc_statusp(i, j, SECRET)) {
+        if (loc_statusp(i, j, SECRET, *Level)) {
           lreset(i, j, SECRET);
           lset(i, j, CHANGED);
         }

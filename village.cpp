@@ -149,7 +149,7 @@ void load_village(int villagenum, int populate) {
         Level->site[i][j].locchar = STATUE;
         break;
       }
-      if (loc_statusp(i, j, SECRET))
+      if (loc_statusp(i, j, SECRET, *Level))
         Level->site[i][j].showchar = WALL;
       else
         Level->site[i][j].showchar = Level->site[i][j].locchar;

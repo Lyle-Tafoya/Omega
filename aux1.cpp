@@ -163,7 +163,7 @@ int p_moveable(int x, int y) {
       resetgamestatus(SKIP_MONSTERS);
       return (TRUE);
     }
-  } else if (loc_statusp(x, y, SECRET)) {
+  } else if (loc_statusp(x, y, SECRET, *Level)) {
     if (!gamestatusp(FAST_MOVE))
       print3("Ouch!");
     return (FALSE);
@@ -244,7 +244,7 @@ int p_country_moveable(int x, int y) {
 void searchat(int x, int y) {
   int i;
   if (inbounds(x, y) && (random_range(3) || Player.status[ALERT])) {
-    if (loc_statusp(x, y, SECRET)) {
+    if (loc_statusp(x, y, SECRET, *Level)) {
       lreset(x, y, SECRET);
       lset(x, y, CHANGED);
       if ((Level->site[x][y].locchar == OPEN_DOOR) ||
@@ -768,7 +768,7 @@ void roomcheck() {
       (roomno == RS_KITCHEN) || (roomno == RS_BATHROOM) ||
       (roomno == RS_BEDROOM) || (roomno == RS_DININGROOM) ||
       (roomno == RS_CLOSET) || (roomno > ROOMBASE))
-    if ((!loc_statusp(Player.x, Player.y, LIT)) && (!Player.status[BLINDED]) &&
+    if ((!loc_statusp(Player.x, Player.y, LIT, *Level)) && (!Player.status[BLINDED]) &&
         (Player.status[ILLUMINATION] || (difficulty() < 6))) {
       showroom(Level->site[Player.x][Player.y].roomnumber);
       spreadroomlight(Player.x, Player.y, roomno);

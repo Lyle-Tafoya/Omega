@@ -333,7 +333,7 @@ void m_sp_blackout(struct monster *m) {
     else
       Player.status[BLINDED] += 4;
   }
-  if (loc_statusp(m->x, m->y, LIT)) {
+  if (loc_statusp(m->x, m->y, LIT, *Level)) {
     mprint("The fungus chirps.... ");
     mprint("The area is plunged into darkness.");
     torch_check();

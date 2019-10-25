@@ -498,7 +498,7 @@ void i_pick(pob o) {
       ox = Player.x + Dirs[0][dir];
       oy = Player.y + Dirs[1][dir];
       if ((Level->site[ox][oy].locchar != CLOSED_DOOR) ||
-          loc_statusp(ox, oy, SECRET)) {
+          loc_statusp(ox, oy, SECRET, *Level)) {
         mprint("You can't unlock that!");
         resetgamestatus(SKIP_MONSTERS);
       } else if (Level->site[ox][oy].aux == LOCKED) {
@@ -531,7 +531,7 @@ void i_key(pob o) {
     ox = Player.x + Dirs[0][dir];
     oy = Player.y + Dirs[1][dir];
     if ((Level->site[ox][oy].locchar != CLOSED_DOOR) ||
-        loc_statusp(ox, oy, SECRET)) {
+        loc_statusp(ox, oy, SECRET, *Level)) {
       mprint("You can't unlock that!");
       resetgamestatus(SKIP_MONSTERS);
     } else if (Level->site[ox][oy].aux == LOCKED) {

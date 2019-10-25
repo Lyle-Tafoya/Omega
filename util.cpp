@@ -55,7 +55,7 @@ int unblocked(int x, int y) {
       (Level->site[x][y].locchar == PORTCULLIS) ||
       (Level->site[x][y].locchar == STATUE) ||
       (Level->site[x][y].locchar == HEDGE) ||
-      (Level->site[x][y].locchar == CLOSED_DOOR) || loc_statusp(x, y, SECRET) ||
+      (Level->site[x][y].locchar == CLOSED_DOOR) || loc_statusp(x, y, SECRET, *Level) ||
       ((x == Player.x) && (y == Player.y)))
     return (FALSE);
   else
@@ -71,7 +71,7 @@ int m_unblocked(struct monster *m, int x, int y) {
     return (FALSE);
   else if (m_statusp(m, ONLYSWIM))
     return (Level->site[x][y].locchar == WATER);
-  else if (loc_statusp(x, y, SECRET)) {
+  else if (loc_statusp(x, y, SECRET, *Level)) {
     if (m->movef == M_MOVE_SMART) {
       if (los_p(x, y, Player.x, Player.y)) {
         mprint("You see a secret door swing open!");
@@ -130,7 +130,7 @@ int view_unblocked(int x, int y) {
            (Level->site[x][y].locchar == HEDGE) ||
            (Level->site[x][y].locchar == FIRE) ||
            (Level->site[x][y].locchar == CLOSED_DOOR) ||
-           loc_statusp(x, y, SECRET))
+           loc_statusp(x, y, SECRET, *Level))
     return (FALSE);
   else
     return (TRUE);
@@ -558,7 +558,7 @@ sets x,y there. There must *be* floor space somewhere on level.... */
 int spaceok(int i, int j, int baux) {
   return ((Level->site[i][j].locchar == FLOOR) &&
           (Level->site[i][j].creature == NULL) &&
-          (!loc_statusp(i, j, SECRET)) && (Level->site[i][j].buildaux != baux));
+          (!loc_statusp(i, j, SECRET, *Level)) && (Level->site[i][j].buildaux != baux));
 }
 
 void findspace(int *x, int *y, int baux) {
