@@ -283,19 +283,19 @@ void learnclericalspells ARGS((int, int));
 
 void lock_score_file ARGS((void));
 void unlock_score_file ARGS((void));
-FILE *checkfopen ARGS((char *, char *));
+FILE *checkfopen ARGS((const std::string &, const std::string &));
 int filecheck ARGS((void));
-int test_file_access ARGS((char *, char));
+int test_file_access ARGS((const std::string &, char));
 void abyss_file ARGS((void));
 void adeptfile ARGS((void));
-void checkhigh ARGS((char *, int));
+void checkhigh ARGS((const std::string &, int));
 void cityguidefile ARGS((void));
 void combat_help ARGS((void));
 void commandlist ARGS((void));
-void copyfile ARGS((char *));
-void displayfile ARGS((char *));
-void displaycryptfile ARGS((char *));
-void extendlog ARGS((char *, int));
+void copyfile ARGS((const std::string &));
+void displayfile ARGS((const std::string &));
+void displaycryptfile ARGS((const std::string &));
+void extendlog ARGS((const std::string &, int));
 void filescanstring ARGS((FILE *, char *)); /* in util.c if MSDOS defined */
 void inv_help ARGS((void));
 void save_hiscore_npc ARGS((int));

@@ -7,28 +7,29 @@
 #include <cstdlib>
 #include <curses.h>
 #include <fcntl.h>
+#include <string>
 #include <sys/file.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include "glob.h"
 
-FILE *checkfopen(char *filestring, char *optionstring) {
+FILE *checkfopen(const std::string &filestring, const std::string &optionstring) {
   FILE *fd;
   char response;
 
   change_to_game_perms();
-  fd = fopen(filestring, optionstring);
+  fd = fopen(filestring.c_str(), optionstring.c_str());
   clearmsg();
   while (fd == NULL) {
     print3("Warning! Error opening file:");
     nprint3(filestring);
     print1(" Abort or Retry? [ar] ");
     do
-      response = (char)mcigetc();
+      response = static_cast<char>(mcigetc());
     while ((response != 'a') && (response != 'r'));
     if (response == 'r')
-      fd = fopen(filestring, optionstring);
+      fd = fopen(filestring.c_str(), optionstring.c_str());
     else {
       print2("Sorry 'bout that.... Saving character, then quitting.");
       morewait();
@@ -316,7 +317,7 @@ void save_hiscore_npc(int npc) {
   unlock_score_file();
 }
 
-void checkhigh(char *descrip, int behavior) {
+void checkhigh(const std::string &descrip, int behavior) {
   long points;
 
   if (FixedPoints > 0)
@@ -326,7 +327,7 @@ void checkhigh(char *descrip, int behavior) {
   if (!gamestatusp(CHEATED)) {
     if (Hiscore < points) {
       strcpy(Hiscorer, Player.name);
-      strcpy(Hidescrip, descrip);
+      strcpy(Hidescrip, descrip.c_str());
       Hiscore = points;
       Hilevel = Player.level;
       Hibehavior = behavior;
@@ -355,7 +356,7 @@ void checkhigh(char *descrip, int behavior) {
   }
 }
 
-void extendlog(char *descrip, int lifestatus) {
+void extendlog(const std::string &descrip, int lifestatus) {
   FILE *fd;
   int npcbehavior;
 
@@ -388,20 +389,20 @@ void filescanstring(FILE *fd, char *fstr) {
   fstr[i] = 0;
 }
 
-int test_file_access(char *file_name, char mode) {
+int test_file_access(const std::string &file_name, char mode) {
   int fd;
 
   if (mode == 'r')
-    fd = open(file_name, O_RDONLY, 0);
+    fd = open(file_name.c_str(), O_RDONLY, 0);
   else
-    fd = open(file_name, O_RDWR, 0);
+    fd = open(file_name.c_str(), O_RDWR, 0);
   if (fd < 0)
     return 0;
   close(fd);
   return 1;
 }
 
-char *required_file_list[] = {
+const char *required_file_list[] = {
     "city.dat",     "country.dat",  "dlair.dat",    "misle.dat",
     "court.dat",    "speak.dat",    "temple.dat",   "abyss.dat",
     "village1.dat", "village2.dat", "village3.dat", "village4.dat",
@@ -410,7 +411,7 @@ char *required_file_list[] = {
     "maze3.dat",    "maze4.dat",    "omega.hi",     "omega.log",
     "motd.txt",     "license.txt",  "circle.dat",   NULL};
 
-char *optional_file_list[] = {
+const char *optional_file_list[] = {
     "help1.txt",   "help2.txt",   "help3.txt",   "help4.txt", "help5.txt",
     "help6.txt",   "help7.txt",   "help8.txt",   "help9.txt", "help10.txt",
     "help11.txt",  "help12.txt",  "help13.txt",  "abyss.txt", "scroll1.txt",
@@ -468,13 +469,13 @@ int filecheck() {
 }
 
 /* display a file given a string name of file */
-void displayfile(char *filestr) {
+void displayfile(const std::string &filestr) {
   FILE *fd = checkfopen(filestr, "r");
   int c, d = ' ';
   clear();
   refresh();
   c = fgetc(fd);
-  while ((c != EOF) && ((char)d != 'q') && ((char)d != ESCAPE)) {
+  while ((c != EOF) && (static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE)) {
     if (getcury(stdscr) > ScreenLength) {
       standout();
       printw("\n-More-");
@@ -483,10 +484,10 @@ void displayfile(char *filestr) {
       d = wgetch(stdscr);
       clear();
     }
-    printw("%c", (char)c);
+    printw("%c", static_cast<char>(c));
     c = fgetc(fd);
   }
-  if (((char)d != 'q') && ((char)d != ESCAPE)) {
+  if ((static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE)) {
     standout();
     printw("\n-Done-");
     standend();
@@ -499,7 +500,7 @@ void displayfile(char *filestr) {
 }
 
 /* display a file given a string name of file */
-void displaycryptfile(char *filestr) {
+void displaycryptfile(const std::string &filestr) {
   FILE *fd = checkfopen(filestr, "rb");
   int c, d = ' ';
   char key = 100;
@@ -507,7 +508,7 @@ void displaycryptfile(char *filestr) {
   clear();
   refresh();
   c = fgetc(fd);
-  while ((c != EOF) && ((char)d != 'q') && ((char)d != ESCAPE)) {
+  while ((c != EOF) && (static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE)) {
     if (getcury(stdscr) > ScreenLength) {
       standout();
       printw("\n-More-");
@@ -516,11 +517,11 @@ void displaycryptfile(char *filestr) {
       d = wgetch(stdscr);
       clear();
     }
-    key = ((unsigned char)c) ^ key;
+    key = static_cast<unsigned char>(c) ^ key;
     printw("%c", key);
     c = fgetc(fd);
   }
-  if (((char)d != 'q') && ((char)d != ESCAPE)) {
+  if ((static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE)) {
     standout();
     printw("\n-Done-");
     standend();
@@ -533,7 +534,7 @@ void displaycryptfile(char *filestr) {
 }
 
 /* copy a file given a string name of file */
-void copyfile(char *srcstr) {
+void copyfile(const std::string &srcstr) {
   char deststr[STRING_LEN - 36];
   char buffer[STRING_LEN];
   FILE *in, *out;
