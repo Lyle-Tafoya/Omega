@@ -223,7 +223,7 @@ void m_sp_surprise(struct monster *m) {
           break;
         }
         morewait();
-        setgamestatus(SKIP_PLAYER);
+        setgamestatus(SKIP_PLAYER, GameStatus);
         m_status_reset(*m, M_INVISIBLE);
       } else {
         mprint("You alertly sense the presence of an attacker!");
@@ -290,7 +290,7 @@ void m_sp_dragonlord(struct monster *m) {
       if (!Player.status[IMMOBILE]) {
         mprint("A gust of wind from the Dragonlord's wings knocks you down!");
         p_damage(25, NORMAL_DAMAGE, "a gust of wind");
-        setgamestatus(SKIP_PLAYER);
+        setgamestatus(SKIP_PLAYER, GameStatus);
         Player.status[IMMOBILE] += 2;
       } else if (!Constriction) {
         mprint("The Dragonlord grabs you with his tail!");

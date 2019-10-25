@@ -68,7 +68,7 @@ void i_stargem(pob o) {
     }
     print1("You suddenly find yourself whisked away by some unknown force!");
     morewait();
-    setgamestatus(COMPLETED_ASTRAL);
+    setgamestatus(COMPLETED_ASTRAL, GameStatus);
     change_environment(E_COUNTRYSIDE);
     Player.x = 61;
     Player.y = 3;
@@ -132,9 +132,9 @@ void i_juggernaut(pob o) {
             nprint1("Splat! ");
           else
             not_seen++;
-          setgamestatus(SUPPRESS_PRINTING);
+          setgamestatus(SUPPRESS_PRINTING, GameStatus);
           m_death(Level->site[x][y].creature);
-          resetgamestatus(SUPPRESS_PRINTING);
+          resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
         plotspot(x, y, FALSE);
         omshowcursor(x, y);

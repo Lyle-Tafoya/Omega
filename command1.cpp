@@ -13,14 +13,14 @@ void p_process() {
 
   if (Player.status[BERSERK])
     if (goberserk()) {
-      setgamestatus(SKIP_PLAYER);
+      setgamestatus(SKIP_PLAYER, GameStatus);
       drawvision(Player.x, Player.y);
     }
   if (!gamestatusp(SKIP_PLAYER, GameStatus)) {
     if (searchval > 0) {
       searchval--;
       if (searchval == 0)
-        resetgamestatus(FAST_MOVE);
+        resetgamestatus(FAST_MOVE, GameStatus);
     }
     drawvision(Player.x, Player.y);
     if (!gamestatusp(FAST_MOVE, GameStatus)) {
@@ -32,7 +32,7 @@ void p_process() {
     switch (Cmd) {
     case ' ':
     case 13:
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
       break; /*no op on space or return*/
     case 6:
       abortshadowform();
@@ -51,15 +51,15 @@ void p_process() {
       __attribute__((fallthrough));
     case 12:
       xredraw();
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
       break; /* ^l */
     case 16:
       bufferprint();
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
       break; /* ^p */
     case 18:
       redraw();
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
       break; /* ^r */
     case 23:
       if (gamestatusp(CHEATED, GameStatus))
@@ -217,11 +217,11 @@ void p_process() {
       break;
     case '/':
       charid();
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
       break;
     case '?':
       help();
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
       break;
     case '4':
     case 'h':
@@ -264,66 +264,66 @@ void p_process() {
       Command_Duration = Player.speed * 5 / 5;
       break;
     case '5':
-      setgamestatus(SKIP_MONSTERS); /* don't do anything; a dummy turn */
+      setgamestatus(SKIP_MONSTERS, GameStatus); /* don't do anything; a dummy turn */
       Cmd = mgetc();
       while ((Cmd != ESCAPE) && ((Cmd < '1') || (Cmd > '9') || (Cmd == '5'))) {
         print3("Run in keypad direction [ESCAPE to abort]: ");
         Cmd = mgetc();
       }
       if (Cmd != ESCAPE)
-        setgamestatus(FAST_MOVE);
+        setgamestatus(FAST_MOVE, GameStatus);
       break;
     case 'H':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'h';
       moveplayer(-1, 0);
       Command_Duration = Player.speed * 4 / 5;
       break;
     case 'J':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'j';
       moveplayer(0, 1);
       Command_Duration = Player.speed * 4 / 5;
       break;
     case 'K':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'k';
       moveplayer(0, -1);
       Command_Duration = Player.speed * 4 / 5;
       break;
     case 'L':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'l';
       moveplayer(1, 0);
       Command_Duration = Player.speed * 4 / 5;
       break;
     case 'B':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'b';
       moveplayer(-1, 1);
       Command_Duration = Player.speed * 4 / 5;
       break;
     case 'N':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'n';
       moveplayer(1, 1);
       Command_Duration = Player.speed * 4 / 5;
       break;
     case 'Y':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'y';
       moveplayer(-1, -1);
       Command_Duration = Player.speed * 4 / 5;
       break;
     case 'U':
-      setgamestatus(FAST_MOVE);
+      setgamestatus(FAST_MOVE, GameStatus);
       Cmd = 'u';
       moveplayer(1, -1);
       Command_Duration = Player.speed * 4 / 5;
       break;
     default:
       commanderror();
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
       break;
     }
   }

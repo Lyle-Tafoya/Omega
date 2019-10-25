@@ -93,7 +93,7 @@ void l_altar() {
           print1("A darkling glow envelopes your offering!");
           print2("The glow slowly fades....");
           morewait();
-          setgamestatus(SUPPRESS_PRINTING);
+          setgamestatus(SUPPRESS_PRINTING, GameStatus);
           if (Player.possessions[i]->used) {
             Player.possessions[i]->used = FALSE;
             item_use(Player.possessions[i]);
@@ -104,7 +104,7 @@ void l_altar() {
           } else
             Player.possessions[i]->blessing =
                 -1 - abs(Player.possessions[i]->blessing);
-          resetgamestatus(SUPPRESS_PRINTING);
+          resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
       } else if (response == 'p') {
         if (deity != Player.patron)

@@ -13,7 +13,7 @@ void m_talk_druid(struct monster *m) {
   if (!m_statusp(*m, HOSTILE)) {
     print1("The Archdruid raises a hand in greeting.");
     if (!gamestatusp(SPOKE_TO_DRUID, GameStatus)) {
-      setgamestatus(SPOKE_TO_DRUID);
+      setgamestatus(SPOKE_TO_DRUID, GameStatus);
       morewait();
       print1("The Archdruid congratulates you on reaching his sanctum.");
       print2("You feel competent.");
@@ -574,7 +574,7 @@ void m_talk_horse(struct monster *m) {
       m->hp = -1;
       Level->site[m->x][m->y].creature = NULL;
       putspot(m->x, m->y, getspot(m->x, m->y, FALSE));
-      setgamestatus(MOUNTED);
+      setgamestatus(MOUNTED, GameStatus);
       calc_melee();
       mprint("You are now equitating!");
     }

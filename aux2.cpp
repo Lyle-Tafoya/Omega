@@ -569,7 +569,7 @@ void p_drown() {
         bash_item();
         break;
       case 'c':
-        setgamestatus(SUPPRESS_PRINTING);
+        setgamestatus(SUPPRESS_PRINTING, GameStatus);
         for (i = 0; i < MAXPACK; i++) {
           if (Player.pack[i] != NULL) {
             if (Level->site[Player.x][Player.y].p_locf != L_WATER)
@@ -582,7 +582,7 @@ void p_drown() {
         if (Level->site[Player.x][Player.y].p_locf == L_WATER)
           mprint("It sinks without a trace.");
         Player.packptr = 0;
-        resetgamestatus(SUPPRESS_PRINTING);
+        resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         calc_melee();
         break;
       }
@@ -765,7 +765,7 @@ anomalous stats and item-usage if used indiscriminately */
 void toggle_item_use(int on) {
   static int used[MAXITEMS];
   int i;
-  setgamestatus(SUPPRESS_PRINTING);
+  setgamestatus(SUPPRESS_PRINTING, GameStatus);
   if (on)
     for (i = 0; i < MAXITEMS; i++) {
       used[i] = FALSE;
@@ -787,7 +787,7 @@ void toggle_item_use(int on) {
     dataprint();
     timeprint();
   }
-  resetgamestatus(SUPPRESS_PRINTING);
+  resetgamestatus(SUPPRESS_PRINTING, GameStatus);
 }
 
 void enter_site(Symbol site) {
@@ -831,9 +831,9 @@ void change_environment(char new_environment) {
 
   Player.sx = -1;
   Player.sy = -1;        /* reset sanctuary if there was one */
-  resetgamestatus(LOST); /* in case the player gets lost _on_ a site */
+  resetgamestatus(LOST, GameStatus); /* in case the player gets lost _on_ a site */
 
-  resetgamestatus(FAST_MOVE);
+  resetgamestatus(FAST_MOVE, GameStatus);
 
   Last_Environment = Current_Environment;
   if (Last_Environment == E_COUNTRYSIDE) {
@@ -863,7 +863,7 @@ void change_environment(char new_environment) {
     WIDTH = 64;
     Player.x = 5;
     Player.y = 7;
-    setgamestatus(ARENA_MODE);
+    setgamestatus(ARENA_MODE, GameStatus);
     load_arena();
     ScreenOffset = 0;
     show_screen();
@@ -1081,7 +1081,7 @@ void change_environment(char new_environment) {
       morewait();
       print1("Seeing as you might not be coming back, you feel compelled");
       print2("to let your horse go, rather than keep him hobbled outside.");
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
       calc_melee();
     }
     MaxDungeonLevels = CAVELEVELS;
@@ -1104,7 +1104,7 @@ void change_environment(char new_environment) {
       morewait();
       print1("Seeing as you might not be coming back, you feel compelled");
       print2("to let your horse go, rather than keep him hobbled outside.");
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
       calc_melee();
     }
     MaxDungeonLevels = VOLCANOLEVELS;
@@ -1125,7 +1125,7 @@ void change_environment(char new_environment) {
     print1("You are in a weird flickery maze.");
     if (gamestatusp(MOUNTED, GameStatus)) {
       print2("Your horse doesn't seem to have made it....");
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
       calc_melee();
     }
     MaxDungeonLevels = ASTRALLEVELS;
@@ -1148,7 +1148,7 @@ void change_environment(char new_environment) {
       morewait();
       print1("Seeing as you might not be coming back, you feel compelled");
       print2("to let your horse go, rather than keep him hobbled outside.");
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
     }
     MaxDungeonLevels = CASTLELEVELS;
     if (Current_Dungeon != E_CASTLE) {

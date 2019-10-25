@@ -19,7 +19,7 @@ void m_pulse(struct monster *m) {
 
   if ((!m_statusp(*m, AWAKE)) && (range <= m->wakeup)) {
     m_status_set(*m, AWAKE);
-    resetgamestatus(FAST_MOVE);
+    resetgamestatus(FAST_MOVE, GameStatus);
   }
 
   if (m_statusp(*m, AWAKE)) {
@@ -41,7 +41,7 @@ void m_pulse(struct monster *m) {
           m_statusp(*m, MOBILE) && (!STRIKE || (random_range(2) == 1)))
         monster_move(m);
       else if (m_statusp(*m, HOSTILE) && (range == 1)) {
-        resetgamestatus(FAST_MOVE);
+        resetgamestatus(FAST_MOVE, GameStatus);
         tacmonster(m);
       }
     }
@@ -307,26 +307,26 @@ void m_death(struct monster *m) {
         mprint("You seem to hear a woman's voice from far off:");
         mprint("'Well done! Come to me now....'");
       }
-      setgamestatus(COMPLETED_CAVES);
+      setgamestatus(COMPLETED_CAVES, GameStatus);
       break; /* gob king */
     case GREAT_WYRM:
       if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
         mprint("A female voice sounds from just behind your ear:");
         mprint("'Well fought! I have some new advice for you....'");
       }
-      setgamestatus(COMPLETED_SEWERS);
+      setgamestatus(COMPLETED_SEWERS, GameStatus);
       break; /*grt worm */
     case EATER:
-      setgamestatus(KILLED_EATER);
+      setgamestatus(KILLED_EATER, GameStatus);
       break;
     case LAWBRINGER:
-      setgamestatus(KILLED_LAWBRINGER);
+      setgamestatus(KILLED_LAWBRINGER, GameStatus);
       break;
     case DRAGON_LORD:
-      setgamestatus(KILLED_DRAGONLORD);
+      setgamestatus(KILLED_DRAGONLORD, GameStatus);
       break;
     case DEMON_EMP:
-      setgamestatus(COMPLETED_VOLCANO);
+      setgamestatus(COMPLETED_VOLCANO, GameStatus);
       if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
         mprint("You feel a soft touch on your shoulder...");
         mprint("You turn around but there is no one there!");
@@ -946,9 +946,9 @@ void m_trap_abyss(struct monster *m) {
     Level->site[m->x][m->y].p_locf = L_ABYSS;
     lset(m->x, m->y, CHANGED, *Level);
   }
-  setgamestatus(SUPPRESS_PRINTING);
+  setgamestatus(SUPPRESS_PRINTING, GameStatus);
   m_vanish(m);
-  resetgamestatus(SUPPRESS_PRINTING);
+  resetgamestatus(SUPPRESS_PRINTING, GameStatus);
 }
 
 void m_trap_snare(struct monster *m) {

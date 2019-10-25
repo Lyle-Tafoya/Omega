@@ -542,7 +542,7 @@ int restore_game(char *savestr) {
     fclose(fd);
     print3("Restoration complete.");
     ScreenOffset = -1000; /* to force a redraw */
-    setgamestatus(SKIP_MONSTERS);
+    setgamestatus(SKIP_MONSTERS, GameStatus);
     change_to_game_perms();
     return (TRUE);
   }

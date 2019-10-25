@@ -30,13 +30,13 @@ void time_clock(int reset) {
          Current_Environment == env) {
     if (!gamestatusp(SKIP_PLAYER, GameStatus))
       do {
-        resetgamestatus(SKIP_MONSTERS);
+        resetgamestatus(SKIP_MONSTERS, GameStatus);
         if ((!Player.status[SLEPT]) && (Current_Environment != E_COUNTRYSIDE))
           p_process();
       } while (gamestatusp(SKIP_MONSTERS, GameStatus) &&
                (Current_Environment != E_COUNTRYSIDE));
     else
-      resetgamestatus(SKIP_PLAYER);
+      resetgamestatus(SKIP_PLAYER, GameStatus);
     Player.click = (Player.click + Command_Duration) % 60;
   }
 

@@ -385,7 +385,7 @@ void p_movefunction(int movef) {
       break;
     }
     if (movef != L_NO_OP) {
-      resetgamestatus(FAST_MOVE);
+      resetgamestatus(FAST_MOVE, GameStatus);
       dataprint();
     }
   }

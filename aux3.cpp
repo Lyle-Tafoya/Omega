@@ -158,7 +158,7 @@ void outdoors_random_event() {
     mprint("Due to the inclement weather conditions, you have become lost.");
     morewait();
     Precipitation += random_range(12) + 1;
-    setgamestatus(LOST);
+    setgamestatus(LOST, GameStatus);
     break;
   case 1:
     mprint("You enter a field of brightly colored flowers...");
@@ -169,7 +169,7 @@ void outdoors_random_event() {
     mprint("poppies...");
     morewait();
     print3("You become somewhat disoriented...");
-    setgamestatus(LOST);
+    setgamestatus(LOST, GameStatus);
     break;
   case 2:
     mprint("You discover a sprig of athelas growing lonely in the wild.");
@@ -269,13 +269,13 @@ void outdoors_random_event() {
         morewait();
         mprint("You are now on foot.");
         morewait();
-        resetgamestatus(MOUNTED);
+        resetgamestatus(MOUNTED, GameStatus);
       } else {
         mprint("You notice you are riding a horse. Odd. Very odd....");
         morewait();
         mprint("Now that's a horse of a different color!");
         morewait();
-        setgamestatus(MOUNTED);
+        setgamestatus(MOUNTED, GameStatus);
       }
     } else if (num < 90) {
       mprint("You feel imbued with godlike power....");
@@ -316,7 +316,7 @@ void outdoors_random_event() {
     mprint("You find a Traveller's Aid station with maps of the local area.");
     morewait();
     if (gamestatusp(LOST, GameStatus)) {
-      resetgamestatus(LOST);
+      resetgamestatus(LOST, GameStatus);
       mprint("You know where you are now.");
     }
     for (i = Player.x - 5; i < Player.x + 6; i++)
@@ -641,14 +641,14 @@ void terrain_check(int takestime) {
     break;
   case CITY:
     if (gamestatusp(LOST, GameStatus)) {
-      resetgamestatus(LOST);
+      resetgamestatus(LOST, GameStatus);
       mprint("Well, I guess you know where you are now....");
     }
     locprint("Outside Rampart, the city.");
     break;
   case VILLAGE:
     if (gamestatusp(LOST, GameStatus)) {
-      resetgamestatus(LOST);
+      resetgamestatus(LOST, GameStatus);
       mprint("The village guards let you know where you are....");
     }
     locprint("Outside a small village.");
@@ -1185,7 +1185,7 @@ void alert_guards() {
   if ((!foundguard) && (Current_Environment == E_CITY) &&
       !gamestatusp(DESTROYED_ORDER, GameStatus)) {
     suppress = gamestatusp(SUPPRESS_PRINTING, GameStatus);
-    resetgamestatus(SUPPRESS_PRINTING);
+    resetgamestatus(SUPPRESS_PRINTING, GameStatus);
     print2("The last member of the Order of Paladins dies....");
     morewait();
     gain_experience(1000);
@@ -1219,13 +1219,13 @@ void alert_guards() {
     }
   }
   if (suppress)
-    resetgamestatus(SUPPRESS_PRINTING);
+    resetgamestatus(SUPPRESS_PRINTING, GameStatus);
 }
 
 /* can only occur when player is in city, so OK to use Level */
 void destroy_order() {
   int i, j;
-  setgamestatus(DESTROYED_ORDER);
+  setgamestatus(DESTROYED_ORDER, GameStatus);
   if (Level != City)
     print1("Zounds! A Serious Mistake!");
   else

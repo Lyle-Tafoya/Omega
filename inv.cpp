@@ -21,7 +21,7 @@ void drop_money() {
     } else
       drop_at(Player.x, Player.y, money);
   } else
-    setgamestatus(SKIP_MONSTERS);
+    setgamestatus(SKIP_MONSTERS, GameStatus);
 }
 
 /* returns some money from player back into "money" item.
@@ -60,7 +60,7 @@ void pickup_at(int x, int y) {
   pol ol = Level->site[x][y].things;
   pol temp;
 
-  resetgamestatus(FAST_MOVE);
+  resetgamestatus(FAST_MOVE, GameStatus);
 
   Level->site[x][y].things = NULL;
 
@@ -158,7 +158,7 @@ void drop_at(int x, int y, pob o) {
       tmp->next = Level->site[x][y].things;
       Level->site[x][y].things = tmp;
     } else if (Level->site[x][y].p_locf == L_VOID_STATION)
-      setgamestatus(PREPARED_VOID);
+      setgamestatus(PREPARED_VOID, GameStatus);
   }
 }
 
@@ -179,7 +179,7 @@ void p_drop_at(int x, int y, int n, pob o) {
       tmp->next = Level->site[x][y].things;
       Level->site[x][y].things = tmp;
     } else if (Level->site[x][y].p_locf == L_VOID_STATION)
-      setgamestatus(PREPARED_VOID);
+      setgamestatus(PREPARED_VOID, GameStatus);
   }
 }
 
@@ -318,7 +318,7 @@ void give_money(struct monster *m) {
 
   cash = detach_money();
   if (cash == NULL)
-    setgamestatus(SKIP_MONSTERS);
+    setgamestatus(SKIP_MONSTERS, GameStatus);
   else
     givemonster(m, cash);
 }
@@ -342,7 +342,7 @@ void givemonster(struct monster *m, struct object *o) {
     Player.alignment += 200;
     Player.pow = Player.maxpow = Player.pow * 2;
     gain_experience(2000);
-    setgamestatus(GAVE_STARGEM);
+    setgamestatus(GAVE_STARGEM, GameStatus);
     /* WDT HACK!!!  Where else would this ever get freed?? */
     free(o);
   } else {

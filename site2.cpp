@@ -20,7 +20,7 @@ void l_condo() {
         if (Player.cash < 50000)
           print3("No mortgages, buddy.");
         else {
-          setgamestatus(SOLD_CONDO);
+          setgamestatus(SOLD_CONDO, GameStatus);
           Player.cash -= 50000;
           dataprint();
           print2("You are the proud owner of a luxurious condo penthouse.");
@@ -220,9 +220,9 @@ void send_to_jail() {
          (Current_Environment == E_MANSION) ||
          (Current_Environment == E_HOVEL)) &&
         (Last_Environment == E_CITY)) {
-      setgamestatus(SUPPRESS_PRINTING);
+      setgamestatus(SUPPRESS_PRINTING, GameStatus);
       change_environment(E_CITY);
-      resetgamestatus(SUPPRESS_PRINTING);
+      resetgamestatus(SUPPRESS_PRINTING, GameStatus);
     }
     if (Current_Environment == E_CITY) {
       if (gamestatusp(UNDEAD_GUARDS, GameStatus)) {
@@ -776,7 +776,7 @@ void l_oracle() {
       print1("The oracle doffs her cowl. Her eyes glitter with blue fire!");
       print2("Attack her? [yn] ");
       if (ynq2() == 'y') {
-        setgamestatus(ATTACKED_ORACLE);
+        setgamestatus(ATTACKED_ORACLE, GameStatus);
         print1("The oracle deftly avoids your attack.");
         print2("She sneers at you and vanishes.");
       } else {

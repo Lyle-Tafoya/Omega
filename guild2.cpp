@@ -673,7 +673,7 @@ void l_order() {
         morewait();
         Player.rank[ORDER] = GALLANT;
         Player.guildxp[ORDER] = 1;
-        setgamestatus(MOUNTED);
+        setgamestatus(MOUNTED, GameStatus);
         newitem = ((pob)checkmalloc(sizeof(objtype)));
         *newitem = Objects[WEAPONID + 19]; /* spear */
         newitem->blessing = 9;
@@ -686,7 +686,7 @@ void l_order() {
     print1("'Welcome back, Paladin.'");
     if (!gamestatusp(MOUNTED, GameStatus)) {
       print2("You are given a new steed.");
-      setgamestatus(MOUNTED);
+      setgamestatus(MOUNTED, GameStatus);
     }
     morewait();
     clearmsg();

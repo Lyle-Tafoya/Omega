@@ -343,7 +343,7 @@ void disintegrate(int x, int y) {
     }
   } else {
     if (!view_los_p(Player.x, Player.y, x, y))
-      setgamestatus(SUPPRESS_PRINTING);
+      setgamestatus(SUPPRESS_PRINTING, GameStatus);
     if ((target = Level->site[x][y].creature) != NULL) {
       if (target->uniqueness == COMMON) {
         strcpy(Str1, "The ");
@@ -410,7 +410,7 @@ void disintegrate(int x, int y) {
     } else
       mprint("The blast has no effect.");
     if (!view_los_p(Player.x, Player.y, x, y))
-      resetgamestatus(SUPPRESS_PRINTING);
+      resetgamestatus(SUPPRESS_PRINTING, GameStatus);
     else
       plotspot(x, y, TRUE);
   }
@@ -621,7 +621,7 @@ void strategic_teleport(int blessing) {
     xredraw();
     if (gamestatusp(LOST, GameStatus)) {
       print1("You know where you are now.");
-      resetgamestatus(LOST);
+      resetgamestatus(LOST, GameStatus);
       Precipitation = 0;
     }
   }
@@ -739,16 +739,16 @@ void dispel(int blessing) {
           if ((o->used) && (o->blessing < 0)) {
             if (blessing + 1 + o->blessing >= 0) {
               o->used = FALSE;
-              setgamestatus(SUPPRESS_PRINTING);
+              setgamestatus(SUPPRESS_PRINTING, GameStatus);
               item_use(o);
-              resetgamestatus(SUPPRESS_PRINTING);
+              resetgamestatus(SUPPRESS_PRINTING, GameStatus);
               mprint("You hear a sighing sound from");
               mprint(itemid(o));
               o->blessing = 0;
               o->used = TRUE;
-              setgamestatus(SUPPRESS_PRINTING);
+              setgamestatus(SUPPRESS_PRINTING, GameStatus);
               item_use(o);
-              resetgamestatus(SUPPRESS_PRINTING);
+              resetgamestatus(SUPPRESS_PRINTING, GameStatus);
             } else {
               mprint("You hear dark laughter from");
               mprint(itemid(o));

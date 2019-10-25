@@ -85,10 +85,10 @@ void enchant(int delta) {
       } else {
         used = (Player.possessions[i]->used);
         if (used) {
-          setgamestatus(SUPPRESS_PRINTING);
+          setgamestatus(SUPPRESS_PRINTING, GameStatus);
           Player.possessions[i]->used = FALSE;
           item_use(Player.possessions[i]);
-          resetgamestatus(SUPPRESS_PRINTING);
+          resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
         print1("The item shines!");
         morewait();
@@ -97,10 +97,10 @@ void enchant(int delta) {
           Player.possessions[i]->charge +=
               ((delta + 1) * (random_range(10) + 1));
         if (used) {
-          setgamestatus(SUPPRESS_PRINTING);
+          setgamestatus(SUPPRESS_PRINTING, GameStatus);
           Player.possessions[i]->used = TRUE;
           item_use(Player.possessions[i]);
-          resetgamestatus(SUPPRESS_PRINTING);
+          resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
       }
     }
@@ -125,20 +125,20 @@ void bless(int blessing) {
       morewait();
       used = (Player.possessions[index]->used);
       if (used) {
-        setgamestatus(SUPPRESS_PRINTING);
+        setgamestatus(SUPPRESS_PRINTING, GameStatus);
         Player.possessions[index]->used = FALSE;
         item_use(Player.possessions[index]);
-        resetgamestatus(SUPPRESS_PRINTING);
+        resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
       Player.possessions[index]->blessing -= 2;
       if (Player.possessions[index]->blessing < 0)
         Player.possessions[index]->plus =
             abs(Player.possessions[index]->plus) - 1;
       if (used) {
-        setgamestatus(SUPPRESS_PRINTING);
+        setgamestatus(SUPPRESS_PRINTING, GameStatus);
         Player.possessions[index]->used = TRUE;
         item_use(Player.possessions[index]);
-        resetgamestatus(SUPPRESS_PRINTING);
+        resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
     }
   } else {
@@ -149,10 +149,10 @@ void bless(int blessing) {
     } else if (index != ABORT) {
       used = (Player.possessions[index]->used == TRUE);
       if (used) {
-        setgamestatus(SUPPRESS_PRINTING);
+        setgamestatus(SUPPRESS_PRINTING, GameStatus);
         Player.possessions[index]->used = FALSE;
         item_use(Player.possessions[index]);
-        resetgamestatus(SUPPRESS_PRINTING);
+        resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
       print1("A pure white light surrounds the item... ");
       if (Player.possessions[index]->blessing < 0 - (blessing + 1)) {
@@ -174,10 +174,10 @@ void bless(int blessing) {
         morewait();
       }
       if (used && (Player.possessions[index] != NULL)) {
-        setgamestatus(SUPPRESS_PRINTING);
+        setgamestatus(SUPPRESS_PRINTING, GameStatus);
         Player.possessions[index]->used = TRUE;
         item_use(Player.possessions[index]);
-        resetgamestatus(SUPPRESS_PRINTING);
+        resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
     }
   }
@@ -492,7 +492,7 @@ void identify(int blessing) {
     if (index == CASHVALUE)
       print3("Your money is really money.");
     else if (index == ABORT)
-      setgamestatus(SKIP_MONSTERS);
+      setgamestatus(SKIP_MONSTERS, GameStatus);
     else {
       if (Player.possessions[index]->objchar == FOOD)
         Player.possessions[index]->known = 1;

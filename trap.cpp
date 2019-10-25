@@ -69,7 +69,7 @@ void l_trap_pit() {
     morewait();
     mprint("You are forced to put it out of its misery.");
     morewait();
-    resetgamestatus(MOUNTED);
+    resetgamestatus(MOUNTED, GameStatus);
     showflags();
   } else if (Player.itemweight < ((int)(Player.maxweight / 2)))
     mprint("You nimbly dodge a pit trap.");
@@ -102,7 +102,7 @@ void l_trap_door() {
         p_damage(Level->depth * difficulty(), UNSTOPPABLE, "a rockslide");
       }
       change_level(Level->depth, Level->depth + 1, FALSE);
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
       showflags();
       roomcheck();
     } else if (random_range(100) < Player.agi)
@@ -144,7 +144,7 @@ void l_trap_blade() {
     if (gamestatusp(MOUNTED, GameStatus)) {
       mprint("Your horse is struck by a scything blade and killed instantly.");
       morewait();
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
       showflags();
     } else {
       mprint("A heavy blade scythes across the room and hits you!");
@@ -160,7 +160,7 @@ void l_trap_fire() {
   if (gamestatusp(MOUNTED, GameStatus)) {
     mprint("Your horse is struck by a blast of fire and is charbroiled!");
     morewait();
-    resetgamestatus(MOUNTED);
+    resetgamestatus(MOUNTED, GameStatus);
     showflags();
   } else if (random_range(50) < Player.agi + Player.level)
     mprint("You dodge a pillar of fire!");
@@ -193,7 +193,7 @@ void l_trap_disintegrate() {
   if (gamestatusp(MOUNTED, GameStatus)) {
     mprint("Your horse falls apart into its component atoms...");
     morewait();
-    resetgamestatus(MOUNTED);
+    resetgamestatus(MOUNTED, GameStatus);
     showflags();
   }
   disintegrate(Player.x, Player.y);
@@ -219,7 +219,7 @@ void l_trap_acid() {
     if (gamestatusp(MOUNTED, GameStatus)) {
       mprint("Your horse dies unpleasantly.");
       morewait();
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
       showflags();
     }
     p_damage(random_range(difficulty() * 5), ACID, "an acid trap");

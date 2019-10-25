@@ -150,7 +150,7 @@ int player_on_sanctuary() {
 /* check a move attempt, maybe attack something, return TRUE if ok to move. */
 /* x y is the proposed place to move to */
 int p_moveable(int x, int y) {
-  setgamestatus(SKIP_MONSTERS);
+  setgamestatus(SKIP_MONSTERS, GameStatus);
   if (!inbounds(x, y))
     return (FALSE);
   else if (Player.status[SHADOWFORM]) {
@@ -160,7 +160,7 @@ int p_moveable(int x, int y) {
     case L_VOID:
       return confirmation();
     default:
-      resetgamestatus(SKIP_MONSTERS);
+      resetgamestatus(SKIP_MONSTERS, GameStatus);
       return (TRUE);
     }
   } else if (loc_statusp(x, y, SECRET, *Level)) {
@@ -170,7 +170,7 @@ int p_moveable(int x, int y) {
   } else if (Level->site[x][y].creature != NULL) {
     if (!gamestatusp(FAST_MOVE, GameStatus)) {
       fight_monster(Level->site[x][y].creature);
-      resetgamestatus(SKIP_MONSTERS);
+      resetgamestatus(SKIP_MONSTERS, GameStatus);
       return (FALSE);
     } else
       return (FALSE);
@@ -207,21 +207,21 @@ int p_moveable(int x, int y) {
         if (Level->site[x][y].locchar != WATER ||
             Level->site[x][y].p_locf != L_WATER) {
           print1("You can't convince your steed to continue.");
-          setgamestatus(SKIP_MONSTERS);
+          setgamestatus(SKIP_MONSTERS, GameStatus);
           return (FALSE);
         } else
           return (TRUE);
       } else if (confirmation())
-        resetgamestatus(SKIP_MONSTERS);
+        resetgamestatus(SKIP_MONSTERS, GameStatus);
       else
-        setgamestatus(SKIP_MONSTERS);
+        setgamestatus(SKIP_MONSTERS, GameStatus);
       return (!gamestatusp(SKIP_MONSTERS, GameStatus));
     } else {
-      resetgamestatus(SKIP_MONSTERS);
+      resetgamestatus(SKIP_MONSTERS, GameStatus);
       return (TRUE);
     }
   } else {
-    resetgamestatus(SKIP_MONSTERS);
+    resetgamestatus(SKIP_MONSTERS, GameStatus);
     return (TRUE);
   }
 }
@@ -265,7 +265,7 @@ void searchat(int x, int y) {
       lset(x, y, CHANGED, *Level);
       mprint("You find a trap!");
       drawvision(Player.x, Player.y);
-      resetgamestatus(FAST_MOVE);
+      resetgamestatus(FAST_MOVE, GameStatus);
     }
   }
 }
@@ -486,7 +486,7 @@ void p_damage(int dmg, int dtype, char *fromstring) {
   if (!p_immune(dtype)) {
     if (gamestatusp(FAST_MOVE, GameStatus)) {
       drawvision(Player.x, Player.y);
-      resetgamestatus(FAST_MOVE);
+      resetgamestatus(FAST_MOVE, GameStatus);
     }
     if (dtype == NORMAL_DAMAGE)
       Player.hp -= std::max(1, (dmg - Player.absorption));
@@ -745,12 +745,12 @@ void foodcheck() {
     print3("You feel weak.");
     if (gamestatusp(FAST_MOVE, GameStatus)) {
       drawvision(Player.x, Player.y);
-      resetgamestatus(FAST_MOVE);
+      resetgamestatus(FAST_MOVE, GameStatus);
     }
   } else if (Player.food < 0) {
     if (gamestatusp(FAST_MOVE, GameStatus)) {
       drawvision(Player.x, Player.y);
-      resetgamestatus(FAST_MOVE);
+      resetgamestatus(FAST_MOVE, GameStatus);
     }
     print3("You're starving!");
     p_damage(-5 * Player.food, UNSTOPPABLE, "starvation");

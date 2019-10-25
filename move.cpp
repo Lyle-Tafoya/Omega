@@ -58,7 +58,7 @@ void l_chaos() {
     morewait();
     print1("probably because it's just turned into a chaffinch.");
     morewait();
-    resetgamestatus(MOUNTED);
+    resetgamestatus(MOUNTED, GameStatus);
   }
   if (!onewithchaos)
     print1("You are immersed in raw Chaos....");
@@ -124,7 +124,7 @@ void l_lava() {
   print1("Very clever -- walking into a pool of lava...");
   if (gamestatusp(MOUNTED, GameStatus)) {
     print2("Your horse is incinerated... You fall in too!");
-    resetgamestatus(MOUNTED);
+    resetgamestatus(MOUNTED, GameStatus);
   }
   morewait();
   if (strcmp(Player.name, "Saltheart Foamfollower") == 0) {
@@ -142,7 +142,7 @@ void l_fire() {
   print1("You boldly stride through the curtain of fire...");
   if (gamestatusp(MOUNTED, GameStatus)) {
     print2("Your horse is fried and so are you...");
-    resetgamestatus(MOUNTED);
+    resetgamestatus(MOUNTED, GameStatus);
   }
   p_damage(random_range(100), FLAME, "self-immolation");
 }
@@ -272,7 +272,7 @@ void l_magic_pool() {
   if (gamestatusp(MOUNTED, GameStatus)) {
     if (random_range(2)) {
       print2("Your horse is polymorphed into a fig newton.");
-      resetgamestatus(MOUNTED);
+      resetgamestatus(MOUNTED, GameStatus);
     } else
       print2("Whatever it was, your horse enjoyed it....");
   } else if (possibilities == 0) {
@@ -426,7 +426,7 @@ void l_raise_portcullis() {
 }
 
 void l_arena_exit() {
-  resetgamestatus(ARENA_MODE);
+  resetgamestatus(ARENA_MODE, GameStatus);
   free_level(Level);
   Level = NULL;
   change_environment(E_CITY);
@@ -686,7 +686,7 @@ void l_void_station() {
         clearmsg();
         print1("You see Death raise his scythe to you in a salute.");
         Player.rank[ADEPT] = 1;
-        setgamestatus(COMPLETED_CHALLENGE);
+        setgamestatus(COMPLETED_CHALLENGE, GameStatus);
         FixedPoints = calc_points();
         /* set so change_environment puts player in correct temple! */
         Player.x = 49;
@@ -891,7 +891,7 @@ void l_enter_court() {
         print2("A dulcet voice says: 'Jolly good show!'");
         morewait();
       }
-      setgamestatus(COMPLETED_CASTLE);
+      setgamestatus(COMPLETED_CASTLE, GameStatus);
     }
     change_environment(E_COURT);
   }

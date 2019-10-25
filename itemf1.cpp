@@ -493,14 +493,14 @@ void i_pick(pob o) {
     mprint("Pick lock:");
     dir = getdir();
     if (dir == ABORT)
-      resetgamestatus(SKIP_MONSTERS);
+      resetgamestatus(SKIP_MONSTERS, GameStatus);
     else {
       ox = Player.x + Dirs[0][dir];
       oy = Player.y + Dirs[1][dir];
       if ((Level->site[ox][oy].locchar != CLOSED_DOOR) ||
           loc_statusp(ox, oy, SECRET, *Level)) {
         mprint("You can't unlock that!");
-        resetgamestatus(SKIP_MONSTERS);
+        resetgamestatus(SKIP_MONSTERS, GameStatus);
       } else if (Level->site[ox][oy].aux == LOCKED) {
         if (Level->depth == MaxDungeonLevels - 1)
           mprint("The lock is too complicated for you!!!");
@@ -526,14 +526,14 @@ void i_key(pob o) {
   mprint("Unlock door: ");
   dir = getdir();
   if (dir == ABORT)
-    resetgamestatus(SKIP_MONSTERS);
+    resetgamestatus(SKIP_MONSTERS, GameStatus);
   else {
     ox = Player.x + Dirs[0][dir];
     oy = Player.y + Dirs[1][dir];
     if ((Level->site[ox][oy].locchar != CLOSED_DOOR) ||
         loc_statusp(ox, oy, SECRET, *Level)) {
       mprint("You can't unlock that!");
-      resetgamestatus(SKIP_MONSTERS);
+      resetgamestatus(SKIP_MONSTERS, GameStatus);
     } else if (Level->site[ox][oy].aux == LOCKED) {
       mprint("The lock clicks open!");
       Level->site[ox][oy].aux = UNLOCKED;

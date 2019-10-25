@@ -93,7 +93,7 @@ void l_bank() {
             print2("You pick up your entire balance and then some!");
             Player.cash += Balance + 1000 + random_range(3000);
             Balance = 0;
-            setgamestatus(BANK_BROKEN);
+            setgamestatus(BANK_BROKEN, GameStatus);
           }
         } else
           print2("Password accepted. Working.");
@@ -233,7 +233,7 @@ void l_club() {
           print2("you have explored, and vice versa.");
           Spells[S_RETURN].known = TRUE;
           Player.cash -= 100;
-          setgamestatus(CLUB_MEMBER);
+          setgamestatus(CLUB_MEMBER, GameStatus);
         }
       } else
         print2("OK, but you're missing out on our benefits....");
