@@ -3,8 +3,8 @@
 /* level generator functions */
 
 #include <algorithm>
+#include <ctime>
 #include "glob.h"
-#include <time.h>
 
 /* Deallocate current dungeon */
 void free_dungeon() {

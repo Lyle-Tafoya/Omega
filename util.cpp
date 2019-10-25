@@ -4,7 +4,7 @@
 /* Random utility functions called from all over */
 
 #include <algorithm>
-#include <stdlib.h>
+#include <cstdlib>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>

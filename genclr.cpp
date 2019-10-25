@@ -39,9 +39,9 @@
 
 #ifndef OMEGA_CLRGEN /* this file confuses its own scanner */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /*
  * Special tag cpp prepends to color symbols
@@ -270,9 +270,9 @@ int main(int argc, char **argv) {
   fp = emitopen(cfile, argv);
 
   fprintf(fp,
+          "#include <cstdio>\n"
+          "#include <cstdlib>\n"
           "#include <curses.h>\n"
-          "#include <stdio.h>\n"
-          "#include <stdlib.h>\n"
 
           "#include \"%s\"\n"
 

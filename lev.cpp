@@ -1,6 +1,8 @@
 /* omega copyright (c) 1987,1988,1989 by Laurence Raphael Brothers */
 /* lev.c */
 
+#include <cassert>
+#include <cstdlib>
 #include "glob.h"
 
 /* Functions dealing with dungeon and country levels aside from actual

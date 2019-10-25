@@ -2,6 +2,8 @@
 /* inv.c */
 /* functions having to do with player item inventory */
 
+#include <cassert>
+#include <cstdlib>
 #include <curses.h>
 
 #include "glob.h"

@@ -4,7 +4,7 @@
 /* This file contains toplevel commands called from command1.c */
 
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
 #include <unistd.h>
 
 #include "glob.h"

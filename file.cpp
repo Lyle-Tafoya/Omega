@@ -3,8 +3,9 @@
 /* functions with file access in them. Also some direct calls to
    curses functions */
 
+#include <cerrno>
+#include <cstdlib>
 #include <curses.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <sys/file.h>
 #include <sys/types.h>

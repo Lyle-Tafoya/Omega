@@ -1,7 +1,7 @@
 /* omega copyright (c) 1987,1988,1989 by Laurence Raphael Brothers */
 /* save.c */
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 
 #include "glob.h"

@@ -5,6 +5,7 @@
 /* also some in file.c */
 
 #include <algorithm>
+#include <cassert>
 #include <curses.h>
 #include <sys/types.h>
 

@@ -3,10 +3,10 @@
 /* this file includes main() and some top-level functions */
 /* omega.c */
 
+#include <csignal>
+#include <cstdlib>
+#include <ctime>
 #include <fcntl.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <time.h>
 #include <unistd.h>
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */

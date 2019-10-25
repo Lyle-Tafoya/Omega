@@ -6,6 +6,7 @@
    and aux2.c are not huge */
 
 #include <algorithm>
+#include <cassert>
 #include "glob.h"
 
 /* check every ten minutes */

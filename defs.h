@@ -1409,11 +1409,6 @@ typedef oltype *pol;
 
 /* random  function declarations from system libraries */
 
-#include <stdlib.h>
-
-/* The assert macro (for ANSI/ISO C).  Hopefully this will always work! */
-#include <assert.h>
-
 #undef sign
 /* These must be made to work for both longs and ints */
 #define sign(n) (((n) < 0) ? -1 : (((n) > 0) ? 1 : 0))
@@ -1459,14 +1454,12 @@ typedef oltype *pol;
 /* Also, random and srandom are unlikely to be found on system V... */
 
 #ifdef STRING
-#include <string.h>
+#include <cstring>
 #endif
 
 #ifndef STRING
 #include <strings.h>
 #endif
-
-#include <stdio.h>
 
 #ifndef TRUE
 #define TRUE 1

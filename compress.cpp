@@ -260,12 +260,12 @@ char_type magic_header[] = {"\037\235"}; /* 1F 9D */
  */
 
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <fcntl.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #ifdef notdef

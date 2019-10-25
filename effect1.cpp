@@ -2,6 +2,7 @@
 /* effect1.c */
 
 #include <algorithm>
+#include <cassert>
 #include "glob.h"
 
 /* enchant */
