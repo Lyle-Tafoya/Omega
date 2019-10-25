@@ -185,7 +185,7 @@ void load_circle(int populate) {
         break;
       case 'S':
         Level->site[i][j].locchar = FLOOR;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         break;
       case '.':
         Level->site[i][j].locchar = FLOOR;

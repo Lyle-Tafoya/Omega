@@ -819,7 +819,7 @@ void restore_level(FILE *fd, int version) {
         fread((char *)&mask, sizeof(long int), 1, fd);
       }
       if (mask & 1)
-        lset(i, j, SEEN);
+        lset(i, j, SEEN, *Level);
       mask >>= 1;
       run--;
     }

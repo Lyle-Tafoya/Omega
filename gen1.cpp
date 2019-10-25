@@ -181,11 +181,11 @@ void straggle_corridor(int fx, int fy, int tx, int ty, Symbol loc, char rsi) {
 void makedoor(int x, int y) {
   if (random_range(20) <= Level->depth / 10) {
     Level->site[x][y].locchar = FLOOR;
-    lset(x, y, SECRET);
+    lset(x, y, SECRET, *Level);
   } else if (random_range(20) <= Level->depth / 2) {
     Level->site[x][y].locchar = CLOSED_DOOR;
     if (random_range(20) <= Level->depth / 10)
-      lset(x, y, SECRET);
+      lset(x, y, SECRET, *Level);
     if (random_range(40) <= Level->depth)
       Level->site[x][y].aux = LOCKED;
     else
@@ -195,11 +195,11 @@ void makedoor(int x, int y) {
     Level->site[x][y].aux = UNLOCKED;
   }
   if (!loc_statusp(x, y, SECRET, *Level)) {
-    lset(x, y + 1, STOPS);
-    lset(x + 1, y, STOPS);
-    lset(x - 1, y, STOPS);
-    lset(x, y - 1, STOPS);
-    lset(x, y, STOPS);
+    lset(x, y + 1, STOPS, *Level);
+    lset(x + 1, y, STOPS, *Level);
+    lset(x - 1, y, STOPS, *Level);
+    lset(x, y - 1, STOPS, *Level);
+    lset(x, y, STOPS, *Level);
   }
   Level->site[x][y].p_locf = L_NO_OP;
   /* prevents water corridors from being instant death in sewers */
@@ -453,7 +453,7 @@ void find_stairs(char fromlevel, char tolevel) {
     findspace(&Player.x, &Player.y, -1);
     if (Level->environment != E_ASTRAL) {
       Level->site[Player.x][Player.y].locchar = sitechar;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
     }
   }
 }

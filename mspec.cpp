@@ -426,11 +426,11 @@ void m_sp_lw(struct monster *m) {
     if (Level->site[m->x][m->y].locchar == FLOOR) {
       Level->site[m->x][m->y].locchar = LAVA;
       Level->site[m->x][m->y].p_locf = L_LAVA;
-      lset(m->x, m->y, CHANGED);
+      lset(m->x, m->y, CHANGED, *Level);
     } else if (Level->site[m->x][m->y].locchar == WATER) {
       Level->site[m->x][m->y].locchar = FLOOR;
       Level->site[m->x][m->y].p_locf = L_NO_OP;
-      lset(m->x, m->y, CHANGED);
+      lset(m->x, m->y, CHANGED, *Level);
     }
   }
 }

@@ -891,7 +891,7 @@ void m_trap_dart(struct monster *m) {
     strcat(Str1, " was hit by a dart!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   m_damage(m, difficulty() * 2, NORMAL_DAMAGE);
 }
@@ -907,7 +907,7 @@ void m_trap_pit(struct monster *m) {
     strcat(Str1, " fell into a pit!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   if (!m_statusp(m, INTANGIBLE))
     m_status_reset(m, MOBILE);
@@ -925,7 +925,7 @@ void m_trap_door(struct monster *m) {
     strcat(Str1, " fell into a trap door!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   m_vanish(m);
 }
@@ -942,9 +942,9 @@ void m_trap_abyss(struct monster *m) {
     strcat(Str1, " fell into the infinite abyss!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = ABYSS;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
     Level->site[m->x][m->y].p_locf = L_ABYSS;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   setgamestatus(SUPPRESS_PRINTING);
   m_vanish(m);
@@ -954,7 +954,7 @@ void m_trap_abyss(struct monster *m) {
 void m_trap_snare(struct monster *m) {
   char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
-  lset(m->x, m->y, CHANGED);
+  lset(m->x, m->y, CHANGED, *Level);
   if (los_p(m->x, m->y, Player.x, Player.y)) {
     if (m->uniqueness != COMMON)
       strcpy(Str1, m->monstring);
@@ -972,7 +972,7 @@ void m_trap_snare(struct monster *m) {
 void m_trap_blade(struct monster *m) {
   char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
-  lset(m->x, m->y, CHANGED);
+  lset(m->x, m->y, CHANGED, *Level);
   if (los_p(m->x, m->y, Player.x, Player.y)) {
     if (m->uniqueness != COMMON)
       strcpy(Str1, m->monstring);
@@ -989,7 +989,7 @@ void m_trap_blade(struct monster *m) {
 void m_trap_fire(struct monster *m) {
   char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
-  lset(m->x, m->y, CHANGED);
+  lset(m->x, m->y, CHANGED, *Level);
   if (los_p(m->x, m->y, Player.x, Player.y)) {
     if (m->uniqueness != COMMON)
       strcpy(Str1, m->monstring);
@@ -1021,7 +1021,7 @@ void m_fire(struct monster *m) {
 void m_trap_teleport(struct monster *m) {
   char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
-  lset(m->x, m->y, CHANGED);
+  lset(m->x, m->y, CHANGED, *Level);
   if (los_p(m->x, m->y, Player.x, Player.y)) {
     if (m->uniqueness != COMMON)
       strcpy(Str1, m->monstring);
@@ -1047,7 +1047,7 @@ void m_trap_disintegrate(struct monster *m) {
     strcat(Str1, " walked into a disintegration trap!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   disintegrate(m->x, m->y);
 }
@@ -1064,7 +1064,7 @@ void m_trap_sleepgas(struct monster *m) {
     strcat(Str1, " walked into a sleepgas trap!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   if (!m_immunityp(m, SLEEP))
     m_status_reset(m, AWAKE);
@@ -1082,7 +1082,7 @@ void m_trap_acid(struct monster *m) {
     strcat(Str1, " walked into an acid bath trap!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   m_damage(m, random_range(difficulty() * difficulty()), ACID);
 }
@@ -1099,7 +1099,7 @@ void m_trap_manadrain(struct monster *m) {
     strcat(Str1, " walked into a manadrain trap!");
     mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
-    lset(m->x, m->y, CHANGED);
+    lset(m->x, m->y, CHANGED, *Level);
   }
   if (m->specialf == M_SP_SPELL)
     m->specialf = M_NO_OP;

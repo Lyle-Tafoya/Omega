@@ -1417,10 +1417,14 @@ typedef oltype *pol;
 
 /* these bit operations were functions, but are faster as macros... */
 
-constexpr bool loc_statusp(int x, int y, int stat, const level &Level) {
-  return ((Level.site[x][y].lstatus & (stat)) ? 1 : 0);
+inline bool loc_statusp(int x, int y, int stat, const level &lvl) {
+  return ((lvl.site[x][y].lstatus & (stat)) ? 1 : 0);
 }
-#define lset(x, y, stat) (Level->site[x][y].lstatus |= (stat))
+
+inline void lset(int x, int y, int stat, level &lvl) {
+  lvl.site[x][y].lstatus |= (stat);
+}
+
 #define lreset(x, y, stat) (Level->site[x][y].lstatus &= ~(stat))
 
 #define c_statusp(x, y, stat) ((Country[x][y].status & (stat)) ? 1 : 0)

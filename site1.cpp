@@ -345,7 +345,7 @@ void statue_random(int x, int y) {
     Level->site[x][y].locchar = RUBBLE;
     Level->site[x][y].p_locf = L_RUBBLE;
     plotspot(x, y, TRUE);
-    lset(x, y, CHANGED);
+    lset(x, y, CHANGED, *Level);
     break;
   case 1:
     print1("The statue stoutly resists your attack.");
@@ -355,7 +355,7 @@ void statue_random(int x, int y) {
     Level->site[x][y].locchar = RUBBLE;
     Level->site[x][y].p_locf = L_RUBBLE;
     plotspot(x, y, TRUE);
-    lset(x, y, CHANGED);
+    lset(x, y, CHANGED, *Level);
     make_site_treasure(x, y, difficulty());
     break;
   case 3:
@@ -378,7 +378,7 @@ void statue_random(int x, int y) {
        * implement a bonus level!). */
       Level->site[x][y].locchar = STAIRS_DOWN;
       Level->site[x][y].p_locf = L_NO_OP;
-      lset(x, y, CHANGED | STOPS);
+      lset(x, y, CHANGED | STOPS, *Level);
     }
     break;
   case 6:
@@ -403,10 +403,10 @@ void statue_random(int x, int y) {
     print1("The statue extends an arm. Beams of light illuminate the level!");
     for (i = 0; i < WIDTH; i++)
       for (j = 0; j < LENGTH; j++) {
-        lset(i, j, SEEN);
+        lset(i, j, SEEN, *Level);
         if (loc_statusp(i, j, SECRET, *Level)) {
           lreset(i, j, SECRET);
-          lset(i, j, CHANGED);
+          lset(i, j, CHANGED, *Level);
         }
       }
     show_screen();
@@ -430,7 +430,7 @@ void wake_statue(int x, int y, int first) {
     else
       mprint("A statue springs to life!");
     Level->site[x][y].locchar = FLOOR;
-    lset(x, y, CHANGED);
+    lset(x, y, CHANGED, *Level);
     tml = ((pml)checkmalloc(sizeof(mltype)));
     tml->m = (Level->site[x][y].creature = m_create(x, y, 0, difficulty() + 1));
     m_status_set(Level->site[x][y].creature, HOSTILE);

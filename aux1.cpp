@@ -246,13 +246,13 @@ void searchat(int x, int y) {
   if (inbounds(x, y) && (random_range(3) || Player.status[ALERT])) {
     if (loc_statusp(x, y, SECRET, *Level)) {
       lreset(x, y, SECRET);
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
       if ((Level->site[x][y].locchar == OPEN_DOOR) ||
           (Level->site[x][y].locchar == CLOSED_DOOR)) {
         mprint("You find a secret door!");
         for (i = 0; i <= 8; i++) { /* FIXED! 12/25/98 */
-          lset(x + Dirs[0][i], y + Dirs[1][i], STOPS);
-          lset(x + Dirs[0][i], y + Dirs[1][i], CHANGED);
+          lset(x + Dirs[0][i], y + Dirs[1][i], STOPS, *Level);
+          lset(x + Dirs[0][i], y + Dirs[1][i], CHANGED, *Level);
         }
       } else
         mprint("You find a secret passage!");
@@ -262,7 +262,7 @@ void searchat(int x, int y) {
         (Level->site[x][y].locchar != TRAP) &&
         (Level->site[x][y].p_locf <= TRAP_BASE + NUMTRAPS)) {
       Level->site[x][y].locchar = TRAP;
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
       mprint("You find a trap!");
       drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE);

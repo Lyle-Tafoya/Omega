@@ -239,7 +239,7 @@ int increase_priest_rank(int deity) {
       print2("The altar crumbles to dust and blows away.");
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf = L_NO_OP;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
       break;
     case ODIN:
       if (Player.alignment > 0) {

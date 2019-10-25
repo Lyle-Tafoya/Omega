@@ -508,7 +508,7 @@ void i_pick(pob o) {
                  Player.dex + Player.level + Player.rank[THIEVES] * 10) {
           mprint("You picked the lock!");
           Level->site[ox][oy].aux = UNLOCKED;
-          lset(ox, oy, CHANGED);
+          lset(ox, oy, CHANGED, *Level);
           gain_experience(std::max(3, static_cast<int>(Level->depth)));
         } else
           mprint("You failed to pick the lock.");
@@ -537,7 +537,7 @@ void i_key(pob o) {
     } else if (Level->site[ox][oy].aux == LOCKED) {
       mprint("The lock clicks open!");
       Level->site[ox][oy].aux = UNLOCKED;
-      lset(ox, oy, CHANGED);
+      lset(ox, oy, CHANGED, *Level);
       o->blessing--;
       if ((o->blessing < 0) || (Level->depth == MaxDungeonLevels - 1)) {
         mprint("The key disintegrates!");
@@ -819,7 +819,7 @@ void i_trap(pob o) {
   } else {
     mprint("You successfully set a trap at your location.");
     Level->site[Player.x][Player.y].p_locf = o->aux;
-    lset(Player.x, Player.y, CHANGED);
+    lset(Player.x, Player.y, CHANGED, *Level);
   }
   dispose_lost_objects(1, o);
 }

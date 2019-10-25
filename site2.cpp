@@ -355,7 +355,7 @@ void l_trifid() {
       print2("The trifid disintegrates with a frustrated sigh.");
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf = L_NO_OP;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
       gain_experience(1000);
       stuck = FALSE;
     } else {
@@ -865,7 +865,7 @@ void l_safe() {
     print2("The door springs open!");
     Level->site[Player.x][Player.y].locchar = FLOOR;
     Level->site[Player.x][Player.y].p_locf = L_NO_OP;
-    lset(Player.x, Player.y, CHANGED);
+    lset(Player.x, Player.y, CHANGED, *Level);
     if (random_range(2) == 1) {
       print1("You find:");
       do {
@@ -893,7 +893,7 @@ void l_safe() {
       print2("The safe has self-destructed.");
       Level->site[Player.x][Player.y].locchar = RUBBLE;
       Level->site[Player.x][Player.y].p_locf = L_RUBBLE;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
     } else if (attempt == -3) {
       print1("The safe jolts you with electricity!");
       lball(Player.x, Player.y, Player.x, Player.y, 30);

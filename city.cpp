@@ -42,7 +42,7 @@ void load_city(int populate) {
   Level->environment = E_CITY;
   for (j = 0; j < LENGTH; j++) {
     for (i = 0; i < WIDTH; i++) {
-      lset(i, j, SEEN);
+      lset(i, j, SEEN, *Level);
       site = getc(fd) ^ site;
       switch (site) {
       case 'g':
@@ -145,10 +145,10 @@ void load_city(int populate) {
         CitySiteList[L_BANK - CITYSITEBASE][0] = TRUE;
         CitySiteList[L_BANK - CITYSITEBASE][1] = i;
         CitySiteList[L_BANK - CITYSITEBASE][2] = j;
-        lset(i, j + 1, STOPS);
-        lset(i + 1, j, STOPS);
-        lset(i - 1, j, STOPS);
-        lset(i, j - 1, STOPS);
+        lset(i, j + 1, STOPS, *Level);
+        lset(i + 1, j, STOPS, *Level);
+        lset(i - 1, j, STOPS, *Level);
+        lset(i, j - 1, STOPS, *Level);
         break;
       case 'X':
         Level->site[i][j].locchar = FLOOR;
@@ -161,12 +161,12 @@ void load_city(int populate) {
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].p_locf = L_VAULT;
         Level->site[i][j].aux = NOCITYMOVE;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         break;
       case 'S':
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].aux = NOCITYMOVE;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         break;
       case 'G':
         Level->site[i][j].locchar = FLOOR;
@@ -193,7 +193,7 @@ void load_city(int populate) {
         if (populate)
           make_site_treasure(i, j, 5);
         Level->site[i][j].aux = NOCITYMOVE;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         break;
       case '%':
         Level->site[i][j].showchar = WALL;
@@ -202,7 +202,7 @@ void load_city(int populate) {
         if (populate)
           make_site_treasure(i, j, 5);
         Level->site[i][j].aux = NOCITYMOVE;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         break;
       case '$':
         Level->site[i][j].locchar = FLOOR;
@@ -238,7 +238,7 @@ void load_city(int populate) {
         Level->site[i][j].showchar = WALL;
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].p_locf = TRAP_BASE + random_range(NUMTRAPS);
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         break;
       case '"':
         Level->site[i][j].locchar = HEDGE;
@@ -266,7 +266,7 @@ void load_city(int populate) {
         Level->site[i][j].showchar = WALL;
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].aux = NOCITYMOVE;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         break;
       case '-':
         Level->site[i][j].locchar = CLOSED_DOOR;
@@ -309,11 +309,11 @@ void assign_city_function(int x, int y) {
 
   Level->site[x][y].aux = TRUE;
 
-  lset(x, y + 1, STOPS);
-  lset(x + 1, y, STOPS);
-  lset(x - 1, y, STOPS);
-  lset(x, y - 1, STOPS);
-  lset(x, y, STOPS); /* FIXED! 12/30/98 */
+  lset(x, y + 1, STOPS, *Level);
+  lset(x + 1, y, STOPS, *Level);
+  lset(x - 1, y, STOPS, *Level);
+  lset(x, y - 1, STOPS, *Level);
+  lset(x, y, STOPS, *Level); /* FIXED! 12/30/98 */
 
   if (setup == 0) {
     setup = 1;

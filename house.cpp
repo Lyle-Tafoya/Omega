@@ -82,7 +82,7 @@ void load_house(int kind, int populate) {
       case '.':
         Level->site[i][j].locchar = FLOOR;
         if (stops) {
-          lset(i, j, STOPS);
+          lset(i, j, STOPS, *Level);
           stops = 0;
         }
         break;
@@ -105,13 +105,13 @@ void load_house(int kind, int populate) {
       case 'S':
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].showchar = WALL;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         Level->site[i][j].roomnumber = RS_SECRETPASSAGE;
         break;
       case '3':
         Level->site[i][j].locchar = SAFE;
         Level->site[i][j].showchar = WALL;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         Level->site[i][j].p_locf = L_SAFE;
         break;
       case '^':
@@ -156,13 +156,13 @@ void load_house(int kind, int populate) {
       case '|':
         Level->site[i][j].locchar = OPEN_DOOR;
         Level->site[i][j].roomnumber = RS_CORRIDOR;
-        lset(i, j, STOPS);
+        lset(i, j, STOPS, *Level);
         break;
       case '+':
         Level->site[i][j].locchar = CLOSED_DOOR;
         Level->site[i][j].roomnumber = RS_CORRIDOR;
         Level->site[i][j].aux = LOCKED;
-        lset(i, j, STOPS);
+        lset(i, j, STOPS, *Level);
         break;
       case 'd':
         Level->site[i][j].locchar = FLOOR;

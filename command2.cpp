@@ -358,7 +358,7 @@ void disarm() {
         }
         Level->site[x][y].p_locf = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;
-        lset(x, y, CHANGED);
+        lset(x, y, CHANGED, *Level);
         gain_experience(5);
       } else if (random_range(10 + difficulty() * 2) > Player.dex) {
         print1("You accidentally set off the trap!");
@@ -687,7 +687,7 @@ void opendoor() {
       if (random_range(100) < Player.str) {
         print2("Incredible. You bust a gut and lift the portcullis.");
         Level->site[ox][oy].locchar = FLOOR;
-        lset(ox, oy, CHANGED);
+        lset(ox, oy, CHANGED, *Level);
       } else {
         print2("Argh. You ruptured yourself.");
         p_damage(Player.str, UNSTOPPABLE, "a portcullis");
@@ -700,7 +700,7 @@ void opendoor() {
       print3("That door seems to be locked.");
     else {
       Level->site[ox][oy].locchar = OPEN_DOOR;
-      lset(ox, oy, CHANGED);
+      lset(ox, oy, CHANGED, *Level);
     }
   }
 }
@@ -745,7 +745,7 @@ void bash_location() {
         if (loc_statusp(ox, oy, SECRET, *Level)) {
           print1("You found a secret door!");
           lreset(ox, oy, SECRET);
-          lset(ox, oy, CHANGED);
+          lset(ox, oy, CHANGED, *Level);
         }
         if (Level->site[ox][oy].aux == LOCKED) {
           if (random_range(50 + difficulty() * 10) < Player.str) {
@@ -753,7 +753,7 @@ void bash_location() {
             Player.y = oy;
             print2("You blast the door off its hinges!");
             Level->site[ox][oy].locchar = FLOOR;
-            lset(ox, oy, CHANGED);
+            lset(ox, oy, CHANGED, *Level);
             p_movefunction(Level->site[Player.x][Player.y].p_locf);
             setgamestatus(SKIP_MONSTERS); /* monsters are surprised... */
           } else {
@@ -768,7 +768,7 @@ void bash_location() {
           if (random_range(30) > Player.str)
             p_damage(1, UNSTOPPABLE, "a door");
           Level->site[ox][oy].locchar = OPEN_DOOR;
-          lset(ox, oy, CHANGED);
+          lset(ox, oy, CHANGED, *Level);
           p_movefunction(Level->site[Player.x][Player.y].p_locf);
           setgamestatus(SKIP_MONSTERS); /* monsters are surprised... */
         }
@@ -782,7 +782,7 @@ void bash_location() {
           gain_experience(100);
           Level->site[ox][oy].locchar = FLOOR;
           Level->site[ox][oy].p_locf = L_NO_OP;
-          lset(ox, oy, CHANGED);
+          lset(ox, oy, CHANGED, *Level);
         } else {
           print2("You only hurt yourself on the 3'' thick steel bars.");
           p_damage(Player.str, UNSTOPPABLE, "a portcullis");
@@ -799,7 +799,7 @@ void bash_location() {
           print3("You feel almost unbearably smug.");
           Level->site[ox][oy].locchar = RUBBLE;
           Level->site[ox][oy].p_locf = L_RUBBLE;
-          lset(ox, oy, CHANGED);
+          lset(ox, oy, CHANGED, *Level);
           gain_experience(5);
         } else {
           print1("You have successfully annoyed a major deity. Good job.");
@@ -814,7 +814,7 @@ void bash_location() {
             print1("The altar crumbles...");
             Level->site[ox][oy].locchar = RUBBLE;
             Level->site[ox][oy].p_locf = L_RUBBLE;
-            lset(ox, oy, CHANGED);
+            lset(ox, oy, CHANGED, *Level);
             morewait();
             if (Player.rank[PRIESTHOOD]) {
               print2("You sense your deity's pleasure with you.");
@@ -963,7 +963,7 @@ void closedoor() {
       setgamestatus(SKIP_MONSTERS);
     } else
       Level->site[ox][oy].locchar = CLOSED_DOOR;
-    lset(ox, oy, CHANGED);
+    lset(ox, oy, CHANGED, *Level);
   }
 }
 

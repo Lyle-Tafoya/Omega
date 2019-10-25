@@ -1235,11 +1235,11 @@ void destroy_order() {
           lreset(i, j, SECRET);
           Level->site[i][j].locchar = FLOOR;
           Level->site[i][j].p_locf = L_NO_OP;
-          lset(i, j, CHANGED);
+          lset(i, j, CHANGED, *Level);
         } else {
           Level->site[i][j].locchar = RUBBLE;
           Level->site[i][j].p_locf = L_RUBBLE;
-          lset(i, j, CHANGED);
+          lset(i, j, CHANGED, *Level);
         }
         if (Level->site[i][j].creature != NULL) {
           Level->site[i][j].creature->hp = -1;

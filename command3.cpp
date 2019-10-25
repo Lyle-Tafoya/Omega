@@ -889,7 +889,7 @@ void tunnel() {
           tunnelcheck();
           Level->site[ox][oy].locchar = RUBBLE;
           Level->site[ox][oy].p_locf = L_RUBBLE;
-          lset(ox, oy, CHANGED);
+          lset(ox, oy, CHANGED, *Level);
         } else
           mprint("No joy.");
       } else if (Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
@@ -900,7 +900,7 @@ void tunnel() {
           tunnelcheck();
           Level->site[ox][oy].locchar = RUBBLE;
           Level->site[ox][oy].p_locf = L_RUBBLE;
-          lset(ox, oy, CHANGED);
+          lset(ox, oy, CHANGED, *Level);
         } else
           mprint("No luck.");
       } else if ((aux > 0) &&
@@ -910,7 +910,7 @@ void tunnel() {
         tunnelcheck();
         Level->site[ox][oy].locchar = RUBBLE;
         Level->site[ox][oy].p_locf = L_RUBBLE;
-        lset(ox, oy, CHANGED);
+        lset(ox, oy, CHANGED, *Level);
       } else
         mprint("You have no success as yet.");
     }

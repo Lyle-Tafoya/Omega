@@ -76,7 +76,7 @@ int m_unblocked(struct monster *m, int x, int y) {
       if (los_p(x, y, Player.x, Player.y)) {
         mprint("You see a secret door swing open!");
         lreset(x, y, SECRET);
-        lset(x, y, CHANGED);
+        lset(x, y, CHANGED, *Level);
       } else
         mprint("You hear a door creak open, and then close again.");
       /* smart monsters would close secret doors behind them if the */
@@ -98,12 +98,12 @@ int m_unblocked(struct monster *m, int x, int y) {
     if (m->movef == M_MOVE_SMART) {
       mprint("You hear a door creak open.");
       Level->site[x][y].locchar = OPEN_DOOR;
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
       return (TRUE);
     } else if (random_range(m->dmg) > random_range(100)) {
       mprint("You hear a door shattering.");
       Level->site[x][y].locchar = RUBBLE;
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
       return (TRUE);
     } else
       return (m_statusp(m, INTANGIBLE));

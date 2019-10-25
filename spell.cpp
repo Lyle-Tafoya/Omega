@@ -162,7 +162,7 @@ void s_ritual() {
                 HEDGE;
             Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].p_locf =
                 L_TRIFID;
-            lset(Player.x + Dirs[0][i], Player.y + Dirs[1][i], CHANGED);
+            lset(Player.x + Dirs[0][i], Player.y + Dirs[1][i], CHANGED, *Level);
           }
           break;
         case ROOMBASE + 13: /* harem */
@@ -198,7 +198,7 @@ void s_ritual() {
               y++;
             }
           }
-          lset(Player.x, Player.y, CHANGED);
+          lset(Player.x, Player.y, CHANGED, *Level);
           break;
         case ROOMBASE + 27: /* magician's lab */
           mprint("Your magical activity sets off a latent spell in the lab!");

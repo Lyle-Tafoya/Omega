@@ -325,7 +325,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype) {
         Level->site[xx][yy].p_locf = L_NO_OP;
         Level->site[xx][yy].locchar = FLOOR;
         plotspot(xx, yy, TRUE);
-        lset(xx, yy, CHANGED);
+        lset(xx, yy, CHANGED, *Level);
       } else
         mprint("The hedge is unaffected.");
     } else
@@ -335,7 +335,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype) {
       mprint("The water is vaporised!");
       Level->site[xx][yy].p_locf = L_NO_OP;
       Level->site[xx][yy].locchar = FLOOR;
-      lset(xx, yy, CHANGED);
+      lset(xx, yy, CHANGED, *Level);
     }
 }
 
@@ -433,7 +433,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype) {
           Level->site[ex][ey].p_locf = L_NO_OP;
           Level->site[ex][ey].locchar = FLOOR;
           plotspot(ex, ey, TRUE);
-          lset(ex, ey, CHANGED);
+          lset(ex, ey, CHANGED, *Level);
         } else
           mprint("The hedge is unaffected.");
       } else
@@ -444,7 +444,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype) {
         Level->site[ex][ey].p_locf = L_NO_OP;
         Level->site[ex][ey].locchar = FLOOR;
         plotspot(ex, ey, TRUE);
-        lset(ex, ey, CHANGED);
+        lset(ex, ey, CHANGED, *Level);
       }
   }
 }

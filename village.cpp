@@ -61,7 +61,7 @@ void load_village(int villagenum, int populate) {
   fd = checkfopen(Str3, "rb");
   for (j = 0; j < LENGTH; j++) {
     for (i = 0; i < WIDTH; i++) {
-      lset(i, j, SEEN);
+      lset(i, j, SEEN, *Level);
       site = getc(fd) ^ site;
       Level->site[i][j].p_locf = L_NO_OP;
       switch (site) {
@@ -226,11 +226,11 @@ void assign_village_function(int x, int y, int setup) {
     }
   } else {
 
-    lset(x, y + 1, STOPS);
-    lset(x + 1, y, STOPS);
-    lset(x - 1, y, STOPS);
-    lset(x, y - 1, STOPS);
-    lset(x, y, STOPS);
+    lset(x, y + 1, STOPS, *Level);
+    lset(x + 1, y, STOPS, *Level);
+    lset(x - 1, y, STOPS, *Level);
+    lset(x, y - 1, STOPS, *Level);
+    lset(x, y, STOPS, *Level);
 
     switch (permutation[next++]) {
     case 0:

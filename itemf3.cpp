@@ -126,7 +126,7 @@ void i_juggernaut(pob o) {
           Level->site[x][y].p_locf = L_NO_OP;
         }
         lreset(x, y, SECRET);
-        lset(x, y, CHANGED);
+        lset(x, y, CHANGED, *Level);
         if (Level->site[x][y].creature != NULL) {
           if (seen)
             nprint1("Splat! ");
@@ -249,7 +249,7 @@ void i_antioch(pob o) {
       gain_experience(1000);
       Level->site[x][y].locchar = TRAP;
       Level->site[x][y].p_locf = L_TRAP_DOOR;
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
       if (Level->site[x][y].creature != NULL) {
         m_death(Level->site[x][y].creature);
         print2("You are covered with gore.");

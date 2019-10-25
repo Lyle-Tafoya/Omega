@@ -79,7 +79,7 @@ void make_country_monsters(Symbol terrain) {
     if (m_statusp(tml->m, ONLYSWIM)) {
       Level->site[tml->m->x][tml->m->y].locchar = WATER;
       Level->site[tml->m->x][tml->m->y].p_locf = L_WATER;
-      lset(tml->m->x, tml->m->y, CHANGED);
+      lset(tml->m->x, tml->m->y, CHANGED, *Level);
     }
 
     tml->next = ml;
@@ -378,7 +378,7 @@ void populate_level(int monstertype) {
     if (m_statusp(Level->site[i][j].creature, ONLYSWIM)) {
       Level->site[i][j].locchar = WATER;
       Level->site[i][j].p_locf = L_WATER;
-      lset(i, j, CHANGED);
+      lset(i, j, CHANGED, *Level);
     }
 
     tml->next = ((pml)checkmalloc(sizeof(mltype)));

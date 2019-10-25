@@ -209,8 +209,8 @@ void sleep_player(int amount) {
 
 void hide(int x, int y) {
   if (inbounds(x, y)) {
-    lset(x, y, SECRET);
-    lset(x, y, CHANGED);
+    lset(x, y, SECRET, *Level);
+    lset(x, y, CHANGED, *Level);
     putspot(x, y, WALL);
     mprint("You feel sneaky.");
   }
@@ -226,7 +226,7 @@ void clairvoyance(int vision) {
       if (inbounds(i, j)) {
         Level->site[i][j].showchar = SPACE;
         lreset(i, j, SECRET);
-        lset(i, j, CHANGED);
+        lset(i, j, CHANGED, *Level);
         dodrawspot(i, j);
       }
     }
@@ -365,14 +365,14 @@ void disintegrate(int x, int y) {
         Level->site[x][y].locchar = TRAP;
         Level->site[x][y].p_locf = L_TRAP_DOOR;
         Level->site[x][y].aux = S_DISINTEGRATE;
-        lset(x, y, CHANGED);
+        lset(x, y, CHANGED, *Level);
       } else
         mprint("The hole just gets deeper....");
     } else if (Level->site[x][y].locchar == FLOOR) {
       mprint("You zap a hole in the floor!");
       Level->site[x][y].locchar = TRAP;
       Level->site[x][y].p_locf = L_TRAP_PIT;
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
     } else if ((Level->site[x][y].locchar == WALL) ||
                (Level->site[x][y].locchar == OPEN_DOOR) ||
                (Level->site[x][y].locchar == CLOSED_DOOR) ||
@@ -384,14 +384,14 @@ void disintegrate(int x, int y) {
       Level->site[x][y].p_locf = L_RUBBLE;
       Level->site[x][y].locchar = RUBBLE;
       lreset(x, y, SECRET);
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
     } else if ((Level->site[x][y].locchar == RUBBLE) ||
                (Level->site[x][y].locchar == TRAP)) {
       mprint("The site is blasted clear!");
       Level->site[x][y].p_locf = L_NO_OP;
       Level->site[x][y].locchar = FLOOR;
       lreset(x, y, SECRET);
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
     } else if (Level->site[x][y].locchar == HEDGE) {
       if (Level->site[x][y].p_locf == L_TRIFID) {
         mprint("The trifid screams as it disintgrates!");
@@ -399,13 +399,13 @@ void disintegrate(int x, int y) {
         Level->site[x][y].p_locf = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;
         lreset(x, y, SECRET);
-        lset(x, y, CHANGED);
+        lset(x, y, CHANGED, *Level);
       } else {
         mprint("The hedge is blasted away!");
         Level->site[x][y].p_locf = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;
         lreset(x, y, SECRET);
-        lset(x, y, CHANGED);
+        lset(x, y, CHANGED, *Level);
       }
     } else
       mprint("The blast has no effect.");
@@ -773,7 +773,7 @@ void dispel(int blessing) {
       Level->site[x][y].p_locf = L_NO_OP;
       if (Level->site[x][y].locchar == TRAP)
         Level->site[x][y].locchar = FLOOR;
-      lset(x, y, CHANGED);
+      lset(x, y, CHANGED, *Level);
     } else if (Level->site[x][y].p_locf == L_MAGIC_POOL)
       Level->site[x][y].p_locf = L_WATER;
     else
@@ -945,7 +945,7 @@ void drain(int blessing) {
     mprint("The altar collapses in on itself....");
     Level->site[x][y].locchar = ABYSS;
     Level->site[x][y].p_locf = L_ABYSS;
-    lset(x, y, CHANGED);
+    lset(x, y, CHANGED, *Level);
     if (!Player.patron) {
       mprint("You drain some theurgic energy from the altar....");
       gain_experience(40);

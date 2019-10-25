@@ -506,7 +506,7 @@ void drawspot(int x, int y) {
     c = getspot(x, y, FALSE);
     if (c != Level->site[x][y].showchar)
       if (view_los_p(Player.x, Player.y, x, y)) {
-        lset(x, y, SEEN);
+        lset(x, y, SEEN, *Level);
         Level->site[x][y].showchar = c;
         putspot(x, y, c);
       }
@@ -519,7 +519,7 @@ void dodrawspot(int x, int y) {
   if (inbounds(x, y)) {
     c = getspot(x, y, FALSE);
     if (c != Level->site[x][y].showchar) {
-      lset(x, y, SEEN);
+      lset(x, y, SEEN, *Level);
       Level->site[x][y].showchar = c;
       putspot(x, y, c);
     }
@@ -530,7 +530,7 @@ void dodrawspot(int x, int y) {
 void blankoutspot(int i, int j) {
   if (inbounds(i, j)) {
     lreset(i, j, LIT);
-    lset(i, j, CHANGED);
+    lset(i, j, CHANGED, *Level);
     if (Level->site[i][j].locchar == FLOOR) {
       Level->site[i][j].showchar = SPACE;
       putspot(i, j, SPACE);
@@ -879,7 +879,7 @@ void drawscreen() {
   else
     for (i = 0; i < WIDTH; i++)
       for (j = 0; j < LENGTH; j++)
-        lset(i, j, SEEN);
+        lset(i, j, SEEN, *Level);
   if (Current_Environment == E_CITY)
     for (i = 0; i < NUMCITYSITES; i++)
       CitySiteList[i][0] = 1;
@@ -1223,9 +1223,9 @@ void spreadroomlight(int x, int y, int roomno) {
 /* illuminate one spot at x y */
 void lightspot(int x, int y) {
   Symbol c;
-  lset(x, y, LIT);
-  lset(x, y, SEEN);
-  lset(x, y, CHANGED);
+  lset(x, y, LIT, *Level);
+  lset(x, y, SEEN, *Level);
+  lset(x, y, CHANGED, *Level);
   c = getspot(x, y, FALSE);
   Level->site[x][y].showchar = c;
   putspot(x, y, c);

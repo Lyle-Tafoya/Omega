@@ -10,7 +10,7 @@
 void l_trap_siren() {
   pml ml;
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   print1("A klaxon goes off!");
   print2("'Intruder Alert -- Intruder Alert -- Intruder Alert'");
   print3("You have the feeling you have been discovered....");
@@ -45,7 +45,7 @@ void l_trap_siren() {
 
 void l_trap_dart() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   if (gamestatusp(MOUNTED)) {
     mprint("A dart annoys your horse....");
   } else if (random_range(100) < Player.absorption)
@@ -63,7 +63,7 @@ void l_trap_dart() {
 
 void l_trap_pit() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   if (gamestatusp(MOUNTED)) {
     mprint("Your horse stumbles into a pit and breaks a leg!");
     morewait();
@@ -90,7 +90,7 @@ void l_trap_door() {
     mprint("You feel oddly lucky.");
   else {
     Level->site[Player.x][Player.y].locchar = TRAP;
-    lset(Player.x, Player.y, CHANGED);
+    lset(Player.x, Player.y, CHANGED, *Level);
     if (gamestatusp(MOUNTED)) {
       mprint("You and your horse fall through a trap door!");
       morewait();
@@ -124,7 +124,7 @@ void l_trap_door() {
 
 void l_trap_snare() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   if (gamestatusp(MOUNTED))
     mprint("Your horse steps out of a snare trap.");
   else if (random_range(100) < Player.agi)
@@ -137,7 +137,7 @@ void l_trap_snare() {
 
 void l_trap_blade() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   if (random_range(30) < Player.agi + Player.level)
     mprint("You duck under a scything blade!");
   else {
@@ -171,12 +171,12 @@ void l_trap_fire() {
   }
   Level->site[Player.x][Player.y].locchar = FIRE;
   Level->site[Player.x][Player.y].p_locf = L_FIRE;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
 }
 
 void l_trap_teleport() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   mprint("You experience a momentary disorientation....");
   morewait();
   if (random_range(10000) > difficulty() * difficulty())
@@ -187,7 +187,7 @@ void l_trap_teleport() {
 
 void l_trap_disintegrate() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   mprint("Oh, no! A disintegration trap!");
   morewait();
   if (gamestatusp(MOUNTED)) {
@@ -201,7 +201,7 @@ void l_trap_disintegrate() {
 
 void l_trap_sleepgas() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   mprint("Hsssssssss....");
   morewait();
   mprint("You detect a strange odor....");
@@ -212,7 +212,7 @@ void l_trap_sleepgas() {
 void l_trap_acid() {
   int i, k, itemdamage;
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   if (Player.agi + Player.level < random_range(100)) {
     mprint("You are drenched by a spray of acid!");
     morewait();
@@ -239,7 +239,7 @@ void l_trap_acid() {
 
 void l_trap_abyss() {
   Level->site[Player.x][Player.y].locchar = ABYSS;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   if (gamestatusp(MOUNTED)) {
     mprint("You and your horse fall into the infinite abyss!");
     morewait();
@@ -255,7 +255,7 @@ void l_trap_abyss() {
 
 void l_trap_manadrain() {
   Level->site[Player.x][Player.y].locchar = TRAP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   if (Player.mana == 0) {
     if (random_range(10) == 3) {
       mprint("The manadrain trap overloads -- positive feedback....");
@@ -263,7 +263,7 @@ void l_trap_manadrain() {
       morewait();
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf = L_NO_OP;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
       Player.mana = calcmana();
     } else
       mprint("You feel strangely unaffected by the manadrain trap.");

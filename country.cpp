@@ -200,7 +200,7 @@ void load_dlair(int empty, int populate) {
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].showchar = WALL;
         if (!empty)
-          lset(i, j, SECRET);
+          lset(i, j, SECRET, *Level);
         Level->site[i][j].roomnumber = RS_SECRETPASSAGE;
         break;
       case '$':
@@ -294,7 +294,7 @@ void load_speak(int empty, int populate) {
       case 'S':
         Level->site[i][j].locchar = FLOOR;
         Level->site[i][j].showchar = WALL;
-        lset(i, j, SECRET);
+        lset(i, j, SECRET, *Level);
         Level->site[i][j].roomnumber = RS_SECRETPASSAGE;
         break;
       case 'L':
@@ -536,7 +536,7 @@ void load_temple(int deity, int populate) {
         Level->site[i][j].locchar = FLOOR;
         if (!Player.patron || strcmp(Player.name, Priest[Player.patron]) ||
             Player.rank[PRIESTHOOD] != HIGHPRIEST)
-          lset(i, j, SECRET);
+          lset(i, j, SECRET, *Level);
         break;
       case 'W':
         Level->site[i][j].locchar = FLOOR;

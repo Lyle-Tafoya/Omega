@@ -21,7 +21,7 @@ void make_stairs(int fromlevel) {
     findspace(&i, &j, -1);
     Level->site[i][j].locchar = STAIRS_UP;
     Level->site[i][j].aux = Level->depth - 1;
-    lset(i, j, STOPS);
+    lset(i, j, STOPS, *Level);
     if (fromlevel >= 0 && fromlevel < Level->depth) {
       Player.x = i;
       Player.y = j;
@@ -31,7 +31,7 @@ void make_stairs(int fromlevel) {
     findspace(&i, &j, -1);
     Level->site[i][j].locchar = STAIRS_DOWN;
     Level->site[i][j].aux = Level->depth + 1;
-    lset(i, j, STOPS);
+    lset(i, j, STOPS, *Level);
     if (fromlevel > Level->depth) {
       Player.x = i;
       Player.y = j;

@@ -215,7 +215,7 @@ void l_lift() {
 
   Level->site[Player.x][Player.y].locchar = FLOOR;
   Level->site[Player.x][Player.y].p_locf = L_NO_OP;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
   print1("You walk onto a shimmering disk....");
   print2("The disk vanishes, and a glow surrounds you.");
   print3("You feel weightless.... You feel ghostly....");
@@ -321,7 +321,7 @@ void l_magic_pool() {
   print2("The pool seems to have dried up.");
   Level->site[Player.x][Player.y].locchar = TRAP;
   Level->site[Player.x][Player.y].p_locf = L_TRAP_PIT;
-  lset(Player.x, Player.y, CHANGED);
+  lset(Player.x, Player.y, CHANGED, *Level);
 }
 
 void l_no_op() {}
@@ -368,7 +368,7 @@ void l_portcullis_trap() {
       if ((Level->site[i][j].p_locf == L_PORTCULLIS) &&
           (Level->site[i][j].locchar != PORTCULLIS)) {
         Level->site[i][j].locchar = PORTCULLIS;
-        lset(i, j, CHANGED);
+        lset(i, j, CHANGED, *Level);
         putspot(i, j, PORTCULLIS);
         if ((i == Player.x) && (j == Player.y)) {
           print3("Smash! You've been hit by a falling portcullis!");
@@ -392,11 +392,11 @@ void l_drop_every_portcullis() {
     for (j = 0; j < LENGTH; j++) {
       if (Level->site[i][j].p_locf == L_DROP_EVERY_PORTCULLIS) {
         Level->site[i][j].p_locf = L_NO_OP;
-        lset(i, j, CHANGED);
+        lset(i, j, CHANGED, *Level);
       } else if ((Level->site[i][j].p_locf == L_PORTCULLIS) &&
                  (Level->site[i][j].locchar != PORTCULLIS)) {
         Level->site[i][j].locchar = PORTCULLIS;
-        lset(i, j, CHANGED);
+        lset(i, j, CHANGED, *Level);
         putspot(i, j, PORTCULLIS);
         if ((i == Player.x) && (j == Player.y)) {
           print3("Smash! You've been hit by a falling portcullis!");
@@ -416,7 +416,7 @@ void l_raise_portcullis() {
     for (j = 0; j < LENGTH; j++) {
       if (Level->site[i][j].locchar == PORTCULLIS) {
         Level->site[i][j].locchar = FLOOR;
-        lset(i, j, CHANGED);
+        lset(i, j, CHANGED, *Level);
         putspot(i, j, FLOOR);
         open = TRUE;
       }
@@ -856,7 +856,7 @@ void l_throne() {
           print2("With an odd tinkling sound the throne shatters!");
           Level->site[Player.x][Player.y].locchar = RUBBLE;
           Level->site[Player.x][Player.y].p_locf = L_RUBBLE;
-          lset(Player.x, Player.y, CHANGED);
+          lset(Player.x, Player.y, CHANGED, *Level);
           if (find_and_remove_item(ARTIFACTID + 22, -1)) {
             morewait();
             print1("Your sceptre reverberates with the noise, and");

@@ -561,13 +561,13 @@ void sanctify(int blessing) {
       mprint("The gods are angered!");
       Level->site[Player.x][Player.y].locchar = LAVA;
       Level->site[Player.x][Player.y].p_locf = L_LAVA;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
       p_movefunction(L_LAVA);
     } else {
       Level->site[Player.x][Player.y].locchar = ALTAR;
       Level->site[Player.x][Player.y].aux = Player.patron;
       Level->site[Player.x][Player.y].p_locf = L_ALTAR;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
       mprint("You are standing on sacred ground!");
     }
   } else {
@@ -575,7 +575,7 @@ void sanctify(int blessing) {
       mprint("The altar crumbles before your unholy blast....");
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf = L_NO_OP;
-      lset(Player.x, Player.y, CHANGED);
+      lset(Player.x, Player.y, CHANGED, *Level);
       if (Level->site[Player.x][Player.y].aux == Player.patron) {
         mprint("Your deity is not amused....");
         p_damage(Player.hp - 1, UNSTOPPABLE, "Divine Wrath");
