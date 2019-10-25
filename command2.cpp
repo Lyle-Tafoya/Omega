@@ -632,7 +632,7 @@ void setoptions() {
     display_option_slot(slot);
     move_slot(slot, slot, NUMOPTIONS + 1);
   } while (!done);
-  if (optionp(SHOW_COLOUR))
+  if (optionp(SHOW_COLOUR, Player))
     colour_on();
   else
     colour_off();
@@ -1011,10 +1011,10 @@ void moveplayer(int dx, int dy) {
       if (Current_Environment != E_COUNTRYSIDE) {
         if (gamestatusp(FAST_MOVE, GameStatus))
           if ((Level->site[Player.x][Player.y].things != NULL) ||
-              (optionp(RUNSTOP) && loc_statusp(Player.x, Player.y, STOPS, *Level)))
+              (optionp(RUNSTOP, Player) && loc_statusp(Player.x, Player.y, STOPS, *Level)))
             resetgamestatus(FAST_MOVE, GameStatus);
         if ((Level->site[Player.x][Player.y].things != NULL) &&
-            (optionp(PICKUP)))
+            (optionp(PICKUP, Player)))
           pickup();
       }
     }

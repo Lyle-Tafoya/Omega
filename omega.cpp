@@ -282,7 +282,7 @@ int main(int argc, char *argv[]) {
   else
     terrain_check(FALSE);
 
-  if (optionp(SHOW_COLOUR))
+  if (optionp(SHOW_COLOUR, Player))
     colour_on();
   else
     colour_off();

@@ -160,7 +160,7 @@ void p_process() {
       Command_Duration = 10;
       break;
     case 'I':
-      if (!optionp(TOPINV))
+      if (!optionp(TOPINV, Player))
         top_inventory_control();
       else {
         display_possessions();
@@ -184,7 +184,7 @@ void p_process() {
       rename_player();
       break;
     case 'S':
-      save(optionp(COMPRESS_OPTION), FALSE);
+      save(optionp(COMPRESS_OPTION, Player), FALSE);
       break;
     case 'T':
       tunnel();
@@ -391,7 +391,7 @@ void p_country_process() {
       hunt(Country[Player.x][Player.y].current_terrain_type);
       break;
     case 'I':
-      if (!optionp(TOPINV))
+      if (!optionp(TOPINV, Player))
         top_inventory_control();
       else {
         menuclear();
@@ -412,7 +412,7 @@ void p_country_process() {
       rename_player();
       break;
     case 'S':
-      save(optionp(COMPRESS_OPTION), FALSE);
+      save(optionp(COMPRESS_OPTION, Player), FALSE);
       break;
     case 'V':
       version();

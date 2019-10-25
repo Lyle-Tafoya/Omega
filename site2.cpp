@@ -740,7 +740,7 @@ void sign_print(int x, int y, int signp) {
 }
 
 void l_countryside() {
-  if (optionp(CONFIRM)) {
+  if (optionp(CONFIRM, Player)) {
     clearmsg();
     print1("Do you really want to return to the countryside? ");
     if (ynq1() != 'y')

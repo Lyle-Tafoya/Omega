@@ -191,7 +191,7 @@ int p_moveable(int x, int y) {
     if (!gamestatusp(FAST_MOVE, GameStatus))
       print3("Ouch!");
     return (FALSE);
-  } else if (optionp(CONFIRM)) {
+  } else if (optionp(CONFIRM, Player)) {
     if ((Level->site[x][y].locchar == HEDGE) ||
         (Level->site[x][y].locchar == LAVA) ||
         (Level->site[x][y].locchar == FIRE) ||
@@ -230,7 +230,7 @@ int p_moveable(int x, int y) {
 int p_country_moveable(int x, int y) {
   if (!inbounds(x, y))
     return (FALSE);
-  else if (optionp(CONFIRM)) {
+  else if (optionp(CONFIRM, Player)) {
     if ((Country[x][y].current_terrain_type == CHAOS_SEA) ||
         (Country[x][y].current_terrain_type == MOUNTAINS))
       return (confirmation());
@@ -368,7 +368,7 @@ void fight_monster(struct monster *m) {
     print3("Your attack has no effect in your shadowy state.");
     reallyfight = FALSE;
   } else if ((Player.status[BERSERK] < 1) && (!m_statusp(*m, HOSTILE))) {
-    if (optionp(BELLICOSE))
+    if (optionp(BELLICOSE, Player))
       reallyfight = TRUE;
     else
       reallyfight = confirmation();

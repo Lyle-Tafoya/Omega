@@ -591,7 +591,7 @@ void vault() {
       p_movefunction(Level->site[Player.x][Player.y].p_locf);
       if (Current_Environment != E_COUNTRYSIDE)
         if ((Level->site[Player.x][Player.y].things != NULL) &&
-            (optionp(PICKUP)))
+            (optionp(PICKUP, Player)))
           pickup();
     }
   }

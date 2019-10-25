@@ -1445,7 +1445,6 @@ inline bool m_immunityp(const monster &m, int status) {
   return ((m.immunity & pow2(status)) ? true : false);
 }
 
-
 inline bool gamestatusp(int flag, const long &status) {
   return ((status & flag) ? true : false);
 }
@@ -1456,10 +1455,10 @@ inline void resetgamestatus(int flag, long &status) {
   status &= ~(flag);
 }
 
-//#define setgamestatus(flag) (GameStatus |= (flag))
-//#define resetgamestatus(flag) (GameStatus &= ~(flag))
+inline bool optionp(int option, const player &p) {
+  return ((p.options & option) ? true : false);
+}
 
-#define optionp(o) ((Player.options & (o)) ? 1 : 0)
 #define optionset(o) (Player.options |= (o))
 #define optionreset(o) (Player.options &= ~(o))
 

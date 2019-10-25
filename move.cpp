@@ -327,7 +327,7 @@ void l_magic_pool() {
 void l_no_op() {}
 
 void l_tactical_exit() {
-  if (optionp(CONFIRM)) {
+  if (optionp(CONFIRM, Player)) {
     clearmsg();
     print1("Do you really want to leave this place? ");
     if (ynq1() != 'y')
@@ -433,7 +433,7 @@ void l_arena_exit() {
 }
 
 void l_house_exit() {
-  if (optionp(CONFIRM)) {
+  if (optionp(CONFIRM, Player)) {
     clearmsg();
     print1("Do you really want to leave this abode? ");
     if (ynq1() != 'y')

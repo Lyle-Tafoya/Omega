@@ -558,7 +558,7 @@ void gain_item(struct object *o) {
     Player.cash += o->basevalue;
     free((char *)o);
     dataprint();
-  } else if (optionp(PACKADD)) {
+  } else if (optionp(PACKADD, Player)) {
     if (!get_to_pack(o)) {
       Player.possessions[O_UP_IN_AIR] = o;
       do_inventory_control();
@@ -740,7 +740,7 @@ int aux_take_from_pack(int slot) {
       use_pack_item(response - 'a', slot);
     }
   }
-  if (optionp(TOPINV))
+  if (optionp(TOPINV, Player))
     display_possessions();
   return slot;
 }
@@ -786,7 +786,7 @@ int aux_top_take_from_pack(int slot, int display) {
 }
 
 int take_from_pack(int slot, int display) {
-  if (optionp(TOPINV))
+  if (optionp(TOPINV, Player))
     return aux_top_take_from_pack(slot, display);
   else
     return aux_take_from_pack(slot);
@@ -802,7 +802,7 @@ void item_inventory(int topline) {
 }
 
 void do_inventory_control() {
-  if (optionp(TOPINV))
+  if (optionp(TOPINV, Player))
     top_inventory_control();
   else {
     menuclear();
