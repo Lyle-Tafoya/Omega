@@ -245,7 +245,7 @@ void searchat(int x, int y) {
   int i;
   if (inbounds(x, y) && (random_range(3) || Player.status[ALERT])) {
     if (loc_statusp(x, y, SECRET, *Level)) {
-      lreset(x, y, SECRET);
+      lreset(x, y, SECRET, *Level);
       lset(x, y, CHANGED, *Level);
       if ((Level->site[x][y].locchar == OPEN_DOOR) ||
           (Level->site[x][y].locchar == CLOSED_DOOR)) {

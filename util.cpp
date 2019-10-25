@@ -75,7 +75,7 @@ int m_unblocked(struct monster *m, int x, int y) {
     if (m->movef == M_MOVE_SMART) {
       if (los_p(x, y, Player.x, Player.y)) {
         mprint("You see a secret door swing open!");
-        lreset(x, y, SECRET);
+        lreset(x, y, SECRET, *Level);
         lset(x, y, CHANGED, *Level);
       } else
         mprint("You hear a door creak open, and then close again.");

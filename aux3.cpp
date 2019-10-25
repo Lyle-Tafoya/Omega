@@ -1232,7 +1232,7 @@ void destroy_order() {
     for (i = 35; i < 46; i++)
       for (j = 60; j < 63; j++) {
         if (i == 40 && (j == 60 || j == 61)) {
-          lreset(i, j, SECRET);
+          lreset(i, j, SECRET, *Level);
           Level->site[i][j].locchar = FLOOR;
           Level->site[i][j].p_locf = L_NO_OP;
           lset(i, j, CHANGED, *Level);

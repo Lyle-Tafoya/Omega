@@ -552,7 +552,7 @@ void mazesite(int i, int j, int populate) {
     randommazesite(i, j, populate);
     break;
   }
-  lreset(i, j, SEEN);
+  lreset(i, j, SEEN, *Level);
 }
 
 void randommazesite(int i, int j, int populate) {
@@ -642,6 +642,6 @@ void repair_jail() {
         City->site[i + 35][j + 52].aux = NOCITYMOVE;
         break;
       }
-      lreset(i + 35, j + 52, CHANGED);
+      lreset(i + 35, j + 52, CHANGED, *Level);
     }
 }

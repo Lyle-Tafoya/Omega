@@ -225,7 +225,7 @@ void clairvoyance(int vision) {
     for (j = y - vision; j < y + vision + 1; j++) {
       if (inbounds(i, j)) {
         Level->site[i][j].showchar = SPACE;
-        lreset(i, j, SECRET);
+        lreset(i, j, SECRET, *Level);
         lset(i, j, CHANGED, *Level);
         dodrawspot(i, j);
       }
@@ -279,7 +279,7 @@ void amnesia() {
   int i, j;
   for (j = 0; j < LENGTH; j++)
     for (i = 0; i < WIDTH; i++)
-      lreset(i, j, SEEN);
+      lreset(i, j, SEEN, *Level);
 
   erase_level();
   drawvision(Player.x, Player.y);
@@ -383,14 +383,14 @@ void disintegrate(int x, int y) {
         tunnelcheck();
       Level->site[x][y].p_locf = L_RUBBLE;
       Level->site[x][y].locchar = RUBBLE;
-      lreset(x, y, SECRET);
+      lreset(x, y, SECRET, *Level);
       lset(x, y, CHANGED, *Level);
     } else if ((Level->site[x][y].locchar == RUBBLE) ||
                (Level->site[x][y].locchar == TRAP)) {
       mprint("The site is blasted clear!");
       Level->site[x][y].p_locf = L_NO_OP;
       Level->site[x][y].locchar = FLOOR;
-      lreset(x, y, SECRET);
+      lreset(x, y, SECRET, *Level);
       lset(x, y, CHANGED, *Level);
     } else if (Level->site[x][y].locchar == HEDGE) {
       if (Level->site[x][y].p_locf == L_TRIFID) {
@@ -398,13 +398,13 @@ void disintegrate(int x, int y) {
         gain_experience(50);
         Level->site[x][y].p_locf = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;
-        lreset(x, y, SECRET);
+        lreset(x, y, SECRET, *Level);
         lset(x, y, CHANGED, *Level);
       } else {
         mprint("The hedge is blasted away!");
         Level->site[x][y].p_locf = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;
-        lreset(x, y, SECRET);
+        lreset(x, y, SECRET, *Level);
         lset(x, y, CHANGED, *Level);
       }
     } else

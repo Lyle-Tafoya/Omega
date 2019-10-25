@@ -744,7 +744,7 @@ void bash_location() {
       } else if (Level->site[ox][oy].locchar == CLOSED_DOOR) {
         if (loc_statusp(ox, oy, SECRET, *Level)) {
           print1("You found a secret door!");
-          lreset(ox, oy, SECRET);
+          lreset(ox, oy, SECRET, *Level);
           lset(ox, oy, CHANGED, *Level);
         }
         if (Level->site[ox][oy].aux == LOCKED) {

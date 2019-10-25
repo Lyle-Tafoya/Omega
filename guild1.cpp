@@ -269,7 +269,7 @@ void l_castle() {
               lset(x, y, CHANGED, *Level);
             }
             if (x >= 12 && loc_statusp(x, y, SECRET, *Level)) {
-              lreset(x, y, SECRET);
+              lreset(x, y, SECRET, *Level);
               lset(x, y, CHANGED, *Level);
             }
             if (x >= 20 && x <= 23 && y == 56) {

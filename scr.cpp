@@ -529,7 +529,7 @@ void dodrawspot(int x, int y) {
 /* write a blank to a spot if it is floor */
 void blankoutspot(int i, int j) {
   if (inbounds(i, j)) {
-    lreset(i, j, LIT);
+    lreset(i, j, LIT, *Level);
     lset(i, j, CHANGED, *Level);
     if (Level->site[i][j].locchar == FLOOR) {
       Level->site[i][j].showchar = SPACE;
@@ -541,7 +541,7 @@ void blankoutspot(int i, int j) {
 /* blank out a spot regardless */
 void blotspot(int i, int j) {
   if (inbounds(i, j)) {
-    lreset(i, j, SEEN);
+    lreset(i, j, SEEN, *Level);
     Level->site[i][j].showchar = SPACE;
     if (!offscreen(j)) {
       wmove(Levelw, screenmod(j), i);

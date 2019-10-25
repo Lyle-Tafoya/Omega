@@ -125,7 +125,7 @@ void i_juggernaut(pob o) {
           Level->site[x][y].locchar = FLOOR;
           Level->site[x][y].p_locf = L_NO_OP;
         }
-        lreset(x, y, SECRET);
+        lreset(x, y, SECRET, *Level);
         lset(x, y, CHANGED, *Level);
         if (Level->site[x][y].creature != NULL) {
           if (seen)
