@@ -1413,7 +1413,7 @@ typedef oltype *pol;
 
 /* WDT: This should be harmless under ANSI C, and will stop
  * some errors under bizarre platforms. */
-#define pow2(n) (1L << (n))
+constexpr long pow2(int n) { return 1L << n; }
 
 inline bool loc_statusp(int x, int y, int status, const level &lvl) {
   return ((lvl.site[x][y].lstatus & (status)) ? true : false);
