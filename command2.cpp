@@ -584,7 +584,7 @@ void setoptions() {
 #endif
     case 't':
       if (slot <= NUMTFOPTIONS)
-        optionset(pow2(slot - 1));
+        optionset(pow2(slot - 1), Player);
       else if (slot == VERBOSITY_LEVEL)
         Verbosity = TERSE;
       else
@@ -592,7 +592,7 @@ void setoptions() {
       break;
     case 'f':
       if (slot <= NUMTFOPTIONS)
-        optionreset(pow2(slot - 1));
+        optionreset(pow2(slot - 1), Player);
       else
         print3("'F' is meaningless for this option.");
       break;

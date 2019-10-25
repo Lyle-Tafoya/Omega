@@ -1458,9 +1458,12 @@ inline void resetgamestatus(int flag, long &status) {
 inline bool optionp(int option, const player &p) {
   return ((p.options & option) ? true : false);
 }
-
-#define optionset(o) (Player.options |= (o))
-#define optionreset(o) (Player.options &= ~(o))
+inline void optionset(int option, player &p) {
+  p.options |= option;
+}
+inline void optionreset(int option, player &p) {
+  p.options &= ~(option);
+}
 
 /* systemV for some reason uses string.h instead of strings.h */
 /* Also, random and srandom are unlikely to be found on system V... */

@@ -64,12 +64,12 @@ void initplayer() {
   }
   change_to_game_perms();
   if (!oldchar) {
-    optionset(RUNSTOP);
-    optionset(CONFIRM);
+    optionset(RUNSTOP, Player);
+    optionset(CONFIRM, Player);
 #ifdef COMPRESS_SAVE_FILES
-    optionset(COMPRESS_OPTION);
+    optionset(COMPRESS_OPTION, Player);
 #endif
-    optionset(SHOW_COLOUR);
+    optionset(SHOW_COLOUR, Player);
     initstats();
   }
   Searchnum = std::max(1, std::min(9, Searchnum));
