@@ -770,13 +770,13 @@ void restore_level(FILE *fd, int version) {
     load_house(Level->environment, FALSE);
     break;
   case E_DLAIR:
-    load_dlair(gamestatusp(KILLED_DRAGONLORD), FALSE);
+    load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), FALSE);
     break;
   case E_STARPEAK:
-    load_speak(gamestatusp(KILLED_LAWBRINGER), FALSE);
+    load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), FALSE);
     break;
   case E_MAGIC_ISLE:
-    load_misle(gamestatusp(KILLED_EATER), FALSE);
+    load_misle(gamestatusp(KILLED_EATER, GameStatus), FALSE);
     break;
   case E_TEMPLE:
     load_temple(Country[LastCountryLocX][LastCountryLocY].aux, FALSE);

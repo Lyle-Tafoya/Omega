@@ -164,11 +164,11 @@ int p_moveable(int x, int y) {
       return (TRUE);
     }
   } else if (loc_statusp(x, y, SECRET, *Level)) {
-    if (!gamestatusp(FAST_MOVE))
+    if (!gamestatusp(FAST_MOVE, GameStatus))
       print3("Ouch!");
     return (FALSE);
   } else if (Level->site[x][y].creature != NULL) {
-    if (!gamestatusp(FAST_MOVE)) {
+    if (!gamestatusp(FAST_MOVE, GameStatus)) {
       fight_monster(Level->site[x][y].creature);
       resetgamestatus(SKIP_MONSTERS);
       return (FALSE);
@@ -178,7 +178,7 @@ int p_moveable(int x, int y) {
              (Level->site[x][y].locchar == STATUE) ||
              (Level->site[x][y].locchar == PORTCULLIS) ||
              (Level->site[x][y].locchar == CLOSED_DOOR) ||
-             (gamestatusp(FAST_MOVE) &&
+             (gamestatusp(FAST_MOVE, GameStatus) &&
               ((Level->site[x][y].locchar == HEDGE) ||
                (Level->site[x][y].locchar == LAVA) ||
                (Level->site[x][y].locchar == ABYSS) ||
@@ -188,7 +188,7 @@ int p_moveable(int x, int y) {
                (Level->site[x][y].locchar == WATER) ||
                (Level->site[x][y].locchar == LIFT) ||
                (Level->site[x][y].locchar == TRAP)))) {
-    if (!gamestatusp(FAST_MOVE))
+    if (!gamestatusp(FAST_MOVE, GameStatus))
       print3("Ouch!");
     return (FALSE);
   } else if (optionp(CONFIRM)) {
@@ -203,7 +203,7 @@ int p_moveable(int x, int y) {
         (Level->site[x][y].locchar == LIFT) ||
         (Level->site[x][y].locchar == TRAP)) {
       /* horses WILL go into water... */
-      if (gamestatusp(MOUNTED)) {
+      if (gamestatusp(MOUNTED, GameStatus)) {
         if (Level->site[x][y].locchar != WATER ||
             Level->site[x][y].p_locf != L_WATER) {
           print1("You can't convince your steed to continue.");
@@ -215,7 +215,7 @@ int p_moveable(int x, int y) {
         resetgamestatus(SKIP_MONSTERS);
       else
         setgamestatus(SKIP_MONSTERS);
-      return (!gamestatusp(SKIP_MONSTERS));
+      return (!gamestatusp(SKIP_MONSTERS, GameStatus));
     } else {
       resetgamestatus(SKIP_MONSTERS);
       return (TRUE);
@@ -314,7 +314,7 @@ void calc_melee() {
 
   Player.speed = std::max(1, std::min(25, Player.speed));
 
-  if (gamestatusp(MOUNTED)) {
+  if (gamestatusp(MOUNTED, GameStatus)) {
     Player.speed = 3;
     Player.hit += 10;
     Player.dmg += 10;
@@ -399,7 +399,7 @@ int damage_item(pob o) {
   if (o->id == ARTIFACTID + 21) {
     print1("The Star Gem shatters into a million glistening shards....");
     if (Current_Environment == E_STARPEAK) {
-      if (!gamestatusp(KILLED_LAWBRINGER))
+      if (!gamestatusp(KILLED_LAWBRINGER, GameStatus))
         print2("You hear an agonizing scream of anguish and despair.");
       morewait();
       print1("A raging torrent of energy escapes in an explosion of magic!");
@@ -484,7 +484,7 @@ int damage_item(pob o) {
 /* do dmg points of damage of type dtype, from source fromstring */
 void p_damage(int dmg, int dtype, char *fromstring) {
   if (!p_immune(dtype)) {
-    if (gamestatusp(FAST_MOVE)) {
+    if (gamestatusp(FAST_MOVE, GameStatus)) {
       drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE);
     }
@@ -657,7 +657,7 @@ void describe_player() {
     nprint1(levelname(Player.level));
   nprint1(" named ");
   nprint1(Player.name);
-  if (gamestatusp(MOUNTED))
+  if (gamestatusp(MOUNTED, GameStatus))
     nprint1(" (riding a horse.)");
 }
 
@@ -743,12 +743,12 @@ void foodcheck() {
     print3("You are ravenously hungry.");
   else if (Player.food == 3) {
     print3("You feel weak.");
-    if (gamestatusp(FAST_MOVE)) {
+    if (gamestatusp(FAST_MOVE, GameStatus)) {
       drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE);
     }
   } else if (Player.food < 0) {
-    if (gamestatusp(FAST_MOVE)) {
+    if (gamestatusp(FAST_MOVE, GameStatus)) {
       drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE);
     }

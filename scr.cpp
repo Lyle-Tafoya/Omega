@@ -243,7 +243,7 @@ void erase_level() {
 
 /* direct print to first msg line */
 void print1(const std::string &s) {
-  if (!gamestatusp(SUPPRESS_PRINTING)) {
+  if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     buffercycle(s);
     wclear(Msg1w);
     wprintw(Msg1w, s.c_str());
@@ -253,7 +253,7 @@ void print1(const std::string &s) {
 
 /* for run on-messages -- print1 clears first.... */
 void nprint1(const std::string &s) {
-  if (!gamestatusp(SUPPRESS_PRINTING)) {
+  if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     if (bufferappend(s)) {
       wprintw(Msg1w, s.c_str());
       wrefresh(Msg1w);
@@ -263,7 +263,7 @@ void nprint1(const std::string &s) {
 
 /* direct print to second msg line */
 void print2(const std::string &s) {
-  if (!gamestatusp(SUPPRESS_PRINTING)) {
+  if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     buffercycle(s);
     wclear(Msg2w);
     wprintw(Msg2w, s.c_str());
@@ -273,7 +273,7 @@ void print2(const std::string &s) {
 
 /* for run on-messages -- print2 clears first.... */
 void nprint2(const std::string &s) {
-  if (!gamestatusp(SUPPRESS_PRINTING)) {
+  if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     if (bufferappend(s)) {
       wprintw(Msg2w, s.c_str());
       wrefresh(Msg2w);
@@ -284,7 +284,7 @@ void nprint2(const std::string &s) {
 /* msg line 3 is not part of the region that mprint or printm can reach */
 /* typical use of print3 is for "you can't do that" type error messages */
 void print3(const std::string &s) {
-  if (!gamestatusp(SUPPRESS_PRINTING)) {
+  if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     buffercycle(s);
     wclear(Msg3w);
     wprintw(Msg3w, s.c_str());
@@ -294,7 +294,7 @@ void print3(const std::string &s) {
 
 /* for run on-messages -- print3 clears first.... */
 void nprint3(const std::string &s) {
-  if (!gamestatusp(SUPPRESS_PRINTING)) {
+  if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     if (bufferappend(s)) {
       wprintw(Msg3w, s.c_str());
       wrefresh(Msg3w);
@@ -306,7 +306,7 @@ void nprint3(const std::string &s) {
 it should morewait and clear window */
 void mprint(const std::string &s) {
   int x;
-  if (!gamestatusp(SUPPRESS_PRINTING)) {
+  if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     x = getcurx(Msgw);
     if (x + s.length() >= static_cast<size_t>(WIDTH)) {
       buffercycle(s);
@@ -468,7 +468,7 @@ void drawvision(int x, int y) {
       drawmonsters(FALSE); /* erase all monsters */
       drawmonsters(TRUE);  /* draw those now visible */
     }
-    if ((!gamestatusp(FAST_MOVE)) || (!optionp(JUMPMOVE)))
+    if ((!gamestatusp(FAST_MOVE, GameStatus)) || (!optionp(JUMPMOVE)))
       omshowcursor(Player.x, Player.y);
     oldx = x;
     oldy = y;
@@ -742,7 +742,7 @@ void menuaddch(char c) {
 void morewait() {
   int display = TRUE;
   int c;
-  if (gamestatusp(SUPPRESS_PRINTING))
+  if (gamestatusp(SUPPRESS_PRINTING, GameStatus))
     return;
   do {
     wclear(Morew);
@@ -1117,7 +1117,7 @@ void showflags() {
   else
     wprintw(Flagw, "Healthy\n");
 
-  if (gamestatusp(MOUNTED))
+  if (gamestatusp(MOUNTED, GameStatus))
     wprintw(Flagw, "Mounted\n");
   else if (Player.status[LEVITATING])
     wprintw(Flagw, "Levitating\n");

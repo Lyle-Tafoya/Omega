@@ -10,7 +10,7 @@ void l_condo() {
   int i, done = FALSE, over = FALSE, weeksleep = FALSE;
   char response;
 
-  if (!gamestatusp(SOLD_CONDO)) {
+  if (!gamestatusp(SOLD_CONDO, GameStatus)) {
     print1("Rampart Arms. Weekly Rentals and Purchases");
     print2("Which are you interested in [r,p, or ESCAPE] ");
     response = mgetc();
@@ -210,7 +210,7 @@ void send_to_jail() {
     print1("You are immediately expelled permanently from the Order!");
     print2("Your name is expunged from the records....");
     Player.rank[ORDER] = -1;
-  } else if (gamestatusp(DESTROYED_ORDER))
+  } else if (gamestatusp(DESTROYED_ORDER, GameStatus))
     print1("The destruction of the Order of Paladins has negated the law!");
   else if ((Current_Environment != E_CITY) && (Last_Environment != E_CITY))
     print1("Fortunately, there is no jail around here, so you are freed!");
@@ -225,7 +225,7 @@ void send_to_jail() {
       resetgamestatus(SUPPRESS_PRINTING);
     }
     if (Current_Environment == E_CITY) {
-      if (gamestatusp(UNDEAD_GUARDS)) {
+      if (gamestatusp(UNDEAD_GUARDS, GameStatus)) {
         print1("You are taken to a weirdly deserted chamber where an undead");
         print2("Magistrate presides over a court of ghosts and haunts.");
         morewait();
@@ -302,7 +302,7 @@ void send_to_jail() {
 
 void l_adept() {
   print1("You see a giant shimmering gate in the form of an omega.");
-  if (!gamestatusp(ATTACKED_ORACLE)) {
+  if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
     if (Player.str + Player.con + Player.iq + Player.pow < 100)
       print2("A familiar female voice says: I would not advise this now....");
     else
@@ -707,7 +707,7 @@ void sign_print(int x, int y, int signp) {
   case L_CONDO:
     if (signp) {
       print1("You notice a sign:");
-      if (gamestatusp(SOLD_CONDO))
+      if (gamestatusp(SOLD_CONDO, GameStatus))
         print2("Home Sweet Home");
       else
         print2("Luxury Condominium For Sale; Inquire Within");
@@ -751,7 +751,7 @@ void l_countryside() {
 
 void l_oracle() {
   char response;
-  if (gamestatusp(ATTACKED_ORACLE) && (!gamestatusp(COMPLETED_ASTRAL))) {
+  if (gamestatusp(ATTACKED_ORACLE, GameStatus) && (!gamestatusp(COMPLETED_ASTRAL, GameStatus))) {
     print1("You come before a blue crystal dais. You see a broken mirror.");
     print2("Look in the mirror? [yn] ");
     if (ynq2() == 'y') {
@@ -781,16 +781,16 @@ void l_oracle() {
         print2("She sneers at you and vanishes.");
       } else {
         print2("She stares at you...and speaks:");
-        if (!gamestatusp(SPOKE_TO_DRUID)) {
+        if (!gamestatusp(SPOKE_TO_DRUID, GameStatus)) {
           print3("'The ArchDruid speaks wisdom in his forest shrine.'");
-        } else if (!gamestatusp(COMPLETED_CAVES)) {
+        } else if (!gamestatusp(COMPLETED_CAVES, GameStatus)) {
           print3("'Thou mayest find aught of interest in the caves to the "
                  "South.'");
-        } else if (!gamestatusp(COMPLETED_SEWERS)) {
+        } else if (!gamestatusp(COMPLETED_SEWERS, GameStatus)) {
           print3("'Turn thy attention to the abyssal depths of the city.'");
-        } else if (!gamestatusp(COMPLETED_CASTLE)) {
+        } else if (!gamestatusp(COMPLETED_CASTLE, GameStatus)) {
           print3("'Explorest thou the depths of the Castle of the ArchMage.'");
-        } else if (!gamestatusp(COMPLETED_ASTRAL)) {
+        } else if (!gamestatusp(COMPLETED_ASTRAL, GameStatus)) {
           morewait();
           print1("'Journey to the Astral Plane and meet the Gods' servants.'");
           print2("The oracle holds out her hand. Do you take it? [yn] ");
@@ -808,9 +808,9 @@ void l_oracle() {
             change_environment(E_ASTRAL);
           } else
             print3("You detect the hint of a sneer from the oracle.");
-        } else if (!gamestatusp(COMPLETED_VOLCANO)) {
+        } else if (!gamestatusp(COMPLETED_VOLCANO, GameStatus)) {
           print3("'The infernal maw may yield its secrets to thee now.'");
-        } else if (!gamestatusp(COMPLETED_CHALLENGE)) {
+        } else if (!gamestatusp(COMPLETED_CHALLENGE, GameStatus)) {
           print3("'The challenge of adepthood yet awaits thee.'");
         } else {
           morewait();

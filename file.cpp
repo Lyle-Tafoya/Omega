@@ -236,7 +236,7 @@ void save_hiscore_npc(int npc) {
   char buffer[80];
   int i;
 
-  if (gamestatusp(CHEATED))
+  if (gamestatusp(CHEATED, GameStatus))
     return;
   lock_score_file();
   strcpy(Str1, Omegalib);
@@ -324,7 +324,7 @@ void checkhigh(const std::string &descrip, int behavior) {
     points = FixedPoints;
   else
     points = calc_points();
-  if (!gamestatusp(CHEATED)) {
+  if (!gamestatusp(CHEATED, GameStatus)) {
     if (Hiscore < points) {
       strcpy(Hiscorer, Player.name);
       strcpy(Hidescrip, descrip.c_str());
@@ -360,7 +360,7 @@ void extendlog(const std::string &descrip, int lifestatus) {
   FILE *fd;
   int npcbehavior;
 
-  if ((Player.level > 0) && (!gamestatusp(CHEATED))) {
+  if ((Player.level > 0) && (!gamestatusp(CHEATED, GameStatus))) {
     change_to_game_perms();
     npcbehavior = fixnpc(lifestatus);
     checkhigh(descrip, npcbehavior);

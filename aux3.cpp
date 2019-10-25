@@ -262,7 +262,7 @@ void outdoors_random_event() {
       make_artifact(ob, -1);
       gain_item(ob);
     } else if (num < 80) {
-      if (gamestatusp(MOUNTED)) {
+      if (gamestatusp(MOUNTED, GameStatus)) {
         mprint("Your horse screams as he is transformed into an");
         morewait();
         mprint("imaginary unseen dead tortoise.");
@@ -315,7 +315,7 @@ void outdoors_random_event() {
   case 11:
     mprint("You find a Traveller's Aid station with maps of the local area.");
     morewait();
-    if (gamestatusp(LOST)) {
+    if (gamestatusp(LOST, GameStatus)) {
       resetgamestatus(LOST);
       mprint("You know where you are now.");
     }
@@ -333,7 +333,7 @@ void outdoors_random_event() {
     show_screen();
     break;
   case 12:
-    if (!gamestatusp(MOUNTED)) {
+    if (!gamestatusp(MOUNTED, GameStatus)) {
       mprint("You develop blisters....");
       p_damage(1, UNSTOPPABLE, "blisters");
     }
@@ -418,7 +418,7 @@ void terrain_check(int takestime) {
       print2("You move swiftly through the wilderness.");
       break;
     }
-  } else if (gamestatusp(MOUNTED)) {
+  } else if (gamestatusp(MOUNTED, GameStatus)) {
     faster = 1;
     switch (random_range(32)) {
     case 0:
@@ -640,14 +640,14 @@ void terrain_check(int takestime) {
     }
     break;
   case CITY:
-    if (gamestatusp(LOST)) {
+    if (gamestatusp(LOST, GameStatus)) {
       resetgamestatus(LOST);
       mprint("Well, I guess you know where you are now....");
     }
     locprint("Outside Rampart, the city.");
     break;
   case VILLAGE:
-    if (gamestatusp(LOST)) {
+    if (gamestatusp(LOST, GameStatus)) {
       resetgamestatus(LOST);
       mprint("The village guards let you know where you are....");
     }
@@ -1183,14 +1183,14 @@ void alert_guards() {
       Level->site[40][60].p_locf = L_NO_OP; /* pacify_guards restores this */
   }
   if ((!foundguard) && (Current_Environment == E_CITY) &&
-      !gamestatusp(DESTROYED_ORDER)) {
-    suppress = gamestatusp(SUPPRESS_PRINTING);
+      !gamestatusp(DESTROYED_ORDER, GameStatus)) {
+    suppress = gamestatusp(SUPPRESS_PRINTING, GameStatus);
     resetgamestatus(SUPPRESS_PRINTING);
     print2("The last member of the Order of Paladins dies....");
     morewait();
     gain_experience(1000);
     Player.alignment -= 250;
-    if (!gamestatusp(KILLED_LAWBRINGER)) {
+    if (!gamestatusp(KILLED_LAWBRINGER, GameStatus)) {
       print1("A chime sounds from far away.... The sound grows stronger....");
       print2("Suddenly the great shadowy form of the LawBringer appears over");
       print3("the city. He points his finger at you....");

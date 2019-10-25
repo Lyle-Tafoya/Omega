@@ -8,7 +8,7 @@
 
 /* various miscellaneous location functions */
 void l_water() {
-  if (!gamestatusp(MOUNTED)) {
+  if (!gamestatusp(MOUNTED, GameStatus)) {
     if ((Player.possessions[O_ARMOR] != NULL)) {
       print1("Your heavy armor drags you under the water!");
       morewait();
@@ -52,7 +52,7 @@ void l_water() {
 }
 
 void l_chaos() {
-  if (gamestatusp(MOUNTED)) {
+  if (gamestatusp(MOUNTED, GameStatus)) {
     print1("Your steed tries to swim in the raw Chaos, but seems to");
     print2("be having some difficulties...");
     morewait();
@@ -122,7 +122,7 @@ void l_hedge() {
 
 void l_lava() {
   print1("Very clever -- walking into a pool of lava...");
-  if (gamestatusp(MOUNTED)) {
+  if (gamestatusp(MOUNTED, GameStatus)) {
     print2("Your horse is incinerated... You fall in too!");
     resetgamestatus(MOUNTED);
   }
@@ -140,7 +140,7 @@ void l_lava() {
 
 void l_fire() {
   print1("You boldly stride through the curtain of fire...");
-  if (gamestatusp(MOUNTED)) {
+  if (gamestatusp(MOUNTED, GameStatus)) {
     print2("Your horse is fried and so are you...");
     resetgamestatus(MOUNTED);
   }
@@ -269,7 +269,7 @@ void l_lift() {
 void l_magic_pool() {
   int possibilities = random_range(100);
   print1("This pool seems to be enchanted....");
-  if (gamestatusp(MOUNTED)) {
+  if (gamestatusp(MOUNTED, GameStatus)) {
     if (random_range(2)) {
       print2("Your horse is polymorphed into a fig newton.");
       resetgamestatus(MOUNTED);
@@ -669,7 +669,7 @@ void l_void_station() {
         print1("Each of your cells explodes with a little scream of pain.");
         print2("Your disrupted essence merges with the megaflow.");
         p_death("the Power of the Void");
-      } else if (!gamestatusp(PREPARED_VOID)) {
+      } else if (!gamestatusp(PREPARED_VOID, GameStatus)) {
         print1("The hungry void swallows you whole!");
         print2("Your being dissipates with a pathetic little sigh....");
         p_death("the Emptyness of the Void");
@@ -886,8 +886,8 @@ void l_escalator() {
 void l_enter_court() {
   print1("You have found a magical portal! Enter it? [yn] ");
   if (ynq1() == 'y') {
-    if (!gamestatusp(COMPLETED_CASTLE)) {
-      if (!gamestatusp(ATTACKED_ORACLE)) {
+    if (!gamestatusp(COMPLETED_CASTLE, GameStatus)) {
+      if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
         print2("A dulcet voice says: 'Jolly good show!'");
         morewait();
       }

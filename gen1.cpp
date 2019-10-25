@@ -517,7 +517,7 @@ void cavern_level() {
     straggle_corridor(fx, fy, tx, ty, WATER, RS_PONDS);
   }
   if (Current_Dungeon == E_CAVES) {
-    if ((Level->depth == CAVELEVELS) && (!gamestatusp(COMPLETED_CAVES))) {
+    if ((Level->depth == CAVELEVELS) && (!gamestatusp(COMPLETED_CAVES, GameStatus))) {
       findspace(&tx, &ty, -1);
       Level->mlist = ((pml)checkmalloc(sizeof(mltype)));
       Level->mlist->next = NULL;
@@ -569,7 +569,7 @@ void sewer_level() {
     sewer_corridor(l + e, t + e, 1, 1, lchar);
   }
   if (Current_Dungeon == E_SEWERS) {
-    if ((Level->depth == SEWERLEVELS) && (!gamestatusp(COMPLETED_SEWERS))) {
+    if ((Level->depth == SEWERLEVELS) && (!gamestatusp(COMPLETED_SEWERS, GameStatus))) {
       findspace(&tx, &ty, -1);
       Level->mlist = ((pml)checkmalloc(sizeof(mltype)));
       Level->mlist->next = NULL;

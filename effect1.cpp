@@ -567,7 +567,7 @@ void wish(int blessing) {
     Player.mana = calcmana() * 10;
   } else if (strcmp(wishstr, "Skill") == 0) {
     print2("You feel more competent.");
-    if (gamestatusp(CHEATED))
+    if (gamestatusp(CHEATED, GameStatus))
       gain_experience(10000);
     else
       gain_experience(std::min(10000l, Player.xp));
@@ -598,12 +598,12 @@ void wish(int blessing) {
     Player.status[DISEASED] = 0;
     Player.status[POISONED] = 0;
   } else if (strcmp(wishstr, "Destruction") == 0)
-    annihilate(gamestatusp(CHEATED));
+    annihilate(gamestatusp(CHEATED, GameStatus));
   else if (strcmp(wishstr, "Acquisition") == 0)
-    acquire(gamestatusp(CHEATED));
+    acquire(gamestatusp(CHEATED, GameStatus));
   else if (strcmp(wishstr, "Summoning") == 0)
-    summon(gamestatusp(CHEATED), -1);
-  else if (strcmp(wishstr, "Stats") == 0 && gamestatusp(CHEATED)) {
+    summon(gamestatusp(CHEATED, GameStatus), -1);
+  else if (strcmp(wishstr, "Stats") == 0 && gamestatusp(CHEATED, GameStatus)) {
     Player.str = Player.maxstr = Player.con = Player.maxcon = Player.agi =
         Player.maxagi = Player.dex = Player.maxdex = Player.iq = Player.maxiq =
             Player.pow = Player.maxpow = 200;
@@ -634,7 +634,7 @@ void acquire(int blessing) {
   } else {
     newthing = ((pob)checkmalloc(sizeof(objtype)));
     newthing->id = -1;
-    if (gamestatusp(CHEATED))
+    if (gamestatusp(CHEATED, GameStatus))
       print1("Acquire which kind of item: !?][}{)/=%%\\& ");
     else
       print1("Acquire which kind of item: !?][}{)/=%%\\ ");
@@ -751,7 +751,7 @@ void acquire(int blessing) {
         make_thing(newthing, id);
       break;
     case (ARTIFACT & 0xff):
-      if (gamestatusp(CHEATED))
+      if (gamestatusp(CHEATED, GameStatus))
         id = itemlist(ARTIFACTID, NUMARTIFACTS);
       else
         id = -1;

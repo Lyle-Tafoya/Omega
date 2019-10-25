@@ -101,7 +101,7 @@ void p_movefunction(int movef) {
       l_void_station();
       break;
     }
-  else if ((!Player.status[LEVITATING]) || gamestatusp(MOUNTED) ||
+  else if ((!Player.status[LEVITATING]) || gamestatusp(MOUNTED, GameStatus) ||
            (Cmd == '@') || /* @ command activates all effects under player */
            (movef < LEVITATION_AVOIDANCE)) {
 

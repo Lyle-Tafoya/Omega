@@ -432,7 +432,7 @@ void gain_level() {
   int gained = FALSE;
   int hp_gain; /* FIXED! 12/30/98 */
 
-  if (gamestatusp(SUPPRESS_PRINTING))
+  if (gamestatusp(SUPPRESS_PRINTING, GameStatus))
     return;
   while (expval(Player.level + 1) <= Player.xp) {
     if (!gained)
@@ -961,7 +961,7 @@ void change_environment(char new_environment) {
     LENGTH = 16;
     Player.y = 9;
     Player.x = 2;
-    load_dlair(gamestatusp(KILLED_DRAGONLORD), TRUE);
+    load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), TRUE);
     ScreenOffset = 0;
     show_screen();
     break;
@@ -970,7 +970,7 @@ void change_environment(char new_environment) {
     LENGTH = 16;
     Player.y = 9;
     Player.x = 2;
-    load_speak(gamestatusp(KILLED_LAWBRINGER), TRUE);
+    load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), TRUE);
     ScreenOffset = 0;
     show_screen();
     break;
@@ -979,7 +979,7 @@ void change_environment(char new_environment) {
     LENGTH = 16;
     Player.y = 14;
     Player.x = 62;
-    load_misle(gamestatusp(KILLED_EATER), TRUE);
+    load_misle(gamestatusp(KILLED_EATER, GameStatus), TRUE);
     ScreenOffset = 0;
     show_screen();
     break;
@@ -1077,7 +1077,7 @@ void change_environment(char new_environment) {
     LENGTH = 64;
     print1("You enter a dark cleft in a hillside;");
     print2("You note signs of recent passage in the dirt nearby.");
-    if (gamestatusp(MOUNTED)) {
+    if (gamestatusp(MOUNTED, GameStatus)) {
       morewait();
       print1("Seeing as you might not be coming back, you feel compelled");
       print2("to let your horse go, rather than keep him hobbled outside.");
@@ -1100,7 +1100,7 @@ void change_environment(char new_environment) {
     WIDTH = 64;
     LENGTH = 64;
     print1("You pass down through the glowing crater.");
-    if (gamestatusp(MOUNTED)) {
+    if (gamestatusp(MOUNTED, GameStatus)) {
       morewait();
       print1("Seeing as you might not be coming back, you feel compelled");
       print2("to let your horse go, rather than keep him hobbled outside.");
@@ -1123,7 +1123,7 @@ void change_environment(char new_environment) {
     WIDTH = 64;
     LENGTH = 64;
     print1("You are in a weird flickery maze.");
-    if (gamestatusp(MOUNTED)) {
+    if (gamestatusp(MOUNTED, GameStatus)) {
       print2("Your horse doesn't seem to have made it....");
       resetgamestatus(MOUNTED);
       calc_melee();
@@ -1144,7 +1144,7 @@ void change_environment(char new_environment) {
     WIDTH = 64;
     LENGTH = 64;
     print1("You cross the drawbridge. Strange forms move beneath the water.");
-    if (gamestatusp(MOUNTED)) {
+    if (gamestatusp(MOUNTED, GameStatus)) {
       morewait();
       print1("Seeing as you might not be coming back, you feel compelled");
       print2("to let your horse go, rather than keep him hobbled outside.");
@@ -1166,7 +1166,7 @@ void change_environment(char new_environment) {
     WIDTH = 64;
     LENGTH = 64;
     print1("You pry open a manhole and descend into the sewers below.");
-    if (gamestatusp(MOUNTED)) {
+    if (gamestatusp(MOUNTED, GameStatus)) {
       print2("You horse waits patiently outside the sewer entrance....");
       dismount_steed();
     }

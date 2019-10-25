@@ -421,23 +421,23 @@ long calc_points() {
   int i;
   long points = 0;
 
-  if (gamestatusp(SPOKE_TO_DRUID))
+  if (gamestatusp(SPOKE_TO_DRUID, GameStatus))
     points += 50;
-  if (gamestatusp(COMPLETED_CAVES))
+  if (gamestatusp(COMPLETED_CAVES, GameStatus))
     points += 100;
-  if (gamestatusp(COMPLETED_SEWERS))
+  if (gamestatusp(COMPLETED_SEWERS, GameStatus))
     points += 200;
-  if (gamestatusp(COMPLETED_CASTLE))
+  if (gamestatusp(COMPLETED_CASTLE, GameStatus))
     points += 300;
-  if (gamestatusp(COMPLETED_ASTRAL))
+  if (gamestatusp(COMPLETED_ASTRAL, GameStatus))
     points += 400;
-  if (gamestatusp(COMPLETED_VOLCANO))
+  if (gamestatusp(COMPLETED_VOLCANO, GameStatus))
     points += 500;
-  if (gamestatusp(KILLED_DRAGONLORD))
+  if (gamestatusp(KILLED_DRAGONLORD, GameStatus))
     points += 100;
-  if (gamestatusp(KILLED_EATER))
+  if (gamestatusp(KILLED_EATER, GameStatus))
     points += 100;
-  if (gamestatusp(KILLED_LAWBRINGER))
+  if (gamestatusp(KILLED_LAWBRINGER, GameStatus))
     points += 100;
 
   points += Player.xp / 50;

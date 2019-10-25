@@ -16,14 +16,14 @@ void p_process() {
       setgamestatus(SKIP_PLAYER);
       drawvision(Player.x, Player.y);
     }
-  if (!gamestatusp(SKIP_PLAYER)) {
+  if (!gamestatusp(SKIP_PLAYER, GameStatus)) {
     if (searchval > 0) {
       searchval--;
       if (searchval == 0)
         resetgamestatus(FAST_MOVE);
     }
     drawvision(Player.x, Player.y);
-    if (!gamestatusp(FAST_MOVE)) {
+    if (!gamestatusp(FAST_MOVE, GameStatus)) {
       searchval = 0;
       Cmd = mgetc();
       clear_if_necessary();
@@ -46,7 +46,7 @@ void p_process() {
       xredraw();
       break; /* ^i */
     case 11:
-      if (gamestatusp(CHEATED))
+      if (gamestatusp(CHEATED, GameStatus))
         frobgamestatus();
       __attribute__((fallthrough));
     case 12:
@@ -62,11 +62,11 @@ void p_process() {
       setgamestatus(SKIP_MONSTERS);
       break; /* ^r */
     case 23:
-      if (gamestatusp(CHEATED))
+      if (gamestatusp(CHEATED, GameStatus))
         drawscreen();
       break; /* ^w */
     case 24: /* ^x */
-      if (gamestatusp(CHEATED) || Player.rank[ADEPT])
+      if (gamestatusp(CHEATED, GameStatus) || Player.rank[ADEPT])
         wish(1);
       Command_Duration = 5;
       break;
@@ -362,11 +362,11 @@ void p_country_process() {
       no_op = TRUE;
       break; /* ^r */
     case 23:
-      if (gamestatusp(CHEATED))
+      if (gamestatusp(CHEATED, GameStatus))
         drawscreen();
       break; /* ^w */
     case 24:
-      if (gamestatusp(CHEATED) || Player.rank[ADEPT])
+      if (gamestatusp(CHEATED, GameStatus) || Player.rank[ADEPT])
         wish(1);
       break; /* ^x */
     case 'd':

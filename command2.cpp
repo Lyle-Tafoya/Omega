@@ -162,7 +162,7 @@ void search(int *searchval) {
   if (Player.status[AFRAID] > 0)
     print3("You are too terror-stricken to stop to search for anything.");
   else {
-    if (!gamestatusp(FAST_MOVE)) {
+    if (!gamestatusp(FAST_MOVE, GameStatus)) {
       setgamestatus(FAST_MOVE);
       *searchval = Searchnum;
     }
@@ -492,7 +492,7 @@ void upstairs() {
   else if (Level->site[Player.x][Player.y].p_locf == L_ESCALATOR)
     p_movefunction(Level->site[Player.x][Player.y].p_locf);
   else {
-    if (gamestatusp(MOUNTED))
+    if (gamestatusp(MOUNTED, GameStatus))
       print2("You manage to get your horse upstairs.");
     print1("You ascend a level.");
     if (Level->depth <= 1) {
@@ -515,7 +515,7 @@ void downstairs() {
            Level->site[Player.x][Player.y].p_locf == L_ENTER_COURT)
     p_movefunction(Level->site[Player.x][Player.y].p_locf);
   else {
-    if (gamestatusp(MOUNTED))
+    if (gamestatusp(MOUNTED, GameStatus))
       print2("You manage to get your horse downstairs.");
     if (Current_Environment == Current_Dungeon) {
       print1("You descend a level.");
@@ -874,7 +874,7 @@ void save(int compress, int force) {
   int pos, ok = TRUE;
 
   clearmsg();
-  if (gamestatusp(ARENA_MODE)) {
+  if (gamestatusp(ARENA_MODE, GameStatus)) {
     if (force) {
       resetgamestatus(ARENA_MODE);
       change_environment(E_CITY);
@@ -976,7 +976,7 @@ void moveplayer(int dx, int dy) {
       print3("You are unable to move");
     } else if ((Player.maxweight < Player.itemweight) && random_range(2) &&
                (!Player.status[LEVITATING])) {
-      if (gamestatusp(MOUNTED)) {
+      if (gamestatusp(MOUNTED, GameStatus)) {
         print1("Your horse refuses to carry you and your pack another step!");
         print2("Your steed bucks wildly and throws you off!");
         p_damage(10, UNSTOPPABLE, "a cruelly abused horse");
@@ -1009,7 +1009,7 @@ void moveplayer(int dx, int dy) {
       having effects from being on the Level, a kluge, but hey,... */
 
       if (Current_Environment != E_COUNTRYSIDE) {
-        if (gamestatusp(FAST_MOVE))
+        if (gamestatusp(FAST_MOVE, GameStatus))
           if ((Level->site[Player.x][Player.y].things != NULL) ||
               (optionp(RUNSTOP) && loc_statusp(Player.x, Player.y, STOPS, *Level)))
             resetgamestatus(FAST_MOVE);
@@ -1018,7 +1018,7 @@ void moveplayer(int dx, int dy) {
           pickup();
       }
     }
-  } else if (gamestatusp(FAST_MOVE)) {
+  } else if (gamestatusp(FAST_MOVE, GameStatus)) {
     drawvision(Player.x, Player.y);
     resetgamestatus(FAST_MOVE);
   }
@@ -1029,7 +1029,7 @@ void movepincountry(int dx, int dy) {
   int i, takestime = TRUE;
   if ((Player.maxweight < Player.itemweight) && random_range(2) &&
       (!Player.status[LEVITATING])) {
-    if (gamestatusp(MOUNTED)) {
+    if (gamestatusp(MOUNTED, GameStatus)) {
       print1("Your horse refuses to carry you and your pack another step!");
       print2("Your steed bucks wildly and throws you off!");
       p_damage(10, UNSTOPPABLE, "a cruelly abused horse");
@@ -1054,7 +1054,7 @@ void movepincountry(int dx, int dy) {
       print3("The weight of your pack drags you down. You can't move.");
     }
   } else {
-    if (gamestatusp(LOST)) {
+    if (gamestatusp(LOST, GameStatus)) {
       print3("Being lost, you strike out randomly....");
       morewait();
       dx = random_range(3) - 1;
@@ -1066,7 +1066,7 @@ void movepincountry(int dx, int dy) {
       else {
         Player.x += dx;
         Player.y += dy;
-        if ((!gamestatusp(MOUNTED)) && (Player.possessions[O_BOOTS] != NULL)) {
+        if ((!gamestatusp(MOUNTED, GameStatus)) && (Player.possessions[O_BOOTS] != NULL)) {
           if (Player.possessions[O_BOOTS]->usef == I_BOOTS_7LEAGUE) {
             takestime = FALSE;
             if (Player.possessions[O_BOOTS]->blessing < 0) {
@@ -1084,12 +1084,12 @@ void movepincountry(int dx, int dy) {
             }
           }
         }
-        if (gamestatusp(LOST) && (Precipitation < 1) &&
+        if (gamestatusp(LOST, GameStatus) && (Precipitation < 1) &&
             c_statusp(Player.x, Player.y, SEEN, Country)) {
           print3("Ah! Now you know where you are!");
           morewait();
           resetgamestatus(LOST);
-        } else if (gamestatusp(LOST)) {
+        } else if (gamestatusp(LOST, GameStatus)) {
           print3("You're still lost.");
           morewait();
         }

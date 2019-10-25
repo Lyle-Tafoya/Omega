@@ -12,7 +12,7 @@ void m_talk_druid(struct monster *m) {
 
   if (!m_statusp(*m, HOSTILE)) {
     print1("The Archdruid raises a hand in greeting.");
-    if (!gamestatusp(SPOKE_TO_DRUID)) {
+    if (!gamestatusp(SPOKE_TO_DRUID, GameStatus)) {
       setgamestatus(SPOKE_TO_DRUID);
       morewait();
       print1("The Archdruid congratulates you on reaching his sanctum.");
@@ -564,7 +564,7 @@ void m_talk_horse(struct monster *m) {
     mprint("The horse neighs angrily at you.");
   else if (m_statusp(*m, HUNGRY))
     mprint("The horse noses curiously at your pack.");
-  else if (gamestatusp(MOUNTED))
+  else if (gamestatusp(MOUNTED, GameStatus))
     mprint("The horse and your steed don't seem to get along.");
   else if (Current_Environment == Current_Dungeon)
     mprint("The horse shies; maybe he doesn't like the dungeon air....");

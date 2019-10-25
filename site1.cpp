@@ -15,7 +15,7 @@ void l_bank() {
   char passwd[64];
   print1("First Bank of Omega: Autoteller Carrel.");
 
-  if (gamestatusp(BANK_BROKEN))
+  if (gamestatusp(BANK_BROKEN, GameStatus))
     print2("You see a damaged autoteller.");
   else {
     print2("The proximity sensor activates the autoteller as you approach.");
@@ -216,7 +216,7 @@ void l_club() {
   char response;
 
   print1("Rampart Explorers' Club.");
-  if (!gamestatusp(CLUB_MEMBER)) {
+  if (!gamestatusp(CLUB_MEMBER, GameStatus)) {
     if (Player.level < 2)
       print3("Only reknowned adventurers need apply.");
     else {

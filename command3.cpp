@@ -353,7 +353,7 @@ void quit(int) {
 die automatically.... */
 void nap() {
   static int naptime;
-  if (gamestatusp(FAST_MOVE)) {
+  if (gamestatusp(FAST_MOVE, GameStatus)) {
     if (naptime-- < 1) {
       clearmsg();
       mprint("Yawn. You wake up.");
@@ -521,7 +521,7 @@ void wizard() {
   struct passwd *dastuff;
 
   setgamestatus(SKIP_MONSTERS);
-  if (gamestatusp(CHEATED))
+  if (gamestatusp(CHEATED, GameStatus))
     mprint("You're already in wizard mode!");
   else {
     clearmsg();
@@ -1000,7 +1000,7 @@ void hunt(Symbol terrain) {
 
 void dismount_steed() {
   pml ml;
-  if (!gamestatusp(MOUNTED))
+  if (!gamestatusp(MOUNTED, GameStatus))
     print3("You're on foot already!");
   else if (Current_Environment == E_COUNTRYSIDE) {
     mprint("If you leave your steed here he will wander away!");

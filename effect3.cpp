@@ -506,7 +506,7 @@ void strategic_teleport(int blessing) {
    * as well.  Seems to me that Hy Magic ought to allow it, and nothing
    * else (aside from the Star Gem, of course). */
   if ((Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL) &&
-      !gamestatusp(CHEATED)) {
+      !gamestatusp(CHEATED, GameStatus)) {
     mprint("Some property of this eerie place interferes with the magic!\n");
     return;
   }
@@ -536,7 +536,7 @@ void strategic_teleport(int blessing) {
     menuprint("l: WoodHenge\n");
     menuprint("m: Temple of Destiny\n");
     menuprint("n: HellWell Volcano\n");
-    if (gamestatusp(CHEATED))
+    if (gamestatusp(CHEATED, GameStatus))
       menuprint("z: Anywhere\n");
     menuprint("ANYTHING ELSE: Avoid entering a portal.");
     showmenu();
@@ -612,14 +612,14 @@ void strategic_teleport(int blessing) {
       Player.y = 58;
       break;
     default:
-      if (gamestatusp(CHEATED)) {
+      if (gamestatusp(CHEATED, GameStatus)) {
         mprint("Enter environment number: ");
         new_env = (int)parsenum();
         change_environment(new_env);
       }
     }
     xredraw();
-    if (gamestatusp(LOST)) {
+    if (gamestatusp(LOST, GameStatus)) {
       print1("You know where you are now.");
       resetgamestatus(LOST);
       Precipitation = 0;
@@ -647,7 +647,7 @@ void hero(int blessing) {
 
 void levitate(int blessing) {
   if (blessing > -1) {
-    if (gamestatusp(MOUNTED))
+    if (gamestatusp(MOUNTED, GameStatus))
       mprint("You have a strange feeling of lightness in your saddle.");
     else {
       mprint("You start to float a few inches above the floor.");

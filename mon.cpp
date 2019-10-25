@@ -246,7 +246,7 @@ void m_death(struct monster *m) {
         /* just a tad complicated. Promote a new justiciar if any
            guards are left in the city, otherwise Destroy the Order! */
         Player.alignment -= 100;
-        if (!gamestatusp(DESTROYED_ORDER)) {
+        if (!gamestatusp(DESTROYED_ORDER, GameStatus)) {
           curr = Level->site[m->x][m->y].things;
           while (curr && curr->thing->id != THINGID + 16) {
             prev = curr;
@@ -303,14 +303,14 @@ void m_death(struct monster *m) {
         alert_guards();
       break;
     case GOBLIN_KING:
-      if (!gamestatusp(ATTACKED_ORACLE)) {
+      if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
         mprint("You seem to hear a woman's voice from far off:");
         mprint("'Well done! Come to me now....'");
       }
       setgamestatus(COMPLETED_CAVES);
       break; /* gob king */
     case GREAT_WYRM:
-      if (!gamestatusp(ATTACKED_ORACLE)) {
+      if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
         mprint("A female voice sounds from just behind your ear:");
         mprint("'Well fought! I have some new advice for you....'");
       }
@@ -327,7 +327,7 @@ void m_death(struct monster *m) {
       break;
     case DEMON_EMP:
       setgamestatus(COMPLETED_VOLCANO);
-      if (!gamestatusp(ATTACKED_ORACLE)) {
+      if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
         mprint("You feel a soft touch on your shoulder...");
         mprint("You turn around but there is no one there!");
         mprint("You turn back and see a note: 'See me soon.'");
@@ -335,7 +335,7 @@ void m_death(struct monster *m) {
       }
       break;
     case ELEM_MASTER:
-      if (!gamestatusp(ATTACKED_ORACLE)) {
+      if (!gamestatusp(ATTACKED_ORACLE, GameStatus)) {
         mprint("Words appear before you, traced in blue flame!");
         mprint("'Return to the Prime Plane via the Circle of Sorcerors....'");
       }

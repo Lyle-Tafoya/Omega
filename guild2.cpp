@@ -612,7 +612,7 @@ void l_order() {
   print1("The Headquarters of the Order of Paladins.");
   morewait();
   if ((Player.rank[ORDER] == PALADIN) && (Player.level > Justiciarlevel) &&
-      gamestatusp(GAVE_STARGEM) && Player.alignment > 300) {
+      gamestatusp(GAVE_STARGEM, GameStatus) && Player.alignment > 300) {
     print1("You have succeeded in your quest!");
     morewait();
     print1("The previous Justiciar steps down in your favor.");
@@ -684,7 +684,7 @@ void l_order() {
     }
   } else {
     print1("'Welcome back, Paladin.'");
-    if (!gamestatusp(MOUNTED)) {
+    if (!gamestatusp(MOUNTED, GameStatus)) {
       print2("You are given a new steed.");
       setgamestatus(MOUNTED);
     }

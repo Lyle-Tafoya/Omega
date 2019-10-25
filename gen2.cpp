@@ -292,7 +292,7 @@ void room_level() {
       Level->site[tx][ty].p_locf = L_ENTER_COURT;
     }
   } else if (Current_Environment == E_VOLCANO) {
-    if (Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO)) {
+    if (Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus)) {
       findspace(&tx, &ty, -1);
       Level->mlist = ((pml)checkmalloc(sizeof(mltype)));
       Level->mlist->next = NULL;
@@ -409,7 +409,7 @@ void maze_level() {
       Level->site[tx][ty].p_locf = L_ENTER_CIRCLE;
       Level->site[tx][ty].locchar = STAIRS_DOWN;
     }
-    if (!gamestatusp(COMPLETED_ASTRAL)) {
+    if (!gamestatusp(COMPLETED_ASTRAL, GameStatus)) {
       findspace(&tx, &ty, -1);
       Level->mlist = ((pml)checkmalloc(sizeof(mltype)));
       Level->mlist->next = NULL;
@@ -419,7 +419,7 @@ void maze_level() {
       Level->mlist->m->y = ty;
     }
   } else if (Current_Environment == E_VOLCANO) {
-    if (Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO)) {
+    if (Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus)) {
       findspace(&tx, &ty, -1);
       Level->mlist = ((pml)checkmalloc(sizeof(mltype)));
       Level->mlist->next = NULL;
