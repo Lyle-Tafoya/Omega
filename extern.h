@@ -18,9 +18,9 @@ void load_abyss(void);
 
 /* aux1.cpp functions */
 
-char *levelname(int);
-char *mstatus_string(struct monster *);
-char *trapid(int);
+std::string levelname(int);
+std::string mstatus_string(struct monster *);
+std::string trapid(int);
 int getdir(void);
 int goberserk(void);
 int p_country_moveable(int, int);
@@ -32,8 +32,8 @@ void describe_player(void);
 void fight_monster(struct monster *);
 void foodcheck(void);
 void gain_experience(int);
-void p_damage(int, int, char *);
-void p_death(char *);
+void p_damage(int, int, const std::string &);
+void p_death(const std::string &);
 void roomcheck(void);
 void searchat(int, int);
 void setspot(int *, int *);

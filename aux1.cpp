@@ -3,6 +3,7 @@
 /* auxiliary functions for those in com.c, also see aux2.c and aux3.c */
 
 #include <algorithm>
+#include <string>
 #include "glob.h"
 
 #ifdef SAVE_LEVELS
@@ -482,7 +483,7 @@ int damage_item(pob o) {
 }
 
 /* do dmg points of damage of type dtype, from source fromstring */
-void p_damage(int dmg, int dtype, char *fromstring) {
+void p_damage(int dmg, int dtype, const std::string &fromstring) {
   if (!p_immune(dtype)) {
     if (gamestatusp(FAST_MOVE, GameStatus)) {
       drawvision(Player.x, Player.y);
@@ -500,7 +501,7 @@ void p_damage(int dmg, int dtype, char *fromstring) {
 }
 
 /* game over, you lose! */
-void p_death(char *fromstring) {
+void p_death(const std::string &fromstring) {
   Player.hp = -1;
   print3("You died!");
   morewait();
@@ -610,7 +611,7 @@ int getdir() {
 }
 
 /* functions describes monster m's state for examine function */
-char *mstatus_string(struct monster *m) {
+std::string mstatus_string(struct monster *m) {
   if (m_statusp(*m, M_INVISIBLE) && !Player.status[TRUESIGHT])
     strcpy(Str2, "Some invisible creature");
   else if (m->uniqueness == COMMON) {
@@ -665,7 +666,7 @@ void describe_player() {
 /* share out experience among guild memberships */
 void gain_experience(int amount) {
   int i, count = 0, share;
-  Player.xp += (long)amount;
+  Player.xp += static_cast<long>(amount);
   gain_level(); /* actually, check to see if should gain level */
   for (i = 0; i < NUMRANKS; i++)
     if (Player.guildxp[i] > 0)
@@ -697,36 +698,36 @@ int goberserk() {
 }
 
 /* identifies a trap for examine() by its aux value */
-char *trapid(int trapno) {
+std::string trapid(int trapno) {
   switch (trapno) {
   case L_TRAP_SIREN:
-    return ("A siren trap");
+    return "A siren trap";
   case L_TRAP_DART:
-    return ("A dart trap");
+    return "A dart trap";
   case L_TRAP_PIT:
-    return ("A pit");
+    return "A pit";
   case L_TRAP_SNARE:
-    return ("A snare");
+    return "A snare";
   case L_TRAP_BLADE:
-    return ("A blade trap");
+    return "A blade trap";
   case L_TRAP_FIRE:
-    return ("A fire trap");
+    return "A fire trap";
   case L_TRAP_TELEPORT:
-    return ("A teleport trap");
+    return "A teleport trap";
   case L_TRAP_DISINTEGRATE:
-    return ("A disintegration trap");
+    return "A disintegration trap";
   case L_TRAP_DOOR:
-    return ("A trap door");
+    return "A trap door";
   case L_TRAP_MANADRAIN:
-    return ("A manadrain trap");
+    return "A manadrain trap";
   case L_TRAP_ACID:
-    return ("An acid shower trap");
+    return "An acid shower trap";
   case L_TRAP_SLEEP_GAS:
-    return ("A sleep gas trap");
+    return "A sleep gas trap";
   case L_TRAP_ABYSS:
-    return ("A concealed entrance to the abyss");
+    return "A concealed entrance to the abyss";
   default:
-    return ("A completely inoperative trap.");
+    return "A completely inoperative trap.";
   }
 }
 
@@ -897,7 +898,7 @@ void threaten(struct monster *m) {
     Player.alignment += 3;
     print2("Kill it, rob it, or free it? [krf] ");
     do
-      response = (char)mcigetc();
+      response = static_cast<char>(mcigetc());
     while ((response != 'k') && (response != 'r') && (response != 'f'));
     if (response == 'k') {
       m_death(m);
@@ -926,86 +927,59 @@ void threaten(struct monster *m) {
 }
 
 /* name of the player's experience level */
-char *levelname(int level) {
+std::string levelname(int level) {
   switch (level) {
   case 0:
-    strcpy(Str3, "neophyte");
-    break;
+    return "neophyte";
   case 1:
-    strcpy(Str3, "beginner");
-    break;
+    return "beginner";
   case 2:
-    strcpy(Str3, "tourist");
-    break;
+    return "tourist";
   case 3:
-    strcpy(Str3, "traveller");
-    break;
+    return "traveller";
   case 4:
-    strcpy(Str3, "wayfarer");
-    break;
+    return "wayfarer";
   case 5:
-    strcpy(Str3, "peregrinator");
-    break;
+    return "peregrinator";
   case 6:
-    strcpy(Str3, "wanderer");
-    break;
+    return "wanderer";
   case 7:
-    strcpy(Str3, "hunter");
-    break;
+    return "hunter";
   case 8:
-    strcpy(Str3, "scout");
-    break;
+    return "scout";
   case 9:
-    strcpy(Str3, "trailblazer");
-    break;
+    return "trailblazer";
   case 10:
-    strcpy(Str3, "discoverer");
-    break;
+    return "discoverer";
   case 11:
-    strcpy(Str3, "explorer");
-    break;
+    return "explorer";
   case 12:
-    strcpy(Str3, "senior explorer");
-    break;
+    return "senior explorer";
   case 13:
-    strcpy(Str3, "ranger");
-    break;
+    return "ranger";
   case 14:
-    strcpy(Str3, "ranger captain");
-    break;
+    return "ranger captain";
   case 15:
-    strcpy(Str3, "ranger knight");
-    break;
+    return "ranger knight";
   case 16:
-    strcpy(Str3, "adventurer");
-    break;
+    return "adventurer";
   case 17:
-    strcpy(Str3, "experienced adventurer");
-    break;
+    return "experienced adventurer";
   case 18:
-    strcpy(Str3, "skilled adventurer");
-    break;
+    return "skilled adventurer";
   case 19:
-    strcpy(Str3, "master adventurer");
-    break;
+    return "master adventurer";
   case 20:
-    strcpy(Str3, "hero");
-    break;
+    return "hero";
   case 21:
-    strcpy(Str3, "superhero");
-    break;
+    return "superhero";
   case 22:
-    strcpy(Str3, "demigod");
-    break;
+    return "demigod";
   default:
     if (level < 100) {
-      strcpy(Str3, "Order ");
-      Str3[6] = ((level / 10) - 2) + '0';
-      Str3[7] = 0;
-      strcat(Str3, " Master of Omega");
+      int order = level / 10 - 2;
+      return "Order " + std::to_string(order) + " Master of Omega";
     } else
-      strcpy(Str3, "Ultimate Master of Omega");
-    break;
+      return "Ultimate Master of Omega";
   }
-  return (Str3);
 }
