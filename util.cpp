@@ -18,7 +18,11 @@ int inbounds(int x, int y) {
 }
 
 int random_range(int k) {
-  std::uniform_int_distribution<> distribution(0, k-1);
+  int small, large;
+  if(k > 0) { small = 0; large = k-1; }
+  else if(k < 0) { small = k+1; large = 0; }
+  else { return 0; }
+  std::uniform_int_distribution<> distribution(small, large);
   return distribution(generator);
 }
 
