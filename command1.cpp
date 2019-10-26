@@ -48,7 +48,7 @@ void p_process() {
     case 11:
       if (gamestatusp(CHEATED, GameStatus))
         frobgamestatus();
-      __attribute__((fallthrough));
+      [[fallthrough]];
     case 12:
       xredraw();
       setgamestatus(SKIP_MONSTERS, GameStatus);

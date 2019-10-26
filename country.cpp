@@ -608,7 +608,7 @@ void random_temple_site(int i, int j, int, int populate) {
   case 1:
     Level->site[i][j].locchar = WATER;
     Level->site[i][j].p_locf = L_MAGIC_POOL;
-    __attribute__((fallthrough));
+    [[fallthrough]];
   case 2:
     if (populate)
       make_site_monster(i, j, INNER_DEMON);

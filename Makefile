@@ -10,7 +10,7 @@ LIBDIR = /home/sdossey/omega/lib/
 
 #CPPFLAGS = -DBSD -ggdb
 #CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -Wno-register -DSAVE_LEVELS
-CPPFLAGS = -Wall -Wextra -Wno-write-strings
+CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings
 
 # g++
 CXX = g++

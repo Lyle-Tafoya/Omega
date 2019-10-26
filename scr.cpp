@@ -128,10 +128,10 @@ int ynq() {
     break;
   case ESCAPE:
     p = 'q';
-    __attribute__((fallthrough));
+    [[fallthrough]];
   case ' ':
     p = 'q';
-    __attribute__((fallthrough));
+    [[fallthrough]];
   case 'q':
     wprintw(Msgw, "quit. ");
     break;
@@ -158,10 +158,10 @@ int ynq1() {
 
   case ESCAPE:
     p = 'q';
-    __attribute__((fallthrough));
+    [[fallthrough]];
   case ' ':
     p = 'q';
-    __attribute__((fallthrough));
+    [[fallthrough]];
   case 'q':
     wprintw(Msg1w, "quit. ");
     break;
@@ -187,10 +187,10 @@ int ynq2() {
     break;
   case ESCAPE:
     p = 'q';
-    __attribute__((fallthrough));
+    [[fallthrough]];
   case ' ':
     p = 'q';
-    __attribute__((fallthrough));
+    [[fallthrough]];
   case 'q':
     wprintw(Msg2w, "quit. ");
     break;
