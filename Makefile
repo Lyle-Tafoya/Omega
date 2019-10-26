@@ -11,18 +11,14 @@ LIBDIR = /home/sdossey/omega/lib/
 #CPPFLAGS = -DBSD -ggdb
 #CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -Wno-register -DSAVE_LEVELS
 CPPFLAGS = -Wall -Wextra -Wno-write-strings
-# I also had to define -cckr (K&R style C) for system V
 
-#CPP = cc -E
-#CPP = /lib/cpp
-CPP = g++ -E
+# g++
+CXX = g++
+# clang++
+#CXX = clang++
 
-# If you have gcc and don't intend to hack around with the game,
-# I recommend setting CC to gcc and using -O (as the CFLAGS).
-
-#CFLAGS = -O
-#LDFLAGS = -s
-CC = g++
+LDFLAGS = -lstdc++
+CPP = $(CXX) -E
 
 # comment out one of the following two, after establishing whether your
 # machine uses termcap (most BSD machines) or terminfo (System-V)
@@ -44,7 +40,7 @@ OBJ = omega.o abyss.o aux1.o aux2.o aux3.o char.o city.o\
       spell.o time.o trap.o util.o village.o
 
 omega: $(OBJ)
-	$(CC) $(LDFLAGS) $(OBJ) $(LIBS) -o omega
+	$(CXX) $(LDFLAGS) $(OBJ) $(LIBS) -o omega
 
 install: omega $(BINDIR) $(LIBDIR)
 	cp omega $(BINDIR)
@@ -74,4 +70,4 @@ clrgen.h clrgen.cpp: genclr.cpp minit.h defs.h
 	$(CPP) -DOMEGA_CLRGEN *.{cpp,h} | ./genclr clrgen.cpp clrgen.h
 
 genclr: genclr.o
-	$(CC) $(LDFLAGS) genclr.o -o genclr
+	$(CXX) $(LDFLAGS) genclr.o -o genclr
