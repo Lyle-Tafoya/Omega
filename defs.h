@@ -23,11 +23,6 @@ on save and restore. */
 
 #define COMPRESS_SAVE_FILES
 
-/* If your system doesn't have the usleep call, uncomment this line */
-/* (try man usleep) */
-
-/* #define NO_USLEEP */
-
 /* OMEGALIB is where all the data files reside.
    Note the final / is necessary.
    msdos note: \ is the C string escape character, so you need \\ in the

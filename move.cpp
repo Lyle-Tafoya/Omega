@@ -3,6 +3,8 @@
 /* general functions for player moving */
 
 #include <algorithm>
+#include <chrono>
+#include <thread>
 #include <unistd.h>
 #include "glob.h"
 
@@ -459,7 +461,7 @@ void l_void() {
   while (Player.hp > 0) {
     Time += 60;
     hourly_check();
-    usleep(250000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
   }
 }
 
@@ -651,7 +653,7 @@ void l_void_station() {
       while (Player.hp > 0) {
         Time += 60;
         hourly_check();
-        usleep(250000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
       }
     } else {
       print1("You enter the void.");

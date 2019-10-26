@@ -6,8 +6,10 @@
 
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <curses.h>
 #include <string>
+#include <thread>
 #include <sys/types.h>
 
 #define CHARATTR(c) ((c) & ~0xff)
@@ -828,10 +830,10 @@ void draw_explosion(Symbol pyx, int x, int y) {
   for (j = 0; j < 3; j++) {
     for (i = 0; i < 9; i++)
       plotchar(pyx, x + Dirs[0][i], y + Dirs[1][i]);
-    usleep(150000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
     for (i = 0; i < 9; i++)
       plotchar(SPACE, x + Dirs[0][i], y + Dirs[1][i]);
-    usleep(150000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
   }
   for (i = 0; i < 9; i++)
     plotspot(x + Dirs[0][i], y + Dirs[1][i], true);
@@ -1150,7 +1152,7 @@ void drawomega() {
     printw("\n                       *   ***                ***   *");
     printw("\n                        ****                    ****");
     refresh();
-    usleep(200000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
     move(1, 1);
     if (optionp(SHOW_COLOUR, Player))
       wattrset(stdscr, CHARATTR(CLR(CYAN)));
@@ -1169,7 +1171,7 @@ void drawomega() {
     printw("\n                       +   +++                +++   +");
     printw("\n                        ++++                    ++++");
     refresh();
-    usleep(200000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
     move(1, 1);
     if (optionp(SHOW_COLOUR, Player))
       wattrset(stdscr, CHARATTR(CLR(BLUE)));
@@ -1188,7 +1190,7 @@ void drawomega() {
     printw("\n                       .   ...                ...   .");
     printw("\n                        ....                    ....");
     refresh();
-    usleep(200000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
   }
   wattrset(stdscr, CHARATTR(CLR(WHITE)));
 }

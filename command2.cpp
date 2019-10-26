@@ -4,8 +4,9 @@
 /* This file contains toplevel commands called from command1.c */
 
 #include <algorithm>
+#include <chrono>
 #include <cctype>
-#include <unistd.h>
+#include <thread>
 
 #include "glob.h"
 
@@ -923,7 +924,7 @@ void save(int compress, int force) {
     if (ok) {
       if (save_game(compress, fname)) {
         print3("Bye!");
-        sleep(2);
+        std::this_thread::sleep_for(std::chrono::seconds(2));
         endgraf();
         exit(0);
       } else

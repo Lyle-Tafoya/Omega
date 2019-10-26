@@ -1062,9 +1062,6 @@ void do_los(Symbol, int *, int *, int, int);
 void do_object_los(int, int *, int *, int, int);
 void findspace(int *, int *, int);
 void initdirs(void);
-#ifdef NO_USLEEP
-void usleep(int);
-#endif
 
 /* village.cpp functions */
 

@@ -4,8 +4,10 @@
 /* Random utility functions called from all over */
 
 #include <algorithm>
+#include <chrono>
 #include <random>
 #include <string>
+#include <thread>
 #include <unistd.h>
 
 #include "glob.h"
@@ -216,7 +218,7 @@ void do_los(Symbol pyx, int *x1, int *y1, int x2, int y2) {
     Level->site[*x1][*y1].showchar = pyx;
     plotchar(pyx, *x1, *y1);
     plotspot(ox, oy, true);
-    usleep(50000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
   } while ((*x1 != x2 || *y1 != y2) && !blocked);
   plotspot(*x1, *y1, true);
   levelrefresh();
@@ -278,7 +280,7 @@ void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2) {
     if (unblocked(*x1, *y1)) {
       plotchar(pyx, *x1, *y1);
       Level->site[*x1][*y1].showchar = pyx;
-      usleep(50000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
   } while ((*x1 != x2 || *y1 != y2) && !blocked);
   if (Level->site[*x1][*y1].creature == NULL && blocked) {
@@ -781,15 +783,3 @@ void change_to_game_perms() {
   seteuid(game_uid);
 #endif /* BSD */
 }
-
-#ifdef NO_USLEEP
-void usleep(int usecs) {
-  fd_set null;
-  struct timeval timeout;
-
-  FD_ZERO(&null);
-  timeout.tv_usec = usecs;
-  timeout.tv_sec = 0;
-  select(0, &null, &null, &null, &timeout);
-}
-#endif

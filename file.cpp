@@ -4,12 +4,14 @@
    curses functions */
 
 #include <cerrno>
+#include <chrono>
 #include <cstdlib>
 #include <curses.h>
 #include <fcntl.h>
 #include <string>
 #include <sys/file.h>
 #include <sys/types.h>
+#include <thread>
 #include <unistd.h>
 
 #include "glob.h"
@@ -140,7 +142,7 @@ void lock_score_file() {
       if (attempts > 10) /* assume that lock file has been abandoned */
         unlink(Str1);    /* so we unlink it ourselves - ugly...	*/
       else
-        sleep(2);
+        std::this_thread::sleep_for(std::chrono::seconds(2));
     } else if (lock < 0) /* oops - something very wrong */
       return;
   } while (lock < 0);
