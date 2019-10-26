@@ -9,7 +9,8 @@ LIBDIR = /home/sdossey/omega/lib/
 # one, make sure you comment out the other definition of CFLAGS lower down
 
 #CPPFLAGS = -DBSD -ggdb
-#CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -Wno-register -DSAVE_LEVELS
+#CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DSAVE_LEVELS
+#CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DDEBUG
 CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings
 
 # g++

@@ -9,6 +9,9 @@
 #include <fcntl.h>
 #include <random>
 #include <unistd.h>
+#ifdef DEBUG
+#include <cassert>
+#endif
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */
 
