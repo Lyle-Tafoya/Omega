@@ -3,9 +3,6 @@
 /* functions having to do with player item inventory */
 
 #include <cassert>
-#include <cstdlib>
-#include <curses.h>
-
 #include "glob.h"
 
 /* drops money, heh heh */

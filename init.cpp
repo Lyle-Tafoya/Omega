@@ -2,9 +2,7 @@
 /* init.c */
 
 #include "defs.h"
-
 #include "iinit.h"
-
 #include "minit.h"
 
 /* This file contains all the object and monster definitions */

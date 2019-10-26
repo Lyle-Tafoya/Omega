@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <pwd.h>
 #include <unistd.h>
-
 #include "date.h"
 #include "glob.h"
 

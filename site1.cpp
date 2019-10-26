@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <chrono>
 #include <thread>
-
 #include "glob.h"
 
 /* the bank; can be broken into (!) */

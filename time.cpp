@@ -3,7 +3,6 @@
 
 /* this file deals with the passage of time in omega */
 
-#include <cstdlib>
 #include "glob.h"
 
 /* This function coordinates monsters and player actions, as well as

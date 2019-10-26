@@ -8,7 +8,6 @@
 /* glob.h */
 
 #include "defs.h"
-
 #include "extern.h"
 
 #ifdef DEBUG /* Added by DG, naturally. */

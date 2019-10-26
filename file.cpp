@@ -3,17 +3,11 @@
 /* functions with file access in them. Also some direct calls to
    curses functions */
 
-#include <cerrno>
 #include <chrono>
-#include <cstdlib>
-#include <curses.h>
 #include <fcntl.h>
 #include <string>
-#include <sys/file.h>
-#include <sys/types.h>
 #include <thread>
 #include <unistd.h>
-
 #include "glob.h"
 
 FILE *checkfopen(const std::string &filestring, const std::string &optionstring) {

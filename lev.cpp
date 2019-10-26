@@ -2,7 +2,6 @@
 /* lev.c */
 
 #include <cassert>
-#include <cstdlib>
 #include "glob.h"
 
 /* Functions dealing with dungeon and country levels aside from actual

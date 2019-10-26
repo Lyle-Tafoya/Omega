@@ -3,7 +3,6 @@
 /* level generator functions */
 
 #include <algorithm>
-#include <ctime>
 #include "glob.h"
 
 #ifdef SAVE_LEVELS

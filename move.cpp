@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <chrono>
 #include <thread>
-#include <unistd.h>
 #include "glob.h"
 
 /* various miscellaneous location functions */

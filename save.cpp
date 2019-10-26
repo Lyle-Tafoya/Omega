@@ -1,9 +1,7 @@
 /* omega copyright (c) 1987,1988,1989 by Laurence Raphael Brothers */
 /* save.c */
 
-#include <cstdlib>
 #include <unistd.h>
-
 #include "glob.h"
 
 #ifdef SAVE_LEVELS

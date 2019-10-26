@@ -10,12 +10,10 @@
 #include <curses.h>
 #include <string>
 #include <thread>
-#include <sys/types.h>
+#include "glob.h"
 
 #define CHARATTR(c) ((c) & ~0xff)
 
-#include "glob.h"
-#include <unistd.h>
 
 #ifdef EXCESSIVE_REDRAW
 #undef wclear

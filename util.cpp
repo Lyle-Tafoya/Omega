@@ -9,7 +9,6 @@
 #include <string>
 #include <thread>
 #include <unistd.h>
-
 #include "glob.h"
 
 std::mt19937 generator;
