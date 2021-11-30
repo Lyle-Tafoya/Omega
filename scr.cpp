@@ -61,19 +61,15 @@ void phaseprint() {
 }
 
 void show_screen() {
-  int i, j, top, bottom;
-  int last_attr = 0, c;
-
   wclear(Levelw);
-  top = ScreenOffset;
-  bottom = ScreenOffset + ScreenLength;
-  top = std::max(0, top);
-  bottom = std::min(bottom, LENGTH);
+  int last_attr = 0;
+  int top = std::max(0, ScreenOffset);
+  int bottom = std::min(ScreenOffset+ScreenLength, LENGTH);
   if (Current_Environment != E_COUNTRYSIDE)
-    for (j = top; j < bottom; j++) {
+    for (int j = top; j <= bottom; ++j) {
       wmove(Levelw, screenmod(j), 0);
-      for (i = 0; i < WIDTH; i++) {
-        c = ((loc_statusp(i, j, SEEN, *Level)) ? getspot(i, j, false) : (int)SPACE);
+      for (int i = 0; i < WIDTH; ++i) {
+        int c = ((loc_statusp(i, j, SEEN, *Level)) ? getspot(i, j, false) : static_cast<int>(SPACE));
         if (optionp(SHOW_COLOUR, Player) && CHARATTR(c) != last_attr) {
           last_attr = CHARATTR(c);
           wattrset(Levelw, last_attr);
@@ -82,11 +78,10 @@ void show_screen() {
       }
     }
   else
-    for (j = top; j < bottom; j++)
-      for (i = 0; i < WIDTH; i++) {
+    for (int j = top; j <= bottom; ++j)
+      for (int i = 0; i < WIDTH; ++i) {
         wmove(Levelw, screenmod(j), i);
-        c = ((c_statusp(i, j, SEEN, Country)) ? Country[i][j].current_terrain_type
-                                     : (int)SPACE);
+        int c = c_statusp(i, j, SEEN, Country) ? Country[i][j].current_terrain_type : static_cast<int>(SPACE);
         if (optionp(SHOW_COLOUR, Player) && CHARATTR(c) != last_attr) {
           last_attr = CHARATTR(c);
           wattrset(Levelw, last_attr);
@@ -100,11 +95,9 @@ char mgetc() { return (wgetch(Msgw)); }
 
 /* case insensitive mgetc -- sends uppercase to lowercase */
 int mcigetc() {
-  int c;
-
-  c = wgetch(Msgw);
-  if ((c >= (int)'A') && (c <= (int)'Z'))
-    return (c + (int)('a' - 'A'));
+  int c = wgetch(Msgw);
+  if(c >= static_cast<int>('A') && c <= static_cast<int>('Z'))
+    return c + static_cast<int>('a' - 'A');
   else
     return (c);
 }
@@ -347,7 +340,6 @@ void hide_line(int i) {
 
 /* initialize, screen, windows */
 void initgraf() {
-  int i;
   initscr();
   start_color();
   clrgen_init();
@@ -369,7 +361,7 @@ void initgraf() {
   scrollok(Locw, 0);
   Levelw = newwin(ScreenLength, 64, 3, 0);
   scrollok(Levelw, 0);
-  for (i = 0; i < MAXITEMS; i++) {
+  for (int i = 0; i < MAXITEMS; ++i) {
     Showline[i] = newwin(1, 64, i + 3, 0);
     scrollok(Showline[i], 0);
     wclear(Showline[i]);
@@ -401,12 +393,10 @@ void initgraf() {
 int lastx = -1, lasty = -1;
 
 void drawplayer() {
-  int c;
-
   if (Current_Environment == E_COUNTRYSIDE) {
     if (inbounds(lastx, lasty) && !offscreen(lasty)) {
       wmove(Levelw, screenmod(lasty), lastx);
-      c = Country[lastx][lasty].current_terrain_type;
+      int c = Country[lastx][lasty].current_terrain_type;
       if (optionp(SHOW_COLOUR, Player))
         wattrset(Levelw, CHARATTR(c));
       waddch(Levelw, (c & 0xff));
@@ -437,9 +427,9 @@ void setlastxy(int new_x, int new_y) /* used when changing environments */
 
 int litroom(int x, int y) {
   if (Level->site[x][y].roomnumber < ROOMBASE)
-    return (false);
+    return false;
   else
-    return (loc_statusp(x, y, LIT, *Level) || Player.status[ILLUMINATION]);
+    return loc_statusp(x, y, LIT, *Level) || Player.status[ILLUMINATION];
 }
 
 void drawvision(int x, int y) {
@@ -1198,15 +1188,12 @@ void drawomega() {
    in absolute coordinates */
 
 void screencheck(int y) {
-  if (((y - ScreenOffset) < (ScreenLength / 8)) ||
-      ((y - ScreenOffset) > (7 * ScreenLength / 8))) {
-    ScreenOffset = y - (ScreenLength / 2);
-    show_screen();
-    if (Current_Environment != E_COUNTRYSIDE)
-      drawmonsters(true);
-    if (!offscreen(Player.y))
-      drawplayer();
-  }
+  ScreenOffset = std::max(y - ScreenLength/2, 0);
+  show_screen();
+  if (Current_Environment != E_COUNTRYSIDE)
+    drawmonsters(true);
+  if (!offscreen(Player.y))
+    drawplayer();
 }
 
 void spreadroomlight(int x, int y, int roomno) {
@@ -1280,7 +1267,7 @@ void display_inventory_slot(int slotnum, int topline) {
   wclear(W);
   switch (slotnum) {
   case O_UP_IN_AIR:
-    wprintw(W, "-- Object 'up in air':", usechar);
+    wprintw(W, "-- Object 'up in air':");
     break;
   case O_READY_HAND:
     wprintw(W, "-- %c%c ready hand: ", idchar, usechar);

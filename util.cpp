@@ -31,8 +31,7 @@ int random_range(int k) {
 int screenmod(int y) { return (y - ScreenOffset); }
 
 int offscreen(int y) {
-  return ((y < 0) || (y < ScreenOffset) ||
-          (y > ScreenOffset + ScreenLength - 1) || (y > LENGTH));
+  return ((y < 0) || (y < ScreenOffset) || (y > ScreenOffset+ScreenLength-1) || (y > LENGTH));
 }
 
 /* always hit on a natural 0; never hit on a natural 19 */
