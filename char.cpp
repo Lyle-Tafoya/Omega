@@ -64,9 +64,6 @@ void initplayer() {
   if (!oldchar) {
     optionset(RUNSTOP, Player);
     optionset(CONFIRM, Player);
-#ifdef COMPRESS_SAVE_FILES
-    optionset(COMPRESS_OPTION, Player);
-#endif
     optionset(SHOW_COLOUR, Player);
     initstats();
   }

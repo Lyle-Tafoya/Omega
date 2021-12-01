@@ -805,7 +805,7 @@ void restore_country(FILE *, int);
 void restore_level(FILE *, int);
 void restore_monsters(FILE *, plv, int);
 void restore_player(FILE *, int);
-int save_game(int, char *);
+int save_game(char *);
 int save_country(FILE *);
 int save_item(FILE *, pob);
 int save_itemlist(FILE *, pol);

@@ -21,8 +21,6 @@ redraw the screen excessively. */
 huge amounts of disk space and are annoyed at waiting a few more seconds
 on save and restore. */
 
-#define COMPRESS_SAVE_FILES
-
 /* OMEGALIB is where all the data files reside.
    Note the final / is necessary.
    msdos note: \ is the C string escape character, so you need \\ in the
@@ -56,13 +54,6 @@ on save and restore. */
 /* Don't change anything from here on (unless you know what you're doing) */
 #define VERSION 90
 #define VERSIONSTRING "omega version 0.90"
-
-#ifdef COMPRESS_SAVE_FILES
-#define COMPRESSOR "gzip"
-#define UNCOMPRESSOR "gunzip"
-#define COMPRESS_EXT "gz"
-#define EXT_LENGTH 2
-#endif
 
 #define VACANT 0
 #define ABORT -1

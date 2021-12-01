@@ -19,7 +19,7 @@ the country level, and the last or current dungeon level */
    The player, the city level, and the current dungeon level are saved.
 */
 
-int save_game(int compress, char *savestr) {
+int save_game(char *savestr) {
   FILE *fd;
   int slashpos;
 #ifdef SAVE_LEVELS
@@ -27,7 +27,6 @@ int save_game(int compress, char *savestr) {
 #endif
   int i, writeok = true;
   plv current, save;
-  char temp[200];
 
   if (access(savestr, R_OK) == 0)
     if (access(savestr, W_OK) == 0) {
@@ -101,19 +100,6 @@ int save_game(int compress, char *savestr) {
       print1("Game Saved.");
     else
       print1("Something didn't work... save aborted.");
-#ifdef COMPRESS_SAVE_FILES
-    if (writeok && compress) {
-      print2("Compressing Save File....");
-      strcpy(temp, COMPRESSOR);
-      strcat(temp, " ");
-      strcat(temp, savestr);
-      system(temp);
-      sprintf(temp, "%s.%s", savestr, COMPRESS_EXT);
-      unlink(savestr);
-      link(temp, savestr);
-      unlink(temp); /* renames, but sys-V doesn't have rename()... */
-    }
-#endif
     morewait();
     clearmsg();
   }
@@ -122,16 +108,10 @@ int save_game(int compress, char *savestr) {
 }
 
 /* saves game on SIGHUP */
-/* no longer tries to compress, which hangs */
 void signalsave(int) {
   change_to_user_perms();
-  save_game(false, "Omega.Sav");
-#ifdef COMPRESS_SAVE_FILES
-  print1("Signal - Saving uncompressed file 'Omega.Sav'.");
-  print2("You can compress it yourself, if you like.");
-#else
+  save_game("Omega.Sav");
   print1("Signal - Saving file 'Omega.Sav'.");
-#endif
   morewait();
   endgraf();
   exit(0);
@@ -434,7 +414,6 @@ int ok_outdated(int version) {
 
 int restore_game(char *savestr) {
   int i, version;
-  char temp[200];
   FILE *fd;
 
   if (access(savestr, F_OK | R_OK | W_OK) == -1) /* access uses real uid */
@@ -445,32 +424,6 @@ int restore_game(char *savestr) {
     return false;
   }
   change_to_user_perms();
-#ifdef COMPRESS_SAVE_FILES
-  fd = fopen(savestr, "rb");
-  if (fd == NULL) {
-    print1("Error restoring game -- aborted.");
-    print2("File name was: ");
-    nprint2(savestr);
-    morewait();
-    change_to_game_perms();
-    return (false);
-  }
-  fread((char *)&version, sizeof(int), 1, fd);
-  fclose(fd);
-  if (VERSION != version && !ok_outdated(version)) {
-    print1("Uncompressing Save File....");
-    sprintf(temp, "%s.%s", savestr, COMPRESS_EXT);
-    unlink(temp);
-    link(savestr, temp);
-    unlink(savestr); /* renames, but sys-V doesn't have rename()... */
-    strcpy(temp, UNCOMPRESSOR);
-    strcat(temp, " ");
-    strcat(temp, savestr);
-    system(temp);
-    print2("Save file uncompressed.");
-    morewait();
-  }
-#endif
 
   fd = fopen(savestr, "rb");
 

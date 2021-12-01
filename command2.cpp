@@ -552,10 +552,8 @@ void setoptions() {
     case KEY_DOWN:
 #endif
       to = slot + 1;
-#ifndef COMPRESS_SAVE_FILES
       if (to == 8) /* COMPRESS_OPTION */
         to = 9;
-#endif
       slot = move_slot(slot, to, NUMOPTIONS + 1);
       break;
     case 'k':
@@ -564,10 +562,8 @@ void setoptions() {
     case KEY_UP:
 #endif
       to = slot - 1;
-#ifndef COMPRESS_SAVE_FILES
       if (to == 8) /* COMPRESS_OPTION */
         to = 7;
-#endif
       if (to > 0)
         slot = move_slot(slot, to, NUMOPTIONS + 1);
       break;
@@ -920,7 +916,7 @@ void save(int compress, int force) {
       ok = false;
     }
     if (ok) {
-      if (save_game(compress, fname)) {
+      if (save_game(fname)) {
         print3("Bye!");
         std::this_thread::sleep_for(std::chrono::seconds(2));
         endgraf();
