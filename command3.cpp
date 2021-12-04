@@ -5,8 +5,6 @@
    called from command1.c */
 
 #include <algorithm>
-#include <pwd.h>
-#include <unistd.h>
 #include "date.h"
 #include "glob.h"
 
@@ -516,9 +514,6 @@ void charid() {
 }
 
 void wizard() {
-  char *lname;
-  struct passwd *dastuff;
-
   setgamestatus(SKIP_MONSTERS, GameStatus);
   if (gamestatusp(CHEATED, GameStatus))
     mprint("You're already in wizard mode!");
@@ -526,12 +521,16 @@ void wizard() {
     clearmsg();
     mprint("Really try to enter wizard mode? [yn] ");
     if (ynq() == 'y') {
-      lname = getlogin();
-      if (!lname || strlen(lname) == 0) {
-        dastuff = getpwuid(getuid());
-        lname = dastuff->pw_name;
+#ifdef PLATFORM_WINDOWS
+      const char *env = getenv("USER");
+#else
+      const char *env = getenv("USERNAME");
+#endif
+      std::string username;
+      if(!env || strlen(env) == 0) {
+        username = "pcuser";
       }
-      if (strcmp(lname, WIZARD) == 0) {
+      if (username == WIZARD) {
         setgamestatus(CHEATED, GameStatus);
         mprint("Wizard mode set.");
       } else {

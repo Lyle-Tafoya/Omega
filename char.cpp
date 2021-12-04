@@ -3,8 +3,6 @@
 /* Player generation */
 
 #include <algorithm>
-#include <pwd.h>
-#include <unistd.h>
 #include "glob.h"
 
 /* set player to begin with */
@@ -12,15 +10,20 @@ void initplayer() {
   int i;
   int oldchar = false;
   FILE *fd;
-  char *lname;
-  struct passwd *dastuff;
-
-  lname = getlogin();
-  if (!lname || strlen(lname) == 0) {
-    dastuff = getpwuid(getuid());
-    lname = dastuff->pw_name;
+#ifdef PLATFORM_WINDOWS
+  const char *env = getenv("USER");
+#else
+  const char *env = getenv("USERNAME");
+#endif
+  std::string username;
+  if(!env || strlen(env) == 0) {
+    username = "pcuser";
   }
-  strcpy(Player.name, lname);
+  else {
+    username = env;
+  }
+  strcpy(Player.name, username.c_str());
+
   if (Player.name[0] >= 'a' && Player.name[0] <= 'z')
     Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
   Player.itemweight = 0;
@@ -54,7 +57,7 @@ void initplayer() {
       fread((char *)&Player, sizeof(Player), 1, fd);
       fread((char *)&Searchnum, sizeof(int), 1, fd);
       fread((char *)&Verbosity, sizeof(char), 1, fd);
-      strcpy(Player.name, lname);
+      strcpy(Player.name, username.c_str());
       if (Player.name[0] >= 'a' && Player.name[0] <= 'z')
         Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
     }

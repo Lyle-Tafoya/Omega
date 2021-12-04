@@ -150,7 +150,7 @@ void initrand(int environment, int level) {
     store = random_range(RAND_MAX);
   /* Pseudo Random Seed */
   if (environment == E_RANDOM)
-    seed = (int)time((long *)NULL);
+    seed = static_cast<int>(time(nullptr));
   else if (environment == E_RESTORE)
     seed = store;
   else
@@ -201,12 +201,16 @@ int main(int argc, char *argv[]) {
 #endif
 
   if (CATCH_SIGNALS) {
+#ifndef PLATFORM_WINDOWS
     signal(SIGQUIT, signalexit);
+#endif
     signal(SIGILL, signalexit);
 #ifdef DEBUG
     if (DG_debug_flag) {
 #endif
+#ifndef PLATFORM_WINDOWS
       signal(SIGTRAP, signalexit);
+#endif
       signal(SIGFPE, signalexit);
       signal(SIGSEGV, signalexit);
 #ifdef DEBUG

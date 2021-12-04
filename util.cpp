@@ -756,8 +756,10 @@ int game_uid;
 int user_uid;
 
 void init_perms() {
+#ifndef PLATFORM_WINDOWS
   user_uid = getuid();
   game_uid = geteuid();
+#endif
 }
 
 /*
@@ -767,17 +769,21 @@ void setreuid(int, int);
 */
 
 void change_to_user_perms() {
+#ifndef PLATFORM_WINDOWS
 #ifdef BSD
   setreuid(game_uid, user_uid);
 #else
   seteuid(user_uid);
 #endif /* BSD */
+#endif
 }
 
 void change_to_game_perms() {
+#ifndef PLATFORM_WINDOWS
 #ifdef BSD
   setreuid(user_uid, game_uid);
 #else
   seteuid(game_uid);
 #endif /* BSD */
+#endif
 }

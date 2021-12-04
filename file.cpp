@@ -7,7 +7,11 @@
 #include <fcntl.h>
 #include <string>
 #include <thread>
+#include <fstream>
+#include <filesystem>
+#ifndef PLATFORM_WINDOWS
 #include <unistd.h>
+#endif
 #include "glob.h"
 
 FILE *checkfopen(const std::string &filestring, const std::string &optionstring) {
@@ -116,6 +120,7 @@ void showmotd() {
 }
 
 void lock_score_file() {
+#ifndef PLATFORM_WINDOWS
   int lock, attempts = 0, thispid, lastpid = 0;
   FILE *lockfile;
 
@@ -143,12 +148,15 @@ void lock_score_file() {
   sprintf(Str1, "%d", getpid());
   write(lock, Str1, strlen(Str1));
   close(lock);
+#endif
 }
 
 void unlock_score_file() {
+#ifndef PLATFORM_WINDOWS
   strcpy(Str1, Omegalib);
   strcat(Str1, "omega.hi.lock");
   unlink(Str1);
+#endif
 }
 
 void showscores() {
@@ -307,9 +315,8 @@ void save_hiscore_npc(int npc) {
   }
   fclose(infile);
   fclose(outfile);
-  unlink(Str1);
-  link(Str2, Str1);
-  unlink(Str2); /* renames, but sys-V doesn't have rename()... */
+
+  std::filesystem::rename(Str2, Str1);
   unlock_score_file();
 }
 
@@ -385,17 +392,15 @@ void filescanstring(FILE *fd, char *fstr) {
   fstr[i] = 0;
 }
 
-int test_file_access(const std::string &file_name, char mode) {
-  int fd;
-
-  if (mode == 'r')
-    fd = open(file_name.c_str(), O_RDONLY, 0);
-  else
-    fd = open(file_name.c_str(), O_RDWR, 0);
-  if (fd < 0)
-    return 0;
-  close(fd);
-  return 1;
+bool test_file_access(const std::string &file_name, char mode) {
+  std::fstream file;
+  auto file_mode = (mode == 'r' ? std::ios::in : std::ios::in|std::ios::out);
+  file.open(file_name, file_mode);
+  if(!file) {
+    return false;
+  }
+  file.close();
+  return true;
 }
 
 const char *required_file_list[] = {
@@ -426,17 +431,17 @@ int filecheck() {
     strcpy(&(Str1[endpos]), required_file_list[file]);
     if ((strcmp(required_file_list[file], "omega.hi") == 0 ||
          strcmp(required_file_list[file], "omega.log") == 0) &&
-        test_file_access(Str1, 'w') == 0) {
+        !test_file_access(Str1, 'w')) {
       impossible = true;
       printf("\nError! File not appendable or accessible: %s", Str1);
-    } else if (test_file_access(Str1, 'r') == 0) {
+    } else if (!test_file_access(Str1, 'r')) {
       impossible = true;
       printf("\nError! File not accessible: %s", Str1);
     }
   }
   for (file = 0; optional_file_list[file]; file++) {
     strcpy(&(Str1[endpos]), optional_file_list[file]);
-    if (test_file_access(Str1, 'r') == 0) {
+    if (!test_file_access(Str1, 'r')) {
       badbutpossible = true;
       printf("\nWarning! File not accessible: %s", Str1);
     }

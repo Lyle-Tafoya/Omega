@@ -32,20 +32,20 @@ void free_dungeon() {
 /* erase the level w/o deallocating it*/
 void clear_level(struct level *dungeon_level) {
   int i, j;
-  if (dungeon_level != NULL) {
+  if (dungeon_level != nullptr) {
     dungeon_level->generated = false;
     dungeon_level->numrooms = 0;
     dungeon_level->tunnelled = 0;
     dungeon_level->depth = 0;
-    dungeon_level->mlist = NULL;
-    dungeon_level->next = NULL;
-    dungeon_level->last_visited = time((long *)NULL);
+    dungeon_level->mlist = nullptr;
+    dungeon_level->next = nullptr;
+    dungeon_level->last_visited = time(nullptr);
     for (i = 0; i < MAXWIDTH; i++)
       for (j = 0; j < MAXLENGTH; j++) {
         dungeon_level->site[i][j].locchar = WALL;
         dungeon_level->site[i][j].showchar = SPACE;
-        dungeon_level->site[i][j].creature = NULL;
-        dungeon_level->site[i][j].things = NULL;
+        dungeon_level->site[i][j].creature = nullptr;
+        dungeon_level->site[i][j].things = nullptr;
         dungeon_level->site[i][j].aux = difficulty() * 20;
         dungeon_level->site[i][j].buildaux = 0;
         dungeon_level->site[i][j].p_locf = L_NO_OP;
@@ -146,16 +146,16 @@ void change_level(char fromlevel, char tolevel, char rewrite_level) {
 /* tries to find the level of depth levelnum in dungeon; if can't find
    it returns NULL */
 plv findlevel(struct level *dungeon, char levelnum) {
-  if (dungeon == NULL)
-    return (NULL);
+  if (dungeon == nullptr)
+    return (nullptr);
   else {
-    while ((dungeon->next != NULL) && (dungeon->depth != levelnum))
+    while ((dungeon->next != nullptr) && (dungeon->depth != levelnum))
       dungeon = dungeon->next;
     if (dungeon->depth == levelnum) {
-      dungeon->last_visited = time((long *)NULL);
+      dungeon->last_visited = time(nullptr);
       return (dungeon);
     } else
-      return (NULL);
+      return (nullptr);
   }
 }
 #endif

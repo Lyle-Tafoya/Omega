@@ -279,7 +279,7 @@ void lock_score_file(void);
 void unlock_score_file(void);
 FILE *checkfopen(const std::string &, const std::string &);
 int filecheck(void);
-int test_file_access(const std::string &, char);
+bool test_file_access(const std::string &, char);
 void abyss_file(void);
 void adeptfile(void);
 void checkhigh(const std::string &, int);
