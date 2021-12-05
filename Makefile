@@ -1,5 +1,4 @@
-# These two definitions are used if you 'make install'
-# the value of LIBDIR should be the same as OMEGALIB in defs.h
+# The value of LIBDIR should be the same as OMEGALIB in defs.h
 BINDIR = /home/sdossey/omega/
 LIBDIR = /home/sdossey/omega/lib/
 
@@ -8,10 +7,10 @@ LIBDIR = /home/sdossey/omega/lib/
 # it will fail if none of them are defined.  If you do uncomment
 # one, make sure you comment out the other definition of CFLAGS lower down
 
-#CPPFLAGS = -DBSD -ggdb
-#CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DSAVE_LEVELS
-#CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DDEBUG
-CPPFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings
+#CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -g -DDEBUG
+#CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DSAVE_LEVELS
+#CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DPLATFORM_WINDOWS
+CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings
 
 # g++
 CXX = g++
@@ -21,12 +20,9 @@ CXX = g++
 LDFLAGS = -lstdc++
 CPP = $(CXX) -E
 
-# comment out one of the following two, after establishing whether your
-# machine uses termcap (most BSD machines) or terminfo (System-V)
-#LIBS = -lcurses -ltermcap
-#LIBS = -lcurses -ltermlib
-# Linux links in term?? automatically.
+# POSIX systems use ncurses while Windows uses pdcurses
 LIBS = -lncurses
+#LIBS = -lpdcurses
 
 #################### that's it for changing the Makefile ####################
 
