@@ -1268,7 +1268,9 @@ struct monster {
   int talkf, movef, meleef, strikef, specialf;
   long status, immunity;
   Symbol monchar;
-  char *monstring, *corpsestr, *meleestr;
+  const char *monstring;
+  const char *corpsestr;
+  char *meleestr;
 };
 
 struct monsterlist {
@@ -1310,7 +1312,9 @@ struct object {
   int usef;
   unsigned char level;
   Symbol objchar;
-  char *objstr, *truename, *cursestr;
+  const char *objstr;
+  const char *truename;
+  const char *cursestr;
 };
 
 struct objectlist {

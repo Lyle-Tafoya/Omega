@@ -823,7 +823,7 @@ char *countryid(Symbol terrain) {
   return (Str1);
 }
 
-static char *sitenames[] = {/* alphabetical listing */
+static const char *sitenames[] = {/* alphabetical listing */
                             "alchemist",
                             "arena",
                             "armorer",

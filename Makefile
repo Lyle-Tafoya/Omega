@@ -2,19 +2,12 @@
 BINDIR = /home/sdossey/omega/
 LIBDIR = /home/sdossey/omega/lib/
 
-# One of these should be uncommented, as appropriate, unless your compiler
-# does it for you.  You can test this by simply trying to 'make' omega -
-# it will fail if none of them are defined.  If you do uncomment
-# one, make sure you comment out the other definition of CFLAGS lower down
-
 #CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -g -DDEBUG
 #CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DSAVE_LEVELS
 #CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DPLATFORM_WINDOWS
 CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings
 
-# g++
 CXX = g++
-# clang++
 #CXX = clang++
 
 LDFLAGS = -lstdc++

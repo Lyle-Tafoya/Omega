@@ -243,7 +243,7 @@ void hide(int, int);
 void illuminate(int);
 void inflict_fear(int, int);
 void learnspell(int);
-void level_drain(int, char *);
+void level_drain(int, const char *);
 void level_return(void);
 void levitate(int);
 void p_poison(int);
@@ -268,8 +268,8 @@ void make_prime(int, int);
 /* etc.cpp functions */
 
 char *nameprint(void);
-char *slotstr(int);
-char *wordnum(int);
+const char *slotstr(int);
+const char *wordnum(int);
 void hint(void);
 void learnclericalspells(int, int);
 
@@ -361,7 +361,7 @@ void do_inventory_control(void);
 int key_to_index(signed char);
 signed char index_to_key(int);
 long get_money(long);
-char *cashstr(void);
+const char *cashstr(void);
 char *itemid(pob);
 int baditem(int);
 int badobject(char);
@@ -408,13 +408,13 @@ void top_inventory_control(void);
 /* item.cpp functions */
 
 void shuffle(int[], int);
-char *bootname(int);
-char *cloakname(int);
-char *grotname(void);
-char *potionname(int);
-char *ringname(int);
-char *scrollname(int);
-char *stickname(int);
+const char *bootname(int);
+const char *cloakname(int);
+const char *grotname(void);
+const char *potionname(int);
+const char *ringname(int);
+const char *scrollname(int);
+const char *stickname(int);
 int itemblessing(void);
 int itemcharge(void);
 int itemplus(void);
@@ -614,7 +614,7 @@ void m_move_leash(struct monster *);
 
 /* mon.cpp functions */
 
-char *mantype(void);
+const char *mantype(void);
 void determine_npc_behavior(pmt, int, int);
 void m_abyss(struct monster *);
 void m_altar(struct monster *);
@@ -805,7 +805,7 @@ void restore_country(FILE *, int);
 void restore_level(FILE *, int);
 void restore_monsters(FILE *, plv, int);
 void restore_player(FILE *, int);
-int save_game(char *);
+int save_game(const char *);
 int save_country(FILE *);
 int save_item(FILE *, pob);
 int save_itemlist(FILE *, pol);
@@ -952,7 +952,7 @@ void send_to_jail(void);
 
 /* spell.cpp functions */
 
-char *spellid(int);
+const char *spellid(int);
 int getspell(void);
 int spellparse(void);
 void cast_spell(int);
@@ -1027,7 +1027,7 @@ long calc_points(void);
 const char *getarticle(const std::string &);
 const char *month(void);
 const char *ordinal(int);
-char *salloc(char *);
+const char *salloc(char *);
 char inversedir(int);
 void init_perms(void);
 int confirmation(void);

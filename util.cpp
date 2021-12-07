@@ -738,7 +738,7 @@ void *checkmalloc(unsigned int bytes) {
 }
 
 /* alloc just enough string space for str, strcpy, and return pointer */
-char *salloc(char *str) {
+const char *salloc(char *str) {
   char *s = (char *)checkmalloc((unsigned)(strlen(str) + 1));
   strcpy(s, str);
   return (s);

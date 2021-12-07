@@ -19,34 +19,21 @@ the country level, and the last or current dungeon level */
    The player, the city level, and the current dungeon level are saved.
 */
 
-int save_game(char *savestr) {
+int save_game(const char *savestr) {
   FILE *fd;
-  int slashpos;
 #ifdef SAVE_LEVELS
   int tmpdepth;
 #endif
   int i, writeok = true;
   plv current, save;
 
-  if (access(savestr, R_OK) == 0)
+  if (access(savestr, R_OK) == 0) {
     if (access(savestr, W_OK) == 0) {
       mprint(" Overwrite old file?");
       writeok = (ynq() == 'y');
     } else {
       mprint(" File already exists.");
       writeok = false;
-    }
-  else {
-    for (slashpos = strlen(savestr); slashpos > 0 && savestr[slashpos] != '/';
-         slashpos--)
-      ;
-    if (slashpos > 0) {
-      savestr[slashpos] = '\0';
-      if (access(savestr, W_OK) == -1) {
-        mprint(" Unable to save to that directory.");
-        writeok = false;
-      }
-      savestr[slashpos] = '/';
     }
   }
   change_to_user_perms();

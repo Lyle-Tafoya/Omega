@@ -59,8 +59,8 @@
  * Colors specified in cpp output on standard input
  */
 typedef struct {
-  char *ofg, *obg;             /* Omega fore/background color */
-  char *cfg, *cbg;             /* curses fore/background color */
+  const char *ofg, *obg;             /* Omega fore/background color */
+  const char *cfg, *cbg;             /* curses fore/background color */
   unsigned int boldfg, boldbg; /* fore/background bold flag */
   unsigned int idx;            /* COLOR_PAIR() argument */
 } ClrPair;
@@ -69,8 +69,8 @@ typedef struct {
  * Omega versus curses color names
  */
 typedef struct {
-  char *omega;
-  char *curses;
+  const char *omega;
+  const char *curses;
   unsigned int bold;
 } ClrEquiv;
 
@@ -92,7 +92,7 @@ static ClrEquiv clr_equiv[17] = {{"BLACK", "BLACK", 0},
                                  {"BRIGHT_WHITE", "WHITE", 1},
                                  {NULL, NULL, 0}};
 
-static char *clr_lookup(char *omega, char **curses, unsigned int *bold) {
+static const char *clr_lookup(const char *omega, const char **curses, unsigned int *bold) {
   /*
    * Point CURSES to the curses color corresponding to Omega color OMEGA,
    * set *BOLD to whether the bold attribute should accompany that curses
@@ -109,7 +109,7 @@ static char *clr_lookup(char *omega, char **curses, unsigned int *bold) {
   return NULL;
 }
 
-static char *clr_scan(char *p, char **curses, unsigned int *bold, char **end) {
+static const char *clr_scan(char *p, const char **curses, unsigned int *bold, char **end) {
   /*
    * Return a copy of the Omega color nearest the start of writable buffer
    * P, point CURSES to the corresponding curses color, and point END just
@@ -117,7 +117,8 @@ static char *clr_scan(char *p, char **curses, unsigned int *bold, char **end) {
    *
    * If the Omega color is unrecognized, issue an error and exit.
    */
-  char c, *start, *omega;
+  char c;
+  const char *omega, *start;
   for (; (c = *p); p++) {
     if (!ISCID(c))
       continue;

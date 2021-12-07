@@ -93,7 +93,7 @@ void make_country_screen(Symbol terrain) {
   }
 }
 
-void make_general_map(char *terrain) {
+void make_general_map(const char *terrain) {
   int i, j;
   int size = strlen(terrain);
   char curr;

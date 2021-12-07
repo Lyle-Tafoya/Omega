@@ -239,7 +239,7 @@ void print1(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     buffercycle(s);
     wclear(Msg1w);
-    wprintw(Msg1w, s.c_str());
+    wprintw(Msg1w, "%s", s.c_str());
     wrefresh(Msg1w);
   }
 }
@@ -248,7 +248,7 @@ void print1(const std::string &s) {
 void nprint1(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     if (bufferappend(s)) {
-      wprintw(Msg1w, s.c_str());
+      wprintw(Msg1w, "%s", s.c_str());
       wrefresh(Msg1w);
     }
   }
@@ -259,7 +259,7 @@ void print2(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     buffercycle(s);
     wclear(Msg2w);
-    wprintw(Msg2w, s.c_str());
+    wprintw(Msg2w, "%s", s.c_str());
     wrefresh(Msg2w);
   }
 }
@@ -268,7 +268,7 @@ void print2(const std::string &s) {
 void nprint2(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     if (bufferappend(s)) {
-      wprintw(Msg2w, s.c_str());
+      wprintw(Msg2w, "%s", s.c_str());
       wrefresh(Msg2w);
     }
   }
@@ -280,7 +280,7 @@ void print3(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     buffercycle(s);
     wclear(Msg3w);
-    wprintw(Msg3w, s.c_str());
+    wprintw(Msg3w, "%s", s.c_str());
     wrefresh(Msg3w);
   }
 }
@@ -289,7 +289,7 @@ void print3(const std::string &s) {
 void nprint3(const std::string &s) {
   if (!gamestatusp(SUPPRESS_PRINTING, GameStatus)) {
     if (bufferappend(s)) {
-      wprintw(Msg3w, s.c_str());
+      wprintw(Msg3w, "%s", s.c_str());
       wrefresh(Msg3w);
     }
   }
@@ -317,7 +317,7 @@ void mprint(const std::string &s) {
       bufferappend(s);
     else
       buffercycle(s);
-    wprintw(Msgw, s.c_str());
+    wprintw(Msgw, "%s", s.c_str());
     waddch(Msgw, ' ');
     wrefresh(Msgw);
   }
@@ -663,9 +663,9 @@ void timeprint() {
   if (showminute() == 0)
     waddch(Timew, '0');
   wprintw(Timew, hour() > 11 ? " PM \n" : " AM \n");
-  wprintw(Timew, month());
+  wprintw(Timew, "%s", month());
   wprintw(Timew, " the %d", day());
-  wprintw(Timew, ordinal(day()));
+  wprintw(Timew, "%s", ordinal(day()));
   wrefresh(Timew);
 }
 
@@ -779,7 +779,7 @@ void menuspellprint(int i) {
     wclear(Menuw);
     touchwin(Menuw);
   }
-  wprintw(Menuw, spellid(i));
+  wprintw(Menuw, "%s", spellid(i));
   wprintw(Menuw, "(%d)\n", Spells[i].powerdrain);
 }
 
@@ -790,7 +790,7 @@ void menuprint(const std::string &s) {
     wclear(Menuw);
     touchwin(Menuw);
   }
-  wprintw(Menuw, s.c_str());
+  wprintw(Menuw, "%s", s.c_str());
 }
 
 void showmenu() { wrefresh(Menuw); }
@@ -855,7 +855,7 @@ char *msgscanstring() {
 
 void locprint(const std::string &s) {
   wclear(Locw);
-  wprintw(Locw, s.c_str());
+  wprintw(Locw, "%s", s.c_str());
   wrefresh(Locw);
 }
 
@@ -951,12 +951,12 @@ void display_death(const std::string &source) {
   touchwin(stdscr);
   printw("\n\n\n\n");
   printw("Requiescat In Pace, ");
-  printw(Player.name);
+  printw("%s", Player.name);
   printw(" (%ld points)", calc_points());
   strcpy(Str4, "Killed by ");
   strcat(Str4, source.c_str());
   printw("\n");
-  printw(Str4);
+  printw("%s", Str4);
   printw(".");
   printw("\n\n\n\n\nHit 'c' to continue.");
   refresh();
@@ -972,7 +972,7 @@ void display_win() {
   clear();
   touchwin(stdscr);
   printw("\n\n\n\n");
-  printw(Player.name);
+  printw("%s", Player.name);
   if (Player.rank[ADEPT]) {
     printw(" is a total master of omega with %ld points!", FixedPoints);
     strcpy(Str4, "A total master of omega");
@@ -997,7 +997,7 @@ void display_quit() {
   clear();
   touchwin(stdscr);
   printw("\n\n\n\n");
-  printw(Player.name);
+  printw("%s", Player.name);
   strcpy(Str4, "A quitter.");
   printw(" wimped out with %ld points!", calc_points());
   printw("\n\n\n\n\nHit 'c' to continue.");
@@ -1014,7 +1014,7 @@ void display_bigwin() {
   clear();
   touchwin(stdscr);
   printw("\n\n\n\n");
-  printw(Player.name);
+  printw("%s", Player.name);
   strcpy(Str4, "retired, an Adept of Omega.");
   printw(" retired, an Adept of Omega with %ld points!", FixedPoints);
   printw("\n\n\n\n\nHit 'c' to continue.");
@@ -1318,7 +1318,7 @@ void display_inventory_slot(int slotnum, int topline) {
   if (Player.possessions[slotnum] == NULL)
     wprintw(W, "(slot vacant)");
   else
-    wprintw(W, itemid(Player.possessions[slotnum]));
+    wprintw(W, "%s", itemid(Player.possessions[slotnum]));
   wrefresh(W);
 }
 
@@ -1465,8 +1465,7 @@ int bufferappend(const std::string &s) {
 void bufferprint() {
   int i = bufferpos - 1, c, finished = 0;
   clearmsg();
-  wprintw(Msg1w,
-          "^p for previous message, ^n for next, anything else to quit.");
+  wprintw(Msg1w, "^p for previous message, ^n for next, anything else to quit.");
   wrefresh(Msg1w);
   do {
     if (i >= STRING_BUFFER_SIZE)
@@ -1474,7 +1473,7 @@ void bufferprint() {
     if (i < 0)
       i = STRING_BUFFER_SIZE - 1;
     wclear(Msg2w);
-    wprintw(Msg2w, Stringbuffer[i]);
+    wprintw(Msg2w, "%s", Stringbuffer[i]);
     wrefresh(Msg2w);
     c = mgetc();
     if (c == 16) /* ^p */

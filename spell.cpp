@@ -316,7 +316,7 @@ int getspell() {
   return (spell);
 }
 
-char *spellid(int id) {
+const char *spellid(int id) {
   switch (id) {
   case S_MON_DET:
     return ("monster detection");
@@ -666,7 +666,7 @@ void cast_spell(int spell) {
   }
 }
 
-static char *spell_names[] = {/* alphabetical listing */
+static const char *spell_names[] = {/* alphabetical listing */
                               "accuracy",
                               "alertness",
                               "apportation",

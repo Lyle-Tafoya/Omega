@@ -237,7 +237,7 @@ char *itemid(pob obj) {
   }
 }
 
-char *cashstr() {
+const char *cashstr() {
   if (difficulty() < 3)
     return ("copper pieces");
   else if (difficulty() < 5)
@@ -650,7 +650,7 @@ void use_pack_item(int response, int slot) {
  * right now it's only used in the function directly below. */
 int aux_display_pack(int start_item, int slot) {
   int i = start_item, items;
-  char *depth_string;
+  const char *depth_string;
   if (Player.packptr < 1)
     print3("Pack is empty.");
   else if (Player.packptr <= start_item)

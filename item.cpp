@@ -273,7 +273,7 @@ void shuffle(int ids[], int number) {
 
 /* item name functions */
 
-char *scrollname(int id) {
+const char *scrollname(int id) {
   switch (scroll_ids[id]) {
   case 0:
     return "scroll-GRISTOGRUE";
@@ -339,7 +339,7 @@ char *scrollname(int id) {
   }
 }
 
-char *grotname() {
+const char *grotname() {
   switch (random_range(20)) {
   case 0:
     return "pot lid";
@@ -385,7 +385,7 @@ char *grotname() {
   }
 }
 
-char *potionname(int id) {
+const char *potionname(int id) {
   switch (potion_ids[id]) {
   case 0:
     return "vial of dewy liquid";
@@ -431,7 +431,7 @@ char *potionname(int id) {
   }
 }
 
-char *stickname(int id) {
+const char *stickname(int id) {
   switch (stick_ids[id]) {
   case 0:
     return "oaken staff";
@@ -477,7 +477,7 @@ char *stickname(int id) {
   }
 }
 
-char *ringname(int id) {
+const char *ringname(int id) {
   switch (ring_ids[id]) {
   case 0:
     return "gold ring with a blue gem";
@@ -525,7 +525,7 @@ char *ringname(int id) {
   }
 }
 
-char *cloakname(int id) {
+const char *cloakname(int id) {
   switch (cloak_ids[id]) {
   case 0:
     return "tattered piece of cloth";
@@ -573,7 +573,7 @@ char *cloakname(int id) {
   }
 }
 
-char *bootname(int id) {
+const char *bootname(int id) {
   switch (boot_ids[id]) {
   case 0:
     return "sturdy leather boots";

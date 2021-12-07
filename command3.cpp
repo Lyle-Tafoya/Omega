@@ -598,7 +598,8 @@ void vault() {
 /* Sets sequence of combat maneuvers. */
 void tacoptions() {
   int actionsleft, done, place;
-  char defatt, *attstr, *defstr; /* for the default setting */
+  char defatt;
+  const char *attstr, *defstr;
   int draw_again = 1;
 
   setgamestatus(SKIP_MONSTERS, GameStatus);

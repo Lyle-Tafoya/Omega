@@ -288,7 +288,7 @@ void l_arena() {
   char response;
   pob newitem;
   int i, prize, monsterlevel;
-  char *name, *melee = NULL;
+  char *name, *melee = nullptr;
 
   print1("Rampart Coliseum");
   if (Player.rank[ARENA] == 0) {
@@ -404,7 +404,9 @@ void l_arena() {
     if (Arena_Monster->id == HISCORE_NPC) {
       strcpy(Str1, Champion);
       strcat(Str1, ", the arena champion");
-      name = Arena_Monster->monstring = salloc(Str1);
+      name = (char *)checkmalloc((unsigned)(strlen(Str1) + 1));
+      strcpy(name, Str1);
+      Arena_Monster->monstring = name;
       strcpy(Str2, "The corpse of ");
       strcat(Str2, Str1);
       Arena_Monster->corpsestr = salloc(Str2);
@@ -425,7 +427,9 @@ void l_arena() {
       strcpy(Str1, nameprint());
       strcat(Str1, " the ");
       strcat(Str1, Arena_Monster->monstring);
-      name = Arena_Monster->monstring = salloc(Str1);
+      name = (char *)checkmalloc((unsigned)(strlen(Str1) + 1));
+      Arena_Monster->monstring = name;
+      strcpy(name, Str1);
       strcpy(Str2, "The corpse of ");
       strcat(Str2, Str1);
       Arena_Monster->corpsestr = salloc(Str2);

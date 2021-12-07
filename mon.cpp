@@ -1207,7 +1207,7 @@ void m_altar(struct monster *m) {
   }
 }
 
-char *mantype() {
+const char *mantype() {
   switch (random_range(20)) {
   case 0:
     return "janitor";

@@ -25,7 +25,7 @@ extern std::mt19937 generator;
 
 /* most globals originate in omega.c */
 
-char *Omegalib; /* contains the path to the library files */
+const char *Omegalib; /* contains the path to the library files */
 
 #ifdef DEBUG
 FILE *DG_debug_log;    /* debug log file pointer */

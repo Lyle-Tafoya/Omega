@@ -286,7 +286,7 @@ void amnesia() {
 }
 
 /*affects player only */
-void level_drain(int levels, char *source) {
+void level_drain(int levels, const char *source) {
   int decrement = ((int)(Player.maxhp / (Player.level + 1)));
 
   Player.level -= levels;
