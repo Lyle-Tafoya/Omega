@@ -491,7 +491,7 @@ void l_brothel() {
             } else {
               print1("you spend an enjoyable and educational evening with");
               if (Player.preference == 'm' ||
-                  (Player.preference == 'y' && random_range(2)))
+                  (Player.preference == 'b' && random_range(2)))
                 switch (random_range(4)) {
                 case 0:
                   print2("Skarn the Insatiable, a satyr.");
