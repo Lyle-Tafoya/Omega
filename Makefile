@@ -5,7 +5,7 @@ LIBDIR = /home/sdossey/omega/lib/
 #CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -g -DDEBUG
 #CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DSAVE_LEVELS
 #CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings -DPLATFORM_WINDOWS
-CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-write-strings
+CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
 
 CXX = g++
 #CXX = clang++

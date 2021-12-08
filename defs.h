@@ -1270,7 +1270,7 @@ struct monster {
   Symbol monchar;
   const char *monstring;
   const char *corpsestr;
-  char *meleestr;
+  const char *meleestr;
 };
 
 struct monsterlist {

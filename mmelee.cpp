@@ -282,14 +282,12 @@ void transcribe_monster_actions(struct monster *m) {
   else
     block_loc = 'H';
 
-  m->meleestr = mmstr;
-
   if (m->id != NPC)
-    strcpy(m->meleestr, Monsters[m->id].meleestr);
+    strcpy(mmstr, Monsters[m->id].meleestr);
   else {
-    strcpy(m->meleestr, "");
+    strcpy(mmstr, "");
     for (i = 0; i < m->level; i += 2)
-      strcat(m->meleestr, "L?R?");
+      strcat(mmstr, "L?R?");
   }
 
   i = 0;
@@ -297,22 +295,23 @@ void transcribe_monster_actions(struct monster *m) {
     if ((m->meleestr[i] == 'A') || (m->meleestr[i] == 'L')) {
       if (m->meleestr[i + 1] == '?') {
         if (m->level + random_range(30) > Player.level + random_range(20))
-          m->meleestr[i + 1] = attack_loc;
+          mmstr[i + 1] = attack_loc;
         else
-          m->meleestr[i + 1] = random_loc();
+          mmstr[i + 1] = random_loc();
       } else if (m->meleestr[i + 1] == 'X')
-        m->meleestr[i + 1] = random_loc();
+        mmstr[i + 1] = random_loc();
     } else if ((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R')) {
-      if (m->meleestr[i + 1] == '?') {
+      if (mmstr[i + 1] == '?') {
         if (m->level + random_range(30) > Player.level + random_range(20))
-          m->meleestr[i + 1] = block_loc;
+          mmstr[i + 1] = block_loc;
         else
-          m->meleestr[i + 1] = random_loc();
-      } else if (m->meleestr[i + 1] == 'X')
-        m->meleestr[i + 1] = random_loc();
+          mmstr[i + 1] = random_loc();
+      } else if (mmstr[i + 1] == 'X')
+        mmstr[i + 1] = random_loc();
     }
     i += 2;
   }
+  m->meleestr = mmstr;
 }
 
 char random_loc() {

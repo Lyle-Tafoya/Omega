@@ -417,10 +417,11 @@ void l_arena() {
       Arena_Monster->dmg = 100 + Championlevel * 2;
       Arena_Monster->xpv = Championlevel * Championlevel * 5;
       Arena_Monster->speed = 3;
-      melee = Arena_Monster->meleestr = (char *)checkmalloc(30 * sizeof(char));
-      strcpy(Arena_Monster->meleestr, "");
+      melee = (char *)checkmalloc(30 * sizeof(char));
+      strcpy(melee, "");
       for (i = 0; i < Championlevel / 5; i++)
-        strcat(Arena_Monster->meleestr, "L?R?");
+        strcat(melee, "L?R?");
+      Arena_Monster->meleestr = melee;
       m_status_set(*Arena_Monster, MOBILE);
       m_status_set(*Arena_Monster, HOSTILE);
     } else {
