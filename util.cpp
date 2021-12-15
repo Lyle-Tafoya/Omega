@@ -619,19 +619,26 @@ int strprefix(const std::string &prefix, const std::string &s) {
 int confirmation() {
   switch (random_range(4)) {
   case 0:
-    mprint("Are you sure? (yes) [no] ");
+    mprint("Are you sure?");
     break;
   case 1:
-    mprint("Certain about that? (yes) [no] ");
+    mprint("Certain about that?");
     break;
   case 2:
-    mprint("Do you really mean it? (yes) [no] ");
+    mprint("Do you really mean it?");
     break;
   case 3:
-    mprint("Confirm that, would you? (yes) [no] ");
+    mprint("Confirm that, would you?");
     break;
   }
-  return strcmp(msgscanstring(), "yes") == 0;
+  if(optionp(PARANOID_CONFIRM, Player)) {
+    mprint("[yes] [no]");
+    return strcmp(msgscanstring(), "yes") == 0;
+  }
+  else {
+    mprint("[yn] (n)");
+    return ynq() == 'y';
+  }
 }
 
 /* is character c a member of string s */
@@ -731,7 +738,7 @@ void *checkmalloc(unsigned int bytes) {
   else {
     print1("Out of memory!  Saving and quitting.");
     morewait();
-    save(false, true);
+    save(true);
     endgraf();
     exit(0);
   }

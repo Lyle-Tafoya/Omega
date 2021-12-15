@@ -33,7 +33,7 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
     else {
       print2("Sorry 'bout that.... Saving character, then quitting.");
       morewait();
-      save(optionp(COMPRESS_OPTION, Player), true);
+      save(true);
       endgraf();
       exit(0);
     }

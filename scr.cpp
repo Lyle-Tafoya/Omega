@@ -1374,6 +1374,8 @@ void display_option_slot(int slot) {
     wprintw(Showline[slot], optionp(PACKADD, Player) ? "(now T) " : "(now F) ");
     break;
   case 8:
+    wprintw(Showline[slot], "-- Option PARANOID_CONFIRM [TF]: ");
+    wprintw(Showline[slot], optionp(PARANOID_CONFIRM, Player) ? "(now T) " : "(now F) ");
     break;
   case 9:
     wprintw(Showline[slot], "-- Option COLOUR [TF]: ");

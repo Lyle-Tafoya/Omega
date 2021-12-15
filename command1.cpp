@@ -184,7 +184,7 @@ void p_process() {
       rename_player();
       break;
     case 'S':
-      save(optionp(COMPRESS_OPTION, Player), false);
+      save(false);
       break;
     case 'T':
       tunnel();
@@ -412,7 +412,7 @@ void p_country_process() {
       rename_player();
       break;
     case 'S':
-      save(optionp(COMPRESS_OPTION, Player), false);
+      save(false);
       break;
     case 'V':
       version();

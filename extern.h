@@ -141,7 +141,7 @@ void opendoor(void);
 void peruse(void);
 void quaff(void);
 void rest(void);
-void save(int, int);
+void save(int);
 void search(int *);
 void setoptions(void);
 void talk(void);

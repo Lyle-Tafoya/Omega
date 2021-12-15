@@ -552,8 +552,6 @@ void setoptions() {
     case KEY_DOWN:
 #endif
       to = slot + 1;
-      if (to == 8) /* COMPRESS_OPTION */
-        to = 9;
       slot = move_slot(slot, to, NUMOPTIONS + 1);
       break;
     case 'k':
@@ -562,8 +560,6 @@ void setoptions() {
     case KEY_UP:
 #endif
       to = slot - 1;
-      if (to == 8) /* COMPRESS_OPTION */
-        to = 7;
       if (to > 0)
         slot = move_slot(slot, to, NUMOPTIONS + 1);
       break;
@@ -864,7 +860,7 @@ void bash_item() {
 
 /* guess what this does */
 /* if force is true, exiting due to some problem - don't bomb out */
-void save(int compress, int force) {
+void save(int force) {
   char fname[100];
   int pos, ok = true;
 
@@ -931,7 +927,7 @@ void save(int compress, int force) {
     print1("The game is quitting - you will lose your character.");
     print2("Try to save again? ");
     if (ynq2() == 'y')
-      save(compress, force);
+      save(force);
   }
   setgamestatus(SKIP_MONSTERS, GameStatus); /* if we get here, we failed to save */
 }

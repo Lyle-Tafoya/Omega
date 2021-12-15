@@ -317,7 +317,7 @@ void signalexit(int) {
   mprint("Want to try and save the game?");
   reply = ynq();
   if (reply == 'y')
-    save(false, true); /* don't compress, force save */
+    save(true); // force save
   else if (reply == EOF)
     signalsave();
   mprint("Bye!");

@@ -551,15 +551,15 @@ on save and restore. */
 #define SEARCH_DURATION 11
 
 /* Player.options bits */
-#define BELLICOSE 1
-#define JUMPMOVE 2
-#define RUNSTOP 4
-#define PICKUP 8
-#define CONFIRM 16
-#define TOPINV 32
-#define PACKADD 64
-#define COMPRESS_OPTION 128
-#define SHOW_COLOUR 256
+#define BELLICOSE        1<<0
+#define JUMPMOVE         1<<1
+#define RUNSTOP          1<<2
+#define PICKUP           1<<3
+#define CONFIRM          1<<4
+#define TOPINV           1<<5
+#define PACKADD          1<<6
+#define PARANOID_CONFIRM 1<<7
+#define SHOW_COLOUR      1<<8
 
 /* This has to be changed whenever an item is added */
 #define NUMSCROLLS 24
