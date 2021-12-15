@@ -619,19 +619,19 @@ int strprefix(const std::string &prefix, const std::string &s) {
 int confirmation() {
   switch (random_range(4)) {
   case 0:
-    mprint("Are you sure? [yn] ");
+    mprint("Are you sure? (yes) [no] ");
     break;
   case 1:
-    mprint("Certain about that? [yn] ");
+    mprint("Certain about that? (yes) [no] ");
     break;
   case 2:
-    mprint("Do you really mean it? [yn] ");
+    mprint("Do you really mean it? (yes) [no] ");
     break;
   case 3:
-    mprint("Confirm that, would you? [yn] ");
+    mprint("Confirm that, would you? (yes) [no] ");
     break;
   }
-  return (ynq() == 'y');
+  return strcmp(msgscanstring(), "yes") == 0;
 }
 
 /* is character c a member of string s */
