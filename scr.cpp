@@ -66,7 +66,7 @@ void show_screen() {
   int top = std::max(0, ScreenOffset);
   int bottom = std::min(ScreenOffset+ScreenLength, LENGTH);
   if (Current_Environment != E_COUNTRYSIDE)
-    for (int j = top; j <= bottom; ++j) {
+    for (int j = top; j < bottom; ++j) {
       wmove(Levelw, screenmod(j), 0);
       for (int i = 0; i < WIDTH; ++i) {
         int c = ((loc_statusp(i, j, SEEN, *Level)) ? getspot(i, j, false) : static_cast<int>(SPACE));
@@ -78,7 +78,7 @@ void show_screen() {
       }
     }
   else
-    for (int j = top; j <= bottom; ++j)
+    for (int j = top; j < bottom; ++j)
       for (int i = 0; i < WIDTH; ++i) {
         wmove(Levelw, screenmod(j), i);
         int c = c_statusp(i, j, SEEN, Country) ? Country[i][j].current_terrain_type : static_cast<int>(SPACE);
