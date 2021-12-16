@@ -2,10 +2,10 @@
 BINDIR = /home/sdossey/omega/
 LIBDIR = /home/sdossey/omega/lib/
 
-#CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -g -DDEBUG
+CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -g -DDEBUG
 #CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -DSAVE_LEVELS
 #CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -DPLATFORM_WINDOWS
-CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
+#CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
 
 CXX = g++
 #CXX = clang++

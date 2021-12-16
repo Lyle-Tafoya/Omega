@@ -252,8 +252,10 @@ void outdoors_random_event() {
     } else if (num < 60) {
       mprint("The storm deposits you in a strange place....");
       morewait();
-      Player.x = random_range(WIDTH);
-      Player.y = random_range(LENGTH);
+      do {
+        Player.x = random_range(WIDTH);
+        Player.y = random_range(LENGTH);
+      } while(Country[Player.x][Player.y].current_terrain_type == CHAOS_SEA && !Player.rank[ADEPT]);
       screencheck(Player.y);
     } else if (num < 70) {
       mprint("A tendril of the storm condenses and falls into your hands.");
