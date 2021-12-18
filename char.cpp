@@ -11,9 +11,9 @@ void initplayer() {
   int oldchar = false;
   FILE *fd;
 #ifdef PLATFORM_WINDOWS
-  const char *env = getenv("USER");
-#else
   const char *env = getenv("USERNAME");
+#else
+  const char *env = getenv("USER");
 #endif
   std::string username;
   if(!env || strlen(env) == 0) {
