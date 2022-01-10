@@ -200,11 +200,11 @@ bool monster_hit(monster *m, char hitloc, int bonus) {
   bool blocks = false, riposte = false;
   size_t meleestr_length = std::min(strlen(Player.meleestr), maneuvers() * 2);
   for(size_t i = 0; i < meleestr_length; i += 2) {
-    if((Player.meleestr[i] == 'B') || (Player.meleestr[i] == 'R')) {
+    if(Player.meleestr[i] == 'B' || (Player.meleestr[i] == 'R')) {
       blocks = true;
       if(hitloc == Player.meleestr[i + 1]) {
         ++goodblocks;
-        if(Player.meleestr[i] == 'R') {
+        if(Player.meleestr[i] == 'R' && Player.possessions[O_WEAPON_HAND] && Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
           riposte = true;
         }
       }
