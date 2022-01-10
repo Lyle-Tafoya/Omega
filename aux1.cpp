@@ -347,8 +347,6 @@ void calc_melee() {
         Player.possessions[O_ARMOR]->plus - Player.possessions[O_ARMOR]->aux;
   }
 
-  if (strlen(Player.meleestr) > 2 * maneuvers())
-    default_maneuvers();
   comwinprint();
   showflags();
   dataprint();
@@ -680,21 +678,19 @@ void gain_experience(int amount) {
 /* try to hit a monster in an adjacent space. If there are none
    return false. Note if you're berserk you get to attack ALL
    adjacent monsters! */
-int goberserk() {
-  int wentberserk = false, i;
-  char meleestr[80];
+bool goberserk() {
+  bool wentberserk = false;
+  char meleestr[64];
   strcpy(meleestr, Player.meleestr);
-  strcpy(Player.meleestr, "lLlClH");
-  for (i = 0; i < 8; i++)
-    if (Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature !=
-        NULL) {
+  strcpy(Player.meleestr, "LLLCLH");
+  for(uint8_t i = 0; i < 8; ++i)
+    if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature != NULL) {
       wentberserk = true;
-      fight_monster(
-          Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
+      fight_monster(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
       morewait();
     }
   strcpy(Player.meleestr, meleestr);
-  return (wentberserk);
+  return wentberserk;
 }
 
 /* identifies a trap for examine() by its aux value */

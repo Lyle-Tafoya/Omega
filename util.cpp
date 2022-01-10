@@ -35,14 +35,17 @@ int offscreen(int y) {
 }
 
 /* always hit on a natural 0; never hit on a natural 19 */
-int hitp(int hit, int ac) {
+bool hitp(int hit, int ac) {
   int roll = random_range(20);
-  if (roll == 0)
-    return (true);
-  else if (roll == 19)
-    return (false);
-  else
-    return ((roll < (hit - ac)) ? true : false);
+  if(roll == 0) {
+    return true;
+  }
+  else if(roll == 19) {
+    return false;
+  }
+  else {
+    return roll < (hit - ac);
+  }
 }
 
 /* number of moves from x1,y1 to x2,y2 */

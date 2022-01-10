@@ -595,95 +595,102 @@ void vault() {
   }
 }
 
-/* Sets sequence of combat maneuvers. */
-void tacoptions() {
-  int actionsleft, done, place;
-  char defatt;
-  const char *attstr, *defstr;
-  int draw_again = 1;
 
+std::string attack_string() {
+  if(Player.possessions[O_WEAPON_HAND] == NULL) {
+    return "Punch";
+  }
+  else if(Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
+    return "Thrust";
+  }
+  else if(Player.possessions[O_WEAPON_HAND]->type == STRIKING) {
+    return "Strike";
+  }
+  else {
+    return "Cut";
+  }
+}
+
+std::string defense_string() {
+  if(!Player.possessions[O_WEAPON_HAND]) {
+    return "Dodge";
+  }
+  else if(Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
+    return "Parry";
+  }
+  else {
+    return "Block";
+  }
+}
+
+// Sets sequence of combat maneuvers.
+void tacoptions() {
   setgamestatus(SKIP_MONSTERS, GameStatus);
 
-  done = false;
-  actionsleft = maneuvers();
-  place = 0;
+  size_t actionsleft = maneuvers();
+  size_t place = 0;
+  bool done = false;
+  bool draw_again = true;
   do {
-    if (draw_again) {
+    if(draw_again) {
       menuclear();
       menuprint("Enter a combat maneuvers sequence.\n");
       menuprint("? for help, ! for default, backspace to start again,\n");
       menuprint(" RETURN to save sequence\n");
       showmenu();
-      draw_again = 0;
+      draw_again = false;
     }
     clearmsg();
     mprint("Maneuvers Left:");
     mnumprint(actionsleft);
-    switch (mgetc()) {
+    switch(mgetc()) {
     case '?':
       combat_help();
-      draw_again = 1;
+      draw_again = true;
       break;
     case 'a':
     case 'A':
-      if (actionsleft < 1)
+      if(actionsleft < 1) {
         print3("No more maneuvers!");
+      }
       else {
-        if (Player.possessions[O_WEAPON_HAND] == NULL) {
-          Player.meleestr[place] = 'C';
-          menuprint("\nPunch:");
-        } else if (Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
-          Player.meleestr[place] = 'T';
-          menuprint("\nThrust:");
-        } else if (Player.possessions[O_WEAPON_HAND]->type == STRIKING) {
-          Player.meleestr[place] = 'C';
-          menuprint("\nStrike:");
-        } else {
-          menuprint("\nCut:");
-          Player.meleestr[place] = 'C';
-        }
-        place++;
-        Player.meleestr[place] = getlocation();
-        place++;
-        actionsleft--;
+        menuprint("\n" + attack_string() + ":");
+        Player.meleestr[place++] = 'A';
+        Player.meleestr[place++] = getlocation();
+        --actionsleft;
       }
       break;
     case 'b':
     case 'B':
-      if (actionsleft < 1)
+      if(actionsleft < 1) {
         print3("No more maneuvers!");
+      }
       else {
-        Player.meleestr[place] = 'B';
-        if (Player.possessions[O_WEAPON_HAND] == NULL)
-          menuprint("\nDodge (from):");
-        else if (Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
-          menuprint("\nParry:");
-        else
-          menuprint("\nBlock:");
-        place++;
-        Player.meleestr[place] = getlocation();
-        place++;
-        actionsleft--;
+        menuprint("\n" + defense_string() + ":");
+        Player.meleestr[place++] = 'B';
+        Player.meleestr[place++] = getlocation();
+        --actionsleft;
       }
       break;
     case 'l':
     case 'L':
-      if (actionsleft < 2)
+      if(actionsleft < 2) {
         print3("Not enough maneuvers to lunge!");
+      }
       else {
-        if (Player.possessions[O_WEAPON_HAND] != NULL) {
-          if (Player.possessions[O_WEAPON_HAND]->type != MISSILE) {
+        if(Player.possessions[O_WEAPON_HAND] != NULL) {
+          if(Player.possessions[O_WEAPON_HAND]->type != MISSILE) {
             menuprint("\nLunge:");
-            Player.meleestr[place] = 'L';
-            place++;
-            Player.meleestr[place] = getlocation();
-            place++;
+            Player.meleestr[place++] = 'L';
+            Player.meleestr[place++] = getlocation();
             actionsleft -= 2;
-          } else {
+          }
+          else {
             print3("Can't lunge with a missile weapon!");
             morewait();
           }
-        } else {
+        }
+        else {
           print3("Can't lunge without a weapon!");
           morewait();
         }
@@ -691,20 +698,23 @@ void tacoptions() {
       break;
     case 'r':
     case 'R':
-      if (actionsleft < 2)
+      if(actionsleft < 2) {
         print3("Not enough maneuvers to riposte!");
+      }
       else {
-        if (Player.possessions[O_WEAPON_HAND] != NULL) {
-          if (Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
+        if(Player.possessions[O_WEAPON_HAND] != NULL) {
+          if(Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
             Player.meleestr[place++] = 'R';
             menuprint("\nRiposte:");
             Player.meleestr[place++] = getlocation();
             actionsleft -= 2;
-          } else {
+          }
+          else {
             print3("Can't riposte without a thrusting weapon!");
             morewait();
           }
-        } else {
+        }
+        else {
           print3("Can't riposte without a thrusting weapon!");
           morewait();
         }
@@ -714,44 +724,27 @@ void tacoptions() {
     case DELETE:
       place = 0;
       actionsleft = maneuvers();
-      draw_again = 1;
+      draw_again = true;
       break;
     case '!':
-      if (Player.possessions[O_WEAPON_HAND] == NULL) {
-        defatt = 'C';
-        attstr = "Punch";
-      } else if (Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
-        defatt = 'T';
-        attstr = "Thrust";
-      } else if (Player.possessions[O_WEAPON_HAND]->type == STRIKING) {
-        defatt = 'C';
-        attstr = "Strike";
-      } else {
-        defatt = 'C';
-        attstr = "Cut";
-      }
-      if (Player.possessions[O_WEAPON_HAND] == NULL)
-        defstr = "Dodge";
-      else if (Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
-        defstr = "Parry";
-      else
-        defstr = "Block";
       menuclear();
       menuprint("Enter a combat maneuvers sequence.\n");
       menuprint("? for help, ! for default, backspace to start again,\n");
       menuprint(" RETURN to save sequence\n\n");
-      for (place = 0; (size_t)place < maneuvers(); place++)
-        if (place & 1) { /* every 2nd time around */
+      for(place = 0; place < maneuvers(); ++place) {
+        if(place & 1) { // every 2nd time around
           Player.meleestr[place * 2] = 'B';
           Player.meleestr[(place * 2) + 1] = 'C';
-          menuprint(defstr);
-          menuprint(" Center.\n");
-        } else {
-          Player.meleestr[place * 2] = defatt;
-          Player.meleestr[(place * 2) + 1] = 'C';
-          menuprint(attstr);
+          menuprint(defense_string());
           menuprint(" Center.\n");
         }
+        else {
+          Player.meleestr[place * 2] = 'A';
+          Player.meleestr[(place * 2) + 1] = 'C';
+          menuprint(attack_string());
+          menuprint(" Center.\n");
+        }
+      }
       actionsleft = 0;
       showmenu();
       Player.meleestr[place * 2] = '\0';
@@ -762,8 +755,7 @@ void tacoptions() {
       done = true;
       break;
     }
-    /*    if (actionsleft < 1) morewait(); */ /* FIXED 12/30/98 */
-  } while (!done);
+  } while(!done);
   xredraw();
   Player.meleestr[place] = 0;
 }

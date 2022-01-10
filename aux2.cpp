@@ -75,36 +75,40 @@ void p_hit(struct monster *m, int dmg, int dtype) {
     mprint("It laughs at the injury and fights on!");
 }
 
-/* and effects of missing */
-void player_miss(struct monster *m, int dtype) {
-  if (random_range(30) == 1) /* fumble 1 in 30 */
+void player_miss(monster *m, int dtype) {
+  if(!random_range(30)) {
     p_fumble(dtype);
+  }
   else {
-    if (Verbosity != TERSE) {
-      if (random_range(10))
-        strcpy(Str3, "You miss ");
-      else
-        switch (random_range(4)) {
+    if(Verbosity != TERSE) {
+      std::string monster_name;
+      if(m->uniqueness == COMMON) {
+        monster_name = "the ";
+      }
+      monster_name += m->monstring;
+      if(random_range(10)) {
+        mprint("You miss " + monster_name + ".");
+      }
+      else {
+        switch(random_range(4)) {
         case 0:
-          strcpy(Str3, "You flail lamely at ");
+          mprint("You flail lamely at " + monster_name + ".");
           break;
         case 1:
-          strcpy(Str3, "You only amuse ");
+          mprint("You only amuse " + monster_name + ".");
           break;
         case 2:
-          strcpy(Str3, "You fail to even come close to ");
+          mprint("You fail to even come close to " + monster_name + ".");
           break;
         case 3:
-          strcpy(Str3, "You totally avoid contact with ");
+          mprint("You totally avoid contact with " + monster_name + ".");
           break;
         }
-      if (m->uniqueness == COMMON)
-        strcat(Str3, "the ");
-      strcat(Str3, m->monstring);
-      strcat(Str3, ". ");
-      mprint(Str3);
-    } else
+      }
+    }
+    else {
       mprint("You missed it.");
+    }
   }
 }
 
@@ -645,116 +649,124 @@ void weapon_use(int dmgmod, pob weapon, struct monster *m) {
 }
 
 /* for printing actions in printactions above */
-char *actionlocstr(char dir) {
+std::string actionlocstr(char dir) {
   switch (dir) {
   case 'L':
-    strcpy(Str3, "low.");
-    break;
+    return "low.";
   case 'C':
-    strcpy(Str3, "center.");
-    break;
+    return "center.";
   case 'H':
-    strcpy(Str3, "high.");
-    break;
+    return "high.";
   default:
-    strcpy(Str3, "wildly.");
-    break;
+    return "wildly.";
   }
-  return (Str3);
 }
 
 /* execute player combat actions versus monster m */
-void tacplayer(struct monster *m) {
-  int i = 0;
-
-  while ((size_t)i < strlen(Player.meleestr)) {
-    if (m->hp > 0) {
-      switch (Player.meleestr[i]) {
-      case 't':
-      case 'T':
-        if (Player.possessions[O_WEAPON_HAND] == NULL)
-          strcpy(Str1, "You punch ");
-        else
-          strcpy(Str1, "You thrust ");
-        strcat(Str1, actionlocstr(Player.meleestr[i + 1]));
-        if (Verbosity == VERBOSE)
-          mprint(Str1);
-        if (player_hit(2 * statmod(Player.dex), Player.meleestr[i + 1], m))
-          weapon_use(0, Player.possessions[O_WEAPON_HAND], m);
-        else
-          player_miss(m, NORMAL_DAMAGE);
-        break;
-      case 'c':
-      case 'C':
-        if (Player.possessions[O_WEAPON_HAND] == NULL)
-          strcpy(Str1, "You punch ");
-        else if (Player.possessions[O_WEAPON_HAND]->type == CUTTING)
-          strcpy(Str1, "You cut ");
-        else if (Player.possessions[O_WEAPON_HAND]->type == STRIKING)
-          strcpy(Str1, "You strike ");
-        else
-          strcpy(Str1, "You attack ");
-        strcat(Str1, actionlocstr(Player.meleestr[i + 1]));
-        if (Verbosity == VERBOSE)
-          mprint(Str1);
-        if (player_hit(0, Player.meleestr[i + 1], m))
-          weapon_use(2 * statmod(Player.str), Player.possessions[O_WEAPON_HAND],
-                     m);
-        else
-          player_miss(m, NORMAL_DAMAGE);
-        break;
-      case 'l':
-      case 'L':
-        strcpy(Str1, "You lunge ");
-        strcat(Str1, actionlocstr(Player.meleestr[i + 1]));
-        if (Verbosity == VERBOSE)
-          mprint(Str1);
-        if (player_hit(Player.level + Player.dex, Player.meleestr[i + 1], m))
-          weapon_use(Player.level, Player.possessions[O_WEAPON_HAND], m);
-        else
-          player_miss(m, NORMAL_DAMAGE);
-        break;
-      }
+void tacplayer(monster *m) {
+  size_t meleestr_length = std::min(strlen(Player.meleestr), maneuvers() * 2);
+  for(size_t i = 0; i < meleestr_length; i += 2) {
+    if(m->hp <= 0) {
+      break;
     }
-    i += 2;
+    switch(Player.meleestr[i]) {
+      case 'L':
+        if(Player.possessions[O_WEAPON_HAND] || Player.status[BERSERK]) {
+          if(Verbosity == VERBOSE) {
+            mprint("You lunge " + actionlocstr(Player.meleestr[i+1]));
+          }
+          if(player_hit(Player.level + Player.dex, Player.meleestr[i + 1], m)) {
+            weapon_use(Player.level, Player.possessions[O_WEAPON_HAND], m);
+          }
+          else {
+            player_miss(m, NORMAL_DAMAGE);
+          }
+          break;
+        }
+        [[fallthrough]];
+      case 'A':
+        if(!Player.possessions[O_WEAPON_HAND] || Player.possessions[O_WEAPON_HAND]->type != THRUSTING) {
+          if(Verbosity == VERBOSE) {
+            std::string combat_message;
+            if(!Player.possessions[O_WEAPON_HAND]) {
+              mprint("You punch " + actionlocstr(Player.meleestr[i+1]));
+            }
+            else if(Player.possessions[O_WEAPON_HAND]->type == CUTTING) {
+              mprint("You cut " + actionlocstr(Player.meleestr[i+1]));
+            }
+            else if(Player.possessions[O_WEAPON_HAND]->type == STRIKING) {
+              mprint("You strike " + actionlocstr(Player.meleestr[i+1]));
+            }
+            else {
+              mprint("You attack " + actionlocstr(Player.meleestr[i+1]));
+            }
+          }
+          if(player_hit(0, Player.meleestr[i + 1], m)) {
+            weapon_use(2 * statmod(Player.str), Player.possessions[O_WEAPON_HAND], m);
+          }
+          else {
+            player_miss(m, NORMAL_DAMAGE);
+          }
+        }
+        else {
+          if(Verbosity == VERBOSE) {
+            mprint("You thrust " + actionlocstr(Player.meleestr[i+1]));
+          }
+          if(player_hit(2 * statmod(Player.dex), Player.meleestr[i + 1], m)) {
+            weapon_use(0, Player.possessions[O_WEAPON_HAND], m);
+          }
+          else {
+            player_miss(m, NORMAL_DAMAGE);
+          }
+        }
+        break;
+    }
   }
 }
 
 /* checks to see if player hits with hitmod vs. monster m at location hitloc */
-int player_hit(int hitmod, char hitloc, struct monster *m) {
-  int i = 0, blocks = false, goodblocks = 0, hit;
-  if (m->hp < 1) {
+int player_hit(int hitmod, char hitloc, monster *m) {
+  if(m->hp < 1) {
     mprint("Unfortunately, your opponent is already dead!");
     return false;
-  } else {
-    if (hitloc == 'X')
+  }
+  else {
+    if(hitloc == 'X') {
       hitloc = random_loc();
+    }
 
     transcribe_monster_actions(m);
 
-    while ((size_t)i < strlen(m->meleestr)) {
-      if ((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R')) {
+    bool blocks = false;
+    int goodblocks = 0;
+
+    for(size_t i = 0; i < strlen(m->meleestr); i += 2) {
+      if((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R')) {
         blocks = true;
-        if (hitloc == m->meleestr[i + 1])
-          goodblocks++;
+        if(hitloc == m->meleestr[i + 1]) {
+          ++goodblocks;
+        }
       }
-      i += 2;
     }
 
-    if (!blocks)
+    if(!blocks) {
       goodblocks = -1;
-    hit = hitp(Player.hit + hitmod, m->ac + goodblocks * 10);
-    if ((!hit) && (goodblocks > 0)) {
-      if (m->uniqueness == COMMON) {
+    }
+    int hit = hitp(Player.hit + hitmod, m->ac + goodblocks * 10);
+    if(!hit && goodblocks > 0) {
+      if(m->uniqueness == COMMON) {
         strcpy(Str1, "The ");
         strcat(Str1, m->monstring);
-      } else
+      }
+      else {
         strcpy(Str1, m->monstring);
+      }
       strcat(Str1, " blocks it!");
-      if (Verbosity == VERBOSE)
+      if(Verbosity == VERBOSE) {
         mprint(Str1);
+      }
     }
-    return (hit);
+    return hit;
   }
 }
 

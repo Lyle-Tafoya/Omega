@@ -1254,33 +1254,15 @@ void destroy_order() {
 }
 
 size_t maneuvers() {
-  int m;
-
-  m = 2 + Player.level / 7;
-  if (Player.rank[ARENA])
-    m++;
-  if (Player.status[HASTED])
-    m *= 2;
-  if (Player.status[SLOWED])
-    m /= 2;
-  m = std::min(8, std::max(1, m));
-
-  return (m);
-}
-
-/* for when haste runs out, etc. */
-void default_maneuvers() {
-  int i;
-  morewait();
-  clearmsg();
-  print1("Warning, resetting your combat options to the default.");
-  print2("Use the 'F' command to select which options you prefer.");
-  morewait();
-  for (i = 0; (size_t)i < maneuvers(); i += 2) {
-    Player.meleestr[i * 2] = 'A';
-    Player.meleestr[(i * 2) + 1] = 'C';
-    Player.meleestr[(i + 1) * 2] = 'B';
-    Player.meleestr[((i + 1) * 2) + 1] = 'C';
+  int m = 2 + Player.level/7;
+  if(Player.rank[ARENA]) {
+    ++m;
   }
-  Player.meleestr[maneuvers() * 2] = 0;
+  if(Player.status[HASTED]) {
+    m *= 2;
+  }
+  if(Player.status[SLOWED]) {
+    m /= 2;
+  }
+  return std::min(8, std::max(1, m));
 }

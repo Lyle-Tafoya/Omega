@@ -74,7 +74,7 @@ void initplayer() {
   Player.hp = Player.maxhp = Player.maxcon;
   Player.mana = Player.maxmana = calcmana();
   Player.click = 1;
-  strcpy(Player.meleestr, "CCBC");
+  strcpy(Player.meleestr, "ACBC");
   calc_melee();
   ScreenOffset = -1000; /* to force a redraw */
 }
