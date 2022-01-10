@@ -10,12 +10,6 @@
 #include "defs.h"
 #include "extern.h"
 
-#ifdef DEBUG /* Added by DG, naturally. */
-/* Debug log file */
-extern FILE *DG_debug_log;
-extern int DG_debug_flag;
-#endif
-
 /* This string holds the path to the library files */
 extern const char *Omegalib;
 

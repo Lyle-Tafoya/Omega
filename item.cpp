@@ -1037,12 +1037,5 @@ void item_use(struct object *o) {
   case I_PERM_DEFLECT:
     i_perm_deflect(o);
     break;
-#ifdef DEBUG /* WDT: good idea, DG.  I'll be using this often, I predict! */
-  /* looking for objects without, or with unimplemented, functions */
-  default:
-    fprintf(DG_debug_log, "tried to use a %s with o->usef %d\n", itemid(o),
-            o->usef);
-    break;
-#endif
   }
 }

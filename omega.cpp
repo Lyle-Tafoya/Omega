@@ -9,9 +9,6 @@
 #include <fcntl.h>
 #include <random>
 #include <unistd.h>
-#ifdef DEBUG
-#include <cassert>
-#endif
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */
 
@@ -26,11 +23,6 @@ extern std::mt19937 generator;
 /* most globals originate in omega.c */
 
 const char *Omegalib; /* contains the path to the library files */
-
-#ifdef DEBUG
-FILE *DG_debug_log;    /* debug log file pointer */
-int DG_debug_flag = 0; /* debug flag -- set by -d commandline option */
-#endif
 
 /* Objects and Monsters are allocated and initialized in init.c */
 
@@ -161,14 +153,6 @@ void initrand(int environment, int level) {
 int game_restore(int argc, char *argv[]) {
   char savestr[80];
   int ok;
-#ifdef DEBUG
-  if (argc == 3) {
-    if ((argv[2][0] == '-') && (argv[2][1] == 'g')) {
-      DG_debug_flag++;
-      argc--;
-    }
-  }
-#endif
   if (argc == 2) {
     strcpy(savestr, argv[1]);
     ok = restore_game(savestr);
@@ -205,17 +189,11 @@ int main(int argc, char *argv[]) {
     signal(SIGQUIT, signalexit);
 #endif
     signal(SIGILL, signalexit);
-#ifdef DEBUG
-    if (DG_debug_flag) {
-#endif
 #ifndef PLATFORM_WINDOWS
-      signal(SIGTRAP, signalexit);
+    signal(SIGTRAP, signalexit);
 #endif
-      signal(SIGFPE, signalexit);
-      signal(SIGSEGV, signalexit);
-#ifdef DEBUG
-    }
-#endif
+    signal(SIGFPE, signalexit);
+    signal(SIGSEGV, signalexit);
 #ifdef SIGIOT
     signal(SIGIOT, signalexit);
 #endif
@@ -248,14 +226,6 @@ int main(int argc, char *argv[]) {
   initdirs();
   initrand(E_RANDOM, 0);
   initspells();
-
-#ifdef DEBUG
-  /* initialize debug log file */
-  DG_debug_log = fopen("/tmp/omega_dbg_log", "a");
-  assert(DG_debug_log); /* WDT :) */
-  setvbuf(DG_debug_log, NULL, _IOLBF, 0);
-  fprintf(DG_debug_log, "##############  new game started ##############\n");
-#endif
 
   for (count = 0; count < STRING_BUFFER_SIZE; count++)
     strcpy(Stringbuffer[count], "<nothing>");
