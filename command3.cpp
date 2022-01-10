@@ -275,6 +275,11 @@ void fire() {
     x1 = x2 = Player.x;
     y1 = y2 = Player.y;
     setspot(&x2, &y2);
+    if(x2 == ABORT || y2 == ABORT) {
+      setgamestatus(SKIP_MONSTERS, GameStatus);
+      print2("Aborted.");
+      return;
+    }
     if ((x2 == Player.x) && (y2 == Player.y))
       mprint("You practice juggling for a moment or two.");
     else {
