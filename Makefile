@@ -53,7 +53,7 @@ clean:
 	rm -f $(OBJ) genclr genclr.o
 	rm -i omega
 
-$(OBJ): clrgen.h defs.h extern.h glob.h
+$(OBJ): clrgen.h defs.h extern.h glob.h iinit.h minit.h
 
 clrgen.h clrgen.cpp: genclr.cpp minit.h defs.h
 	$(MAKE) genclr

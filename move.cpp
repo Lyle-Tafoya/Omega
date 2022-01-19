@@ -7,6 +7,8 @@
 #include <thread>
 #include "glob.h"
 
+extern void item_unequip(object *);
+
 /* various miscellaneous location functions */
 void l_water() {
   if (!gamestatusp(MOUNTED, GameStatus)) {
@@ -983,29 +985,34 @@ void l_lawstone() {
 }
 
 void l_voidstone() {
-  int i;
   print1("This is a grey and uninteresting stone.");
   print2("A feeling of nihility emanates from it.");
   morewait();
   clearmsg();
   print1("Touch it? [yn] ");
-  if (ynq() == 'y') {
+  if(ynq() == 'y') {
     print1("You feel negated.");
     morewait();
     Player.mana = 0;
     toggle_item_use(true);
-    for (i = 0; i < NUMSTATI; i++)
+    for(int i = 0; i < NUMSTATI; ++i) {
       Player.status[i] = 0;
-    for (i = 0; i < MAXITEMS; i++)
-      if (Player.possessions[i] != NULL) {
+    }
+    for(int i = 0; i < MAXITEMS; ++i) {
+      if(Player.possessions[i]) {
         Player.possessions[i]->blessing = 0;
         Player.possessions[i]->plus = 0;
-        Player.possessions[i]->usef = I_NOTHING;
+        Player.possessions[i]->on_use = I_NOTHING;
+        Player.possessions[i]->on_equip = I_NOTHING;
+        Player.possessions[i]->on_unequip = I_NOTHING;
       }
+    }
     toggle_item_use(false);
     calc_melee();
-  } else
+  }
+  else {
     print1("You back away from the strange rock.");
+  }
 }
 
 void l_sacrificestone() {

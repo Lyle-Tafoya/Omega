@@ -5,69 +5,76 @@
 #include <cassert>
 #include "glob.h"
 
+extern void item_equip(object *);
+extern void item_unequip(object *);
+
 /* enchant */
 void enchant(int delta) {
-  int i, used = false;
-  long change_cash;
 
-  if (delta < 0) {
-    i = random_item();
-    if (i == ABORT || Player.possessions[i]->usef == I_NOTHING ||
-        Player.possessions[i]->usef == I_NO_OP ||
-        Player.possessions[i]->usef == I_NORMAL_ARMOR ||
-        Player.possessions[i]->usef == I_NORMAL_WEAPON ||
-        Player.possessions[i]->usef == I_NORMAL_SHIELD ||
+  if(delta < 0) {
+    int i = random_item();
+    if(i == ABORT ||
+        (Player.possessions[i]->on_use == I_NOTHING && Player.possessions[i]->on_equip == I_NOTHING) ||
+        Player.possessions[i]->on_use == I_NO_OP ||
+        Player.possessions[i]->on_use == I_NORMAL_ARMOR ||
+        Player.possessions[i]->on_use == I_NORMAL_WEAPON ||
+        Player.possessions[i]->on_use == I_NORMAL_SHIELD ||
         Player.possessions[i]->objchar == FOOD ||
         Player.possessions[i]->objchar == MISSILEWEAPON) {
       print1("You feel fortunate.");
       morewait();
-    } else if (Player.possessions[i]->blessing < 0 ||
-               (Player.possessions[i]->objchar == ARTIFACT &&
-                random_range(3))) {
+    } else if (Player.possessions[i]->blessing < 0 || (Player.possessions[i]->objchar == ARTIFACT && random_range(3))) {
       if (Player.possessions[i]->uniqueness == COMMON)
         print1("Your ");
       nprint1(itemid(Player.possessions[i]));
       nprint1(" glows, but the glow flickers out...");
       morewait();
-    } else {
-      used = (Player.possessions[i]->used);
-      if (used) {
-        Player.possessions[i]->used = false;
-        item_use(Player.possessions[i]);
+    }
+    else {
+      bool used = Player.possessions[i]->used;
+      if(used) {
+        item_unequip(Player.possessions[i]);
       }
-      if (Player.possessions[i]->uniqueness == COMMON)
+      if(Player.possessions[i]->uniqueness == COMMON) {
         print1("Your ");
+      }
       nprint1(itemid(Player.possessions[i]));
       nprint1(" radiates an aura of mundanity!");
       morewait();
       Player.possessions[i]->plus = 0;
       Player.possessions[i]->charge = -1;
-      Player.possessions[i]->usef = I_NOTHING;
-      if (used) {
-        Player.possessions[i]->used = true;
-        item_use(Player.possessions[i]);
+      Player.possessions[i]->on_use = I_NOTHING;
+      Player.possessions[i]->on_equip = I_NOTHING;
+      Player.possessions[i]->on_unequip = I_NOTHING;
+      if(used) {
+        item_equip(Player.possessions[i]);
       }
     }
-  } else {
-    i = getitem(CASH);
-    if (i == ABORT) {
+  }
+  else {
+    int i = getitem(CASH);
+    if(i == ABORT) {
       print1("You feel unlucky.");
       morewait();
-    } else if (i == CASHVALUE) {
+    }
+    else if(i == CASHVALUE) {
       print1("You enchant your money.... What a concept!");
-      change_cash = Player.cash * (random_range(7) - 3) / 6;
-      if (change_cash > 0)
+      long change_cash = Player.cash * (random_range(7) - 3) / 6;
+      if(change_cash > 0) {
         print2("Seems to have been a good idea!");
-      else
+      }
+      else {
         print2("Maybe it wasn't such a good idea....");
+      }
       Player.cash += change_cash;
       morewait();
-    } else if (Player.possessions[i]->objchar == ARTIFACT) {
-      if (Player.possessions[i]->usef !=
-          Objects[Player.possessions[i]->id].usef) {
+    }
+    else if(Player.possessions[i]->objchar == ARTIFACT) {
+      if(Player.possessions[i]->on_use != Objects[Player.possessions[i]->id].on_use) {
         print1("It re-acquires its magical aura!");
-        Player.possessions[i]->usef = Objects[Player.possessions[i]->id].usef;
-      } else {
+        Player.possessions[i]->on_use = Objects[Player.possessions[i]->id].on_use;
+      }
+      else {
         print1("The enchantment spell enfolds the ");
         nprint1(itemid(Player.possessions[i]));
         print2("and the potent enchantment of the Artifact causes a backlash!");
@@ -75,31 +82,31 @@ void enchant(int delta) {
         clearmsg();
         manastorm(Player.x, Player.y, Player.possessions[i]->level * 5);
       }
-    } else {
-      if (Player.possessions[i]->plus > random_range(20) + 1) {
+    }
+    else {
+      if(Player.possessions[i]->plus > random_range(20) + 1) {
         print1("Uh-oh, the force of the enchantment was too much!");
         print2("There is a loud explosion!");
         morewait();
         manastorm(Player.x, Player.y, Player.possessions[i]->plus * 5);
         dispose_lost_objects(1, Player.possessions[i]);
-      } else {
-        used = (Player.possessions[i]->used);
-        if (used) {
+      }
+      else {
+        bool used = (Player.possessions[i]->used);
+        if(used) {
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          Player.possessions[i]->used = false;
-          item_use(Player.possessions[i]);
+          item_unequip(Player.possessions[i]);
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
         print1("The item shines!");
         morewait();
-        Player.possessions[i]->plus += delta + 1;
-        if (Player.possessions[i]->charge > -1)
-          Player.possessions[i]->charge +=
-              ((delta + 1) * (random_range(10) + 1));
-        if (used) {
+        Player.possessions[i]->plus += delta+1;
+        if(Player.possessions[i]->charge > -1) {
+          Player.possessions[i]->charge += (delta+1) * (random_range(10)+1);
+        }
+        if(used) {
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          Player.possessions[i]->used = true;
-          item_use(Player.possessions[i]);
+          item_equip(Player.possessions[i]);
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
       }
@@ -126,8 +133,7 @@ void bless(int blessing) {
       used = (Player.possessions[index]->used);
       if (used) {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
-        Player.possessions[index]->used = false;
-        item_use(Player.possessions[index]);
+        item_unequip(Player.possessions[index]);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
       Player.possessions[index]->blessing -= 2;
@@ -136,8 +142,7 @@ void bless(int blessing) {
             abs(Player.possessions[index]->plus) - 1;
       if (used) {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
-        Player.possessions[index]->used = true;
-        item_use(Player.possessions[index]);
+        item_equip(Player.possessions[index]);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
     }
@@ -150,8 +155,7 @@ void bless(int blessing) {
       used = (Player.possessions[index]->used == true);
       if (used) {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
-        Player.possessions[index]->used = false;
-        item_use(Player.possessions[index]);
+        item_unequip(Player.possessions[index]);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
       print1("A pure white light surrounds the item... ");
@@ -175,8 +179,7 @@ void bless(int blessing) {
       }
       if (used && (Player.possessions[index] != NULL)) {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
-        Player.possessions[index]->used = true;
-        item_use(Player.possessions[index]);
+        item_equip(Player.possessions[index]);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
     }

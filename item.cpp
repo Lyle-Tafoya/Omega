@@ -74,64 +74,64 @@ void make_corpse(pob o, struct monster *m) {
 /* DG I_CANNIBAL not implemented... fall through to code in I_CORPSE */
 #if 0 /* WDT HACK, of course -- we need to implement I_CANNIBAL. */
   if ((m->monchar&0xff) == '@')
-    o->usef = I_CANNIBAL;
+    o->on_use = I_CANNIBAL;
   else
 #endif
   if (m_statusp(*m, EDIBLE)) {
-    o->usef = I_FOOD;
+    o->on_use = I_FOOD;
     o->aux = 6;
   } else if (m_statusp(*m, POISONOUS))
-    o->usef = I_POISON_FOOD;
+    o->on_use = I_POISON_FOOD;
   /* Special corpse-eating effects */
   else
     switch (m->id) {
     case TSETSE: /*tse tse fly */
     case TORPOR: /*torpor beast */
-      o->usef = I_SLEEP_SELF;
+      o->on_use = I_SLEEP_SELF;
       break;
     case NASTY:
-      o->usef = I_INVISIBLE;
+      o->on_use = I_INVISIBLE;
       break;
     case BLIPPER:
-      o->usef = I_TELEPORT;
+      o->on_use = I_TELEPORT;
       break;
     case EYE: /* floating eye -- it's traditional.... */
-      o->usef = I_CLAIRVOYANCE;
+      o->on_use = I_CLAIRVOYANCE;
       break;
     case FUZZY: /*astral fuzzy */
-      o->usef = I_DISPLACE;
+      o->on_use = I_DISPLACE;
       break;
     case SERV_LAW:
-      o->usef = I_CHAOS;
+      o->on_use = I_CHAOS;
       break;
     case SERV_CHAOS:
-      o->usef = I_LAW;
+      o->on_use = I_LAW;
       break;
     case ASTRAL_VAMP: /* astral vampire */
-      o->usef = I_ENCHANT;
+      o->on_use = I_ENCHANT;
       break;
     case MANABURST:
-      o->usef = I_SPELLS;
+      o->on_use = I_SPELLS;
       break;
     case RAKSHASA:
-      o->usef = I_TRUESIGHT;
+      o->on_use = I_TRUESIGHT;
       break;
 /* DG fall through to code in I_CORPSE and special case there */
 #if 0 /* WDT HACK? */
   case BEHEMOTH:
-    o->usef = I_HEAL;
+    o->on_use = I_HEAL;
     break;
   case UNICORN:
-    o->usef = I_NEUTRALIZE_POISON;
+    o->on_use = I_NEUTRALIZE_POISON;
     break;
 #endif
     case COMA: /*coma beast */
-      o->usef = I_ALERT;
+      o->on_use = I_ALERT;
       break;
 /* DG I_INEDIBLE not implemented... fall through to code in I_CORPSE */
 #if 0 /* WDT HACK: yawn. */
   default:
-    o->usef = I_INEDIBLE; 
+    o->on_use = I_INEDIBLE; 
     break;
 #endif
     }
@@ -662,380 +662,394 @@ int twohandedp(int id) {
   }
 }
 
-void item_use(struct object *o) {
+void call_item_function(int object_function, object *o) {
   clearmsg();
-  switch (o->usef) {
-  case -1:
-    i_no_op(o);
-    break;
-  case 0:
-    i_nothing(o);
-    break;
+  switch (object_function) {
+    case -1:
+      i_no_op(o);
+      break;
+    case 0:
+      i_nothing(o);
+      break;
 
-  /* scrolls */
-  case I_SPELLS:
-    i_spells(o);
-    break;
-  case I_BLESS:
-    i_bless(o);
-    break;
-  case I_ACQUIRE:
-    i_acquire(o);
-    break;
-  case I_ENCHANT:
-    i_enchant(o);
-    break;
-  case I_TELEPORT:
-    i_teleport(o);
-    break;
-  case I_WISH:
-    i_wish(o);
-    break;
-  case I_CLAIRVOYANCE:
-    i_clairvoyance(o);
-    break;
-  case I_DISPLACE:
-    i_displace(o);
-    break;
-  case I_ID:
-    i_id(o);
-    break;
-  case I_JANE_T:
-    i_jane_t(o);
-    break;
-  case I_FLUX:
-    i_flux(o);
-    break;
-  case I_WARP:
-    i_warp(o);
-    break;
-  case I_ALERT:
-    i_alert(o);
-    break;
-  case I_CHARGE:
-    i_charge(o);
-    break;
-  case I_KNOWLEDGE:
-    i_knowledge(o);
-    break;
-  case I_LAW:
-    i_law(o);
-    break;
-  case I_HINT:
-    hint();
-    break;
-  case I_HERO:
-    i_hero(o);
-    break;
-  case I_TRUESIGHT:
-    i_truesight(o);
-    break;
-  case I_ILLUMINATE:
-    i_illuminate(o);
-    break;
-  case I_DEFLECT:
-    i_deflect(o);
-    break;
+    /* scrolls */
+    case I_SPELLS:
+      i_spells(o);
+      break;
+    case I_BLESS:
+      i_bless(o);
+      break;
+    case I_ACQUIRE:
+      i_acquire(o);
+      break;
+    case I_ENCHANT:
+      i_enchant(o);
+      break;
+    case I_TELEPORT:
+      i_teleport(o);
+      break;
+    case I_WISH:
+      i_wish(o);
+      break;
+    case I_CLAIRVOYANCE:
+      i_clairvoyance(o);
+      break;
+    case I_DISPLACE:
+      i_displace(o);
+      break;
+    case I_ID:
+      i_id(o);
+      break;
+    case I_JANE_T:
+      i_jane_t(o);
+      break;
+    case I_FLUX:
+      i_flux(o);
+      break;
+    case I_WARP:
+      i_warp(o);
+      break;
+    case I_ALERT:
+      i_alert(o);
+      break;
+    case I_CHARGE:
+      i_charge(o);
+      break;
+    case I_KNOWLEDGE:
+      i_knowledge(o);
+      break;
+    case I_LAW:
+      i_law(o);
+      break;
+    case I_HINT:
+      hint();
+      break;
+    case I_HERO:
+      i_hero(o);
+      break;
+    case I_TRUESIGHT:
+      i_truesight(o);
+      break;
+    case I_ILLUMINATE:
+      i_illuminate(o);
+      break;
+    case I_DEFLECT:
+      i_deflect(o);
+      break;
 
-  /* potion functions */
-  case I_HEAL:
-    i_heal(o);
-    break;
-  case I_OBJDET:
-    i_objdet(o);
-    break;
-  case I_MONDET:
-    i_mondet(o);
-    break;
-  case I_SLEEP_SELF:
-    i_sleep_self(o);
-    break;
-  case I_NEUTRALIZE_POISON:
-    i_neutralize_poison(o);
-    break;
-  case I_RESTORE:
-    i_restore(o);
-    break;
-  case I_SPEED:
-    i_speed(o);
-    break;
-  case I_AZOTH:
-    i_azoth(o);
-    break;
-  case I_AUGMENT:
-    i_augment(o);
-    break;
-  case I_REGENERATE:
-    i_regenerate(o);
-    break;
-  case I_INVISIBLE:
-    i_invisible(o);
-    break;
-  case I_BREATHING:
-    i_breathing(o);
-    break;
-  case I_FEAR_RESIST:
-    i_fear_resist(o);
-    break;
-  case I_CHAOS:
-    i_chaos(o);
-    break;
-  case I_ACCURACY:
-    i_accuracy(o);
-    break;
-  case I_LEVITATION:
-    i_levitate(o);
-    break;
-  case I_CURE:
-    i_cure(o);
-    break;
+    /* potion functions */
+    case I_HEAL:
+      i_heal(o);
+      break;
+    case I_OBJDET:
+      i_objdet(o);
+      break;
+    case I_MONDET:
+      i_mondet(o);
+      break;
+    case I_SLEEP_SELF:
+      i_sleep_self(o);
+      break;
+    case I_NEUTRALIZE_POISON:
+      i_neutralize_poison(o);
+      break;
+    case I_RESTORE:
+      i_restore(o);
+      break;
+    case I_SPEED:
+      i_speed(o);
+      break;
+    case I_AZOTH:
+      i_azoth(o);
+      break;
+    case I_AUGMENT:
+      i_augment(o);
+      break;
+    case I_REGENERATE:
+      i_regenerate(o);
+      break;
+    case I_INVISIBLE:
+      i_invisible(o);
+      break;
+    case I_BREATHING:
+      i_breathing(o);
+      break;
+    case I_FEAR_RESIST:
+      i_fear_resist(o);
+      break;
+    case I_CHAOS:
+      i_chaos(o);
+      break;
+    case I_ACCURACY:
+      i_accuracy(o);
+      break;
+    case I_LEVITATION:
+      i_levitate(o);
+      break;
+    case I_CURE:
+      i_cure(o);
+      break;
 
-  /* stick functions */
-  case I_FIREBOLT:
-    i_firebolt(o);
-    break;
-  case I_LBOLT:
-    i_lbolt(o);
-    break;
-  case I_MISSILE:
-    i_missile(o);
-    break;
-  case I_SLEEP_OTHER:
-    i_sleep_other(o);
-    break;
-  case I_FIREBALL:
-    i_fireball(o);
-    break;
-  case I_LBALL:
-    i_lball(o);
-    break;
-  case I_SNOWBALL:
-    i_snowball(o);
-    break;
-  case I_SUMMON:
-    i_summon(o);
-    break;
-  case I_HIDE:
-    i_hide(o);
-    break;
-  case I_DISRUPT:
-    i_disrupt(o);
-    break;
-  case I_DISINTEGRATE:
-    i_disintegrate(o);
-    break;
-  case I_APPORT:
-    i_apport(o);
-    break;
-  case I_DISPEL:
-    i_dispel(o);
-    break;
-  case I_POLYMORPH:
-    i_polymorph(o);
-    break;
-  case I_FEAR:
-    i_fear(o);
-    break;
+    /* stick functions */
+    case I_FIREBOLT:
+      i_firebolt(o);
+      break;
+    case I_LBOLT:
+      i_lbolt(o);
+      break;
+    case I_MISSILE:
+      i_missile(o);
+      break;
+    case I_SLEEP_OTHER:
+      i_sleep_other(o);
+      break;
+    case I_FIREBALL:
+      i_fireball(o);
+      break;
+    case I_LBALL:
+      i_lball(o);
+      break;
+    case I_SNOWBALL:
+      i_snowball(o);
+      break;
+    case I_SUMMON:
+      i_summon(o);
+      break;
+    case I_HIDE:
+      i_hide(o);
+      break;
+    case I_DISRUPT:
+      i_disrupt(o);
+      break;
+    case I_DISINTEGRATE:
+      i_disintegrate(o);
+      break;
+    case I_APPORT:
+      i_apport(o);
+      break;
+    case I_DISPEL:
+      i_dispel(o);
+      break;
+    case I_POLYMORPH:
+      i_polymorph(o);
+      break;
+    case I_FEAR:
+      i_fear(o);
+      break;
 
-  /* food functions */
-  case I_FOOD:
-    i_food(o);
-    break;
-  case I_LEMBAS:
-    i_lembas(o);
-    break;
-  case I_STIM:
-    i_stim(o);
-    break;
-  case I_POW:
-    i_pow(o);
-    break;
-  case I_IMMUNE:
-    i_immune(o);
-    break;
-  case I_POISON_FOOD:
-    i_poison_food(o);
-    break;
-  case I_CORPSE:
-    i_corpse(o);
-    break;
-  case I_PEPPER_FOOD:
-    i_pepper_food(o);
-    break;
+    /* food functions */
+    case I_FOOD:
+      i_food(o);
+      break;
+    case I_LEMBAS:
+      i_lembas(o);
+      break;
+    case I_STIM:
+      i_stim(o);
+      break;
+    case I_POW:
+      i_pow(o);
+      break;
+    case I_IMMUNE:
+      i_immune(o);
+      break;
+    case I_POISON_FOOD:
+      i_poison_food(o);
+      break;
+    case I_CORPSE:
+      i_corpse(o);
+      break;
+    case I_PEPPER_FOOD:
+      i_pepper_food(o);
+      break;
 
-  /* boots functions */
-  case I_PERM_SPEED:
-    i_perm_speed(o);
-    break;
-  case I_PERM_HERO:
-    i_perm_hero(o);
-    break;
-  case I_PERM_LEVITATE:
-    i_perm_levitate(o);
-    break;
-  case I_PERM_AGILITY:
-    i_perm_agility(o);
-    break;
+    /* boots functions */
+    case I_PERM_SPEED:
+      i_perm_speed(o);
+      break;
+    case I_PERM_HERO:
+      i_perm_hero(o);
+      break;
+    case I_PERM_LEVITATE:
+      i_perm_levitate(o);
+      break;
+    case I_PERM_AGILITY:
+      i_perm_agility(o);
+      break;
 
-  /* artifact functions */
-  case I_SCEPTRE:
-    i_sceptre(o);
-    break;
-  case I_PLANES:
-    i_planes(o);
-    break;
-  case I_STARGEM:
-    i_stargem(o);
-    break;
-  case I_SYMBOL:
-    i_symbol(o);
-    break;
-  case I_ORBMASTERY:
-    i_orbmastery(o);
-    break;
-  case I_ORBFIRE:
-    i_orbfire(o);
-    break;
-  case I_ORBWATER:
-    i_orbwater(o);
-    break;
-  case I_ORBEARTH:
-    i_orbearth(o);
-    break;
-  case I_ORBAIR:
-    i_orbair(o);
-    break;
-  case I_ORBDEAD:
-    i_orbdead(o);
-    break;
-  case I_CRYSTAL:
-    i_crystal(o);
-    break;
-  case I_LIFE:
-    i_life(o);
-    break;
-  case I_DEATH:
-    i_death(o);
-    break;
-  case I_ANTIOCH:
-    i_antioch(o);
-    break;
-  case I_HELM:
-    i_helm(o);
-    break;
-  case I_KOLWYNIA:
-    i_kolwynia(o);
-    break;
-  case I_ENCHANTMENT:
-    i_enchantment(o);
-    break;
-  case I_JUGGERNAUT:
-    i_juggernaut(o);
-    break;
+    /* artifact functions */
+    case I_SCEPTRE:
+      i_sceptre(o);
+      break;
+    case I_PLANES:
+      i_planes(o);
+      break;
+    case I_STARGEM:
+      i_stargem(o);
+      break;
+    case I_SYMBOL:
+      i_symbol(o);
+      break;
+    case I_ORBMASTERY:
+      i_orbmastery(o);
+      break;
+    case I_ORBFIRE:
+      i_orbfire(o);
+      break;
+    case I_ORBWATER:
+      i_orbwater(o);
+      break;
+    case I_ORBEARTH:
+      i_orbearth(o);
+      break;
+    case I_ORBAIR:
+      i_orbair(o);
+      break;
+    case I_ORBDEAD:
+      i_orbdead(o);
+      break;
+    case I_CRYSTAL:
+      i_crystal(o);
+      break;
+    case I_LIFE:
+      i_life(o);
+      break;
+    case I_DEATH:
+      i_death(o);
+      break;
+    case I_ANTIOCH:
+      i_antioch(o);
+      break;
+    case I_HELM:
+      i_helm(o);
+      break;
+    case I_KOLWYNIA:
+      i_kolwynia(o);
+      break;
+    case I_ENCHANTMENT:
+      i_enchantment(o);
+      break;
+    case I_JUGGERNAUT:
+      i_juggernaut(o);
+      break;
 
-  /* cloak functions */
-  case I_PERM_DISPLACE:
-    i_perm_displace(o);
-    break;
-  case I_PERM_NEGIMMUNE:
-    i_perm_negimmune(o);
-    break;
-  case I_PERM_INVISIBLE:
-    i_perm_invisible(o);
-    break;
-  case I_PERM_PROTECTION:
-    i_perm_protection(o);
-    break;
-  case I_PERM_ACCURACY:
-    i_perm_accuracy(o);
-    break;
-  case I_PERM_TRUESIGHT:
-    i_perm_truesight(o);
-    break;
+    /* cloak functions */
+    case I_PERM_DISPLACE:
+      i_perm_displace(o);
+      break;
+    case I_PERM_NEGIMMUNE:
+      i_perm_negimmune(o);
+      break;
+    case I_PERM_INVISIBLE:
+      i_perm_invisible(o);
+      break;
+    case I_PERM_PROTECTION:
+      i_perm_protection(o);
+      break;
+    case I_PERM_ACCURACY:
+      i_perm_accuracy(o);
+      break;
+    case I_PERM_TRUESIGHT:
+      i_perm_truesight(o);
+      break;
 
-  /* ring functions */
-  case I_PERM_BURDEN:
-    i_perm_burden(o);
-    break;
-  case I_PERM_STRENGTH:
-    i_perm_strength(o);
-    break;
-  case I_PERM_GAZE_IMMUNE:
-    i_perm_gaze_immune(o);
-    break;
-  case I_PERM_FIRE_RESIST:
-    i_perm_fire_resist(o);
-    break;
-  case I_PERM_POISON_RESIST:
-    i_perm_poison_resist(o);
-    break;
-  case I_PERM_REGENERATE:
-    i_perm_regenerate(o);
-    break;
-  case I_PERM_KNOWLEDGE:
-    i_perm_knowledge(o);
-    break;
+    /* ring functions */
+    case I_PERM_BURDEN:
+      i_perm_burden(o);
+      break;
+    case I_PERM_STRENGTH:
+      i_perm_strength(o);
+      break;
+    case I_PERM_GAZE_IMMUNE:
+      i_perm_gaze_immune(o);
+      break;
+    case I_PERM_FIRE_RESIST:
+      i_perm_fire_resist(o);
+      break;
+    case I_PERM_POISON_RESIST:
+      i_perm_poison_resist(o);
+      break;
+    case I_PERM_REGENERATE:
+      i_perm_regenerate(o);
+      break;
+    case I_PERM_KNOWLEDGE:
+      i_perm_knowledge(o);
+      break;
 
-  /* armor functions */
-  case I_NORMAL_ARMOR:
-    i_normal_armor(o);
-    break;
-  case I_PERM_FEAR_RESIST:
-    i_perm_fear_resist(o);
-    break;
-  case I_PERM_ENERGY_RESIST:
-    i_perm_energy_resist(o);
-    break;
-  case I_PERM_BREATHING:
-    i_perm_breathing(o);
-    break;
+    /* armor functions */
+    case I_NORMAL_ARMOR:
+      i_normal_armor(o);
+      break;
+    case I_PERM_FEAR_RESIST:
+      i_perm_fear_resist(o);
+      break;
+    case I_PERM_ENERGY_RESIST:
+      i_perm_energy_resist(o);
+      break;
+    case I_PERM_BREATHING:
+      i_perm_breathing(o);
+      break;
 
-  /* weapons functions */
-  case I_NORMAL_WEAPON:
-    i_normal_weapon(o);
-    break;
-  case I_LIGHTSABRE:
-    i_lightsabre(o);
-    break;
-  case I_DEMONBLADE:
-    i_demonblade(o);
-    break;
-  case I_DESECRATE:
-    i_desecrate(o);
-    break;
-  case I_MACE_DISRUPT:
-    i_mace_disrupt(o);
-    break;
-  case I_DEFEND:
-    i_defend(o);
-    break;
-  case I_VICTRIX:
-    i_victrix(o);
-    break;
+    /* weapons functions */
+    case I_NORMAL_WEAPON:
+      i_normal_weapon(o);
+      break;
+    case I_LIGHTSABRE:
+      i_lightsabre(o);
+      break;
+    case I_DEMONBLADE:
+      i_demonblade(o);
+      break;
+    case I_DESECRATE:
+      i_desecrate(o);
+      break;
+    case I_MACE_DISRUPT:
+      i_mace_disrupt(o);
+      break;
+    case I_DEFEND:
+      i_defend(o);
+      break;
+    case I_VICTRIX:
+      i_victrix(o);
+      break;
 
-  /* thing functions */
-  case I_PICK:
-    i_pick(o);
-    break;
-  case I_KEY:
-    i_key(o);
-    break;
-  case I_PERM_ILLUMINATE:
-    i_perm_illuminate(o);
-    break;
-  case I_TRAP:
-    i_trap(o);
-    break;
-  case I_RAISE_PORTCULLIS:
-    i_raise_portcullis(o);
-    break;
+    /* thing functions */
+    case I_PICK:
+      i_pick(o);
+      break;
+    case I_KEY:
+      i_key(o);
+      break;
+    case I_PERM_ILLUMINATE:
+      i_perm_illuminate(o);
+      break;
+    case I_TRAP:
+      i_trap(o);
+      break;
+    case I_RAISE_PORTCULLIS:
+      i_raise_portcullis(o);
+      break;
 
-  /* shield functions */
-  case I_NORMAL_SHIELD:
-    i_normal_shield(o);
-    break;
-  case I_PERM_DEFLECT:
-    i_perm_deflect(o);
-    break;
+    /* shield functions */
+    case I_NORMAL_SHIELD:
+      i_normal_shield(o);
+      break;
+    case I_PERM_DEFLECT:
+      i_perm_deflect(o);
+      break;
   }
+}
+
+void item_use(object *o) {
+  call_item_function(o->on_use, o);
+}
+
+void item_equip(object *o) {
+  o->used = true;
+  call_item_function(o->on_equip, o);
+}
+
+void item_unequip(object *o) {
+  o->used = false;
+  call_item_function(o->on_unequip, o);
 }

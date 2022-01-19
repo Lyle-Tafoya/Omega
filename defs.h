@@ -2,6 +2,9 @@
 /* This file is the header file for all omega modules */
 /* defs.h */
 
+#ifndef OMEGA_DEFS_H_
+#define OMEGA_DEFS_H_
+
 /* omega will NOT function unless the implementor sets the appropriate
 definitions in the following section. */
 
@@ -1304,12 +1307,24 @@ struct player {
 };
 
 struct object {
-  int id, weight, plus, charge, dmg, hit, aux, number, fragility;
+  int id;
+  int weight;
+  int plus;
+  int charge;
+  int dmg;
+  int hit;
+  int aux;
+  int number;
+  int fragility;
   long basevalue;
-  unsigned char known, used;
+  unsigned char known;
+  unsigned char used;
   int blessing;
-  unsigned char type, uniqueness;
-  int usef;
+  unsigned char type;
+  unsigned char uniqueness;
+  int on_use;
+  int on_equip;
+  int on_unequip;
   unsigned char level;
   Symbol objchar;
   const char *objstr;
@@ -1449,4 +1464,6 @@ inline void optionreset(int option, player &p) {
 
 #ifndef STRING
 #include <strings.h>
+#endif
+
 #endif

@@ -7,6 +7,8 @@
 #include <thread>
 #include "glob.h"
 
+extern void item_unequip(object *);
+
 /* the bank; can be broken into (!) */
 void l_bank() {
   int done = false, valid = false;
@@ -1078,10 +1080,8 @@ void l_pawn_shop() {
             nprint1("Au each. Sell [yn]? ");
             if (ynq1() == 'y') {
               number = getnumber(Player.possessions[i]->number);
-              if ((number >= Player.possessions[i]->number) &&
-                  Player.possessions[i]->used) {
-                Player.possessions[i]->used = false;
-                item_use(Player.possessions[i]);
+              if ((number >= Player.possessions[i]->number) && Player.possessions[i]->used) {
+                item_unequip(Player.possessions[i]);
               }
               Player.cash += number * item_value(Player.possessions[i]) / 2;
               free((char *)Pawnitems[0]);

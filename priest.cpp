@@ -5,6 +5,9 @@
 #include <algorithm>
 #include "glob.h"
 
+extern void item_equip(object *);
+extern void item_unequip(object *);
+
 /* prayer occurs at altars, hence name of function */
 void l_altar() {
   int i, deity;
@@ -95,12 +98,10 @@ void l_altar() {
           morewait();
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           if (Player.possessions[i]->used) {
-            Player.possessions[i]->used = false;
-            item_use(Player.possessions[i]);
+            item_unequip(Player.possessions[i]);
             Player.possessions[i]->blessing =
                 -1 - abs(Player.possessions[i]->blessing);
-            Player.possessions[i]->used = true;
-            item_use(Player.possessions[i]);
+            item_equip(Player.possessions[i]);
           } else
             Player.possessions[i]->blessing =
                 -1 - abs(Player.possessions[i]->blessing);

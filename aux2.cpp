@@ -8,6 +8,9 @@
 #include <algorithm>
 #include "glob.h"
 
+extern void item_equip(object *);
+extern void item_unequip(object *);
+
 #ifdef SAVE_LEVELS
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
@@ -301,25 +304,25 @@ void moon_check() {
 
 /* check 1/hour for torch to burn out if used */
 void torch_check() {
-  int i;
-  for (i = O_READY_HAND; i <= O_WEAPON_HAND; i++) {
-    if (Player.possessions[i] != NULL)
-      if ((Player.possessions[i]->id == THINGID + 8) && /*torch */
-          (Player.possessions[i]->aux > 0)) {
-        Player.possessions[i]->aux--;
-        if (Player.possessions[i]->aux == 0) {
+  for(int i = O_READY_HAND; i <= O_WEAPON_HAND; ++i) {
+    if(Player.possessions[i]) {
+      if((Player.possessions[i]->id == THINGID + 8) && (Player.possessions[i]->aux > 0)) {
+        --Player.possessions[i]->aux;
+        if(Player.possessions[i]->aux == 0) {
           mprint("Your torch goes out!!!");
           conform_unused_object(Player.possessions[i]);
-          if (Player.possessions[i]->number > 1) {
+          if(Player.possessions[i]->number > 1) {
             Player.possessions[i]->number--;
             Player.possessions[i]->aux = 6;
-          } else {
-            Player.possessions[i]->usef = I_NO_OP;
-            Player.possessions[i]->cursestr = Player.possessions[i]->truename =
-                Player.possessions[i]->objstr = "burnt-out torch";
+          }
+          else {
+            Player.possessions[i]->on_use = I_NO_OP;
+            Player.possessions[i]->on_unequip = I_NO_OP;
+            Player.possessions[i]->cursestr = Player.possessions[i]->truename = Player.possessions[i]->objstr = "burnt-out torch";
           }
         }
       }
+    }
   }
 }
 
@@ -774,26 +777,25 @@ int player_hit(int hitmod, char hitloc, monster *m) {
 always be used in pairs with on being true and false, and may cause
 anomalous stats and item-usage if used indiscriminately */
 
-void toggle_item_use(int on) {
+void toggle_item_use(bool on) {
   static int used[MAXITEMS];
-  int i;
   setgamestatus(SUPPRESS_PRINTING, GameStatus);
-  if (on)
-    for (i = 0; i < MAXITEMS; i++) {
+  if(on) {
+    for(int i = 0; i < MAXITEMS; ++i) {
       used[i] = false;
-      if (Player.possessions[i] != NULL) {
-        if ((used[i] = Player.possessions[i]->used) == true) {
-          Player.possessions[i]->used = false;
-          item_use(Player.possessions[i]);
+      if(Player.possessions[i]) {
+        if(Player.possessions[i]->on_equip != I_NO_OP && (used[i] = Player.possessions[i]->used) == true) {
+          item_unequip(Player.possessions[i]);
         }
       }
     }
+  }
   else {
-    for (i = 1; i < MAXITEMS; i++)
-      if (used[i]) {
-        Player.possessions[i]->used = true;
-        item_use(Player.possessions[i]);
+    for(int i = 1; i < MAXITEMS; ++i) {
+      if(used[i]) {
+        item_equip(Player.possessions[i]);
       }
+    }
     calc_melee();
     showflags();
     dataprint();

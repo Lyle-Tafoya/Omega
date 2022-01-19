@@ -434,8 +434,7 @@ void terrain_check(int takestime) {
       print2("....as I go riding merrily along....");
       break;
     }
-  } else if (Player.possessions[O_BOOTS] &&
-             Player.possessions[O_BOOTS]->usef == I_BOOTS_7LEAGUE) {
+  } else if (Player.possessions[O_BOOTS] && Player.possessions[O_BOOTS]->on_equip == I_BOOTS_7LEAGUE) {
     takestime = 0;
     switch (random_range(32)) {
     case 0:

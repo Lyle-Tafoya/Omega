@@ -2,6 +2,7 @@
 /* extern.h -- function declarations */
 
 #include <string>
+#include "defs.h"
 
 /* omega.cpp functions */
 
@@ -66,7 +67,7 @@ void p_win(void);
 void player_miss(struct monster *, int);
 void tacplayer(struct monster *);
 void tenminute_status_check(void);
-void toggle_item_use(int);
+void toggle_item_use(bool);
 void torch_check(void);
 void weapon_use(int, pob, struct monster *);
 
@@ -419,7 +420,6 @@ int itemcharge(void);
 int itemplus(void);
 int twohandedp(int);
 pob create_object(int);
-void item_use(struct object *);
 void make_armor(pob, int);
 void make_artifact(pob, int);
 void make_boots(pob, int);

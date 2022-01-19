@@ -12,6 +12,8 @@
 extern void kill_all_levels();
 #endif
 
+extern void item_unequip(object *);
+
 /* look at some spot */
 void examine() {
   pol ol;
@@ -268,8 +270,7 @@ void fire() {
     Player.possessions[O_WEAPON_HAND]->aux = LOADED;
   } else {
     if (Player.possessions[index]->used) {
-      Player.possessions[index]->used = false;
-      item_use(Player.possessions[index]);
+      item_unequip(Player.possessions[index]);
     }
     obj = Player.possessions[index];
     x1 = x2 = Player.x;
@@ -562,7 +563,7 @@ void vault() {
   clearmsg();
 
   if (Player.possessions[O_BOOTS] != NULL)
-    if (Player.possessions[O_BOOTS]->usef == I_BOOTS_JUMPING)
+    if (Player.possessions[O_BOOTS]->on_equip == I_BOOTS_JUMPING)
       jumper = 2;
   if (Player.status[IMMOBILE] > 0) {
     resetgamestatus(FAST_MOVE, GameStatus);

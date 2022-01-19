@@ -4,6 +4,9 @@
 #include <algorithm>
 #include "glob.h"
 
+extern void item_equip(object *);
+extern void item_unequip(object *);
+
 /* if know id, then summon that monster; else (if < 0) get one. */
 void summon(int blessing, int id) {
   int i, looking = true, x, y;
@@ -103,11 +106,9 @@ void cleanse(int blessing) {
         if (Player.possessions[i] != NULL) {
           if ((Player.possessions[i]->used) &&
               (Player.possessions[i]->blessing < 0)) {
-            Player.possessions[i]->used = false;
-            item_use(Player.possessions[i]);
+            item_unequip(Player.possessions[i]);
             Player.possessions[i]->blessing = 0;
-            Player.possessions[i]->used = true;
-            item_use(Player.possessions[i]);
+            item_equip(Player.possessions[i]);
           }
         }
 
@@ -738,16 +739,14 @@ void dispel(int blessing) {
         if (o != NULL)
           if ((o->used) && (o->blessing < 0)) {
             if (blessing + 1 + o->blessing >= 0) {
-              o->used = false;
               setgamestatus(SUPPRESS_PRINTING, GameStatus);
-              item_use(o);
+              item_unequip(o);
               resetgamestatus(SUPPRESS_PRINTING, GameStatus);
               mprint("You hear a sighing sound from");
               mprint(itemid(o));
               o->blessing = 0;
-              o->used = true;
               setgamestatus(SUPPRESS_PRINTING, GameStatus);
-              item_use(o);
+              item_equip(o);
               resetgamestatus(SUPPRESS_PRINTING, GameStatus);
             } else {
               mprint("You hear dark laughter from");

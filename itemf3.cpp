@@ -6,6 +6,9 @@
 #include <algorithm>
 #include "glob.h"
 
+extern void item_equip(object *);
+extern void item_unequip(object *);
+
 /* amulet of the planes */
 void i_planes(pob) {
   if (Player.mana < 1)
@@ -483,9 +486,19 @@ void i_orbdead(pob) {
   print2("You feel not at all like a mage.");
   for (i = 0; i < MAXITEMS; i++) {
     if (Player.possessions[i] != NULL) {
+      bool used = Player.possessions[i]->used;
+      if(used) {
+        item_unequip(Player.possessions[i]);
+      }
       Player.possessions[i]->plus = 0;
-      if (Player.possessions[i]->usef > 100)
-        Player.possessions[i]->usef = I_NOTHING;
+      if(Player.possessions[i]->on_use > 100 || Player.possessions[i]->on_equip > 100 || Player.possessions[i]->on_unequip > 100) {
+        Player.possessions[i]->on_use = I_NOTHING;
+        Player.possessions[i]->on_equip = I_NOTHING;
+        Player.possessions[i]->on_unequip = I_NOTHING;
+      }
+      if(used) {
+        item_equip(Player.possessions[i]);
+      }
     }
   }
   print3("A storm of mundanity surounds you!");

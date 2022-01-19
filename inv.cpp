@@ -5,6 +5,9 @@
 #include <cassert>
 #include "glob.h"
 
+extern void item_equip(object *);
+extern void item_unequip(object *);
+
 /* drops money, heh heh */
 void drop_money() {
   pob money;
@@ -203,7 +206,9 @@ char *itemid(pob obj) {
       if (obj->id == ARTIFACTID + 8 || obj->id == ARTIFACTID + 20 ||
           obj->id == ARTIFACTID + 21)
         strcat(Str4, "the ");
-      if (obj->usef == I_NOTHING && Objects[obj->id].usef != I_NOTHING)
+      if (obj->on_use == I_NOTHING && Objects[obj->id].on_use != I_NOTHING &&
+          obj->on_equip == I_NOTHING && Objects[obj->id].on_equip != I_NOTHING &&
+          obj->on_unequip == I_NOTHING && Objects[obj->id].on_unequip != I_NOTHING)
         strcat(Str4, "disenchanted ");
       if (obj->blessing < 0) {
         strcat(Str4, "cursed ");
@@ -369,12 +374,12 @@ void givemonster(struct monster *m, struct object *o) {
 
       if (((m->id == HORSE) && (o->id == FOODID + 15)) || /* grain */
           ((m->id != HORSE) &&
-           ((o->usef == I_FOOD) || (o->usef == I_POISON_FOOD)))) {
+           ((o->on_use == I_FOOD) || (o->on_use == I_POISON_FOOD)))) {
         strcat(Str3, " wolfs down your food ... ");
         print1(Str3);
         m_status_reset(*m, HUNGRY);
         m_status_reset(*m, HOSTILE);
-        if (o->usef == I_POISON_FOOD) {
+        if (o->on_use == I_POISON_FOOD) {
           Player.alignment -= 2;
           nprint1("...and chokes on the poisoned ration!");
           morewait();
@@ -452,8 +457,7 @@ void conform_lost_objects(int n, pob obj) {
 /* clears unused possession */
 void conform_unused_object(pob obj) {
   if (obj->used) {
-    obj->used = false;
-    item_use(obj);
+    item_unequip(obj);
   }
   calc_melee();
 }
@@ -638,8 +642,7 @@ void use_pack_item(int response, int slot) {
       Player.possessions[O_WEAPON_HAND] = item;
   }
   if (item_useable(item, slot)) {
-    item->used = true;
-    item_use(item);
+    item_equip(item);
     morewait();
     if (item->number > 1)
       pack_extra_items(item);
@@ -1263,8 +1266,7 @@ void switch_to_slot(int slot) {
         Player.possessions[slot] = oair;
       Player.possessions[O_UP_IN_AIR] = NULL;
       if (item_useable(oair, slot)) {
-        oair->used = true;
-        item_use(oair);
+        item_equip(oair);
         morewait();
         if (oair->number > 1)
           pack_extra_items(oair);
@@ -1313,8 +1315,7 @@ void switch_to_slot(int slot) {
       }
 
       if (item_useable(oair, slot)) {
-        oair->used = true;
-        item_use(oair);
+        item_equip(oair);
         morewait();
         if (oair->number > 1)
           pack_extra_items(oair);
@@ -1339,7 +1340,8 @@ int objequal(struct object *o, struct object *p) {
     return ((o->id == p->id) && (o->plus == p->plus) && (o->charge == 0) &&
             (p->charge == 0) && (o->dmg == p->dmg) && (o->hit == p->hit) &&
             (o->aux == p->aux) && (o->known == p->known) &&
-            (o->blessing == p->blessing) && (o->usef == p->usef));
+            (o->blessing == p->blessing) && (o->on_use == p->on_use) &&
+            (o->on_equip == p->on_equip) && (o->on_unequip == p->on_unequip));
 }
 
 /* criteria for being able to put some item in some slot */

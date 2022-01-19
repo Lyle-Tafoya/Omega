@@ -8,6 +8,8 @@
 #include <thread>
 #include "glob.h"
 
+extern void item_use(object *);
+
 /* no op a turn.... */
 void rest() {
   if (random_range(20) == 1) {
@@ -142,7 +144,7 @@ void eat() {
       print3("You can't eat ");
       nprint3(itemid(obj));
     } else {
-      if (obj->usef == I_FOOD)
+      if (obj->on_use == I_FOOD)
         Player.food = std::max(0, Player.food + obj->aux);
       item_use(obj);
       dispose_lost_objects(1, obj);
@@ -1058,7 +1060,7 @@ void movepincountry(int dx, int dy) {
         Player.x += dx;
         Player.y += dy;
         if ((!gamestatusp(MOUNTED, GameStatus)) && (Player.possessions[O_BOOTS] != NULL)) {
-          if (Player.possessions[O_BOOTS]->usef == I_BOOTS_7LEAGUE) {
+          if (Player.possessions[O_BOOTS]->on_equip == I_BOOTS_7LEAGUE) {
             takestime = false;
             if (Player.possessions[O_BOOTS]->blessing < 0) {
               print1("Whooah! -- Your boots launch you into the sky....");

@@ -9,6 +9,8 @@
 #include <algorithm>
 #include "glob.h"
 
+extern void item_unequip(object *);
+
 void l_thieves_guild() {
   int fee, count, i, number, done = false, dues = 1000;
   char c, action;
@@ -211,8 +213,7 @@ void l_thieves_guild() {
                 number = getnumber(Player.possessions[i]->number);
                 if ((number >= Player.possessions[i]->number) &&
                     Player.possessions[i]->used) {
-                  Player.possessions[i]->used = false;
-                  item_use(Player.possessions[i]);
+                  item_unequip(Player.possessions[i]);
                 }
                 Player.cash +=
                     number * 2 * item_value(Player.possessions[i]) / 3;
