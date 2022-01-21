@@ -1174,7 +1174,7 @@ void drop_from_slot(int slot) {
 }
 
 void put_to_pack(int slot) {
-  int waitflag, num = 1;
+  int num = 1;
   pob temp, oslot = Player.possessions[slot];
   if (oslot == NULL)
     print3("Slot is empty!");
@@ -1182,12 +1182,17 @@ void put_to_pack(int slot) {
     print3("Item is cursed!");
   else {
     num = get_item_number(oslot);
-    if (num > 0) {
-      temp = split_item(num, oslot);
-      waitflag = (oslot->used && (oslot->number == num));
-      conform_lost_objects(num, oslot);
-      if (waitflag)
+    if(num >= oslot->number) {
+      Player.possessions[slot] = nullptr;
+      if(oslot->used) {
         morewait();
+      }
+      conform_unused_object(oslot);
+      add_to_pack(oslot);
+    }
+    else if (num > 0) {
+      temp = split_item(num, oslot);
+      conform_lost_objects(num, oslot);
       add_to_pack(temp);
     }
   }
@@ -1276,7 +1281,12 @@ void switch_to_slot(int slot) {
 
     else if (take) {
       num = get_item_number(oslot);
-      if (num > 0) {
+      if(num >= oslot->number) {
+        Player.possessions[O_UP_IN_AIR] = oslot;
+        Player.possessions[slot] = nullptr;
+        conform_unused_object(oslot);
+      }
+      else if(num > 0) {
         otemp = split_item(num, oslot);
         dispose_lost_objects(num, oslot);
         Player.possessions[O_UP_IN_AIR] = otemp;
@@ -1378,39 +1388,35 @@ int slottable(pob o, int slot) {
   return (ok);
 }
 
-/* ->;WDT HACK: this is bad factoring.  I want to use this, but it's
- * printing SILLY stuff out. */
-/* whether or not an item o can be used in a slot. Assumes o can in
-   fact be placed in the slot. */
-int item_useable(pob o, int slot) {
-  /* don't have to check the object in the first if since only armor
-  can go in armor slot, cloak in cloak slot, etc */
-
-  if ((slot == O_ARMOR) || (slot == O_CLOAK) || (slot == O_SHIELD) ||
-      (slot == O_BOOTS) || (slot >= O_RING1))
-    return (true);
-
-  /* weapon is useable if it is put in weapon hand or if it is two-handed
-     and put in either hand when the other also holds the weapon */
-
-  else if ((o->objchar == WEAPON) || (o->objchar == MISSILEWEAPON)) {
-    if (twohandedp(o->id) &&
-        ((slot == O_READY_HAND) || (slot == O_WEAPON_HAND))) {
-      if (Player.possessions[O_READY_HAND] ==
-          Player.possessions[O_WEAPON_HAND]) {
+// whether or not an item o can be used in a slot. Assumes o can in fact be placed in the slot.
+bool item_useable(pob o, int slot) {
+  if(slot == O_ARMOR || slot == O_CLOAK || slot == O_SHIELD || slot == O_BOOTS || slot >= O_RING1) {
+    return true;
+  }
+  else if(o->objchar == WEAPON || o->objchar == MISSILEWEAPON) {
+    if(twohandedp(o->id) && (slot == O_READY_HAND || slot == O_WEAPON_HAND)) {
+      if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND]) {
         print1("You heft the weapon and find you must use both hands.");
         morewait();
-        return (true);
-      } else {
+        return true;
+      }
+      else {
         print1("This weapon is two-handed, so at the moment, ");
         print2("you are just lugging it around....");
         morewait();
-        return (false);
+        return false;
       }
-    } else
-      return (slot == O_WEAPON_HAND);
-  } else
-    return (false);
+    }
+    else {
+      return slot == O_WEAPON_HAND;
+    }
+  }
+  else if((slot == O_READY_HAND || slot == O_WEAPON_HAND) && o->id == 8) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 /* returns false if not cursed, true if cursed but not used,

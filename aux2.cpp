@@ -302,24 +302,18 @@ void moon_check() {
   }
 }
 
-/* check 1/hour for torch to burn out if used */
+// check 1/hour for torch to burn out if used
 void torch_check() {
   for(int i = O_READY_HAND; i <= O_WEAPON_HAND; ++i) {
     if(Player.possessions[i]) {
-      if((Player.possessions[i]->id == THINGID + 8) && (Player.possessions[i]->aux > 0)) {
-        --Player.possessions[i]->aux;
-        if(Player.possessions[i]->aux == 0) {
+      if((Player.possessions[i]->id == THINGID + 8) && Player.possessions[i]->aux) {
+        --Player.possessions[i]->charge;
+        if(!Player.possessions[i]->charge) {
           mprint("Your torch goes out!!!");
           conform_unused_object(Player.possessions[i]);
-          if(Player.possessions[i]->number > 1) {
-            Player.possessions[i]->number--;
-            Player.possessions[i]->aux = 6;
-          }
-          else {
-            Player.possessions[i]->on_use = I_NO_OP;
-            Player.possessions[i]->on_unequip = I_NO_OP;
-            Player.possessions[i]->cursestr = Player.possessions[i]->truename = Player.possessions[i]->objstr = "burnt-out torch";
-          }
+          Player.possessions[i]->on_use = I_NO_OP;
+          Player.possessions[i]->on_unequip = I_NO_OP;
+          Player.possessions[i]->cursestr = Player.possessions[i]->truename = Player.possessions[i]->objstr = "burnt-out torch";
         }
       }
     }

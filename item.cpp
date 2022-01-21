@@ -1029,6 +1029,12 @@ void call_item_function(int object_function, object *o) {
     case I_RAISE_PORTCULLIS:
       i_raise_portcullis(o);
       break;
+    case I_TORCH_USE:
+      i_torch_use(o);
+      break;
+    case I_TORCH_UNEQUIP:
+      i_torch_unequip(o);
+      break;
 
     /* shield functions */
     case I_NORMAL_SHIELD:

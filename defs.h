@@ -758,6 +758,8 @@ on save and restore. */
 #define I_PERM_ILLUMINATE 1105
 #define I_TRAP 1106
 #define I_RAISE_PORTCULLIS 1107
+#define I_TORCH_USE 1108
+#define I_TORCH_UNEQUIP 1109
 
 /* shield functions */
 #define I_PERM_DEFLECT 1201

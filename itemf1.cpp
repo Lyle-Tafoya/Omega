@@ -798,6 +798,28 @@ void i_illuminate(pob o) {
   illuminate(o->blessing);
 }
 
+void i_torch_use(pob o) {
+  if(!o->used || !o->charge) {
+    return;
+  }
+  o->known = 1;
+  Objects[o->id].known = 1;
+  o->aux = !o->aux;
+  if(o->aux) {
+    Player.status[ILLUMINATION] += 1500;
+  }
+  else {
+    Player.status[ILLUMINATION] = std::max(0, Player.status[ILLUMINATION] - 1500);
+  }
+}
+
+void i_torch_unequip(pob o) {
+  if(o->aux) {
+    o->aux = false;
+    Player.status[ILLUMINATION] = std::max(0, Player.status[ILLUMINATION] - 1500);
+  }
+}
+
 void i_perm_illuminate(pob o) {
   o->known = 1;
   Objects[o->id].known = 1;
