@@ -164,11 +164,9 @@ void drop_at(int x, int y, pob o) {
 
 /* put n of o on objlist at x,y on Level->depth */
 void p_drop_at(int x, int y, int n, pob o) {
-  pol tmp;
-  if (Current_Environment != E_COUNTRYSIDE) {
-    if ((Level->site[x][y].locchar != VOID_CHAR) &&
-        (Level->site[x][y].locchar != ABYSS)) {
-      tmp = ((pol)checkmalloc(sizeof(oltype)));
+  if(Current_Environment != E_COUNTRYSIDE) {
+    if((Level->site[x][y].locchar != VOID_CHAR) && (Level->site[x][y].locchar != ABYSS)) {
+      pol tmp = ((pol)checkmalloc(sizeof(oltype)));
       tmp->thing = ((pob)checkmalloc(sizeof(objtype)));
       *(tmp->thing) = *o;
       tmp->thing->used = false;
@@ -176,10 +174,23 @@ void p_drop_at(int x, int y, int n, pob o) {
       print2("Dropped ");
       nprint2(itemid(tmp->thing));
       morewait();
-      tmp->next = Level->site[x][y].things;
-      Level->site[x][y].things = tmp;
-    } else if (Level->site[x][y].p_locf == L_VOID_STATION)
+      bool stacked_item = false;
+      for(objectlist *pile = Level->site[x][y].things; pile; pile = pile->next) {
+        if(pile->thing && objequal(pile->thing, o) && pile->thing->objchar != STICK) {
+          pile->thing->number += o->number;
+          stacked_item = true;
+          delete o;
+          break;
+        }
+      }
+      if(!stacked_item) {
+        tmp->next = Level->site[x][y].things;
+        Level->site[x][y].things = tmp;
+      }
+    }
+    else if(Level->site[x][y].p_locf == L_VOID_STATION) {
       setgamestatus(PREPARED_VOID, GameStatus);
+    }
   }
 }
 
@@ -579,12 +590,21 @@ void push_pack(pob o) {
   Player.packptr++;
 }
 
-/* Adds item to pack list */
+// Adds item to pack list
 void add_to_pack(pob o) {
-  if (Player.packptr >= MAXPACK) {
+  for(int i = 0; i < MAXPACK; ++i) {
+    object *pack_item = Player.pack[i];
+    if(pack_item && objequal(o, pack_item) && o->objchar != STICK) {
+      pack_item->number += o->number;
+      delete o;
+      return;
+    }
+  }
+  if(Player.packptr >= MAXPACK) {
     print3("Your pack is full. The item drops to the ground.");
     drop_at(Player.x, Player.y, o);
-  } else {
+  }
+  else {
     push_pack(o);
     print3("Putting item in pack.");
   }
@@ -1214,121 +1234,105 @@ pob split_item(int num, pob item) {
   return (newitem);
 }
 
-/* Trades contents of "up in air" slot with selected slot. One or both
-may be null. If both slots are 'objequal' merges two groups into one
-in the selected slot. If one slot is null and the number of the other
-is greater than one, requests how many to move. */
-
+// Trades contents of "up in air" slot with selected slot.
 void switch_to_slot(int slot) {
   pob oslot = Player.possessions[slot];
-  pob oair = Player.possessions[O_UP_IN_AIR];
-  pob otemp = NULL;
-  int slotnull, airnull, num = 1, trade = false, put = false, take = false,
-                         merge = false;
-  int s2h = false, a2h = false;
 
-  /* ie, is cursed and in use */
-  if (slot == O_UP_IN_AIR)
+  if(slot == O_UP_IN_AIR) {
     print3("This action makes no sense!");
-  else if (cursed(oslot) == true + true)
+  }
+  else if(oslot && oslot->used && oslot->blessing < 0) {
     print3("The object in that slot is cursed -- you can't get rid of it!");
+  }
   else {
-
-    slotnull = (oslot == NULL);
-    airnull = (oair == NULL);
-
-    if (!slotnull)
-      s2h = (Player.possessions[O_READY_HAND] ==
-             Player.possessions[O_WEAPON_HAND]);
-
-    if (!airnull)
-      a2h = (twohandedp(oair->id) &&
-             ((slot == O_READY_HAND) || (slot == O_WEAPON_HAND)));
-
-    /* figure out which action to take */
-
-    /* merge if both are same kind of object */
-    merge = objequal(oslot, oair);
-
-    take = ((!merge) && (!slotnull) && airnull);
-
-    put = ((!merge) && slotnull && (!airnull) && slottable(oair, slot));
-
-    trade = ((!merge) && (!slotnull) && (!airnull) && slottable(oair, slot));
-
-    if (merge)
-      merge_item(slot);
-
-    else if (put) {
-
-      /* deal with a 2-handed weapon */
-      if (a2h) {
-        if (Player.possessions[O_READY_HAND] == NULL)
-          Player.possessions[O_READY_HAND] = oair;
-        if (Player.possessions[O_WEAPON_HAND] == NULL)
-          Player.possessions[O_WEAPON_HAND] = oair;
-      } else
-        Player.possessions[slot] = oair;
-      Player.possessions[O_UP_IN_AIR] = NULL;
-      if (item_useable(oair, slot)) {
-        item_equip(oair);
-        morewait();
-        if (oair->number > 1)
-          pack_extra_items(oair);
-      }
-      Player.possessions[O_UP_IN_AIR] = NULL;
+    bool s2h = false, a2h = false;
+    if(oslot) {
+      s2h = (Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND]);
+    }
+    pob oair = Player.possessions[O_UP_IN_AIR];
+    if(oair) {
+      a2h = (twohandedp(oair->id) && ((slot == O_READY_HAND) || (slot == O_WEAPON_HAND)));
     }
 
-    else if (take) {
-      num = get_item_number(oslot);
+    if(objequal(oslot, oair) && !item_useable(oair, slot) && oair->objchar != STICK) {
+      merge_item(slot);
+    }
+    else if(!oslot && oair && slottable(oair, slot)) {
+      /* deal with a 2-handed weapon */
+      if(a2h) {
+        if(!Player.possessions[O_READY_HAND]) {
+          Player.possessions[O_READY_HAND] = oair;
+        }
+        if(!Player.possessions[O_WEAPON_HAND]) {
+          Player.possessions[O_WEAPON_HAND] = oair;
+        }
+      }
+      else {
+        Player.possessions[slot] = oair;
+      }
+      Player.possessions[O_UP_IN_AIR] = nullptr;
+      if(item_useable(oair, slot)) {
+        item_equip(oair);
+        morewait();
+        if(oair->number > 1) {
+          pack_extra_items(oair);
+        }
+      }
+    }
+    else if(oslot && !oair) {
+      int num = get_item_number(oslot);
       if(num >= oslot->number) {
         Player.possessions[O_UP_IN_AIR] = oslot;
         Player.possessions[slot] = nullptr;
         conform_unused_object(oslot);
       }
       else if(num > 0) {
-        otemp = split_item(num, oslot);
+        object *otemp = split_item(num, oslot);
         dispose_lost_objects(num, oslot);
         Player.possessions[O_UP_IN_AIR] = otemp;
       }
-      if (s2h) {
-        if (Player.possessions[O_READY_HAND] == oslot)
-          Player.possessions[O_READY_HAND] = NULL;
-        if (Player.possessions[O_WEAPON_HAND] == oslot)
-          Player.possessions[O_WEAPON_HAND] = NULL;
+      if(s2h) {
+        if(Player.possessions[O_READY_HAND] == oslot) {
+          Player.possessions[O_READY_HAND] = nullptr;
+        }
+        if(Player.possessions[O_WEAPON_HAND] == oslot) {
+          Player.possessions[O_WEAPON_HAND] = nullptr;
+        }
       }
     }
-
-    else if (trade) {
-
-      /* first remove item from slot */
-      num = oslot->number;
+    else if(oslot && oair && slottable(oair, slot)) {
+      // first remove item from slot
+      int num = oslot->number;
       conform_lost_objects(oslot->number, oslot);
       oslot->number = num;
 
       Player.possessions[O_UP_IN_AIR] = oslot;
-
       Player.possessions[slot] = oair;
 
-      if (s2h) {
-        if (Player.possessions[O_READY_HAND] == oslot)
-          Player.possessions[O_READY_HAND] = NULL;
-        if (Player.possessions[O_WEAPON_HAND] == oslot)
-          Player.possessions[O_WEAPON_HAND] = NULL;
+      if(s2h) {
+        if(Player.possessions[O_READY_HAND] == oslot) {
+          Player.possessions[O_READY_HAND] = nullptr;
+        }
+        if(Player.possessions[O_WEAPON_HAND] == oslot) {
+          Player.possessions[O_WEAPON_HAND] = nullptr;
+        }
       }
 
-      if (a2h) {
-        if (Player.possessions[O_READY_HAND] == NULL)
+      if(a2h) {
+        if(!Player.possessions[O_READY_HAND]) {
           Player.possessions[O_READY_HAND] = oair;
-        if (Player.possessions[O_WEAPON_HAND] == NULL)
+        }
+        if(!Player.possessions[O_WEAPON_HAND]) {
           Player.possessions[O_WEAPON_HAND] = oair;
+        }
       }
 
-      if (item_useable(oair, slot)) {
+      if(item_useable(oair, slot)) {
         item_equip(oair);
         morewait();
-        if (oair->number > 1)
+        if(oair->number > 1) {
           pack_extra_items(oair);
+        }
       }
     }
   }
@@ -1338,20 +1342,24 @@ void switch_to_slot(int slot) {
 
 void merge_item(int slot) {
   Player.possessions[slot]->number += Player.possessions[O_UP_IN_AIR]->number;
-  Player.possessions[O_UP_IN_AIR] = NULL;
+  delete Player.possessions[O_UP_IN_AIR];
+  Player.possessions[O_UP_IN_AIR] = nullptr;
 }
 
 /* are two objects equal except for their number field? */
 /* returns false if either object is null */
 int objequal(struct object *o, struct object *p) {
-  if ((o == NULL) || (p == NULL))
-    return (false);
-  else
-    return ((o->id == p->id) && (o->plus == p->plus) && (o->charge == 0) &&
-            (p->charge == 0) && (o->dmg == p->dmg) && (o->hit == p->hit) &&
-            (o->aux == p->aux) && (o->known == p->known) &&
-            (o->blessing == p->blessing) && (o->on_use == p->on_use) &&
-            (o->on_equip == p->on_equip) && (o->on_unequip == p->on_unequip));
+  if(!o || !p) {
+    return false;
+  }
+  else {
+    return (o->id == p->id && o->weight == p->weight && o->plus == p->plus &&
+        o->charge == p->charge && o->dmg == p->dmg && o->hit == p->hit &&
+        o->aux == p->aux && o->fragility == p->fragility &&
+        o->basevalue == p->basevalue && o->known == p->known &&
+        o->blessing == p->blessing && o->on_use == p->on_use &&
+        o->on_equip == p->on_equip && o->on_unequip == p->on_unequip);
+  }
 }
 
 /* criteria for being able to put some item in some slot */

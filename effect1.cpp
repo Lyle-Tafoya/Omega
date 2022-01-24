@@ -101,7 +101,7 @@ void enchant(int delta) {
         print1("The item shines!");
         morewait();
         Player.possessions[i]->plus += delta+1;
-        if(Player.possessions[i]->charge > -1) {
+        if(Player.possessions[i]->charge > -1 && Player.possessions[i]->objchar == STICK) {
           Player.possessions[i]->charge += (delta+1) * (random_range(10)+1);
         }
         if(used) {

@@ -173,7 +173,7 @@ void make_potion(pob o, int id) {
   if (id == -1)
     id = random_range(NUMPOTIONS);
   *o = Objects[POTIONID + id];
-  if (o->plus == 0)
+  if (o->plus == 0 && (o->id == 67 || o->id == 74)) // Only potion of healing and Azoth
     o->plus = itemplus();
 }
 
