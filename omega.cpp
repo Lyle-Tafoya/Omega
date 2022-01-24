@@ -36,6 +36,7 @@ int CitySiteList[NUMCITYSITES][3];
 int LENGTH = MAXLENGTH;
 int WIDTH = MAXWIDTH;
 
+bool received_directions = false;
 long GameStatus = 0L;                        /* Game Status bit vector */
 int ScreenLength = 0;                        /* How large is level window */
 struct player Player;                        /* the player */

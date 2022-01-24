@@ -5,6 +5,8 @@
 #include <algorithm>
 #include "glob.h"
 
+extern bool received_directions;
+
 /* The druid's altar is in the northern forest */
 void m_talk_druid(struct monster *m) {
   int i;
@@ -187,31 +189,55 @@ void m_talk_hungry(struct monster *m) {
 }
 
 void m_talk_guard(struct monster *m) {
-  if (m_statusp(*m, HOSTILE)) {
+  if(m_statusp(*m, HOSTILE)) {
     print1("'Surrender in the name of the Law!'");
     print2("Do it? [yn] ");
-    if (ynq2() == 'y') {
+    if(ynq2() == 'y') {
       Player.alignment++;
-      if (Current_Environment == E_CITY) {
+      if(Current_Environment == E_CITY) {
         print1("Go directly to jail. Do not pass go, do not collect 200Au.");
         print2("You are taken to the city gaol.");
         morewait();
         send_to_jail();
         drawvision(Player.x, Player.y);
-      } else {
+      }
+      else {
         clearmsg();
         print1("Mollified, the guard disarms you and sends you away.");
         dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
         pacify_guards();
       }
-    } else {
+    }
+    else {
       clearmsg();
       print1("All right, you criminal scum, you asked for it!");
     }
-  } else if (Player.rank[ORDER] > 0)
+  }
+  else if(!received_directions && Current_Environment == E_CITY) {
+    print1("The guard offers to show you a map of Rampart.");
+    print2("Look at the map? [yn]  ");
+    if(ynq2() == 'y') {
+      for(int i = 0; i < NUMCITYSITES; ++i) {
+        int site = CITYSITEBASE + i;
+        if(site != L_THIEVES_GUILD && site != L_ORACLE && site != L_BROTHEL) {
+          CitySiteList[i][0] = true;
+        }
+      }
+      clearmsg();
+      print1("You feel more knowledgeable!");
+    }
+    else {
+      clearmsg();
+      print1("Next time you need help, you can ask someone else!");
+    }
+    received_directions = true;
+  }
+  else if(Player.rank[ORDER] > 0) {
     print1("'Greetings comrade! May you always tread the paths of Law.'");
-  else
+  }
+  else {
     print1("Move it right along, stranger!");
+  }
 }
 
 void m_talk_mp(struct monster *) {
