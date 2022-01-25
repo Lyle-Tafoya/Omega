@@ -166,27 +166,22 @@ void drop_at(int x, int y, pob o) {
 void p_drop_at(int x, int y, int n, pob o) {
   if(Current_Environment != E_COUNTRYSIDE) {
     if((Level->site[x][y].locchar != VOID_CHAR) && (Level->site[x][y].locchar != ABYSS)) {
+      print2("Dropped ");
+      nprint2(itemid(o));
+      morewait();
+      for(objectlist *pile = Level->site[x][y].things; pile; pile = pile->next) {
+        if(pile->thing && objequal(pile->thing, o) && pile->thing->objchar != STICK) {
+          pile->thing->number += n;
+          return;
+        }
+      }
       pol tmp = ((pol)checkmalloc(sizeof(oltype)));
       tmp->thing = ((pob)checkmalloc(sizeof(objtype)));
       *(tmp->thing) = *o;
       tmp->thing->used = false;
       tmp->thing->number = n;
-      print2("Dropped ");
-      nprint2(itemid(tmp->thing));
-      morewait();
-      bool stacked_item = false;
-      for(objectlist *pile = Level->site[x][y].things; pile; pile = pile->next) {
-        if(pile->thing && objequal(pile->thing, o) && pile->thing->objchar != STICK) {
-          pile->thing->number += o->number;
-          stacked_item = true;
-          delete o;
-          break;
-        }
-      }
-      if(!stacked_item) {
-        tmp->next = Level->site[x][y].things;
-        Level->site[x][y].things = tmp;
-      }
+      tmp->next = Level->site[x][y].things;
+      Level->site[x][y].things = tmp;
     }
     else if(Level->site[x][y].p_locf == L_VOID_STATION) {
       setgamestatus(PREPARED_VOID, GameStatus);
