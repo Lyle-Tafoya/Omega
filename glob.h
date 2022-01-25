@@ -242,3 +242,5 @@ extern int boot_ids[30];
 
 extern int deepest[E_MAX + 1];
 extern int level_seed[E_MAX + 1];
+
+extern bool received_directions;

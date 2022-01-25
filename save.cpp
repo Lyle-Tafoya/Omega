@@ -179,6 +179,8 @@ int save_player(FILE *fd) {
   ok &= (fwrite((char *)deepest, sizeof(int), E_MAX + 1, fd) > 0);
   ok &= (fwrite((char *)level_seed, sizeof(int), E_MAX + 1, fd) > 0);
 
+  ok &= (fwrite((char *)&received_directions, sizeof(bool), 1, fd) > 0);
+
   /* Save player possessions */
 
   if (Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
@@ -569,6 +571,8 @@ void restore_player(FILE *fd, int version) {
   fread((char *)boot_ids, sizeof(boot_ids), 1, fd);
   fread((char *)deepest, sizeof(int), E_MAX + 1, fd);
   fread((char *)level_seed, sizeof(int), E_MAX + 1, fd);
+
+  fread((char *)&received_directions, sizeof(bool), 1, fd);
 
   /* Set up the strings for the id's */
   inititem(false);
