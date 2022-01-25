@@ -65,7 +65,7 @@ int Precipitation = 0;                /* Hours of rain, snow, etc */
 int Lunarity = 0;                     /* Effect of the moon on character */
 int Phase = 0;                        /* Phase of the moon */
 int Date = 0;                         /* Starting date */
-int Pawndate = 0;                     /* Pawn Shop item generation date */
+int Pawndate = -1;                     /* Pawn Shop item generation date */
 pob Pawnitems[PAWNITEMS] = {NULL, NULL, NULL, NULL, NULL,
                             NULL, NULL, NULL, NULL, NULL};
 /* items in pawn shop */
