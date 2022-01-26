@@ -488,7 +488,9 @@ void i_pick(pob o) {
   if ((!o->known) && (!Player.rank[THIEVES]))
     mprint("You have no idea what do with a piece of twisted metal.");
   else {
-    o->known = 1;
+    if(!o->known) {
+      o->known = 1;
+    }
     Objects[o->id].known = 1;
     mprint("Pick lock:");
     dir = getdir();
@@ -640,13 +642,17 @@ void i_corpse(pob o) {
 }
 
 void i_accuracy(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   accuracy(o->blessing);
 }
 
 void i_perm_accuracy(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   if ((o->used) && (o->blessing > -1)) {
     Player.status[ACCURATE] += 1500;
@@ -662,13 +668,17 @@ void i_perm_accuracy(pob o) {
 }
 
 void i_hero(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   hero(o->blessing);
 }
 
 void i_perm_hero(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   if (o->used) {
     if (o->blessing > -1) {
@@ -702,13 +712,17 @@ void i_perm_hero(pob o) {
 }
 
 void i_levitate(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   levitate(o->blessing);
 }
 
 void i_perm_levitate(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   if (o->blessing > -1) {
     if (o->used) {
@@ -759,13 +773,17 @@ void i_perm_agility(pob o) {
 }
 
 void i_truesight(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   truesight(o->blessing);
 }
 
 void i_perm_truesight(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   if (o->used) {
     if (o->blessing > -1) {
@@ -793,7 +811,9 @@ void i_perm_truesight(pob o) {
 }
 
 void i_illuminate(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   illuminate(o->blessing);
 }
@@ -802,7 +822,9 @@ void i_torch_use(pob o) {
   if(!o->used || !o->charge) {
     return;
   }
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   o->aux = !o->aux;
   if(o->aux) {
@@ -821,7 +843,9 @@ void i_torch_unequip(pob o) {
 }
 
 void i_perm_illuminate(pob o) {
-  o->known = 1;
+  if(!o->known) {
+    o->known = 1;
+  }
   Objects[o->id].known = 1;
   if (o->used)
     Player.status[ILLUMINATION] += 1500;

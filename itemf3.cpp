@@ -354,7 +354,9 @@ void i_orbfire(pob o) {
     print1("Bad choice!");
     print2("The Orb of Fire blasts you!");
     fball(Player.x, Player.y, Player.x, Player.y, 250);
-    o->known = 1;
+    if(!o->known) {
+      o->known = 1;
+    }
   } else {
     print1("The Orb of Fire flares a brilliant red!");
     Spells[S_FIREBOLT].known = true;
@@ -373,7 +375,9 @@ void i_orbwater(pob o) {
     print1("A serious mistake!");
     print2("The Orb of Water blasts you!");
     heal(-250);
-    o->known = 1;
+    if(!o->known) {
+      o->known = 1;
+    }
   } else {
     print1("The Orb of Water pulses a deep green!");
     Spells[S_DISRUPT].known = true;
@@ -407,7 +411,9 @@ void i_orbearth(pob o) {
           Player.pack[i] = NULL;
         }
       Player.packptr = 0;
-      o->known = 1;
+      if(!o->known) {
+        o->known = 1;
+      }
     }
   } else {
     print1("The Orb of Earth emanates a brownish aura!");
@@ -427,7 +433,9 @@ void i_orbair(pob o) {
     print1("You lose!");
     print2("The Orb of Air blasts you!");
     lball(Player.x, Player.y, Player.x, Player.y, 100);
-    o->known = 1;
+    if(!o->known) {
+      o->known = 1;
+    }
   } else {
     print1("The Orb of Air flashes blue!");
     Spells[S_LBALL].known = true; /* lball */
@@ -448,7 +456,9 @@ void i_orbmastery(pob o) {
     print1("A fatal error!");
     print2("The Orb of Mastery blasts you to cinders!");
     p_death("playing with the Orb of Mastery");
-    o->known = 1;
+    if(!o->known) {
+      o->known = 1;
+    }
   } else if ((find_and_remove_item(ARTIFACTID + 1, -1)) &&
              (find_and_remove_item(ARTIFACTID + 2, -1)) &&
              (find_and_remove_item(ARTIFACTID + 3, -1)) &&
