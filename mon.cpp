@@ -5,6 +5,8 @@
 #include <algorithm>
 #include "glob.h"
 
+extern bool merge_item_with_list(objectlist *l, object *o, int n);
+
 /*               Revised function                   */
 /* WDT: code contributed by David J. Robertson */
 /* consider one monster's action */
@@ -80,15 +82,21 @@ void m_pickup(struct monster *m, struct object *o) {
 }
 
 void m_dropstuff(struct monster *m) {
-  pol tmp = m->possessions;
-  if (tmp != NULL) {
-    while (tmp->next != NULL)
-      tmp = tmp->next;
-
-    tmp->next = Level->site[m->x][m->y].things;
-    Level->site[m->x][m->y].things = m->possessions;
-    m->possessions = NULL;
+  objectlist *drop_pile = Level->site[m->x][m->y].things;
+  for(objectlist *possessions = m->possessions; possessions;) {
+    objectlist *tmp = possessions->next;
+    if(merge_item_with_list(drop_pile, possessions->thing, possessions->thing->number)) {
+      delete possessions->thing;
+      delete possessions;
+    }
+    else {
+      possessions->next = drop_pile;
+      drop_pile = possessions;
+    }
+    possessions = tmp;
   }
+  m->possessions = nullptr;
+  Level->site[m->x][m->y].things = drop_pile;
 }
 
 void m_damage(struct monster *m, int dmg, int dtype) {

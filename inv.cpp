@@ -141,6 +141,23 @@ int aux_slottable(pob o, int slot) {
   return (ok);
 }
 
+bool merge_item_with_list(objectlist *l, object *o, int n) {
+  for(objectlist *pile = l; pile; pile = pile->next) {
+    if(!pile->thing) {
+      continue;
+    }
+    if(o->objchar == CASH && pile->thing->objchar == CASH) {
+      pile->thing->basevalue += o->basevalue;
+      return true;
+    }
+    else if(objequal(pile->thing, o) && pile->thing->objchar != STICK) {
+      pile->thing->number += n;
+      return true;
+    }
+  }
+  return false;
+}
+
 /* put all of o on objlist at x,y on Level->depth */
 /* Not necessarily dropped by character; just dropped... */
 void drop_at(int x, int y, pob o) {
@@ -150,6 +167,9 @@ void drop_at(int x, int y, pob o) {
   if (Current_Environment != E_COUNTRYSIDE) {
     if ((Level->site[x][y].locchar != VOID_CHAR) &&
         (Level->site[x][y].locchar != ABYSS)) {
+      if(merge_item_with_list(Level->site[x][y].things, o, o->number)) {
+        return;
+      }
       cpy = ((pob)checkmalloc(sizeof(objtype)));
       tmp = ((pol)checkmalloc(sizeof(oltype)));
       *cpy = *o;
@@ -169,11 +189,8 @@ void p_drop_at(int x, int y, int n, pob o) {
       print2("Dropped ");
       nprint2(itemid(o));
       morewait();
-      for(objectlist *pile = Level->site[x][y].things; pile; pile = pile->next) {
-        if(pile->thing && objequal(pile->thing, o) && pile->thing->objchar != STICK) {
-          pile->thing->number += n;
-          return;
-        }
+      if(merge_item_with_list(Level->site[x][y].things, o, n)) {
+        return;
       }
       pol tmp = ((pol)checkmalloc(sizeof(oltype)));
       tmp->thing = ((pob)checkmalloc(sizeof(objtype)));
