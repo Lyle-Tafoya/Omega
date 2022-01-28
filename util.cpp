@@ -105,7 +105,7 @@ int m_unblocked(struct monster *m, int x, int y) {
       Level->site[x][y].locchar = OPEN_DOOR;
       lset(x, y, CHANGED, *Level);
       return (true);
-    } else if (random_range(m->dmg) > random_range(100)) {
+    } else if (random_range(m->dmg) > random_range(100) && Level->site[x][y].p_locf != L_ORACLE) {
       mprint("You hear a door shattering.");
       Level->site[x][y].locchar = RUBBLE;
       lset(x, y, CHANGED, *Level);
