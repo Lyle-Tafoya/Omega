@@ -188,7 +188,8 @@ int p_moveable(int x, int y) {
                (Level->site[x][y].locchar == WHIRLWIND) ||
                (Level->site[x][y].locchar == WATER) ||
                (Level->site[x][y].locchar == LIFT) ||
-               (Level->site[x][y].locchar == TRAP)))) {
+               (Level->site[x][y].locchar == TRAP) ||
+               Level->site[x][y].locchar == RUBBLE))) {
     if (!gamestatusp(FAST_MOVE, GameStatus))
       print3("Ouch!");
     return false;
