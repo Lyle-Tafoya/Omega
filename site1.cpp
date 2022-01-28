@@ -793,63 +793,89 @@ void l_alchemist() {
       print2("b: Pay for transformation.");
       print3("ESCAPE: Leave this place.");
       response = (char)mcigetc();
-      if (response == 'a') {
+      if(response == 'a') {
         clearmsg();
         done = true;
         i = getitem(CORPSE);
-        if ((i != ABORT) && (Player.possessions[i] != NULL)) {
+        if((i != ABORT) && (Player.possessions[i] != NULL)) {
           obj = Player.possessions[i];
-          if (Monsters[obj->charge].transformid == -1) {
+          if(Monsters[obj->charge].transformid == -1) {
             print1("I don't want such a thing.");
-            if (obj->basevalue > 0)
+            if(obj->basevalue > 0) {
               print2("You might be able to sell it to someone else, though.");
-          } else {
+            }
+          }
+          else {
             clearmsg();
             print1("I'll give you ");
+            long sell_price =  obj->basevalue / 3;
             mnumprint(obj->basevalue / 3);
-            nprint1("Au for it. Take it? [yn] ");
-            if (ynq1() == 'y') {
-              Player.cash += (obj->basevalue / 3);
-              conform_lost_objects(1, obj);
-            } else
+            nprint1("Au each. Take it? [yn] ");
+            if(ynq1() == 'y') {
+              int n = getnumber(obj->number);
+              Player.cash += sell_price * n;
+              conform_lost_objects(n, obj);
+            }
+            else {
               print2("Well, keep the smelly old thing, then!");
+            }
           }
-        } else
+        }
+        else {
           print2("So nu?");
-      } else if (response == 'b') {
+        }
+      }
+      else if(response == 'b') {
         clearmsg();
         done = true;
         i = getitem(CORPSE);
-        if ((i != ABORT) && (Player.possessions[i] != NULL)) {
+        if((i != ABORT) && (Player.possessions[i] != NULL)) {
           obj = Player.possessions[i];
-          if (Monsters[obj->charge].transformid == -1)
+          if(Monsters[obj->charge].transformid == -1) {
             print1("Oy vey! You want me to transform such a thing?");
+          }
+          else if(obj->number > 1 && Objects[Monsters[obj->charge].transformid].objchar == STICK) {
+            print1("I can only work with one of these at a time.");
+          }
           else {
             mlevel = Monsters[obj->charge].level;
             print1("It'll cost you ");
-            mnumprint(std::max(10l, obj->basevalue * 2));
+            long transform_price = std::max(10l, obj->basevalue * 2 * obj->number);
+            mnumprint(transform_price);
             nprint1("Au for the transformation. Pay it? [yn] ");
-            if (ynq1() == 'y') {
-              if (Player.cash < std::max(10l, obj->basevalue * 2))
+            if(ynq1() == 'y') {
+              if (Player.cash < transform_price) {
                 print2("You can't afford it!");
+              }
               else {
                 print1("Voila! A tap of the Philosopher's Stone...");
-                Player.cash -= std::max(10l, obj->basevalue * 2);
+                Player.cash -= transform_price;
+                int n = obj->number;
                 *obj = Objects[Monsters[obj->charge].transformid];
-                if ((obj->id >= STICKID) && (obj->id < STICKID + NUMSTICKS))
+                obj->number = n;
+                if((obj->id >= STICKID) && (obj->id < STICKID + NUMSTICKS)) {
                   obj->charge = 20;
-                if (obj->plus == 0)
+                }
+                if(obj->plus == 0) {
                   obj->plus = mlevel;
-                if (obj->blessing == 0)
+                }
+                if(obj->blessing == 0) {
                   obj->blessing = 1;
+                }
               }
-            } else
+            }
+            else {
               print2("I don't need your business, anyhow.");
+            }
           }
-        } else
+        }
+        else {
           print2("So nu?");
-      } else if (response == ESCAPE)
+        }
+      }
+      else if(response == ESCAPE) {
         done = true;
+      }
     }
 }
 
