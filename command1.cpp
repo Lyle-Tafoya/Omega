@@ -199,7 +199,7 @@ void p_process() {
       break;
     case '.':
       rest();
-      Command_Duration = 10;
+      Command_Duration = Player.speed;
       break;
     case ',':
       Command_Duration = 10;
