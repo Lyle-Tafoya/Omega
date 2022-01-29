@@ -83,20 +83,30 @@ int unblocked(int x, int y)
      (Level->site[x][y].locchar == PORTCULLIS) || (Level->site[x][y].locchar == STATUE) ||
      (Level->site[x][y].locchar == HEDGE) || (Level->site[x][y].locchar == CLOSED_DOOR) ||
      loc_statusp(x, y, SECRET, *Level) || ((x == Player.x) && (y == Player.y)))
+  {
     return (false);
+  }
   else
+  {
     return (true);
+  }
 }
 
 /* do monsters want to move through a spot */
 int m_unblocked(struct monster *m, int x, int y)
 {
   if((!inbounds(x, y)) || ((x == Player.x) && (y == Player.y)))
+  {
     return (false);
+  }
   else if((Level->site[x][y].creature != NULL) || (Level->site[x][y].locchar == SPACE))
+  {
     return (false);
+  }
   else if(m_statusp(*m, ONLYSWIM))
+  {
     return (Level->site[x][y].locchar == WATER);
+  }
   else if(loc_statusp(x, y, SECRET, *Level))
   {
     if(m->movef == M_MOVE_SMART)
@@ -108,22 +118,32 @@ int m_unblocked(struct monster *m, int x, int y)
         lset(x, y, CHANGED, *Level);
       }
       else
+      {
         mprint("You hear a door creak open, and then close again.");
+      }
       /* smart monsters would close secret doors behind them if the */
       /* player didn't see them using it */
       return (true);
     }
     else
+    {
       return (m_statusp(*m, INTANGIBLE));
+    }
   }
   else if((Level->site[x][y].locchar == FLOOR) || (Level->site[x][y].locchar == OPEN_DOOR))
+  {
     return (true);
+  }
   else if((Level->site[x][y].locchar == PORTCULLIS) || (Level->site[x][y].locchar == WALL) ||
           (Level->site[x][y].locchar == STATUE))
+  {
     return (m_statusp(*m, INTANGIBLE));
+  }
   else if(Level->site[x][y].locchar == WATER)
+  {
     return (m_statusp(*m, SWIMMING) || m_statusp(*m, ONLYSWIM) || m_statusp(*m, INTANGIBLE) ||
             m_statusp(*m, FLYING));
+  }
   else if(Level->site[x][y].locchar == CLOSED_DOOR)
   {
     if(m->movef == M_MOVE_SMART)
@@ -141,31 +161,47 @@ int m_unblocked(struct monster *m, int x, int y)
       return (true);
     }
     else
+    {
       return (m_statusp(*m, INTANGIBLE));
+    }
   }
   else if(Level->site[x][y].locchar == LAVA)
+  {
     return ((m_immunityp(*m, FLAME) && m_statusp(*m, SWIMMING)) || m_statusp(*m, INTANGIBLE) ||
             m_statusp(*m, FLYING));
+  }
   else if(Level->site[x][y].locchar == FIRE)
+  {
     return (m_statusp(*m, INTANGIBLE) || m_immunityp(*m, FLAME));
+  }
   else if((Level->site[x][y].locchar == TRAP) || (Level->site[x][y].locchar == HEDGE) ||
           (Level->site[x][y].locchar == ABYSS))
+  {
     return ((m->movef == M_MOVE_CONFUSED) || m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING));
+  }
   else
+  {
     return (true);
+  }
 }
 
 /* can you see through a spot? */
 int view_unblocked(int x, int y)
 {
   if(!inbounds(x, y))
+  {
     return (false);
+  }
   else if((Level->site[x][y].locchar == WALL) || (Level->site[x][y].locchar == STATUE) ||
           (Level->site[x][y].locchar == HEDGE) || (Level->site[x][y].locchar == FIRE) ||
           (Level->site[x][y].locchar == CLOSED_DOOR) || loc_statusp(x, y, SECRET, *Level))
+  {
     return (false);
+  }
   else
+  {
     return (true);
+  }
 }
 
 /* 8 moves in Dirs */
@@ -202,17 +238,29 @@ void do_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
   int blocked;
 
   if(x2 - *x1 < 0)
+  {
     dx = 5;
+  }
   else if(x2 - *x1 > 0)
+  {
     dx = 4;
+  }
   else
+  {
     dx = -1;
+  }
   if(y2 - *y1 < 0)
+  {
     dy = 7;
+  }
   else if(y2 - *y1 > 0)
+  {
     dy = 6;
+  }
   else
+  {
     dy = -1;
+  }
   if(abs(x2 - *x1) > abs(y2 - *y1))
   {
     major = dx;
@@ -227,8 +275,10 @@ void do_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
     step  = abs(y2 - *y1);
     delta = 2 * abs(x2 - *x1);
   }
-  if(major == -1) /* x1,y2 already == x2,y2 */
+  if(major == -1)
+  { /* x1,y2 already == x2,y2 */
     return;
+  }
   error = 0;
   do
   {
@@ -270,17 +320,29 @@ void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
   int blocked;
 
   if(x2 - *x1 < 0)
+  {
     dx = 5;
+  }
   else if(x2 - *x1 > 0)
+  {
     dx = 4;
+  }
   else
+  {
     dx = -1;
+  }
   if(y2 - *y1 < 0)
+  {
     dy = 7;
+  }
   else if(y2 - *y1 > 0)
+  {
     dy = 6;
+  }
   else
+  {
     dy = -1;
+  }
   if(abs(x2 - *x1) > abs(y2 - *y1))
   {
     major = dx;
@@ -295,8 +357,10 @@ void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
     step  = abs(y2 - *y1);
     delta = 2 * abs(x2 - *x1);
   }
-  if(major == -1) /* x1,y2 already == x2,y2 */
+  if(major == -1)
+  { /* x1,y2 already == x2,y2 */
     return;
+  }
   error = 0;
   do
   {
@@ -345,17 +409,29 @@ int los_p(int x1, int y1, int x2, int y2)
   int blocked;
 
   if(x2 - x1 < 0)
+  {
     dx = 5;
+  }
   else if(x2 - x1 > 0)
+  {
     dx = 4;
+  }
   else
+  {
     dx = -1;
+  }
   if(y2 - y1 < 0)
+  {
     dy = 7;
+  }
   else if(y2 - y1 > 0)
+  {
     dy = 6;
+  }
   else
+  {
     dy = -1;
+  }
   if(abs(x2 - x1) > abs(y2 - y1))
   {
     major = dx;
@@ -370,8 +446,10 @@ int los_p(int x1, int y1, int x2, int y2)
     step  = abs(y2 - y1);
     delta = 2 * abs(x2 - x1);
   }
-  if(major == -1) /* x1,y2 already == x2,y2 */
+  if(major == -1)
+  { /* x1,y2 already == x2,y2 */
     return true;
+  }
   error = 0;
   do
   {
@@ -405,17 +483,29 @@ int view_los_p(int x1, int y1, int x2, int y2)
   int blocked;
 
   if(x2 - x1 < 0)
+  {
     dx = 5;
+  }
   else if(x2 - x1 > 0)
+  {
     dx = 4;
+  }
   else
+  {
     dx = -1;
+  }
   if(y2 - y1 < 0)
+  {
     dy = 7;
+  }
   else if(y2 - y1 > 0)
+  {
     dy = 6;
+  }
   else
+  {
     dy = -1;
+  }
   if(abs(x2 - x1) > abs(y2 - y1))
   {
     major = dx;
@@ -430,8 +520,10 @@ int view_los_p(int x1, int y1, int x2, int y2)
     step  = abs(y2 - y1);
     delta = 2 * abs(x2 - x1);
   }
-  if(major == -1) /* x1,y2 already == x2,y2 */
+  if(major == -1)
+  { /* x1,y2 already == x2,y2 */
     return true;
+  }
   error = 0;
   do
   {
@@ -488,49 +580,82 @@ long calc_points()
   long points = 0;
 
   if(gamestatusp(SPOKE_TO_DRUID, GameStatus))
+  {
     points += 50;
+  }
   if(gamestatusp(COMPLETED_CAVES, GameStatus))
+  {
     points += 100;
+  }
   if(gamestatusp(COMPLETED_SEWERS, GameStatus))
+  {
     points += 200;
+  }
   if(gamestatusp(COMPLETED_CASTLE, GameStatus))
+  {
     points += 300;
+  }
   if(gamestatusp(COMPLETED_ASTRAL, GameStatus))
+  {
     points += 400;
+  }
   if(gamestatusp(COMPLETED_VOLCANO, GameStatus))
+  {
     points += 500;
+  }
   if(gamestatusp(KILLED_DRAGONLORD, GameStatus))
+  {
     points += 100;
+  }
   if(gamestatusp(KILLED_EATER, GameStatus))
+  {
     points += 100;
+  }
   if(gamestatusp(KILLED_LAWBRINGER, GameStatus))
+  {
     points += 100;
+  }
 
   points += Player.xp / 50;
 
   points += Player.cash / 500;
 
   for(i = 0; i < MAXITEMS; i++)
+  {
     if(Player.possessions[i] != NULL)
+    {
       points += Player.possessions[i]->level * (Player.possessions[i]->known + 1);
+    }
+  }
 
   for(i = 0; i < MAXPACK; i++)
+  {
     if(Player.pack[i] != NULL)
+    {
       points += Player.pack[i]->level * (Player.pack[i]->known + 1);
+    }
+  }
 
   for(i = 0; i < NUMRANKS; i++)
   {
     if(Player.rank[i] == 5)
+    {
       points += 500;
+    }
     else
+    {
       points += 20 * Player.rank[i];
+    }
   }
 
   if(Player.hp < 1)
+  {
     points = (points / 2);
-
+  }
   else if(Player.rank[ADEPT])
+  {
     points *= 10;
+  }
 
   return (points);
 }
@@ -552,9 +677,13 @@ int showhour()
 {
   int showtime;
   if((hour() == 0) || (hour() == 12))
+  {
     showtime = 12;
+  }
   else
+  {
     showtime = (hour() % 12);
+  }
   return (showtime);
 }
 
@@ -569,9 +698,13 @@ const char *getarticle(const std::string &str)
   if((str[0] == 'a') || (str[0] == 'A') || (str[0] == 'e') || (str[0] == 'E') || (str[0] == 'i') ||
      (str[0] == 'I') || (str[0] == 'o') || (str[0] == 'O') || (str[0] == 'u') || (str[0] == 'U') ||
      (((str[0] == 'h') || (str[0] == 'H')) && ((str[1] == 'i') || (str[1] == 'e'))))
+  {
     return ("an ");
+  }
   else
+  {
     return ("a ");
+  }
 }
 
 int day()
@@ -582,8 +715,11 @@ int day()
 const char *ordinal(int number)
 {
   if((number == 11) || (number == 12) || (number == 13))
+  {
     return ("th");
+  }
   else
+  {
     switch(number % 10)
     {
       case 1:
@@ -595,6 +731,7 @@ const char *ordinal(int number)
       default:
         return ("th");
     }
+  }
 }
 
 const char *month()
@@ -663,7 +800,9 @@ void findspace(int *x, int *y, int baux)
         {
           i++;
           if(i >= WIDTH)
+          {
             break;
+          }
           else if(spaceok(i, j, baux))
           {
             done = true;
@@ -678,7 +817,9 @@ void findspace(int *x, int *y, int baux)
         {
           j++;
           if(j >= LENGTH)
+          {
             break;
+          }
           else if(spaceok(i, j, baux))
           {
             done = true;
@@ -698,7 +839,9 @@ int strprefix(const std::string &prefix, const std::string &s)
   int    matched = true;
   size_t i       = 0;
   if(prefix.length() > s.length())
+  {
     return (false);
+  }
   else
   {
     while(matched && (i < prefix.length()))
@@ -745,7 +888,9 @@ int strmem(char c, const std::string &s)
   int    found = false;
   size_t i     = 0;
   for(i = 0; ((i < s.length()) && (!found)); i++)
+  {
     found = (s[i] == c);
+  }
   return (found);
 }
 
@@ -754,14 +899,24 @@ void calc_weight()
   int i, weight = 0;
 
   for(i = 1; i < MAXITEMS; i++)
+  {
     if(Player.possessions[i] != NULL)
+    {
       weight += Player.possessions[i]->weight * Player.possessions[i]->number;
+    }
+  }
   if((Player.possessions[O_WEAPON_HAND] != NULL) &&
      (Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND]))
+  {
     weight -= Player.possessions[O_READY_HAND]->weight * Player.possessions[O_READY_HAND]->number;
+  }
   for(i = 0; i < MAXPACK; i++)
+  {
     if(Player.pack[i] != NULL)
+    {
       weight += Player.pack[i]->weight * Player.pack[i]->number;
+    }
+  }
   Player.itemweight = weight;
   dataprint();
 }
@@ -770,10 +925,14 @@ void calc_weight()
 int ok_to_free(plv level)
 {
   if(level == NULL)
+  {
     return (false);
+  }
   else
+  {
     return ((level->environment != E_CITY) && (level->environment != E_VILLAGE) &&
             (level->environment != Current_Dungeon));
+  }
 }
 
 void free_objlist(pol pobjlist)
@@ -808,12 +967,16 @@ void free_level(plv level)
 
   free_mons_and_objs(level->mlist);
   for(i = 0; i < MAXWIDTH; i++)
+  {
     for(j = 0; j < MAXLENGTH; j++)
+    {
       if(level->site[i][j].things)
       {
         free_objlist(level->site[i][j].things);
         level->site[i][j].things = NULL;
       }
+    }
+  }
 #ifndef SAVE_LEVELS
   free(level);
 #endif
@@ -827,11 +990,15 @@ void *checkmalloc(unsigned int bytes)
   struct level *curr, **prev, **oldest;
 
   if(ptr)
+  {
     return ptr;
+  }
   for(curr = Dungeon, oldest = prev = &Dungeon; curr; curr = curr->next)
   {
     if((*oldest)->last_visited > curr->last_visited)
+    {
       oldest = prev;
+    }
     prev = &(curr->next);
   }
   if(*oldest && *oldest != Level)
@@ -842,7 +1009,9 @@ void *checkmalloc(unsigned int bytes)
     ptr = malloc(bytes);
   }
   if(ptr)
+  {
     return ptr;
+  }
   else
   {
     print1("Out of memory!  Saving and quitting.");
@@ -866,7 +1035,9 @@ char cryptkey(const std::string &fname)
   int key = 0;
 
   for(int pos = 0; fname[pos]; pos++)
+  {
     key += 3 * (fname[pos] - ' ');
+  }
   return (key & 0xff);
 }
 

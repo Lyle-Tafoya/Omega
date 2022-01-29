@@ -20,7 +20,9 @@ void l_bank()
   print1("First Bank of Omega: Autoteller Carrel.");
 
   if(gamestatusp(BANK_BROKEN, GameStatus))
+  {
     print2("You see a damaged autoteller.");
+  }
   else
   {
     print2("The proximity sensor activates the autoteller as you approach.");
@@ -38,7 +40,9 @@ void l_bank()
         menuclear();
         menuprint("?: This List.\n");
         if(strcmp(Password, "") == 0)
+        {
           menuprint("O: Open an account.\n");
+        }
         else
         {
           menuprint("P: Enter password.\n");
@@ -111,7 +115,9 @@ void l_bank()
           }
         }
         else
+        {
           print2("Password accepted. Working.");
+        }
       }
       else if((response == 'D') && valid)
       {
@@ -119,9 +125,13 @@ void l_bank()
         print1("Amount: ");
         amount = get_money(Player.cash);
         if(amount < 1)
+        {
           print3("Transaction aborted.");
+        }
         else if(amount > Player.cash)
+        {
           print3("Deposit too large -- transaction aborted.");
+        }
         else
         {
           print2("Transaction accomplished.");
@@ -135,9 +145,13 @@ void l_bank()
         print1("Amount: ");
         amount = get_money(Balance);
         if(amount < 1)
+        {
           print3("Transaction aborted.");
+        }
         else if(amount > Balance)
+        {
           print3("Withdrawal too large -- transaction aborted.");
+        }
         else
         {
           print2("Transaction accomplished.");
@@ -169,7 +183,9 @@ void l_bank()
         }
       }
       else
+      {
         print3(" Illegal command.");
+      }
       dataprint();
     }
   }
@@ -181,9 +197,13 @@ void l_armorer()
   int  done = false;
   char action;
   if(hour() == 12)
+  {
     print3("Unfortunately, this is Julie's lunch hour -- try again later.");
+  }
   else if(nighttime())
+  {
     print3("It seems that Julie keeps regular business hours.");
+  }
   else
   {
     while(!done)
@@ -192,11 +212,17 @@ void l_armorer()
       print1("Julie's: Buy Armor, Weapons, or Leave [a,w,ESCAPE] ");
       action = mgetc();
       if(action == ESCAPE)
+      {
         done = true;
+      }
       else if(action == 'a')
+      {
         buyfromstock(ARMORID, 10);
+      }
       else if(action == 'w')
+      {
         buyfromstock(WEAPONID, 23);
+      }
     }
   }
   xredraw();
@@ -221,7 +247,9 @@ void buyfromstock(int base, int numitems)
   showmenu();
   item = ' ';
   while((item != ESCAPE) && ((item < 'a') || (item >= 'a' + numitems)))
+  {
     item = mgetc();
+  }
   if(item != ESCAPE)
   {
     i              = item - 'a';
@@ -247,7 +275,9 @@ void buyfromstock(int base, int numitems)
       }
     }
     else
+    {
       free((char *)newitem);
+    }
   }
 }
 
@@ -260,14 +290,18 @@ void l_club()
   if(!gamestatusp(CLUB_MEMBER, GameStatus))
   {
     if(Player.level < 2)
+    {
       print3("Only reknowned adventurers need apply.");
+    }
     else
     {
       print2("Dues are 100Au. Pay it? [yn] ");
       if(ynq2() == 'y')
       {
         if(Player.cash < 100)
+        {
           print3("Beat it, or we'll blackball you!");
+        }
         else
         {
           print1("Welcome to the club! You are taught the spell of Return.");
@@ -282,19 +316,24 @@ void l_club()
         }
       }
       else
+      {
         print2("OK, but you're missing out on our benefits....");
+      }
     }
   }
   else
   {
     print2("Shop at the club store or listen for rumors [sl] ");
     do
+    {
       response = (char)mcigetc();
-    while((response != 's') && (response != 'l') && (response != ESCAPE));
+    } while((response != 's') && (response != 'l') && (response != ESCAPE));
     if(response == 'l')
     {
       if(hinthour == hour())
+      {
         print2("You don't hear anything useful.");
+      }
       else
       {
         print1("You overhear a conversation....");
@@ -308,7 +347,9 @@ void l_club()
       xredraw();
     }
     else if(response == ESCAPE)
+    {
       print2("Be seeing you, old chap!");
+    }
   }
 }
 #undef hinthour
@@ -353,11 +394,17 @@ void l_gym()
       case ESCAPE:
         clearmsg();
         if(trained == 0)
+        {
           print1("Well, it's your body you're depriving!");
+        }
         else if(trained < 3)
+        {
           print1("You towel yourself off, and find the exit.");
+        }
         else
+        {
           print1("A refreshing bath, and you're on your way.");
+        }
         done = true;
         break;
       default:
@@ -464,6 +511,7 @@ void statue_random(int x, int y)
     case 9:
       print1("The statue extends an arm. Beams of light illuminate the level!");
       for(i = 0; i < WIDTH; i++)
+      {
         for(j = 0; j < LENGTH; j++)
         {
           lset(i, j, SEEN, *Level);
@@ -473,6 +521,7 @@ void statue_random(int x, int y)
             lset(i, j, CHANGED, *Level);
           }
         }
+      }
       show_screen();
       break;
   }
@@ -483,7 +532,9 @@ void l_statue_wake()
   int i;
   int x = Player.x, y = Player.y;
   for(i = 0; i < 9; i++)
+  {
     wake_statue(x + Dirs[0][i], y + Dirs[1][i], true);
+  }
 }
 
 void wake_statue(int x, int y, int first)
@@ -493,9 +544,13 @@ void wake_statue(int x, int y, int first)
   if(Level->site[x][y].locchar == STATUE)
   {
     if(!first)
+    {
       mprint("Another statue awakens!");
+    }
     else
+    {
       mprint("A statue springs to life!");
+    }
     Level->site[x][y].locchar = FLOOR;
     lset(x, y, CHANGED, *Level);
     tml    = ((pml)checkmalloc(sizeof(mltype)));
@@ -504,7 +559,9 @@ void wake_statue(int x, int y, int first)
     tml->next    = Level->mlist;
     Level->mlist = tml;
     for(i = 0; i < 8; i++)
+    {
       wake_statue(x + Dirs[0][i], y + Dirs[1][i], false);
+    }
   }
 }
 
@@ -514,7 +571,9 @@ void l_casino()
   char response;
   print1("Rampart Mithril Nugget Casino.");
   if(random_range(10) == 1)
+  {
     print2("Casino closed due to Grand Jury investigation.");
+  }
   else
   {
     while(!done)
@@ -528,7 +587,9 @@ void l_casino()
       if(response == 'a')
       {
         if(Player.cash < 100)
+        {
           print3("No credit, jerk.");
+        }
         else
         {
           Player.cash -= 100;
@@ -536,9 +597,13 @@ void l_casino()
           for(i = 0; i < 20; i++)
           {
             if(i == 19)
+            {
               std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
             else
+            {
               std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            }
             a = random_range(10);
             b = random_range(10);
             c = random_range(10);
@@ -548,12 +613,14 @@ void l_casino()
             mprint(slotstr(c));
           }
           if(winnings > 0)
+          {
             do
             {
               a = random_range(10);
               b = random_range(10);
               c = random_range(10);
             } while((a == b) || (a == c) || (b == c));
+          }
           else
           {
             a = random_range(10);
@@ -602,28 +669,39 @@ void l_casino()
       else if(response == 'b')
       {
         if(Player.cash < 1000)
+        {
           mprint("No credit, jerk.");
+        }
         else
         {
           Player.cash -= 1000;
           dataprint();
           print1("Red or Black? [rb]");
           do
+          {
             response = (char)mcigetc();
-          while((response != 'r') && (response != 'b'));
+          } while((response != 'r') && (response != 'b'));
           match = (response == 'r' ? 0 : 1);
           for(i = 0; i < 20; i++)
           {
             if(i == 19)
+            {
               std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
             else
+            {
               std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            }
             a = random_range(37);
             b = a % 2;
             if(a == 0)
+            {
               print1(" 0 ");
+            }
             else if(a == 1)
+            {
               print1(" 0 - 0 ");
+            }
             else
             {
               print1((b == 0) ? "Red " : "Black ");
@@ -631,20 +709,26 @@ void l_casino()
             }
           }
           if(winnings > 0)
+          {
             do
             {
               a = random_range(37);
               b = a % 2;
             } while(b == match);
+          }
           else
           {
             a = random_range(37);
             b = a % 2;
           }
           if(a == 0)
+          {
             print1(" 0 ");
+          }
           else if(a == 1)
+          {
             print1(" 0 - 0 ");
+          }
           else
           {
             print1((b == 0) ? "Red " : "Black ");
@@ -666,7 +750,9 @@ void l_casino()
         }
       }
       else if(response == ESCAPE)
+      {
         done = true;
+      }
     }
   }
 }
@@ -683,9 +769,13 @@ void l_commandant()
     print1("How many? ");
     num = (int)parsenum();
     if(num < 1)
+    {
       print3("Cute. Real cute.");
+    }
     else if(num * 5 > Player.cash)
+    {
       print3("No handouts here, mac!");
+    }
     else
     {
       Player.cash -= num * 5;
@@ -693,15 +783,21 @@ void l_commandant()
       *food        = Objects[FOODID + 0]; /* food ration */
       food->number = num;
       if(num == 1)
+      {
         print2("There you go, mac! One Lyzzard Bucket, coming up.");
+      }
       else
+      {
         print2("A passel of Lyzzard Buckets, for your pleasure.");
+      }
       morewait();
       gain_item(food);
     }
   }
   else
+  {
     print2("Don't blame the Commandant if you starve!");
+  }
 }
 
 void l_diner()
@@ -711,7 +807,9 @@ void l_diner()
   if(ynq2() == 'y')
   {
     if(Player.cash < 25)
+    {
       mprint("TANSTAAFL! Now git!");
+    }
     else
     {
       Player.cash -= 25;
@@ -726,14 +824,18 @@ void l_crap()
 {
   print1("Les Crapeuleaux. (****) ");
   if((hour() < 17) || (hour() > 23))
+  {
     print2("So sorry, we are closed 'til the morrow...");
+  }
   else
   {
     print2("May I take your order? [yn] ");
     if(ynq2() == 'y')
     {
       if(Player.cash < 1000)
+      {
         print2("So sorry, you have not the funds for dinner.");
+      }
       else
       {
         print2("Hope you enjoyed your tres expensive meal, m'sieur...");
@@ -762,14 +864,17 @@ void l_tavern()
     menuprint("ESCAPE: Leave this comfortable haven.\n");
     showmenu();
     do
+    {
       response = (char)mcigetc();
-    while((response != 'a') && (response != 'b') && (response != 'c') && (response != 'd') &&
-          (response != ESCAPE));
+    } while((response != 'a') && (response != 'b') && (response != 'c') && (response != 'd') &&
+            (response != ESCAPE));
     switch(response)
     {
       case 'a':
         if(Player.cash < 1)
+        {
           print2("Aw hell, have one on me.");
+        }
         else
         {
           Player.cash -= 1;
@@ -782,22 +887,30 @@ void l_tavern()
               hint();
             }
             else
+            {
               print1("You don't hear much of interest.");
+            }
             hinthour = hour();
           }
           else
+          {
             print1("You just hear the same conversations again.");
+          }
         }
         break;
       case 'b':
         if(Player.cash < 10)
+        {
           print2("I don't serve the Dew on no tab, buddy!");
+        }
         else
         {
           Player.cash -= 10;
           print1("Ahhhhh....");
           if(Player.status[POISONED] || Player.status[DISEASED])
+          {
             print2("Phew! That's, er, smooth stuff!");
+          }
           Player.status[POISONED] = 0;
           Player.status[DISEASED] = 0;
           showflags();
@@ -831,13 +944,21 @@ void l_tavern()
             case 1:
               print1("A wandering priest of Dionysus blesses you...");
               if((Player.patron == ODIN) || (Player.patron == ATHENA))
+              {
                 Player.alignment++;
+              }
               else if((Player.patron == HECATE) || (Player.patron == SET))
+              {
                 Player.alignment--;
+              }
               else if(Player.alignment > 0)
+              {
                 Player.alignment--;
+              }
               else
+              {
                 Player.alignment++;
+              }
               break;
             case 2:
               print1("A thirsty bard promises to put your name in a song!");
@@ -856,14 +977,18 @@ void l_tavern()
                   Player.maxcon++;
                 }
                 else
+                {
                   print2("You toss it back nonchalantly.");
+                }
               }
           }
         }
         break;
       case 'd':
         if(Player.cash < 25)
+        {
           print2("Pay in advance, mac!");
+        }
         else
         {
           Player.cash -= 25;
@@ -887,7 +1012,9 @@ void l_tavern()
           showflags();
           print1("The next day.....");
           if(hour() > 10)
+          {
             print2("Oh my! You overslept!");
+          }
         }
         break;
       default:
@@ -896,7 +1023,9 @@ void l_tavern()
     }
   }
   else
+  {
     print2("The pub don't open til dark, fella.");
+  }
   xredraw();
 }
 #undef hinthour
@@ -908,8 +1037,11 @@ void l_alchemist()
   pob  obj;
   print1("Ambrosias' Potions et cie.");
   if(nighttime())
+  {
     print2("Ambrosias doesn't seem to be in right now.");
+  }
   else
+  {
     while(!done)
     {
       morewait();
@@ -1024,13 +1156,16 @@ void l_alchemist()
         done = true;
       }
     }
+  }
 }
 
 void l_dpw()
 {
   print1("Rampart Department of Public Works.");
   if(Date - LastDay < 7)
+  {
     print2("G'wan! Get a job!");
+  }
   else if(Player.cash < 100)
   {
     print2("Do you want to go on the dole? [yn] ");
@@ -1041,9 +1176,13 @@ void l_dpw()
       print1("Please enter your name for our records:");
       strcpy(Str1, msgscanstring());
       if(Str1[0] >= 'a' && Str1[0] <= 'z')
+      {
         Str1[0] += 'A' - 'a';
+      }
       if(Str1[0] == '\0')
+      {
         print1("Maybe you should come back when you've learned to write.");
+      }
       else if(strcmp(Player.name, Str1) != 0)
       {
         print3("Aha! Welfare Fraud! It's off to gaol for you, lout!");
@@ -1060,7 +1199,9 @@ void l_dpw()
     }
   }
   else
+  {
     print2("You're too well off for us to help you!");
+  }
 }
 
 void l_library()
@@ -1070,7 +1211,9 @@ void l_library()
   int  done = false, fee = 1000;
   print1("Rampart Public Library.");
   if(nighttime())
+  {
     print2("CLOSED");
+  }
   else
   {
     morewait();
@@ -1170,7 +1313,9 @@ void l_library()
               print1("That was an expensive browse...");
             }
             else
+            {
               studied = false;
+            }
           } while(!studied);
         }
         xredraw();
@@ -1179,9 +1324,13 @@ void l_library()
       {
         done = true;
         if(studied)
+        {
           print2("Come back anytime we're open, 7am to 8pm.");
+        }
         else
+        {
           print2("You philistine!");
+        }
       }
     }
   }
@@ -1193,7 +1342,9 @@ void l_pawn_shop()
   char item, action;
 
   if(nighttime())
+  {
     print1("Shop Closed: Have a Nice (K)Night");
+  }
   else
   {
     limit    = std::min(5, Date - Pawndate);
@@ -1203,24 +1354,34 @@ void l_pawn_shop()
       if(Pawnitems[0] != NULL)
       {
         if(Objects[Pawnitems[0]->id].uniqueness > UNIQUE_UNMADE)
+        {
           Objects[Pawnitems[0]->id].uniqueness = UNIQUE_UNMADE;
+        }
         /* could turn up anywhere, really :) */
         free((char *)Pawnitems[0]);
         Pawnitems[0] = NULL;
       }
       for(i = 0; i < PAWNITEMS - 1; i++)
+      {
         Pawnitems[i] = Pawnitems[i + 1];
+      }
       Pawnitems[PAWNITEMS - 1] = NULL;
       for(i = 0; i < PAWNITEMS; i++)
+      {
         if(Pawnitems[i] == NULL)
+        {
           do
           {
             if(Pawnitems[i] != NULL)
+            {
               free(Pawnitems[i]);
+            }
             Pawnitems[i]        = create_object(5);
             Pawnitems[i]->known = 2;
           } while((Pawnitems[i]->objchar == CASH) || (Pawnitems[i]->objchar == ARTIFACT) ||
                   (true_item_value(Pawnitems[i]) <= 0));
+        }
+      }
     }
     while(!done)
     {
@@ -1228,6 +1389,7 @@ void l_pawn_shop()
       print2("Buy item, Sell item, sell Pack contents, Leave [b,s,p,ESCAPE] ");
       menuclear();
       for(i = 0; i < PAWNITEMS; i++)
+      {
         if(Pawnitems[i] != NULL)
         {
           strcpy(Str3, " :");
@@ -1236,21 +1398,28 @@ void l_pawn_shop()
           menuprint(Str3);
           menuprint("\n");
         }
+      }
       showmenu();
       action = (char)mcigetc();
       if(action == ESCAPE)
+      {
         done = true;
+      }
       else if(action == 'b')
       {
         print2("Purchase which item? [ESCAPE to quit] ");
         item = ' ';
         while((item != ESCAPE) && ((item < 'a') || (item >= 'a' + PAWNITEMS)))
+        {
           item = (char)mcigetc();
+        }
         if(item != ESCAPE)
         {
           i = item - 'a';
           if(Pawnitems[i] == NULL)
+          {
             print3("No such item!");
+          }
           else if(true_item_value(Pawnitems[i]) <= 0)
           {
             print1("Hmm, how did that junk get on my shelves?");
@@ -1315,7 +1484,9 @@ void l_pawn_shop()
               Player.cash += number * item_value(Player.possessions[i]) / 2;
               free((char *)Pawnitems[0]);
               for(j = 0; j < PAWNITEMS - 1; j++)
+              {
                 Pawnitems[j] = Pawnitems[j + 1];
+              }
               Pawnitems[PAWNITEMS - 1]         = ((pob)checkmalloc(sizeof(objtype)));
               *(Pawnitems[PAWNITEMS - 1])      = *(Player.possessions[i]);
               Pawnitems[PAWNITEMS - 1]->number = number;
@@ -1347,7 +1518,9 @@ void l_pawn_shop()
                 Player.cash += number * item_value(Player.pack[i]) / 2;
                 free((char *)Pawnitems[0]);
                 for(j = 0; j < PAWNITEMS - 1; j++)
+                {
                   Pawnitems[j] = Pawnitems[j + 1];
+                }
                 Pawnitems[PAWNITEMS - 1]         = ((pob)checkmalloc(sizeof(objtype)));
                 *(Pawnitems[PAWNITEMS - 1])      = *(Player.pack[i]);
                 Pawnitems[PAWNITEMS - 1]->number = number;

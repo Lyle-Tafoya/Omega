@@ -20,24 +20,34 @@ void time_clock(int reset)
     Tick = 0;
     minute_status_check(); /* see about some player statuses each minute */
     if(++Time % 10 == 0)
+    {
       tenminute_check();
+    }
   }
 
   if(reset)
+  {
     Tick = (Player.click = 0);
+  }
 
   env = Current_Environment;
   while((Tick == Player.click) && (Current_Environment != E_COUNTRYSIDE) && Current_Environment == env)
   {
     if(!gamestatusp(SKIP_PLAYER, GameStatus))
+    {
       do
       {
         resetgamestatus(SKIP_MONSTERS, GameStatus);
         if((!Player.status[SLEPT]) && (Current_Environment != E_COUNTRYSIDE))
+        {
           p_process();
+        }
       } while(gamestatusp(SKIP_MONSTERS, GameStatus) && (Current_Environment != E_COUNTRYSIDE));
+    }
     else
+    {
       resetgamestatus(SKIP_PLAYER, GameStatus);
+    }
     Player.click = (Player.click + Command_Duration) % 60;
   }
 
@@ -52,16 +62,21 @@ void time_clock(int reset)
     prev = &(Level->mlist);
     ml   = *prev;
     while(ml)
+    {
       if(ml->m->hp > 0)
       {
         /* following is a hack until I discover source of phantom monsters */
         if(Level->site[ml->m->x][ml->m->y].creature != ml->m)
+        {
           fix_phantom(ml->m);
+        }
         if(Tick == ml->m->click)
         {
           ml->m->click += ml->m->speed;
           while(ml->m->click > 60)
+          {
             ml->m->click -= 60;
+          }
           m_pulse(ml->m);
         }
         prev = &(ml->next);
@@ -75,7 +90,10 @@ void time_clock(int reset)
         ml = *prev;
       }
       else
+      {
         ml = ml->next;
+      }
+    }
   }
 }
 

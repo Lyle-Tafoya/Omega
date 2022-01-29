@@ -15,29 +15,53 @@ pob create_object(int itemlevel)
     o = ((pob)checkmalloc(sizeof(objtype)));
     r = random_range(135);
     if(r < 20)
+    {
       make_thing(o, -1);
+    }
     else if(r < 40)
+    {
       make_food(o, -1);
+    }
     else if(r < 50)
+    {
       make_scroll(o, -1);
+    }
     else if(r < 60)
+    {
       make_potion(o, -1);
+    }
     else if(r < 70)
+    {
       make_weapon(o, -1);
+    }
     else if(r < 80)
+    {
       make_armor(o, -1);
+    }
     else if(r < 90)
+    {
       make_shield(o, -1);
+    }
     else if(r < 100)
+    {
       make_stick(o, -1);
+    }
     else if(r < 110)
+    {
       make_boots(o, -1);
+    }
     else if(r < 120)
+    {
       make_cloak(o, -1);
+    }
     else if(r < 130)
+    {
       make_ring(o, -1);
+    }
     else
+    {
       make_artifact(o, -1);
+    }
     /* not ok if object is too good for level, or if unique and already made */
     /* 1/100 chance of finding object if too good for level */
     ok = ((o->uniqueness < UNIQUE_MADE) &&
@@ -48,7 +72,9 @@ pob create_object(int itemlevel)
     }
   }
   if(o->uniqueness == UNIQUE_UNMADE)
+  {
     Objects[o->id].uniqueness = UNIQUE_MADE;
+  }
   return (o);
 }
 
@@ -63,7 +89,9 @@ void make_cash(pob o, int level)
 void make_food(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMFOODS);
+  }
   *o = Objects[FOODID + id];
 }
 
@@ -88,9 +116,12 @@ void make_corpse(pob o, struct monster *m)
     o->aux    = 6;
   }
   else if(m_statusp(*m, POISONOUS))
+  {
     o->on_use = I_POISON_FOOD;
-  /* Special corpse-eating effects */
+    /* Special corpse-eating effects */
+  }
   else
+  {
     switch(m->id)
     {
       case TSETSE: /*tse tse fly */
@@ -143,25 +174,36 @@ void make_corpse(pob o, struct monster *m)
     break;
 #endif
     }
+  }
 }
 
 void make_ring(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMRINGS);
+  }
   *o = Objects[RINGID + id];
   if(o->blessing == 0)
+  {
     o->blessing = itemblessing();
+  }
   if(o->plus == 0)
+  {
     o->plus = itemplus() + 1;
+  }
   if(o->blessing < 0)
+  {
     o->plus = -1 - abs(o->plus);
+  }
 }
 
 void make_thing(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMTHINGS);
+  }
   *o = Objects[THINGID + id];
   if(strcmp(o->objstr, "grot") == 0)
   {
@@ -173,7 +215,9 @@ void make_thing(pob o, int id)
 void make_scroll(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMSCROLLS);
+  }
   *o = Objects[SCROLLID + id];
   /* if a scroll of spells, aux is the spell id in Spells */
   if(o->id == SCROLLID + 1)
@@ -185,96 +229,145 @@ void make_scroll(pob o, int id)
 void make_potion(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMPOTIONS);
+  }
   *o = Objects[POTIONID + id];
-  if(o->plus == 0 && (o->id == 67 || o->id == 74)) // Only potion of healing and Azoth
+  if(o->plus == 0 && (o->id == 67 || o->id == 74))
+  { // Only potion of healing and Azoth
     o->plus = itemplus();
+  }
 }
 
 void make_weapon(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMWEAPONS);
+  }
   *o = Objects[WEAPONID + id];
-  if((id == 28) || (id == 29)) /* bolt or arrow */
+  if((id == 28) || (id == 29))
+  { /* bolt or arrow */
     o->number = random_range(20) + 1;
+  }
   if(o->blessing == 0)
+  {
     o->blessing = itemblessing();
+  }
   if(o->plus == 0)
   {
     o->plus = itemplus();
     if(o->blessing < 0)
+    {
       o->plus = -1 - abs(o->plus);
+    }
     else if(o->blessing > 0)
+    {
       o->plus = 1 + abs(o->plus);
+    }
   }
 }
 
 void make_shield(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMSHIELDS);
+  }
   *o = Objects[SHIELDID + id];
   if(o->plus == 0)
+  {
     o->plus = itemplus();
+  }
   if(o->blessing == 0)
+  {
     o->blessing = itemblessing();
+  }
   if(o->blessing < 0)
+  {
     o->plus = -1 - abs(o->plus);
+  }
   else if(o->blessing > 0)
+  {
     o->plus = 1 + abs(o->plus);
+  }
 }
 
 void make_armor(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMARMOR);
+  }
   *o = Objects[ARMORID + id];
   if(o->plus == 0)
+  {
     o->plus = itemplus();
+  }
   if(o->blessing == 0)
+  {
     o->blessing = itemblessing();
+  }
   if(o->blessing < 0)
+  {
     o->plus = -1 - abs(o->plus);
+  }
   else if(o->blessing > 0)
+  {
     o->plus = 1 + abs(o->plus);
+  }
 }
 
 void make_cloak(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMCLOAKS);
+  }
   Objects[CLOAKID + 4].plus = 2;
   *o                        = Objects[CLOAKID + id];
   if(o->blessing == 0)
+  {
     o->blessing = itemblessing();
+  }
 }
 
 void make_boots(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMBOOTS);
+  }
   *o = Objects[BOOTID + id];
   if(o->blessing == 0)
+  {
     o->blessing = itemblessing();
+  }
 }
 
 void make_stick(pob o, int id)
 {
   if(id == -1)
+  {
     id = random_range(NUMSTICKS);
+  }
   *o        = Objects[STICKID + id];
   o->charge = itemcharge();
   if(o->blessing == 0)
+  {
     o->blessing = itemblessing();
+  }
 }
 
 void make_artifact(pob o, int id)
 {
   if(id == -1)
+  {
     do
+    {
       id = random_range(NUMARTIFACTS);
-    while(Objects[id].uniqueness >= UNIQUE_MADE);
+    } while(Objects[id].uniqueness >= UNIQUE_MADE);
+  }
   *o = Objects[ARTIFACTID + id];
 }
 
@@ -285,7 +378,9 @@ void shuffle(int ids[], int number)
   int top, swap, with;
 
   for(top = 0; top < number; top++)
+  {
     ids[top] = top;
+  }
   for(top = number - 1; top >= 0; top--)
   {
     swap      = ids[top];
@@ -664,7 +759,9 @@ int itemplus()
   int p = 0;
 
   while(random_range(2) == 0)
+  {
     p++;
+  }
   return (p);
 }
 

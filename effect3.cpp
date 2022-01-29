@@ -23,7 +23,9 @@ void summon(int blessing, int id)
     }
     /* for (id ==0) case, see below -- get a "fair" monster */
     else if(blessing < 0)
+    {
       id = random_range(NUMMONSTERS);
+    }
   }
   for(i = 0; ((i < 8) && looking); i++)
   {
@@ -36,17 +38,25 @@ void summon(int blessing, int id)
   if(!looking)
   {
     if((blessing == 0) && (id < 0))
+    {
       Level->site[x][y].creature = m_create(x, y, WANDERING, difficulty());
+    }
     else
+    {
       Level->site[x][y].creature = make_creature(id);
+    }
     Level->site[x][y].creature->x = x;
     Level->site[x][y].creature->y = y;
     tml                           = ((pml)checkmalloc(sizeof(mltype)));
     tml->m                        = Level->site[x][y].creature;
     if(blessing > 0)
+    {
       m_status_reset(*tml->m, HOSTILE);
+    }
     else if(blessing < 0)
+    {
       m_status_set(*tml->m, HOSTILE);
+    }
     tml->next    = Level->mlist;
     Level->mlist = tml;
   }
@@ -72,7 +82,9 @@ int itemlist(int itemindex, int num)
   mprint("Item ID? ");
   itemno = (int)parsenum() - 1;
   if((itemno >= num) || (itemno < 0))
+  {
     itemno = ABORT;
+  }
   return (itemno);
 }
 
@@ -81,6 +93,7 @@ int monsterlist()
   int i, itemno;
   print2("Show ID list? ");
   if(ynq2() == 'y')
+  {
     do
     {
       clearmsg();
@@ -101,12 +114,15 @@ int monsterlist()
         morewait();
       }
     } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
+  }
   else
+  {
     do
     {
       print1("Summon monster: ");
       itemno = (int)parsenum() - 1;
     } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
+  }
   return (itemno);
 }
 
@@ -118,7 +134,9 @@ void cleanse(int blessing)
   if(blessing > -1)
   {
     if(blessing > 0)
+    {
       for(i = 0; i < MAXITEMS; i++)
+      {
         if(Player.possessions[i] != NULL)
         {
           if((Player.possessions[i]->used) && (Player.possessions[i]->blessing < 0))
@@ -128,6 +146,8 @@ void cleanse(int blessing)
             item_equip(Player.possessions[i]);
           }
         }
+      }
+    }
 
     if(Player.status[POISONED] > 0)
     {
@@ -158,8 +178,12 @@ void annihilate(int blessing)
   {
     mprint("Lightning strikes flash all around you!!!");
     for(i = 0; i < 9; i++)
+    {
       if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature != NULL)
+      {
         m_death(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
+      }
+    }
   }
   if(blessing > 0)
   {
@@ -177,8 +201,12 @@ void annihilate(int blessing)
     {
       mprint("Thousands of bolts of lightning flash throughout the level!!!");
       for(ml = Level->mlist; ml != NULL; ml = ml->next)
+      {
         if(ml->m != NULL && ml->m->hp > 0)
+        {
           m_death(ml->m);
+        }
+      }
     }
   }
   else
@@ -195,10 +223,14 @@ void sleep_monster(int blessing)
   struct monster *target;
 
   if(blessing == 0)
+  {
     setspot(&x, &y);
+  }
 
   if(blessing < 0)
+  {
     sleep_player(abs(blessing) + 2);
+  }
   else if(blessing > 0)
   {
     mprint("A silence pervades the area.");
@@ -219,7 +251,9 @@ void sleep_monster(int blessing)
         strcat(Str1, target->monstring);
       }
       else
+      {
         strcpy(Str1, target->monstring);
+      }
       if(!m_immunityp(*target, SLEEP))
       {
         strcat(Str1, " seems to have fallen asleep.");
@@ -227,11 +261,15 @@ void sleep_monster(int blessing)
         target->wakeup = 0;
       }
       else
+      {
         strcat(Str1, " is bright eyed, and bushy tailed!");
+      }
       mprint(Str1);
     }
     else
+    {
       mprint("Nothing to sleep there!");
+    }
   }
 }
 
@@ -245,7 +283,9 @@ void sleep_player(int amount)
       Player.status[SLEPT] += random_range(amount * 2) + 2;
     }
     else
+    {
       mprint("but you shrug off the momentary lassitude.");
+    }
   }
 }
 
@@ -267,6 +307,7 @@ void clairvoyance(int vision)
   mprint("Clairvoyance... ");
   setspot(&x, &y);
   for(i = x - vision; i < x + vision + 1; i++)
+  {
     for(j = y - vision; j < y + vision + 1; j++)
     {
       if(inbounds(i, j))
@@ -277,6 +318,7 @@ void clairvoyance(int vision)
         dodrawspot(i, j);
       }
     }
+  }
   levelrefresh();
 }
 
@@ -297,6 +339,7 @@ void learnspell(int blessing)
   if(blessing < 0)
   {
     for(i = NUMSPELLS; ((i > -1) && (!done)); i--)
+    {
       if(Spells[i].known)
       {
         done                        = true;
@@ -304,8 +347,11 @@ void learnspell(int blessing)
         mprint("You feel forgetful.");
         Spells[i].known = false;
       }
+    }
     if(i == ABORT)
+    {
       mprint("You feel fortunate.");
+    }
   }
   else
   {
@@ -330,7 +376,9 @@ void learnspell(int blessing)
       }
     }
     else
+    {
       nprint1(" -- Research unsuccessful.");
+    }
   }
 }
 
@@ -338,8 +386,12 @@ void amnesia()
 {
   int i, j;
   for(j = 0; j < LENGTH; j++)
+  {
     for(i = 0; i < WIDTH; i++)
+    {
       lreset(i, j, SEEN, *Level);
+    }
+  }
 
   erase_level();
   drawvision(Player.x, Player.y);
@@ -356,7 +408,9 @@ void level_drain(int levels, const char *source)
   Player.hp -= (levels * decrement);
 
   if((Player.hp < 1) || (Player.level < 0))
+  {
     p_death(source);
+  }
 }
 
 void disrupt(int x, int y, int amount)
@@ -379,7 +433,9 @@ void disrupt(int x, int y, int amount)
         strcat(Str1, target->monstring);
       }
       else
+      {
         strcpy(Str1, target->monstring);
+      }
       if(!m_immunityp(*target, NORMAL_DAMAGE))
       {
         strcat(Str1, " was blasted!");
@@ -400,7 +456,9 @@ void disintegrate(int x, int y)
 {
   struct monster *target;
   if(!inbounds(x, y))
+  {
     mprint("You feel a sense of wastage.");
+  }
   else if((x == Player.x) && (y == Player.y))
   {
     if(Player.possessions[O_CLOAK] != NULL)
@@ -423,7 +481,9 @@ void disintegrate(int x, int y)
   else
   {
     if(!view_los_p(Player.x, Player.y, x, y))
+    {
       setgamestatus(SUPPRESS_PRINTING, GameStatus);
+    }
     if((target = Level->site[x][y].creature) != NULL)
     {
       if(target->uniqueness == COMMON)
@@ -432,12 +492,16 @@ void disintegrate(int x, int y)
         strcat(Str1, target->monstring);
       }
       else
+      {
         strcpy(Str1, target->monstring);
+      }
       strcat(Str1, " disintegrates!");
       mprint(Str1);
       m_damage(target, 100, UNSTOPPABLE);
       if(target->hp > 0)
+      {
         mprint("It was partially protected by its armor.");
+      }
     }
     else if(Level->site[x][y].locchar == ALTAR)
     {
@@ -456,7 +520,9 @@ void disintegrate(int x, int y)
         lset(x, y, CHANGED, *Level);
       }
       else
+      {
         mprint("The hole just gets deeper....");
+      }
     }
     else if(Level->site[x][y].locchar == FLOOR)
     {
@@ -471,7 +537,9 @@ void disintegrate(int x, int y)
     {
       mprint("The site is reduced to rubble!");
       if(Level->site[x][y].locchar == WALL)
+      {
         tunnelcheck();
+      }
       Level->site[x][y].p_locf  = L_RUBBLE;
       Level->site[x][y].locchar = RUBBLE;
       lreset(x, y, SECRET, *Level);
@@ -506,11 +574,17 @@ void disintegrate(int x, int y)
       }
     }
     else
+    {
       mprint("The blast has no effect.");
+    }
     if(!view_los_p(Player.x, Player.y, x, y))
+    {
       resetgamestatus(SUPPRESS_PRINTING, GameStatus);
+    }
     else
+    {
       plotspot(x, y, true);
+    }
   }
 }
 
@@ -563,7 +637,9 @@ void p_teleport(int type)
     }
   }
   else if(type == 0)
+  {
     findspace(&(Player.x), &(Player.y), -1);
+  }
   else
   {
     setspot(&Player.x, &Player.y);
@@ -582,9 +658,13 @@ void p_poison(int toxicity)
 {
   mprint("You feel sick.");
   if(!p_immune(POISON))
+  {
     Player.status[POISONED] += toxicity;
+  }
   else
+  {
     mprint("The sickness fades!");
+  }
   showflags();
 }
 
@@ -601,7 +681,9 @@ void apport(int blessing)
       plotspot(x, y, true);
     }
     else
+    {
       mprint("There's nothing there to apport!");
+    }
   }
   else
   {
@@ -664,7 +746,9 @@ void strategic_teleport(int blessing)
     menuprint("m: Temple of Destiny\n");
     menuprint("n: HellWell Volcano\n");
     if(gamestatusp(CHEATED, GameStatus))
+    {
       menuprint("z: Anywhere\n");
+    }
     menuprint("ANYTHING ELSE: Avoid entering a portal.");
     showmenu();
     switch((char)mcigetc())
@@ -759,7 +843,9 @@ void strategic_teleport(int blessing)
   screencheck(Player.y);
   drawvision(Player.x, Player.y);
   if(Current_Environment == E_COUNTRYSIDE)
+  {
     terrain_check(false);
+  }
 }
 
 void hero(int blessing)
@@ -784,7 +870,9 @@ void levitate(int blessing)
   if(blessing > -1)
   {
     if(gamestatusp(MOUNTED, GameStatus))
+    {
       mprint("You have a strange feeling of lightness in your saddle.");
+    }
     else
     {
       mprint("You start to float a few inches above the floor.");
@@ -794,7 +882,9 @@ void levitate(int blessing)
     }
   }
   else
+  {
     mprint("Nothing much happens.");
+  }
 }
 
 /* has effect of switching between 1st level and deepest level attained */
@@ -804,9 +894,13 @@ void level_return()
   {
     mprint("The vortex of mana carries you off!");
     if(Level->depth > 1)
+    {
       change_level(Level->depth, 1, false);
+    }
     else
+    {
       change_level(Level->depth, deepest[Current_Environment], false);
+    }
   }
   else if(Current_Environment == E_COUNTRYSIDE)
   {
@@ -818,7 +912,9 @@ void level_return()
     locprint("Back Outside Rampart.");
   }
   else
+  {
     mprint("A feeble vortex of magic swirls by and has no further effect.");
+  }
 }
 
 void cure(int blessing)
@@ -836,7 +932,9 @@ void cure(int blessing)
     {
       Player.status[POISONED] -= 5 + blessing * 10;
       if(Player.status[POISONED] > 0)
+      {
         mprint("The effect of the poison has been reduced.");
+      }
       else
       {
         Player.status[POISONED] = 0;
@@ -851,10 +949,14 @@ void cure(int blessing)
       mprint("Cobwebs clear from before your eyes.");
     }
     if(!happened)
+    {
       mprint("Nothing much happens.");
+    }
   }
   else
+  {
     disease(12);
+  }
   showflags();
 }
 
@@ -867,7 +969,9 @@ void disease(int amount)
     Player.status[DISEASED] += random_range(amount * 2) + 1;
   }
   else
+  {
     mprint("The illness fades.");
+  }
 }
 
 void truesight(int blessing)
@@ -897,6 +1001,7 @@ void dispel(int blessing)
       {
         o = Player.possessions[i];
         if(o != NULL)
+        {
           if((o->used) && (o->blessing < 0))
           {
             if(blessing + 1 + o->blessing >= 0)
@@ -917,6 +1022,7 @@ void dispel(int blessing)
               mprint(itemid(o));
             }
           }
+        }
       }
     }
     else if(Level->site[x][y].creature != NULL)
@@ -925,14 +1031,18 @@ void dispel(int blessing)
       {
         Level->site[x][y].creature->specialf = M_NO_OP;
         if(Level->site[x][y].creature->meleef != M_NO_OP)
+        {
           Level->site[x][y].creature->meleef = M_MELEE_NORMAL;
+        }
         Level->site[x][y].creature->strikef  = M_NO_OP;
         Level->site[x][y].creature->immunity = 0;
         m_status_reset(*Level->site[x][y].creature, M_INVISIBLE);
         m_status_reset(*Level->site[x][y].creature, INTANGIBLE);
       }
       else
+      {
         mprint("The monster ignores the effect!");
+      }
     }
     else if((Level->site[x][y].p_locf == L_TRAP_FIRE) || (Level->site[x][y].p_locf == L_STATUE_WAKE) ||
             (Level->site[x][y].p_locf == L_TRAP_TELEPORT) ||
@@ -940,39 +1050,67 @@ void dispel(int blessing)
     {
       Level->site[x][y].p_locf = L_NO_OP;
       if(Level->site[x][y].locchar == TRAP)
+      {
         Level->site[x][y].locchar = FLOOR;
+      }
       lset(x, y, CHANGED, *Level);
     }
     else if(Level->site[x][y].p_locf == L_MAGIC_POOL)
+    {
       Level->site[x][y].p_locf = L_WATER;
+    }
     else
+    {
       mprint("Nothing much seems to happen.");
+    }
   }
   else
   {
     mprint("A smell of ozone and positive ions fills the air..");
     if(Player.status[ACCURACY] && (Player.status[ACCURACY] < 1000))
+    {
       Player.status[ACCURACY] = 1;
+    }
     if(Player.status[DISPLACED] && (Player.status[DISPLACED] < 1000))
+    {
       Player.status[DISPLACED] = 1;
+    }
     if(Player.status[HASTED] && (Player.status[HASTED] < 1000))
+    {
       Player.status[HASTED] = 1;
+    }
     if(Player.status[BREATHING] && (Player.status[BREATHING] < 1000))
+    {
       Player.status[BREATHING] = 1;
+    }
     if(Player.status[INVISIBLE] && (Player.status[INVISIBLE] < 1000))
+    {
       Player.status[INVISIBLE] = 1;
+    }
     if(Player.status[REGENERATING] && (Player.status[REGENERATING] < 1000))
+    {
       Player.status[REGENERATING] = 1;
+    }
     if(Player.status[ALERT] && (Player.status[ALERT] < 1000))
+    {
       Player.status[ALERT] = 1;
+    }
     if(Player.status[HERO] && (Player.status[HERO] < 1000))
+    {
       Player.status[HERO] = 1;
+    }
     if(Player.status[LEVITATING] && (Player.status[LEVITATING] < 1000))
+    {
       Player.status[LEVITATING] = 1;
+    }
     if(Player.status[ACCURATE] && (Player.status[ACCURATE] < 1000))
+    {
       Player.status[ACCURATE] = 1;
+    }
     if(Player.status[TRUESIGHT] && (Player.status[TRUESIGHT] < 1000))
+    {
       Player.status[TRUESIGHT] = 1;
+    }
     tenminute_status_check();
   }
 }
@@ -994,7 +1132,9 @@ void polymorph(int blessing)
     p_death("polymorphing oneself");
   }
   else if((m = Level->site[x][y].creature) == NULL)
+  {
     mprint("Nothing happens.");
+  }
   else
   {
     if(m_immunityp(*m, OTHER_MAGIC) || (m->level > random_range(12)))
@@ -1009,16 +1149,18 @@ void polymorph(int blessing)
       if(blessing < 0)
       {
         do
+        {
           newmonster = random_range(NUMMONSTERS);
-        while((newmonster == NPC) || (newmonster == MAST_THIEF) ||
-              (Monsters[newmonster].level <= m->level) || (Monsters[newmonster].uniqueness != COMMON));
+        } while((newmonster == NPC) || (newmonster == MAST_THIEF) ||
+                (Monsters[newmonster].level <= m->level) || (Monsters[newmonster].uniqueness != COMMON));
       }
       else
       {
         do
+        {
           newmonster = random_range(NUMMONSTERS);
-        while((newmonster == NPC) || (newmonster == MAST_THIEF) ||
-              (Monsters[newmonster].uniqueness != COMMON));
+        } while((newmonster == NPC) || (newmonster == MAST_THIEF) ||
+                (Monsters[newmonster].uniqueness != COMMON));
       }
       /* WDT HACK: most of this could (and should) be implemented by
        * the following line: "*m = Monsters[newmonster];".  The exception,
@@ -1091,7 +1233,9 @@ void hellfire(int x, int y, int blessing)
         m->possessions = NULL;
       }
       else
+      {
         mprint("and dies, cursing your name and the uncaring gods....");
+      }
       m_death(m);
     }
   }
@@ -1185,7 +1329,9 @@ void drain(int blessing)
 void sanctuary()
 {
   if(Level->environment == E_TEMPLE)
+  {
     mprint("Odd, the spell has no effect. I wonder why.");
+  }
   else
   {
     mprint("You're standing on sacred ground!");
@@ -1223,7 +1369,9 @@ void illuminate(int blessing)
     if(r > ROOMBASE)
     {
       if(loc_statusp(Player.x, Player.y, LIT, *Level))
+      {
         mprint("A glow surrounds you.");
+      }
       else
       {
         mprint("The room lights up!");
@@ -1232,14 +1380,18 @@ void illuminate(int blessing)
       }
     }
     else
+    {
       mprint("You see a faint glimmer of light which quickly fades.");
+    }
   }
   else
   {
     if(r > ROOMBASE)
     {
       if(!loc_statusp(Player.x, Player.y, LIT, *Level))
+      {
         mprint("Nothing much happens.");
+      }
       else
       {
         mprint("The room darkens!");
@@ -1247,7 +1399,9 @@ void illuminate(int blessing)
       }
     }
     else
+    {
       mprint("The gloom thickens for a moment.");
+    }
   }
 }
 
@@ -1256,7 +1410,9 @@ void drain_life(int amount)
   amount = abs(amount);
   mprint("You feel cold!");
   if(p_immune(NEGENERGY))
+  {
     mprint("... but the feeling quickly fades.");
+  }
   else
   {
     if(random_range(2))
@@ -1288,7 +1444,9 @@ void inflict_fear(int x, int y)
   {
     mprint("You shudder with otherworldly dread.");
     if(Player.immunity[FEAR] > 0)
+    {
       mprint("You brace up and face your fear like a hero!");
+    }
     else
     {
       mprint("You panic!");
@@ -1303,20 +1461,28 @@ void inflict_fear(int x, int y)
       strcat(Str2, m->monstring);
     }
     else
+    {
       strcpy(Str2, m->monstring);
+    }
     m->speed = std::max(2, m->speed - 1);
     if(m_immunityp(*m, FEAR))
+    {
       strcat(Str2, "seems enraged!");
+    }
     else
     {
       strcat(Str2, "is terrorized!");
       m_dropstuff(m);
       if(m_statusp(*m, MOBILE))
+      {
         m->movef = M_MOVE_SCAREDY;
+      }
     }
   }
   else
+  {
     mprint("A thrill of fear tickles your spine ... and passes.");
+  }
 }
 
 /*Turns on deflection status for the player */

@@ -16,7 +16,9 @@ void l_merc_guild()
 
   print1("Legion of Destiny, Mercenary Guild, Inc.");
   if(nighttime())
+  {
     print2("The barracks are under curfew right now.");
+  }
   else
   {
     print2("You enter Legion HQ, ");
@@ -145,7 +147,9 @@ void l_merc_guild()
         clearmsg();
         print1("Your CO expresses satisfaction with your progress.");
         if(Player.guildxp[LEGION] < 4000)
+        {
           print2("But your service record does not yet permit promotion.");
+        }
         else
         {
           print2("You have been promoted to Legion Colonel!");
@@ -172,7 +176,9 @@ void l_merc_guild()
         clearmsg();
         print1("Your CO expresses satisfaction with your progress.");
         if(Player.guildxp[LEGION] < 1500)
+        {
           print2("But your service record does not yet permit promotion.");
+        }
         else
         {
           print2("You are now a Legion Force-Leader!");
@@ -189,7 +195,9 @@ void l_merc_guild()
         clearmsg();
         print1("Your CO expresses satisfaction with your progress.");
         if(Player.guildxp[LEGION] < 400)
+        {
           print2("But your service record does not yet permit promotion.");
+        }
         else
         {
           print2("You are promoted to Legion Centurion!");
@@ -259,7 +267,9 @@ void l_castle()
         print1("in the depths of the sewers below the city.");
       }
       else
+      {
         print2("Do not return until you achieve the quest, caitiff!");
+      }
     }
     else if(Player.rank[NOBILITY] == ESQUIRE)
     {
@@ -274,7 +284,9 @@ void l_castle()
         print2("You might have to kill a dragon to get one....");
       }
       else
+      {
         print2("Greetings, squire. My sword? What, you don't have it?");
+      }
     }
     else if(Player.rank[NOBILITY] == KNIGHT)
     {
@@ -292,7 +304,9 @@ void l_castle()
         print2("Of the Elemental Master on the Astral Plane");
       }
       else
+      {
         print2("Your quest is not yet complete, sir knight.");
+      }
     }
     else if(Player.rank[NOBILITY] == LORD)
     {
@@ -310,6 +324,7 @@ void l_castle()
         Dukebehavior = fixnpc(4);
         save_hiscore_npc(12);
         for(y = 52; y < 63; y++)
+        {
           for(x = 2; x < 52; x++)
           {
             if(Level->site[x][y].p_locf == L_TRAP_SIREN)
@@ -328,9 +343,12 @@ void l_castle()
               lset(x, y, CHANGED, *Level);
             }
           }
+        }
       }
       else
+      {
         print2("I didn't really think you were up to the task....");
+      }
     }
   }
 }
@@ -347,30 +365,45 @@ void l_arena()
   {
     print2("Enter the games, or Register as a Gladiator? [e,r,ESCAPE] ");
     do
+    {
       response = (char)mcigetc();
-    while((response != 'e') && (response != 'r') && (response != ESCAPE));
+    } while((response != 'e') && (response != 'r') && (response != ESCAPE));
   }
   else
   {
     print2("Enter the games? [yn] ");
     response = ynq2();
     if(response == 'y')
+    {
       response = 'e';
+    }
     else
+    {
       response = ESCAPE;
+    }
   }
   if(response == 'r')
   {
     if(Player.rank[ARENA] > 0)
+    {
       print2("You're already a gladiator....");
+    }
     else if(Player.rank[ORDER] > 0)
+    {
       print2("We don't let Paladins into our Guild.");
+    }
     else if(Player.rank[LEGION] > 0)
+    {
       print2("We don't train no stinkin' mercs!");
+    }
     else if(Player.str < 13)
+    {
       print2("Yer too weak to train!");
+    }
     else if(Player.agi < 12)
+    {
       print2("Too clumsy to be a gladiator!");
+    }
     else
     {
       print1("Ok, yer now an Arena Trainee.");
@@ -449,13 +482,16 @@ void l_arena()
         break;
       default:
         if((Player.rank[ARENA] < 6) && (Player.rank[ARENA] > 0))
+        {
           *Arena_Monster = Monsters[HISCORE_NPC];
+        }
         else
         {
           do
+          {
             i = random_range(ML9 - ML0) + ML0;
-          while(i == NPC || i == HISCORE_NPC || i == ZERO_NPC || (Monsters[i].uniqueness != COMMON) ||
-                (Monsters[i].dmg == 0));
+          } while(i == NPC || i == HISCORE_NPC || i == ZERO_NPC || (Monsters[i].uniqueness != COMMON) ||
+                  (Monsters[i].dmg == 0));
           *Arena_Monster = Monsters[i];
         }
         break;
@@ -482,7 +518,9 @@ void l_arena()
       melee                    = (char *)checkmalloc(30 * sizeof(char));
       strcpy(melee, "");
       for(i = 0; i < Championlevel / 5; i++)
+      {
         strcat(melee, "L?R?");
+      }
       Arena_Monster->meleestr = melee;
       m_status_set(*Arena_Monster, MOBILE);
       m_status_set(*Arena_Monster, HOSTILE);
@@ -511,7 +549,9 @@ void l_arena()
 
     time_clock(true);
     while(Current_Environment == E_ARENA)
+    {
       time_clock(false);
+    }
 
     /* WDT -- Sheldon Simms points out that these objects are not
      * wastes of space; on the contrary, they can be carried out of the
@@ -532,7 +572,9 @@ void l_arena()
     /* free(corpse); */
 
     if(melee)
+    {
       free(melee);
+    }
     if(!Arena_Victory)
     {
       print1("The crowd boos your craven behavior!!!");
@@ -542,7 +584,9 @@ void l_arena()
         morewait();
         clearmsg();
         if(Gymcredit > 0)
+        {
           print1("Your credit at the gym is cut off!");
+        }
         Gymcredit          = 0;
         Player.rank[ARENA] = -1;
       }
@@ -581,7 +625,9 @@ void l_arena()
       nprint1("Your prize is: ");
       prize = std::max(25, monsterlevel * 50);
       if(Player.rank[ARENA] > 0)
+      {
         prize *= 2;
+      }
       mnumprint(prize);
       nprint1("Au.");
       Player.cash += prize;
@@ -600,5 +646,7 @@ void l_arena()
     xredraw();
   }
   else
+  {
     clearmsg();
+  }
 }

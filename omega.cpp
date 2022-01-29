@@ -140,14 +140,22 @@ void initrand(int environment, int level)
   int        seed;
 
   if(environment >= 0)
+  {
     store = random_range(RAND_MAX);
+  }
   /* Pseudo Random Seed */
   if(environment == E_RANDOM)
+  {
     seed = static_cast<int>(time(nullptr));
+  }
   else if(environment == E_RESTORE)
+  {
     seed = store;
+  }
   else
+  {
     seed = level_seed[environment] + 1000 * level;
+  }
   generator.seed(seed);
 }
 
@@ -171,7 +179,9 @@ int game_restore(int argc, char *argv[])
     return (true);
   }
   else
+  {
     return (false);
+  }
 }
 
 void omega_title();
@@ -220,12 +230,16 @@ int main(int argc, char *argv[])
 
 #ifndef FIXED_OMEGALIB
   if(!(Omegalib = getenv("OMEGALIB")))
+  {
 #endif
     Omegalib = OMEGALIB;
+  }
 
   /* if filecheck is 0, some necessary data files are missing */
   if(filecheck() == 0)
+  {
     exit(0);
+  }
 
   /* all kinds of initialization */
   init_perms();
@@ -235,7 +249,9 @@ int main(int argc, char *argv[])
   initspells();
 
   for(count = 0; count < STRING_BUFFER_SIZE; count++)
+  {
     strcpy(Stringbuffer[count], "<nothing>");
+  }
 
 #ifdef SAVE_LEVELS
   msdos_init();
@@ -260,31 +276,47 @@ int main(int argc, char *argv[])
     mprint("'?' for help or commandlist, 'Q' to quit.");
   }
   else
+  {
     mprint("Your adventure continues....");
+  }
 
   timeprint();
   calc_melee();
   if(Current_Environment != E_COUNTRYSIDE)
+  {
     showroom(Level->site[Player.x][Player.y].roomnumber);
+  }
   else
+  {
     terrain_check(false);
+  }
 
   if(optionp(SHOW_COLOUR, Player))
+  {
     colour_on();
+  }
   else
+  {
     colour_off();
+  }
 
   screencheck(Player.y);
 
   /* game cycle */
   if(!continuing)
+  {
     time_clock(true);
+  }
   while(true)
   {
     if(Current_Environment == E_COUNTRYSIDE)
+    {
       p_country_process();
+    }
     else
+    {
       time_clock(false);
+    }
   }
 }
 
@@ -298,9 +330,13 @@ void signalexit(int)
   mprint("Want to try and save the game?");
   reply = ynq();
   if(reply == 'y')
+  {
     save(true); // force save
+  }
   else if(reply == EOF)
+  {
     signalsave();
+  }
   mprint("Bye!");
   endgraf();
   exit(0);
@@ -313,10 +349,14 @@ void init_world()
 
   City = Level = TempLevel = Dungeon = NULL;
   for(env = 0; env <= E_MAX; env++)
+  {
     level_seed[env] = random_range(RAND_MAX);
+  }
   load_country();
   for(i = 0; i < NUMCITYSITES; i++)
+  {
     CitySiteList[i][0] = false;
+  }
   load_city(true);
   WIDTH               = 64;
   LENGTH              = 64;
@@ -342,17 +382,29 @@ void inititem(int reset)
     shuffle(ring_ids, 20);
   }
   for(i = 0; i < NUMSCROLLS; i++)
+  {
     Objects[SCROLLID + i].objstr = scrollname(i);
+  }
   for(i = 0; i < NUMPOTIONS; i++)
+  {
     Objects[POTIONID + i].objstr = potionname(i);
+  }
   Objects[ARTIFACTID + 10].objstr = potionname(18);
   Objects[ARTIFACTID + 13].objstr = potionname(19);
   for(i = 0; i < NUMSTICKS; i++)
+  {
     Objects[STICKID + i].objstr = stickname(i);
+  }
   for(i = 0; i < NUMBOOTS; i++)
+  {
     Objects[BOOTID + i].objstr = bootname(i);
+  }
   for(i = 0; i < NUMCLOAKS; i++)
+  {
     Objects[CLOAKID + i].objstr = cloakname(i);
+  }
   for(i = 0; i < NUMRINGS; i++)
+  {
     Objects[RINGID + i].objstr = ringname(i);
+  }
 }

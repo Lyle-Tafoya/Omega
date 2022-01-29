@@ -11,31 +11,47 @@
 void i_perm_knowledge(pob o)
 {
   if(o->known < 1)
+  {
     o->known = 1;
+  }
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   if(o->used)
+  {
     knowledge(o->blessing);
+  }
 }
 
 void i_perm_strength(pob o)
 {
   if(o->known < 1)
+  {
     o->known = 1;
+  }
   Objects[o->id].known = 1;
   if(o->used)
   {
     if(o->blessing > -1)
+    {
       Player.str += abs(o->plus) + 1;
+    }
     else
+    {
       Player.str -= abs(o->plus) + 1;
+    }
   }
   else
   {
     if(o->blessing > -1)
+    {
       Player.str -= abs(o->plus) + 1;
+    }
     else
+    {
       Player.str += abs(o->plus) + 1;
+    }
   }
   calc_melee();
 }
@@ -58,24 +74,34 @@ void i_perm_burden(pob o)
   for(i = 0; i < MAXITEMS; i++)
   {
     if(Player.possessions[i] != NULL)
+    {
       Player.itemweight += (Player.possessions[i]->weight * Player.possessions[i]->number);
+    }
   }
 }
 
 void i_perm_gaze_immune(pob o)
 {
   if(o->used)
+  {
     Player.immunity[GAZE]++;
+  }
   else
+  {
     Player.immunity[GAZE]--;
+  }
 }
 
 void i_perm_fire_resist(pob o)
 {
   if(o->used)
+  {
     Player.immunity[FLAME]++;
+  }
   else
+  {
     Player.immunity[FLAME]--;
+  }
 }
 
 void i_perm_poison_resist(pob o)
@@ -107,9 +133,13 @@ void i_perm_poison_resist(pob o)
 void i_perm_regenerate(pob o)
 {
   if(o->known < 1)
+  {
     o->known = 1;
+  }
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   if(o->used)
   {
     mprint("You seem abnormally healthy.");
@@ -131,7 +161,9 @@ void i_perm_regenerate(pob o)
 void i_normal_armor(pob o)
 {
   if(o->used)
+  {
     mprint("You put on your suit of armor.");
+  }
 }
 
 void i_perm_energy_resist(pob o)
@@ -179,9 +211,13 @@ void i_perm_fear_resist(pob o)
 void i_perm_breathing(pob o)
 {
   if(o->known < 1)
+  {
     o->known = 1;
+  }
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
 
   if(o->blessing > -1)
   {
@@ -251,15 +287,21 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
     if(m->level > random_range(10))
     {
       if(Player.hp < Player.maxhp)
+      {
         Player.hp = std::min(Player.maxhp, Player.hp + m->hp);
+      }
       Player.str++;
       if(Player.pow < Player.maxpow)
+      {
         Player.pow = std::min(Player.maxpow, Player.pow + m->level);
+      }
       m_death(m);
       mprint("You feel a surge of raw power from Demonblade!");
     }
     else
+    {
       p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
+    }
   }
   else
   {
@@ -278,7 +320,9 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
       Player.str -= 3;
       Player.con -= 3;
       if(Player.str < 1 || Player.con < 1)
+      {
         p_death("a backlash of negative energies");
+      }
     }
   }
 }
@@ -321,10 +365,14 @@ void weapon_tangle(int dmgmod, pob, struct monster *m)
 void weapon_arrow(int dmgmod, pob o, struct monster *m)
 {
   if((Player.possessions[O_WEAPON_HAND] != NULL) &&
-     (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26)) /* ie, using a bow */
+     (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
+  { /* ie, using a bow */
     p_hit(m, Player.dmg + o->plus + o->dmg + dmgmod, NORMAL_DAMAGE);
+  }
   else
+  {
     p_hit(m, o->plus + o->dmg + dmgmod, NORMAL_DAMAGE);
+  }
 }
 
 /* if wielding a crossbow, add bow damage to arrow damage */
@@ -338,7 +386,9 @@ void weapon_bolt(int dmgmod, pob o, struct monster *m)
     Player.possessions[O_WEAPON_HAND]->aux = UNLOADED;
   }
   else
+  {
     p_hit(m, o->plus + o->dmg, NORMAL_DAMAGE);
+  }
 }
 
 void weapon_mace_disrupt(int dmgmod, pob, struct monster *m)
@@ -349,7 +399,9 @@ void weapon_mace_disrupt(int dmgmod, pob, struct monster *m)
     m_death(m);
   }
   else
+  {
     p_hit(m, Player.dmg + dmgmod, UNSTOPPABLE);
+  }
 }
 
 void weapon_normal_hit(int dmgmod, pob, struct monster *m)
@@ -384,15 +436,21 @@ void i_demonblade(pob o)
 void i_normal_weapon(pob o)
 {
   if(o->used)
+  {
     mprint("You ready your weapon for battle.");
+  }
 }
 
 void i_lightsabre(pob o)
 {
   if(o->used)
+  {
     mprint("You feel one with the Force.");
+  }
   else
+  {
     mprint("You feel out of touch with the Force.");
+  }
 }
 
 void i_mace_disrupt(pob)
@@ -406,13 +464,19 @@ void weapon_vorpal(int dmgmod, pob o, struct monster *m)
   {
     o->known = 2;
     if(random_range(2) == 1)
+    {
       mprint("One Two! One Two! And through and through!");
+    }
     else
+    {
       mprint("Your vorpal blade goes snicker-snack!");
+    }
     m_death(m);
   }
   else
+  {
     weapon_normal_hit(dmgmod, o, m);
+  }
 }
 
 void weapon_desecrate(int dmgmod, pob o, struct monster *m)
@@ -448,7 +512,9 @@ void weapon_firestar(int dmgmod, pob o, struct monster *m)
     fball(Player.x, Player.y, Player.x, Player.y, std::max(Player.dmg, 25));
   }
   if(m->hp > 0)
+  {
     weapon_normal_hit(dmgmod, o, m);
+  }
 }
 
 void weapon_defend(int dmgmod, pob o, struct monster *m)
@@ -481,7 +547,9 @@ void weapon_victrix(int dmgmod, pob o, struct monster *m)
     m_death(m);
   }
   else
+  {
     weapon_normal_hit(dmgmod, o, m);
+  }
 }
 
 void i_defend(pob o)
@@ -493,7 +561,9 @@ void i_defend(pob o)
     Player.status[PROTECTION] += o->hit;
   }
   else
+  {
     Player.status[PROTECTION] -= o->hit;
+  }
 }
 
 void i_victrix(pob o)
@@ -517,7 +587,9 @@ void i_victrix(pob o)
 void i_desecrate(pob o)
 {
   if(o->known < 1)
+  {
     o->known = 2;
+  }
   if(o->blessing > 0)
   {
     mprint("How weird, a blessed desecrator... ");
@@ -525,20 +597,26 @@ void i_desecrate(pob o)
     dispose_lost_objects(1, o);
   }
   else if(Level->site[Player.x][Player.y].locchar == ALTAR)
+  {
     sanctify(-1);
+  }
 }
 
 /* shield functions */
 void i_normal_shield(pob o)
 {
   if(o->used)
+  {
     mprint("You sling your shield across a forearm.");
+  }
 }
 
 void i_perm_deflect(pob o)
 {
   if(o->known < 1)
+  {
     o->known = 2;
+  }
   if(o->blessing > -1)
   {
     if(o->used)

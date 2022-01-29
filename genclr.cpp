@@ -106,12 +106,14 @@ static const char *clr_lookup(const char *omega, const char **curses, unsigned i
    */
   ClrEquiv *e = clr_equiv;
   for(; e->omega; e++)
+  {
     if(!strcmp(e->omega, omega))
     {
       *curses = e->curses;
       *bold   = e->bold;
       return e->omega;
     }
+  }
   return NULL;
 }
 
@@ -129,11 +131,15 @@ static const char *clr_scan(char *p, const char **curses, unsigned int *bold, ch
   for(; (c = *p); p++)
   {
     if(!ISCID(c))
+    {
       continue;
+    }
     for(start = p++; (c = *p); p++)
     {
       if(ISCID(c))
+      {
         continue;
+      }
       *p = '\0';
       if(!(omega = clr_lookup(start, curses, bold)))
       {
@@ -158,7 +164,9 @@ static int opaircmp(const void *pair1, const void *pair2)
   ClrPair *p1 = (ClrPair *)pair1, *p2 = (ClrPair *)pair2;
   int      diff = strcmp(p1->ofg, p2->ofg);
   if(diff)
+  {
     return diff;
+  }
   return strcmp(p1->obg, p2->obg);
 }
 
@@ -172,7 +180,9 @@ static int cpaircmp(const void *pair1, const void *pair2)
   ClrPair *p1 = *(ClrPair **)pair1, *p2 = *(ClrPair **)pair2;
   int      diff = strcmp(p1->cfg, p2->cfg);
   if(diff)
+  {
     return diff;
+  }
   return strcmp(p1->cbg, p2->cbg);
 }
 
@@ -206,7 +216,9 @@ static void emitclose(FILE *fp, char *file)
    * Close FP attached to FILE, exiting on error.
    */
   if(fclose(fp) == 0)
+  {
     return;
+  }
   fprintf(stderr, "error closing %s", file);
   perror("");
   exit(1);
@@ -250,7 +262,9 @@ int main(int argc, char **argv)
       pair->obg = one ? clr_lookup("BLACK", &pair->cbg, &pair->boldbg)
                       : clr_scan(p, &pair->cbg, &pair->boldbg, &p);
       if(pair->boldbg)
+      {
         fprintf(stderr, "warning: \"%s\": bg bold unimplemented\n", pair->obg);
+      }
     }
   }
   if(!nopairs)
@@ -266,7 +280,9 @@ int main(int argc, char **argv)
   for(i = 0, j = 1; j < nopairs; j++)
   {
     if(opaircmp(opairs + i, opairs + j))
+    {
       opairs[++i] = opairs[j];
+    }
   }
   nopairs = i + 1;
 
@@ -276,14 +292,18 @@ int main(int argc, char **argv)
    */
   cpairs = (ClrPair **)malloc(nopairs * sizeof(ClrPair *));
   for(i = 0; i < nopairs; i++)
+  {
     cpairs[i] = opairs + i;
+  }
   qsort(cpairs, nopairs, sizeof(ClrPair *), cpaircmp);
   cpairs[0]->idx = 1;
 
   for(i = 0, j = 1; j < nopairs; j++)
   {
     if(cpaircmp(cpairs + i, cpairs + j))
+    {
       cpairs[++i] = cpairs[j];
+    }
     cpairs[j]->idx = i + 1;
   }
   ncpairs = i + 1;
@@ -310,10 +330,12 @@ int main(int argc, char **argv)
           hfile, ncpairs);
 
   for(i = 0; i < ncpairs; i++)
+  {
     fprintf(fp, "\
     init_pair (%d, COLOR_%s, COLOR_%s);\n\
 ",
             cpairs[i]->idx, cpairs[i]->cfg, cpairs[i]->cbg);
+  }
   fputs("\
 "
         "}\n\

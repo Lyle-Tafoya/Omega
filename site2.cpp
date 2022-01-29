@@ -23,7 +23,9 @@ void l_condo()
       if(ynq2() == 'y')
       {
         if(Player.cash < 50000)
+        {
           print3("No mortgages, buddy.");
+        }
         else
         {
           setgamestatus(SOLD_CONDO, GameStatus);
@@ -40,7 +42,9 @@ void l_condo()
       if(ynq2() == 'y')
       {
         if(Player.cash < 1000)
+        {
           print2("Hey, pay the rent or out you go....");
+        }
         else
         {
           weeksleep = true;
@@ -50,7 +54,9 @@ void l_condo()
       }
     }
     else
+    {
       print2("Please keep us in mind for your housing needs.");
+    }
   }
   else
   {
@@ -71,7 +77,9 @@ void l_condo()
         if(i != ABORT)
         {
           if(Player.possessions[i]->blessing < 0)
+          {
             print2("The item just doesn't want to be stored away...");
+          }
           else
           {
             ol         = ((pol)checkmalloc(sizeof(oltype)));
@@ -96,12 +104,18 @@ void l_condo()
           {
             gain_item(ol->thing);
             if(ol == Condoitems)
+            {
               Condoitems = Condoitems->next;
+            }
             else if(prev != NULL)
+            {
               prev->next = ol->next;
+            }
           }
           else if(response == 'q')
+          {
             over = true;
+          }
           prev = ol;
           ol   = ol->next;
         }
@@ -122,7 +136,9 @@ void l_condo()
         }
       }
       else if(response == ESCAPE)
+      {
         done = true;
+      }
     }
     xredraw();
   }
@@ -140,8 +156,12 @@ void l_condo()
     Player.iq  = Player.maxiq;
     Player.pow = Player.maxpow;
     for(i = 0; i < NUMSTATI; i++)
+    {
       if(Player.status[i] < 1000)
+      {
         Player.status[i] = 0;
+      }
+    }
     toggle_item_use(false);
     Player.food = 36;
     print2("You're once again fit and ready to continue your adventure.");
@@ -155,11 +175,15 @@ void l_condo()
 void gymtrain(int *maxstat, int *stat)
 {
   if(Gymcredit + Player.cash < 2000)
+  {
     print2("You can't afford our training!");
+  }
   else
   {
     if(Gymcredit > 2000)
+    {
       Gymcredit -= 2000;
+    }
     else
     {
       Player.cash -= (2000 - Gymcredit);
@@ -188,13 +212,17 @@ void gymtrain(int *maxstat, int *stat)
 void healforpay()
 {
   if(Player.cash < 50)
+  {
     print2("You can't afford to be healed!");
+  }
   else
   {
     Player.cash -= 50;
     Player.hp += 20 + random_range(20);
     if(Player.hp > Player.maxhp)
+    {
       Player.hp = Player.maxhp;
+    }
     print2("Another medical marvel....");
   }
   calc_melee();
@@ -203,7 +231,9 @@ void healforpay()
 void cureforpay()
 {
   if(Player.cash < 250)
+  {
     print2("You can't afford to be cured!");
+  }
   else
   {
     Player.cash -= 250;
@@ -227,7 +257,9 @@ void pacify_guards()
       if(ml->m->id == GUARD && ml->m->hp > 0 && ml->m->aux1 > 0)
       {
         if(Level->site[ml->m->x][ml->m->y].creature == ml->m)
+        {
           Level->site[ml->m->x][ml->m->y].creature = NULL;
+        }
         ml->m->x                                 = ml->m->aux1;
         ml->m->y                                 = ml->m->aux2;
         Level->site[ml->m->x][ml->m->y].creature = ml->m;
@@ -235,7 +267,9 @@ void pacify_guards()
       else if(ml->m->id == HISCORE_NPC && ml->m->hp > 0 && Current_Environment == E_CITY)
       {
         if(Level->site[ml->m->x][ml->m->y].creature == ml->m)
+        {
           Level->site[ml->m->x][ml->m->y].creature = NULL;
+        }
         ml->m->x                                 = 40;
         ml->m->y                                 = 62;
         Level->site[ml->m->x][ml->m->y].creature = ml->m;
@@ -243,7 +277,9 @@ void pacify_guards()
     }
   }
   if(Current_Environment == E_CITY)
+  {
     Level->site[40][60].p_locf = L_ORDER; /* undoes action in alert_guards */
+  }
 }
 
 void send_to_jail()
@@ -258,9 +294,13 @@ void send_to_jail()
     Player.rank[ORDER] = -1;
   }
   else if(gamestatusp(DESTROYED_ORDER, GameStatus))
+  {
     print1("The destruction of the Order of Paladins has negated the law!");
+  }
   else if((Current_Environment != E_CITY) && (Last_Environment != E_CITY))
+  {
     print1("Fortunately, there is no jail around here, so you are freed!");
+  }
   else
   {
     pacify_guards();
@@ -317,6 +357,7 @@ void send_to_jail()
         screencheck(58);
       }
       else
+      {
         switch(Imprisonment++)
         {
           case 0:
@@ -350,6 +391,7 @@ void send_to_jail()
             screencheck(54);
             l_portcullis_trap();
         }
+      }
     }
   }
 }
@@ -360,9 +402,13 @@ void l_adept()
   if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
   {
     if(Player.str + Player.con + Player.iq + Player.pow < 100)
+    {
       print2("A familiar female voice says: I would not advise this now....");
+    }
     else
+    {
       print2("A familiar female voice says: Go for it!");
+    }
     morewait();
     clearmsg();
   }
@@ -393,7 +439,9 @@ void l_adept()
       p_damage(random_range(200), UNSTOPPABLE, "a vortex of chaos");
     }
     else
+    {
       print2("Some strange force shields you from a chaos vortex!");
+    }
     morewait();
     print1("Your head spins for a moment....");
     print2("and clears....");
@@ -447,7 +495,9 @@ void l_trifid()
             stuck = false;
           }
           else
+          {
             print1("Well, THAT didn't work.");
+          }
           break;
         case 'b':
           print1("Well, at least you're facing your fate with dignity.");
@@ -460,7 +510,9 @@ void l_trifid()
             stuck = false;
           }
           else
+          {
             print1("You receive no divine aid as yet.");
+          }
           break;
         case 'd':
           print1("The hedge doesn't answer your entreaties.");
@@ -512,11 +564,15 @@ void l_vault()
           morewait();
         }
         else
+        {
           send_to_jail();
+        }
       }
     }
     else
+    {
       print2("Good move.");
+    }
   }
 }
 
@@ -537,13 +593,16 @@ void l_brothel()
     menuprint("ESCAPE: Leave this house of ill repute.\n");
     showmenu();
     do
+    {
       response = menugetc();
-    while((response != 'a') && (response != 'b') && (response != 'c') && (response != ESCAPE));
+    } while((response != 'a') && (response != 'b') && (response != 'c') && (response != ESCAPE));
     xredraw();
     if(response == 'a')
     {
       if(!nighttime())
+      {
         print2("There is no reponse.");
+      }
       else
       {
         print1("A window opens in the door.");
@@ -584,6 +643,7 @@ void l_brothel()
             {
               print1("you spend an enjoyable and educational evening with");
               if(Player.preference == 'm' || (Player.preference == 'b' && random_range(2)))
+              {
                 switch(random_range(4))
                 {
                   case 0:
@@ -599,7 +659,9 @@ void l_brothel()
                     print2("Hieronymus, the mendicant priest of Eros.");
                     break;
                 }
+              }
               else
+              {
                 switch(random_range(4))
                 {
                   case 0:
@@ -615,10 +677,13 @@ void l_brothel()
                     print2("Sheena the Queena the Jungle, a wereleopard.");
                     break;
                 }
+              }
             }
             morewait();
             if(hour() > 12)
+            {
               Time += ((24 - hour()) + 8) * 60;
+            }
             else
             {
               Time += ((9 - hour()) * 60);
@@ -638,9 +703,13 @@ void l_brothel()
             Player.pow = std::min(Player.pow, Player.maxpow);
             toggle_item_use(false);
             if(Player.preference == 'n')
+            {
               Player.iq++; /* whatever :-) */
+            }
             else
+            {
               Player.con++;
+            }
             gain_experience(100);
             timeprint();
             dataprint();
@@ -648,13 +717,19 @@ void l_brothel()
             morewait();
             clearmsg();
             if(Player.preference == 'n')
+            {
               print1("You arise refreshed the next morning...");
+            }
             else
+            {
               print1("You arise, tired but happy, the next morning...");
+            }
           }
         }
         else
+        {
           print2("What are you, some kinda prude?");
+        }
       }
     }
     else if(response == 'b')
@@ -665,7 +740,9 @@ void l_brothel()
         print2("The bouncer tosses you into the street.");
       }
       else
+      {
         print1("The door appears to be bolted and barred from behind.");
+      }
     }
     else if(response == 'c')
     {
@@ -695,7 +772,9 @@ void sign_print(int x, int y, int signp)
 {
   if((Level->site[x][y].p_locf >= CITYSITEBASE) &&
      (Level->site[x][y].p_locf < CITYSITEBASE + NUMCITYSITES))
+  {
     CitySiteList[Level->site[x][y].p_locf - CITYSITEBASE][0] = true;
+  }
   switch(Level->site[x][y].p_locf)
   {
     case L_CHARITY:
@@ -712,7 +791,9 @@ void sign_print(int x, int y, int signp)
       break;
     case L_PORTCULLIS:
       if(Level->site[x][y].locchar == FLOOR)
+      {
         print1("You see a groove in the floor and slots above you.");
+      }
       break;
     case L_STABLES:
       print1("You notice a sign:");
@@ -828,9 +909,13 @@ void sign_print(int x, int y, int signp)
       {
         print1("You notice a sign:");
         if(gamestatusp(SOLD_CONDO, GameStatus))
+        {
           print2("Home Sweet Home");
+        }
         else
+        {
           print2("Luxury Condominium For Sale; Inquire Within");
+        }
       }
       break;
     case L_PAWN_SHOP:
@@ -867,7 +952,9 @@ void l_countryside()
     clearmsg();
     print1("Do you really want to return to the countryside? ");
     if(ynq1() != 'y')
+    {
       return;
+    }
   }
   change_environment(E_COUNTRYSIDE);
 }
@@ -894,8 +981,9 @@ void l_oracle()
     print1("You come before a blue crystal dais. There is a bell and a mirror.");
     print2("Ring the bell [b], look in the mirror [m], or leave [ESCAPE] ");
     do
+    {
       response = (char)mcigetc();
-    while((response != 'b') && (response != 'm') && (response != ESCAPE));
+    } while((response != 'b') && (response != 'm') && (response != ESCAPE));
     if(response == 'b')
     {
       print1("The ringing note seems to last forever.");
@@ -948,7 +1036,9 @@ void l_oracle()
             change_environment(E_ASTRAL);
           }
           else
+          {
             print3("You detect the hint of a sneer from the oracle.");
+          }
         }
         else if(!gamestatusp(COMPLETED_VOLCANO, GameStatus))
         {
@@ -973,7 +1063,9 @@ void l_oracle()
       knowledge(1);
     }
     else
+    {
       print2("You leave this immanent place.");
+    }
   }
 }
 
@@ -981,21 +1073,27 @@ void l_mansion()
 {
   print1("Enter the mansion? [yn] ");
   if(ynq1() == 'y')
+  {
     change_environment(E_MANSION);
+  }
 }
 
 void l_house()
 {
   print1("Enter the house? [yn] ");
   if(ynq1() == 'y')
+  {
     change_environment(E_HOUSE);
+  }
 }
 
 void l_hovel()
 {
   print1("Enter the hovel? [yn] ");
   if(ynq1() == 'y')
+  {
     change_environment(E_HOVEL);
+  }
 }
 
 void l_safe()
@@ -1006,12 +1104,17 @@ void l_safe()
   print1("You have discovered a safe!");
   print2("Pick the lock [p], Force the door [f], or ignore [ESCAPE]");
   do
+  {
     response = (char)mcigetc();
-  while((response != 'p') && (response != 'f') && (response != ESCAPE));
+  } while((response != 'p') && (response != 'f') && (response != ESCAPE));
   if(response == 'p')
+  {
     attempt = (2 * Player.dex + Player.rank[THIEVES] * 10 - random_range(100)) / 10;
+  }
   else if(response == 'f')
+  {
     attempt = (Player.dmg - random_range(100)) / 10;
+  }
   if(attempt > 0)
   {
     Player.alignment -= 4;
@@ -1032,7 +1135,9 @@ void l_safe()
       } while(random_range(3) == 1);
     }
     else
+    {
       print2("The safe was empty (awwwww....)");
+    }
   }
   else
   {
@@ -1097,7 +1202,9 @@ void l_cartographer()
   if(ynq2() == 'y')
   {
     if(Player.cash < 500)
+    {
       print3("Cursed be cheapskates! May you never find an aid station....");
+    }
     else
     {
       print3("You now have the local area mapped.");
@@ -1132,7 +1239,9 @@ void l_cartographer()
           break;
       }
       for(i = x - 15; i <= x + 15; i++)
+      {
         for(j = y - 15; j <= y + 15; j++)
+        {
           if((i >= 0) && (i < 64) && (j >= 0) && (j < 64))
           {
             if(Country[i][j].current_terrain_type != Country[i][j].base_terrain_type)
@@ -1142,10 +1251,14 @@ void l_cartographer()
             }
             c_set(i, j, SEEN, Country);
           }
+        }
+      }
     }
   }
   else
+  {
     print3("Don't blame me if you get lost....");
+  }
 }
 
 void l_charity()
@@ -1153,22 +1266,30 @@ void l_charity()
   long donation;
   print2("'Greetings, friend. Do you wish to make a donation?' [yn] ");
   if(ynq2() != 'y')
+  {
     print3("'Pinchpurse!'");
+  }
   else
   {
     clearmsg();
     print1("How much can you give? ");
     donation = parsenum();
     if(donation < 1)
+    {
       print2("'Go stick your head in a pig.'");
+    }
     else if(donation > Player.cash)
+    {
       print2("'I'm afraid you're charity is bigger than your purse!'");
+    }
     else if(donation < std::max(100, Player.level * Player.level * 100))
     {
       print2("'Oh, can't you do better than that?'");
       print3("'Well, I guess we'll take it....'");
       if(Player.alignment < 10)
+      {
         Player.alignment++;
+      }
       Player.cash -= donation;
     }
     else

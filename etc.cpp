@@ -310,13 +310,21 @@ void learnclericalspells(int deity, int level)
   {
     case LAY:
       if(deity == ODIN)
+      {
         Spells[S_MISSILE].known = true;
+      }
       else if(deity == SET)
+      {
         Spells[S_INVISIBLE].known = true;
+      }
       else if(deity == ATHENA)
+      {
         Spells[S_IDENTIFY].known = true;
+      }
       else if(deity == HECATE)
+      {
         Spells[S_DRAIN].known = true;
+      }
       else if(deity == DRUID)
       {
         Spells[S_KNOWLEDGE].known = true;
@@ -350,7 +358,9 @@ void learnclericalspells(int deity, int level)
         Spells[S_CURE].known = true;
       }
       else if(deity == DESTINY)
+      {
         mprint("An acolyte of the Lords of Destiny. Gee whiz.");
+      }
       break;
     case PRIEST:
       Spells[S_SANCTIFY].known = true;
@@ -381,35 +391,55 @@ void learnclericalspells(int deity, int level)
         Spells[S_CLAIRVOYANCE].known = true;
       }
       else if(deity == DESTINY)
+      {
         mprint("How useless, a new priest of the Lords of Destiny.");
+      }
       break;
     case SPRIEST:
       Spells[S_BLESS].known = true;
       if(deity == ODIN)
+      {
         Spells[S_ACCURACY].known = true;
+      }
       else if(deity == SET)
+      {
         Spells[S_SHADOWFORM].known = true;
+      }
       else if(deity == ATHENA)
+      {
         Spells[S_HERO].known = true;
+      }
       else if(deity == HECATE)
+      {
         Spells[S_POLYMORPH].known = true;
+      }
       else if(deity == DRUID)
       {
         Spells[S_POLYMORPH].known = true;
         Spells[S_LEVITATE].known  = true;
       }
       else if(deity == DESTINY)
+      {
         mprint("Wow, a new senior priest of the Lords of Destiny.");
+      }
       break;
     case HIGHPRIEST:
       if(deity == ODIN)
+      {
         Spells[S_RESTORE].known = true;
+      }
       else if(deity == SET)
+      {
         Spells[S_HELLFIRE].known = true;
+      }
       else if(deity == ATHENA)
+      {
         Spells[S_HELLFIRE].known = true;
+      }
       else if(deity == HECATE)
+      {
         Spells[S_DESECRATE].known = true;
+      }
       else if(deity == DRUID)
       {
         Spells[S_DISINTEGRATE].known = true;

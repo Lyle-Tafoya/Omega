@@ -133,7 +133,9 @@ void load_dlair(int empty, int populate)
   }
 
   if(!populate)
+  {
     empty = true;
+  }
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
@@ -160,9 +162,13 @@ void load_dlair(int empty, int populate)
     {
       Level->site[i][j].lstatus = 0;
       if(i < 48)
+      {
         Level->site[i][j].roomnumber = RS_CAVERN;
+      }
       else
+      {
         Level->site[i][j].roomnumber = RS_DRAGONLORD;
+      }
       Level->site[i][j].p_locf = L_NO_OP;
       site                     = getc(fd) ^ site;
       switch(site)
@@ -188,24 +194,32 @@ void load_dlair(int empty, int populate)
         case 'W':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             make_site_monster(i, j, KING_WYV);
+          }
           break;
         case 'M':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             make_site_monster(i, j, RANDOM);
+          }
           break;
         case 'S':
           Level->site[i][j].locchar  = FLOOR;
           Level->site[i][j].showchar = WALL;
           if(!empty)
+          {
             lset(i, j, SECRET, *Level);
+          }
           Level->site[i][j].roomnumber = RS_SECRETPASSAGE;
           break;
         case '$':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             make_site_treasure(i, j, 10);
+          }
           break;
         case 's':
           Level->site[i][j].locchar = FLOOR;
@@ -213,9 +227,13 @@ void load_dlair(int empty, int populate)
           break;
         case '7':
           if(!empty)
+          {
             Level->site[i][j].locchar = PORTCULLIS;
+          }
           else
+          {
             Level->site[i][j].locchar = FLOOR;
+          }
           Level->site[i][j].p_locf = L_PORTCULLIS;
           break;
         case 'R':
@@ -229,7 +247,9 @@ void load_dlair(int empty, int populate)
         case 'T':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             Level->site[i][j].p_locf = L_PORTCULLIS_TRAP;
+          }
           break;
         case 'X':
           Level->site[i][j].locchar = FLOOR;
@@ -264,7 +284,9 @@ void load_speak(int empty, int populate)
   }
 
   if(!populate)
+  {
     empty = true;
+  }
 
   TempLevel = Level;
   if(ok_to_free(TempLevel))
@@ -308,7 +330,9 @@ void load_speak(int empty, int populate)
           {
             make_site_monster(i, j, LAWBRINGER);
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case 's':
@@ -317,7 +341,9 @@ void load_speak(int empty, int populate)
           {
             make_site_monster(i, j, SERV_LAW); /* servant of law */
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case 'M':
@@ -326,19 +352,27 @@ void load_speak(int empty, int populate)
           {
             make_site_monster(i, j, -1);
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case '$':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             make_site_treasure(i, j, 10);
+          }
           break;
         case '7':
           if(!empty)
+          {
             Level->site[i][j].locchar = PORTCULLIS;
+          }
           else
+          {
             Level->site[i][j].locchar = FLOOR;
+          }
           Level->site[i][j].p_locf = L_PORTCULLIS;
           break;
         case 'R':
@@ -358,7 +392,9 @@ void load_speak(int empty, int populate)
         case 'T':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             Level->site[i][j].p_locf = L_PORTCULLIS_TRAP;
+          }
           break;
         case 'X':
           Level->site[i][j].locchar = FLOOR;
@@ -397,7 +433,9 @@ void load_misle(int empty, int populate)
   }
 
   if(!populate)
+  {
     empty = true;
+  }
 
   TempLevel = Level;
   if(ok_to_free(TempLevel))
@@ -432,17 +470,23 @@ void load_misle(int empty, int populate)
         case 'E':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             make_site_monster(i, j, EATER); /* eater of magic */
+          }
           break;
         case 'm':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             make_site_monster(i, j, MIL_PRIEST); /* militant priest */
+          }
           break;
         case 'n':
           Level->site[i][j].locchar = FLOOR;
           if(!empty)
+          {
             make_site_monster(i, j, NAZGUL);
+          }
           break;
         case 'X':
           Level->site[i][j].locchar = FLOOR;
@@ -549,28 +593,38 @@ void load_temple(int deity, int populate)
           Level->site[i][j].locchar = FLOOR;
           if(populate && (!Player.patron || strcmp(Player.name, Priest[Player.patron]) ||
                           Player.rank[PRIESTHOOD] != HIGHPRIEST))
+          {
             make_high_priest(i, j, deity);
+          }
           break;
         case 'S':
           Level->site[i][j].locchar = FLOOR;
           if(!Player.patron || strcmp(Player.name, Priest[Player.patron]) ||
              Player.rank[PRIESTHOOD] != HIGHPRIEST)
+          {
             lset(i, j, SECRET, *Level);
+          }
           break;
         case 'W':
           Level->site[i][j].locchar = FLOOR;
           if(deity != Player.patron && deity != DRUID)
+          {
             Level->site[i][j].p_locf = L_TEMPLE_WARNING;
+          }
           break;
         case 'm':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_site_monster(i, j, MIL_PRIEST); /* militant priest */
+          }
           break;
         case 'd':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_site_monster(i, j, DOBERMAN); /* doberman death hound */
+          }
           break;
         case 'X':
           Level->site[i][j].locchar = FLOOR;
@@ -597,7 +651,9 @@ void load_temple(int deity, int populate)
           break;
         case '?':
           if(deity != DESTINY)
+          {
             Level->site[i][j].locchar = FLOOR;
+          }
           else
           {
             Level->site[i][j].locchar = ABYSS;
@@ -616,8 +672,12 @@ void load_temple(int deity, int populate)
   }
   /* Main Temple is peaceful for player of same sect,druids always peaceful. */
   if((Player.patron == deity) || (deity == DRUID))
+  {
     for(ml = Level->mlist; ml != NULL; ml = ml->next)
+    {
       m_status_reset(*ml->m, HOSTILE);
+    }
+  }
   fclose(fd);
   /*  initrand(-2, 0); */ /* FIXED! 12/30/98 */
 }
@@ -628,7 +688,9 @@ void random_temple_site(int i, int j, int, int populate)
   {
     case 0:
       if(populate)
+      {
         make_site_monster(i, j, MEND_PRIEST);
+      }
       break; /* mendicant priest */
     case 1:
       Level->site[i][j].locchar = WATER;
@@ -636,19 +698,27 @@ void random_temple_site(int i, int j, int, int populate)
       [[fallthrough]];
     case 2:
       if(populate)
+      {
         make_site_monster(i, j, INNER_DEMON);
+      }
       break; /* inner circle demon */
     case 3:
       if(populate)
+      {
         make_site_monster(i, j, ANGEL);
+      }
       break; /* angel of apropriate sect */
     case 4:
       if(populate)
+      {
         make_site_monster(i, j, HIGH_ANGEL);
+      }
       break; /* high angel of apropriate sect */
     case 5:
       if(populate)
+      {
         make_site_monster(i, j, ARCHANGEL);
+      }
       break; /* archangel of apropriate sect */
   }
 }

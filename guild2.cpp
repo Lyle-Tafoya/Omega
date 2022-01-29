@@ -19,7 +19,9 @@ void l_thieves_guild()
   pob  lockpick;
   print1("You have penetrated to the Lair of the Thieves' Guild.");
   if(!nighttime())
+  {
     print2("There aren't any thieves around in the daytime.");
+  }
   else
   {
     if((Player.rank[THIEVES] == TMASTER) && (Player.level > Shadowlordlevel) &&
@@ -51,24 +53,36 @@ void l_thieves_guild()
     {
       menuclear();
       if(Player.rank[THIEVES] == 0)
+      {
         menuprint("a: Join the Thieves' Guild.\n");
+      }
       else
+      {
         menuprint("b: Raise your Guild rank.\n");
+      }
       menuprint("c: Get an item identified.\n");
       if(Player.rank[THIEVES] > 0)
+      {
         menuprint("d: Fence an item.\n");
+      }
       menuprint("ESCAPE: Leave this Den of Iniquity.");
       showmenu();
       action = mgetc();
       if(action == ESCAPE)
+      {
         done = true;
+      }
       else if(action == 'a')
       {
         done = true;
         if(Player.rank[THIEVES] > 0)
+        {
           print2("You are already a member!");
+        }
         else if(Player.alignment > 10)
+        {
           print2("You are too lawful to be a thief!");
+        }
         else
         {
           dues += dues * (12 - Player.dex) / 9;
@@ -115,20 +129,30 @@ void l_thieves_guild()
       else if(action == 'b')
       {
         if(Player.rank[THIEVES] == 0)
+        {
           print2("You are not even a member!");
+        }
         else if(Player.rank[THIEVES] == SHADOWLORD)
+        {
           print2("You can't get any higher than this!");
+        }
         else if(Player.rank[THIEVES] == TMASTER)
         {
           if(Player.level <= Shadowlordlevel)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
+          {
             print2("You must bring back the Justiciar's Badge!");
+          }
         }
         else if(Player.rank[THIEVES] == THIEF)
         {
           if(Player.guildxp[THIEVES] < 4000)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a Master Thief of the Guild!");
@@ -150,7 +174,9 @@ void l_thieves_guild()
         else if(Player.rank[THIEVES] == ATHIEF)
         {
           if(Player.guildxp[THIEVES] < 1500)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a ranking Thief of the Guild!");
@@ -164,7 +190,9 @@ void l_thieves_guild()
         else if(Player.rank[THIEVES] == TMEMBER)
         {
           if(Player.guildxp[THIEVES] < 400)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now an Apprentice Thief!");
@@ -192,7 +220,9 @@ void l_thieves_guild()
         if((char)mcigetc() == 'i')
         {
           if(Player.cash < fee)
+          {
             print2("Try again when you have the cash.");
+          }
           else
           {
             Player.cash -= fee;
@@ -204,13 +234,25 @@ void l_thieves_guild()
         {
           count = 0;
           for(i = 1; i < MAXITEMS; i++)
+          {
             if(Player.possessions[i] != NULL)
+            {
               if(Player.possessions[i]->known < 2)
+              {
                 count++;
+              }
+            }
+          }
           for(i = 0; i < Player.packptr; i++)
+          {
             if(Player.pack[i] != NULL)
+            {
               if(Player.pack[i]->known < 2)
+              {
                 count++;
+              }
+            }
+          }
           clearmsg();
           print1("The fee will be: ");
           mnumprint(std::max(count * fee, fee));
@@ -218,7 +260,9 @@ void l_thieves_guild()
           if(ynq1() == 'y')
           {
             if(Player.cash < std::max(count * fee, fee))
+            {
               print2("Try again when you have the cash.");
+            }
             else
             {
               Player.cash -= std::max(count * fee, fee);
@@ -231,7 +275,9 @@ void l_thieves_guild()
       else if(action == 'd')
       {
         if(Player.rank[THIEVES] == 0)
+        {
           print2("Fence? Who said anything about a fence?");
+        }
         else
         {
           print1("Fence one item or go through pack? [ip] ");
@@ -239,9 +285,13 @@ void l_thieves_guild()
           {
             i = getitem(NULL_ITEM);
             if((i == ABORT) || (Player.possessions[i] == NULL))
+            {
               print2("Huh, Is this some kind of set-up?");
+            }
             else if(Player.possessions[i]->blessing < 0)
+            {
               print2("I don't want to buy a cursed item!");
+            }
             else
             {
               clearmsg();
@@ -258,12 +308,16 @@ void l_thieves_guild()
                 Player.cash += number * 2 * item_value(Player.possessions[i]) / 3;
                 /* Fenced artifacts could turn up anywhere, really... */
                 if(Objects[Player.possessions[i]->id].uniqueness > UNIQUE_UNMADE)
+                {
                   Objects[Player.possessions[i]->id].uniqueness = UNIQUE_UNMADE;
+                }
                 dispose_lost_objects(number, Player.possessions[i]);
                 dataprint();
               }
               else
+              {
                 print2("Hey, gimme a break, it was a fair price!");
+              }
             }
           }
           else
@@ -287,7 +341,9 @@ void l_thieves_guild()
                   {
                     /* Fenced an artifact?  You just might see it again. */
                     if(Objects[Player.pack[i]->id].uniqueness > UNIQUE_UNMADE)
+                    {
                       Objects[Player.pack[i]->id].uniqueness = UNIQUE_UNMADE;
+                    }
                     free((char *)Player.pack[i]);
                     Player.pack[i] = NULL;
                   }
@@ -295,7 +351,9 @@ void l_thieves_guild()
                   dataprint();
                 }
                 else if(c == 'q')
+                {
                   break;
+                }
               }
             }
             fixpack();
@@ -313,7 +371,9 @@ void l_college()
   int  done = false, enrolled = false;
   print1("The Collegium Magii. Founded 16937, AOF.");
   if(nighttime())
+  {
     print2("The Registration desk is closed at night....");
+  }
   else
   {
     while(!done)
@@ -347,15 +407,23 @@ void l_college()
       showmenu();
       action = mgetc();
       if(action == ESCAPE)
+      {
         done = true;
+      }
       else if(action == 'a')
       {
         if(Player.rank[COLLEGE] > 0)
+        {
           print2("You are already enrolled!");
+        }
         else if(Player.iq < 13)
+        {
           print2("Your low IQ renders you incapable of being educated.");
+        }
         else if(Player.rank[CIRCLE] > 0)
+        {
           print2("Sorcery and our Magic are rather incompatable, no?");
+        }
         else
         {
           if(Player.iq > 17)
@@ -371,7 +439,9 @@ void l_college()
             if(ynq1() == 'y')
             {
               if(Player.cash < 1000)
+              {
                 print2("You don't have the funds!");
+              }
               else
               {
                 Player.cash -= 1000;
@@ -402,20 +472,30 @@ void l_college()
       else if(action == 'b')
       {
         if(Player.rank[COLLEGE] == 0)
+        {
           print2("You have not even been initiated, yet!");
+        }
         else if(Player.rank[COLLEGE] == ARCHMAGE)
+        {
           print2("You are at the pinnacle of mastery in the Collegium.");
+        }
         else if(Player.rank[COLLEGE] == MAGE)
         {
           if(Player.level <= Archmagelevel)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
+          {
             print2("You must return with the heart of the Eater of Magic!");
+          }
         }
         else if(Player.rank[COLLEGE] == PRECEPTOR)
         {
           if(Player.guildxp[COLLEGE] < 4000)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a Mage of the Collegium Magii!");
@@ -437,7 +517,9 @@ void l_college()
         else if(Player.rank[COLLEGE] == STUDENT)
         {
           if(Player.guildxp[COLLEGE] < 1500)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a Preceptor of the Collegium Magii!");
@@ -457,7 +539,9 @@ void l_college()
         else if(Player.rank[COLLEGE] == NOVICE)
         {
           if(Player.guildxp[COLLEGE] < 400)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a Student at the Collegium Magii!");
@@ -492,7 +576,9 @@ void l_college()
           if(ynq1() == 'y')
           {
             if(Player.cash < 2000)
+            {
               print1("Try again when you have the cash.");
+            }
             else
             {
               Player.cash -= 2000;
@@ -525,6 +611,7 @@ void l_sorcerors()
     dataprint();
   }
   else
+  {
     while(!done)
     {
       if((Player.rank[CIRCLE] == HIGHSORCEROR) && (Player.level > Primelevel) &&
@@ -557,15 +644,23 @@ void l_sorcerors()
       showmenu();
       action = mgetc();
       if(action == ESCAPE)
+      {
         done = true;
+      }
       else if(action == 'a')
       {
         if(Player.rank[CIRCLE] > 0)
+        {
           print2("You are already an initiate!");
+        }
         else if(Player.alignment > 0)
+        {
           print2("You may not join -- you reek of Law!");
+        }
         else if(Player.rank[COLLEGE] != 0)
+        {
           print2("Foolish Mage!  You don't have the right attitude to Power!");
+        }
         else
         {
           fee += Player.alignment * 100;
@@ -579,7 +674,9 @@ void l_sorcerors()
           if(ynq2() == 'y')
           {
             if(Player.cash < fee)
+            {
               print3("Try again when you have the cash!");
+            }
             else
             {
               print1("Prime Sorceror ");
@@ -602,7 +699,9 @@ void l_sorcerors()
       else if(action == 'b')
       {
         if(Player.rank[CIRCLE] == 0)
+        {
           print2("You have not even been initiated, yet!");
+        }
         else if(Player.alignment > -1)
         {
           print1("Ahh! You have grown too lawful!!!");
@@ -612,7 +711,9 @@ void l_sorcerors()
           clearmsg();
           print1("A pox upon thee!");
           if(!Player.immunity[INFECTION])
+          {
             Player.status[DISEASED] += 100;
+          }
           print2("And a curse on your possessions!");
           morewait();
           clearmsg();
@@ -625,18 +726,26 @@ void l_sorcerors()
           done = true;
         }
         else if(Player.rank[CIRCLE] == PRIME)
+        {
           print2("You are at the pinnacle of mastery in the Circle.");
+        }
         else if(Player.rank[CIRCLE] == HIGHSORCEROR)
         {
           if(Player.level <= Primelevel)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
+          {
             print2("You must return with the Crown of the LawBringer!");
+          }
         }
         else if(Player.rank[CIRCLE] == SORCEROR)
         {
           if(Player.guildxp[CIRCLE] < 4000)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a High Sorceror of the Inner Circle!");
@@ -654,7 +763,9 @@ void l_sorcerors()
         else if(Player.rank[CIRCLE] == ENCHANTER)
         {
           if(Player.guildxp[CIRCLE] < 1500)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a member of the Circle of Sorcerors!");
@@ -668,7 +779,9 @@ void l_sorcerors()
         else if(Player.rank[CIRCLE] == INITIATE)
         {
           if(Player.guildxp[CIRCLE] < 400)
+          {
             print2("You are not experienced enough to advance.");
+          }
           else
           {
             print1("You are now a member of the Circle of Enchanters!");
@@ -685,7 +798,9 @@ void l_sorcerors()
         done = true;
         fee  = Player.level * 100;
         if(Player.rank[CIRCLE])
+        {
           fee = fee / 2;
+        }
         clearmsg();
         print1("That will be: ");
         mnumprint(fee);
@@ -693,7 +808,9 @@ void l_sorcerors()
         if(ynq1() == 'y')
         {
           if(Player.cash < fee)
+          {
             print2("Begone, deadbeat, or face the wrath of the Circle!");
+          }
           else
           {
             Player.cash -= fee;
@@ -707,9 +824,12 @@ void l_sorcerors()
           }
         }
         else
+        {
           print2("Be seeing you!");
+        }
       }
     }
+  }
   xredraw();
 }
 
@@ -728,7 +848,9 @@ void l_order()
     print2("You are now the Justiciar of Rampart and the Order!");
     strcpy(Justiciar, Player.name);
     for(ml = Level->mlist; ml && (ml->m->id != HISCORE_NPC || ml->m->aux2 != 15); ml = ml->next)
+    {
       /* just scan for current Justicar */;
+    }
     if(ml)
     {
       Level->site[ml->m->x][ml->m->y].creature = NULL;
@@ -764,16 +886,24 @@ void l_order()
       send_to_jail();
     }
     else
+    {
       print1("Get thee hence, minion of chaos!");
+    }
   }
   else if(Player.rank[ORDER] == -1)
+  {
     print1("Thee again?  Get thee hence, minion of chaos!");
+  }
   else if(Player.rank[ORDER] == 0)
   {
     if(Player.rank[ARENA] != 0)
+    {
       print1("We do not accept bloodstained gladiators into our Order.");
+    }
     else if(Player.rank[LEGION] != 0)
+    {
       print1("Go back to your barracks, mercenary!");
+    }
     else
     {
       print1("Dost thou wish to join our Order? [yn] ");
@@ -810,7 +940,9 @@ void l_order()
     morewait();
     clearmsg();
     if((Player.hp < Player.maxhp) || (Player.status[DISEASED]) || (Player.status[POISONED]))
+    {
       print1("Your wounds are treated by a medic.");
+    }
     cleanse(0);
     Player.hp   = Player.maxhp;
     Player.food = 40;
@@ -820,18 +952,28 @@ void l_order()
     if(Player.rank[ORDER] == PALADIN)
     {
       if(Player.level <= Justiciarlevel)
+      {
         print2("You are not experienced enough to advance.");
+      }
       else if(Player.alignment < 300)
+      {
         print2("You are not sufficiently Lawful as yet to advance.");
+      }
       else
+      {
         print2("You must give the Star Gem to the LawBringer.");
+      }
     }
     else if(Player.rank[ORDER] == CHEVALIER)
     {
       if(Player.guildxp[ORDER] < 4000)
+      {
         print2("You are not experienced enough to advance.");
+      }
       else if(Player.alignment < 200)
+      {
         print2("You are not sufficiently Lawful as yet to advance.");
+      }
       else
       {
         print1("You are made a Paladin of the Order!");
@@ -860,9 +1002,13 @@ void l_order()
     else if(Player.rank[ORDER] == GUARDIAN)
     {
       if(Player.guildxp[ORDER] < 1500)
+      {
         print2("You are not experienced enough to advance.");
+      }
       else if(Player.alignment < 125)
+      {
         print2("You are not yet sufficiently Lawful to advance.");
+      }
       else
       {
         Player.rank[ORDER] = CHEVALIER;
@@ -879,9 +1025,13 @@ void l_order()
     else if(Player.rank[ORDER] == GALLANT)
     {
       if(Player.guildxp[ORDER] < 400)
+      {
         print2("You are not experienced enough to advance.");
+      }
       else if(Player.alignment < 50)
+      {
         print2("You are not Lawful enough to advance.");
+      }
       else
       {
         print1("You are made a Guardian of the Order of Paladins!");

@@ -18,7 +18,9 @@ void i_nothing(pob) {}
 void i_knowledge(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   knowledge(o->blessing);
 }
 
@@ -69,11 +71,17 @@ void i_jane_t(pob o)
     Objects[i].known = 1;
     v                = Objects[i].truename[0];
     if((v >= 'A' && v <= 'Z') || volume == 3)
+    {
       sprintf(Str1, "   %s\n", Objects[i].truename);
+    }
     else if(v == 'a' || v == 'e' || v == 'i' || v == 'o' || v == 'u')
+    {
       sprintf(Str1, "   an %s\n", Objects[i].truename);
+    }
     else
+    {
       sprintf(Str1, "   a %s\n", Objects[i].truename);
+    }
     menuprint(Str1);
   }
   showmenu();
@@ -84,7 +92,9 @@ void i_jane_t(pob o)
 void i_flux(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   flux(o->blessing);
 }
 
@@ -92,7 +102,9 @@ void i_flux(pob o)
 void i_enchant(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   enchant(o->blessing < 0 ? -1 - o->plus : o->plus + 1);
 }
 
@@ -100,11 +112,17 @@ void i_enchant(pob o)
 void i_clairvoyance(struct object *o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   if(o->blessing < 0)
+  {
     amnesia();
+  }
   else
+  {
     clairvoyance(5 + o->blessing * 5);
+  }
 }
 
 void i_acquire(pob o)
@@ -112,7 +130,9 @@ void i_acquire(pob o)
   int blessing;
 
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   blessing = o->blessing;
   *o       = Objects[SCROLLID + 0]; /* blank out the scroll */
   acquire(blessing);
@@ -121,14 +141,18 @@ void i_acquire(pob o)
 void i_teleport(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   p_teleport(o->blessing);
 }
 
 void i_spells(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   mprint("A scroll of spells.");
   morewait();
   learnspell(o->blessing);
@@ -145,7 +169,9 @@ void i_bless(pob o)
 void i_wish(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   wish(o->blessing);
   *o = Objects[SCROLLID + 0]; /* blank out the scroll */
 }
@@ -154,7 +180,9 @@ void i_wish(pob o)
 void i_displace(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   displace(o->blessing);
 }
 
@@ -162,7 +190,9 @@ void i_displace(pob o)
 void i_deflect(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   deflection(o->blessing);
 }
 
@@ -170,7 +200,9 @@ void i_deflect(pob o)
 void i_id(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   identify(o->blessing);
 }
 
@@ -185,14 +217,18 @@ void i_heal(pob o)
     heal(1 + o->plus);
   }
   else
+  {
     heal(-1 - abs(o->plus));
+  }
 }
 
 /* potion of monster detection */
 void i_mondet(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   mondet(o->blessing);
 }
 
@@ -200,7 +236,9 @@ void i_mondet(pob o)
 void i_objdet(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   objdet(o->blessing);
 }
 
@@ -214,7 +252,9 @@ void i_neutralize_poison(pob o)
     Player.status[POISONED] = 0;
   }
   else
+  {
     p_poison(random_range(20) + 5);
+  }
 }
 
 /* potion of sleep */
@@ -228,7 +268,9 @@ void i_sleep_self(pob o)
 void i_speed(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   haste(o->blessing);
 }
 
@@ -236,14 +278,18 @@ void i_speed(pob o)
 void i_restore(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   recover_stat(o->blessing);
 }
 
 void i_augment(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   augment(o->blessing);
 }
 
@@ -311,7 +357,9 @@ void i_perm_speed(pob o)
     {
       Player.status[HASTED] -= 1500;
       if(Player.status[HASTED] < 1)
+      {
         mprint("The world speeds up again.");
+      }
     }
   }
   else
@@ -329,7 +377,9 @@ void i_perm_speed(pob o)
     {
       Player.status[SLOWED] -= 1500;
       if(Player.status[SLOWED] < 1)
+      {
         mprint("You feel quicker again.");
+      }
     }
   }
 }
@@ -382,10 +432,14 @@ void i_perm_negimmune(pob o)
       Player.immunity[NEGENERGY]++;
     }
     else
+    {
       Player.immunity[NEGENERGY]--;
+    }
   }
   else if(o->used)
+  {
     level_drain(abs(o->blessing), "cursed cloak of level drain");
+  }
 }
 
 /* food functions */
@@ -477,21 +531,27 @@ void i_immune(pob o)
 void i_breathing(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   breathe(o->blessing);
 }
 
 void i_invisible(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   invisible(o->blessing);
 }
 
 void i_perm_invisible(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   if(o->used)
   {
     if(o->blessing > -1)
@@ -531,7 +591,9 @@ void i_perm_invisible(pob o)
 void i_warp(pob o)
 {
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   warp(o->blessing);
 }
 
@@ -548,7 +610,9 @@ void i_charge(pob o)
 {
   int i;
   if(o->blessing > -1)
+  {
     Objects[o->id].known = 1;
+  }
   mprint("A scroll of charging.");
   mprint("Charge: ");
   i = getitem(STICK);
@@ -564,7 +628,9 @@ void i_charge(pob o)
       mprint("The stick glows blue!");
       Player.possessions[i]->charge += (random_range(10) + 1) * (o->blessing + 1);
       if(Player.possessions[i]->charge > 99)
+      {
         Player.possessions[i]->charge = 99;
+      }
     }
   }
 }
@@ -594,7 +660,9 @@ void i_pick(pob o)
   int ox, oy;
   o->used = false;
   if((!o->known) && (!Player.rank[THIEVES]))
+  {
     mprint("You have no idea what do with a piece of twisted metal.");
+  }
   else
   {
     if(!o->known)
@@ -605,7 +673,9 @@ void i_pick(pob o)
     mprint("Pick lock:");
     dir = getdir();
     if(dir == ABORT)
+    {
       resetgamestatus(SKIP_MONSTERS, GameStatus);
+    }
     else
     {
       ox = Player.x + Dirs[0][dir];
@@ -618,7 +688,9 @@ void i_pick(pob o)
       else if(Level->site[ox][oy].aux == LOCKED)
       {
         if(Level->depth == MaxDungeonLevels - 1)
+        {
           mprint("The lock is too complicated for you!!!");
+        }
         else if(Level->depth * 2 + random_range(50) <
                 Player.dex + Player.level + Player.rank[THIEVES] * 10)
         {
@@ -628,10 +700,14 @@ void i_pick(pob o)
           gain_experience(std::max(3, static_cast<int>(Level->depth)));
         }
         else
+        {
           mprint("You failed to pick the lock.");
+        }
       }
       else
+      {
         mprint("That door is already unlocked!");
+      }
     }
   }
 }
@@ -645,7 +721,9 @@ void i_key(pob o)
   mprint("Unlock door: ");
   dir = getdir();
   if(dir == ABORT)
+  {
     resetgamestatus(SKIP_MONSTERS, GameStatus);
+  }
   else
   {
     ox = Player.x + Dirs[0][dir];
@@ -667,10 +745,14 @@ void i_key(pob o)
         conform_lost_objects(1, o);
       }
       else
+      {
         mprint("Your key glows faintly.");
+      }
     }
     else
+    {
       mprint("That door is already unlocked!");
+    }
   }
 }
 
@@ -697,7 +779,9 @@ void i_corpse(pob o)
     case JONIN: /* cannibalism */
       mprint("Yechh! How could you! You didn't even cook him, first!");
       if(Player.alignment > 0)
+      {
         Player.food = 25;
+      }
       Player.food += 8;
       Player.alignment -= 10;
       foodcheck();
@@ -724,7 +808,9 @@ void i_corpse(pob o)
     case INVIS_SLAY:
       mprint("Guess what? You're invisible.");
       if(Player.status[INVISIBLE] < 1000)
+      {
         Player.status[INVISIBLE] = 666;
+      }
       Player.food += 6;
       foodcheck();
       break;
@@ -896,7 +982,9 @@ void i_perm_levitate(pob o)
     }
   }
   else
+  {
     i_perm_burden(o);
+  }
 }
 
 void i_perm_protection(pob o)
@@ -904,16 +992,24 @@ void i_perm_protection(pob o)
   if(o->used)
   {
     if(o->blessing > -1)
+    {
       Player.status[PROTECTION] += abs(o->plus) + 1;
+    }
     else
+    {
       Player.status[PROTECTION] -= abs(o->plus) + 1;
+    }
   }
   else
   {
     if(o->blessing > -1)
+    {
       Player.status[PROTECTION] -= abs(o->plus) + 1;
+    }
     else
+    {
       Player.status[PROTECTION] += abs(o->plus) + 1;
+    }
   }
   calc_melee();
 }
@@ -925,16 +1021,24 @@ void i_perm_agility(pob o)
   if(o->used)
   {
     if(o->blessing > -1)
+    {
       Player.agi += abs(o->plus) + 1;
+    }
     else
+    {
       Player.agi -= abs(o->plus) + 1;
+    }
   }
   else
   {
     if(o->blessing > -1)
+    {
       Player.agi -= abs(o->plus) + 1;
+    }
     else
+    {
       Player.agi += abs(o->plus) + 1;
+    }
   }
   calc_melee();
 }
@@ -1041,9 +1145,13 @@ void i_perm_illuminate(pob o)
   }
   Objects[o->id].known = 1;
   if(o->used)
+  {
     Player.status[ILLUMINATION] += 1500;
+  }
   else
+  {
     Player.status[ILLUMINATION] = std::max(0, Player.status[ILLUMINATION] - 1500);
+  }
 }
 
 void i_trap(pob o)
@@ -1052,7 +1160,9 @@ void i_trap(pob o)
 
   if((Level->site[Player.x][Player.y].locchar != FLOOR) ||
      (Level->site[Player.x][Player.y].p_locf != L_NO_OP))
+  {
     mprint("Your attempt fails.");
+  }
   else if(!o->known)
   {
     mprint("Fiddling with the thing, you have a small accident....");

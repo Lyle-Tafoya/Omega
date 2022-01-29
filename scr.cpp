@@ -69,6 +69,7 @@ void show_screen()
   int top       = std::max(0, ScreenOffset);
   int bottom    = std::min(ScreenOffset + ScreenLength, LENGTH);
   if(Current_Environment != E_COUNTRYSIDE)
+  {
     for(int j = top; j < bottom; ++j)
     {
       wmove(Levelw, screenmod(j), 0);
@@ -83,8 +84,11 @@ void show_screen()
         waddch(Levelw, c & 0xff);
       }
     }
+  }
   else
+  {
     for(int j = top; j < bottom; ++j)
+    {
       for(int i = 0; i < WIDTH; ++i)
       {
         wmove(Levelw, screenmod(j), i);
@@ -97,6 +101,8 @@ void show_screen()
         }
         waddch(Levelw, c & 0xff);
       }
+    }
+  }
   wrefresh(Levelw);
 }
 
@@ -110,9 +116,13 @@ int mcigetc()
 {
   int c = wgetch(Msgw);
   if(c >= static_cast<int>('A') && c <= static_cast<int>('Z'))
+  {
     return c + static_cast<int>('a' - 'A');
+  }
   else
+  {
     return (c);
+  }
 }
 
 char menugetc()
@@ -130,7 +140,9 @@ int ynq()
   char p = '*'; /* the user's choice; start with something impossible
                  * to prevent a loop. */
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != EOF) && (p != ' '))
+  {
     p = wgetch(Msgw);
+  }
   switch(p)
   {
     case 'y':
@@ -160,7 +172,9 @@ int ynq1()
   char p = '*'; /* the user's choice; start with something impossible
                  * to prevent a loop. */
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
+  {
     p = wgetch(Msg1w);
+  }
   switch(p)
   {
     case 'y':
@@ -191,7 +205,9 @@ int ynq2()
   char p = '*'; /* the user's choice; start with something impossible
                  * to prevent a loop. */
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
+  {
     p = wgetch(Msg2w);
+  }
   switch(p)
   {
     case 'y':
@@ -364,9 +380,13 @@ void mprint(const std::string &s)
       }
     }
     else if(x > 0)
+    {
       bufferappend(s);
+    }
     else
+    {
       buffercycle(s);
+    }
     wprintw(Msgw, "%s", s.c_str());
     waddch(Msgw, ' ');
     wrefresh(Msgw);
@@ -456,23 +476,31 @@ void drawplayer()
       wmove(Levelw, screenmod(lasty), lastx);
       int c = Country[lastx][lasty].current_terrain_type;
       if(optionp(SHOW_COLOUR, Player))
+      {
         wattrset(Levelw, CHARATTR(c));
+      }
       waddch(Levelw, (c & 0xff));
     }
     wmove(Levelw, screenmod(Player.y), Player.x);
     if(optionp(SHOW_COLOUR, Player))
+    {
       wattrset(Levelw, CHARATTR(PLAYER));
+    }
     waddch(Levelw, (PLAYER & 0xff));
   }
   else
   {
     if(inbounds(lastx, lasty) && !offscreen(lasty))
+    {
       plotspot(lastx, lasty, (Player.status[BLINDED] > 0 ? false : true));
+    }
     wmove(Levelw, screenmod(Player.y), Player.x);
     if((!Player.status[INVISIBLE]) || Player.status[TRUESIGHT])
     {
       if(optionp(SHOW_COLOUR, Player))
+      {
         wattrset(Levelw, CHARATTR(PLAYER));
+      }
       waddch(Levelw, (PLAYER & 0xff));
     }
   }
@@ -489,9 +517,13 @@ void setlastxy(int new_x, int new_y) /* used when changing environments */
 int litroom(int x, int y)
 {
   if(Level->site[x][y].roomnumber < ROOMBASE)
+  {
     return false;
+  }
   else
+  {
     return loc_statusp(x, y, LIT, *Level) || Player.status[ILLUMINATION];
+  }
 }
 
 void drawvision(int x, int y)
@@ -512,31 +544,49 @@ void drawvision(int x, int y)
       if(Player.status[ILLUMINATION] > 0)
       {
         for(i = -2; i < 3; i++)
+        {
           for(j = -2; j < 3; j++)
+          {
             if(inbounds(x + i, y + j))
+            {
               if(view_los_p(x + i, y + j, Player.x, Player.y))
+              {
                 dodrawspot(x + i, y + j);
+              }
+            }
+          }
+        }
       }
       else
       {
         for(i = -1; i < 2; i++)
+        {
           for(j = -1; j < 2; j++)
+          {
             if(inbounds(x + i, y + j))
+            {
               dodrawspot(x + i, y + j);
+            }
+          }
+        }
       }
       drawplayer();
       drawmonsters(false); /* erase all monsters */
       drawmonsters(true);  /* draw those now visible */
     }
     if((!gamestatusp(FAST_MOVE, GameStatus)) || (!optionp(JUMPMOVE, Player)))
+    {
       omshowcursor(Player.x, Player.y);
+    }
     oldx = x;
     oldy = y;
   }
   else
   {
     for(i = -1; i < 2; i++)
+    {
       for(j = -1; j < 2; j++)
+      {
         if(inbounds(x + i, y + j))
         {
           c_set(x + i, y + j, SEEN, Country);
@@ -545,10 +595,14 @@ void drawvision(int x, int y)
             wmove(Levelw, screenmod(y + j), x + i);
             c = Country[x + i][y + j].current_terrain_type;
             if(optionp(SHOW_COLOUR, Player))
+            {
               wattrset(Levelw, CHARATTR(c));
+            }
             waddch(Levelw, (c & 0xff));
           }
         }
+      }
+    }
     drawplayer();
     omshowcursor(Player.x, Player.y);
   }
@@ -576,12 +630,14 @@ void drawspot(int x, int y)
   {
     c = getspot(x, y, false);
     if(c != Level->site[x][y].showchar)
+    {
       if(view_los_p(Player.x, Player.y, x, y))
       {
         lset(x, y, SEEN, *Level);
         Level->site[x][y].showchar = c;
         putspot(x, y, c);
       }
+    }
   }
 }
 
@@ -636,9 +692,13 @@ void blotspot(int i, int j)
 void plotspot(int x, int y, int showmonster)
 {
   if(loc_statusp(x, y, SEEN, *Level))
+  {
     putspot(x, y, getspot(x, y, showmonster));
+  }
   else
+  {
     putspot(x, y, SPACE);
+  }
 }
 
 /* Puts c at x,y on screen. No fuss, no bother. */
@@ -648,7 +708,9 @@ void putspot(int x, int y, Symbol c)
   {
     wmove(Levelw, screenmod(y), x);
     if(optionp(SHOW_COLOUR, Player))
+    {
       wattrset(Levelw, CHARATTR(c));
+    }
     waddch(Levelw, (0xff & c));
   }
 }
@@ -660,7 +722,9 @@ void plotmon(struct monster *m)
   {
     wmove(Levelw, screenmod(m->y), m->x);
     if(optionp(SHOW_COLOUR, Player))
+    {
       wattrset(Levelw, CHARATTR(m->monchar));
+    }
     waddch(Levelw, (m->monchar & 0xff));
   }
 }
@@ -681,15 +745,21 @@ void drawmonsters(int display)
           {
             if(!optionp(SHOW_COLOUR, Player) && (ml->m->level > 5) && ((ml->m->monchar & 0xff) != '@') &&
                ((ml->m->monchar & 0xff) != '|'))
+            {
               wstandout(Levelw);
+            }
             putspot(ml->m->x, ml->m->y, ml->m->monchar);
             if(!optionp(SHOW_COLOUR, Player))
+            {
               wstandend(Levelw);
+            }
           }
         }
       }
       else
+      {
         erase_monster(ml->m);
+      }
     }
   }
 }
@@ -698,28 +768,43 @@ void drawmonsters(int display)
 void erase_monster(struct monster *m)
 {
   if(loc_statusp(m->x, m->y, SEEN, *Level))
+  {
     putspot(m->x, m->y, getspot(m->x, m->y, false));
+  }
   else
+  {
     blotspot(m->x, m->y);
+  }
 }
 
 /* find apt char to display at some location */
 Symbol getspot(int x, int y, int showmonster)
 {
   if(loc_statusp(x, y, SECRET, *Level))
+  {
     return (WALL);
+  }
   else
+  {
     switch(Level->site[x][y].locchar)
     {
       case WATER:
         if(Level->site[x][y].creature == NULL)
+        {
           return (WATER);
+        }
         else if(m_statusp(*Level->site[x][y].creature, SWIMMING))
+        {
           return (WATER);
+        }
         else if(showmonster)
+        {
           return (Level->site[x][y].creature->monchar);
+        }
         else
+        {
           return (WATER);
+        }
       /* these sites never show anything but their location char's */
       case CLOSED_DOOR:
       case LAVA:
@@ -732,32 +817,49 @@ Symbol getspot(int x, int y, int showmonster)
         if(showmonster && (Level->site[x][y].creature != NULL))
         {
           if((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) && (!Player.status[TRUESIGHT]))
+          {
             return (getspot(x, y, false));
+          }
           else
+          {
             return (Level->site[x][y].creature->monchar);
+          }
         }
         else
+        {
           return (Level->site[x][y].locchar);
+        }
       /* everywhere else, first try to show monster, next show items, next show
        location char */
       default:
         if(showmonster && (Level->site[x][y].creature != NULL))
         {
           if((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) && (!Player.status[TRUESIGHT]))
+          {
             return (getspot(x, y, false));
+          }
           else
+          {
             return (Level->site[x][y].creature->monchar);
+          }
         }
         else if(Level->site[x][y].things != NULL)
         {
           if(Level->site[x][y].things->next != NULL)
+          {
             return (PILE);
+          }
           else
+          {
             return (Level->site[x][y].things->thing->objchar);
+          }
         }
         else
+        {
           return (Level->site[x][y].locchar);
+        }
     }
+  }
 }
 
 void commanderror()
@@ -772,7 +874,9 @@ void timeprint()
   wclear(Timew);
   wprintw(Timew, "%d:%d", showhour(), showminute());
   if(showminute() == 0)
+  {
     waddch(Timew, '0');
+  }
   wprintw(Timew, hour() > 11 ? " PM \n" : " AM \n");
   wprintw(Timew, "%s", month());
   wprintw(Timew, " the %d", day());
@@ -848,14 +952,20 @@ void morewait()
   int display = true;
   int c;
   if(gamestatusp(SUPPRESS_PRINTING, GameStatus))
+  {
     return;
+  }
   do
   {
     wclear(Morew);
     if(display)
+    {
       wprintw(Morew, "***  MORE  ***");
+    }
     else
+    {
       wprintw(Morew, "+++  MORE  +++");
+    }
     display = !display;
     wrefresh(Morew);
     c = wgetch(Msgw);
@@ -872,9 +982,13 @@ int stillonblock()
   {
     wclear(Morew);
     if(display)
+    {
       wprintw(Morew, "<<<STAY?>>>");
+    }
     else
+    {
       wprintw(Morew, ">>>STAY?<<<");
+    }
     display = !display;
     wrefresh(Morew);
     c = wgetch(Msgw);
@@ -935,7 +1049,9 @@ void plotchar(Symbol pyx, int x, int y)
   {
     wmove(Levelw, screenmod(y), x);
     if(optionp(SHOW_COLOUR, Player))
+    {
       wattrset(Levelw, CHARATTR(pyx));
+    }
     waddch(Levelw, (pyx & 0xff));
     wrefresh(Levelw);
   }
@@ -948,14 +1064,20 @@ void draw_explosion(Symbol pyx, int x, int y)
   for(j = 0; j < 3; j++)
   {
     for(i = 0; i < 9; i++)
+    {
       plotchar(pyx, x + Dirs[0][i], y + Dirs[1][i]);
+    }
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
     for(i = 0; i < 9; i++)
+    {
       plotchar(SPACE, x + Dirs[0][i], y + Dirs[1][i]);
+    }
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
   }
   for(i = 0; i < 9; i++)
+  {
     plotspot(x + Dirs[0][i], y + Dirs[1][i], true);
+  }
   wrefresh(Levelw);
 }
 
@@ -1002,16 +1124,32 @@ void drawscreen()
 {
   int i, j;
   if(Current_Environment == E_COUNTRYSIDE)
+  {
     for(i = 0; i < WIDTH; i++)
+    {
       for(j = 0; j < LENGTH; j++)
+      {
         c_set(i, j, SEEN, Country);
+      }
+    }
+  }
   else
+  {
     for(i = 0; i < WIDTH; i++)
+    {
       for(j = 0; j < LENGTH; j++)
+      {
         lset(i, j, SEEN, *Level);
+      }
+    }
+  }
   if(Current_Environment == E_CITY)
+  {
     for(i = 0; i < NUMCITYSITES; i++)
+    {
       CitySiteList[i][0] = 1;
+    }
+  }
   show_screen();
 }
 
@@ -1023,23 +1161,34 @@ int getnumber(int range)
   int atom;
 
   if(range == 1)
+  {
     return (1);
+  }
   else
+  {
     while(!done)
     {
       clearmsg();
       wprintw(Msg1w, "How many? Change with < or >, ESCAPE to select:");
       mnumprint(value);
       do
+      {
         atom = mcigetc();
-      while((atom != '<') && (atom != '>') && (atom != ESCAPE));
+      } while((atom != '<') && (atom != '>') && (atom != ESCAPE));
       if((atom == '>') && (value < range))
+      {
         value++;
+      }
       else if((atom == '<') && (value > 1))
+      {
         value--;
+      }
       else if(atom == ESCAPE)
+      {
         done = true;
+      }
     }
+  }
   return (value);
 }
 
@@ -1078,7 +1227,9 @@ long parsenum()
   }
   waddch(Msgw, ' ');
   if(byte == ESCAPE)
+  {
     return (ABORT);
+  }
   else
   {
     for(i = place; i >= 0; i--)
@@ -1112,7 +1263,9 @@ void display_death(const std::string &source)
   printw("\n\n\n\n\nHit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
+  {
     ;
+  }
   clear();
   touchwin(stdscr);
   refresh();
@@ -1138,14 +1291,20 @@ void display_win()
   printw("\n\n\n\n\nHit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
+  {
     ;
+  }
   clear();
   touchwin(stdscr);
   refresh();
   if(Player.rank[ADEPT])
+  {
     extendlog(Str4, BIGWIN);
+  }
   else
+  {
     extendlog(Str4, WIN);
+  }
 }
 
 void display_quit()
@@ -1159,7 +1318,9 @@ void display_quit()
   printw("\n\n\n\n\nHit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
+  {
     ;
+  }
   clear();
   touchwin(stdscr);
   refresh();
@@ -1177,7 +1338,9 @@ void display_bigwin()
   printw("\n\n\n\n\nHit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
+  {
     ;
+  }
   clear();
   touchwin(stdscr);
   refresh();
@@ -1246,38 +1409,68 @@ void showflags()
   phaseprint();
   wclear(Flagw);
   if(Player.food < 0)
+  {
     wprintw(Flagw, "Starving\n");
+  }
   else if(Player.food <= 3)
+  {
     wprintw(Flagw, "Weak\n");
+  }
   else if(Player.food <= 10)
+  {
     wprintw(Flagw, "Ravenous\n");
+  }
   else if(Player.food <= 20)
+  {
     wprintw(Flagw, "Hungry\n");
+  }
   else if(Player.food <= 30)
+  {
     wprintw(Flagw, "A mite peckish\n");
+  }
   else if(Player.food <= 36)
+  {
     wprintw(Flagw, "Content\n");
+  }
   else if(Player.food <= 44)
+  {
     wprintw(Flagw, "Satiated\n");
+  }
   else
+  {
     wprintw(Flagw, "Bloated\n");
+  }
 
   if(Player.status[POISONED] > 0)
+  {
     wprintw(Flagw, "Poisoned\n");
+  }
   else
+  {
     wprintw(Flagw, "Vigorous\n");
+  }
 
   if(Player.status[DISEASED] > 0)
+  {
     wprintw(Flagw, "Diseased\n");
+  }
   else
+  {
     wprintw(Flagw, "Healthy\n");
+  }
 
   if(gamestatusp(MOUNTED, GameStatus))
+  {
     wprintw(Flagw, "Mounted\n");
+  }
   else if(Player.status[LEVITATING])
+  {
     wprintw(Flagw, "Levitating\n");
+  }
   else
+  {
     wprintw(Flagw, "Afoot\n");
+  }
 
   wrefresh(Flagw);
 }
@@ -1291,7 +1484,9 @@ void drawomega()
   {
     move(1, 1);
     if(optionp(SHOW_COLOUR, Player))
+    {
       wattrset(stdscr, CHARATTR(CLR(LIGHT_BLUE)));
+    }
     printw("\n\n\n");
     printw("\n                                    *****");
     printw("\n                               ******   ******");
@@ -1310,7 +1505,9 @@ void drawomega()
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     move(1, 1);
     if(optionp(SHOW_COLOUR, Player))
+    {
       wattrset(stdscr, CHARATTR(CLR(CYAN)));
+    }
     printw("\n\n\n");
     printw("\n                                    +++++");
     printw("\n                               ++++++   ++++++");
@@ -1329,7 +1526,9 @@ void drawomega()
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     move(1, 1);
     if(optionp(SHOW_COLOUR, Player))
+    {
       wattrset(stdscr, CHARATTR(CLR(BLUE)));
+    }
     printw("\n\n\n");
     printw("\n                                    .....");
     printw("\n                               ......   ......");
@@ -1359,9 +1558,13 @@ void screencheck(int y)
   ScreenOffset = std::max(y - ScreenLength / 2, 0);
   show_screen();
   if(Current_Environment != E_COUNTRYSIDE)
+  {
     drawmonsters(true);
+  }
   if(!offscreen(Player.y))
+  {
     drawplayer();
+  }
 }
 
 void spreadroomlight(int x, int y, int roomno)
@@ -1391,6 +1594,7 @@ void lightspot(int x, int y)
 void spreadroomdark(int x, int y, int roomno)
 {
   if(inbounds(x, y))
+  {
     if(loc_statusp(x, y, LIT, *Level) && (Level->site[x][y].roomnumber == roomno))
     {
       blankoutspot(x, y);
@@ -1399,13 +1603,16 @@ void spreadroomdark(int x, int y, int roomno)
       spreadroomdark(x - 1, y, roomno);
       spreadroomdark(x, y - 1, roomno);
     }
+  }
 }
 
 void display_pack()
 {
   int i;
   if(Player.packptr < 1)
+  {
     print3("Pack is empty.");
+  }
   else
   {
     menuclear();
@@ -1423,7 +1630,9 @@ void display_possessions()
 {
   int i;
   for(i = 0; i < MAXITEMS; i++)
+  {
     display_inventory_slot(i, false);
+  }
 }
 
 void display_inventory_slot(int slotnum, int topline)
@@ -1431,10 +1640,16 @@ void display_inventory_slot(int slotnum, int topline)
   WINDOW *W;
   char    usechar = ')', idchar = '-';
   if(Player.possessions[slotnum] != NULL)
+  {
     if(Player.possessions[slotnum]->used)
+    {
       usechar = '>';
+    }
+  }
   if(topline)
+  {
     W = Msg3w;
+  }
   else
   {
     W = Showline[slotnum];
@@ -1495,9 +1710,13 @@ void display_inventory_slot(int slotnum, int topline)
       break;
   }
   if(Player.possessions[slotnum] == NULL)
+  {
     wprintw(W, "(slot vacant)");
+  }
   else
+  {
     wprintw(W, "%s", itemid(Player.possessions[slotnum]));
+  }
   wrefresh(W);
 }
 
@@ -1516,7 +1735,9 @@ int move_slot(int oldslot, int newslot, int maxslot)
     return (newslot);
   }
   else
+  {
     return (oldslot);
+  }
 }
 
 void colour_on() {}
@@ -1571,11 +1792,17 @@ void display_option_slot(int slot)
     case VERBOSITY_LEVEL:
       wprintw(Showline[slot], "-- Option VERBOSITY [(T)erse,(M)edium,(V)erbose]: (now ");
       if(Verbosity == VERBOSE)
+      {
         wprintw(Showline[slot], "Verbose)");
+      }
       else if(Verbosity == MEDIUM)
+      {
         wprintw(Showline[slot], "Medium)");
+      }
       else
+      {
         wprintw(Showline[slot], "Terse)");
+      }
       break;
     case SEARCH_DURATION:
       wprintw(Showline[slot], "-- Option SEARCHNUM [0>x>10]: (now %d)", Searchnum);
@@ -1590,7 +1817,9 @@ void display_options()
   menuclear();
   hide_line(0);
   for(i = 1; i <= NUMOPTIONS; i++)
+  {
     display_option_slot(i);
+  }
 }
 
 /* nya ha ha ha ha haaaa.... */
@@ -1641,7 +1870,9 @@ void buffercycle(const std::string &s)
 {
   strcpy(Stringbuffer[bufferpos++], s.c_str());
   if(bufferpos >= STRING_BUFFER_SIZE)
+  {
     bufferpos = 0;
+  }
 }
 
 int bufferappend(const std::string &s)
@@ -1649,14 +1880,18 @@ int bufferappend(const std::string &s)
   int pos = bufferpos - 1;
 
   if(pos < 0)
+  {
     pos = STRING_BUFFER_SIZE - 1;
+  }
   if(strlen(Stringbuffer[pos]) + s.length() < 80 - 1)
   {
     strcat(Stringbuffer[pos], s.c_str());
     return 1;
   }
   else
+  {
     return 0;
+  }
 }
 
 void bufferprint()
@@ -1668,19 +1903,29 @@ void bufferprint()
   do
   {
     if(i >= STRING_BUFFER_SIZE)
+    {
       i = 0;
+    }
     if(i < 0)
+    {
       i = STRING_BUFFER_SIZE - 1;
+    }
     wclear(Msg2w);
     wprintw(Msg2w, "%s", Stringbuffer[i]);
     wrefresh(Msg2w);
     c = mgetc();
-    if(c == 16) /* ^p */
+    if(c == 16)
+    { /* ^p */
       i--;
-    else if(c == 14) /* ^n */
+    }
+    else if(c == 14)
+    { /* ^n */
       i++;
+    }
     else
+    {
       finished = 1;
+    }
   } while(!finished);
   clearmsg();
   omshowcursor(Player.x, Player.y);

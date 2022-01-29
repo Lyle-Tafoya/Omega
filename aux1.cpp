@@ -15,14 +15,22 @@ extern void kill_all_levels();
 void tunnelcheck()
 {
   if((Level->depth == 0 && Current_Environment != E_DLAIR) || Current_Environment == E_ASTRAL)
+  {
     return;
+  }
   Level->tunnelled++;
   if((Level->tunnelled) > LENGTH / 4)
+  {
     mprint("Dust and stone fragments fall on you from overhead.");
+  }
   if((Level->tunnelled) > LENGTH / 2)
+  {
     mprint("You hear groaning and creaking noises.");
+  }
   if((Level->tunnelled) > 3 * LENGTH / 4)
+  {
     mprint("The floor trembles and you hear a loud grinding screech.");
+  }
   if((Level->tunnelled) > LENGTH)
   {
     mprint("With a scream of tortured stone, the entire dungeon caves in!!!");
@@ -139,7 +147,9 @@ void showroom(int i)
   }
   else if(strlen(Str2) == 0 || Current_Environment == E_MANSION || Current_Environment == E_HOUSE ||
           Current_Environment == E_HOVEL)
+  {
     strcpy(Str1, roomname(i));
+  }
   strcat(Str2, Str1);
   locprint(Str2);
 }
@@ -147,19 +157,27 @@ void showroom(int i)
 int player_on_sanctuary()
 {
   if((Player.x == Player.sx) && (Player.y == Player.sy))
+  {
     return true;
+  }
   else
   {
     if(Player.patron)
     {
       if((Level->site[Player.x][Player.y].locchar == ALTAR) &&
          (Level->site[Player.x][Player.y].aux == Player.patron))
+      {
         return true;
+      }
       else
+      {
         return false;
+      }
     }
     else
+    {
       return false;
+    }
   }
 }
 
@@ -271,17 +289,25 @@ int p_moveable(int x, int y)
 int p_country_moveable(int x, int y)
 {
   if(!inbounds(x, y))
+  {
     return false;
+  }
   else if(optionp(CONFIRM, Player))
   {
     if((Country[x][y].current_terrain_type == CHAOS_SEA) ||
        (Country[x][y].current_terrain_type == MOUNTAINS))
+    {
       return (confirmation());
+    }
     else
+    {
       return true;
+    }
   }
   else
+  {
     return true;
+  }
 }
 
 /* search once particular spot */
@@ -304,7 +330,9 @@ void searchat(int x, int y)
         }
       }
       else
+      {
         mprint("You find a secret passage!");
+      }
       drawvision(Player.x, Player.y);
     }
     if((Level->site[x][y].p_locf >= TRAP_BASE) && (Level->site[x][y].locchar != TRAP) &&
@@ -332,10 +360,15 @@ void calc_melee()
   Player.dmg        = statmod(Player.str) + 3;
   Player.speed      = 5 - std::min(4, (statmod(Player.agi) / 2));
   if(Player.status[HASTED] > 0)
+  {
     Player.speed = Player.speed / 2;
+  }
   if(Player.status[SLOWED] > 0)
+  {
     Player.speed = Player.speed * 2;
+  }
   if(Player.itemweight > 0)
+  {
     switch(Player.maxweight / Player.itemweight)
     {
       case 0:
@@ -351,17 +384,28 @@ void calc_melee()
         Player.speed += 1;
         break;
     }
+  }
 
   if(Player.status[ACCURATE])
+  {
     Player.hit += 20;
+  }
   if(Player.status[HERO])
+  {
     Player.hit += Player.dex;
+  }
   if(Player.status[HERO])
+  {
     Player.dmg += Player.str;
+  }
   if(Player.status[HERO])
+  {
     Player.defense += Player.agi;
+  }
   if(Player.status[HERO])
+  {
     Player.speed = Player.speed / 2;
+  }
 
   Player.speed = std::max(1, std::min(25, Player.speed));
 
@@ -376,6 +420,7 @@ void calc_melee()
   /* have to check for used since it could be a 2h weapon just carried
      in one hand */
   if(Player.possessions[O_WEAPON_HAND] != NULL)
+  {
     if(Player.possessions[O_WEAPON_HAND]->used &&
        ((Player.possessions[O_WEAPON_HAND]->objchar == WEAPON) ||
         (Player.possessions[O_WEAPON_HAND]->objchar == MISSILEWEAPON)))
@@ -383,6 +428,7 @@ void calc_melee()
       Player.hit += Player.possessions[O_WEAPON_HAND]->hit + Player.possessions[O_WEAPON_HAND]->plus;
       Player.dmg += Player.possessions[O_WEAPON_HAND]->dmg + Player.possessions[O_WEAPON_HAND]->plus;
     }
+  }
 
   /* shield or defensive weapon */
   if(Player.possessions[O_SHIELD] != NULL)
@@ -426,22 +472,34 @@ void fight_monster(struct monster *m)
   else if((Player.status[BERSERK] < 1) && (!m_statusp(*m, HOSTILE)))
   {
     if(optionp(BELLICOSE, Player))
+    {
       reallyfight = true;
+    }
     else
+    {
       reallyfight = confirmation();
+    }
   }
   else
+  {
     reallyfight = true;
+  }
 
   if(reallyfight)
   {
     if(Lunarity == 1)
+    {
       hitmod += Player.level;
+    }
     else if(Lunarity == -1)
+    {
       hitmod -= (Player.level / 2);
+    }
 
     if(!m->attacked)
+    {
       Player.alignment -= 2; /* chaotic action */
+    }
     m_status_set(*m, AWAKE);
     m_status_set(*m, HOSTILE);
     m->attacked = true;
@@ -461,7 +519,9 @@ int damage_item(pob o)
     if(Current_Environment == E_STARPEAK)
     {
       if(!gamestatusp(KILLED_LAWBRINGER, GameStatus))
+      {
         print2("You hear an agonizing scream of anguish and despair.");
+      }
       morewait();
       print1("A raging torrent of energy escapes in an explosion of magic!");
       print2("The energy flows to the apex of Star Peak where there is");
@@ -503,7 +563,9 @@ int damage_item(pob o)
         print1(Str1);
         morewait();
         if(o->charge < 1)
+        {
           nprint1(" Fzzz... Out of Power... Oh well...");
+        }
         else
         {
           nprint1(" Ka-Blamm!!!");
@@ -541,9 +603,13 @@ int damage_item(pob o)
       else
       {
         if(o->blessing > 0)
+        {
           print1("You hear a faint despairing cry!");
+        }
         else if(o->blessing < 0)
+        {
           print1("You hear an agonized scream!");
+        }
         strcpy(Str1, "Your ");
         strcat(Str1, itemid(o));
         strcat(Str1, " shatters in a thousand lost fragments!");
@@ -568,14 +634,22 @@ void p_damage(int dmg, int dtype, const std::string &fromstring)
       resetgamestatus(FAST_MOVE, GameStatus);
     }
     if(dtype == NORMAL_DAMAGE)
+    {
       Player.hp -= std::max(1, (dmg - Player.absorption));
+    }
     else
+    {
       Player.hp -= dmg;
+    }
     if(Player.hp < 1)
+    {
       p_death(fromstring);
+    }
   }
   else
+  {
     mprint("You resist the effects!");
+  }
   dataprint();
 }
 
@@ -644,7 +718,9 @@ void setspot(int *x, int *y)
     }
   }
   if(c == ESCAPE)
+  {
     *x = *y = ABORT;
+  }
   screencheck(Player.y);
 }
 
@@ -700,17 +776,27 @@ int getdir()
 std::string mstatus_string(struct monster *m)
 {
   if(m_statusp(*m, M_INVISIBLE) && !Player.status[TRUESIGHT])
+  {
     strcpy(Str2, "Some invisible creature");
+  }
   else if(m->uniqueness == COMMON)
   {
     if(m->hp < Monsters[m->id].hp / 3)
+    {
       strcpy(Str2, "a grievously injured ");
+    }
     else if(m->hp < Monsters[m->id].hp / 2)
+    {
       strcpy(Str2, "a severely injured ");
+    }
     else if(m->hp < Monsters[m->id].hp)
+    {
       strcpy(Str2, "an injured ");
+    }
     else
+    {
       strcpy(Str2, getarticle(m->monstring));
+    }
     if(m->level > Monsters[m->id].level)
     {
       strcat(Str2, " (level ");
@@ -723,11 +809,17 @@ std::string mstatus_string(struct monster *m)
   {
     strcpy(Str2, m->monstring);
     if(m->hp < Monsters[m->id].hp / 3)
+    {
       strcat(Str2, " who is grievously injured ");
+    }
     else if(m->hp < Monsters[m->id].hp / 2)
+    {
       strcat(Str2, " who is severely injured ");
+    }
     else if(m->hp < Monsters[m->id].hp)
+    {
       strcat(Str2, " who is injured ");
+    }
   }
   return (Str2);
 }
@@ -736,22 +828,36 @@ std::string mstatus_string(struct monster *m)
 void describe_player()
 {
   if(Player.hp < (Player.maxhp / 5))
+  {
     print1("A grievously injured ");
+  }
   else if(Player.hp < (Player.maxhp / 2))
+  {
     print1("A seriously wounded ");
+  }
   else if(Player.hp < Player.maxhp)
+  {
     print1("A somewhat bruised ");
+  }
   else
+  {
     print1("A fit ");
+  }
 
   if(Player.status[SHADOWFORM])
+  {
     nprint1("shadow");
+  }
   else
+  {
     nprint1(levelname(Player.level));
+  }
   nprint1(" named ");
   nprint1(Player.name);
   if(gamestatusp(MOUNTED, GameStatus))
+  {
     nprint1(" (riding a horse.)");
+  }
 }
 
 /* access to player experience... */
@@ -762,12 +868,20 @@ void gain_experience(int amount)
   Player.xp += static_cast<long>(amount);
   gain_level(); /* actually, check to see if should gain level */
   for(i = 0; i < NUMRANKS; i++)
+  {
     if(Player.guildxp[i] > 0)
+    {
       count++;
+    }
+  }
   share = amount / (std::max(count, 1));
   for(i = 0; i < NUMRANKS; i++)
+  {
     if(Player.guildxp[i] > 0)
+    {
       Player.guildxp[i] += share;
+    }
+  }
 }
 
 /* try to hit a monster in an adjacent space. If there are none
@@ -780,12 +894,14 @@ bool goberserk()
   strcpy(meleestr, Player.meleestr);
   strcpy(Player.meleestr, "LLLCLH");
   for(uint8_t i = 0; i < 8; ++i)
+  {
     if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature != NULL)
     {
       wentberserk = true;
       fight_monster(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
       morewait();
     }
+  }
   strcpy(Player.meleestr, meleestr);
   return wentberserk;
 }
@@ -835,11 +951,17 @@ void foodcheck()
     Player.food = 12;
   }
   else if(Player.food == 30)
+  {
     print3("Time for a smackerel of something.");
+  }
   else if(Player.food == 20)
+  {
     print3("You feel hungry.");
+  }
   else if(Player.food == 12)
+  {
     print3("You are ravenously hungry.");
+  }
   else if(Player.food == 3)
   {
     print3("You feel weak.");
@@ -872,6 +994,7 @@ void roomcheck()
   if((roomno == RS_CAVERN) || (roomno == RS_SEWER_DUCT) || (roomno == RS_KITCHEN) ||
      (roomno == RS_BATHROOM) || (roomno == RS_BEDROOM) || (roomno == RS_DININGROOM) ||
      (roomno == RS_CLOSET) || (roomno > ROOMBASE))
+  {
     if((!loc_statusp(Player.x, Player.y, LIT, *Level)) && (!Player.status[BLINDED]) &&
        (Player.status[ILLUMINATION] || (difficulty() < 6)))
     {
@@ -879,6 +1002,7 @@ void roomcheck()
       spreadroomlight(Player.x, Player.y, roomno);
       levelrefresh();
     }
+  }
   if((oldroomno != roomno) || (oldlevel != Level))
   {
     showroom(roomno);
@@ -911,7 +1035,9 @@ void surrender(struct monster *m)
   if(m->id == GUARD)
   {
     if(m_statusp(*m, HOSTILE))
+    {
       monster_talk(m);
+    }
     else
     {
       print2("The guard (bored): Have you broken a law? [yn] ");
@@ -922,27 +1048,37 @@ void surrender(struct monster *m)
         send_to_jail();
       }
       else
+      {
         print2("Then don't bother me. Scat!");
+      }
     }
   }
   else if((m->talkf == M_NO_OP) || (m->talkf == M_TALK_STUPID))
+  {
     print3("Your plea is ignored.");
+  }
   else
   {
     morewait();
     print1("Your surrender is accepted.");
     if(Player.cash > 0)
+    {
       nprint1(" All your gold is taken....");
+    }
     Player.cash = 0;
     bestvalue   = 0;
     bestitem    = ABORT;
     for(i = 1; i < MAXITEMS; i++)
+    {
       if(Player.possessions[i] != NULL)
+      {
         if(bestvalue < true_item_value(Player.possessions[i]))
         {
           bestitem  = i;
           bestvalue = true_item_value(Player.possessions[i]);
         }
+      }
+    }
     if(bestitem != ABORT)
     {
       print2("You also give away your best item... ");
@@ -972,7 +1108,9 @@ void surrender(struct monster *m)
       m_status_reset(*m, GREEDY);
     }
     else if(m->id == HORNET || m->id == GUARD)
+    {
       print1("It continues to attack you. ");
+    }
     else
     {
       print1("The monster leaves, chuckling to itself....");
@@ -1008,19 +1146,24 @@ void threaten(struct monster *m)
     m_status_set(*m, HOSTILE);
   }
   else if(((m->level * 2 > Player.level) && (m->hp > Player.dmg)) || (m->uniqueness != COMMON))
+  {
     print1("It sneers contemptuously at you.");
+  }
   else if((m->talkf != M_TALK_GREEDY) && (m->talkf != M_TALK_HUNGRY) && (m->talkf != M_TALK_EVIL) &&
           (m->talkf != M_TALK_MAN) && (m->talkf != M_TALK_BEG) && (m->talkf != M_TALK_THIEF) &&
           (m->talkf != M_TALK_MERCHANT) && (m->talkf != M_TALK_IM))
+  {
     print1("Your demand is ignored");
+  }
   else
   {
     print1("It yields to your mercy.");
     Player.alignment += 3;
     print2("Kill it, rob it, or free it? [krf] ");
     do
+    {
       response = static_cast<char>(mcigetc());
-    while((response != 'k') && (response != 'r') && (response != 'f'));
+    } while((response != 'k') && (response != 'r') && (response != 'f'));
     if(response == 'k')
     {
       m_death(m);
@@ -1111,6 +1254,8 @@ std::string levelname(int level)
         return "Order " + std::to_string(order) + " Master of Omega";
       }
       else
+      {
         return "Ultimate Master of Omega";
+      }
   }
 }

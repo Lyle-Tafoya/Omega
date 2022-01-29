@@ -74,7 +74,9 @@ void load_village(int villagenum, int populate)
         case 'f':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_food_bin(i, j);
+          }
           break;
         case 'g':
           Level->site[i][j].locchar = FLOOR;
@@ -83,7 +85,9 @@ void load_village(int villagenum, int populate)
         case 'h':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_horse(i, j);
+          }
           break;
         case 'S':
           Level->site[i][j].locchar = FLOOR;
@@ -92,7 +96,9 @@ void load_village(int villagenum, int populate)
         case 'H':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_merchant(i, j);
+          }
           break;
         case 'C':
           Level->site[i][j].locchar = FLOOR;
@@ -101,7 +107,9 @@ void load_village(int villagenum, int populate)
         case 's':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_sheep(i, j);
+          }
           break;
         case 'x':
           assign_village_function(i, j, false);
@@ -157,9 +165,13 @@ void load_village(int villagenum, int populate)
           break;
       }
       if(loc_statusp(i, j, SECRET, *Level))
+      {
         Level->site[i][j].showchar = WALL;
+      }
       else
+      {
         Level->site[i][j].showchar = Level->site[i][j].locchar;
+      }
     }
     site = getc(fd) ^ site;
   }
@@ -232,7 +244,9 @@ void assign_village_function(int x, int y, int setup)
   {
     next = 0;
     for(i = 0; i < 24; i++)
+    {
       permutation[i] = i;
+    }
     for(i = 0; i < 24; i++)
     {
       j              = permutation[i];
@@ -274,11 +288,17 @@ void assign_village_function(int x, int y, int setup)
       default:
         Level->site[x][y].locchar = CLOSED_DOOR;
         if(random_range(2))
+        {
           Level->site[x][y].aux = LOCKED;
+        }
         if(random_range(2))
+        {
           Level->site[x][y].p_locf = L_HOVEL;
+        }
         else
+        {
           Level->site[x][y].p_locf = L_HOUSE;
+        }
         break;
     }
   }

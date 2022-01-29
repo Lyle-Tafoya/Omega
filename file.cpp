@@ -28,10 +28,13 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
     nprint3(filestring);
     print1(" Abort or Retry? [ar] ");
     do
+    {
       response = static_cast<char>(mcigetc());
-    while((response != 'a') && (response != 'r'));
+    } while((response != 'a') && (response != 'r'));
     if(response == 'r')
+    {
       fd = fopen(filestring.c_str(), optionstring.c_str());
+    }
     else
     {
       print2("Sorry 'bout that.... Saving character, then quitting.");
@@ -48,9 +51,13 @@ void commandlist()
 {
   strcpy(Str1, Omegalib);
   if(Current_Environment == E_COUNTRYSIDE)
+  {
     strcat(Str1, "help13.txt");
+  }
   else
+  {
     strcat(Str1, "help12.txt");
+  }
   displayfile(Str1);
   xredraw();
 }
@@ -152,17 +159,25 @@ void lock_score_file()
         fscanf(lockfile, "%d", &thispid);
         fclose(lockfile);
         if(thispid != lastpid)
+        {
           attempts = 0;
+        }
         lastpid = thispid;
       }
       attempts++;
-      if(attempts > 10) /* assume that lock file has been abandoned */
-        unlink(Str1);   /* so we unlink it ourselves - ugly...	*/
+      if(attempts > 10)
+      {               /* assume that lock file has been abandoned */
+        unlink(Str1); /* so we unlink it ourselves - ugly...	*/
+      }
       else
+      {
         std::this_thread::sleep_for(std::chrono::seconds(2));
+      }
     }
-    else if(lock < 0) /* oops - something very wrong */
+    else if(lock < 0)
+    { /* oops - something very wrong */
       return;
+    }
   } while(lock < 0);
   sprintf(Str1, "%d", getpid());
   write(lock, Str1, strlen(Str1));
@@ -264,7 +279,9 @@ void save_hiscore_npc(int npc)
   int   i;
 
   if(gamestatusp(CHEATED, GameStatus))
+  {
     return;
+  }
   lock_score_file();
   strcpy(Str1, Omegalib);
   strcat(Str1, "omega.hi");
@@ -322,14 +339,20 @@ void save_hiscore_npc(int npc)
     {
       fgets(buffer, 80, infile);
       if(i != npc)
+      {
         fputs(buffer, outfile);
+      }
     }
     fgets(buffer, 80, infile);
     if(i != npc)
+    {
       fputs(buffer, outfile);
+    }
     fgets(buffer, 80, infile);
     if(i != npc)
+    {
       fputs(buffer, outfile);
+    }
   }
   fclose(infile);
   fclose(outfile);
@@ -343,9 +366,13 @@ void checkhigh(const std::string &descrip, int behavior)
   long points;
 
   if(FixedPoints > 0)
+  {
     points = FixedPoints;
+  }
   else
+  {
     points = calc_points();
+  }
   if(!gamestatusp(CHEATED, GameStatus))
   {
     if(Hiscore < points)
@@ -413,8 +440,12 @@ void filescanstring(FILE *fd, char *fstr)
     fstr[i] = byte;
   }
   if(byte != '\n')
+  {
     while((byte != '\n') && (byte != EOF))
+    {
       byte = fgetc(fd);
+    }
+  }
   fstr[i] = 0;
 }
 
@@ -483,7 +514,9 @@ int filecheck()
   {
     printf("\nFurther execution is impossible. Sorry.");
     if(strcmp(Omegalib, OMEGALIB))
+    {
       printf("\nEnvironment variable OMEGALIB badly set\n");
+    }
     else
     {
       printf("\nOMEGALIB may be badly #defined in defs.h\n");
@@ -499,12 +532,18 @@ int filecheck()
     printf("\nFurther execution may cause anomalous behavior.");
     printf("\nContinue anyhow? [yn] ");
     if(getchar() == 'y')
+    {
       return (-1);
+    }
     else
+    {
       return (0);
+    }
   }
   else
+  {
     return (1);
+  }
 }
 
 /* display a file given a string name of file */
@@ -609,7 +648,9 @@ void copyfile(const std::string &srcstr)
   }
   print2("Copying file....");
   while(fgets(buffer, STRING_LEN, in))
+  {
     fputs(buffer, out);
+  }
   fclose(in);
   fclose(out);
   change_to_game_perms();

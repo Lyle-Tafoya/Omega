@@ -27,10 +27,14 @@ void l_trap_siren()
       send_to_jail();
     }
     else
+    {
       print1("Nobody answers the alarm.");
+    }
   }
   else if(Current_Environment == E_HOVEL)
+  {
     print1("Nobody answers the alarm.");
+  }
   else
   {
     if(Current_Environment == E_CIRCLE)
@@ -46,7 +50,9 @@ void l_trap_siren()
       if((Current_Environment == E_CIRCLE) ||
          ((Current_Environment == E_VILLAGE) && (ml->m->id == GUARD)) ||
          ((Current_Environment == E_CITY) && (ml->m->id == GUARD)))
+      {
         m_status_set(*ml->m, HOSTILE);
+      }
     }
   }
 }
@@ -60,7 +66,9 @@ void l_trap_dart()
     mprint("A dart annoys your horse....");
   }
   else if(random_range(100) < Player.absorption)
+  {
     mprint("A dart plinks off your armor");
+  }
   else
   {
     mprint("You were hit by a dart!");
@@ -88,7 +96,9 @@ void l_trap_pit()
     showflags();
   }
   else if(Player.itemweight < ((int)(Player.maxweight / 2)))
+  {
     mprint("You nimbly dodge a pit trap.");
+  }
   else
   {
     mprint("You fell into a pit!");
@@ -99,7 +109,9 @@ void l_trap_pit()
       p_damage(difficulty() * 5, NORMAL_DAMAGE, "a spiked pit");
     }
     else
+    {
       p_damage(difficulty() * 2, NORMAL_DAMAGE, "a pit");
+    }
     Player.status[IMMOBILE]++;
   }
 }
@@ -107,7 +119,9 @@ void l_trap_pit()
 void l_trap_door()
 {
   if(Current_Environment != Current_Dungeon)
+  {
     mprint("You feel oddly lucky.");
+  }
   else
   {
     Level->site[Player.x][Player.y].locchar = TRAP;
@@ -130,7 +144,9 @@ void l_trap_door()
       roomcheck();
     }
     else if(random_range(100) < Player.agi)
+    {
       mprint("You leap over a trap door.");
+    }
     else
     {
       mprint("You fell through a trap door!");
@@ -153,9 +169,13 @@ void l_trap_snare()
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   if(gamestatusp(MOUNTED, GameStatus))
+  {
     mprint("Your horse steps out of a snare trap.");
+  }
   else if(random_range(100) < Player.agi)
+  {
     mprint("You agilely avoid a snare.");
+  }
   else
   {
     mprint("You were caught in a snare!");
@@ -168,7 +188,9 @@ void l_trap_blade()
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   if(random_range(30) < Player.agi + Player.level)
+  {
     mprint("You duck under a scything blade!");
+  }
   else
   {
     if(gamestatusp(MOUNTED, GameStatus))
@@ -198,7 +220,9 @@ void l_trap_fire()
     showflags();
   }
   else if(random_range(50) < Player.agi + Player.level)
+  {
     mprint("You dodge a pillar of fire!");
+  }
   else
   {
     mprint("You were blasted by a fire trap!");
@@ -217,9 +241,13 @@ void l_trap_teleport()
   mprint("You experience a momentary disorientation....");
   morewait();
   if(random_range(10000) > difficulty() * difficulty())
+  {
     p_teleport(0);
+  }
   else
+  {
     p_teleport(-1);
+  }
 }
 
 void l_trap_disintegrate()
@@ -272,15 +300,19 @@ void l_trap_acid()
       morewait();
       itemdamage = random_range(5);
       for(i = k = 0; ((i < MAXITEMS) && (k < itemdamage)); i++)
+      {
         if(Player.possessions[i] != NULL)
         {
           k++;
           (void)damage_item(Player.possessions[i]);
         }
+      }
     }
   }
   else
+  {
     mprint("You somehow dodge a shower of hydroflouric acid!");
+  }
 }
 
 void l_trap_abyss()
@@ -300,7 +332,9 @@ void l_trap_abyss()
     l_abyss();
   }
   else
+  {
     mprint("You gingerly step around a concealed entrance to the abyss!");
+  }
 }
 
 void l_trap_manadrain()
@@ -320,7 +354,9 @@ void l_trap_manadrain()
       Player.mana = calcmana();
     }
     else
+    {
       mprint("You feel strangely unaffected by the manadrain trap.");
+    }
   }
   else
   {

@@ -36,45 +36,65 @@ void m_simple_move(struct monster *m)
       strcat(Str2, m->monstring);
     }
     else
+    {
       strcpy(Str2, m->monstring);
+    }
     if(m->possessions != NULL)
     {
       strcat(Str2, " drops its treasure and flees!");
       m_dropstuff(m);
     }
     else
+    {
       strcat(Str2, " flees!");
+    }
     mprint(Str2);
     m->speed = std::min(2, m->speed - 1);
   }
   if((!m_statusp(*m, HOSTILE) && !m_statusp(*m, NEEDY)) || (Player.status[INVISIBLE] > 0))
+  {
     m_random_move(m);
+  }
   else
   {
     if(m_unblocked(m, m->x + dx, m->y + dy))
+    {
       movemonster(m, m->x + dx, m->y + dy);
+    }
     else if(dx == 0)
     {
       if(m_unblocked(m, m->x + 1, m->y + dy))
+      {
         movemonster(m, m->x + 1, m->y + dy);
+      }
       else if(m_unblocked(m, m->x - 1, m->y + dy))
+      {
         movemonster(m, m->x - 1, m->y + dy);
+      }
     }
 
     else if(dy == 0)
     {
       if(m_unblocked(m, m->x + dx, m->y + 1))
+      {
         movemonster(m, m->x + dx, m->y + 1);
+      }
       else if(m_unblocked(m, m->x + dx, m->y - 1))
+      {
         movemonster(m, m->x + dx, m->y - 1);
+      }
     }
 
     else
     {
       if(m_unblocked(m, m->x + dx, m->y))
+      {
         movemonster(m, m->x + dx, m->y);
+      }
       else if(m_unblocked(m, m->x, m->y + dy))
+      {
         movemonster(m, m->x, m->y + dy);
+      }
     }
   }
 }
@@ -82,9 +102,13 @@ void m_simple_move(struct monster *m)
 void m_move_animal(struct monster *m)
 {
   if(m_statusp(*m, HOSTILE))
+  {
     m_normal_move(m);
+  }
   else
+  {
     m_scaredy_move(m);
+  }
 }
 
 /* same as simple move except run in opposite direction */
@@ -94,33 +118,49 @@ void m_scaredy_move(struct monster *m)
   int dy = -sign(Player.y - m->y);
   erase_monster(m);
   if(Player.status[INVISIBLE])
+  {
     m_random_move(m);
+  }
   else
   {
     if(m_unblocked(m, m->x + dx, m->y + dy))
+    {
       movemonster(m, m->x + dx, m->y + dy);
+    }
     else if(dx == 0)
     {
       if(m_unblocked(m, m->x + 1, m->y + dy))
+      {
         movemonster(m, m->x + 1, m->y + dy);
+      }
       else if(m_unblocked(m, m->x - 1, m->y + dy))
+      {
         movemonster(m, m->x - 1, m->y + dy);
+      }
     }
 
     else if(dy == 0)
     {
       if(m_unblocked(m, m->x + dx, m->y + 1))
+      {
         movemonster(m, m->x + dx, m->y + 1);
+      }
       else if(m_unblocked(m, m->x + dx, m->y - 1))
+      {
         movemonster(m, m->x + dx, m->y - 1);
+      }
     }
 
     else
     {
       if(m_unblocked(m, m->x + dx, m->y))
+      {
         movemonster(m, m->x + dx, m->y);
+      }
       else if(m_unblocked(m, m->x, m->y + dy))
+      {
         movemonster(m, m->x, m->y + dy);
+      }
     }
   }
 }
@@ -139,9 +179,13 @@ void m_spirit_move(struct monster *m)
   }
 
   if(Player.status[INVISIBLE] > 0 || !m_unblocked(m, m->x + dx, m->y + dy))
+  {
     m_random_move(m);
+  }
   else
+  {
     movemonster(m, m->x + dx, m->y + dy);
+  }
 }
 
 /* fluttery dumb movement */
@@ -151,7 +195,9 @@ void m_flutter_move(struct monster *m)
   int i, tx, ty, nx = m->x, ny = m->y;
   erase_monster(m);
   if(Player.status[INVISIBLE] > 0)
+  {
     m_random_move(m);
+  }
   else
   {
     for(i = 0; i < 8; i++)
@@ -182,9 +228,13 @@ void m_flutter_move(struct monster *m)
 void m_follow_move(struct monster *m)
 {
   if(!m_statusp(*m, HOSTILE))
+  {
     m_normal_move(m);
+  }
   else
+  {
     m_scaredy_move(m);
+  }
 }
 
 /* allows monsters to fall into pools, revealed traps, etc */
@@ -229,7 +279,9 @@ void m_vanish(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   strcat(Str2, " vanishes in the twinkling of an eye!");
   mprint(Str2);
   Level->site[m->x][m->y].creature = NULL;
@@ -271,7 +323,9 @@ void m_move_leash(struct monster *m)
           strcat(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
         }
         else
+        {
           strcpy(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
+        }
         strcat(Str1, " releases the dog's chain!");
         mprint(Str1);
       }
@@ -284,7 +338,9 @@ void m_move_leash(struct monster *m)
       plotspot(m->x, m->y, false);
     }
     else
+    {
       mprint("You hear a strangled sort of yelp!");
+    }
     Level->site[m->x][m->y].creature = NULL;
     m->x                             = m->aux1;
     m->y                             = m->aux2;

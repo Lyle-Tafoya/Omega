@@ -18,8 +18,12 @@ void m_pulse(struct monster *m)
   pol prev;
 
   if(Time % 10 == 0)
+  {
     if(m->hp < Monsters[m->id].hp)
+    {
       m->hp++;
+    }
+  }
 
   if((!m_statusp(*m, AWAKE)) && (range <= m->wakeup))
   {
@@ -32,23 +36,33 @@ void m_pulse(struct monster *m)
     if(m_statusp(*m, WANDERING))
     {
       if(m_statusp(*m, MOBILE))
+      {
         m_random_move(m);
+      }
       if(range <= m->sense && (m_statusp(*m, HOSTILE) || m_statusp(*m, NEEDY)))
+      {
         m_status_reset(*m, WANDERING);
+      }
     }
     else /* not wandering */
     {
       if(m_statusp(*m, HOSTILE))
+      {
         if((range > 2) && (range < m->sense) && (random_range(2) == 1))
+        {
           if(los_p(m->x, m->y, Player.x, Player.y) && (Player.status[INVISIBLE] == 0))
           {
             STRIKE = true;
             monster_strike(m);
           }
+        }
+      }
 
       if((m_statusp(*m, HOSTILE) || m_statusp(*m, NEEDY)) && (range > 1) && m_statusp(*m, MOBILE) &&
          (!STRIKE || (random_range(2) == 1)))
+      {
         monster_move(m);
+      }
       else if(m_statusp(*m, HOSTILE) && (range == 1))
       {
         resetgamestatus(FAST_MOVE, GameStatus);
@@ -57,6 +71,7 @@ void m_pulse(struct monster *m)
     }
     /* if monster is greedy, picks up treasure it finds */
     if(m_statusp(*m, GREEDY) && (m->hp > 0))
+    {
       while(Level->site[m->x][m->y].things != NULL)
       {
         m_pickup(m, Level->site[m->x][m->y].things->thing);
@@ -64,9 +79,12 @@ void m_pulse(struct monster *m)
         Level->site[m->x][m->y].things = Level->site[m->x][m->y].things->next;
         free((char *)prev);
       }
+    }
     /* prevents monsters from casting spells from other side of dungeon */
     if((range < std::max(5, m->level)) && (m->hp > 0) && (random_range(2) == 1))
+    {
       monster_special(m);
+    }
   }
 }
 
@@ -74,9 +92,13 @@ void m_pulse(struct monster *m)
 void movemonster(struct monster *m, int newx, int newy)
 {
   if(Level->site[newx][newy].creature != NULL)
+  {
     return;
+  }
   if(Level->site[m->x][m->y].creature == m)
+  {
     Level->site[m->x][m->y].creature = NULL;
+  }
   m->x                             = newx;
   m->y                             = newy;
   Level->site[m->x][m->y].creature = m;
@@ -123,7 +145,9 @@ void m_damage(struct monster *m, int dmg, int dtype)
     if(los_p(Player.x, Player.y, m->x, m->y))
     {
       if(m->uniqueness != COMMON)
+      {
         strcpy(Str1, m->monstring);
+      }
       else
       {
         strcpy(Str1, "The ");
@@ -134,7 +158,9 @@ void m_damage(struct monster *m, int dmg, int dtype)
     }
   }
   else if((m->hp -= dmg) < 1)
+  {
     m_death(m);
+  }
 }
 
 void m_death(struct monster *m)
@@ -150,7 +176,9 @@ void m_death(struct monster *m)
     gain_experience(m->xpv);
     calc_melee();
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -204,7 +232,9 @@ void m_death(struct monster *m)
   {
     Level->site[m->x][m->y].creature = NULL;
     if(m == Arena_Monster)
+    {
       Arena_Victory = true; /* won this round of arena combat */
+    }
     if(random_range(2) || (m->uniqueness != COMMON))
     {
       corpse = ((pob)checkmalloc(sizeof(objtype)));
@@ -266,17 +296,25 @@ void m_death(struct monster *m)
             break;
           case 13:
             if(Player.alignment > 10)
+            {
               mprint("You feel smug.");
+            }
             else if(Player.alignment < 10)
+            {
               mprint("You feel ashamed.");
+            }
             strcpy(Chaoslord, nameprint());
             Chaoslordbehavior = 2912;
             break;
           case 14:
             if(Player.alignment < 10)
+            {
               mprint("You feel smug.");
+            }
             else if(Player.alignment > 10)
+            {
               mprint("You feel ashamed.");
+            }
             strcpy(Lawlord, nameprint());
             Lawlordbehavior = 2911;
             break;
@@ -301,7 +339,9 @@ void m_death(struct monster *m)
               {
                 found = ((ml->m->id == GUARD) && (ml->m->hp > 0));
                 if(!found)
+                {
                   ml = ml->next;
+                }
               }
               if(ml != NULL)
               {
@@ -311,13 +351,19 @@ void m_death(struct monster *m)
                          "leaves.");
                   m_pickup(ml->m, curr->thing);
                   if(prev)
+                  {
                     prev->next = curr->next;
+                  }
                   else
+                  {
                     Level->site[m->x][m->y].things = curr->next;
+                  }
                   free(curr);
                 }
                 else
+                {
                   mprint("materializes, sheds a tear, and leaves.");
+                }
                 mprint("A new justiciar has been promoted!");
                 x = ml->m->x;
                 y = ml->m->y;
@@ -348,7 +394,9 @@ void m_death(struct monster *m)
       case GUARD: /* guard */
         Player.alignment -= 10;
         if((Current_Environment == E_CITY) || (Current_Environment == E_VILLAGE))
+        {
           alert_guards();
+        }
         break;
       case GOBLIN_KING:
         if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
@@ -411,12 +459,16 @@ void monster_move(struct monster *m)
 void monster_strike(struct monster *m)
 {
   if(player_on_sanctuary())
+  {
     print1("The aegis of your deity protects you!");
+  }
   else
   {
     /* It's lawful to wait to be attacked */
     if(m->attacked == 0)
+    {
       Player.alignment++;
+    }
     m->attacked++;
     monster_action(m, m->strikef);
   }
@@ -427,7 +479,9 @@ void monster_special(struct monster *m)
   /* since many special functions are really attacks, cancel them
      all if on sanctuary */
   if(!player_on_sanctuary())
+  {
     monster_action(m, m->specialf);
+  }
 }
 
 void monster_talk(struct monster *m)
@@ -450,6 +504,7 @@ void monster_action(struct monster *m, int action)
     }
   }
   else
+  {
     switch(action)
     {
       case M_NO_OP:
@@ -718,6 +773,7 @@ void monster_action(struct monster *m, int action)
         m_sp_prime(m);
         break;
     }
+  }
 }
 
 /* makes one of the highscore npcs */
@@ -745,9 +801,13 @@ void make_hiscore_npc(pmt npc, int npcid)
       st                     = ARTIFACTID + 13 + npcid; /* appropriate holy symbol... */
       Objects[st].uniqueness = UNIQUE_MADE;
       if(npcid == DRUID)
+      {
         npc->talkf = M_TALK_DRUID;
+      }
       if(Player.patron == npcid)
+      {
         m_status_reset(*npc, HOSTILE);
+      }
       break;
     case 7:
       strcpy(Str2, Shadowlord);
@@ -757,7 +817,9 @@ void make_hiscore_npc(pmt npc, int npcid)
       strcpy(Str2, Commandant);
       determine_npc_behavior(npc, Commandantlevel, Commandantbehavior);
       if(Player.rank[LEGION])
+      {
         m_status_reset(*npc, HOSTILE);
+      }
       break;
     case 9:
       strcpy(Str2, Archmage);
@@ -773,13 +835,17 @@ void make_hiscore_npc(pmt npc, int npcid)
       npc->talkf    = M_TALK_PRIME;
       npc->specialf = M_SP_PRIME;
       if(Player.alignment < 0)
+      {
         m_status_reset(*npc, HOSTILE);
+      }
       break;
     case 11:
       strcpy(Str2, Champion);
       determine_npc_behavior(npc, Championlevel, Championbehavior);
       if(Player.rank[ARENA])
+      {
         m_status_reset(*npc, HOSTILE);
+      }
       break;
     case 12:
       strcpy(Str2, Duke);
@@ -789,13 +855,17 @@ void make_hiscore_npc(pmt npc, int npcid)
       strcpy(Str2, Chaoslord);
       determine_npc_behavior(npc, Chaoslordlevel, Chaoslordbehavior);
       if(Player.alignment < 0 && random_range(2))
+      {
         m_status_reset(*npc, HOSTILE);
+      }
       break;
     case 14:
       strcpy(Str2, Lawlord);
       determine_npc_behavior(npc, Lawlordlevel, Lawlordbehavior);
       if(Player.alignment > 0)
+      {
         m_status_reset(*npc, HOSTILE);
+      }
       break;
     case 15:
       strcpy(Str2, Justiciar);
@@ -830,7 +900,9 @@ void determine_npc_behavior(pmt npc, int level, int behavior)
   talktype    = behavior / 1000;
   npc->level  = competence;
   if(npc->level < 2 * difficulty())
+  {
     npc->status += HOSTILE;
+  }
   npc->xpv = npc->level * 20;
   switch(combatype)
   {
@@ -870,6 +942,7 @@ void determine_npc_behavior(pmt npc, int level, int behavior)
       break;
   }
   if(npc->talkf == M_TALK_MAN)
+  {
     switch(talktype)
     {
       case 1:
@@ -891,6 +964,7 @@ void determine_npc_behavior(pmt npc, int level, int behavior)
         mprint("Say Whutt? (npc talk weirdness)");
         break;
     }
+  }
   npc->uniqueness = UNIQUE_MADE;
 }
 
@@ -917,7 +991,9 @@ void make_log_npc(struct monster *npc)
     { /* this algo. from Knuth 2 - cute, eh? */
       sscanf(Str1, "%d %d %d", &status, &level, &behavior);
       for(i = 0; (Str1[i] < 'a' || Str1[i] > 'z') && (Str1[i] < 'A' || Str1[i] > 'Z'); i++)
+      {
         ;
+      }
       strcpy(Str2, Str1 + i);
       Str2[strlen(Str2) - 1] = '\0'; /* 'cos fgets reads in the \n */
     }
@@ -968,7 +1044,9 @@ void m_trap_dart(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -987,7 +1065,9 @@ void m_trap_pit(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -999,7 +1079,9 @@ void m_trap_pit(struct monster *m)
     lset(m->x, m->y, CHANGED, *Level);
   }
   if(!m_statusp(*m, INTANGIBLE))
+  {
     m_status_reset(*m, MOBILE);
+  }
   m_damage(m, difficulty() * 5, NORMAL_DAMAGE);
 }
 
@@ -1008,7 +1090,9 @@ void m_trap_door(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1028,7 +1112,9 @@ void m_trap_abyss(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1054,7 +1140,9 @@ void m_trap_snare(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1064,7 +1152,9 @@ void m_trap_snare(struct monster *m)
     mprint(Str1);
   }
   if(!m_statusp(*m, INTANGIBLE))
+  {
     m_status_reset(*m, MOBILE);
+  }
 }
 
 void m_trap_blade(struct monster *m)
@@ -1075,7 +1165,9 @@ void m_trap_blade(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1095,7 +1187,9 @@ void m_trap_fire(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1113,7 +1207,9 @@ void m_fire(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1133,7 +1229,9 @@ void m_trap_teleport(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1151,7 +1249,9 @@ void m_trap_disintegrate(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1171,7 +1271,9 @@ void m_trap_sleepgas(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1183,7 +1285,9 @@ void m_trap_sleepgas(struct monster *m)
     lset(m->x, m->y, CHANGED, *Level);
   }
   if(!m_immunityp(*m, SLEEP))
+  {
     m_status_reset(*m, AWAKE);
+  }
 }
 
 void m_trap_acid(struct monster *m)
@@ -1192,7 +1296,9 @@ void m_trap_acid(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1212,7 +1318,9 @@ void m_trap_manadrain(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1224,7 +1332,9 @@ void m_trap_manadrain(struct monster *m)
     lset(m->x, m->y, CHANGED, *Level);
   }
   if(m->specialf == M_SP_SPELL)
+  {
     m->specialf = M_NO_OP;
+  }
 }
 
 void m_water(struct monster *m)
@@ -1235,7 +1345,9 @@ void m_water(struct monster *m)
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
       if(m->uniqueness != COMMON)
+      {
         strcpy(Str1, m->monstring);
+      }
       else
       {
         strcpy(Str1, "The ");
@@ -1254,7 +1366,9 @@ void m_abyss(struct monster *m)
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1274,7 +1388,9 @@ void m_lava(struct monster *m)
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
       if(m->uniqueness != COMMON)
+      {
         strcpy(Str1, m->monstring);
+      }
       else
       {
         strcpy(Str1, "The ");
@@ -1296,7 +1412,9 @@ void m_altar(struct monster *m)
   if(visible)
   {
     if(m->uniqueness != COMMON)
+    {
       strcpy(Str1, m->monstring);
+    }
     else
     {
       strcpy(Str1, "The ");
@@ -1306,16 +1424,26 @@ void m_altar(struct monster *m)
     mprint(Str1);
   }
   if(!m_statusp(*m, HOSTILE))
+  {
     reaction = 0;
+  }
   else if(m->id == HISCORE_NPC && m->aux2 == altar)
+  {
     reaction = 1; /* high priest of same deity */
+  }
   else if((m->id == ANGEL || m->id == HIGH_ANGEL || m->id == ARCHANGEL) && m->aux1 == altar)
+  {
     reaction = 1; /* angel of same deity */
+  }
   else if(altar == Player.patron)
+  {
     reaction = -1; /* friendly deity will zap hostile monster */
+  }
   else if(((Player.patron == ODIN || Player.patron == ATHENA) && (altar == SET || altar == HECATE)) ||
           ((Player.patron == SET || Player.patron == HECATE) && (altar == ODIN || altar == ATHENA)))
+  {
     reaction = 1; /* hostile deity will help hostile monster */
+  }
   switch(reaction)
   {
     case -1:
@@ -1336,7 +1464,9 @@ void m_altar(struct monster *m)
       break;
     default:
       if(visible)
+      {
         mprint("but nothing much seems to happen");
+      }
       break;
   }
 }

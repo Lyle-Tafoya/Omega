@@ -130,7 +130,9 @@ void load_circle(int populate)
             make_prime(i, j); /* prime sorceror */
             Level->site[i][j].creature->specialf = M_SP_PRIME;
             if(!safe)
+            {
               m_status_set(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case 'D':
@@ -139,7 +141,9 @@ void load_circle(int populate)
           {
             make_site_monster(i, j, DEMON_PRINCE); /* prime circle demon */
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
             Level->site[i][j].creature->specialf = M_SP_COURT;
           }
           break;
@@ -150,7 +154,9 @@ void load_circle(int populate)
             make_site_monster(i, j, SERV_CHAOS); /* servant of chaos */
             Level->site[i][j].creature->specialf = M_SP_COURT;
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case 'e':
@@ -160,7 +166,9 @@ void load_circle(int populate)
             make_site_monster(i, j, ENCHANTOR); /* enchanter */
             Level->site[i][j].creature->specialf = M_SP_COURT;
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case 'n':
@@ -170,7 +178,9 @@ void load_circle(int populate)
             make_site_monster(i, j, NECROMANCER); /* necromancer */
             Level->site[i][j].creature->specialf = M_SP_COURT;
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case 'T':
@@ -180,7 +190,9 @@ void load_circle(int populate)
             make_site_monster(i, j, THAUMATURGIST); /* High Thaumaturgist */
             Level->site[i][j].creature->specialf = M_SP_COURT;
             if(safe)
+            {
               m_status_reset(*Level->site[i][j].creature, HOSTILE);
+            }
           }
           break;
         case '#':

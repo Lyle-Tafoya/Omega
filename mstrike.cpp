@@ -41,7 +41,9 @@ void m_blind_strike(struct monster *m)
       strcat(Str2, m->monstring);
     }
     else
+    {
       strcpy(Str2, m->monstring);
+    }
     strcat(Str2, " gazes at you menacingly");
     mprint(Str2);
     if(!p_immune(GAZE))
@@ -49,10 +51,14 @@ void m_blind_strike(struct monster *m)
       mprint("You've been blinded!");
       Player.status[BLINDED] = random_range(4) + 1;
       for(ml = Level->mlist; ml != NULL; ml = ml->next)
+      {
         plotspot(ml->m->x, ml->m->y, false);
+      }
     }
     else
+    {
       mprint("You gaze steadily back....");
+    }
   }
 }
 
@@ -64,7 +70,9 @@ void m_strike_sonic(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   strcat(Str2, " screams at you!");
   mprint(Str2);
   p_damage(m->dmg, OTHER_MAGIC, "a sonic blast");

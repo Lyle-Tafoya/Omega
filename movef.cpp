@@ -10,6 +10,7 @@ void p_movefunction(int movef)
   drawvision(Player.x, Player.y);
   sign_print(Player.x, Player.y, false);
   if(Player.status[SHADOWFORM])
+  {
     switch(movef)
     { /* player in shadow form is unable to do most things */
       case L_CHAOS:
@@ -103,6 +104,7 @@ void p_movefunction(int movef)
         l_void_station();
         break;
     }
+  }
   else if((!Player.status[LEVITATING]) || gamestatusp(MOUNTED, GameStatus) ||
           (Cmd == '@') || /* @ command activates all effects under player */
           (movef < LEVITATION_AVOIDANCE))
@@ -400,6 +402,7 @@ void m_movefunction(struct monster *m, int movef)
 {
   /* loc functs above traps should be activated whether levitating or not */
   if(!m_statusp(*m, FLYING) && !m_statusp(*m, INTANGIBLE))
+  {
     switch(movef)
     {
       /* miscellaneous */
@@ -463,4 +466,5 @@ void m_movefunction(struct monster *m, int movef)
         m_altar(m);
         break;
     }
+  }
 }

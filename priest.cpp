@@ -16,9 +16,13 @@ void l_altar()
   char response;
 
   if(Current_Environment == E_COUNTRYSIDE)
+  {
     deity = DRUID;
+  }
   else
+  {
     deity = Level->site[Player.x][Player.y].aux;
+  }
 
   switch(deity)
   {
@@ -48,15 +52,20 @@ void l_altar()
   if(ynq2() == 'y')
   {
     if(Player.rank[PRIESTHOOD] == 0)
+    {
       increase_priest_rank(deity);
+    }
     else if(!check_sacrilege(deity))
     {
       if(Blessing)
+      {
         print1("You have a sense of immanence.");
+      }
       print2("Request a Blessing, Sacrifice an item, or just Pray [b,s,p] ");
       do
+      {
         response = (char)mcigetc();
-      while((response != 'b') && (response != 's') && (response != 'p') && (response != ESCAPE));
+      } while((response != 'b') && (response != 's') && (response != 'p') && (response != ESCAPE));
       if(response == 'b')
       {
         print1("You beg a heavenly benefice.");
@@ -87,7 +96,9 @@ void l_altar()
         print1("Which item to Sacrifice?");
         i = getitem(NULL_ITEM);
         if(i == ABORT)
+        {
           i = 0;
+        }
         if(Player.possessions[i] == NULL)
         {
           print1("You have insulted your deity!");
@@ -117,16 +128,22 @@ void l_altar()
             item_equip(Player.possessions[i]);
           }
           else
+          {
             Player.possessions[i]->blessing = -1 - abs(Player.possessions[i]->blessing);
+          }
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
       }
       else if(response == 'p')
       {
         if(deity != Player.patron)
+        {
           print1("Nothing seems to happen.");
+        }
         else if(!increase_priest_rank(deity))
+        {
           answer_prayer();
+        }
       }
     }
   }
@@ -184,8 +201,12 @@ int check_sacrilege(int deity)
             morewait();
             print1("You are wreathed in clouds of smoke.");
             for(i = 0; i < MAXITEMS; i++)
+            {
               if((Player.possessions[i] != NULL) && (Player.possessions[i]->blessing > -1))
+              {
                 conform_lost_object(Player.possessions[i]);
+              }
+            }
             morewait();
             print2("You feel Set's Black Hand on your heart....");
             Player.con = Player.maxcon = Player.maxcon / 4;
@@ -211,7 +232,9 @@ int check_sacrilege(int deity)
             Player.maxpow = Player.maxpow / 5;
             Player.pow    = std::min(Player.pow, Player.maxpow);
             for(i = 0; i < NUMSPELLS; i++)
+            {
               Spells[i].known = false;
+            }
           }
         }
         morewait();
@@ -249,9 +272,13 @@ int check_sacrilege(int deity)
       case DRUID:
         print2("Your treachery to the ArchDruid has been noted.");
         if(random_range(2) == 1)
+        {
           Player.alignment += 40;
+        }
         else
+        {
           Player.alignment -= 40;
+        }
         morewait();
         break;
     }
@@ -267,6 +294,7 @@ int check_sacrilege(int deity)
 int increase_priest_rank(int deity)
 {
   if(Player.rank[PRIESTHOOD] == 0)
+  {
     switch(deity)
     {
       default:
@@ -292,7 +320,9 @@ int increase_priest_rank(int deity)
           learnclericalspells(ODIN, LAY);
         }
         else
+        {
           print1("Odin ignores you.");
+        }
         break;
       case SET:
         if(Player.alignment < 0)
@@ -308,7 +338,9 @@ int increase_priest_rank(int deity)
           learnclericalspells(SET, LAY);
         }
         else
+        {
           print1("Set ignores you.");
+        }
         break;
       case ATHENA:
         if(Player.alignment > 0)
@@ -324,7 +356,9 @@ int increase_priest_rank(int deity)
           learnclericalspells(ATHENA, LAY);
         }
         else
+        {
           print1("Athena ignores you.");
+        }
         break;
       case HECATE:
         if(Player.alignment < 0)
@@ -340,7 +374,9 @@ int increase_priest_rank(int deity)
           learnclericalspells(HECATE, LAY);
         }
         else
+        {
           print1("Hecate ignores you.");
+        }
         break;
       case DRUID:
         if(abs(Player.alignment) < 10)
@@ -369,6 +405,7 @@ int increase_priest_rank(int deity)
         Player.guildxp[PRIESTHOOD] = 1;
         break;
     }
+  }
   else if(deity == Player.patron)
   {
     if((((deity == ODIN) || (deity == ATHENA)) && (Player.alignment < 1)) ||
@@ -381,13 +418,19 @@ int increase_priest_rank(int deity)
       Player.xp = std::max(0l, Player.xp);
     }
     else if(Player.rank[PRIESTHOOD] == HIGHPRIEST)
+    {
       return 0;
+    }
     else if(Player.rank[PRIESTHOOD] == SPRIEST)
     {
       if(Player.level > Priestlevel[deity])
+      {
         hp_req_test();
+      }
       else
+      {
         return 0;
+      }
     }
     else if(Player.rank[PRIESTHOOD] == PRIEST)
     {
@@ -401,7 +444,9 @@ int increase_priest_rank(int deity)
         learnclericalspells(deity, SPRIEST);
       }
       else
+      {
         return 0;
+      }
     }
     else if(Player.rank[PRIESTHOOD] == ACOLYTE)
     {
@@ -414,7 +459,9 @@ int increase_priest_rank(int deity)
         learnclericalspells(deity, PRIEST);
       }
       else
+      {
         return 0;
+      }
     }
     else if(Player.rank[PRIESTHOOD] == LAY)
     {
@@ -427,7 +474,9 @@ int increase_priest_rank(int deity)
         learnclericalspells(deity, ACOLYTE);
       }
       else
+      {
         return 0;
+      }
     }
   }
   return 1;
@@ -460,45 +509,75 @@ void hp_req_test()
   {
     case ODIN:
       if(find_item(&o, ARTIFACTID + 15, -1))
+      {
         make_hp(o);
+      }
       else
+      {
         hp_req_print();
+      }
       break;
     case SET:
       if(find_item(&o, ARTIFACTID + 14, -1))
+      {
         make_hp(o);
+      }
       else
+      {
         hp_req_print();
+      }
       break;
     case ATHENA:
       if(find_item(&o, ARTIFACTID + 17, -1))
+      {
         make_hp(o);
+      }
       else
+      {
         hp_req_print();
+      }
       break;
     case HECATE:
       if(find_item(&o, ARTIFACTID + 16, -1))
+      {
         make_hp(o);
+      }
       else
+      {
         hp_req_print();
+      }
       break;
     case DRUID:
       if(find_item(&o, ARTIFACTID + 14, -1))
+      {
         make_hp(o);
+      }
       else if(find_item(&o, ARTIFACTID + 15, -1))
+      {
         make_hp(o);
+      }
       else if(find_item(&o, ARTIFACTID + 16, -1))
+      {
         make_hp(o);
+      }
       else if(find_item(&o, ARTIFACTID + 17, -1))
+      {
         make_hp(o);
+      }
       else
+      {
         hp_req_print();
+      }
       break;
     case DESTINY:
       if(find_item(&o, ARTIFACTID + 19, -1))
+      {
         make_hp(o);
+      }
       else
+      {
         hp_req_print();
+      }
       break;
   }
 }
@@ -564,9 +643,13 @@ void make_hp(pob o)
   o->charge = 17; /* random hack to convey bit that symbol is functional */
   morewait();
   if(Player.patron == DRUID)
+  {
     print1("Your deity raises you to the post of ArchDruid!");
+  }
   else
+  {
     print1("Your deity raises you to the post of High Priest!");
+  }
   print2("You feel holy.");
   strcpy(Priest[Player.patron], Player.name);
   Priestlevel[Player.patron] = Player.level;

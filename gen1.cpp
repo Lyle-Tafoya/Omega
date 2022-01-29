@@ -47,6 +47,7 @@ void clear_level(struct level *dungeon_level)
     dungeon_level->next         = nullptr;
     dungeon_level->last_visited = time(nullptr);
     for(i = 0; i < MAXWIDTH; i++)
+    {
       for(j = 0; j < MAXLENGTH; j++)
       {
         dungeon_level->site[i][j].locchar    = WALL;
@@ -59,6 +60,7 @@ void clear_level(struct level *dungeon_level)
         dungeon_level->site[i][j].lstatus    = 0;
         dungeon_level->site[i][j].roomnumber = RS_WALLSPACE;
       }
+    }
   }
 }
 
@@ -102,15 +104,23 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
     {
       case E_CAVES:
         if((random_range(4) == 0) && (tolevel < MaxDungeonLevels))
+        {
           room_level();
+        }
         else
+        {
           cavern_level();
+        }
         break;
       case E_SEWERS:
         if((random_range(4) == 0) && (tolevel < MaxDungeonLevels))
+        {
           room_level();
+        }
         else
+        {
           sewer_level();
+        }
         break;
       case E_CASTLE:
         room_level();
@@ -160,18 +170,24 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
 plv findlevel(struct level *dungeon, char levelnum)
 {
   if(dungeon == nullptr)
+  {
     return (nullptr);
+  }
   else
   {
     while((dungeon->next != nullptr) && (dungeon->depth != levelnum))
+    {
       dungeon = dungeon->next;
+    }
     if(dungeon->depth == levelnum)
     {
       dungeon->last_visited = time(nullptr);
       return (dungeon);
     }
     else
+    {
       return (nullptr);
+    }
   }
 }
 #endif
@@ -187,9 +203,13 @@ void straggle_corridor(int fx, int fy, int tx, int ty, Symbol loc, char rsi)
     dx = tx - fx;
     dy = ty - fy;
     if(random_range(abs(dx) + abs(dy)) < abs(dx))
+    {
       corridor_crawl(&fx, &fy, sign(dx), 0, random_range(abs(dx)) + 1, loc, rsi);
+    }
     else
+    {
       corridor_crawl(&fx, &fy, 0, sign(dy), random_range(abs(dy)) + 1, loc, rsi);
+    }
   }
 }
 
@@ -204,11 +224,17 @@ void makedoor(int x, int y)
   {
     Level->site[x][y].locchar = CLOSED_DOOR;
     if(random_range(20) <= Level->depth / 10)
+    {
       lset(x, y, SECRET, *Level);
+    }
     if(random_range(40) <= Level->depth)
+    {
       Level->site[x][y].aux = LOCKED;
+    }
     else
+    {
       Level->site[x][y].aux = UNLOCKED;
+    }
   }
   else
   {
@@ -238,13 +264,21 @@ void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, Symbol loc, char rs
     {
       Level->site[*fx][*fy].locchar = loc;
       if(Level->site[*fx][*fy].roomnumber == RS_WALLSPACE)
+      {
         Level->site[*fx][*fy].roomnumber = rsi;
+      }
       if(loc == WATER)
+      {
         Level->site[*fx][*fy].p_locf = L_WATER;
+      }
       else if(loc == FLOOR)
+      {
         Level->site[*fx][*fy].p_locf = L_NO_OP;
+      }
       else if(loc == RUBBLE)
+      {
         Level->site[*fx][*fy].p_locf = L_RUBBLE;
+      }
     }
   }
 }
@@ -465,11 +499,17 @@ void find_stairs(char fromlevel, char tolevel)
   int    i, j, found = false;
   Symbol sitechar;
   if(fromlevel > tolevel)
+  {
     sitechar = STAIRS_DOWN;
+  }
   else
+  {
     sitechar = STAIRS_UP;
+  }
   for(i = 0; i < WIDTH; i++)
+  {
     for(j = 0; j < LENGTH; j++)
+    {
       if((Level->site[i][j].locchar == sitechar) && (!found))
       {
         found    = true;
@@ -477,6 +517,8 @@ void find_stairs(char fromlevel, char tolevel)
         Player.y = j;
         break;
       }
+    }
+  }
   if(!found)
   {
     findspace(&Player.x, &Player.y, -1);
@@ -492,10 +534,16 @@ void install_traps()
 {
   int i, j;
   for(i = 0; i < WIDTH; i++)
+  {
     for(j = 0; j < LENGTH; j++)
+    {
       if((Level->site[i][j].locchar == FLOOR) && (Level->site[i][j].p_locf == L_NO_OP) &&
          random_range(500) <= ((int)(Level->depth / 6)))
+      {
         Level->site[i][j].p_locf = TRAP_BASE + random_range(NUMTRAPS);
+      }
+    }
+  }
 }
 
 /* x, y, is top left corner, l is length of side, rsi is room string index */
@@ -505,17 +553,21 @@ void build_square_room(int x, int y, int l, char rsi, int baux)
   int i, j;
 
   for(i = x; i <= x + l; i++)
+  {
     for(j = y; j <= y + l; j++)
     {
       Level->site[i][j].roomnumber = rsi;
       Level->site[i][j].buildaux   = baux;
     }
+  }
   for(i = x + 1; i < x + l; i++)
+  {
     for(j = y + 1; j < y + l; j++)
     {
       Level->site[i][j].locchar = FLOOR;
       Level->site[i][j].p_locf  = L_NO_OP;
     }
+  }
 }
 
 void build_room(int x, int y, int l, char rsi, int baux)
@@ -531,9 +583,13 @@ void cavern_level()
   Level->numrooms = 1;
 
   if((Current_Dungeon == E_CAVES) && (Level->depth == CAVELEVELS))
+  {
     rsi = RS_GOBLINKING;
+  }
   else
+  {
     rsi = RS_CAVERN;
+  }
   t = random_range(LENGTH / 2);
   l = random_range(WIDTH / 2);
   e = random_range(WIDTH / 8) + WIDTH / 8;
@@ -639,21 +695,31 @@ void sewer_corridor(int x, int y, int dx, int dy, Symbol locchar)
   {
     Level->site[x][y].locchar = locchar;
     if(locchar == WATER)
+    {
       Level->site[x][y].p_locf = L_WATER;
+    }
     else
+    {
       Level->site[x][y].p_locf = L_NO_OP;
+    }
     Level->site[x][y].roomnumber = RS_SEWER_DUCT;
     x += dx;
     y += dy;
     if(locchar == WATER)
+    {
       continuing = (inbounds(x, y) &&
                     ((Level->site[x][y].locchar == WALL) || (Level->site[x][y].locchar == WATER)));
+    }
     else
+    {
       continuing = (inbounds(x, y) && ((Level->site[x][y].roomnumber == RS_WALLSPACE) ||
                                        (Level->site[x][y].roomnumber == RS_SEWER_DUCT)));
+    }
   }
   if(inbounds(x, y))
+  {
     makedoor(x, y);
+  }
 }
 
 void install_specials()
@@ -661,7 +727,9 @@ void install_specials()
   int i, j, x, y;
 
   for(x = 0; x < WIDTH; x++)
+  {
     for(y = 0; y < LENGTH; y++)
+    {
       if((Level->site[x][y].locchar == FLOOR) && (Level->site[x][y].p_locf == L_NO_OP) &&
          (random_range(300) < difficulty()))
       {
@@ -711,12 +779,16 @@ void install_specials()
         {
           Level->site[x][y].locchar = STATUE;
           if(random_range(100) < difficulty())
+          {
             for(j = 0; j < 8; j++)
             {
               if(Level->site[x + Dirs[0][j]][y + Dirs[1][j]].p_locf != L_NO_OP)
+              {
                 Level->site[x + Dirs[0][j]][y + Dirs[1][j]].locchar = FLOOR;
+              }
               Level->site[x + Dirs[0][j]][y + Dirs[1][j]].p_locf = L_STATUE_WAKE;
             }
+          }
         }
         else
         {
@@ -755,4 +827,6 @@ void install_specials()
           }
         }
       }
+    }
+  }
 }

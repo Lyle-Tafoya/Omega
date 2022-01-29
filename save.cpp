@@ -75,28 +75,48 @@ int save_game(const char *savestr)
     writeok &= save_level(fd, City);
 
     if(Current_Environment == E_CITY || Current_Environment == E_COUNTRYSIDE)
+    {
       save = Dungeon;
+    }
     else if(Current_Environment == Current_Dungeon)
+    {
       save = Dungeon;
+    }
     else
+    {
       save = Level;
+    }
     for(i = 0, current = save; current; current = current->next, i++)
+    {
       ;
+    }
     if(!fwrite((char *)&i, sizeof(int), 1, fd))
+    {
       writeok = false;
+    }
 #ifdef SAVE_LEVELS
     Level = msdos_changelevel(NULL, Current_Environment, tmpdepth);
 #endif
     for(current = save; current; current = current->next)
+    {
       if(current != Level)
+      {
         writeok &= save_level(fd, current);
+      }
+    }
     if(save)
+    {
       writeok &= save_level(fd, Level); /* put current level last */
+    }
     fclose(fd);
     if(writeok)
+    {
       print1("Game Saved.");
+    }
     else
+    {
       print1("Something didn't work... save aborted.");
+    }
     morewait();
     clearmsg();
   }
@@ -195,13 +215,21 @@ int save_player(FILE *fd)
   /* Save player possessions */
 
   if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
+  {
     Player.possessions[O_READY_HAND] = NULL;
+  }
   for(i = 0; i < MAXITEMS; i++)
+  {
     ok &= save_item(fd, Player.possessions[i]);
+  }
   for(i = 0; i < MAXPACK; i++)
+  {
     ok &= save_item(fd, Player.pack[i]);
+  }
   for(i = 0; i < PAWNITEMS; i++)
+  {
     ok &= save_item(fd, Pawnitems[i]);
+  }
 
   /* Save items in condo vault */
   ok &= save_itemlist(fd, Condoitems);
@@ -227,25 +255,34 @@ int save_level(FILE *fd, plv level)
   ok &= (fwrite((char *)&level->tunnelled, sizeof(char), 1, fd) > 0);
   ok &= (fwrite((char *)&level->environment, sizeof(int), 1, fd) > 0);
   for(j = 0; j < MAXLENGTH; j++)
+  {
     for(i = 0; i < MAXWIDTH; i++)
+    {
       if(level->site[i][j].lstatus & CHANGED)
       {                                    /* this loc has been changed */
         for(run = i + 1; run < MAXWIDTH && /* find how many in a row */
                          level->site[run][j].lstatus & CHANGED;
             run++)
+        {
           ;
+        }
         ok &= (fwrite((char *)&i, sizeof(int), 1, fd) > 0);
         ok &= (fwrite((char *)&j, sizeof(int), 1, fd) > 0);
         ok &= (fwrite((char *)&run, sizeof(int), 1, fd) > 0);
         for(; i < run; i++)
+        {
           ok &= (fwrite((char *)&level->site[i][j], sizeof(struct location), 1, fd) > 0);
+        }
       }
+    }
+  }
   ok &= (fwrite((char *)&i, sizeof(int), 1, fd) > 0);
   ok &= (fwrite((char *)&j, sizeof(int), 1, fd) > 0); /* signify end */
   /* since we don't mark the 'seen' bits as CHANGED, need to save a bitmask */
   run  = 8 * sizeof(long int);
   mask = 0;
   for(j = 0; j < MAXLENGTH; j++)
+  {
     for(i = 0; i < MAXWIDTH; i++)
     {
       if(run == 0)
@@ -256,20 +293,29 @@ int save_level(FILE *fd, plv level)
       }
       mask >>= 1;
       if(level->site[i][j].lstatus & SEEN)
+      {
         mask |= ((long int)1 << (sizeof(long int) * 8 - 1));
+      }
       run--;
     }
+  }
   if(run < 8 * sizeof(long int))
+  {
     ok &= (fwrite((char *)&mask, sizeof(long int), 1, fd) > 0);
+  }
   ok &= save_monsters(fd, level->mlist);
   for(i = 0; i < MAXWIDTH; i++)
+  {
     for(j = 0; j < MAXLENGTH; j++)
+    {
       if(level->site[i][j].things)
       {
         ok &= (fwrite((char *)&i, sizeof(int), 1, fd) > 0);
         ok &= (fwrite((char *)&j, sizeof(int), 1, fd) > 0);
         ok &= save_itemlist(fd, level->site[i][j].things);
       }
+    }
+  }
   ok &= (fwrite((char *)&i, sizeof(int), 1, fd) > 0);
   ok &= (fwrite((char *)&j, sizeof(int), 1, fd) > 0); /* signify end */
   return ok;
@@ -284,8 +330,12 @@ int save_monsters(FILE *fd, pml ml)
 
   /* First count monsters */
   for(tml = ml; tml != NULL; tml = tml->next)
+  {
     if(tml->m->hp > 0)
+    {
       nummonsters++;
+    }
+  }
 
   ok &= (fwrite((char *)&nummonsters, sizeof(int), 1, fd) > 0);
 
@@ -299,14 +349,22 @@ int save_monsters(FILE *fd, pml ml)
       {
         type = 0x0;
         if(strcmp(tml->m->monstring, Monsters[tml->m->id].monstring))
+        {
           type |= 0x1;
+        }
         if(strcmp(tml->m->corpsestr, Monsters[tml->m->id].corpsestr))
+        {
           type |= 0x2;
+        }
         ok &= (fwrite((char *)&type, sizeof(unsigned char), 1, fd) > 0);
         if(type & 1)
+        {
           ok &= (fprintf(fd, "%s\n", tml->m->monstring) >= 0);
+        }
         if(type & 2)
+        {
           ok &= (fprintf(fd, "%s\n", tml->m->corpsestr) >= 0);
+        }
         /* WDT: line moved from here... */
       } /* else it'll be reloaded from the hiscore file on restore */
       /* WDT: to here.  This bug fix is Sheldon Simm's suggestion
@@ -335,19 +393,31 @@ int save_item(FILE *fd, pob o)
   {
     type = 0;
     if(strcmp(o->objstr, Objects[o->id].objstr))
+    {
       type |= 1;
+    }
     if(strcmp(o->truename, Objects[o->id].truename))
+    {
       type |= 2;
+    }
     if(strcmp(o->cursestr, Objects[o->id].cursestr))
+    {
       type |= 4;
+    }
     ok &= (fwrite((char *)&type, sizeof(type), 1, fd) > 0);
     ok &= (fwrite((char *)o, sizeof(objtype), 1, fd) > 0);
     if(type & 1)
+    {
       ok &= (fprintf(fd, "%s\n", o->objstr) >= 0);
+    }
     if(type & 2)
+    {
       ok &= (fprintf(fd, "%s\n", o->truename) >= 0);
+    }
     if(type & 4)
+    {
       ok &= (fprintf(fd, "%s\n", o->cursestr) >= 0);
+    }
   }
   return ok;
 }
@@ -359,10 +429,14 @@ int save_itemlist(FILE *fd, pol ol)
   int ok = 1;
 
   for(tol = ol; tol != NULL; tol = tol->next)
+  {
     numitems++;
+  }
   ok &= (fwrite((char *)&numitems, sizeof(int), 1, fd) > 0);
   for(tol = ol; tol != NULL; tol = tol->next)
+  {
     ok &= save_item(fd, tol->thing);
+  }
   return ok;
 }
 
@@ -373,19 +447,24 @@ int save_country(FILE *fd)
   unsigned long int mask;
 
   for(i = 0; i < MAXWIDTH; i++)
+  {
     for(j = 0; j < MAXLENGTH; j++)
+    {
       if(c_statusp(i, j, CHANGED, Country))
       {
         ok &= (fwrite((char *)&i, sizeof(int), 1, fd) > 0);
         ok &= (fwrite((char *)&j, sizeof(int), 1, fd) > 0);
         ok &= (fwrite((char *)&Country[i][j], sizeof(struct terrain), 1, fd) > 0);
       }
+    }
+  }
   ok &= (fwrite((char *)&i, sizeof(int), 1, fd) > 0);
   ok &= (fwrite((char *)&j, sizeof(int), 1, fd) > 0);
   /* since we don't mark the 'seen' bits as CHANGED, need to save a bitmask */
   run  = 8 * sizeof(long int);
   mask = 0;
   for(i = 0; i < MAXWIDTH; i++)
+  {
     for(j = 0; j < MAXLENGTH; j++)
     {
       if(run == 0)
@@ -396,11 +475,16 @@ int save_country(FILE *fd)
       }
       mask >>= 1;
       if(c_statusp(i, j, SEEN, Country))
+      {
         mask |= ((long int)1 << (sizeof(long int) * 8 - 1));
+      }
       run--;
     }
+  }
   if(run < 8 * sizeof(long int))
+  {
     ok &= (fwrite((char *)&mask, sizeof(long int), 1, fd) > 0);
+  }
   return ok;
 }
 
@@ -489,7 +573,9 @@ int restore_game(char *savestr)
         Dungeon     = Level;
       }
       if(Current_Environment == E_CITY)
+      {
         Level = City;
+      }
     }
     /* this disgusting kludge because LENGTH and WIDTH are globals... */
     WIDTH = 64;
@@ -616,22 +702,32 @@ void restore_player(FILE *fd, int version)
   inititem(false);
 
   for(i = 0; i < MAXITEMS; i++)
+  {
     Player.possessions[i] = restore_item(fd, version);
+  }
 
   if(!Player.possessions[O_READY_HAND] && Player.possessions[O_WEAPON_HAND] &&
      twohandedp(Player.possessions[O_WEAPON_HAND]->id))
+  {
     Player.possessions[O_READY_HAND] = Player.possessions[O_WEAPON_HAND];
+  }
 
   for(i = 0; i < MAXPACK; i++)
+  {
     Player.pack[i] = restore_item(fd, version);
+  }
   for(i = 0; i < PAWNITEMS; i++)
+  {
     Pawnitems[i] = restore_item(fd, version);
+  }
   Condoitems = restore_itemlist(fd, version);
   for(i = 0; i < TOTALITEMS; i++)
   {
     fread((char *)&(Objects[i].known), sizeof(Objects[i].known), 1, fd);
     if(version != 80)
+    {
       fread((char *)&(Objects[i].uniqueness), sizeof(Objects[i].uniqueness), 1, fd);
+    }
   }
 }
 
@@ -654,21 +750,27 @@ pob restore_item(FILE *fd, int)
       obj->objstr = salloc(tempstr);
     }
     else
+    {
       obj->objstr = Objects[obj->id].objstr;
+    }
     if(type & 2)
     {
       filescanstring(fd, tempstr);
       obj->truename = salloc(tempstr);
     }
     else
+    {
       obj->truename = Objects[obj->id].truename;
+    }
     if(type & 4)
     {
       filescanstring(fd, tempstr);
       obj->cursestr = salloc(tempstr);
     }
     else
+    {
       obj->cursestr = Objects[obj->id].cursestr;
+    }
   }
   return obj;
 }
@@ -726,16 +828,24 @@ void restore_level(FILE *fd, int version)
     case E_CAVES:
       initrand(Current_Environment, Level->depth);
       if((random_range(4) == 0) && (Level->depth < MaxDungeonLevels))
+      {
         room_level();
+      }
       else
+      {
         cavern_level();
+      }
       break;
     case E_SEWERS:
       initrand(Current_Environment, Level->depth);
       if((random_range(4) == 0) && (Level->depth < MaxDungeonLevels))
+      {
         room_level();
+      }
       else
+      {
         sewer_level();
+      }
       break;
     case E_CASTLE:
       initrand(Current_Environment, Level->depth);
@@ -812,6 +922,7 @@ void restore_level(FILE *fd, int version)
   }
   run = 0;
   for(j = 0; j < MAXLENGTH; j++)
+  {
     for(i = 0; i < MAXWIDTH; i++)
     {
       if(run == 0)
@@ -820,10 +931,13 @@ void restore_level(FILE *fd, int version)
         fread((char *)&mask, sizeof(long int), 1, fd);
       }
       if(mask & 1)
+      {
         lset(i, j, SEEN, *Level);
+      }
       mask >>= 1;
       run--;
     }
+  }
   restore_monsters(fd, Level, version);
   fread((char *)&i, sizeof(int), 1, fd);
   fread((char *)&j, sizeof(int), 1, fd);
@@ -933,6 +1047,7 @@ void restore_monsters(FILE *fd, plv level, int version)
     ml->next = NULL;
     fread((char *)ml->m, sizeof(montype), 1, fd);
     if(ml->m->id == HISCORE_NPC)
+    {
       if(version == 80)
       {
         temp_x = ml->m->x;
@@ -942,7 +1057,10 @@ void restore_monsters(FILE *fd, plv level, int version)
         ml->m->y = temp_y;
       }
       else
+      {
         restore_hiscore_npc(ml->m, ml->m->aux2);
+      }
+    }
     else
     {
       fread((char *)&type, sizeof(unsigned char), 1, fd);
@@ -952,23 +1070,31 @@ void restore_monsters(FILE *fd, plv level, int version)
         ml->m->monstring = salloc(tempstr);
       }
       else
+      {
         ml->m->monstring = Monsters[ml->m->id].monstring;
+      }
       if(type & 2)
       {
         filescanstring(fd, tempstr);
         ml->m->corpsestr = salloc(tempstr);
       }
       else
+      {
         ml->m->corpsestr = Monsters[ml->m->id].corpsestr;
+      }
       /* WDT: As suggested by Sheldon Simms, I'm moving this line... */
       if(version <= 80)
+      {
         ml->m->possessions = restore_itemlist(fd, version);
+      }
       ml->m->meleestr = Monsters[ml->m->id].meleestr;
     }
     /* WDT: ...to here, so that all creatures will have their stuff
      * restored to them.  Savefile versioning added by David Given. */
     if(version > 80)
+    {
       ml->m->possessions = restore_itemlist(fd, version);
+    }
     level->site[ml->m->x][ml->m->y].creature = ml->m;
     ml->next                                 = level->mlist;
     level->mlist                             = ml;
@@ -992,6 +1118,7 @@ void restore_country(FILE *fd, int)
   }
   run = 0;
   for(i = 0; i < MAXWIDTH; i++)
+  {
     for(j = 0; j < MAXLENGTH; j++)
     {
       if(run == 0)
@@ -1000,8 +1127,11 @@ void restore_country(FILE *fd, int)
         fread((char *)&mask, sizeof(long int), 1, fd);
       }
       if(mask & 1)
+      {
         c_set(i, j, SEEN, Country);
+      }
       mask >>= 1;
       run--;
     }
+  }
 }

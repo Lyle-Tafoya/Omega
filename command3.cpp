@@ -43,7 +43,9 @@ void examine()
     if(Current_Environment == E_COUNTRYSIDE)
     {
       if(!c_statusp(x, y, SEEN, Country))
+      {
         print3("How should I know what that is?");
+      }
       else
       {
         mprint("That terrain is:");
@@ -51,17 +53,26 @@ void examine()
       }
     }
     else if(!view_los_p(Player.x, Player.y, x, y))
+    {
       print3("I refuse to examine something I can't see.");
+    }
     else
     {
       clearmsg();
       if(Level->site[x][y].creature != NULL)
+      {
         mprint(mstatus_string(Level->site[x][y].creature));
+      }
       else if((Player.x == x) && (Player.y == y))
+      {
         describe_player();
+      }
       if(loc_statusp(x, y, SECRET, *Level))
+      {
         print2("An age-worn stone wall.");
+      }
       else
+      {
         switch(Level->site[x][y].locchar)
         {
           case SPACE:
@@ -75,32 +86,54 @@ void examine()
             break;
           case FLOOR:
             if(Current_Dungeon == Current_Environment)
+            {
               print2("A dirty stone floor.");
+            }
             else
+            {
               print2("The ground.");
+            }
             break;
           case WALL:
             if(Level->site[x][y].aux == 0)
+            {
               print2("A totally impervious wall.");
+            }
             else if(Level->site[x][y].aux < 10)
+            {
               print2("A pitted concrete wall.");
+            }
             else if(Level->site[x][y].aux < 30)
+            {
               print2("An age-worn sandstone wall.");
+            }
             else if(Level->site[x][y].aux < 50)
+            {
               print2("A smooth basalt wall.");
+            }
             else if(Level->site[x][y].aux < 70)
+            {
               print2("A solid granite wall.");
+            }
             else if(Level->site[x][y].aux < 90)
+            {
               print2("A wall of steel.");
+            }
             else if(Level->site[x][y].aux < 210)
             {
               if(Current_Environment == E_CITY)
+              {
                 print2("A thick wall of Rampart bluestone");
+              }
               else
+              {
                 print2("A magically reinforced wall.");
+              }
             }
             else
+            {
               print2("An almost totally impervious wall.");
+            }
             break;
           case RUBBLE:
             print2("A dangerous-looking pile of rubble.");
@@ -128,9 +161,13 @@ void examine()
             break;
           case HEDGE:
             if(Level->site[x][y].p_locf == L_EARTH_STATION)
+            {
               print2("A weird fibrillation of oozing tendrils.");
+            }
             else
+            {
               print2("A brambly, thorny hedge.");
+            }
             break;
           case LAVA:
             print2("A bubbling pool of lava.");
@@ -149,13 +186,21 @@ void examine()
             break;
           case WATER:
             if(Level->site[x][y].p_locf == L_WATER)
+            {
               print2("A deep pool of water.");
+            }
             else if(Level->site[x][y].p_locf == L_CHAOS)
+            {
               print2("A pool of primal chaos.");
+            }
             else if(Level->site[x][y].p_locf == L_WATER_STATION)
+            {
               print2("A bubbling pool of acid.");
+            }
             else
+            {
               print2("An eerie pool of water.");
+            }
             break;
           case FIRE:
             print2("A curtain of fire.");
@@ -164,10 +209,13 @@ void examine()
             print2("Wow, I haven't the faintest idea!");
             break;
         }
+      }
       if((ol = Level->site[x][y].things) != NULL && !loc_statusp(x, y, SECRET, *Level))
       {
         if(ol->next == NULL)
+        {
           print3(itemid(ol->thing));
+        }
         else
         {
           drewmenu = true;
@@ -187,7 +235,9 @@ void examine()
     }
   }
   if(drewmenu)
+  {
     xredraw();
+  }
 }
 
 void help()
@@ -217,8 +267,9 @@ void help()
   menuprint("ESCAPE: Forget the whole thing.");
   showmenu();
   do
+  {
     c = (char)mcigetc();
-  while((c < 'a' || c > 'n') && c != ESCAPE);
+  } while((c < 'a' || c > 'n') && c != ESCAPE);
   if(c == 'n')
   {
     print1("Trying to copy all help files to ./omega.doc ");
@@ -234,7 +285,9 @@ void help()
         sprintf(Str1, "%shelp%d.txt", Omegalib, n);
         in = checkfopen(Str1, "r");
         while(fgets(Str1, STRING_LEN, in))
+        {
           fputs(Str1, out);
+        }
         fclose(in);
       }
       fclose(out);
@@ -247,12 +300,17 @@ void help()
     sprintf(filestr, "%shelp%d.txt", Omegalib, c + 1 - 'a');
     print1("Display help file, or Copy help file to file in wd. [dc] ");
     do
+    {
       c = (char)mcigetc();
-    while((c != 'd') && (c != 'c') && (c != ESCAPE));
+    } while((c != 'd') && (c != 'c') && (c != ESCAPE));
     if(c == 'd')
+    {
       displayfile(filestr);
+    }
     else if(c == 'c')
+    {
       copyfile(filestr);
+    }
   }
   xredraw();
 }
@@ -277,12 +335,18 @@ void fire()
   print1("Fire/Throw --");
   index = getitem(NULL_ITEM);
   if(index == ABORT)
+  {
     setgamestatus(SKIP_MONSTERS, GameStatus);
+  }
   else if(index == CASHVALUE)
+  {
     print3("Can't fire money at something!");
+  }
   else if(cursed(Player.possessions[index]) && Player.possessions[index]->used)
+  {
     print3("You can't seem to get rid of it!");
-  /* load a crossbow */
+    /* load a crossbow */
+  }
   else if((Player.possessions[O_WEAPON_HAND] != NULL) &&
           (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) &&
           (Player.possessions[O_WEAPON_HAND]->aux != LOADED) &&
@@ -308,7 +372,9 @@ void fire()
       return;
     }
     if((x2 == Player.x) && (y2 == Player.y))
+    {
       mprint("You practice juggling for a moment or two.");
+    }
     else
     {
       do_object_los(obj->objchar, &x1, &y1, x2, y2);
@@ -343,7 +409,9 @@ void fire()
         { /* ok already, hit the damn thing */
           weapon_use(2 * statmod(Player.str), obj, m);
           if((obj->id == WEAPONID + 28 || obj->id == WEAPONID + 29) && !random_range(4))
+          {
             dispose_lost_objects(1, obj);
+          }
           else
           {
             setgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -381,9 +449,13 @@ void quit(int)
   if(ynq() == 'y')
   {
     if(Player.rank[ADEPT] == 0)
+    {
       display_quit();
+    }
     else
+    {
       display_bigwin();
+    }
 #ifdef SAVE_LEVELS
     kill_all_levels();
 #endif
@@ -391,7 +463,9 @@ void quit(int)
     exit(0);
   }
   else
+  {
     resetgamestatus(SKIP_MONSTERS, GameStatus);
+  }
 }
 
 /* rest in 10 second segments so if woken up by monster won't
@@ -420,7 +494,9 @@ void nap()
       naptime = 3600;
     }
     else
+    {
       naptime *= 6;
+    }
     if(naptime > 1)
     {
       clearmsg();
@@ -444,15 +520,22 @@ void charid()
     countryside = true;
     strcpy(cstr, countryid(id));
     if(strcmp(cstr, "I have no idea.") == 0)
+    {
       countryside = false;
+    }
     else
+    {
       mprint(cstr);
+    }
   }
   if(!countryside)
   {
     if((id >= 'a' && id <= 'z') || (id >= 'A' && id <= 'Z') || id == '@')
+    {
       mprint("A monster or NPC -- examine (x) to find out exactly.");
+    }
     else
+    {
       switch(id)
       {
         case(SPACE & 0xff):
@@ -570,6 +653,7 @@ void charid()
           mprint("That character is unused.");
           break;
       }
+    }
   }
 }
 
@@ -577,7 +661,9 @@ void wizard()
 {
   setgamestatus(SKIP_MONSTERS, GameStatus);
   if(gamestatusp(CHEATED, GameStatus))
+  {
     mprint("You're already in wizard mode!");
+  }
   else
   {
     clearmsg();
@@ -605,13 +691,19 @@ void wizard()
         strcpy(Str1, WIZARD);
         strcat(Str1, ", the Wizard of Omega appears before you....");
         if(Str1[0] >= 'a' && Str1[0] <= 'z')
+        {
           Str1[0] += 'A' - 'a'; /* capitalise 1st letter */
+        }
         mprint(Str1);
         mprint("'Do not meddle in the affairs of Wizards --");
         if(random_range(2))
+        {
           mprint("it makes them soggy and hard to light.'");
+        }
         else
+        {
           mprint("for they are subtle, and swift to anger!'");
+        }
       }
     }
   }
@@ -625,8 +717,12 @@ void vault()
   clearmsg();
 
   if(Player.possessions[O_BOOTS] != NULL)
+  {
     if(Player.possessions[O_BOOTS]->on_equip == I_BOOTS_JUMPING)
+    {
       jumper = 2;
+    }
+  }
   if(Player.status[IMMOBILE] > 0)
   {
     resetgamestatus(FAST_MOVE, GameStatus);
@@ -638,15 +734,25 @@ void vault()
     mprint("Jump where?");
     setspot(&x, &y);
     if(!los_p(Player.x, Player.y, x, y))
+    {
       print3("The way is obstructed.");
+    }
     else if(Player.itemweight > Player.maxweight)
+    {
       print3("You are too burdened to jump anywhere.");
+    }
     else if(distance(x, y, Player.x, Player.y) > std::max(2, statmod(Player.agi) + 2) + jumper)
+    {
       print3("The jump is too far for you.");
+    }
     else if(Level->site[x][y].creature != NULL)
+    {
       print3("You can't jump on another creature.");
+    }
     else if(!p_moveable(x, y))
+    {
       print3("You can't jump there.");
+    }
     else
     {
       resetgamestatus(SKIP_MONSTERS, GameStatus);
@@ -660,8 +766,12 @@ void vault()
       }
       p_movefunction(Level->site[Player.x][Player.y].p_locf);
       if(Current_Environment != E_COUNTRYSIDE)
+      {
         if((Level->site[Player.x][Player.y].things != NULL) && (optionp(PICKUP, Player)))
+        {
           pickup();
+        }
+      }
     }
   }
 }
@@ -875,7 +985,9 @@ void pickpocket()
   index = getdir();
 
   if(index == ABORT)
+  {
     setgamestatus(SKIP_MONSTERS, GameStatus);
+  }
   else
   {
     dx = Dirs[0][index];
@@ -935,11 +1047,15 @@ void rename_player()
   mprint("Rename Character: ");
   strcpy(Str1, msgscanstring());
   if(strlen(Str1) == 0)
+  {
     mprint(Player.name);
+  }
   else
   {
     if(Str1[0] >= 'a' && Str1[0] <= 'z')
+    {
       Str1[0] += 'A' - 'a';
+    }
     strcpy(Player.name, Str1);
   }
   sprintf(Str1, "Henceforth, you shall be known as %s", Player.name);
@@ -969,13 +1085,17 @@ void tunnel()
   mprint("Tunnel -- ");
   dir = getdir();
   if(dir == ABORT)
+  {
     setgamestatus(SKIP_MONSTERS, GameStatus);
+  }
   else
   {
     ox = Player.x + Dirs[0][dir];
     oy = Player.y + Dirs[1][dir];
     if(loc_statusp(ox, oy, SECRET, *Level))
+    {
       mprint("You have no success as yet.");
+    }
     else if(Level->site[ox][oy].locchar != WALL)
     {
       print3("You can't tunnel through that!");
@@ -999,7 +1119,9 @@ void tunnel()
           (void)damage_item(Player.possessions[O_WEAPON_HAND]);
         }
         else
+        {
           mprint("Your digging implement shows no sign of breaking.");
+        }
       }
       if(Player.possessions[O_WEAPON_HAND] == NULL)
       {
@@ -1012,7 +1134,9 @@ void tunnel()
           lset(ox, oy, CHANGED, *Level);
         }
         else
+        {
           mprint("No joy.");
+        }
       }
       else if(Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
       {
@@ -1025,7 +1149,9 @@ void tunnel()
           lset(ox, oy, CHANGED, *Level);
         }
         else
+        {
           mprint("No luck.");
+        }
       }
       else if((aux > 0) && (Player.possessions[O_WEAPON_HAND]->dmg + random_range(100) > aux))
       {
@@ -1036,7 +1162,9 @@ void tunnel()
         lset(ox, oy, CHANGED, *Level);
       }
       else
+      {
         mprint("You have no success as yet.");
+      }
     }
   }
 }
@@ -1123,20 +1251,26 @@ void hunt(Symbol terrain)
     change_environment(E_TACTICAL_MAP);
   }
   else
+  {
     mprint("Your hunt is fruitless.");
+  }
 }
 
 void dismount_steed()
 {
   pml ml;
   if(!gamestatusp(MOUNTED, GameStatus))
+  {
     print3("You're on foot already!");
+  }
   else if(Current_Environment == E_COUNTRYSIDE)
   {
     mprint("If you leave your steed here he will wander away!");
     mprint("Do it anyway? [yn] ");
     if(ynq() == 'y')
+    {
       resetgamestatus(MOUNTED, GameStatus);
+    }
   }
   else
   {
@@ -1165,14 +1299,18 @@ void city_move()
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else if(Player.status[IMMOBILE] > 0)
+  {
     print3("You can't even move!");
+  }
   else if(hostilemonstersnear())
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
     print3("You can't move this way with hostile monsters around!");
   }
   else if(Level->site[Player.x][Player.y].aux == NOCITYMOVE)
+  {
     print3("You can't use the 'M' command from this location.");
+  }
   else
   {
     print1("Move to which establishment [? for help, ESCAPE to quit]");
@@ -1188,9 +1326,13 @@ void city_move()
         {
           Time++;
           if(Time % 10 == 0)
+          {
             tenminute_check();
+          }
           else
+          {
             minute_status_check();
+          }
         }
         x += sign(CitySiteList[site][1] - x);
         y += sign(CitySiteList[site][2] - y);
@@ -1214,8 +1356,9 @@ void frobgamestatus()
   long num;
   mprint("Set or Reset or Forget it [s,r,ESCAPE]:");
   do
+  {
     response = (char)mcigetc();
-  while((response != 'r') && (response != 's') && (response != ESCAPE));
+  } while((response != 'r') && (response != 's') && (response != ESCAPE));
   if(response != ESCAPE)
   {
     mprint("Enter log2 of flag:");
@@ -1229,9 +1372,13 @@ void frobgamestatus()
         return;
       }
       if(response == 's')
+      {
         setgamestatus(num, GameStatus);
+      }
       else
+      {
         resetgamestatus(num, GameStatus);
+      }
       mprint("Done....");
     }
   }

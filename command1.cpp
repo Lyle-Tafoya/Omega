@@ -13,18 +13,22 @@ void p_process()
   static int searchval = 0;
 
   if(Player.status[BERSERK])
+  {
     if(goberserk())
     {
       setgamestatus(SKIP_PLAYER, GameStatus);
       drawvision(Player.x, Player.y);
     }
+  }
   if(!gamestatusp(SKIP_PLAYER, GameStatus))
   {
     if(searchval > 0)
     {
       searchval--;
       if(searchval == 0)
+      {
         resetgamestatus(FAST_MOVE, GameStatus);
+      }
     }
     drawvision(Player.x, Player.y);
     if(!gamestatusp(FAST_MOVE, GameStatus))
@@ -53,7 +57,9 @@ void p_process()
         break; /* ^i */
       case 11:
         if(gamestatusp(CHEATED, GameStatus))
+        {
           frobgamestatus();
+        }
         [[fallthrough]];
       case 12:
         xredraw();
@@ -69,11 +75,15 @@ void p_process()
         break; /* ^r */
       case 23:
         if(gamestatusp(CHEATED, GameStatus))
+        {
           drawscreen();
+        }
         break; /* ^w */
       case 24: /* ^x */
         if(gamestatusp(CHEATED, GameStatus) || Player.rank[ADEPT])
+        {
           wish(1);
+        }
         Command_Duration = 5;
         break;
       case 'a':
@@ -167,7 +177,9 @@ void p_process()
         break;
       case 'I':
         if(!optionp(TOPINV, Player))
+        {
           top_inventory_control();
+        }
         else
         {
           display_possessions();
@@ -279,7 +291,9 @@ void p_process()
           Cmd = mgetc();
         }
         if(Cmd != ESCAPE)
+        {
           setgamestatus(FAST_MOVE, GameStatus);
+        }
         break;
       case 'H':
         setgamestatus(FAST_MOVE, GameStatus);
@@ -336,7 +350,9 @@ void p_process()
     }
   }
   if(Current_Environment != E_COUNTRYSIDE)
+  {
     roomcheck();
+  }
   screencheck(Player.y);
 }
 
@@ -374,11 +390,15 @@ void p_country_process()
         break; /* ^r */
       case 23:
         if(gamestatusp(CHEATED, GameStatus))
+        {
           drawscreen();
+        }
         break; /* ^w */
       case 24:
         if(gamestatusp(CHEATED, GameStatus) || Player.rank[ADEPT])
+        {
           wish(1);
+        }
         break; /* ^x */
       case 'd':
         drop();
@@ -403,7 +423,9 @@ void p_country_process()
         break;
       case 'I':
         if(!optionp(TOPINV, Player))
+        {
           top_inventory_control();
+        }
         else
         {
           menuclear();

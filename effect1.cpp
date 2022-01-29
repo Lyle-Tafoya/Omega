@@ -29,7 +29,9 @@ void enchant(int delta)
             (Player.possessions[i]->objchar == ARTIFACT && random_range(3)))
     {
       if(Player.possessions[i]->uniqueness == COMMON)
+      {
         print1("Your ");
+      }
       nprint1(itemid(Player.possessions[i]));
       nprint1(" glows, but the glow flickers out...");
       morewait();
@@ -154,7 +156,9 @@ void bless(int blessing)
     {
       print1("A foul odor arises from ");
       if(Player.possessions[index]->uniqueness == COMMON)
+      {
         nprint1("your ");
+      }
       nprint1(itemid(Player.possessions[index]));
       morewait();
       used = (Player.possessions[index]->used);
@@ -166,7 +170,9 @@ void bless(int blessing)
       }
       Player.possessions[index]->blessing -= 2;
       if(Player.possessions[index]->blessing < 0)
+      {
         Player.possessions[index]->plus = abs(Player.possessions[index]->plus) - 1;
+      }
       if(used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -237,7 +243,9 @@ void heal(int amount)
     {
       Player.hp += random_range(10 * amount) + 1;
       if(Player.hp > Player.maxhp)
+      {
         Player.hp = Player.maxhp + amount;
+      }
     }
     Player.status[BLINDED] = 0;
   }
@@ -246,7 +254,9 @@ void heal(int amount)
     mprint("You feel unwell.");
     Player.hp -= random_range(10 * abs(amount) + 1);
     if(Player.hp < 0)
+    {
       p_death("magical disruption");
+    }
   }
   dataprint();
 }
@@ -305,7 +315,9 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
   if((xx == Player.x) && (yy == Player.y))
   {
     if(Player.status[DEFLECTION] > 0)
+    {
       mprint("The bolt just missed you!");
+    }
     else
     {
       switch(dtype)
@@ -339,7 +351,9 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
         strcat(Str1, target->monstring);
       }
       else
+      {
         strcpy(Str1, target->monstring);
+      }
       switch(dtype)
       {
           /* WDT: these sentances really ought to be livened up.  Especially
@@ -369,7 +383,9 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
         strcat(Str1, target->monstring);
       }
       else
+      {
         strcpy(Str1, target->monstring);
+      }
       switch(dtype)
       {
         case FLAME:
@@ -389,6 +405,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
     }
   }
   else if(Level->site[xx][yy].locchar == HEDGE)
+  {
     if(Level->site[xx][yy].p_locf != L_TRIFID)
     {
       if((dtype == FLAME) || (dtype == ELECTRICITY))
@@ -400,11 +417,17 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
         lset(xx, yy, CHANGED, *Level);
       }
       else
+      {
         mprint("The hedge is unaffected.");
+      }
     }
     else
+    {
       mprint("The trifid absorbs the energy and laughs!");
+    }
+  }
   else if(Level->site[xx][yy].locchar == WATER)
+  {
     if(dtype == FLAME)
     {
       mprint("The water is vaporised!");
@@ -412,6 +435,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
       Level->site[xx][yy].locchar = FLOOR;
       lset(xx, yy, CHANGED, *Level);
     }
+  }
 }
 
 void lball(int fx, int fy, int tx, int ty, int dmg)
@@ -496,7 +520,9 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
           strcat(Str1, target->monstring);
         }
         else
+        {
           strcpy(Str1, target->monstring);
+        }
         switch(dtype)
         {
           case FLAME:
@@ -518,6 +544,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
       m_damage(target, random_range(dmg), dtype);
     }
     if(Level->site[ex][ey].locchar == HEDGE)
+    {
       if(Level->site[ex][ey].p_locf != L_TRIFID)
       {
         if((dtype == FLAME) || (dtype == ELECTRICITY))
@@ -529,11 +556,17 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
           lset(ex, ey, CHANGED, *Level);
         }
         else
+        {
           mprint("The hedge is unaffected.");
+        }
       }
       else
+      {
         mprint("The trifid absorbs the energy and laughs!");
+      }
+    }
     else if(Level->site[ex][ey].locchar == WATER)
+    {
       if(dtype == FLAME)
       {
         mprint("The water is vaporised!");
@@ -542,6 +575,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
         plotspot(ex, ey, true);
         lset(ex, ey, CHANGED, *Level);
       }
+    }
   }
 }
 
@@ -549,13 +583,19 @@ void mondet(int blessing)
 {
   pml ml;
   for(ml = Level->mlist; ml != NULL; ml = ml->next)
+  {
     if(ml->m->hp > 0) /* FIXED 12/30/98 DG */
     {
       if(blessing > -1)
+      {
         plotmon(ml->m);
+      }
       else
+      {
         putspot(random_range(WIDTH), random_range(LENGTH), Monsters[random_range(NUMMONSTERS)].monchar);
+      }
     }
+  }
   levelrefresh();
   morewait();
   show_screen();
@@ -565,14 +605,22 @@ void objdet(int blessing)
 {
   int i, j;
   for(i = 0; i < WIDTH; i++)
+  {
     for(j = 0; j < LENGTH; j++)
+    {
       if(Level->site[i][j].things != NULL)
       {
         if(blessing < 0)
+        {
           putspot(random_range(WIDTH), random_range(LENGTH), Level->site[i][j].things->thing->objchar);
+        }
         else
+        {
           putspot(i, j, Level->site[i][j].things->thing->objchar);
+        }
       }
+    }
+  }
   levelrefresh();
   morewait();
   show_screen();
@@ -589,13 +637,19 @@ void identify(int blessing)
     print1("Identify:");
     index = getitem(NULL_ITEM);
     if(index == CASHVALUE)
+    {
       print3("Your money is really money.");
+    }
     else if(index == ABORT)
+    {
       setgamestatus(SKIP_MONSTERS, GameStatus);
+    }
     else
     {
       if(Player.possessions[index]->objchar == FOOD)
+      {
         Player.possessions[index]->known = 1;
+      }
       else
       {
         Player.possessions[index]->known             = 2;
@@ -609,37 +663,47 @@ void identify(int blessing)
   {
     print2("You feel forgetful.");
     for(index = 0; index < MAXITEMS; index++)
+    {
       if(Player.possessions[index] != NULL)
       {
         Player.possessions[index]->known             = 0;
         Objects[Player.possessions[index]->id].known = 0;
       }
+    }
   }
   else
   {
     print2("You feel encyclopaedic.");
     for(index = 0; index < MAXITEMS; index++)
+    {
       if(Player.possessions[index] != NULL)
       {
         if(Player.possessions[index]->objchar == FOOD)
+        {
           Player.possessions[index]->known = 1;
+        }
         else
         {
           Player.possessions[index]->known             = 2;
           Objects[Player.possessions[index]->id].known = 1;
         }
       }
+    }
     for(index = 0; index < Player.packptr; index++)
+    {
       if(Player.pack[index] != NULL)
       {
         if(Player.pack[index]->objchar == FOOD)
+        {
           Player.pack[index]->known = 1;
+        }
         else
         {
           Player.pack[index]->known             = 2;
           Objects[Player.pack[index]->id].known = 1;
         }
       }
+    }
   }
   calc_melee();
 }
@@ -651,12 +715,16 @@ int random_item()
   int number = 0;
 
   for(tries = 0; tries < MAXITEMS; tries++)
+  {
     if(Player.possessions[tries] != NULL)
     {
       number++;
       if(random_range(number) == 0)
+      {
         item = tries;
+      }
     }
+  }
   return (item);
 }
 
@@ -668,9 +736,13 @@ void wish(int blessing)
   clearmsg();
   print1("What do you wish for? ");
   if(blessing < 0)
+  {
     deathprint();
+  }
   else
+  {
     strcpy(wishstr, msgscanstring());
+  }
   if(blessing < 0 || strcmp(wishstr, "Death") == 0)
   {
     print2("As you wish, so shall it be.");
@@ -685,9 +757,13 @@ void wish(int blessing)
   {
     print2("You feel more competent.");
     if(gamestatusp(CHEATED, GameStatus))
+    {
       gain_experience(10000);
+    }
     else
+    {
       gain_experience(std::min(10000l, Player.xp));
+    }
   }
   else if(strcmp(wishstr, "Wealth") == 0)
   {
@@ -710,15 +786,21 @@ void wish(int blessing)
     Player.alignment += 25;
   }
   else if(strcmp(wishstr, "Location") == 0)
+  {
     strategic_teleport(1);
+  }
   else if(strcmp(wishstr, "Knowledge") == 0)
   {
     print2("You feel more knowledgeable.");
     i = random_range(NUMSPELLS);
     if(Spells[i].known)
+    {
       Spells[i].powerdrain = (std::max(1, Spells[i].powerdrain / 2));
+    }
     else
+    {
       Spells[i].known = true;
+    }
   }
   else if(strcmp(wishstr, "Health") == 0)
   {
@@ -728,11 +810,17 @@ void wish(int blessing)
     Player.status[POISONED] = 0;
   }
   else if(strcmp(wishstr, "Destruction") == 0)
+  {
     annihilate(gamestatusp(CHEATED, GameStatus));
+  }
   else if(strcmp(wishstr, "Acquisition") == 0)
+  {
     acquire(gamestatusp(CHEATED, GameStatus));
+  }
   else if(strcmp(wishstr, "Summoning") == 0)
+  {
     summon(gamestatusp(CHEATED, GameStatus), -1);
+  }
   else if(strcmp(wishstr, "Stats") == 0 && gamestatusp(CHEATED, GameStatus))
   {
     Player.str = Player.maxstr = Player.con = Player.maxcon = Player.agi = Player.maxagi = Player.dex =
@@ -740,7 +828,9 @@ void wish(int blessing)
     calc_melee();
   }
   else
+  {
     print2("You feel stupid.");
+  }
   dataprint();
   showflags();
 }
@@ -756,7 +846,9 @@ void acquire(int blessing)
   {
     index = random_item();
     if(index == ABORT)
+    {
       mprint("You feel fortunate.");
+    }
     else
     {
       print1("Smoke drifts out of your pack.... ");
@@ -771,131 +863,231 @@ void acquire(int blessing)
     newthing     = ((pob)checkmalloc(sizeof(objtype)));
     newthing->id = -1;
     if(gamestatusp(CHEATED, GameStatus))
+    {
       print1("Acquire which kind of item: !?][}{)/=%%\\& ");
+    }
     else
+    {
       print1("Acquire which kind of item: !?][}{)/=%%\\ ");
+    }
     otype = mgetc();
     switch(otype)
     {
       case(POTION & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(POTIONID, NUMPOTIONS);
+        }
         else
+        {
           id = random_range(NUMPOTIONS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_potion(newthing, id);
+        }
         break;
       case(SCROLL & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(SCROLLID, NUMSCROLLS);
+        }
         else
+        {
           id = random_range(NUMSCROLLS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_scroll(newthing, id);
+        }
         break;
       case(RING & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(RINGID, NUMRINGS);
+        }
         else
+        {
           id = random_range(NUMRINGS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_ring(newthing, id);
+        }
         break;
       case(STICK & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(STICKID, NUMSTICKS);
+        }
         else
+        {
           id = random_range(NUMSTICKS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_stick(newthing, id);
+        }
         break;
       case(ARMOR & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(ARMORID, NUMARMOR);
+        }
         else
+        {
           id = random_range(NUMARMOR);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_armor(newthing, id);
+        }
         break;
       case(SHIELD & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(SHIELDID, NUMSHIELDS);
+        }
         else
+        {
           id = random_range(NUMSHIELDS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_shield(newthing, id);
+        }
         break;
       case(WEAPON & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(WEAPONID, NUMWEAPONS);
+        }
         else
+        {
           id = random_range(NUMWEAPONS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_weapon(newthing, id);
+        }
         break;
       case(BOOTS & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(BOOTID, NUMBOOTS);
+        }
         else
+        {
           id = random_range(NUMBOOTS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_boots(newthing, id);
+        }
         break;
       case(CLOAK & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(CLOAKID, NUMCLOAKS);
+        }
         else
+        {
           id = random_range(NUMCLOAKS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_cloak(newthing, id);
+        }
         break;
       case(FOOD & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(FOODID, NUMFOODS);
+        }
         else
+        {
           id = random_range(NUMFOODS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_food(newthing, id);
+        }
         break;
       case(THING & 0xff):
         if(blessing > 0)
+        {
           id = itemlist(THINGID, NUMTHINGS);
+        }
         else
+        {
           id = random_range(NUMTHINGS);
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_thing(newthing, id);
+        }
         break;
       case(ARTIFACT & 0xff):
         if(gamestatusp(CHEATED, GameStatus))
+        {
           id = itemlist(ARTIFACTID, NUMARTIFACTS);
+        }
         else
+        {
           id = -1;
+        }
         if(id < 0)
+        {
           print2("You feel stupid.");
+        }
         else
+        {
           make_artifact(newthing, id);
+        }
         break;
       default:
         print2("You feel stupid.");

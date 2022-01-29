@@ -62,7 +62,9 @@ void make_country_monsters(Symbol terrain)
     tml    = ((pml)checkmalloc(sizeof(mltype)));
     tml->m = ((pmt)checkmalloc(sizeof(montype)));
     if(monsters == NULL)
+    {
       tml->m = m_create(random_range(WIDTH), random_range(LENGTH), true, difficulty());
+    }
     else
     {
       tml->m    = make_creature(*(monsters + random_range(10)));
@@ -94,11 +96,17 @@ void populate_level(int monstertype)
   int i, j, k, monsterid, nummonsters = (random_range(difficulty() / 3) + 1) * 3 + 8;
 
   if(monstertype == E_CASTLE)
+  {
     nummonsters += 10;
+  }
   else if(monstertype == E_ASTRAL)
+  {
     nummonsters += 10;
+  }
   else if(monstertype == E_VOLCANO)
+  {
     nummonsters += 20;
+  }
 
   head = tml = ((pml)checkmalloc(sizeof(mltype)));
 
@@ -110,18 +118,29 @@ void populate_level(int monstertype)
     {
       case E_CAVES:
         if(Level->depth * 10 + random_range(100) > 150)
+        {
           monsterid = GOBLIN_SHAMAN;
+        }
         else if(Level->depth * 10 + random_range(100) > 100)
+        {
           monsterid = GOBLIN_CHIEF; /* Goblin Chieftain */
+        }
         else if(random_range(100) > 50)
+        {
           monsterid = GOBLIN;
+        }
         else
+        {
           monsterid = RANDOM; /* IE, random monster */
+        }
         break;
       case E_SEWERS:
         if(!random_range(3))
+        {
           monsterid = -1;
+        }
         else
+        {
           switch(random_range(Level->depth + 3))
           {
             case 0:
@@ -176,9 +195,11 @@ void populate_level(int monstertype)
               monsterid = RANDOM;
               break; /* whatever seems good */
           }
+        }
         break;
       case E_ASTRAL:
-        if(random_range(2)) /* random astral creatures */
+        if(random_range(2))
+        { /* random astral creatures */
           switch(random_range(12))
           {
             case 0:
@@ -217,15 +238,25 @@ void populate_level(int monstertype)
             default:
               monsterid = SHADOW_SLAY; /* shadow slayer */
           }
-        else if(random_range(2) && (Level->depth == 1)) /* plane of earth */
-          monsterid = EARTH_ELEM;                       /* earth elemental */
-        else if(random_range(2) && (Level->depth == 2)) /* plane of air */
-          monsterid = AIR_ELEM;                         /* air elemental */
-        else if(random_range(2) && (Level->depth == 3)) /* plane of water */
-          monsterid = WATER_ELEM;                       /* water elemental */
-        else if(random_range(2) && (Level->depth == 4)) /* plane of fire */
-          monsterid = FIRE_ELEM;                        /* fire elemental */
-        else if(random_range(2) && (Level->depth == 5)) /* deep astral */
+        }
+        else if(random_range(2) && (Level->depth == 1))
+        {                         /* plane of earth */
+          monsterid = EARTH_ELEM; /* earth elemental */
+        }
+        else if(random_range(2) && (Level->depth == 2))
+        {                       /* plane of air */
+          monsterid = AIR_ELEM; /* air elemental */
+        }
+        else if(random_range(2) && (Level->depth == 3))
+        {                         /* plane of water */
+          monsterid = WATER_ELEM; /* water elemental */
+        }
+        else if(random_range(2) && (Level->depth == 4))
+        {                        /* plane of fire */
+          monsterid = FIRE_ELEM; /* fire elemental */
+        }
+        else if(random_range(2) && (Level->depth == 5))
+        { /* deep astral */
           switch(random_range(12))
           {
             case 0:
@@ -264,17 +295,22 @@ void populate_level(int monstertype)
             default:
               monsterid = ARCHANGEL;
           }
+        }
         else
+        {
           monsterid = RANDOM;
+        }
         break;
       case E_VOLCANO:
         if(random_range(2))
         {
           do
+          {
             monsterid = random_range(ML10 - ML4) + ML4;
-          while(Monsters[monsterid].uniqueness != COMMON);
+          } while(Monsters[monsterid].uniqueness != COMMON);
         }
         else
+        {
           switch(random_range(Level->depth / 2 + 2))
           { /* evil & fire creatures */
             case 0:
@@ -347,21 +383,32 @@ void populate_level(int monstertype)
               monsterid = RANDOM;
               break;
           }
+        }
         break;
       case E_CASTLE:
         if(random_range(4) == 1)
         {
           if(difficulty() < 5)
+          {
             monsterid = ENCHANTOR;
+          }
           else if(difficulty() < 6)
+          {
             monsterid = NECROMANCER;
+          }
           else if(difficulty() < 8)
+          {
             monsterid = FIRE_ELEM;
+          }
           else
+          {
             monsterid = THAUMATURGIST;
+          }
         }
         else
+        {
           monsterid = RANDOM;
+        }
         break;
 
       default:
@@ -372,9 +419,13 @@ void populate_level(int monstertype)
     assert(RANDOM == -1); /* WDT: the following test slightly assumes
                            * this. */
     if(monsterid > RANDOM)
+    {
       Level->site[i][j].creature = make_creature(monsterid);
+    }
     else
+    {
       Level->site[i][j].creature = m_create(i, j, true, difficulty());
+    }
 
     Level->site[i][j].creature->x = i;
     Level->site[i][j].creature->y = j;
@@ -424,9 +475,13 @@ void make_site_monster(int i, int j, int mid)
   pml ml = ((pml)checkmalloc(sizeof(mltype)));
   pmt m;
   if(mid > -1)
+  {
     Level->site[i][j].creature = (m = make_creature(mid));
+  }
   else
+  {
     Level->site[i][j].creature = (m = m_create(i, j, WANDERING, difficulty()));
+  }
   m->x         = i;
   m->y         = j;
   ml->m        = m;
@@ -481,13 +536,16 @@ pmt m_create(int x, int y, int kind, int level)
   }
 
   do
+  {
     mid = random_range(monster_range);
-  while(Monsters[mid].uniqueness != COMMON);
+  } while(Monsters[mid].uniqueness != COMMON);
   newmonster = make_creature(mid);
 
   /* no duplicates of unique monsters */
   if(kind == WANDERING)
+  {
     m_status_set(*newmonster, WANDERING);
+  }
   newmonster->x = x;
   newmonster->y = y;
   return (newmonster);
@@ -502,15 +560,21 @@ pmt make_creature(int mid)
   int i, treasures;
 
   if(mid == -1)
+  {
     mid = random_range(ML9);
+  }
   *newmonster = Monsters[mid];
   if((mid == ANGEL) || (mid == HIGH_ANGEL) || (mid == ARCHANGEL))
   {
     /* aux1 field of an angel is its deity */
     if(Current_Environment == E_TEMPLE)
+    {
       newmonster->aux1 = Country[LastCountryLocX][LastCountryLocY].aux;
+    }
     else
+    {
       newmonster->aux1 = random_range(6) + 1;
+    }
     strcpy(Str3, Monsters[mid].monstring);
     switch(newmonster->aux1)
     {
@@ -561,19 +625,29 @@ pmt make_creature(int mid)
     if(newmonster->id == INCUBUS)
     {
       if((newmonster->monchar & 0xff) == 'n')
+      {
         newmonster->corpsestr = "dead succubus";
+      }
       else
+      {
         newmonster->corpsestr = "dead incubus";
+      }
     }
   }
   if(mid == NPC)
+  {
     make_log_npc(newmonster);
+  }
   else if(mid == HISCORE_NPC)
+  {
     make_hiscore_npc(newmonster, random_range(15));
+  }
   else
   {
     if(newmonster->sleep < random_range(100))
+    {
       m_status_set(*newmonster, AWAKE);
+    }
     if(newmonster->startthing > -1 && Objects[newmonster->startthing].uniqueness <= UNIQUE_MADE)
     {
       ob  = ((pob)checkmalloc(sizeof(objtype)));
@@ -653,7 +727,9 @@ void make_specific_treasure(int i, int j, int itemid)
 {
   pol tmp;
   if(Objects[itemid].uniqueness == UNIQUE_TAKEN)
+  {
     return;
+  }
   tmp                      = ((pol)checkmalloc(sizeof(oltype)));
   tmp->thing               = ((pob)checkmalloc(sizeof(objtype)));
   *(tmp->thing)            = Objects[itemid];
@@ -669,7 +745,9 @@ int difficulty()
 {
   int depth = 1;
   if(Level != NULL)
+  {
     depth = Level->depth;
+  }
   switch(Current_Environment)
   {
     case E_COUNTRYSIDE:

@@ -8,7 +8,9 @@
 void knowledge(int blessing)
 {
   if(blessing < 0)
+  {
     mprint("You feel ignorant.");
+  }
   else
   {
     mprint("You feel knowledgeable!");
@@ -17,103 +19,193 @@ void knowledge(int blessing)
     menulongprint(calc_points());
     menuprint("\nAlignment:");
     if(Player.alignment == 0)
+    {
       menuprint("Neutral, embodying the Cosmic Balance");
+    }
     else if(abs(Player.alignment) < 10)
+    {
       menuprint("Neutral, tending toward ");
+    }
     else if(abs(Player.alignment) < 50)
+    {
       menuprint("Neutral-");
+    }
     else if(abs(Player.alignment) < 100)
+    {
       ;
+    }
     else if(abs(Player.alignment) < 200)
+    {
       menuprint("Servant of ");
+    }
     else if(abs(Player.alignment) < 400)
+    {
       menuprint("Master of ");
+    }
     else if(abs(Player.alignment) < 800)
+    {
       menuprint("The Essence of ");
+    }
     else
+    {
       menuprint("The Ultimate Avatar of ");
+    }
     if(Player.alignment < 0)
+    {
       menuprint("Chaos\n");
+    }
     else if(Player.alignment > 0)
+    {
       menuprint("Law\n");
+    }
     showmenu();
     morewait();
     menuclear();
     menuprint("Current stati:\n");
     if(Player.status[BLINDED])
+    {
       menuprint("Blinded\n");
+    }
     if(Player.status[SLOWED])
+    {
       menuprint("Slowed\n");
+    }
     if(Player.status[HASTED])
+    {
       menuprint("Hasted\n");
+    }
     if(Player.status[DISPLACED])
+    {
       menuprint("Displaced\n");
+    }
     if(Player.status[SLEPT])
+    {
       menuprint("Slept\n");
+    }
     if(Player.status[DISEASED])
+    {
       menuprint("Diseased\n");
+    }
     if(Player.status[POISONED])
+    {
       menuprint("Poisoned\n");
+    }
     if(Player.status[BREATHING])
+    {
       menuprint("Breathing\n");
+    }
     if(Player.status[INVISIBLE])
+    {
       menuprint("Invisible\n");
+    }
     if(Player.status[REGENERATING])
+    {
       menuprint("Regenerating\n");
+    }
     if(Player.status[VULNERABLE])
+    {
       menuprint("Vulnerable\n");
+    }
     if(Player.status[BERSERK])
+    {
       menuprint("Berserk\n");
+    }
     if(Player.status[IMMOBILE])
+    {
       menuprint("Immobile\n");
+    }
     if(Player.status[ALERT])
+    {
       menuprint("Alert\n");
+    }
     if(Player.status[AFRAID])
+    {
       menuprint("Afraid\n");
+    }
     if(Player.status[ACCURATE])
+    {
       menuprint("Accurate\n");
+    }
     if(Player.status[HERO])
+    {
       menuprint("Heroic\n");
+    }
     if(Player.status[LEVITATING])
+    {
       menuprint("Levitating\n");
-    if(Player.status[TRUESIGHT]) /* FIXED! 12/30/98 DG */
+    }
+    if(Player.status[TRUESIGHT])
+    { /* FIXED! 12/30/98 DG */
       menuprint("Sharp\n");
+    }
     if(Player.status[SHADOWFORM])
+    {
       menuprint("Shadowy\n");
+    }
     if(Player.status[ILLUMINATION])
+    {
       menuprint("Glowing\n");
+    }
     if(Player.status[DEFLECTION])
+    {
       menuprint("Buffered\n");
+    }
     if(Player.status[RETURNING])
+    {
       menuprint("Returning\n");
+    }
     showmenu();
     morewait();
     menuclear();
     menuprint("Immunities:\n");
     if(p_immune(NORMAL_DAMAGE))
+    {
       menuprint("Normal Damage\n");
+    }
     if(p_immune(FLAME))
+    {
       menuprint("Flame\n");
+    }
     if(p_immune(ELECTRICITY))
+    {
       menuprint("Electricity\n");
+    }
     if(p_immune(COLD))
+    {
       menuprint("Cold\n");
+    }
     if(p_immune(POISON))
+    {
       menuprint("Poison\n");
+    }
     if(p_immune(ACID))
+    {
       menuprint("Acid\n");
+    }
     if(p_immune(FEAR))
+    {
       menuprint("Fear\n");
+    }
     if(p_immune(SLEEP))
+    {
       menuprint("Sleep\n");
+    }
     if(p_immune(NEGENERGY))
+    {
       menuprint("Negative Energies\n");
+    }
     if(p_immune(THEFT))
+    {
       menuprint("Theft\n");
+    }
     if(p_immune(GAZE))
+    {
       menuprint("Gaze\n");
+    }
     if(p_immune(INFECTION))
+    {
       menuprint("Infection\n");
+    }
     showmenu();
     morewait();
     menuclear();
@@ -349,7 +441,9 @@ void knowledge(int blessing)
       menuprint(" XP).\n");
     }
     if(Player.rank[ADEPT] > 0)
+    {
       menuprint("**************\n*Omegan Adept*\n**************\n");
+    }
     showmenu();
     morewait();
     xredraw();
@@ -369,7 +463,9 @@ void flux(int)
     mprint("The universe unwarps itself....");
   }
   else if(Current_Environment != Current_Dungeon)
+  {
     mprint("Odd.... No effect!");
+  }
   else
   {
     mprint("You stagger as the very nature of reality warps!");
@@ -413,7 +509,9 @@ void warp(int blessing)
 {
   int newlevel;
   if(Current_Environment != Current_Dungeon)
+  {
     mprint("How strange! No effect....");
+  }
   else
   {
     mprint("Warp to which level? ");
@@ -437,13 +535,17 @@ void alert(int blessing)
     Player.status[ALERT] += 4 + (5 * blessing);
   }
   else
+  {
     sleep_player(abs(blessing) + 3);
+  }
 }
 
 void regenerate(int blessing)
 {
   if(blessing < 0)
+  {
     heal(blessing * 10);
+  }
   else
   {
     mprint("You feel abnormally healthy.");
@@ -456,20 +558,30 @@ void haste(int blessing)
   if(blessing > -1)
   {
     if(!Player.status[HASTED])
+    {
       mprint("The world slows down!");
+    }
     else
+    {
       mprint("Nothing much happens.");
+    }
     if(Player.status[SLOWED])
+    {
       Player.status[SLOWED] = 0;
+    }
     Player.status[HASTED] += (blessing * 100) + random_range(250);
   }
   else
   {
     mprint("You feel slower.");
     if(Player.status[HASTED] > 0)
+    {
       mprint("...but the feeling quickly fades.");
+    }
     else
+    {
       Player.status[SLOWED] += random_range(250) + 250;
+    }
   }
 }
 
@@ -627,9 +739,13 @@ void sanctify(int blessing)
   if(blessing > -1)
   {
     if(Level->environment == E_TEMPLE)
+    {
       mprint("Odd, the spell has no effect. I wonder why.");
+    }
     else if(Level->site[Player.x][Player.y].locchar == ALTAR)
+    {
       mprint("This site can't get any holier!");
+    }
     else if(Player.patron == 0)
     {
       mprint("The gods are angered!");
@@ -694,10 +810,14 @@ void sanctify(int blessing)
         gain_experience(250);
       }
       else
+      {
         mprint("Nothing much happens");
+      }
     }
     else
+    {
       mprint("You feel an aura of unholiness arising from this spot....");
+    }
   }
 }
 

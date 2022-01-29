@@ -196,9 +196,13 @@ void s_ritual()
   setgamestatus(SKIP_PLAYER, GameStatus);
   time_clock(false);
   if(RitualHour == hour())
+  {
     mprint("Your mental fatigue prevents from completing the ritual!");
+  }
   else if(random_range(100) > Player.iq + Player.pow + Player.level)
+  {
     mprint("Your concentration was broken -- the ritual fails!");
+  }
   else
   {
     mprint("You charge the ritual with magical energy and focus your will.");
@@ -225,7 +229,9 @@ void s_ritual()
     else if((roomno = Level->site[Player.x][Player.y].roomnumber) >= 0)
     {
       if(RitualRoom == roomno)
+      {
         mprint("For some reason the ritual doesn't work this time...");
+      }
       else
       {
         RitualRoom = roomno;
@@ -244,9 +250,13 @@ void s_ritual()
           case ROOMBASE + 22: /* boudoir */
             mprint("A secret panel opens next to the bed....");
             if(random_range(2))
+            {
               summon(0, INCUBUS); /* succubus/incubus */
+            }
             else
+            {
               summon(0, SATYR); /* satyr/nymph */
+            }
             break;
           case ROOMBASE + 26: /*shrine to high magic */
             mprint("A storm of mana coaelesces around you.");
@@ -254,15 +264,23 @@ void s_ritual()
             p_damage(random_range(Player.pow), UNSTOPPABLE, "high magic");
             mprint("Continue ritual? Could be dangerous.... [yn] ");
             if(ynq() == 'y')
+            {
               s_wish();
+            }
             else
+            {
               mprint("The mana fades away to nothingness.");
+            }
             x = Player.x;
             y = Player.y;
             while(x >= 0 && Level->site[x - 1][y].roomnumber == ROOMBASE + 26)
+            {
               x--;
+            }
             while(y >= 0 && Level->site[x][y - 1].roomnumber == ROOMBASE + 26)
+            {
               y--;
+            }
             for(i = 0; Level->site[x][y].roomnumber == ROOMBASE + 26;)
             {
               Level->site[x][y].roomnumber = RS_ZORCH;
@@ -310,7 +328,9 @@ void s_ritual()
                   mprint("You feel uplifted.");
                 }
                 else
+                {
                   gain_experience(std::min(1000l, Player.xp));
+                }
               }
               else if(random_range(3) == 1)
               {
@@ -326,7 +346,9 @@ void s_ritual()
                 Player.xp   = 0;
               }
               else
+              {
                 mprint("The Lords of Destiny laugh at you!");
+              }
             }
             break;
           default:
@@ -339,7 +361,9 @@ void s_ritual()
     else
     {
       if(RitualRoom == Level->site[Player.x][Player.y].roomnumber)
+      {
         mprint("The ritual fails for some unexplainable reason.");
+      }
       else
       {
         mprint("The ritual seems to be generating some spell effect.");
@@ -539,7 +563,9 @@ void initspells()
   int i;
 
   for(i = 0; i < NUMSPELLS; i++)
+  {
     Spells[i].known = false;
+  }
 
   Spells[S_MON_DET].powerdrain = 3;
   Spells[S_MON_DET].id         = S_MON_DET;
@@ -859,6 +885,7 @@ void showknownspells(int first, int last)
   menuclear();
   menuprint("\nPossible Spells:\n");
   for(i = first; i <= last; i++)
+  {
     if(Spells[spell_ids[i]].known)
     {
       printed = true;
@@ -868,8 +895,11 @@ void showknownspells(int first, int last)
       menuprint(" mana)");
       menuprint("\n");
     }
+  }
   if(!printed)
+  {
     menuprint("\nNo spells match that prefix!");
+  }
   showmenu();
 }
 
@@ -883,7 +913,9 @@ int spellparse()
 
   first = 0;
   while(first < NUMSPELLS && !Spells[spell_ids[first]].known)
+  {
     first++;
+  }
   if(first == NUMSPELLS)
   {
     print1("You don't know any spells!");
@@ -905,18 +937,24 @@ int spellparse()
         while(f >= 0 && !strncmp(prefix, spell_names[f], pos))
         {
           if(Spells[spell_ids[f]].known)
+          {
             first = f;
+          }
           f--;
         }
         l = last;
         while(l < NUMSPELLS && !strncmp(prefix, spell_names[l], pos))
         {
           if(Spells[spell_ids[l]].known)
+          {
             last = l;
+          }
           l++;
         }
         if(found)
+        {
           found = 0;
+        }
         print2(prefix);
       }
       if(pos == 0)
@@ -933,23 +971,35 @@ int spellparse()
       return ABORT;
     }
     else if(byte == '?')
+    {
       showknownspells(first, last);
+    }
     else if(byte != '\n')
     {
       if(byte >= 'A' && byte <= 'Z')
+      {
         byte += 'a' - 'A';
+      }
       if(found)
+      {
         continue;
+      }
       f = first;
       l = last;
       while(f < NUMSPELLS &&
             (!Spells[spell_ids[f]].known || strlen(spell_names[f]) < pos || spell_names[f][pos] < byte))
+      {
         f++;
+      }
       while(l >= 0 &&
             (!Spells[spell_ids[l]].known || strlen(spell_names[l]) < pos || spell_names[l][pos] > byte))
+      {
         l--;
+      }
       if(l < f)
+      {
         continue;
+      }
       prefix[pos++] = byte;
       prefix[pos]   = '\0';
       nprint2(prefix + pos - 1);
@@ -964,7 +1014,9 @@ int spellparse()
   } while(byte != '\n');
   xredraw();
   if(found)
+  {
     return spell_ids[first];
+  }
   else
   {
     print3("That is an ambiguous abbreviation!");

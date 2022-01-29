@@ -131,7 +131,9 @@ void load_city(int populate)
         case 'j':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_justiciar(i, j);
+          }
           break;
         case 'J':
           Level->site[i][j].locchar = CLOSED_DOOR;
@@ -185,19 +187,25 @@ void load_city(int populate)
         case 'u':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_minor_undead(i, j);
+          }
           break;
         case 'U':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_major_undead(i, j);
+          }
           break;
         case 'V':
           Level->site[i][j].showchar = WALL;
           Level->site[i][j].locchar  = FLOOR;
           Level->site[i][j].p_locf   = L_VAULT;
           if(populate)
+          {
             make_site_treasure(i, j, 5);
+          }
           Level->site[i][j].aux = NOCITYMOVE;
           lset(i, j, SECRET, *Level);
           break;
@@ -206,14 +214,18 @@ void load_city(int populate)
           Level->site[i][j].locchar  = FLOOR;
           Level->site[i][j].p_locf   = L_TRAP_SIREN;
           if(populate)
+          {
             make_site_treasure(i, j, 5);
+          }
           Level->site[i][j].aux = NOCITYMOVE;
           lset(i, j, SECRET, *Level);
           break;
         case '$':
           Level->site[i][j].locchar = FLOOR;
           if(populate)
+          {
             make_site_treasure(i, j, 5);
+          }
           break;
         case '2':
           Level->site[i][j].locchar = ALTAR;
@@ -288,9 +300,13 @@ void load_city(int populate)
       if(loc_statusp(i, j, SEEN, *Level))
       {
         if(loc_statusp(i, j, SECRET, *Level))
+        {
           Level->site[i][j].showchar = WALL;
+        }
         else
+        {
           Level->site[i][j].showchar = Level->site[i][j].locchar;
+        }
       }
     }
     site = getc(fd) ^ site;
@@ -328,7 +344,9 @@ void assign_city_function(int x, int y)
   {
     setup = 1;
     for(i = 0; i < 64; i++)
+    {
       permutation[i] = i;
+    }
     for(i = 0; i < 500; i++)
     {
       j              = random_range(64);
@@ -343,9 +361,12 @@ void assign_city_function(int x, int y)
     Level->site[x][y].locchar = CLOSED_DOOR;
     Level->site[x][y].p_locf  = L_HOUSE;
     if(random_range(5))
+    {
       Level->site[x][y].aux = LOCKED;
+    }
   }
   else
+  {
     switch(permutation[next])
     {
       case 0:
@@ -464,9 +485,12 @@ void assign_city_function(int x, int y)
             break;
         }
         if(random_range(5))
+        {
           Level->site[x][y].aux = LOCKED;
+        }
         break;
     }
+  }
   next++;
 }
 
@@ -541,15 +565,21 @@ void mazesite(int i, int j, int populate)
   site = getc(fd) ^ site;
   k++;
   if(k == 286)
+  {
     fclose(fd);
+  }
   switch(site)
   {
     case '"':
       Level->site[i][j].locchar = HEDGE;
       if(random_range(10))
+      {
         Level->site[i][j].p_locf = L_HEDGE;
+      }
       else
+      {
         Level->site[i][j].p_locf = L_TRIFID;
+      }
       break;
     case '-':
       Level->site[i][j].locchar = CLOSED_DOOR;
@@ -591,13 +621,17 @@ void randommazesite(int i, int j, int populate)
     case 3:
       Level->site[i][j].locchar = FLOOR;
       if(populate)
+      {
         make_site_monster(i, j, -1);
+      }
       break;
     case 4:
     case 5:
       Level->site[i][j].locchar = FLOOR;
       if(populate)
+      {
         make_site_treasure(i, j, 5);
+      }
       break;
     default:
       Level->site[i][j].locchar = FLOOR;
@@ -609,9 +643,13 @@ void make_minor_undead(int i, int j)
 {
   int mid;
   if(random_range(2))
+  {
     mid = GHOST;
+  }
   else
+  {
     mid = HAUNT;
+  }
   make_site_monster(i, j, mid);
   m_status_reset(*Level->site[i][j].creature, AWAKE);
   m_status_reset(*Level->site[i][j].creature, HOSTILE);
@@ -622,9 +660,13 @@ void make_major_undead(int i, int j)
 {
   int mid;
   if(random_range(2))
+  {
     mid = LICHE; /* lich */
+  }
   else
+  {
     mid = VAMP_LORD; /*vampire lord*/
+  }
   make_site_monster(i, j, mid);
   m_status_reset(*Level->site[i][j].creature, AWAKE);
   m_status_reset(*Level->site[i][j].creature, HOSTILE);
@@ -643,6 +685,7 @@ void repair_jail()
 {
   int i, j;
   for(i = 0; i < 11; i++)
+  {
     for(j = 0; j < 5; j++)
     {
       switch(jail[j][i])
@@ -675,4 +718,5 @@ void repair_jail()
       }
       lreset(i + 35, j + 52, CHANGED, *Level);
     }
+  }
 }

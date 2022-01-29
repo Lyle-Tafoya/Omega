@@ -61,9 +61,13 @@ void load_house(int kind, int populate)
     for(i = 0; i < WIDTH; i++)
     {
       if(kind == E_HOVEL)
+      {
         Level->site[i][j].lstatus = SEEN;
+      }
       else
+      {
         Level->site[i][j].lstatus = 0;
+      }
       Level->site[i][j].roomnumber = RS_CORRIDOR;
       Level->site[i][j].p_locf     = L_NO_OP;
       site                         = getc(fd) ^ site;
@@ -73,13 +77,17 @@ void load_house(int kind, int populate)
           Level->site[i][j].locchar    = FLOOR;
           Level->site[i][j].roomnumber = RS_BEDROOM;
           if(random_range(2) && populate)
+          {
             make_house_npc(i, j);
+          }
           break;
         case 'H':
           Level->site[i][j].locchar    = FLOOR;
           Level->site[i][j].roomnumber = RS_BEDROOM;
           if(random_range(2) && populate)
+          {
             make_mansion_npc(i, j);
+          }
           break;
         case 'D':
           Level->site[i][j].locchar    = FLOOR;
@@ -176,7 +184,9 @@ void load_house(int kind, int populate)
           Level->site[i][j].locchar    = FLOOR;
           Level->site[i][j].roomnumber = RS_CORRIDOR;
           if(populate)
+          {
             make_site_monster(i, j, DOBERMAN);
+          }
           break;
         case 'a':
           Level->site[i][j].locchar    = FLOOR;
@@ -187,7 +197,9 @@ void load_house(int kind, int populate)
           Level->site[i][j].locchar    = FLOOR;
           Level->site[i][j].roomnumber = RS_CORRIDOR;
           if(populate)
+          {
             make_site_monster(i, j, AUTO_MINOR); /* automaton */
+          }
           break;
       }
       Level->site[i][j].showchar = ' ';
@@ -207,9 +219,13 @@ void make_house_npc(int i, int j)
   *(ml->m) = Monsters[NPC];
   make_log_npc(ml->m);
   if(ml->m->id == NPC)
+  {
     mprint("You detect signs of life in this house.");
+  }
   else
+  {
     mprint("An eerie shiver runs down your spine as you enter....");
+  }
   /* if not == NPC, then we got a ghost off the npc list */
   ml->m->x                   = i;
   ml->m->y                   = j;
@@ -219,9 +235,13 @@ void make_house_npc(int i, int j)
   Level->mlist               = ml;
   m_status_set(*ml->m, HOSTILE);
   if(nighttime())
+  {
     m_status_reset(*ml->m, AWAKE);
+  }
   else
+  {
     m_status_set(*ml->m, AWAKE);
+  }
   if(ml->m->startthing > -1)
   {
     ob  = ((pob)checkmalloc(sizeof(objtype)));
@@ -246,7 +266,11 @@ void make_mansion_npc(int i, int j)
   Level->mlist               = ml;
   m_status_set(*ml->m, HOSTILE);
   if(nighttime())
+  {
     m_status_reset(*ml->m, AWAKE);
+  }
   else
+  {
     m_status_set(*ml->m, AWAKE);
+  }
 }

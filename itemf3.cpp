@@ -14,7 +14,9 @@ extern void item_unequip(object *);
 void i_planes(pob)
 {
   if(Player.mana < 1)
+  {
     print1("The amulet spits some multicolored sparks.");
+  }
   else
   {
     print1("You focus mana into the amulet....");
@@ -29,7 +31,9 @@ void i_planes(pob)
 void i_sceptre(pob)
 {
   if(HiMagicUse == Date)
+  {
     print1("The Sceptre makes a sort of dull 'thut' noise.");
+  }
   else if(Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL)
   {
     HiMagicUse = Date; /* WDT: this looks like it's a good place to use
@@ -44,7 +48,9 @@ void i_sceptre(pob)
     print1("With a shriek of tearing aether, a magic portal appears!");
     print2("Step through? [yn] ");
     if(ynq() == 'y')
+    {
       change_environment(E_COURT);
+    }
     print1("The sceptre seems to subside. You hear a high whine, as of");
     print2("capacitors beginning to recharge.");
     morewait();
@@ -128,7 +134,9 @@ void i_juggernaut(pob o)
   {
     d = getdir();
     if(d == ABORT)
+    {
       print2("You deactivate the Juggernaut before it escapes.");
+    }
     else
     {
       print1("Vroom! ");
@@ -137,9 +145,13 @@ void i_juggernaut(pob o)
         x += Dirs[0][d];
         y += Dirs[1][d];
         if(!view_unblocked(x, y) || offscreen(y))
+        {
           seen = 0;
+        }
         if(Level->site[x][y].locchar == WALL)
+        {
           tunneled++;
+        }
         if(Level->site[x][y].locchar != WATER && Level->site[x][y].locchar != VOID_CHAR &&
            Level->site[x][y].locchar != ABYSS && Level->site[x][y].locchar != SPACE &&
            Level->site[x][y].locchar != LAVA)
@@ -152,9 +164,13 @@ void i_juggernaut(pob o)
         if(Level->site[x][y].creature != NULL)
         {
           if(seen)
+          {
             nprint1("Splat! ");
+          }
           else
+          {
             not_seen++;
+          }
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           m_death(Level->site[x][y].creature);
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -163,13 +179,21 @@ void i_juggernaut(pob o)
         omshowcursor(x, y);
       }
       if(not_seen > 6)
+      {
         print2("You hear many distant screams...");
+      }
       else if(not_seen > 3)
+      {
         print2("You hear several distant screams...");
+      }
       else if(not_seen > 1)
+      {
         print2("You hear a couple of distant screams...");
+      }
       else if(not_seen == 1)
+      {
         print2("You hear a distant scream...");
+      }
       gain_experience(1000);
       dispose_lost_objects(1, o);
       Level->tunnelled += tunneled - 1;
@@ -182,8 +206,10 @@ void i_symbol(pob o)
 {
   int i;
   if(!o->known)
+  {
     print1("Nothing seems to happen.");
-  /* if o->charge != 17, then symbol was stolen from own high priest! */
+    /* if o->charge != 17, then symbol was stolen from own high priest! */
+  }
   else if((o->aux != Player.patron) || (o->charge != 17))
   {
     print1("You invoke the deity...");
@@ -195,8 +221,12 @@ void i_symbol(pob o)
       dataprint();
       morewait();
       for(i = 0; i < MAXITEMS; i++)
+      {
         if(Player.possessions[i] != NULL)
+        {
           dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
+        }
+      }
       Player.mana = 0;
     }
   }
@@ -221,12 +251,16 @@ void i_symbol(pob o)
 void i_crystal(pob o)
 {
   if(!o->known)
+  {
     print1("You can't figure out how to activate this orb.");
+  }
   else
   {
     print1("You gaze into your crystal ball.");
     if(ViewHour == hour())
+    {
       print2("All you get is Gilligan's Island reruns.");
+    }
     else if((o->blessing < 0) || (Player.iq + Player.level < random_range(30)))
     {
       ViewHour = hour();
@@ -317,7 +351,9 @@ void i_kolwynia(pob o)
     print1("You seem to have gained complete mastery of magic.");
     Player.pow = Player.maxpow = 2 * Player.maxpow;
     for(i = 0; i < NUMSPELLS; i++)
+    {
       Spells[i].known = true;
+    }
   }
   dispose_lost_objects(1, o);
 }
@@ -326,7 +362,9 @@ void i_enchantment(pob o)
 {
   char response;
   if(ZapHour == hour())
+  {
     print1("The staff doesn't seem to have recharged yet.");
+  }
   else if(!o->known)
   {
     ZapHour = hour();
@@ -338,20 +376,27 @@ void i_enchantment(pob o)
     ZapHour = hour();
     print1("Zap with white or black end [wb] ");
     do
+    {
       response = (char)mcigetc();
-    while((response != 'w') && (response != 'b'));
+    } while((response != 'w') && (response != 'b'));
     print2("The staff discharges!");
     if(response == 'w')
+    {
       enchant(o->blessing * 2 + 1);
+    }
     else
+    {
       dispel(o->blessing);
+    }
   }
 }
 
 void i_helm(pob o)
 {
   if(HelmHour == hour())
+  {
     print1("The helm doesn't seem to have recharged yet.");
+  }
   else if(!o->known)
   {
     HelmHour = hour();
@@ -466,19 +511,27 @@ void i_orbearth(pob o)
     print2("The Orb of Earth blasts you!");
     Player.con -= 10;
     if(Player.con < 3)
+    {
       p_death("congestive heart failure");
+    }
     else
     {
       print3("Your possessions disintegrate!");
       for(i = 0; i < MAXITEMS; i++)
+      {
         if(Player.possessions[i] != NULL)
+        {
           dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
+        }
+      }
       for(i = 0; i < MAXPACK; i++)
+      {
         if(Player.pack[i] != NULL)
         {
           free((char *)Player.pack[i]);
           Player.pack[i] = NULL;
         }
+      }
       Player.packptr = 0;
       if(!o->known)
       {
@@ -574,7 +627,9 @@ void i_orbdead(pob)
   int i;
   print1("The burnt-out orb drains all your energy!");
   for(i = 0; i < NUMSPELLS; i++)
+  {
     Spells[i].known = false;
+  }
   print2("You feel not at all like a mage.");
   for(i = 0; i < MAXITEMS; i++)
   {

@@ -52,8 +52,11 @@ void p_hit(struct monster *m, int dmg, int dtype)
     default:
       dmult = 1;
       if(random_range(10))
+      {
         strcpy(Str3, "You hit ");
+      }
       else
+      {
         switch(random_range(4))
         {
           case 0:
@@ -69,23 +72,36 @@ void p_hit(struct monster *m, int dmg, int dtype)
             strcpy(Str3, "You molest ");
             break;
         }
+      }
       break;
   }
   if(Lunarity == 1)
+  {
     dmult = dmult * 2;
+  }
   else if(Lunarity == -1)
+  {
     dmult = dmult / 2;
+  }
   if(m->uniqueness == COMMON)
+  {
     strcat(Str3, "the ");
+  }
   strcat(Str3, m->monstring);
   strcat(Str3, ". ");
   if(Verbosity != TERSE)
+  {
     mprint(Str3);
+  }
   else
+  {
     mprint("You hit it.");
+  }
   m_damage(m, dmult * random_range(dmg), dtype);
   if((Verbosity != TERSE) && (random_range(10) == 3) && (m->hp > 0))
+  {
     mprint("It laughs at the injury and fights on!");
+  }
 }
 
 void player_miss(monster *m, int dtype)
@@ -173,7 +189,9 @@ void drop_weapon()
     conform_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
   }
   else
+  {
     mprint("You feel fortunate.");
+  }
 }
 
 /* try to break a weapon (from fumbling) */
@@ -255,16 +273,22 @@ void minute_status_check()
   if(Player.immunity[UNSTOPPABLE] > 0)
   {
     for(i = 0; i < NUMIMMUNITIES; i++)
+    {
       Player.immunity[i]--;
+    }
     if(Player.immunity[UNSTOPPABLE] == 1)
+    {
       mprint("You feel vincible again.");
+    }
   }
 
   if(Player.status[IMMOBILE] > 0)
   {
     Player.status[IMMOBILE]--;
     if(Player.status[IMMOBILE] == 0)
+    {
       mprint("You can move again.");
+    }
   }
 
   if(Player.status[SLEPT] > 0)
@@ -311,15 +335,25 @@ void minute_status_check()
   {
     Player.status[RETURNING]--;
     if(Player.status[RETURNING] == 10)
+    {
       mprint("Your return spell slowly hums towards activation...");
+    }
     else if(Player.status[RETURNING] == 8)
+    {
       mprint("There is an electric tension in the air!");
+    }
     else if(Player.status[RETURNING] == 5)
+    {
       mprint("A vortex of mana begins to form around you!");
+    }
     else if(Player.status[RETURNING] == 1)
+    {
       mprint("Your surroundings start to warp and fade!");
+    }
     if(Player.status[RETURNING] == 0)
+    {
       level_return();
+    }
   }
 
   if(Player.status[AFRAID] > 0)
@@ -411,14 +445,18 @@ void tenminute_status_check()
   {
     Player.status[VULNERABLE]--;
     if(Player.status[VULNERABLE] == 0)
+    {
       mprint("You feel less endangered.");
+    }
   }
 
   if((Player.status[DEFLECTION] > 0) && (Player.status[DEFLECTION] < 1000))
   {
     Player.status[DEFLECTION]--;
     if(Player.status[DEFLECTION] == 0)
+    {
       mprint("You feel less well defended.");
+    }
   }
 
   if((Player.status[ACCURATE] > 0) && (Player.status[ACCURACY] < 1000))
@@ -444,7 +482,9 @@ void tenminute_status_check()
   {
     Player.status[LEVITATING]--;
     if(Player.status[LEVITATING] == 0)
+    {
       mprint("You're no longer walking on air.");
+    }
   }
 
   if(Player.status[DISEASED] > 0)
@@ -461,49 +501,63 @@ void tenminute_status_check()
   {
     Player.status[INVISIBLE]--;
     if(Player.status[INVISIBLE] == 0)
+    {
       mprint("You feel more opaque now.");
+    }
   }
 
   if((Player.status[BLINDED] > 0) && (Player.status[BLINDED] < 1000))
   {
     Player.status[BLINDED]--;
     if(Player.status[BLINDED] == 0)
+    {
       mprint("You can see again.");
+    }
   }
 
   if((Player.status[TRUESIGHT] > 0) && (Player.status[TRUESIGHT] < 1000))
   {
     Player.status[TRUESIGHT]--;
     if(Player.status[TRUESIGHT] == 0)
+    {
       mprint("You feel less keen now.");
+    }
   }
 
   if((Player.status[BERSERK] > 0) && (Player.status[BERSERK] < 1000))
   {
     Player.status[BERSERK]--;
     if(Player.status[BERSERK] == 0)
+    {
       mprint("You stop foaming at the mouth.");
+    }
   }
 
   if((Player.status[ALERT] > 0) && (Player.status[ALERT] < 1000))
   {
     Player.status[ALERT]--;
     if(Player.status[ALERT] == 0)
+    {
       mprint("You feel less alert now.");
+    }
   }
 
   if((Player.status[BREATHING] > 0) && (Player.status[BREATHING] < 1000))
   {
     Player.status[BREATHING]--;
     if(Player.status[BREATHING] == 0)
+    {
       mprint("You feel somewhat congested.");
+    }
   }
 
   if((Player.status[DISPLACED] > 0) && (Player.status[DISPLACED] < 1000))
   {
     Player.status[DISPLACED]--;
     if(Player.status[DISPLACED] == 0)
+    {
       mprint("You feel a sense of position.");
+    }
   }
   timeprint();
   dataprint();
@@ -516,11 +570,15 @@ void gain_level()
   int hp_gain; /* FIXED! 12/30/98 */
 
   if(gamestatusp(SUPPRESS_PRINTING, GameStatus))
+  {
     return;
+  }
   while(expval(Player.level + 1) <= Player.xp)
   {
     if(!gained)
+    {
       morewait();
+    }
     gained = true;
     Player.level++;
     print1("You have attained a new experience level!");
@@ -529,9 +587,13 @@ void gain_level()
     nprint2(levelname(Player.level));
     hp_gain = random_range(Player.con) + 1; /* start fix 12/30/98 */
     if(Player.hp < Player.maxhp)
+    {
       Player.hp += hp_gain * Player.hp / Player.maxhp;
+    }
     else if(Player.hp < Player.maxhp + hp_gain)
+    {
       Player.hp = Player.maxhp + hp_gain;
+    }
     /* else leave current hp alone */
     Player.maxhp += hp_gain;
     Player.maxmana = calcmana();
@@ -541,7 +603,9 @@ void gain_level()
     morewait();
   }
   if(gained)
+  {
     clearmsg();
+  }
   calc_melee();
 }
 
@@ -583,19 +647,29 @@ long item_value(pob item)
   if(item->known == 0)
   {
     if(item->objchar == THING)
+    {
       return (1);
+    }
     else
+    {
       return (true_item_value(item) / 10);
+    }
   }
   else if(item->known == 1)
   {
     if(item->objchar == THING)
+    {
       return (item->basevalue);
+    }
     else
+    {
       return (item->basevalue / 2);
+    }
   }
   else
+  {
     return (true_item_value(item));
+  }
 }
 
 /* figures value based on item base-value, charge, plus, and blessing */
@@ -604,17 +678,27 @@ long true_item_value(pob item)
   long value = item->basevalue;
 
   if(item->objchar == THING)
+  {
     return (item->basevalue);
+  }
   else
   {
     if(item->objchar == STICK)
+    {
       value += value * item->charge / 20;
+    }
     if(item->plus > -1)
+    {
       value += value * item->plus / 4;
+    }
     else
+    {
       value /= -item->plus;
+    }
     if(item->blessing > 0)
+    {
       value *= 2;
+    }
     return ((long)value);
   }
 }
@@ -625,8 +709,11 @@ void p_drown()
   int attempts = 3, i;
 
   if(Player.status[BREATHING] > 0)
+  {
     mprint("Your breathing is unaffected!");
+  }
   else
+  {
     while(Player.possessions[O_ARMOR] || Player.itemweight > ((int)(Player.maxweight / 2)))
     {
       menuclear();
@@ -670,19 +757,24 @@ void p_drown()
             if(Player.pack[i] != NULL)
             {
               if(Level->site[Player.x][Player.y].p_locf != L_WATER)
+              {
                 p_drop_at(Player.x, Player.y, Player.pack[i]->number, Player.pack[i]);
+              }
               free((char *)Player.pack[i]);
               Player.pack[i] = NULL;
             }
           }
           if(Level->site[Player.x][Player.y].p_locf == L_WATER)
+          {
             mprint("It sinks without a trace.");
+          }
           Player.packptr = 0;
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
           calc_melee();
           break;
       }
     }
+  }
   show_screen();
   return;
 }
@@ -1165,7 +1257,9 @@ void change_environment(char new_environment)
         Player.y = 21;
       }
       if(City == NULL)
+      {
         load_city(true);
+      }
 #ifdef SAVE_LEVELS
       else
         msdos_changelevel(Level, new_environment, 0);
@@ -1218,9 +1312,13 @@ void change_environment(char new_environment)
         }
       }
       if((!emerging) || (TempLevel == NULL))
+      {
         load_village(Villagenum, true);
+      }
       else if(TempLevel->environment != E_VILLAGE)
+      {
         load_village(Villagenum, true);
+      }
       else
       {
 #ifdef SAVE_LEVELS
@@ -1234,7 +1332,9 @@ void change_environment(char new_environment)
         emerging = false;
       }
       else
+      {
         print1("You enter a small rural village.");
+      }
       ScreenOffset = 0;
       show_screen();
       break;
@@ -1373,7 +1473,9 @@ void change_environment(char new_environment)
         Player.y = LastCountryLocY;
       }
       for(i = 0; i < 9; i++)
+      {
         c_set(Player.x + Dirs[0][i], Player.y + Dirs[1][i], SEEN, Country);
+      }
       ScreenOffset = Player.y - (ScreenLength / 2);
       show_screen();
       break;
@@ -1388,7 +1490,9 @@ void change_environment(char new_environment)
       while(Level->site[Player.x][Player.y].locchar == WATER)
       {
         if(Player.y < LENGTH / 2 + 5)
+        {
           Player.y++;
+        }
         else if(Player.x > WIDTH / 2 - 10)
         {
           Player.x--;
@@ -1413,7 +1517,11 @@ void change_environment(char new_environment)
   }
   setlastxy(Player.x, Player.y);
   if(Current_Environment != E_COUNTRYSIDE)
+  {
     showroom(Level->site[Player.x][Player.y].roomnumber);
+  }
   else
+  {
     terrain_check(false);
+  }
 }

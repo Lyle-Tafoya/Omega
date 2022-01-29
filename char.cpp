@@ -29,20 +29,30 @@ void initplayer()
   strcpy(Player.name, username.c_str());
 
   if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
+  {
     Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
+  }
   Player.itemweight = 0;
   Player.food       = 36;
   Player.packptr    = 0;
   Behavior          = -1;
   Player.options    = 0;
   for(i = 0; i < MAXITEMS; i++)
+  {
     Player.possessions[i] = NULL;
+  }
   for(i = 0; i < MAXPACK; i++)
+  {
     Player.pack[i] = NULL;
+  }
   for(i = 0; i < NUMIMMUNITIES; i++)
+  {
     Player.immunity[i] = 0;
+  }
   for(i = 0; i < NUMSTATI; i++)
+  {
     Player.status[i] = 0;
+  }
   for(i = 0; i < NUMRANKS; i++)
   {
     Player.rank[i]    = 0;
@@ -68,7 +78,9 @@ void initplayer()
       fread((char *)&Verbosity, sizeof(char), 1, fd);
       strcpy(Player.name, username.c_str());
       if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
+      {
         Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
+      }
     }
     fclose(fd);
   }
@@ -111,10 +123,13 @@ void initstats()
   char response;
   print1("Do you want to run a character [c] or play yourself [p]?");
   do
+  {
     response = (char)mcigetc();
-  while((response != 'c') && (response != 'p'));
+  } while((response != 'c') && (response != 'p'));
   if(response == 'c')
+  {
     omegan_character_stats();
+  }
   else
   {
     user_character_stats();
@@ -122,7 +137,9 @@ void initstats()
     print1("Do you want to save this set-up to .omegarc in your home "
            "directory? [yn] ");
     if(ynq1() == 'y')
+    {
       save_omegarc();
+    }
   }
   xredraw();
 }
@@ -135,7 +152,9 @@ void save_omegarc()
   sprintf(Str1, "%s/.omegarc", getenv("HOME"));
   fd = fopen(Str1, "w");
   if(fd == NULL)
+  {
     print1("Sorry, couldn't save .omegarc for some reason.");
+  }
   else
   {
     fwrite((char *)&i, sizeof(int), 1, fd);
@@ -175,7 +194,9 @@ int fixnpc(int status)
     npcbehavior += 1000; /* threaten */
   }
   else if(Behavior >= 0)
+  {
     npcbehavior = Behavior;
+  }
   else
   {
     menuclear();
@@ -206,7 +227,9 @@ int fixnpc(int status)
     response = '0';
     while((response != '1') && (response != '2') && (response != '3') && (response != '4') &&
           (response != '5'))
+    {
       response = menugetc();
+    }
     menuaddch(response);
     npcbehavior += 10 * (response - '0');
     npcbehavior += 100 * competence_check(response - '0');
@@ -221,7 +244,9 @@ int fixnpc(int status)
     showmenu();
     while((response != '1') && (response != '2') && (response != '3') && (response != '4') &&
           (response != '5'))
+    {
       response = menugetc();
+    }
     menuaddch(response);
     npcbehavior += 1000 * (response - '0');
     xredraw();
@@ -262,9 +287,13 @@ int competence_check(int attack)
   }
   ability += ((int)(Player.level / 5));
   if(ability < 0)
+  {
     ability = 0;
+  }
   if(ability > 9)
+  {
     ability = 9;
+  }
   return (ability);
 }
 
@@ -276,11 +305,17 @@ void user_character_stats()
   print1("How many pounds can you bench press? ");
   num = (int)parsenum();
   if(num < 30)
+  {
     Player.str = Player.maxstr = 3;
+  }
   else if(num < 90)
+  {
     Player.str = Player.maxstr = num / 10;
+  }
   else
+  {
     Player.str = Player.maxstr = 9 + ((num - 120) / 30);
+  }
   if(Player.str > 18)
   {
     print2("Even if it's true, I don't believe it.");
@@ -359,7 +394,9 @@ void user_character_stats()
     clearmsg();
   }
   else
+  {
     Player.iq = iqpts / numints;
+  }
   Player.maxiq = Player.iq;
   agipts       = 0;
   print1("Can you dance? [yn] ");
@@ -368,7 +405,9 @@ void user_character_stats()
     agipts++;
     nprint1(" Well? [yn] ");
     if(ynq1() == 'y')
+    {
       agipts += 2;
+    }
   }
   print1("Do you have training in a martial art or gymnastics? [yn] ");
   if(ynq1() == 'y')
@@ -376,7 +415,9 @@ void user_character_stats()
     agipts += 2;
     print2("Do you have dan rank or equivalent? [yn] ");
     if(ynq2() == 'y')
+    {
       agipts += 4;
+    }
   }
   clearmsg();
   print1("Do you play some field sport? [yn] ");
@@ -385,28 +426,40 @@ void user_character_stats()
     agipts++;
     nprint1(" Are you good? [yn] ");
     if(ynq1() == 'y')
+    {
       agipts++;
+    }
   }
   print1("Do you cave, mountaineer, etc.? [yn] ");
   if(ynq1() == 'y')
+  {
     agipts += 3;
+  }
   print1("Do you skate or ski? [yn] ");
   if(ynq1() == 'y')
   {
     agipts += 2;
     nprint1(" Well? [yn] ");
     if(ynq1() == 'y')
+    {
       agipts += 2;
+    }
   }
   print1("Are you physically handicapped? [yn] ");
   if(ynq1() == 'y')
+  {
     agipts -= 4;
+  }
   print1("Are you accident prone? [yn] ");
   if(ynq1() == 'y')
+  {
     agipts -= 4;
+  }
   print1("Can you use a bicycle? [yn] ");
   if(ynq1() != 'y')
+  {
     agipts -= 4;
+  }
   Player.agi = Player.maxagi = 9 + agipts / 2;
   print1("Do you play video games? [yn] ");
   if(ynq1() == 'y')
@@ -414,7 +467,9 @@ void user_character_stats()
     dexpts += 2;
     print2("Do you get high scores? [yn] ");
     if(ynq2() == 'y')
+    {
       dexpts += 4;
+    }
   }
   clearmsg();
   print1("Are you an archer, fencer, or marksman? [yn] ");
@@ -423,7 +478,9 @@ void user_character_stats()
     dexpts += 2;
     print2("A good one? [yn] ");
     if(ynq2() == 'y')
+    {
       dexpts += 4;
+    }
   }
   clearmsg();
   print1("Have you ever picked a lock? [yn] ");
@@ -446,46 +503,72 @@ void user_character_stats()
   dexpts += num / 25;
   print1("Hold your arm out. Tense your fist. Hand shaking? [yn] ");
   if(ynq1() == 'y')
+  {
     dexpts -= 3;
+  }
   print1("Ambidextrous, are you? [yn] ");
   if(ynq1() == 'y')
+  {
     dexpts += 4;
+  }
   print1("Can you cut a deck of cards with one hand? [yn] ");
   if(ynq1() == 'y')
+  {
     dexpts += 2;
+  }
   print1("Can you tie your shoes blindfolded? [yn] ");
   if(ynq1() != 'y')
+  {
     dexpts -= 3;
+  }
   Player.dex = Player.maxdex = 6 + dexpts / 2;
   print1("Do you ever get colds? [yn] ");
   if(ynq1() != 'y')
+  {
     conpts += 4;
+  }
   else
   {
     nprint1(" Frequently? [yn] ");
     if(ynq1() == 'y')
+    {
       conpts -= 4;
+    }
   }
   print1("Had any serious accident or illness this year? [yn] ");
   if(ynq1() == 'y')
+  {
     conpts -= 4;
+  }
   else
+  {
     conpts += 4;
+  }
   print1("Have a chronic disease? [yn] ");
   if(ynq1() == 'y')
+  {
     conpts -= 4;
+  }
   print1("Overweight or underweight by more than 20 percent? [yn] ");
   if(ynq1() == 'y')
+  {
     conpts -= 2;
+  }
   print1("High Blood Pressure? [yn] ");
   if(ynq1() == 'y')
+  {
     conpts -= 2;
+  }
   print1("Smoke? [yn] ");
   if(ynq1() == 'y')
+  {
     conpts -= 3;
+  }
   print1("Take aerobics classes? [yn] ");
   if(ynq1() == 'y')
+  {
     conpts += 2;
+  }
   print1("How many miles can you run? ");
   num = (int)parsenum();
   if(num > 25)
@@ -496,13 +579,21 @@ void user_character_stats()
     conpts += 8;
   }
   else if(num < 1)
+  {
     conpts -= 3;
+  }
   else if(num < 5)
+  {
     conpts += 2;
+  }
   else if(num < 10)
+  {
     conpts += 4;
+  }
   else
+  {
     conpts += 8;
+  }
   Player.con = Player.maxcon = 12 + conpts / 3;
   print1("Do animals react oddly to your presence? [yn] ");
   if(ynq1() == 'y')
@@ -574,9 +665,10 @@ void user_character_stats()
   Player.pow = Player.maxpow = 3 + powpts / 2;
   print1("Are you sexually attracted to males, females, both, or none? [mfbn] ");
   do
+  {
     Player.preference = (char)mcigetc();
-  while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
-        (Player.preference != 'n')); /* :-) */
+  } while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
+          (Player.preference != 'n')); /* :-) */
 }
 
 void omegan_character_stats()
@@ -607,10 +699,13 @@ void omegan_character_stats()
   print1("Please enter your character's name: ");
   strcpy(Player.name, msgscanstring());
   if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
+  {
     Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
+  }
   print1("Is your character sexually attracted to males, females, both, or none? [mfbn] ");
   do
+  {
     Player.preference = (char)mcigetc();
-  while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
-        (Player.preference != 'n')); /* :-) */
+  } while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
+          (Player.preference != 'n')); /* :-) */
 }

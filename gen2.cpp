@@ -101,11 +101,13 @@ void make_country_screen(Symbol terrain)
   {
     print3("Night's gloom shrouds your sight.");
     for(i = 0; i < WIDTH; i++)
+    {
       for(j = 0; j < LENGTH; j++)
       {
         Level->site[i][j].showchar = SPACE;
         Level->site[i][j].lstatus  = 0;
       }
+    }
   }
 }
 
@@ -116,14 +118,21 @@ void make_general_map(const char *terrain)
   char curr;
 
   for(i = 0; i < WIDTH; i++)
+  {
     for(j = 0; j < LENGTH; j++)
     {
       if((i == 0 && j == 0) || !random_range(5))
+      {
         curr = terrain[random_range(size)];
+      }
       else if(j == 0 || (random_range(2) && i > 0))
+      {
         curr = Level->site[i - 1][j].locchar & 0xff;
+      }
       else
+      {
         curr = Level->site[i][j - 1].locchar & 0xff;
+      }
       switch(curr)
       {
         case(FLOOR & 0xff):
@@ -146,8 +155,11 @@ void make_general_map(const char *terrain)
       Level->site[i][j].lstatus    = SEEN + LIT;
       Level->site[i][j].roomnumber = RS_COUNTRYSIDE;
       if((i == 0) || (j == 0) || (i == WIDTH - 1) || (j == LENGTH - 1))
+      {
         Level->site[i][j].p_locf = L_TACTICAL_EXIT;
+      }
     }
+  }
 }
 
 void make_plains()
@@ -160,12 +172,16 @@ void make_road()
   int x, y;
   make_general_map("\"\"~4....");
   for(x = WIDTH / 2 - 3; x <= WIDTH / 2 + 3; x++)
+  {
     for(y = 0; y < LENGTH; y++)
     {
       Level->site[x][y].locchar = Level->site[x][y].showchar = FLOOR;
       if(y != 0 && y != LENGTH - 1)
+      {
         Level->site[x][y].p_locf = L_NO_OP;
+      }
     }
+  }
 }
 
 void make_forest()
@@ -189,13 +205,21 @@ void make_river()
   for(i = 0; i < 7; i++)
   {
     if(y > LENGTH / 2)
+    {
       y--;
+    }
     else
+    {
       y++;
+    }
     if(y1 > LENGTH / 2)
+    {
       y1--;
+    }
     else
+    {
       y1++;
+    }
     straggle_corridor(0, y, WIDTH, y1, WATER, RS_COUNTRYSIDE);
   }
 }
@@ -247,12 +271,18 @@ void room_level()
   if(Current_Dungeon == E_SEWERS)
   {
     if(random_range(2))
+    {
       rsi = ROOMBASE + 25;
+    }
     else
+    {
       rsi = ROOMBASE + random_range(NUMROOMNAMES);
+    }
   }
   else
+  {
     rsi = ROOMBASE + random_range(NUMROOMNAMES);
+  }
   build_room(l, t, e, rsi, 1);
 
   for(i = 2; i <= Level->numrooms; i++)
@@ -269,12 +299,18 @@ void room_level()
     if(Current_Dungeon == E_SEWERS)
     {
       if(random_range(2))
+      {
         rsi = ROOMBASE + 25;
+      }
       else
+      {
         rsi = ROOMBASE + random_range(NUMROOMNAMES);
+      }
     }
     else
+    {
       rsi = ROOMBASE + random_range(NUMROOMNAMES);
+    }
     build_room(l, t, e, rsi, i);
 
     /* corridor which is guaranteed to connect */
@@ -393,9 +429,13 @@ void room_corridor(int fx, int fy, int tx, int ty, int baux)
     if((dx != 0) && (dy != 0))
     {
       if(random_range(2))
+      {
         dx = 0;
+      }
       else if(random_range(2))
+      {
         dy = 0;
+      }
     }
     fx += dx;
     fy += dy;
@@ -410,6 +450,7 @@ void maze_level()
   int  i, j, tx, ty, mid;
   char rsi;
   if(Current_Environment == E_ASTRAL)
+  {
     switch(Level->depth)
     {
       case 1:
@@ -427,15 +468,21 @@ void maze_level()
       default:
         rsi = RS_HIGHASTRAL;
     }
+  }
   else
+  {
     rsi = RS_VOLCANO;
+  }
   maze_corridor(random_range(WIDTH - 1) + 1, random_range(LENGTH - 1) + 1, random_range(WIDTH - 1) + 1,
                 random_range(LENGTH - 1) + 1, rsi, 0);
   if(Current_Dungeon == E_ASTRAL)
   {
     for(i = 0; i < WIDTH; i++)
+    {
       for(j = 0; j < LENGTH; j++)
+      {
         if(Level->site[i][j].locchar == WALL)
+        {
           switch(Level->depth)
           {
             case 1:
@@ -458,6 +505,9 @@ void maze_level()
               Level->site[i][j].p_locf  = L_ABYSS;
               break;
           }
+        }
+      }
+    }
     switch(Level->depth)
     {
       case 1:

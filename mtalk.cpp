@@ -33,7 +33,9 @@ void m_talk_druid(struct monster *m)
         for(i = 0; i < NUMRANKS; i++)
         {
           if(Player.guildxp[i] > 0)
+          {
             Player.guildxp[i] += 300;
+          }
         }
       }
     }
@@ -44,9 +46,13 @@ void m_talk_druid(struct monster *m)
       { /* full or new moon */
         mprint("\"Unfortunately, I cannot perform a ritual of balance on");
         if(Phase / 2 == 6)
+        {
           mprint("this lawful day.\"");
+        }
         else
+        {
           mprint("this chaotic day.\"");
+        }
       }
       else if(Phase / 2 == 3 || Phase / 2 == 9)
       { /* half moon */
@@ -54,8 +60,10 @@ void m_talk_druid(struct monster *m)
         Player.alignment = 0;
         Player.mana      = calcmana();
         if(Player.patron == DRUID)
+        {
           gain_experience(200); /* if a druid wants to spend 2 days */
-        Time += 60;             /* celebrating for 1600 xp, why not? */
+        }
+        Time += 60; /* celebrating for 1600 xp, why not? */
         hourly_check();
         Time += 60;
         hourly_check();
@@ -77,7 +85,9 @@ void m_talk_druid(struct monster *m)
           Player.mana      = calcmana();
         }
         else
+        {
           Player.alignment -= Player.alignment * std::max(0, 10 - Player.level) / 10;
+        }
         /* the higher level the character is, the more set in his/her ways */
         Time += 60;
         hourly_check();
@@ -95,7 +105,9 @@ void m_talk_druid(struct monster *m)
     {
       mprint("'I certainly hope so!' says the ArchDruid.");
       for(curr = Level->mlist; curr; curr = curr->next)
+      {
         m_status_reset(*curr->m, HOSTILE);
+      }
       m_vanish(m);
     }
     else
@@ -116,7 +128,9 @@ void m_talk_silent(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   switch(reply)
   {
     case 0:
@@ -144,7 +158,9 @@ void m_talk_stupid(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   switch(reply)
   {
     case 0:
@@ -172,7 +188,9 @@ void m_talk_greedy(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   switch(reply)
   {
     case 0:
@@ -200,7 +218,9 @@ void m_talk_hungry(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   switch(reply)
   {
     case 0:
@@ -297,7 +317,9 @@ void m_talk_titter(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   strcat(Str2, " titters obscenely at you.");
   mprint(Str2);
 }
@@ -313,9 +335,13 @@ void m_talk_thief(struct monster *m)
   if(Player.rank[THIEVES])
   {
     if(m->level == 2)
+    {
       m->monstring = "sneak thief";
+    }
     else
+    {
       m->monstring = "master thief";
+    }
     print1("The cloaked figure makes a gesture which you recognize...");
     print2("...the thieves' guild recognition signal!");
     print3("'Sorry, mate, thought you were a mark....'");
@@ -323,7 +349,9 @@ void m_talk_thief(struct monster *m)
     m_vanish(m);
   }
   else
+  {
     m_talk_man(m);
+  }
 }
 
 void m_talk_assassin(struct monster *m)
@@ -340,7 +368,9 @@ void m_talk_im(struct monster *m)
     m->monstring = "itinerant merchant";
   }
   if(m->possessions == NULL)
+  {
     mprint("The merchant says: Alas! I have nothing to sell!");
+  }
   else
   {
     m->possessions->thing->known = 2;
@@ -363,7 +393,9 @@ void m_talk_im(struct monster *m)
           m->possessions = NULL;
         }
         else
+        {
           mprint("Beat it, you deadbeat!");
+        }
       }
       else
       {
@@ -374,7 +406,9 @@ void m_talk_im(struct monster *m)
       }
     }
     else
+    {
       mprint("Well then, I must be off. Good day.");
+    }
     m_vanish(m);
   }
 }
@@ -387,7 +421,9 @@ void m_talk_man(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   switch(random_range(5))
   {
     case 0:
@@ -417,7 +453,9 @@ void m_talk_evil(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   switch(random_range(14))
   {
     case 0:
@@ -474,7 +512,9 @@ void m_talk_robot(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   switch(random_range(4))
   {
     case 0:
@@ -511,7 +551,9 @@ void m_talk_burble(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   strcat(Str2, " burbles hatefully at you.");
   mprint(Str2);
 }
@@ -524,7 +566,9 @@ void m_talk_beg(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   strcat(Str2, " asks you for alms.");
   mprint(Str2);
 }
@@ -537,7 +581,9 @@ void m_talk_hint(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   if(m_statusp(*m, HOSTILE))
   {
     strcat(Str2, " only sneers at you. ");
@@ -568,9 +614,13 @@ void m_talk_gf(struct monster *m)
         {
           mprint("The good fairy dazzles: You don't want a wish, right?");
           if(ynq() == 'y')
+          {
             mprint("The good fairy laughs: I thought not.");
+          }
           else
+          {
             wish(0);
+          }
         }
       }
     }
@@ -606,7 +656,9 @@ void m_talk_seductor(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   if(Player.preference == 'n')
   {
     strcat(Str2, " notices your disinterest and leaves with a pout.");
@@ -642,7 +694,9 @@ void m_talk_demonlover(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   if(Player.preference == 'n')
   {
     strcat(Str2, " notices your disinterest and changes with a snarl...");
@@ -655,7 +709,9 @@ void m_talk_demonlover(struct monster *m)
     mprint(Str2);
     mprint("Flee? [yn] ");
     if(ynq() == 'y')
+    {
       mprint("You feel fortunate....");
+    }
     else
     {
       if(m->uniqueness == COMMON)
@@ -664,7 +720,9 @@ void m_talk_demonlover(struct monster *m)
         strcat(Str2, m->monstring);
       }
       else
+      {
         strcpy(Str2, m->monstring);
+      }
       strcat(Str2, " shows you a good time....");
       mprint(Str2);
       morewait();
@@ -693,7 +751,9 @@ void m_talk_demonlover(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   strcat(Str2, " laughs insanely.");
   mprint(Str2);
   mprint("You now notice the fangs, claws, batwings...");
@@ -702,13 +762,21 @@ void m_talk_demonlover(struct monster *m)
 void m_talk_horse(struct monster *m)
 {
   if(m_statusp(*m, HOSTILE))
+  {
     mprint("The horse neighs angrily at you.");
+  }
   else if(m_statusp(*m, HUNGRY))
+  {
     mprint("The horse noses curiously at your pack.");
+  }
   else if(gamestatusp(MOUNTED, GameStatus))
+  {
     mprint("The horse and your steed don't seem to get along.");
+  }
   else if(Current_Environment == Current_Dungeon)
+  {
     mprint("The horse shies; maybe he doesn't like the dungeon air....");
+  }
   else
   {
     mprint("The horse lets you pat his nose. Want to ride him? [yn] ");
@@ -770,13 +838,19 @@ void m_talk_servant(struct monster *m)
         m_death(Level->site[x][y].creature);
       }
       else
+      {
         mprint("Right. Tell me about it. Idiot!");
+      }
     }
     else
+    {
       mprint("Right. Tell me about it. Idiot!");
+    }
   }
   else
+  {
     mprint("The servant shrugs and turns away.");
+  }
 }
 
 void m_talk_animal(struct monster *m)
@@ -787,7 +861,9 @@ void m_talk_animal(struct monster *m)
     strcat(Str2, m->monstring);
   }
   else
+  {
     strcpy(Str2, m->monstring);
+  }
   mprint(Str2);
   mprint("shows you a scholarly paper by Dolittle, D. Vet.");
   mprint("which demonstrates that animals don't have speech centers");
@@ -845,7 +921,9 @@ void m_talk_merchant(struct monster *m)
       if(ynq() == 'y')
       {
         if(Player.cash < 250)
+        {
           mprint("The merchant says: 'Come back when you've got the cash!'");
+        }
         else
         {
           Player.cash -= 250;
@@ -858,7 +936,9 @@ void m_talk_merchant(struct monster *m)
         }
       }
       else
+      {
         mprint("The merchant tells you to stop wasting his time.");
+      }
     }
     else
     {
@@ -902,5 +982,7 @@ void m_talk_prime(struct monster *m)
     }
   }
   else
+  {
     m_talk_evil(m);
+  }
 }

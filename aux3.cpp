@@ -14,17 +14,25 @@
 void tenminute_check()
 {
   if(Time % 60 == 0)
+  {
     hourly_check();
+  }
   else
   {
     if(Current_Environment == Current_Dungeon)
+    {
       wandercheck();
+    }
     minute_status_check();
     tenminute_status_check();
     if((Player.status[DISEASED] < 1) && (Player.hp < Player.maxhp))
+    {
       Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
+    }
     if(Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
+    {
       indoors_random_event();
+    }
   }
 }
 
@@ -43,13 +51,19 @@ void hourly_check()
   }
   torch_check();
   if(Current_Environment == Current_Dungeon)
+  {
     wandercheck();
+  }
   minute_status_check();
   tenminute_status_check();
   if((Player.status[DISEASED] == 0) && (Player.hp < Player.maxhp))
+  {
     Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
+  }
   if(Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
+  {
     indoors_random_event();
+  }
 }
 
 void indoors_random_event()
@@ -78,8 +92,12 @@ void indoors_random_event()
       print3("A mysterious healing flux settles over the level.");
       morewait();
       for(ml = Level->mlist; ml != NULL; ml = ml->next)
+      {
         if(ml->m->hp > 0)
+        {
           ml->m->hp = Monsters[ml->m->id].hp;
+        }
+      }
       Player.hp = std::max(Player.hp, Player.maxhp);
       break;
     case 5:
@@ -130,7 +148,9 @@ void indoors_random_event()
         Balance = 0;
       }
       else
+      {
         print3("You feel lucky.");
+      }
       break;
     case 13:
       if(Balance > 0)
@@ -139,7 +159,9 @@ void indoors_random_event()
         Balance += 5000;
       }
       else
+      {
         print3("You feel unlucky.");
+      }
       break;
   }
   dataprint();
@@ -164,9 +186,13 @@ void outdoors_random_event()
           break;
         default:
           if((Date > 75) && (Date < 330))
+          {
             mprint("You are drenched by a sudden downpour!");
+          }
           else
+          {
             mprint("It begins to snow. Heavily.");
+          }
       }
       morewait();
       mprint("Due to the inclement weather conditions, you have become lost.");
@@ -202,7 +228,9 @@ void outdoors_random_event()
         morewait();
       }
       else
+      {
         mprint("You feel static cling");
+      }
       break;
     case 4:
       mprint("You find a fast-food establishment.");
@@ -243,13 +271,17 @@ void outdoors_random_event()
         morewait();
         toggle_item_use(true); /* FIXED! 12/30/98 */
         for(i = 1; i < MAXITEMS; i++)
+        {
           if(Player.possessions[i] != NULL)
           {
             Player.possessions[i]->plus++;
             if(Player.possessions[i]->objchar == STICK)
+            {
               Player.possessions[i]->charge += 10;
+            }
             Player.possessions[i]->blessing += 10;
           }
+        }
         toggle_item_use(false); /* FIXED! 12/30/98 */
         cleanse(1);
         mprint("You feel filled with energy!");
@@ -262,7 +294,9 @@ void outdoors_random_event()
         Player.con -= 5;
         Player.maxcon -= 5;
         if(Player.con < 3)
+        {
           p_death("congestive heart failure");
+        }
       }
       else if(num < 40)
       {
@@ -330,9 +364,13 @@ void outdoors_random_event()
         Player.xp    = 0;
         Player.level = 0;
         for(i = 0; i < NUMRANKS; i++)
+        {
           Player.rank[i] = 0;
+        }
         for(i = 0; i < NUMSPELLS; i++)
+        {
           Spells[i].known = false;
+        }
         rename_player();
       }
       else
@@ -362,7 +400,9 @@ void outdoors_random_event()
         mprint("You know where you are now.");
       }
       for(i = Player.x - 5; i < Player.x + 6; i++)
+      {
         for(j = Player.y - 5; j < Player.y + 6; j++)
+        {
           if(inbounds(i, j))
           {
             c_set(i, j, SEEN, Country);
@@ -372,6 +412,8 @@ void outdoors_random_event()
               Country[i][j].current_terrain_type = Country[i][j].base_terrain_type;
             }
           }
+        }
+      }
       show_screen();
       break;
     case 12:
@@ -410,6 +452,7 @@ char getlocation()
   menuprint(" (enter location [HCL]) ");
   showmenu();
   while(c == '\0')
+  {
     switch(c = ((char)mcigetc()))
     {
       case 'h':
@@ -425,6 +468,7 @@ char getlocation()
         c = '\0';
         break;
     }
+  }
   showmenu();
   return (c - 'a' + 'A');
 }
@@ -450,7 +494,9 @@ int magic_resist(int hostile_magic)
     return (true);
   }
   else
+  {
     return (false);
+  }
 }
 
 void terrain_check(int takestime)
@@ -520,6 +566,7 @@ void terrain_check(int takestime)
     }
   }
   else
+  {
     switch(random_range(32))
     {
       case 0:
@@ -529,22 +576,33 @@ void terrain_check(int takestime)
         print2("The road goes ever onward....");
         break;
     }
+  }
   switch(Country[Player.x][Player.y].current_terrain_type)
   {
     case RIVER:
       if((Player.y < 6) && (Player.x > 20))
+      {
         locprint("Star Lake.");
+      }
       else if(Player.y < 41)
       {
         if(Player.x < 10)
+        {
           locprint("Aerie River.");
+        }
         else
+        {
           locprint("The Great Flood.");
+        }
       }
       else if(Player.x < 42)
+      {
         locprint("The Swamp Runs.");
+      }
       else
+      {
         locprint("River Greenshriek.");
+      }
       if(takestime)
       {
         Time += 60;
@@ -591,11 +649,17 @@ void terrain_check(int takestime)
       break;
     case FOREST:
       if(Player.y < 10)
+      {
         locprint("The Deepwood.");
+      }
       else if(Player.y < 18)
+      {
         locprint("The Forest of Erelon.");
+      }
       else if(Player.y < 46)
+      {
         locprint("The Great Forest.");
+      }
       if(takestime)
       {
         Time += 60;
@@ -648,13 +712,21 @@ void terrain_check(int takestime)
       break;
     case MOUNTAINS:
       if((Player.y < 9) && (Player.x < 12))
+      {
         locprint("The Magic Mountains");
+      }
       else if((Player.y < 9) && (Player.y > 2) && (Player.x < 40))
+      {
         locprint("The Peaks of the Fist.");
+      }
       else if(Player.x < 52)
+      {
         locprint("The Rift Mountains.");
+      }
       else
+      {
         locprint("Borderland Mountains.");
+      }
       if(takestime)
       {
         Time += 60;
@@ -834,7 +906,9 @@ void countrysearch()
   Time += 60;
   hourly_check();
   for(x = Player.x - 1; x < Player.x + 2; x++)
+  {
     for(y = Player.y - 1; y < Player.y + 2; y++)
+    {
       if(inbounds(x, y))
       {
         if(Country[x][y].current_terrain_type != Country[x][y].base_terrain_type)
@@ -847,6 +921,8 @@ void countrysearch()
           mprint(countryid(Country[x][y].base_terrain_type));
         }
       }
+    }
+  }
 }
 
 char *countryid(Symbol terrain)
@@ -963,14 +1039,18 @@ void showknownsites(int first, int last)
   menuclear();
   menuprint("\nPossible Sites:\n");
   for(i = first; i <= last; i++)
+  {
     if(CitySiteList[sitenums[i] - CITYSITEBASE][0])
     {
       printed = true;
       menuprint(sitenames[i]);
       menuprint("\n");
     }
+  }
   if(!printed)
+  {
     menuprint("\nNo known sites match that prefix!");
+  }
   showmenu();
 }
 
@@ -999,18 +1079,24 @@ int parsecitysite()
         while(f >= 0 && !strncmp(prefix, sitenames[f], pos))
         {
           if(CitySiteList[sitenums[f] - CITYSITEBASE][0])
+          {
             first = f;
+          }
           f--;
         }
         l = last;
         while(l < NUMCITYSITES && !strncmp(prefix, sitenames[l], pos))
         {
           if(CitySiteList[sitenums[l] - CITYSITEBASE][0])
+          {
             last = l;
+          }
           l++;
         }
         if(found)
+        {
           found = 0;
+        }
         print2(prefix);
       }
       if(pos == 0)
@@ -1027,23 +1113,35 @@ int parsecitysite()
       return ABORT;
     }
     else if(byte == '?')
+    {
       showknownsites(first, last);
+    }
     else if(byte != '\n')
     {
       if(byte >= 'A' && byte <= 'Z')
+      {
         byte += 'a' - 'A';
+      }
       if(found)
+      {
         continue;
+      }
       f = first;
       l = last;
       while(f < NUMCITYSITES && (!CitySiteList[sitenums[f] - CITYSITEBASE][0] ||
                                  strlen(sitenames[f]) < pos || sitenames[f][pos] < byte))
+      {
         f++;
+      }
       while(l >= 0 && (!CitySiteList[sitenums[l] - CITYSITEBASE][0] || strlen(sitenames[l]) < pos ||
                        sitenames[l][pos] > byte))
+      {
         l--;
+      }
       if(l < f)
+      {
         continue;
+      }
       prefix[pos++] = byte;
       prefix[pos]   = '\0';
       nprint2(prefix + pos - 1);
@@ -1058,7 +1156,9 @@ int parsecitysite()
   } while(byte != '\n');
   xredraw();
   if(found)
+  {
     return sitenums[first] - CITYSITEBASE;
+  }
   else
   {
     print3("That is an ambiguous abbreviation!");
@@ -1072,10 +1172,18 @@ int hostilemonstersnear()
   int i, j, hostile = false;
 
   for(i = Player.x - 2; ((i < Player.x + 3) && (!hostile)); i++)
+  {
     for(j = Player.y - 2; ((j < Player.y + 3) && (!hostile)); j++)
+    {
       if(inbounds(i, j))
+      {
         if(Level->site[i][j].creature != NULL)
+        {
           hostile = m_statusp(*Level->site[i][j].creature, HOSTILE);
+        }
+      }
+    }
+  }
 
   return (hostile);
 }
@@ -1134,11 +1242,13 @@ int stonecheck(int alignment)
       print2("A burden has been removed from your shoulders.....");
       print3("Your pack has disintegrated!");
       for(i = 0; i < MAXPACK; i++)
+      {
         if(Player.pack[i] != NULL)
         {
           free((char *)Player.pack[i]);
           Player.pack[i] = NULL;
         }
+      }
       Player.packptr = 0;
       break;
     case 3:
@@ -1221,11 +1331,13 @@ int stonecheck(int alignment)
       print1("The stone glows blue-violet");
       print2("You feel forgetful.");
       for(i = 0; i < NUMSPELLS; i++)
+      {
         if(Spells[i].known)
         {
           Spells[i].known = false;
           break;
         }
+      }
       break;
     case 31:
       print1("The stone glows violet");
@@ -1287,6 +1399,7 @@ void alert_guards()
   pml ml;
   int suppress = 0;
   for(ml = Level->mlist; ml != NULL; ml = ml->next)
+  {
     if(((ml->m->id == GUARD) || ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) && /*justiciar*/
        (ml->m->hp > 0))
     {
@@ -1294,11 +1407,14 @@ void alert_guards()
       m_status_set(*ml->m, AWAKE);
       m_status_set(*ml->m, HOSTILE);
     }
+  }
   if(foundguard)
   {
     mprint("You hear a whistle and the sound of running feet!");
     if(Current_Environment == E_CITY)
+    {
       Level->site[40][60].p_locf = L_NO_OP; /* pacify_guards restores this */
+    }
   }
   if((!foundguard) && (Current_Environment == E_CITY) && !gamestatusp(DESTROYED_ORDER, GameStatus))
   {
@@ -1340,7 +1456,9 @@ void alert_guards()
     }
   }
   if(suppress)
+  {
     resetgamestatus(SUPPRESS_PRINTING, GameStatus);
+  }
 }
 
 /* can only occur when player is in city, so OK to use Level */
@@ -1349,9 +1467,13 @@ void destroy_order()
   int i, j;
   setgamestatus(DESTROYED_ORDER, GameStatus);
   if(Level != City)
+  {
     print1("Zounds! A Serious Mistake!");
+  }
   else
+  {
     for(i = 35; i < 46; i++)
+    {
       for(j = 60; j < 63; j++)
       {
         if(i == 40 && (j == 60 || j == 61))
@@ -1376,6 +1498,8 @@ void destroy_order()
         Level->site[i][j].creature->monstring = "ghost of a Paladin";
         m_status_set(*Level->site[i][j].creature, HOSTILE);
       }
+    }
+  }
 }
 
 size_t maneuvers()
