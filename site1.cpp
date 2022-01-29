@@ -1131,8 +1131,9 @@ void l_pawn_shop() {
             nprint1(itemid(Player.pack[i]));
             nprint1(" for ");
             mlongprint(item_value(Player.pack[i]) / 2);
-            nprint1("Au each? [yn] ");
-            if (ynq1() == 'y') {
+            nprint1("Au each? [ynq] ");
+            int player_input = ynq1();
+            if (player_input == 'y') {
               number = getnumber(Player.pack[i]->number);
               if (number > 0) {
                 Player.cash += number * item_value(Player.pack[i]) / 2;
@@ -1150,6 +1151,9 @@ void l_pawn_shop() {
                 }
                 dataprint();
               }
+            }
+            else if(player_input == 'q') {
+              break;
             }
           }
         }
