@@ -2,42 +2,54 @@
 /* mmelee */
 /* various functions to do with monster melee */
 
-#include <algorithm>
 #include "glob.h"
 
-void m_hit(monster *m, int dtype) {
+#include <algorithm>
+
+void m_hit(monster *m, int dtype)
+{
   std::string monster_name;
-  if(m->uniqueness == COMMON) {
+  if(m->uniqueness == COMMON)
+  {
     monster_name = "a ";
   }
   monster_name += m->monstring;
-  if((Player.status[DISPLACED] > 0) && (random_range(2) == 1)) {
+  if((Player.status[DISPLACED] > 0) && (random_range(2) == 1))
+  {
     mprint("The attack was displaced!");
   }
-  else {
+  else
+  {
     p_damage(random_range(m->dmg), dtype, monster_name);
   }
 }
 
 /* execute monster attacks versus player */
-void tacmonster(monster *m) {
+void tacmonster(monster *m)
+{
   drawvision(Player.x, Player.y);
   transcribe_monster_actions(m);
-  for(size_t i = 0; i < strlen(m->meleestr) && m->hp > 0; i += 2) {
+  for(size_t i = 0; i < strlen(m->meleestr) && m->hp > 0; i += 2)
+  {
     std::string monster_name;
-    if(m->uniqueness == COMMON) {
+    if(m->uniqueness == COMMON)
+    {
       monster_name = "The ";
     }
     monster_name += m->monstring;
-    if(m->meleestr[i] == 'A') {
-      if(Verbosity == VERBOSE) {
-        mprint(monster_name + " attacks " + actionlocstr(m->meleestr[i+1]));
+    if(m->meleestr[i] == 'A')
+    {
+      if(Verbosity == VERBOSE)
+      {
+        mprint(monster_name + " attacks " + actionlocstr(m->meleestr[i + 1]));
       }
       monster_melee(m, m->meleestr[i + 1], 0);
     }
-    else if(m->meleestr[i] == 'L') {
-      if(Verbosity == VERBOSE) {
-        mprint(monster_name + " lunges " + actionlocstr(m->meleestr[i+1]));
+    else if(m->meleestr[i] == 'L')
+    {
+      if(Verbosity == VERBOSE)
+      {
+        mprint(monster_name + " lunges " + actionlocstr(m->meleestr[i + 1]));
       }
       monster_melee(m, m->meleestr[i + 1], m->level);
     }
@@ -45,23 +57,30 @@ void tacmonster(monster *m) {
   }
 }
 
-void monster_melee(struct monster *m, char hitloc, int bonus) {
-  if(player_on_sanctuary()) {
+void monster_melee(struct monster *m, char hitloc, int bonus)
+{
+  if(player_on_sanctuary())
+  {
     print1("The aegis of your deity protects you!");
   }
-  else {
+  else
+  {
     /* It's lawful to wait to be attacked */
-    if(m->attacked == 0) {
+    if(m->attacked == 0)
+    {
       ++Player.alignment;
     }
     ++m->attacked;
     std::string monster_name;
-    if(m->uniqueness == COMMON) {
+    if(m->uniqueness == COMMON)
+    {
       monster_name = "The ";
     }
     monster_name += m->monstring;
-    if(monster_hit(m, hitloc, bonus)) {
-      switch(m->meleef) {
+    if(monster_hit(m, hitloc, bonus))
+    {
+      switch(m->meleef)
+      {
         case M_NO_OP:
           mprint(monster_name + " touches you.");
           break;
@@ -72,7 +91,8 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
         case M_MELEE_NG:
           mprint(monster_name + " hits you.");
           m_hit(m, NORMAL_DAMAGE);
-          if(random_range(5) == 3) {
+          if(random_range(5) == 3)
+          {
             m_sp_ng(m);
           }
           break;
@@ -96,7 +116,8 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
         case M_MELEE_POISON:
           mprint(monster_name + " hits you.");
           m_hit(m, NORMAL_DAMAGE);
-          if(random_range(10) < m->level) {
+          if(random_range(10) < m->level)
+          {
             mprint("You've been poisoned!");
             p_poison(m->dmg);
           }
@@ -114,7 +135,8 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
         case M_MELEE_DISEASE:
           mprint(monster_name + " hits you.");
           m_hit(m, NORMAL_DAMAGE);
-          if(random_range(10) < m->level) {
+          if(random_range(10) < m->level)
+          {
             mprint("You've been infected!");
             disease(m->level);
           }
@@ -122,20 +144,26 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
         case M_MELEE_SLEEP:
           mprint(monster_name + " hit you.");
           m_hit(m, NORMAL_DAMAGE);
-          if(random_range(10) < m->level) {
+          if(random_range(10) < m->level)
+          {
             mprint("You feel drowsy");
             sleep_player(m->level);
           }
           break;
       }
     }
-    else {
-      if(random_range(10)) {
+    else
+    {
+      if(random_range(10))
+      {
         mprint(monster_name + " missed you.");
       }
-      else {
-        if(Verbosity == TERSE) {
-          switch(random_range(10)) {
+      else
+      {
+        if(Verbosity == TERSE)
+        {
+          switch(random_range(10))
+          {
             case 0:
               mprint(monster_name + " blundered severely.");
               m_damage(m, m->dmg, UNSTOPPABLE);
@@ -152,8 +180,10 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
               mprint(monster_name + " missed you.");
           }
         }
-        else {
-          switch(random_range(10)) {
+        else
+        {
+          switch(random_range(10))
+          {
             case 0:
               mprint(monster_name + " flailed stupidly at you.");
               break;
@@ -195,38 +225,51 @@ void monster_melee(struct monster *m, char hitloc, int bonus) {
 }
 
 /* checks to see if player hits with hitmod vs. monster m at location hitloc */
-bool monster_hit(monster *m, char hitloc, int bonus) {
-  int goodblocks = 0;
-  bool blocks = false, riposte = false;
+bool monster_hit(monster *m, char hitloc, int bonus)
+{
+  int    goodblocks = 0;
+  bool   blocks = false, riposte = false;
   size_t meleestr_length = std::min(strlen(Player.meleestr), maneuvers() * 2);
-  for(size_t i = 0; i < meleestr_length; i += 2) {
-    if(Player.meleestr[i] == 'B' || (Player.meleestr[i] == 'R')) {
+  for(size_t i = 0; i < meleestr_length; i += 2)
+  {
+    if(Player.meleestr[i] == 'B' || (Player.meleestr[i] == 'R'))
+    {
       blocks = true;
-      if(hitloc == Player.meleestr[i + 1]) {
+      if(hitloc == Player.meleestr[i + 1])
+      {
         ++goodblocks;
-        if(Player.meleestr[i] == 'R' && Player.possessions[O_WEAPON_HAND] && Player.possessions[O_WEAPON_HAND]->type == THRUSTING) {
+        if(Player.meleestr[i] == 'R' && Player.possessions[O_WEAPON_HAND] &&
+           Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
+        {
           riposte = true;
         }
       }
     }
   }
-  if(!blocks) {
+  if(!blocks)
+  {
     goodblocks = -1;
   }
   bool hit = hitp(m->hit + bonus, Player.defense + goodblocks * 10);
-  if(!hit && goodblocks > 0) {
-    if(Verbosity == VERBOSE) {
+  if(!hit && goodblocks > 0)
+  {
+    if(Verbosity == VERBOSE)
+    {
       mprint("You blocked it!");
     }
-    if(riposte) {
-      if(Verbosity != TERSE) {
+    if(riposte)
+    {
+      if(Verbosity != TERSE)
+      {
         mprint("You got a riposte!");
       }
-      if(hitp(Player.hit, m->ac)) {
+      if(hitp(Player.hit, m->ac))
+      {
         mprint("You hit!");
         weapon_use(0, Player.possessions[O_WEAPON_HAND], m);
       }
-      else {
+      else
+      {
         mprint("You missed.");
       }
     }
@@ -238,98 +281,129 @@ bool monster_hit(monster *m, char hitloc, int bonus) {
 /* if monster is skilled, it can try see the player's attacks coming and
    try to block appropriately. */
 
-void transcribe_monster_actions(monster *m) {
-  char attack_loc, block_loc;
+void transcribe_monster_actions(monster *m)
+{
+  char        attack_loc, block_loc;
   static char mmstr[80];
 
   int p_blocks[3];
   int p_attacks[3];
 
-  for(uint8_t i = 0; i < 3; ++i) {
+  for(uint8_t i = 0; i < 3; ++i)
+  {
     p_blocks[i] = p_attacks[i] = 0;
   }
 
   /* Find which area player blocks and attacks least in */
   size_t meleestr_length = std::min(strlen(Player.meleestr), maneuvers() * 2);
-  for(size_t i = 0; i < meleestr_length; i += 2) {
-    if ((Player.meleestr[i] == 'B') || (Player.meleestr[i] == 'R')) {
-      if (Player.meleestr[i + 1] == 'H') {
+  for(size_t i = 0; i < meleestr_length; i += 2)
+  {
+    if((Player.meleestr[i] == 'B') || (Player.meleestr[i] == 'R'))
+    {
+      if(Player.meleestr[i + 1] == 'H')
+      {
         ++p_blocks[0];
       }
-      if (Player.meleestr[i + 1] == 'C') {
+      if(Player.meleestr[i + 1] == 'C')
+      {
         ++p_blocks[1];
       }
-      if (Player.meleestr[i + 1] == 'L') {
+      if(Player.meleestr[i + 1] == 'L')
+      {
         ++p_blocks[2];
       }
     }
-    else if((Player.meleestr[i] == 'A') || (Player.meleestr[i] == 'L')) {
-      if(Player.meleestr[i + 1] == 'H') {
+    else if((Player.meleestr[i] == 'A') || (Player.meleestr[i] == 'L'))
+    {
+      if(Player.meleestr[i + 1] == 'H')
+      {
         ++p_attacks[0];
       }
-      if(Player.meleestr[i + 1] == 'C') {
+      if(Player.meleestr[i + 1] == 'C')
+      {
         ++p_attacks[1];
       }
-      if(Player.meleestr[i + 1] == 'L') {
+      if(Player.meleestr[i + 1] == 'L')
+      {
         ++p_attacks[2];
       }
     }
   }
 
-  if(p_blocks[2] <= p_blocks[1] && p_blocks[2] <= p_blocks[0]) {
+  if(p_blocks[2] <= p_blocks[1] && p_blocks[2] <= p_blocks[0])
+  {
     attack_loc = 'L';
   }
-  else if(p_blocks[1] <= p_blocks[2] && p_blocks[1] <= p_blocks[0]) {
+  else if(p_blocks[1] <= p_blocks[2] && p_blocks[1] <= p_blocks[0])
+  {
     attack_loc = 'C';
   }
-  else {
+  else
+  {
     attack_loc = 'H';
   }
 
-  if(p_attacks[2] >= p_attacks[1] && p_attacks[2] >= p_attacks[0]) {
+  if(p_attacks[2] >= p_attacks[1] && p_attacks[2] >= p_attacks[0])
+  {
     block_loc = 'L';
   }
-  else if(p_attacks[1] >= p_attacks[2] && p_attacks[1] >= p_attacks[0]) {
+  else if(p_attacks[1] >= p_attacks[2] && p_attacks[1] >= p_attacks[0])
+  {
     block_loc = 'C';
   }
-  else {
+  else
+  {
     block_loc = 'H';
   }
 
-  if(m->id != NPC) {
+  if(m->id != NPC)
+  {
     strcpy(mmstr, Monsters[m->id].meleestr);
   }
-  else {
+  else
+  {
     strcpy(mmstr, "");
-    for(int i = 0; i < m->level; i += 2) {
+    for(int i = 0; i < m->level; i += 2)
+    {
       strcat(mmstr, "L?R?");
     }
   }
 
-  for(size_t i = 0; i < strlen(m->meleestr); i += 2) {
-    if(m->meleestr[i] == 'A' || m->meleestr[i] == 'L') {
-      if(m->meleestr[i + 1] == '?') {
-        if(m->level + random_range(30) > Player.level + random_range(20)) {
+  for(size_t i = 0; i < strlen(m->meleestr); i += 2)
+  {
+    if(m->meleestr[i] == 'A' || m->meleestr[i] == 'L')
+    {
+      if(m->meleestr[i + 1] == '?')
+      {
+        if(m->level + random_range(30) > Player.level + random_range(20))
+        {
           mmstr[i + 1] = attack_loc;
         }
-        else {
+        else
+        {
           mmstr[i + 1] = random_loc();
         }
       }
-      else if(m->meleestr[i + 1] == 'X') {
+      else if(m->meleestr[i + 1] == 'X')
+      {
         mmstr[i + 1] = random_loc();
       }
     }
-    else if(m->meleestr[i] == 'B' || m->meleestr[i] == 'R') {
-      if(mmstr[i + 1] == '?') {
-        if(m->level + random_range(30) > Player.level + random_range(20)) {
+    else if(m->meleestr[i] == 'B' || m->meleestr[i] == 'R')
+    {
+      if(mmstr[i + 1] == '?')
+      {
+        if(m->level + random_range(30) > Player.level + random_range(20))
+        {
           mmstr[i + 1] = block_loc;
         }
-        else {
+        else
+        {
           mmstr[i + 1] = random_loc();
         }
       }
-      else if(mmstr[i + 1] == 'X') {
+      else if(mmstr[i + 1] == 'X')
+      {
         mmstr[i + 1] = random_loc();
       }
     }
@@ -337,13 +411,15 @@ void transcribe_monster_actions(monster *m) {
   m->meleestr = mmstr;
 }
 
-char random_loc() {
-  switch(random_range(3)) {
-  case 0:
-    return ('H');
-  case 1:
-    return ('C');
-  default:
-    return ('L');
+char random_loc()
+{
+  switch(random_range(3))
+  {
+    case 0:
+      return ('H');
+    case 1:
+      return ('C');
+    default:
+      return ('L');
   }
 }

@@ -213,18 +213,16 @@ extern char Str1[100], Str2[100], Str3[100], Str4[100];
 
 /* high score names, levels, behavior */
 
-extern int Shadowlordbehavior, Archmagebehavior, Primebehavior,
-    Justiciarbehavior;
-extern int Commandantbehavior, Chaoslordbehavior, Lawlordbehavior;
-extern int Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
+extern int  Shadowlordbehavior, Archmagebehavior, Primebehavior, Justiciarbehavior;
+extern int  Commandantbehavior, Chaoslordbehavior, Lawlordbehavior;
+extern int  Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
 extern char Shadowlord[80], Archmage[80], Prime[80], Commandant[80], Duke[80];
 extern char Champion[80], Priest[7][80], Hiscorer[80], Hidescrip[80];
 extern char Chaoslord[80], Lawlord[80], Justiciar[80];
-extern int Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel,
-    Dukelevel;
-extern int Championlevel, Priestlevel[7], Hilevel, Justiciarlevel;
+extern int  Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel, Dukelevel;
+extern int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel;
 extern long Hiscore;
-extern int Chaoslordlevel, Lawlordlevel, Chaos, Law;
+extern int  Chaoslordlevel, Lawlordlevel, Chaos, Law;
 
 /* New globals which used to be statics */
 extern int twiddle;

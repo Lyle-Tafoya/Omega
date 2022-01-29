@@ -39,28 +39,29 @@
 
 #ifndef OMEGA_CLRGEN /* this file confuses its own scanner */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#  include <cstdio>
+#  include <cstdlib>
+#  include <cstring>
 
 /*
  * Special tag cpp prepends to color symbols
  */
-#define PREFIX "OMEGA_CLRGEN"
+#  define PREFIX "OMEGA_CLRGEN"
 
 /*
  * Return whether a character could be part of a C identifier
  */
-#define ISCID(c)                                                               \
-  (((c) >= 'A' && (c) <= 'Z') || ((c) >= 'a' && (c) <= 'z') ||                 \
-   ((c) >= '0' && (c) <= '9') || (c) == '_')
+#  define ISCID(c)                                                                             \
+    (((c) >= 'A' && (c) <= 'Z') || ((c) >= 'a' && (c) <= 'z') || ((c) >= '0' && (c) <= '9') || \
+     (c) == '_')
 
 /*
  * Colors specified in cpp output on standard input
  */
-typedef struct {
-  const char *ofg, *obg;             /* Omega fore/background color */
-  const char *cfg, *cbg;             /* curses fore/background color */
+typedef struct
+{
+  const char  *ofg, *obg;      /* Omega fore/background color */
+  const char  *cfg, *cbg;      /* curses fore/background color */
   unsigned int boldfg, boldbg; /* fore/background bold flag */
   unsigned int idx;            /* COLOR_PAIR() argument */
 } ClrPair;
@@ -68,31 +69,35 @@ typedef struct {
 /*
  * Omega versus curses color names
  */
-typedef struct {
-  const char *omega;
-  const char *curses;
+typedef struct
+{
+  const char  *omega;
+  const char  *curses;
   unsigned int bold;
 } ClrEquiv;
 
-static ClrEquiv clr_equiv[17] = {{"BLACK", "BLACK", 0},
-                                 {"BLUE", "BLUE", 0},
-                                 {"GREEN", "GREEN", 0},
-                                 {"CYAN", "CYAN", 0},
-                                 {"RED", "RED", 0},
-                                 {"PURPLE", "MAGENTA", 0},
-                                 {"BROWN", "YELLOW", 0},
-                                 {"WHITE", "WHITE", 0},
-                                 {"GREY", "BLACK", 1},
-                                 {"LIGHT_BLUE", "BLUE", 1},
-                                 {"LIGHT_GREEN", "GREEN", 1},
-                                 {"LIGHT_CYAN", "CYAN", 1},
-                                 {"LIGHT_RED", "RED", 1},
-                                 {"LIGHT_PURPLE", "MAGENTA", 1},
-                                 {"YELLOW", "YELLOW", 1},
-                                 {"BRIGHT_WHITE", "WHITE", 1},
-                                 {NULL, NULL, 0}};
+static ClrEquiv clr_equiv[17] = {
+  {       "BLACK",   "BLACK", 0},
+  {        "BLUE",    "BLUE", 0},
+  {       "GREEN",   "GREEN", 0},
+  {        "CYAN",    "CYAN", 0},
+  {         "RED",     "RED", 0},
+  {      "PURPLE", "MAGENTA", 0},
+  {       "BROWN",  "YELLOW", 0},
+  {       "WHITE",   "WHITE", 0},
+  {        "GREY",   "BLACK", 1},
+  {  "LIGHT_BLUE",    "BLUE", 1},
+  { "LIGHT_GREEN",   "GREEN", 1},
+  {  "LIGHT_CYAN",    "CYAN", 1},
+  {   "LIGHT_RED",     "RED", 1},
+  {"LIGHT_PURPLE", "MAGENTA", 1},
+  {      "YELLOW",  "YELLOW", 1},
+  {"BRIGHT_WHITE",   "WHITE", 1},
+  {          NULL,      NULL, 0}
+};
 
-static const char *clr_lookup(const char *omega, const char **curses, unsigned int *bold) {
+static const char *clr_lookup(const char *omega, const char **curses, unsigned int *bold)
+{
   /*
    * Point CURSES to the curses color corresponding to Omega color OMEGA,
    * set *BOLD to whether the bold attribute should accompany that curses
@@ -100,16 +105,18 @@ static const char *clr_lookup(const char *omega, const char **curses, unsigned i
    * null.
    */
   ClrEquiv *e = clr_equiv;
-  for (; e->omega; e++)
-    if (!strcmp(e->omega, omega)) {
+  for(; e->omega; e++)
+    if(!strcmp(e->omega, omega))
+    {
       *curses = e->curses;
-      *bold = e->bold;
+      *bold   = e->bold;
       return e->omega;
     }
   return NULL;
 }
 
-static const char *clr_scan(char *p, const char **curses, unsigned int *bold, char **end) {
+static const char *clr_scan(char *p, const char **curses, unsigned int *bold, char **end)
+{
   /*
    * Return a copy of the Omega color nearest the start of writable buffer
    * P, point CURSES to the corresponding curses color, and point END just
@@ -117,20 +124,23 @@ static const char *clr_scan(char *p, const char **curses, unsigned int *bold, ch
    *
    * If the Omega color is unrecognized, issue an error and exit.
    */
-  char c;
+  char        c;
   const char *omega, *start;
-  for (; (c = *p); p++) {
-    if (!ISCID(c))
+  for(; (c = *p); p++)
+  {
+    if(!ISCID(c))
       continue;
-    for (start = p++; (c = *p); p++) {
-      if (ISCID(c))
+    for(start = p++; (c = *p); p++)
+    {
+      if(ISCID(c))
         continue;
       *p = '\0';
-      if (!(omega = clr_lookup(start, curses, bold))) {
+      if(!(omega = clr_lookup(start, curses, bold)))
+      {
         fprintf(stderr, "unrecognized Omega color \"%s\"\n", start);
         exit(1);
       }
-      *p = c;
+      *p   = c;
       *end = p;
       return omega;
     }
@@ -138,39 +148,43 @@ static const char *clr_scan(char *p, const char **curses, unsigned int *bold, ch
   return NULL;
 }
 
-static int opaircmp(const void *pair1, const void *pair2) {
+static int opaircmp(const void *pair1, const void *pair2)
+{
   /*
    * qsort comparison function: return less than, equal to, or greater than
    * 0 according to whether PAIR1 precedes, coincides with, or follows PAIR2
    * in a sorted list of Omega color pairs.
    */
   ClrPair *p1 = (ClrPair *)pair1, *p2 = (ClrPair *)pair2;
-  int diff = strcmp(p1->ofg, p2->ofg);
-  if (diff)
+  int      diff = strcmp(p1->ofg, p2->ofg);
+  if(diff)
     return diff;
   return strcmp(p1->obg, p2->obg);
 }
 
-static int cpaircmp(const void *pair1, const void *pair2) {
+static int cpaircmp(const void *pair1, const void *pair2)
+{
   /*
    * qsort comparison function: return less than, equal to, or greater than
    * 0 according to whether PAIR1 precedes, coincides with, or follows PAIR2
    * in a sorted list of curses color pairs.
    */
   ClrPair *p1 = *(ClrPair **)pair1, *p2 = *(ClrPair **)pair2;
-  int diff = strcmp(p1->cfg, p2->cfg);
-  if (diff)
+  int      diff = strcmp(p1->cfg, p2->cfg);
+  if(diff)
     return diff;
   return strcmp(p1->cbg, p2->cbg);
 }
 
-static FILE *emitopen(char *file, char **argv) {
+static FILE *emitopen(char *file, char **argv)
+{
   /*
    * Write to the top of FILE a suitable header based on ARGV, and return a
    * writable file pointer on FILE.  Exit on error.
    */
   FILE *fp = fopen(file, "w");
-  if (!fp) {
+  if(!fp)
+  {
     fprintf(stderr, "error opening %s", file);
     perror("");
     exit(1);
@@ -186,27 +200,30 @@ static FILE *emitopen(char *file, char **argv) {
   return fp;
 }
 
-static void emitclose(FILE *fp, char *file) {
+static void emitclose(FILE *fp, char *file)
+{
   /*
    * Close FP attached to FILE, exiting on error.
    */
-  if (fclose(fp) == 0)
+  if(fclose(fp) == 0)
     return;
   fprintf(stderr, "error closing %s", file);
   perror("");
   exit(1);
 }
 
-int main(int argc, char **argv) {
-  char line[1024], *p;
+int main(int argc, char **argv)
+{
+  char         line[1024], *p;
   unsigned int i, j, nopairs = 0, ncpairs, opairslen = 80, one;
-  ClrPair *pair;
-  ClrPair *opairs;  /* Omega color pairs */
-  ClrPair **cpairs; /* curses color pairs */
-  char *cfile, *hfile;
-  FILE *fp;
+  ClrPair     *pair;
+  ClrPair     *opairs; /* Omega color pairs */
+  ClrPair    **cpairs; /* curses color pairs */
+  char        *cfile, *hfile;
+  FILE        *fp;
 
-  if (argc != 3) {
+  if(argc != 3)
+  {
     fprintf(stderr, "usage: %s <c-file> <h-file>\n", argv[0]);
     exit(1);
   }
@@ -217,23 +234,27 @@ int main(int argc, char **argv) {
    * Accumulate Omega color pairs from standard input into pairs.
    */
   opairs = (ClrPair *)malloc(opairslen * sizeof(ClrPair));
-  while (fgets(line, 1024, stdin)) {
-    for (p = line; (p = strstr(p, PREFIX));) {
+  while(fgets(line, 1024, stdin))
+  {
+    for(p = line; (p = strstr(p, PREFIX));)
+    {
       p += sizeof(PREFIX) - 1;
-      if (nopairs == opairslen) {
+      if(nopairs == opairslen)
+      {
         opairslen *= 2;
         opairs = (ClrPair *)realloc(opairs, opairslen * sizeof(ClrPair));
       }
-      pair = opairs + nopairs++;
-      one = *p++ == '1';
+      pair      = opairs + nopairs++;
+      one       = *p++ == '1';
       pair->ofg = clr_scan(p, &pair->cfg, &pair->boldfg, &p);
       pair->obg = one ? clr_lookup("BLACK", &pair->cbg, &pair->boldbg)
                       : clr_scan(p, &pair->cbg, &pair->boldbg, &p);
-      if (pair->boldbg)
+      if(pair->boldbg)
         fprintf(stderr, "warning: \"%s\": bg bold unimplemented\n", pair->obg);
     }
   }
-  if (!nopairs) {
+  if(!nopairs)
+  {
     fputs("no colors detected in standard input\n", stderr);
     exit(1);
   }
@@ -242,8 +263,9 @@ int main(int argc, char **argv) {
    * Remove duplicate Omega color pairs.
    */
   qsort(opairs, nopairs, sizeof(ClrPair), opaircmp);
-  for (i = 0, j = 1; j < nopairs; j++) {
-    if (opaircmp(opairs + i, opairs + j))
+  for(i = 0, j = 1; j < nopairs; j++)
+  {
+    if(opaircmp(opairs + i, opairs + j))
       opairs[++i] = opairs[j];
   }
   nopairs = i + 1;
@@ -253,13 +275,14 @@ int main(int argc, char **argv) {
    * ClrPair.idx fields.
    */
   cpairs = (ClrPair **)malloc(nopairs * sizeof(ClrPair *));
-  for (i = 0; i < nopairs; i++)
+  for(i = 0; i < nopairs; i++)
     cpairs[i] = opairs + i;
   qsort(cpairs, nopairs, sizeof(ClrPair *), cpaircmp);
   cpairs[0]->idx = 1;
 
-  for (i = 0, j = 1; j < nopairs; j++) {
-    if (cpaircmp(cpairs + i, cpairs + j))
+  for(i = 0, j = 1; j < nopairs; j++)
+  {
+    if(cpaircmp(cpairs + i, cpairs + j))
       cpairs[++i] = cpairs[j];
     cpairs[j]->idx = i + 1;
   }
@@ -286,7 +309,7 @@ int main(int argc, char **argv) {
           "}\n",
           hfile, ncpairs);
 
-  for (i = 0; i < ncpairs; i++)
+  for(i = 0; i < ncpairs; i++)
     fprintf(fp, "\
     init_pair (%d, COLOR_%s, COLOR_%s);\n\
 ",
@@ -302,7 +325,8 @@ int main(int argc, char **argv) {
    * Emit .h file.
    */
   fp = emitopen(hfile, argv);
-  for (i = 0; i < nopairs; i++) {
+  for(i = 0; i < nopairs; i++)
+  {
     pair = opairs + i;
     fprintf(fp, "#define CLR_%s_%s\t%sCOLOR_PAIR(%d)%s\n", pair->ofg, pair->obg,
             strlen(pair->ofg) + strlen(pair->obg) > 10 ? "" : "\t", pair->idx,

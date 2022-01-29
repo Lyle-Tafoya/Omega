@@ -1,13 +1,14 @@
 /* omega copyright (c) 1987,1988,1989 by Laurence Raphael Brothers */
 /* extern.h -- function declarations */
 
-#include <string>
 #include "defs.h"
+
+#include <string>
 
 /* omega.cpp functions */
 
-int main(int, char *[]);
-int game_restore(int, char *[]);
+int  main(int, char *[]);
+int  game_restore(int, char *[]);
 void init_world(void);
 void inititem(int);
 void initrand(int, int);
@@ -22,86 +23,86 @@ void load_abyss(void);
 std::string levelname(int);
 std::string mstatus_string(struct monster *);
 std::string trapid(int);
-int getdir(void);
-bool goberserk(void);
-int p_country_moveable(int, int);
-int p_moveable(int, int);
-int player_on_sanctuary(void);
-void calc_melee(void);
-int damage_item(pob);
-void describe_player(void);
-void fight_monster(struct monster *);
-void foodcheck(void);
-void gain_experience(int);
-void p_damage(int, int, const std::string &);
-void p_death(const std::string &);
-void roomcheck(void);
-void searchat(int, int);
-void setspot(int *, int *);
-void showroom(int);
-void surrender(struct monster *);
-void threaten(struct monster *);
-void tunnelcheck(void);
+int         getdir(void);
+bool        goberserk(void);
+int         p_country_moveable(int, int);
+int         p_moveable(int, int);
+int         player_on_sanctuary(void);
+void        calc_melee(void);
+int         damage_item(pob);
+void        describe_player(void);
+void        fight_monster(struct monster *);
+void        foodcheck(void);
+void        gain_experience(int);
+void        p_damage(int, int, const std::string &);
+void        p_death(const std::string &);
+void        roomcheck(void);
+void        searchat(int, int);
+void        setspot(int *, int *);
+void        showroom(int);
+void        surrender(struct monster *);
+void        threaten(struct monster *);
+void        tunnelcheck(void);
 
 /* aux2.cpp functions */
 
-long expval(int);
-long item_value(pob);
-long true_item_value(pob);
+long        expval(int);
+long        item_value(pob);
+long        true_item_value(pob);
 std::string actionlocstr(char);
-int p_immune(int);
-int player_hit(int, char, struct monster *);
-int statmod(int);
-void break_weapon(void);
-void change_environment(char);
-void drop_weapon(void);
-void enter_site(Symbol);
-void gain_level(void);
-void minute_status_check(void);
-void moon_check(void);
-void movecursor(int *, int *, int, int);
-void p_drown(void);
-void p_fumble(int);
-void p_hit(struct monster *, int, int);
-void p_win(void);
-void player_miss(struct monster *, int);
-void tacplayer(struct monster *);
-void tenminute_status_check(void);
-void toggle_item_use(bool);
-void torch_check(void);
-void weapon_use(int, pob, struct monster *);
+int         p_immune(int);
+int         player_hit(int, char, struct monster *);
+int         statmod(int);
+void        break_weapon(void);
+void        change_environment(char);
+void        drop_weapon(void);
+void        enter_site(Symbol);
+void        gain_level(void);
+void        minute_status_check(void);
+void        moon_check(void);
+void        movecursor(int *, int *, int, int);
+void        p_drown(void);
+void        p_fumble(int);
+void        p_hit(struct monster *, int, int);
+void        p_win(void);
+void        player_miss(struct monster *, int);
+void        tacplayer(struct monster *);
+void        tenminute_status_check(void);
+void        toggle_item_use(bool);
+void        torch_check(void);
+void        weapon_use(int, pob, struct monster *);
 
 /* aux3.cpp functions */
 
-char *citysiteid(int);
-char *countryid(Symbol);
-char getlocation(void);
-int hostilemonstersnear(void);
-int magic_resist(int);
+char  *citysiteid(int);
+char  *countryid(Symbol);
+char   getlocation(void);
+int    hostilemonstersnear(void);
+int    magic_resist(int);
 size_t maneuvers(void);
-int parsecitysite(void);
-int stonecheck(int);
-void alert_guards(void);
-void countrysearch(void);
-void destroy_order(void);
-void hourly_check(void);
-void indoors_random_event(void);
-void outdoors_random_event(void);
-void showknownsites(int, int);
-void tenminute_check(void);
-void terrain_check(int);
+int    parsecitysite(void);
+int    stonecheck(int);
+void   alert_guards(void);
+void   countrysearch(void);
+void   destroy_order(void);
+void   hourly_check(void);
+void   indoors_random_event(void);
+void   outdoors_random_event(void);
+void   showknownsites(int, int);
+void   tenminute_check(void);
+void   terrain_check(int);
 
 /* char.cpp functions */
 
-long calcmana(void);
+long  calcmana(void);
 FILE *omegarc_check(void);
-int competence_check(int);
-int fixnpc(int);
-void initplayer(void);
-void initstats(void);
-void omegan_character_stats(void);
-void save_omegarc(void);
-void user_character_stats(void);
+int   competence_check(int);
+int   fixnpc(int);
+void  initplayer(void);
+void  initstats(void);
+void  omegan_character_stats(void);
+void  save_omegarc(void);
+void  user_character_stats(void);
 
 /* city.cpp functions */
 
@@ -181,7 +182,7 @@ void random_temple_site(int, int, int, int);
 
 /* effect1.cpp functions */
 
-int random_item(void);
+int  random_item(void);
 void acquire(int);
 void ball(int, int, int, int, int, int);
 void bless(int);
@@ -220,8 +221,8 @@ void warp(int);
 
 /* effect3.cpp functions */
 
-int itemlist(int, int);
-int monsterlist(void);
+int  itemlist(int, int);
+int  monsterlist(void);
 void acid_cloud(void);
 void aggravate(void);
 void amnesia(void);
@@ -267,57 +268,57 @@ void make_prime(int, int);
 
 /* etc.cpp functions */
 
-char *nameprint(void);
+char       *nameprint(void);
 const char *slotstr(int);
 const char *wordnum(int);
-void hint(void);
-void learnclericalspells(int, int);
+void        hint(void);
+void        learnclericalspells(int, int);
 
 /* file.cpp functions */
 
-void lock_score_file(void);
-void unlock_score_file(void);
+void  lock_score_file(void);
+void  unlock_score_file(void);
 FILE *checkfopen(const std::string &, const std::string &);
-int filecheck(void);
-bool test_file_access(const std::string &, char);
-void abyss_file(void);
-void adeptfile(void);
-void checkhigh(const std::string &, int);
-void cityguidefile(void);
-void combat_help(void);
-void commandlist(void);
-void copyfile(const std::string &);
-void displayfile(const std::string &);
-void displaycryptfile(const std::string &);
-void extendlog(const std::string &, int);
-void filescanstring(FILE *, char *); /* in util.c if MSDOS defined */
-void inv_help(void);
-void save_hiscore_npc(int);
-void show_license(void);
-void showmotd(void);
-void showscores(void);
-void theologyfile(void);
-void user_intro(void);
-void wishfile(void);
+int   filecheck(void);
+bool  test_file_access(const std::string &, char);
+void  abyss_file(void);
+void  adeptfile(void);
+void  checkhigh(const std::string &, int);
+void  cityguidefile(void);
+void  combat_help(void);
+void  commandlist(void);
+void  copyfile(const std::string &);
+void  displayfile(const std::string &);
+void  displaycryptfile(const std::string &);
+void  extendlog(const std::string &, int);
+void  filescanstring(FILE *, char *); /* in util.c if MSDOS defined */
+void  inv_help(void);
+void  save_hiscore_npc(int);
+void  show_license(void);
+void  showmotd(void);
+void  showscores(void);
+void  theologyfile(void);
+void  user_intro(void);
+void  wishfile(void);
 
 /* gen1.cpp functions */
 
 char *roomname(int);
-plv findlevel(struct level *, char);
-void build_room(int, int, int, char, int);
-void build_square_room(int, int, int, char, int);
-void cavern_level(void);
-void change_level(char, char, char);
-void clear_level(struct level *);
-void corridor_crawl(int *, int *, int, int, int, Symbol, char);
-void find_stairs(char, char);
-void free_dungeon(void);
-void install_specials(void);
-void install_traps(void);
-void makedoor(int, int);
-void sewer_corridor(int, int, int, int, Symbol);
-void sewer_level(void);
-void straggle_corridor(int, int, int, int, Symbol, char);
+plv   findlevel(struct level *, char);
+void  build_room(int, int, int, char, int);
+void  build_square_room(int, int, int, char, int);
+void  cavern_level(void);
+void  change_level(char, char, char);
+void  clear_level(struct level *);
+void  corridor_crawl(int *, int *, int, int, int, Symbol, char);
+void  find_stairs(char, char);
+void  free_dungeon(void);
+void  install_specials(void);
+void  install_traps(void);
+void  makedoor(int, int);
+void  sewer_corridor(int, int, int, int, Symbol);
+void  sewer_level(void);
+void  straggle_corridor(int, int, int, int, Symbol, char);
 
 /* gen2.cpp functions */
 
@@ -357,57 +358,57 @@ void make_mansion_npc(int, int);
 
 /* inv.cpp functions */
 
-void do_inventory_control(void);
-int key_to_index(signed char);
+void        do_inventory_control(void);
+int         key_to_index(signed char);
 signed char index_to_key(int);
-long get_money(long);
+long        get_money(long);
 const char *cashstr(void);
-char *itemid(pob);
-int baditem(int);
-int badobject(char);
-int cursed(pob);
-int find_and_remove_item(int, int);
-int find_item(pob *, int, int);
-int get_inventory_slot(void);
-int get_item_number(pob);
-int get_to_pack(pob);
-int getitem(Symbol);
-bool item_useable(pob, int);
-int objequal(struct object *, struct object *);
-int slottable(pob, int);
-int take_from_pack(int, int);
-pob detach_money(void);
-pob split_item(int, pob);
-void add_to_pack(pob);
-void conform_lost_object(pob);
-void conform_lost_objects(int, pob);
-void conform_unused_object(pob);
-void dispose_lost_objects(int, pob);
-void drop_at(int, int, pob);
-void drop_from_slot(int);
-void drop_money(void);
-void fixpack(void);
-void gain_item(pob);
-void give_money(struct monster *);
-void givemonster(struct monster *, struct object *);
-void inventory_control(void);
-void item_inventory(int);
-void lose_all_items(void);
-void merge_item(int);
-void p_drop_at(int, int, int, pob);
-void pack_extra_items(pob);
-void pickup_at(int, int);
-void put_to_pack(int);
-void setchargestr(pob, char *);
-void setnumstr(pob, char *);
-void setplustr(pob, char *);
-void show_inventory_slot(int, int);
-void switch_to_slot(int);
-void top_inventory_control(void);
+char       *itemid(pob);
+int         baditem(int);
+int         badobject(char);
+int         cursed(pob);
+int         find_and_remove_item(int, int);
+int         find_item(pob *, int, int);
+int         get_inventory_slot(void);
+int         get_item_number(pob);
+int         get_to_pack(pob);
+int         getitem(Symbol);
+bool        item_useable(pob, int);
+int         objequal(struct object *, struct object *);
+int         slottable(pob, int);
+int         take_from_pack(int, int);
+pob         detach_money(void);
+pob         split_item(int, pob);
+void        add_to_pack(pob);
+void        conform_lost_object(pob);
+void        conform_lost_objects(int, pob);
+void        conform_unused_object(pob);
+void        dispose_lost_objects(int, pob);
+void        drop_at(int, int, pob);
+void        drop_from_slot(int);
+void        drop_money(void);
+void        fixpack(void);
+void        gain_item(pob);
+void        give_money(struct monster *);
+void        givemonster(struct monster *, struct object *);
+void        inventory_control(void);
+void        item_inventory(int);
+void        lose_all_items(void);
+void        merge_item(int);
+void        p_drop_at(int, int, int, pob);
+void        pack_extra_items(pob);
+void        pickup_at(int, int);
+void        put_to_pack(int);
+void        setchargestr(pob, char *);
+void        setnumstr(pob, char *);
+void        setplustr(pob, char *);
+void        show_inventory_slot(int, int);
+void        switch_to_slot(int);
+void        top_inventory_control(void);
 
 /* item.cpp functions */
 
-void shuffle(int[], int);
+void        shuffle(int[], int);
 const char *bootname(int);
 const char *cloakname(int);
 const char *grotname(void);
@@ -415,25 +416,25 @@ const char *potionname(int);
 const char *ringname(int);
 const char *scrollname(int);
 const char *stickname(int);
-int itemblessing(void);
-int itemcharge(void);
-int itemplus(void);
-int twohandedp(int);
-pob create_object(int);
-void make_armor(pob, int);
-void make_artifact(pob, int);
-void make_boots(pob, int);
-void make_cash(pob, int);
-void make_cloak(pob, int);
-void make_corpse(pob, struct monster *);
-void make_food(pob, int);
-void make_potion(pob, int);
-void make_ring(pob, int);
-void make_scroll(pob, int);
-void make_shield(pob, int);
-void make_stick(pob, int);
-void make_thing(pob, int);
-void make_weapon(pob, int);
+int         itemblessing(void);
+int         itemcharge(void);
+int         itemplus(void);
+int         twohandedp(int);
+pob         create_object(int);
+void        make_armor(pob, int);
+void        make_artifact(pob, int);
+void        make_boots(pob, int);
+void        make_cash(pob, int);
+void        make_cloak(pob, int);
+void        make_corpse(pob, struct monster *);
+void        make_food(pob, int);
+void        make_potion(pob, int);
+void        make_ring(pob, int);
+void        make_scroll(pob, int);
+void        make_shield(pob, int);
+void        make_stick(pob, int);
+void        make_thing(pob, int);
+void        make_weapon(pob, int);
 
 /* itemf1.cpp functions */
 
@@ -540,7 +541,7 @@ void weapon_vorpal(int, pob, struct monster *);
 
 /* itemf3.cpp functions */
 
-int orbcheck(char);
+int  orbcheck(char);
 void i_antioch(pob);
 void i_apport(pob);
 void i_crystal(pob);
@@ -577,9 +578,9 @@ void i_symbol(pob);
 
 /* lev.cpp functions */
 
-int difficulty(void); /* this function in util.c if MSDOS defined */
-pmt m_create(int, int, int, int);
-pmt make_creature(int);
+int  difficulty(void); /* this function in util.c if MSDOS defined */
+pmt  m_create(int, int, int, int);
+pmt  make_creature(int);
 void make_country_monsters(Symbol);
 void make_site_monster(int, int, int);
 void make_site_treasure(int, int, int);
@@ -616,39 +617,39 @@ void m_move_leash(struct monster *);
 /* mon.cpp functions */
 
 const char *mantype(void);
-void determine_npc_behavior(pmt, int, int);
-void m_abyss(struct monster *);
-void m_altar(struct monster *);
-void m_damage(struct monster *, int, int);
-void m_death(struct monster *);
-void m_dropstuff(struct monster *);
-void m_fire(struct monster *);
-void m_lava(struct monster *);
-void m_no_op(struct monster *);
-void m_pickup(struct monster *, struct object *);
-void m_pulse(struct monster *);
-void m_trap_abyss(struct monster *);
-void m_trap_acid(struct monster *);
-void m_trap_blade(struct monster *);
-void m_trap_dart(struct monster *);
-void m_trap_disintegrate(struct monster *);
-void m_trap_door(struct monster *);
-void m_trap_fire(struct monster *);
-void m_trap_manadrain(struct monster *);
-void m_trap_pit(struct monster *);
-void m_trap_sleepgas(struct monster *);
-void m_trap_snare(struct monster *);
-void m_trap_teleport(struct monster *);
-void m_water(struct monster *);
-void make_hiscore_npc(pmt, int);
-void make_log_npc(struct monster *);
-void monster_action(struct monster *, int);
-void monster_move(struct monster *);
-void monster_special(struct monster *);
-void monster_strike(struct monster *);
-void monster_talk(struct monster *);
-void movemonster(struct monster *, int, int);
-void strengthen_death(struct monster *);
+void        determine_npc_behavior(pmt, int, int);
+void        m_abyss(struct monster *);
+void        m_altar(struct monster *);
+void        m_damage(struct monster *, int, int);
+void        m_death(struct monster *);
+void        m_dropstuff(struct monster *);
+void        m_fire(struct monster *);
+void        m_lava(struct monster *);
+void        m_no_op(struct monster *);
+void        m_pickup(struct monster *, struct object *);
+void        m_pulse(struct monster *);
+void        m_trap_abyss(struct monster *);
+void        m_trap_acid(struct monster *);
+void        m_trap_blade(struct monster *);
+void        m_trap_dart(struct monster *);
+void        m_trap_disintegrate(struct monster *);
+void        m_trap_door(struct monster *);
+void        m_trap_fire(struct monster *);
+void        m_trap_manadrain(struct monster *);
+void        m_trap_pit(struct monster *);
+void        m_trap_sleepgas(struct monster *);
+void        m_trap_snare(struct monster *);
+void        m_trap_teleport(struct monster *);
+void        m_water(struct monster *);
+void        make_hiscore_npc(pmt, int);
+void        make_log_npc(struct monster *);
+void        monster_action(struct monster *, int);
+void        monster_move(struct monster *);
+void        monster_special(struct monster *);
+void        monster_strike(struct monster *);
+void        monster_talk(struct monster *);
+void        movemonster(struct monster *, int, int);
+void        strengthen_death(struct monster *);
 
 /* move.cpp functions */
 
@@ -698,8 +699,7 @@ void stationcheck(void);
 
 void m_movefunction(struct monster *, int);
 void p_movefunction(int);
-void sign_print(int, int,
-                      int); /* this function in site1.c if MSDOS defined */
+void sign_print(int, int, int); /* this function in site1.c if MSDOS defined */
 
 /* mspec.cpp functions */
 
@@ -787,127 +787,127 @@ void m_talk_titter(struct monster *);
 
 /* priest.cpp functions */
 
-int check_sacrilege(int);
+int  check_sacrilege(int);
 void answer_prayer(void);
 void hp_req_print(void);
 void hp_req_test(void);
-int increase_priest_rank(int);
+int  increase_priest_rank(int);
 void l_altar(void);
 void make_hp(pob);
 
 /* save.cpp functions */
 
-int ok_outdated(int);
-int restore_game(char *);
+int  ok_outdated(int);
+int  restore_game(char *);
 void restore_hiscore_npc(pmt, int);
-pob restore_item(FILE *, int);
-pol restore_itemlist(FILE *, int);
+pob  restore_item(FILE *, int);
+pol  restore_itemlist(FILE *, int);
 void restore_country(FILE *, int);
 void restore_level(FILE *, int);
 void restore_monsters(FILE *, plv, int);
 void restore_player(FILE *, int);
-int save_game(const char *);
-int save_country(FILE *);
-int save_item(FILE *, pob);
-int save_itemlist(FILE *, pol);
-int save_level(FILE *, plv);
-int save_monsters(FILE *, pml);
-int save_player(FILE *);
+int  save_game(const char *);
+int  save_country(FILE *);
+int  save_item(FILE *, pob);
+int  save_itemlist(FILE *, pol);
+int  save_level(FILE *, plv);
+int  save_monsters(FILE *, pml);
+int  save_player(FILE *);
 void signalsave(int = 0);
 
 /* scr.cpp functions */
 
-int mcigetc(void);
-long parsenum(void);
-char *msgscanstring(void);
+int    mcigetc(void);
+long   parsenum(void);
+char  *msgscanstring(void);
 Symbol getspot(int, int, int);
-char lgetc(void);
-char menugetc(void);
-char mgetc(void);
-int ynq(void);
-int ynq1(void);
-int ynq2(void);
-int getnumber(int);
-int litroom(int, int);
-int move_slot(int, int, int);
-int stillonblock(void);
-void blankoutspot(int, int);
-void blotspot(int, int);
-void buffercycle(const std::string &);
-int bufferappend(const std::string &);
-void bufferprint(void);
-void checkclear(void);
-void clear_if_necessary(void);
-void clear_screen(void);
-void clearmsg(void);
-void clearmsg1(void);
-void clearmsg3(void);
-void colour_on(void);
-void colour_off(void);
-void commanderror(void);
-void comwinprint(void);
-void dataprint(void);
-void deathprint(void);
-void display_bigwin(void);
-void display_death(const std::string &);
-void display_inventory_slot(int, int);
-void display_option_slot(int);
-void display_options(void);
-void display_pack(void);
-void display_possessions(void);
-void display_quit(void);
-void display_win(void);
-void dobackspace(void);
-void dodrawspot(int, int);
-void draw_explosion(Symbol, int, int);
-void drawmonsters(int);
-void drawomega(void);
-void drawplayer(void);
-void drawscreen(void);
-void drawspot(int, int);
-void drawvision(int, int);
-void endgraf(void);
-void erase_level(void);
-void erase_monster(struct monster *);
-void hide_line(int);
-void initgraf(void);
-void levelrefresh(void);
-void lightspot(int, int);
-void locprint(const std::string &);
-void maddch(char);
-void menuaddch(char);
-void menuclear(void);
-void menulongprint(long);
-void menunumprint(int);
-void menuprint(const std::string &);
-void menuspellprint(int);
-void showmenu(void);
-void mlongprint(long);
-void mnumprint(int);
-void morewait(void);
-void mprint(const std::string &);
-void nprint1(const std::string &);
-void nprint2(const std::string &);
-void nprint3(const std::string &);
-void phaseprint(void);
-void plotchar(Symbol, int, int);
-void plotmon(struct monster *);
-void plotspot(int, int, int);
-void print1(const std::string &);
-void print2(const std::string &);
-void print3(const std::string &);
-void putspot(int, int, Symbol);
-void redraw(void);
-void screencheck(int);
-void setlastxy(int, int);
-void show_screen(void);
-void omshowcursor(int, int);
-void showflags(void);
-void spreadroomdark(int, int, int);
-void spreadroomlight(int, int, int);
-void timeprint(void);
-void title(void);
-void xredraw(void);
+char   lgetc(void);
+char   menugetc(void);
+char   mgetc(void);
+int    ynq(void);
+int    ynq1(void);
+int    ynq2(void);
+int    getnumber(int);
+int    litroom(int, int);
+int    move_slot(int, int, int);
+int    stillonblock(void);
+void   blankoutspot(int, int);
+void   blotspot(int, int);
+void   buffercycle(const std::string &);
+int    bufferappend(const std::string &);
+void   bufferprint(void);
+void   checkclear(void);
+void   clear_if_necessary(void);
+void   clear_screen(void);
+void   clearmsg(void);
+void   clearmsg1(void);
+void   clearmsg3(void);
+void   colour_on(void);
+void   colour_off(void);
+void   commanderror(void);
+void   comwinprint(void);
+void   dataprint(void);
+void   deathprint(void);
+void   display_bigwin(void);
+void   display_death(const std::string &);
+void   display_inventory_slot(int, int);
+void   display_option_slot(int);
+void   display_options(void);
+void   display_pack(void);
+void   display_possessions(void);
+void   display_quit(void);
+void   display_win(void);
+void   dobackspace(void);
+void   dodrawspot(int, int);
+void   draw_explosion(Symbol, int, int);
+void   drawmonsters(int);
+void   drawomega(void);
+void   drawplayer(void);
+void   drawscreen(void);
+void   drawspot(int, int);
+void   drawvision(int, int);
+void   endgraf(void);
+void   erase_level(void);
+void   erase_monster(struct monster *);
+void   hide_line(int);
+void   initgraf(void);
+void   levelrefresh(void);
+void   lightspot(int, int);
+void   locprint(const std::string &);
+void   maddch(char);
+void   menuaddch(char);
+void   menuclear(void);
+void   menulongprint(long);
+void   menunumprint(int);
+void   menuprint(const std::string &);
+void   menuspellprint(int);
+void   showmenu(void);
+void   mlongprint(long);
+void   mnumprint(int);
+void   morewait(void);
+void   mprint(const std::string &);
+void   nprint1(const std::string &);
+void   nprint2(const std::string &);
+void   nprint3(const std::string &);
+void   phaseprint(void);
+void   plotchar(Symbol, int, int);
+void   plotmon(struct monster *);
+void   plotspot(int, int, int);
+void   print1(const std::string &);
+void   print2(const std::string &);
+void   print3(const std::string &);
+void   putspot(int, int, Symbol);
+void   redraw(void);
+void   screencheck(int);
+void   setlastxy(int, int);
+void   show_screen(void);
+void   omshowcursor(int, int);
+void   showflags(void);
+void   spreadroomdark(int, int, int);
+void   spreadroomlight(int, int, int);
+void   timeprint(void);
+void   title(void);
+void   xredraw(void);
 
 /* site1.cpp functions */
 
@@ -954,52 +954,52 @@ void send_to_jail(void);
 /* spell.cpp functions */
 
 const char *spellid(int);
-int getspell(void);
-int spellparse(void);
-void cast_spell(int);
-void initspells(void);
-void s_accuracy(void);
-void s_alert(void);
-void s_apport(void);
-void s_bless(void);
-void s_breathe(void);
-void s_clairvoyance(void);
-void s_cure(void);
-void s_desecrate(void);
-void s_disintegrate(void);
-void s_dispel(void);
-void s_disrupt(void);
-void s_drain(void);
-void s_enchant(void);
-void s_fear(void);
-void s_firebolt(void);
-void s_haste(void);
-void s_heal(void);
-void s_hellfire(void);
-void s_hero(void);
-void s_identify(void);
-void s_invisible(void);
-void s_knowledge(void);
-void s_lball(void);
-void s_levitate(void);
-void s_missile(void);
-void s_mondet(void);
-void s_objdet(void);
-void s_polymorph(void);
-void s_regenerate(void);
-void s_restore(void);
-void s_return(void);
-void s_ritual(void);
-void s_sanctify(void);
-void s_sanctuary(void);
-void s_shadowform(void);
-void s_sleep(void);
-void s_summon(void);
-void s_teleport(void);
-void s_truesight(void);
-void s_warp(void);
-void s_wish(void);
-void showknownspells(int, int);
+int         getspell(void);
+int         spellparse(void);
+void        cast_spell(int);
+void        initspells(void);
+void        s_accuracy(void);
+void        s_alert(void);
+void        s_apport(void);
+void        s_bless(void);
+void        s_breathe(void);
+void        s_clairvoyance(void);
+void        s_cure(void);
+void        s_desecrate(void);
+void        s_disintegrate(void);
+void        s_dispel(void);
+void        s_disrupt(void);
+void        s_drain(void);
+void        s_enchant(void);
+void        s_fear(void);
+void        s_firebolt(void);
+void        s_haste(void);
+void        s_heal(void);
+void        s_hellfire(void);
+void        s_hero(void);
+void        s_identify(void);
+void        s_invisible(void);
+void        s_knowledge(void);
+void        s_lball(void);
+void        s_levitate(void);
+void        s_missile(void);
+void        s_mondet(void);
+void        s_objdet(void);
+void        s_polymorph(void);
+void        s_regenerate(void);
+void        s_restore(void);
+void        s_return(void);
+void        s_ritual(void);
+void        s_sanctify(void);
+void        s_sanctuary(void);
+void        s_shadowform(void);
+void        s_sleep(void);
+void        s_summon(void);
+void        s_teleport(void);
+void        s_truesight(void);
+void        s_warp(void);
+void        s_wish(void);
+void        showknownspells(int, int);
 
 /* time.cpp functions */
 
@@ -1024,45 +1024,45 @@ void l_trap_teleport(void);
 
 /* util.cpp functions */
 
-long calc_points(void);
+long        calc_points(void);
 const char *getarticle(const std::string &);
 const char *month(void);
 const char *ordinal(int);
 const char *salloc(char *);
-char inversedir(int);
-void init_perms(void);
-int confirmation(void);
-char cryptkey(const std::string &);
-int day(void);
-int distance(int, int, int, int);
-bool hitp(int, int);
-int hour(void);
-int inbounds(int, int);
-int los_p(int, int, int, int);
-int m_unblocked(struct monster *, int, int);
-int nighttime(void);
-int offscreen(int);
-int ok_to_free(plv);
-void free_level(plv);
-void free_mons_and_objs(pml);
-void free_objlist(pol);
-void *checkmalloc(unsigned int);
-int random_range(int);
-int screenmod(int);
-int showhour(void);
-int showminute(void);
-int strmem(char, const std::string &);
-int strprefix(const std::string &, const std::string &);
-int unblocked(int, int);
-int view_los_p(int, int, int, int);
-int view_unblocked(int, int);
-void calc_weight(void);
-void change_to_game_perms(void);
-void change_to_user_perms(void);
-void do_los(Symbol, int *, int *, int, int);
-void do_object_los(int, int *, int *, int, int);
-void findspace(int *, int *, int);
-void initdirs(void);
+char        inversedir(int);
+void        init_perms(void);
+int         confirmation(void);
+char        cryptkey(const std::string &);
+int         day(void);
+int         distance(int, int, int, int);
+bool        hitp(int, int);
+int         hour(void);
+int         inbounds(int, int);
+int         los_p(int, int, int, int);
+int         m_unblocked(struct monster *, int, int);
+int         nighttime(void);
+int         offscreen(int);
+int         ok_to_free(plv);
+void        free_level(plv);
+void        free_mons_and_objs(pml);
+void        free_objlist(pol);
+void       *checkmalloc(unsigned int);
+int         random_range(int);
+int         screenmod(int);
+int         showhour(void);
+int         showminute(void);
+int         strmem(char, const std::string &);
+int         strprefix(const std::string &, const std::string &);
+int         unblocked(int, int);
+int         view_los_p(int, int, int, int);
+int         view_unblocked(int, int);
+void        calc_weight(void);
+void        change_to_game_perms(void);
+void        change_to_user_perms(void);
+void        do_los(Symbol, int *, int *, int, int);
+void        do_object_los(int, int *, int *, int, int);
+void        findspace(int *, int *, int);
+void        initdirs(void);
 
 /* village.cpp functions */
 
