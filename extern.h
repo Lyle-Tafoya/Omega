@@ -1,6 +1,9 @@
 /* omega copyright (c) 1987,1988,1989 by Laurence Raphael Brothers */
 /* extern.h -- function declarations */
 
+#ifndef OMEGA_EXTERN_H_
+#define OMEGA_EXTERN_H_
+
 #include "defs.h"
 
 #include <string>
@@ -1074,3 +1077,5 @@ void make_horse(int, int);
 void make_merchant(int, int);
 void make_sheep(int, int);
 void special_village_site(int, int, int);
+
+#endif

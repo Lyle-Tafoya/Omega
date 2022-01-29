@@ -23,8 +23,8 @@ OBJ = omega.o abyss.o aux1.o aux2.o aux3.o char.o city.o\
       clrgen.o command1.o command2.o command3.o\
       country.o effect1.o effect2.o effect3.o\
       etc.o env.o file.o gen1.o gen2.o guild1.o guild2.o house.o\
-      init.o inv.o item.o itemf1.o itemf2.o itemf3.o lev.o\
-      mmelee.o mmove.o mon.o move.o movef.o mspec.o\
+      iinit.o inv.o item.o itemf1.o itemf2.o itemf3.o lev.o\
+      minit.o mmelee.o mmove.o mon.o move.o movef.o mspec.o\
       mstrike.o mtalk.o priest.o\
       save.o scr.o site1.o site2.o\
       spell.o time.o trap.o util.o village.o
@@ -53,9 +53,9 @@ clean:
 	rm -f $(OBJ) genclr genclr.o
 	rm -i omega
 
-$(OBJ): clrgen.h defs.h extern.h glob.h iinit.h minit.h
+$(OBJ): clrgen.h defs.h extern.h glob.h
 
-clrgen.h clrgen.cpp: genclr.cpp minit.h defs.h
+clrgen.h clrgen.cpp: genclr.cpp minit.cpp defs.h
 	$(MAKE) genclr
 	$(CPP) -DOMEGA_CLRGEN *.{cpp,h} | ./genclr clrgen.cpp clrgen.h
 

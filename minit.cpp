@@ -2,6 +2,8 @@
 /* minit.h */
 /* This file defines and initializes the Monsters Array */
 
+#include "defs.h"
+
 // clang-format off
 
 struct monster Monsters[NUMMONSTERS] =

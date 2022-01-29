@@ -3,7 +3,6 @@
 /* This file defines and initializes the Objects Array */
 
 #include "defs.h"
-#include "extern.h"
 
 // clang-format off
 

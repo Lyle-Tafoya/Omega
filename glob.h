@@ -5,6 +5,9 @@
 /* it includes the other header files, so every program module
 (except o.c) can just include this file. */
 
+#ifndef OMEGA_GLOB_H_
+#define OMEGA_GLOB_H_
+
 /* glob.h */
 
 #include "defs.h"
@@ -242,3 +245,5 @@ extern int deepest[E_MAX + 1];
 extern int level_seed[E_MAX + 1];
 
 extern bool received_directions;
+
+#endif
