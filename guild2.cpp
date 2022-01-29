@@ -246,6 +246,7 @@ void l_thieves_guild() {
                     free((char *)Player.pack[i]);
                     Player.pack[i] = NULL;
                   }
+                  calc_melee();
                   dataprint();
                 } else if (c == 'q')
                   break;
