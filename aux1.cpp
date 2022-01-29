@@ -152,30 +152,37 @@ int player_on_sanctuary() {
 /* x y is the proposed place to move to */
 int p_moveable(int x, int y) {
   setgamestatus(SKIP_MONSTERS, GameStatus);
-  if (!inbounds(x, y))
+  if(!inbounds(x, y)) {
     return false;
-  else if (Player.status[SHADOWFORM]) {
+  }
+  else if(Player.status[SHADOWFORM]) {
     switch (Level->site[x][y].p_locf) {
-    case L_CHAOS:
-    case L_ABYSS:
-    case L_VOID:
-      return confirmation();
-    default:
-      resetgamestatus(SKIP_MONSTERS, GameStatus);
-      return true;
+      case L_CHAOS:
+      case L_ABYSS:
+      case L_VOID:
+        return confirmation();
+      default:
+        resetgamestatus(SKIP_MONSTERS, GameStatus);
+        return true;
     }
-  } else if (loc_statusp(x, y, SECRET, *Level)) {
-    if (!gamestatusp(FAST_MOVE, GameStatus))
+  }
+  else if(loc_statusp(x, y, SECRET, *Level)) {
+    if(!gamestatusp(FAST_MOVE, GameStatus)) {
       print3("Ouch!");
+    }
     return false;
-  } else if (Level->site[x][y].creature != NULL) {
-    if (!gamestatusp(FAST_MOVE, GameStatus)) {
+  }
+  else if(Level->site[x][y].creature != NULL) {
+    if(!gamestatusp(FAST_MOVE, GameStatus)) {
       fight_monster(Level->site[x][y].creature);
       resetgamestatus(SKIP_MONSTERS, GameStatus);
       return false;
-    } else
+    }
+    else {
       return false;
-  } else if ((Level->site[x][y].locchar == WALL) ||
+    }
+  }
+  else if((Level->site[x][y].locchar == WALL) ||
              (Level->site[x][y].locchar == STATUE) ||
              (Level->site[x][y].locchar == PORTCULLIS) ||
              (Level->site[x][y].locchar == CLOSED_DOOR) ||
@@ -190,11 +197,14 @@ int p_moveable(int x, int y) {
                (Level->site[x][y].locchar == LIFT) ||
                (Level->site[x][y].locchar == TRAP) ||
                Level->site[x][y].locchar == RUBBLE))) {
-    if (!gamestatusp(FAST_MOVE, GameStatus))
+    if(!gamestatusp(FAST_MOVE, GameStatus)) {
       print3("Ouch!");
+    }
     return false;
-  } else if (optionp(CONFIRM, Player)) {
-    if ((Level->site[x][y].locchar == HEDGE) ||
+  }
+  else if(optionp(CONFIRM, Player) &&
+      !(Player.status[LEVITATING] && Level->site[x][y].p_locf > LEVITATION_AVOIDANCE)) {
+    if((Level->site[x][y].locchar == HEDGE) ||
         (Level->site[x][y].locchar == LAVA) ||
         (Level->site[x][y].locchar == FIRE) ||
         (Level->site[x][y].locchar == WHIRLWIND) ||
@@ -205,24 +215,30 @@ int p_moveable(int x, int y) {
         (Level->site[x][y].locchar == LIFT) ||
         (Level->site[x][y].locchar == TRAP)) {
       /* horses WILL go into water... */
-      if (gamestatusp(MOUNTED, GameStatus)) {
-        if (Level->site[x][y].locchar != WATER ||
-            Level->site[x][y].p_locf != L_WATER) {
+      if(gamestatusp(MOUNTED, GameStatus)) {
+        if(Level->site[x][y].locchar != WATER || Level->site[x][y].p_locf != L_WATER) {
           print1("You can't convince your steed to continue.");
           setgamestatus(SKIP_MONSTERS, GameStatus);
           return false;
-        } else
+        }
+        else {
           return true;
-      } else if (confirmation())
+        }
+      }
+      else if(confirmation()) {
         resetgamestatus(SKIP_MONSTERS, GameStatus);
-      else
+      }
+      else {
         setgamestatus(SKIP_MONSTERS, GameStatus);
+      }
       return (!gamestatusp(SKIP_MONSTERS, GameStatus));
-    } else {
+    }
+    else {
       resetgamestatus(SKIP_MONSTERS, GameStatus);
       return true;
     }
-  } else {
+  }
+  else {
     resetgamestatus(SKIP_MONSTERS, GameStatus);
     return true;
   }
