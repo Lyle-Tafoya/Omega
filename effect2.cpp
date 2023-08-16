@@ -2,8 +2,13 @@
 /* effect2.c */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
+
+extern interactive_menu *menu;
 
 void knowledge(int blessing)
 {
@@ -14,438 +19,417 @@ void knowledge(int blessing)
   else
   {
     mprint("You feel knowledgeable!");
-    menuclear();
-    menuprint("Current Point Total: ");
-    menulongprint(calc_points());
-    menuprint("\nAlignment:");
+    std::vector<std::string> lines;
+    lines.emplace_back("Current Point Total: " + std::to_string(calc_points()));
     if(Player.alignment == 0)
     {
-      menuprint("Neutral, embodying the Cosmic Balance");
+      lines.emplace_back("Alignment: Neutral, embodying the Cosmic Balance");
     }
     else if(abs(Player.alignment) < 10)
     {
-      menuprint("Neutral, tending toward ");
+      lines.emplace_back("Alignment: Neutral, tending toward ");
     }
     else if(abs(Player.alignment) < 50)
     {
-      menuprint("Neutral-");
+      lines.emplace_back("Alignment: Neutral-");
     }
     else if(abs(Player.alignment) < 100)
     {
-      ;
+      lines.emplace_back("Alignment: ");
     }
     else if(abs(Player.alignment) < 200)
     {
-      menuprint("Servant of ");
+      lines.emplace_back("Alignment: Servant of ");
     }
     else if(abs(Player.alignment) < 400)
     {
-      menuprint("Master of ");
+      lines.emplace_back("Alignment: Master of ");
     }
     else if(abs(Player.alignment) < 800)
     {
-      menuprint("The Essence of ");
+      lines.emplace_back("Alignment: The Essence of ");
     }
     else
     {
-      menuprint("The Ultimate Avatar of ");
+      lines.emplace_back("Alignment: The Ultimate Avatar of ");
     }
     if(Player.alignment < 0)
     {
-      menuprint("Chaos\n");
+      lines[lines.size()-1] += "Chaos";
     }
     else if(Player.alignment > 0)
     {
-      menuprint("Law\n");
+      lines[lines.size()-1] += "Law";
     }
-    showmenu();
-    morewait();
-    menuclear();
-    menuprint("Current stati:\n");
+    lines.emplace_back("");
+    lines.emplace_back("Current stati:");
     if(Player.status[BLINDED])
     {
-      menuprint("Blinded\n");
+      lines.emplace_back("  Blinded");
     }
     if(Player.status[SLOWED])
     {
-      menuprint("Slowed\n");
+      lines.emplace_back("  Slowed");
     }
     if(Player.status[HASTED])
     {
-      menuprint("Hasted\n");
+      lines.emplace_back("  Hasted");
     }
     if(Player.status[DISPLACED])
     {
-      menuprint("Displaced\n");
+      lines.emplace_back("  Displaced");
     }
     if(Player.status[SLEPT])
     {
-      menuprint("Slept\n");
+      lines.emplace_back("  Slept");
     }
     if(Player.status[DISEASED])
     {
-      menuprint("Diseased\n");
+      lines.emplace_back("  Diseased");
     }
     if(Player.status[POISONED])
     {
-      menuprint("Poisoned\n");
+      lines.emplace_back("  Poisoned");
     }
     if(Player.status[BREATHING])
     {
-      menuprint("Breathing\n");
+      lines.emplace_back("  Breathing");
     }
     if(Player.status[INVISIBLE])
     {
-      menuprint("Invisible\n");
+      lines.emplace_back("  Invisible");
     }
     if(Player.status[REGENERATING])
     {
-      menuprint("Regenerating\n");
+      lines.emplace_back("  Regenerating");
     }
     if(Player.status[VULNERABLE])
     {
-      menuprint("Vulnerable\n");
+      lines.emplace_back("  Vulnerable");
     }
     if(Player.status[BERSERK])
     {
-      menuprint("Berserk\n");
+      lines.emplace_back("  Berserk");
     }
     if(Player.status[IMMOBILE])
     {
-      menuprint("Immobile\n");
+      lines.emplace_back("  Immobile");
     }
     if(Player.status[ALERT])
     {
-      menuprint("Alert\n");
+      lines.emplace_back("  Alert");
     }
     if(Player.status[AFRAID])
     {
-      menuprint("Afraid\n");
+      lines.emplace_back("  Afraid");
     }
     if(Player.status[ACCURATE])
     {
-      menuprint("Accurate\n");
+      lines.emplace_back("  Accurate");
     }
     if(Player.status[HERO])
     {
-      menuprint("Heroic\n");
+      lines.emplace_back("  Heroic");
     }
     if(Player.status[LEVITATING])
     {
-      menuprint("Levitating\n");
+      lines.emplace_back("  Levitating");
     }
     if(Player.status[TRUESIGHT])
-    { /* FIXED! 12/30/98 DG */
-      menuprint("Sharp\n");
+    {
+      lines.emplace_back("  Sharp");
     }
     if(Player.status[SHADOWFORM])
     {
-      menuprint("Shadowy\n");
+      lines.emplace_back("  Shadowy");
     }
     if(Player.status[ILLUMINATION])
     {
-      menuprint("Glowing\n");
+      lines.emplace_back("  Glowing");
     }
     if(Player.status[DEFLECTION])
     {
-      menuprint("Buffered\n");
+      lines.emplace_back("  Buffered");
     }
     if(Player.status[RETURNING])
     {
-      menuprint("Returning\n");
+      lines.emplace_back("  Returning");
     }
-    showmenu();
-    morewait();
-    menuclear();
-    menuprint("Immunities:\n");
+    lines.emplace_back("");
+    lines.emplace_back("Immunities:");
     if(p_immune(NORMAL_DAMAGE))
     {
-      menuprint("Normal Damage\n");
+      lines.emplace_back("  Normal Damage");
     }
     if(p_immune(FLAME))
     {
-      menuprint("Flame\n");
+      lines.emplace_back("  Flame");
     }
     if(p_immune(ELECTRICITY))
     {
-      menuprint("Electricity\n");
+      lines.emplace_back("  Electricity");
     }
     if(p_immune(COLD))
     {
-      menuprint("Cold\n");
+      lines.emplace_back("  Cold");
     }
     if(p_immune(POISON))
     {
-      menuprint("Poison\n");
+      lines.emplace_back("  Poison");
     }
     if(p_immune(ACID))
     {
-      menuprint("Acid\n");
+      lines.emplace_back("  Acid");
     }
     if(p_immune(FEAR))
     {
-      menuprint("Fear\n");
+      lines.emplace_back("  Fear");
     }
     if(p_immune(SLEEP))
     {
-      menuprint("Sleep\n");
+      lines.emplace_back("  Sleep");
     }
     if(p_immune(NEGENERGY))
     {
-      menuprint("Negative Energies\n");
+      lines.emplace_back("  Negative Energies");
     }
     if(p_immune(THEFT))
     {
-      menuprint("Theft\n");
+      lines.emplace_back("  Theft");
     }
     if(p_immune(GAZE))
     {
-      menuprint("Gaze\n");
+      lines.emplace_back("  Gaze");
     }
     if(p_immune(INFECTION))
     {
-      menuprint("Infection\n");
+      lines.emplace_back("  Infection");
     }
-    showmenu();
-    morewait();
-    menuclear();
-    menuprint("Ranks:\n");
+    lines.emplace_back("");
+    lines.emplace_back("Ranks:");
     switch(Player.rank[LEGION])
     {
       case COMMANDANT:
-        menuprint("Commandant of the Legion");
+        lines.emplace_back("  Commandant of the Legion");
         break;
       case COLONEL:
-        menuprint("Colonel of the Legion");
+        lines.emplace_back("  Colonel of the Legion");
         break;
       case FORCE_LEADER:
-        menuprint("Force Leader of the Legion");
+        lines.emplace_back("  Force Leader of the Legion");
         break;
       case CENTURION:
-        menuprint("Centurion of the Legion");
+        lines.emplace_back("  Centurion of the Legion");
         break;
       case LEGIONAIRE:
-        menuprint("Legionaire");
+        lines.emplace_back("  Legionaire");
         break;
     }
     if(Player.rank[LEGION] > 0)
     {
-      menuprint(" (");
-      menunumprint(Player.guildxp[LEGION]);
-      menuprint(" XP).\n");
+      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[LEGION]) + " XP)";
     }
     switch(Player.rank[ARENA])
     {
       case -1:
-        menuprint("Ex-gladiator\n");
+        lines.emplace_back("  Ex-gladiator");
         break;
       case CHAMPION:
-        menuprint("Gladiator Champion");
+        lines.emplace_back("  Gladiator Champion");
         break;
       case GLADIATOR:
-        menuprint("Gladiator of the Arena");
+        lines.emplace_back("  Gladiator of the Arena");
         break;
       case RETIARIUS:
-        menuprint("Retiarius of the Arena");
+        lines.emplace_back("  Retiarius of the Arena");
         break;
       case BESTIARIUS:
-        menuprint("Bestiarius of the Arena");
+        lines.emplace_back("  Bestiarius of the Arena");
         break;
       case TRAINEE:
-        menuprint("Gladiator Trainee of the Arena");
+        lines.emplace_back("  Gladiator Trainee of the Arena");
         break;
     }
     if(Player.rank[ARENA] > 0)
     {
-      menuprint(" (Opponent ");
-      menunumprint(Arena_Opponent);
-      menuprint(")\n");
+      lines[lines.size()-1] += " (Opponent " + std::to_string(Arena_Opponent) + ")";
     }
     switch(Player.rank[COLLEGE])
     {
       case ARCHMAGE:
-        menuprint("Archmage of the Collegium Magii");
+        lines.emplace_back("  Archmage of the Collegium Magii");
         break;
       case MAGE:
-        menuprint("Collegium Magii: Mage");
+        lines.emplace_back("  Collegium Magii: Mage");
         break;
       case PRECEPTOR:
-        menuprint("Collegium Magii: Preceptor");
+        lines.emplace_back("  Collegium Magii: Preceptor");
         break;
       case STUDENT:
-        menuprint("Collegium Magii: Student");
+        lines.emplace_back("  Collegium Magii: Student");
         break;
       case NOVICE:
-        menuprint("Collegium Magii: Novice");
+        lines.emplace_back("  Collegium Magii: Novice");
         break;
     }
     if(Player.rank[COLLEGE] > 0)
     {
-      menuprint(" (");
-      menunumprint(Player.guildxp[COLLEGE]);
-      menuprint(" XP).\n");
+      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[COLLEGE]) + " XP)";
     }
     switch(Player.rank[NOBILITY])
     {
       case DUKE:
-        menuprint("Duke of Rampart");
+        lines.emplace_back("  Duke of Rampart");
         break;
       case LORD:
-        menuprint("Peer of the Realm");
+        lines.emplace_back("  Peer of the Realm");
         break;
       case KNIGHT:
-        menuprint("Order of the Knights of Rampart");
+        lines.emplace_back("  Order of the Knights of Rampart");
         break;
       case ESQUIRE:
-        menuprint("Squire of Rampart");
+        lines.emplace_back("  Squire of Rampart");
         break;
       case COMMONER:
-        menuprint("Commoner");
+        lines.emplace_back("  Commoner");
         break;
       default:
-        menuprint("Lowly Commoner\n");
+        lines.emplace_back("  Lowly Commoner");
         break;
     }
     if(Player.rank[NOBILITY] > 1)
     {
-      menuprint(" (");
-      menunumprint(Player.rank[NOBILITY] - 1);
-      menuprint(ordinal(Player.rank[NOBILITY] - 1));
-      menuprint(" Quest Completed)\n");
+      lines[lines.size()-1] += " (" + std::to_string(Player.rank[NOBILITY] - 1) +
+        ordinal(Player.rank[NOBILITY] - 1) + " Quest Completed)";
     }
     else if(Player.rank[NOBILITY] == 1)
     {
-      menuprint(" (1st Quest Undertaken)\n");
+      lines[lines.size()-1] += " (1st Quest Undertaken)";
     }
     switch(Player.rank[CIRCLE])
     {
       case -1:
-        menuprint("Former member of the Circle.\n");
+        lines.emplace_back("  Former member of the Circle.");
         break;
       case PRIME:
-        menuprint("Prime Sorceror of the Inner Circle");
+        lines.emplace_back("  Prime Sorceror of the Inner Circle");
         break;
       case HIGHSORCEROR:
-        menuprint("High Sorceror of the Inner Circle");
+        lines.emplace_back("  High Sorceror of the Inner Circle");
         break;
       case SORCEROR:
-        menuprint("Member of the Circle of Sorcerors");
+        lines.emplace_back("  Member of the Circle of Sorcerors");
         break;
       case ENCHANTER:
-        menuprint("Member of the Circle of Enchanters");
+        lines.emplace_back("  Member of the Circle of Enchanters");
         break;
       case INITIATE:
-        menuprint("Member of the Circle of Initiates");
+        lines.emplace_back("  Member of the Circle of Initiates");
         break;
     }
     if(Player.rank[CIRCLE] > 0)
     {
-      menuprint(" (");
-      menunumprint(Player.guildxp[CIRCLE]);
-      menuprint(" XP).\n");
+      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[CIRCLE]) + " XP)";
     }
     switch(Player.rank[ORDER])
     {
       case -1:
-        menuprint("Washout from the Order of Paladins\n");
+        lines.emplace_back("  Washout from the Order of Paladins");
         break;
       case JUSTICIAR:
-        menuprint("Justiciar of the Order of Paladins");
+        lines.emplace_back("  Justiciar of the Order of Paladins");
         break;
       case PALADIN:
-        menuprint("Paladin of the Order");
+        lines.emplace_back("  Paladin of the Order");
         break;
       case CHEVALIER:
-        menuprint("Chevalier of the Order");
+        lines.emplace_back("  Chevalier of the Order");
         break;
       case GUARDIAN:
-        menuprint("Guardian of the Order");
+        lines.emplace_back("  Guardian of the Order");
         break;
       case GALLANT:
-        menuprint("Gallant of the Order");
+        lines.emplace_back("  Gallant of the Order");
         break;
     }
     if(Player.rank[ORDER] > 0)
     {
-      menuprint(" (");
-      menunumprint(Player.guildxp[ORDER]);
-      menuprint(" XP).\n");
+      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[ORDER]) + " XP)";
     }
     switch(Player.rank[THIEVES])
     {
       case SHADOWLORD:
-        menuprint("Guild of Thieves: Shadowlord");
+        lines.emplace_back("  Guild of Thieves: Shadowlord");
         break;
       case TMASTER:
-        menuprint("Guild of Thieves: Master Thief");
+        lines.emplace_back("  Guild of Thieves: Master Thief");
         break;
       case THIEF:
-        menuprint("Guild of Thieves: Thief");
+        lines.emplace_back("  Guild of Thieves: Thief");
         break;
       case ATHIEF:
-        menuprint("Guild of Thieves: Apprentice Thief");
+        lines.emplace_back("  Guild of Thieves: Apprentice Thief");
         break;
       case TMEMBER:
-        menuprint("Guild of Thieves: Candidate Member");
+        lines.emplace_back("  Guild of Thieves: Candidate Member");
         break;
     }
     if(Player.rank[THIEVES] > 0)
     {
-      menuprint(" (");
-      menunumprint(Player.guildxp[THIEVES]);
-      menuprint(" XP).\n");
+      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[THIEVES]) + " XP)";
     }
     switch(Player.rank[PRIESTHOOD])
     {
       case LAY:
-        menuprint("A lay devotee of ");
+        lines.emplace_back("  A lay devotee of ");
         break;
       case ACOLYTE:
-        menuprint("An Acolyte of ");
+        lines.emplace_back("  An Acolyte of ");
         break;
       case PRIEST:
-        menuprint("A Priest of ");
+        lines.emplace_back("  A Priest of ");
         break;
       case SPRIEST:
-        menuprint("A Senior Priest of ");
+        lines.emplace_back("  A Senior Priest of ");
         break;
       case HIGHPRIEST:
-        menuprint("The High Priest of ");
+        lines.emplace_back("  The High Priest of ");
         break;
     }
     switch(Player.patron)
     {
       case ODIN:
-        menuprint("Odin");
+        lines[lines.size()-1] += "Odin";
         break;
       case SET:
-        menuprint("Set");
+        lines[lines.size()-1] += "Set";
         break;
       case ATHENA:
-        menuprint("Athena");
+        lines[lines.size()-1] += "Athena";
         break;
       case HECATE:
-        menuprint("Hecate");
+        lines[lines.size()-1] += "Hecate";
         break;
       case DRUID:
-        menuprint("Druidism");
+        lines[lines.size()-1] += "Druidism";
         break;
       case DESTINY:
-        menuprint("the Lords of Destiny");
+        lines[lines.size()-1] += "the Lords of Destiny";
         break;
     }
     if(Player.rank[PRIESTHOOD] > 0)
     {
-      menuprint(" (");
-      menunumprint(Player.guildxp[PRIESTHOOD]);
-      menuprint(" XP).\n");
+      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[PRIESTHOOD]) + " XP)";
     }
     if(Player.rank[ADEPT] > 0)
     {
-      menuprint("**************\n*Omegan Adept*\n**************\n");
+      lines.emplace_back("");
+      lines.emplace_back("**************");
+      lines.emplace_back("*Omegan Adept*");
+      lines.emplace_back("**************");
     }
-    showmenu();
-    morewait();
+    menu->load(lines);
+    menu->get_player_input();
     xredraw();
   }
 }

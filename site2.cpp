@@ -3,8 +3,15 @@
 /* 2nd half of site functions and aux functions to them */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
+
+extern void append_message(const std::string &message, bool force_break = false);
+extern void queue_message(const std::string &message);
+extern interactive_menu *menu;
 
 void l_condo()
 {
@@ -60,16 +67,19 @@ void l_condo()
   }
   else
   {
+    std::vector<std::string> lines =
+    {
+      {"Home Sweet Home"},
+      {"a: Leave items in your safe."},
+      {"b: Retrieve items."},
+      {"c: Take a week off to rest."},
+      {"d: Retire permanently."},
+      {"ESCAPE: Leave this place."}
+    };
+    menu->load(lines);
+    menu->print();
     while(!done)
     {
-      menuclear();
-      menuprint("Home Sweet Home\n");
-      menuprint("a: Leave items in your safe.\n");
-      menuprint("b: Retrieve items.\n");
-      menuprint("c: Take a week off to rest.\n");
-      menuprint("d: Retire permanently.\n");
-      menuprint("ESCAPE: Leave this place.\n");
-      showmenu();
       response = (char)mcigetc();
       if(response == 'a')
       {
@@ -124,11 +134,9 @@ void l_condo()
       {
         weeksleep = true;
         print1("You take a week off to rest...");
-        morewait();
       }
       else if(response == 'd')
       {
-        clearmsg();
         print1("You sure you want to retire, now? [yn] ");
         if(ynq1() == 'y')
         {
@@ -144,9 +152,7 @@ void l_condo()
   }
   if(weeksleep)
   {
-    clearmsg();
     print1("Taking a week off to rest...");
-    morewait();
     toggle_item_use(true);
     Player.hp  = Player.maxhp;
     Player.str = Player.maxstr;
@@ -176,7 +182,7 @@ void gymtrain(int *maxstat, int *stat)
 {
   if(Gymcredit + Player.cash < 2000)
   {
-    print2("You can't afford our training!");
+    append_message("You can't afford our training!", true);
   }
   else
   {
@@ -189,20 +195,20 @@ void gymtrain(int *maxstat, int *stat)
       Player.cash -= (2000 - Gymcredit);
       Gymcredit = 0;
     }
-    print2("Sweat. Sweat. ");
+    append_message("Sweat. Sweat. ", true);
     if((*maxstat < 30) && ((*maxstat < random_range(30)) || (random_range(3) == 1)))
     {
-      nprint2("The training pays off!");
+      append_message("The training pays off!");
       (*maxstat)++;
       (*stat)++;
     }
     else
     {
-      nprint2("You feel the healthy glow of a good workout.");
+      append_message("You feel the healthy glow of a good workout.");
       if(*stat < *maxstat)
       {
         (*stat)++;
-        print3("A feeling of rehabilitation washes through you.");
+        append_message("A feeling of rehabilitation washes through you.", true);
       }
     }
   }
@@ -288,7 +294,6 @@ void send_to_jail()
   {
     print1("A member of the Order of Paladins sent to jail!");
     print2("It cannot be!");
-    morewait();
     print1("You are immediately expelled permanently from the Order!");
     print2("Your name is expunged from the records....");
     Player.rank[ORDER] = -1;
@@ -318,19 +323,12 @@ void send_to_jail()
       {
         print1("You are taken to a weirdly deserted chamber where an undead");
         print2("Magistrate presides over a court of ghosts and haunts.");
-        morewait();
         print1("'Mr. Foreman, what is the verdict?'");
         print2("'Guilty as charged, your lordship.'");
-        morewait();
-        clearmsg();
         print1("'Guilty...");
-        morewait();
         nprint1("Guilty...");
-        morewait();
         nprint1("Guilty...");
-        morewait();
         nprint1("Guilty...'");
-        clearmsg();
         print1("The members of the court close in around, fingers pointing.");
         print2("You feel insubstantial hands closing around your throat....");
         print3("You feel your life draining away!");
@@ -342,11 +340,10 @@ void send_to_jail()
           dataprint();
         }
         Player.maxhp = Player.maxcon;
-        morewait();
         print1("You are finally released, a husk of your former self....");
         Player.x = 58;
         Player.y = 40;
-        screencheck(58);
+        screencheck(Player.x, Player.y);
       }
       else if(Player.alignment + random_range(200) < 0)
       {
@@ -354,7 +351,7 @@ void send_to_jail()
         print2("Rampart Chaotic Liberties Union gets you off!");
         Player.x = 58;
         Player.y = 40;
-        screencheck(58);
+        screencheck(Player.x, Player.y);
       }
       else
       {
@@ -365,30 +362,27 @@ void send_to_jail()
             print2("As a first-time offender, you are given probation.");
             Player.y = 58;
             Player.x = 40;
-            screencheck(58);
+            screencheck(Player.x, Player.y);
             break;
           case 1:
             print1("The Magistrate expresses shame for your conduct.");
             print2("You are thrown in jail!");
-            morewait();
             repair_jail();
             Player.y = 54;
             Player.x = 37 + (2 * random_range(4));
-            screencheck(54);
+            screencheck(Player.x, Player.y);
             l_portcullis_trap();
             break;
           default:
             print1("The Magistrate renders summary judgement.");
             print2("You are sentenced to prison!");
-            morewait();
             print1("The guards recognize you as a 'three-time-loser'");
             print2("...and beat you up a little to teach you a lesson.");
             p_damage(random_range(Imprisonment * 10), UNSTOPPABLE, "police brutality");
-            morewait();
             repair_jail();
             Player.y = 54;
             Player.x = 37 + (2 * random_range(4));
-            screencheck(54);
+            screencheck(Player.x, Player.y);
             l_portcullis_trap();
         }
       }
@@ -409,8 +403,6 @@ void l_adept()
     {
       print2("A familiar female voice says: Go for it!");
     }
-    morewait();
-    clearmsg();
   }
   print2("Enter the mystic portal? [yn] ");
   if(ynq2() != 'y')
@@ -428,9 +420,7 @@ void l_adept()
   }
   else
   {
-    clearmsg();
     print1("You pass through the portal.");
-    morewait();
     drawomega();
     print1("Like wow man! Colors! ");
     if(Player.patron != DESTINY)
@@ -442,10 +432,8 @@ void l_adept()
     {
       print2("Some strange force shields you from a chaos vortex!");
     }
-    morewait();
     print1("Your head spins for a moment....");
     print2("and clears....");
-    morewait();
     Player.hp   = Player.maxhp;
     Player.mana = calcmana();
     change_environment(E_ABYSS);
@@ -461,7 +449,6 @@ void l_trifid()
     dataprint();
     damage += Level->depth / 2 + 1;
     print2("Razor-edged vines covered in suckers attach themselves to you.");
-    morewait();
     if(find_and_remove_item(THINGID + 6, -1))
     {
       print1("Thinking fast, you toss salt water on the trifid...");
@@ -475,16 +462,18 @@ void l_trifid()
     else
     {
       p_damage(damage, UNSTOPPABLE, "a trifid");
-      morewait();
       print1("You are entangled in tendrils...");
-      menuclear();
-      menuprint("a: Try to break free.\n");
-      menuprint("b: Hang limp and hope the tendrils uncoil.\n");
-      menuprint("c: Pray for assistance.\n");
-      menuprint("d: Attempt to bargain with the hedge.\n");
-      menuprint("e: Click your heels together and wish for escape.\n");
-      menuprint("ANYTHING ELSE: writhe and scream hopelessly.\n");
-      showmenu();
+      std::vector<std::string> lines =
+      {
+        {"a: Try to break free."},
+        {"b: Hang limp and hope the tendrils uncoil."},
+        {"c: Pray for assistance."},
+        {"d: Attempt to bargain with the hedge."},
+        {"e: Click your heels together and wish for escape."},
+        {"ANYTHING ELSE: writhe and scream hopelessly."}
+      };
+      menu->load(lines);
+      menu->print();
       switch(menugetc())
       {
         case 'a':
@@ -541,8 +530,6 @@ void l_vault()
   {
     print2("The door is closed.");
     Level->site[12][56].locchar = WALL;
-    morewait();
-    clearmsg();
     print1("Try to crack it? [yn] ");
     if(ynq1() == 'y')
     {
@@ -555,13 +542,10 @@ void l_vault()
       else
       {
         print2("Uh, oh, set off the alarm.... The castle guard arrives....");
-        morewait();
         if(Player.rank[NOBILITY] == DUKE)
         {
-          clearmsg();
           print1("\"Ah, just testing us, your Grace?  I hope we're up to "
                  "scratch.\"");
-          morewait();
         }
         else
         {
@@ -581,17 +565,18 @@ void l_brothel()
   char response;
   print1("You come to a heavily reinforced inner door.");
   print2("A sign reads `The House of the Eclipse'");
-  morewait();
-  clearmsg();
   print1("Try to enter? [yn] ");
   if(ynq1() == 'y')
   {
-    menuclear();
-    menuprint("a:knock on the door.\n");
-    menuprint("b:try to pick the lock.\n");
-    menuprint("c:bash down the door.\n");
-    menuprint("ESCAPE: Leave this house of ill repute.\n");
-    showmenu();
+    std::vector<std::string> lines =
+    {
+      {"a:knock on the door."},
+      {"b:try to pick the lock."},
+      {"c:bash down the door."},
+      {"ESCAPE: Leave this house of ill repute."}
+    };
+    menu->load(lines);
+    menu->print();
     do
     {
       response = menugetc();
@@ -620,7 +605,6 @@ void l_brothel()
             Player.cash -= 500;
             print1("You are ushered into an opulently appointed hall.");
             print2("After an expensive dinner (takeout from Les Crapuleux)");
-            morewait();
             if(Player.preference == 'n')
             {
               switch(random_range(4))
@@ -679,7 +663,6 @@ void l_brothel()
                 }
               }
             }
-            morewait();
             if(hour() > 12)
             {
               Time += ((24 - hour()) + 8) * 60;
@@ -714,8 +697,6 @@ void l_brothel()
             timeprint();
             dataprint();
             showflags();
-            morewait();
-            clearmsg();
             if(Player.preference == 'n')
             {
               print1("You arise refreshed the next morning...");
@@ -750,7 +731,6 @@ void l_brothel()
       {
         print1("As you charge toward the door it opens....");
         print2("Yaaaaah! Thud!");
-        morewait();
         print1("You run past the startled bouncer into a wall.");
         p_damage(20, UNSTOPPABLE, "a move worthy of Clouseau");
         print2("The bouncer tosses you into the street.");
@@ -759,7 +739,6 @@ void l_brothel()
       {
         print1("Ouch! The door resists your efforts.");
         p_damage(1, UNSTOPPABLE, "a sturdy door");
-        morewait();
         print1("You hear an irritated voice from inside:");
         print2("'Keep it down out there! Some of us are trying to sleep!'");
       }
@@ -783,7 +762,6 @@ void sign_print(int x, int y, int signp)
     case L_MANSION:
       print1("You notice a sign:");
       print2("This edifice protected by DeathWatch Devices, Ltd.");
-      morewait();
       break;
     case L_GRANARY:
       print1("You notice a sign:");
@@ -940,7 +918,6 @@ void sign_print(int x, int y, int signp)
     case L_ORACLE:
       print1("You notice a sign:");
       print2("The Oracle of the Cyan Flames");
-      morewait();
       break;
   }
 }
@@ -949,7 +926,6 @@ void l_countryside()
 {
   if(optionp(CONFIRM, Player))
   {
-    clearmsg();
     print1("Do you really want to return to the countryside? ");
     if(ynq1() != 'y')
     {
@@ -988,7 +964,6 @@ void l_oracle()
     {
       print1("The ringing note seems to last forever.");
       print2("You notice a robed figure in front of you....");
-      morewait();
       print1("The oracle doffs her cowl. Her eyes glitter with blue fire!");
       print2("Attack her? [yn] ");
       if(ynq2() == 'y')
@@ -1019,18 +994,14 @@ void l_oracle()
         }
         else if(!gamestatusp(COMPLETED_ASTRAL, GameStatus))
         {
-          morewait();
           print1("'Journey to the Astral Plane and meet the Gods' servants.'");
           print2("The oracle holds out her hand. Do you take it? [yn] ");
           if(ynq2() == 'y')
           {
             print1("'Beware: Only the Star Gem can escape the Astral Plane.'");
             print2("A magic portal opens behind the oracle. She leads you");
-            morewait();
             print1("through a sequence of special effects that would have");
             print2("IL&M technicians cursing in awe and deposits you in an");
-            morewait();
-            clearmsg();
             print1("odd looking room whose walls seem strangely insubstantial.");
             gain_experience(5000);
             change_environment(E_ASTRAL);
@@ -1050,7 +1021,6 @@ void l_oracle()
         }
         else
         {
-          morewait();
           print1("'My lord: Thou hast surpassed my tutelage forever.");
           print2("Fare thee well.'");
           print3("The oracle replaces her hood and seems to fade away....");
@@ -1130,7 +1100,6 @@ void l_safe()
       {
         newitem = create_object(difficulty());
         print2(itemid(newitem));
-        morewait();
         gain_item(newitem);
       } while(random_range(3) == 1);
     }
@@ -1145,12 +1114,10 @@ void l_safe()
     if(attempt == -1)
     {
       print1("A siren goes off! You see flashing red lights everywhere!");
-      morewait();
       if(Last_Environment == E_CITY)
       {
         print2("The city guard shows up! They collar you in no time flat!");
         change_environment(E_CITY);
-        morewait();
         send_to_jail();
       }
     }
@@ -1263,29 +1230,27 @@ void l_cartographer()
 
 void l_charity()
 {
-  long donation;
-  print2("'Greetings, friend. Do you wish to make a donation?' [yn] ");
+  queue_message("'Greetings, friend. Do you wish to make a donation?' [yn] ");
   if(ynq2() != 'y')
   {
-    print3("'Pinchpurse!'");
+    append_message("'Pinchpurse!'", true);
   }
   else
   {
-    clearmsg();
-    print1("How much can you give? ");
-    donation = parsenum();
+    append_message("How much can you give? ", true);
+    long donation = parsenum();
     if(donation < 1)
     {
-      print2("'Go stick your head in a pig.'");
+      append_message("'Go stick your head in a pig.'", true);
     }
     else if(donation > Player.cash)
     {
-      print2("'I'm afraid you're charity is bigger than your purse!'");
+      append_message("'I'm afraid you're charity is bigger than your purse!'", true);
     }
     else if(donation < std::max(100, Player.level * Player.level * 100))
     {
-      print2("'Oh, can't you do better than that?'");
-      print3("'Well, I guess we'll take it....'");
+      append_message("'Oh, can't you do better than that?'", true);
+      append_message("'Well, I guess we'll take it....'", true);
       if(Player.alignment < 10)
       {
         Player.alignment++;
@@ -1294,7 +1259,7 @@ void l_charity()
     }
     else
     {
-      print2("'Oh thank you kindly, friend, and bless you!'");
+      append_message("'Oh thank you kindly, friend, and bless you!'", true);
       Player.cash -= donation;
       Player.alignment += 5;
     }

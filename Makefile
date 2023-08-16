@@ -2,18 +2,15 @@
 BINDIR = /home/sdossey/omega/
 LIBDIR = /home/sdossey/omega/lib/
 
+# Add -DPLATFORM_WINDOWS when compiling for Windows
+# -DSAVE_LEVELS is broken
 CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -g
-#CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -DSAVE_LEVELS
-#CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -DPLATFORM_WINDOWS
-#CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
 
 CXX = g++
-#CXX = clang++
 
 LDFLAGS = -lstdc++
 CPP = $(CXX) -E
 
-# POSIX systems use ncurses while Windows uses pdcurses
 LIBS = -lncurses
 #LIBS = -lpdcurses
 
@@ -23,10 +20,10 @@ OBJ = omega.o abyss.o aux1.o aux2.o aux3.o char.o city.o\
       clrgen.o command1.o command2.o command3.o\
       country.o effect1.o effect2.o effect3.o\
       etc.o env.o file.o gen1.o gen2.o guild1.o guild2.o house.o\
-      iinit.o inv.o item.o itemf1.o itemf2.o itemf3.o lev.o\
-      minit.o mmelee.o mmove.o mon.o move.o movef.o mspec.o\
+      iinit.o interactive_menu.o inv.o item.o itemf1.o itemf2.o itemf3.o \
+      lev.o minit.o mmelee.o mmove.o mon.o move.o movef.o mspec.o\
       mstrike.o mtalk.o priest.o\
-      save.o scr.o site1.o site2.o\
+      save.o scr.o scrolling_buffer.o site1.o site2.o\
       spell.o time.o trap.o util.o village.o
 
 omega: $(OBJ)
@@ -53,7 +50,7 @@ clean:
 	rm -f $(OBJ) genclr genclr.o
 	rm -i omega
 
-$(OBJ): clrgen.h defs.h extern.h glob.h
+$(OBJ): clrgen.h defs.h extern.h glob.h interactive_menu.hpp scrolling_buffer.hpp
 
 clrgen.h clrgen.cpp: genclr.cpp minit.cpp defs.h
 	$(MAKE) genclr

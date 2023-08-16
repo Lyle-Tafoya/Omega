@@ -43,6 +43,8 @@ extern long GameStatus;
 extern int ScreenLength;
 /* How large is level window */
 
+extern int ScreenWidth;
+
 extern struct terrain Country[MAXWIDTH][MAXLENGTH];
 /* The countryside */
 
@@ -67,6 +69,8 @@ extern int Villagenum;
 extern int ScreenOffset;
 /* Offset of displayed screen to level */
 
+extern int HorizontalOffset;
+
 extern int MaxDungeonLevels;
 /*Deepest level allowed in dungeon */
 
@@ -79,7 +83,7 @@ extern int Last_Environment;
 extern int Dirs[2][9];
 /* 9 xy directions */
 
-extern char Cmd;
+extern int Cmd;
 /* last player command */
 
 extern int Command_Duration;

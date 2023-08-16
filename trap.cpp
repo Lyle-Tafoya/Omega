@@ -15,15 +15,12 @@ void l_trap_siren()
   print1("A klaxon goes off!");
   print2("'Intruder Alert -- Intruder Alert -- Intruder Alert'");
   print3("You have the feeling you have been discovered....");
-  morewait();
-  clearmsg();
   if((Current_Environment == E_HOUSE) || (Current_Environment == E_MANSION))
   {
     if(!gamestatusp(DESTROYED_ORDER, GameStatus))
     {
       print1("The city guard arrives!");
       print2("You are apprehended....");
-      morewait();
       send_to_jail();
     }
     else
@@ -76,7 +73,6 @@ void l_trap_dart()
     if(random_range(3) == 1)
     {
       mprint("It was poisoned!");
-      morewait();
       p_poison(difficulty());
     }
   }
@@ -89,9 +85,7 @@ void l_trap_pit()
   if(gamestatusp(MOUNTED, GameStatus))
   {
     mprint("Your horse stumbles into a pit and breaks a leg!");
-    morewait();
     mprint("You are forced to put it out of its misery.");
-    morewait();
     resetgamestatus(MOUNTED, GameStatus);
     showflags();
   }
@@ -105,7 +99,6 @@ void l_trap_pit()
     if(random_range(3) == 1)
     {
       mprint("And were impaled by spikes!");
-      morewait();
       p_damage(difficulty() * 5, NORMAL_DAMAGE, "a spiked pit");
     }
     else
@@ -129,13 +122,10 @@ void l_trap_door()
     if(gamestatusp(MOUNTED, GameStatus))
     {
       mprint("You and your horse fall through a trap door!");
-      morewait();
       mprint("Your horse breaks its back. Snif.");
-      morewait();
       if(Level->site[Player.x][Player.y].aux != S_DISINTEGRATE)
       {
         mprint("You're hit by a rockslide!");
-        morewait();
         p_damage(Level->depth * difficulty(), UNSTOPPABLE, "a rockslide");
       }
       change_level(Level->depth, Level->depth + 1, false);
@@ -150,12 +140,10 @@ void l_trap_door()
     else
     {
       mprint("You fell through a trap door!");
-      morewait();
       p_damage(difficulty(), NORMAL_DAMAGE, "a trap door");
       if(Level->site[Player.x][Player.y].aux != S_DISINTEGRATE)
       {
         mprint("You're hit by a rockslide!");
-        morewait();
         p_damage(Level->depth * difficulty(), UNSTOPPABLE, "a rockslide");
       }
       change_level(Level->depth, Level->depth + 1, false);
@@ -196,14 +184,12 @@ void l_trap_blade()
     if(gamestatusp(MOUNTED, GameStatus))
     {
       mprint("Your horse is struck by a scything blade and killed instantly.");
-      morewait();
       resetgamestatus(MOUNTED, GameStatus);
       showflags();
     }
     else
     {
       mprint("A heavy blade scythes across the room and hits you!");
-      morewait();
       p_damage(random_range(difficulty() * 3) + difficulty() - Player.absorption, NORMAL_DAMAGE,
                "a blade trap");
     }
@@ -215,7 +201,6 @@ void l_trap_fire()
   if(gamestatusp(MOUNTED, GameStatus))
   {
     mprint("Your horse is struck by a blast of fire and is charbroiled!");
-    morewait();
     resetgamestatus(MOUNTED, GameStatus);
     showflags();
   }
@@ -226,7 +211,6 @@ void l_trap_fire()
   else
   {
     mprint("You were blasted by a fire trap!");
-    morewait();
     p_damage(random_range((difficulty() + 1) * 5), FLAME, "a fire trap");
   }
   Level->site[Player.x][Player.y].locchar = FIRE;
@@ -239,7 +223,6 @@ void l_trap_teleport()
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   mprint("You experience a momentary disorientation....");
-  morewait();
   if(random_range(10000) > difficulty() * difficulty())
   {
     p_teleport(0);
@@ -255,11 +238,9 @@ void l_trap_disintegrate()
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   mprint("Oh, no! A disintegration trap!");
-  morewait();
   if(gamestatusp(MOUNTED, GameStatus))
   {
     mprint("Your horse falls apart into its component atoms...");
-    morewait();
     resetgamestatus(MOUNTED, GameStatus);
     showflags();
   }
@@ -271,9 +252,7 @@ void l_trap_sleepgas()
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   mprint("Hsssssssss....");
-  morewait();
   mprint("You detect a strange odor....");
-  morewait();
   sleep_player((difficulty() / 5) + 1);
 }
 
@@ -285,11 +264,9 @@ void l_trap_acid()
   if(Player.agi + Player.level < random_range(100))
   {
     mprint("You are drenched by a spray of acid!");
-    morewait();
     if(gamestatusp(MOUNTED, GameStatus))
     {
       mprint("Your horse dies unpleasantly.");
-      morewait();
       resetgamestatus(MOUNTED, GameStatus);
       showflags();
     }
@@ -297,7 +274,6 @@ void l_trap_acid()
     if(!p_immune(ACID))
     {
       mprint("The acid seeps over your possessions...");
-      morewait();
       itemdamage = random_range(5);
       for(i = k = 0; ((i < MAXITEMS) && (k < itemdamage)); i++)
       {
@@ -322,13 +298,11 @@ void l_trap_abyss()
   if(gamestatusp(MOUNTED, GameStatus))
   {
     mprint("You and your horse fall into the infinite abyss!");
-    morewait();
     l_abyss();
   }
   if(Player.dex + Player.level < random_range(100))
   {
     mprint("You stumble over a concealed entrance to the abyss!");
-    morewait();
     l_abyss();
   }
   else
@@ -347,7 +321,6 @@ void l_trap_manadrain()
     {
       mprint("The manadrain trap overloads -- positive feedback....");
       mprint("That's strange.... You feel repowered!");
-      morewait();
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
       lset(Player.x, Player.y, CHANGED, *Level);
@@ -362,7 +335,6 @@ void l_trap_manadrain()
   {
     mprint("A weird rainbow light seems to play over you....");
     mprint("You feel drained.");
-    morewait();
     while(Player.mana > 1)
     {
       Player.mana /= 2;

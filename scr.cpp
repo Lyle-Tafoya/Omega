@@ -4,289 +4,452 @@
 /* plus a few file i/o stuff */
 /* also some in file.c */
 
+#include "defs.h"
 #include "glob.h"
+#include "interactive_menu.hpp"
+#include "scrolling_buffer.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <chrono>
 #include <curses.h>
+#include <queue>
 #include <string>
 #include <thread>
+#include <unordered_map>
+#include <vector>
+
+extern bool terminal_size_too_small;
+extern bool IsMenu;
+
+int Lasty, Lastx;
 
 #define CHARATTR(c) ((c) & ~0xff)
 
-#ifdef EXCESSIVE_REDRAW
-#  undef wclear
-#  define wclear werase
-#endif
-
-/* note these variables are not exported to other files */
-
-WINDOW *Levelw, *Dataw, *Flagw, *Timew, *Menuw, *Locw, *Morew, *Phasew;
-WINDOW *Comwin, *Msg1w, *Msg2w, *Msg3w, *Msgw;
 WINDOW *Showline[MAXITEMS];
 
-void phaseprint()
+WINDOW *message_window, *menu_window;
+WINDOW *room_name_window;
+WINDOW *name_window, *location_window, *time_window, *level_window;
+WINDOW *health_label_window, *health_window, *health_meter_window;
+WINDOW *mana_label_window, *mana_window, *mana_meter_window;
+WINDOW *strength_label_window, *strength_window;
+WINDOW *dexterity_label_window, *dexterity_window;
+WINDOW *constitution_label_window, *constitution_window;
+WINDOW *agility_label_window, *agility_window;
+WINDOW *intelligence_label_window, *intelligence_window;
+WINDOW *power_label_window, *power_window;
+WINDOW *hitroll_label_window, *hitroll_window;
+WINDOW *dmgroll_label_window, *dmgroll_window;
+WINDOW *defense_label_window, *defense_window;
+WINDOW *absorption_label_window, *absorption_window;
+WINDOW *speed_label_window, *speed_window;
+WINDOW *experience_label_window, *experience_window;
+WINDOW *carry_label_window, *carry_window;
+WINDOW *gold_label_window, *gold_window;
+WINDOW *hunger_window, *poison_window, *disease_window, *footing_window;
+WINDOW *shown_entities_window;
+
+scrolling_buffer message_buffer;
+interactive_menu *menu;
+
+int message_window_length = 6;
+
+void enable_attr(WINDOW *window, attr_t attrs)
 {
-  wclear(Phasew);
-  wprintw(Phasew, "Moon's Phase:\n");
-  switch(Phase / 2)
+  if(optionp(SHOW_COLOUR, Player))
   {
-    case 0:
-      wprintw(Phasew, "NEW");
-      break;
-    case 1:
-    case 11:
-      wprintw(Phasew, "CRESCENT");
-      break;
-    case 2:
-    case 10:
-      wprintw(Phasew, "1/4");
-      break;
-    case 3:
-    case 9:
-      wprintw(Phasew, "HALF");
-      break;
-    case 4:
-    case 8:
-      wprintw(Phasew, "3/4");
-      break;
-    case 5:
-    case 7:
-      wprintw(Phasew, "GIBBOUS");
-      break;
-    case 6:
-      wprintw(Phasew, "FULL");
-      break;
+    wattrset(window, attrs);
   }
-  wrefresh(Phasew);
+}
+
+void color_waddch(WINDOW *window, const chtype ch)
+{
+  if(optionp(SHOW_COLOUR, Player))
+  {
+    waddch(window, ch);
+  }
+  else
+  {
+    waddch(window, ch & 0xff);
+  }
+}
+
+void color_mvwaddch(WINDOW *window, int y, int x, const chtype ch)
+{
+  if(optionp(SHOW_COLOUR, Player))
+  {
+    mvwaddch(window, y, x, ch);
+  }
+  else
+  {
+    mvwaddch(window, y, x, ch & 0xff);
+  }
+}
+
+struct entity_info
+{
+  std::string name;
+  Symbol      character;
+  int         count;
+  long int    value;
+};
+bool operator<(const entity_info &a, const entity_info &b)
+{
+  return a.value < b.value;
+}
+std::unordered_map<std::string, entity_info>                  shown_mobs;
+std::unordered_map<std::string, entity_info>                  shown_items;
+std::array<std::unordered_map<std::string, entity_info> *, 2> entity_maps{&shown_mobs, &shown_items};
+int                                                           max_shown_entities;
+
+long int perceived_item_value(object &o)
+{
+  if(o.known == 2)
+  {
+    return true_item_value(&o);
+  }
+  else if(o.known == 1 || Objects[o.id].known)
+  {
+    return Objects[o.id].basevalue;
+  }
+  else
+  {
+    // These values are the computed averages for each type as of February 15 2022
+    // TODO calculate these values on startup
+    switch(o.objchar)
+    {
+      case THING:
+        return 332;
+      case FOOD:
+        return 68;
+      case SCROLL:
+        return 742;
+      case POTION:
+        return 147;
+      case WEAPON:
+        return 1131;
+      case MISSILEWEAPON:
+        return 171;
+      case ARMOR:
+        return 1402;
+      case SHIELD:
+        return 438;
+      case CLOAK:
+        return 716;
+      case BOOTS:
+        return 808;
+      case RING:
+        return 241;
+      case STICK:
+        return 518;
+      case ARTIFACT:
+        return 3629;
+      case CASH:
+        return o.basevalue;
+      default:
+        return 0;
+    }
+  }
+}
+
+void print_shown_entities()
+{
+  werase(shown_entities_window);
+  int entity_count = 0;
+  for(auto *entity_map : entity_maps)
+  {
+    std::priority_queue<entity_info> ordered_entities;
+    for(auto &it : *entity_map)
+    {
+      ordered_entities.push(it.second);
+    }
+    for(; !ordered_entities.empty() && entity_count < max_shown_entities; ++entity_count)
+    {
+      wmove(shown_entities_window, entity_count, 0);
+      const entity_info &e = ordered_entities.top();
+      for(int i = 0; i < e.count; ++i)
+      {
+        color_waddch(shown_entities_window, e.character);
+      }
+      wstandend(shown_entities_window);
+      wprintw(shown_entities_window, " %s", e.name.c_str());
+      ordered_entities.pop();
+    }
+    if(entity_count == max_shown_entities)
+    {
+      break;
+    }
+  }
+  wrefresh(shown_entities_window);
+}
+
+void print_messages()
+{
+  werase(message_window);
+  const std::deque<std::string> &message_history = message_buffer.get_message_history();
+  size_t                         size = std::min(message_history.size(), static_cast<size_t>(message_window_length));
+  size_t                         i    = 0;
+  for(auto message = message_history.rbegin(); message != message_history.rend() && i < size;
+      ++message, ++i)
+  {
+    mvwaddstr(message_window, size - 1 - i, 0, message->c_str());
+  }
+  if(size > 0)
+  {
+    wmove(message_window, size - 1, message_history.back().size());
+  }
+  wrefresh(message_window);
+}
+
+void expand_message_window()
+{
+  message_window_length = LINES;
+  wresize(message_window, LINES, COLS);
+  mvwin(message_window, 0, 0);
+  print_messages();
+}
+
+void shrink_message_window()
+{
+  message_window_length = 6;
+  wresize(message_window, 6, COLS);
+  mvwin(message_window, ScreenLength, 0);
+  print_messages();
+}
+
+void clear_message_window()
+{
+  message_buffer.clear();
+  werase(message_window);
+}
+
+void calculate_offsets(int x, int y)
+{
+  ScreenOffset     = std::max(0, std::min(y - ScreenLength / 2, LENGTH - ScreenLength));
+  HorizontalOffset = std::max(0, std::min(x - ScreenWidth / 2, WIDTH - ScreenWidth));
 }
 
 void show_screen()
 {
-  wclear(Levelw);
-  int last_attr = 0;
+  werase(level_window);
+  shown_items.clear();
+  int left      = std::max(0, HorizontalOffset);
   int top       = std::max(0, ScreenOffset);
-  int bottom    = std::min(ScreenOffset + ScreenLength, LENGTH);
+  int bottom    = std::min(LENGTH, ScreenOffset + ScreenLength);
+  int right     = std::min(WIDTH, HorizontalOffset + ScreenWidth);
+
   if(Current_Environment != E_COUNTRYSIDE)
   {
-    for(int j = top; j < bottom; ++j)
+    for(int y = top; y < bottom; ++y)
     {
-      wmove(Levelw, screenmod(j), 0);
-      for(int i = 0; i < WIDTH; ++i)
+      wmove(level_window, screenmod(y), 0);
+      for(int x = left; x < right; ++x)
       {
-        int c = ((loc_statusp(i, j, SEEN, *Level)) ? getspot(i, j, false) : static_cast<int>(SPACE));
-        if(optionp(SHOW_COLOUR, Player) && CHARATTR(c) != last_attr)
+        Symbol c = loc_statusp(x, y, SEEN, *Level) ? getspot(x, y, false) : SPACE;
+        bool is_pile = c == PILE;
+        if(is_pile)
         {
-          last_attr = CHARATTR(c);
-          wattrset(Levelw, last_attr);
+          c = Level->site[x][y].things->thing->objchar | A_STANDOUT;
         }
-        waddch(Levelw, c & 0xff);
+        color_waddch(level_window, c);
+
+        if((!Level->site[x][y].things || (Level->site[x][y].things->thing->objchar != c && !is_pile)) ||
+            (Player.x == x && Player.y == y && (!Player.status[INVISIBLE] || Player.status[TRUESIGHT])) ||
+            (Level->site[x][y].creature && (!m_statusp(*Level->site[x][y].creature, M_INVISIBLE) || Player.status[TRUESIGHT])))
+        {
+          continue;
+        }
+        object *o = Level->site[x][y].things->thing;
+        if(shown_items.find(o->objstr) == shown_items.end())
+        {
+          std::string obj_name = itemid(o);
+          shown_items[obj_name] = {obj_name, c, 1, perceived_item_value(*o)};
+        }
+        else
+        {
+          ++shown_items[o->objstr].count;
+        }
       }
     }
   }
   else
   {
-    for(int j = top; j < bottom; ++j)
+    shown_mobs.clear();
+    for(int y = top; y < bottom; ++y)
     {
-      for(int i = 0; i < WIDTH; ++i)
+      wmove(level_window, screenmod(y), 0);
+      for(int x = left; x < right; ++x)
       {
-        wmove(Levelw, screenmod(j), i);
-        int c =
-          c_statusp(i, j, SEEN, Country) ? Country[i][j].current_terrain_type : static_cast<int>(SPACE);
-        if(optionp(SHOW_COLOUR, Player) && CHARATTR(c) != last_attr)
-        {
-          last_attr = CHARATTR(c);
-          wattrset(Levelw, last_attr);
-        }
-        waddch(Levelw, c & 0xff);
+        Symbol c = c_statusp(x, y, SEEN, Country) ? Country[x][y].current_terrain_type : SPACE;
+        color_waddch(level_window, c);
       }
     }
   }
-  wrefresh(Levelw);
+  wrefresh(level_window);
+  print_shown_entities();
 }
 
-char mgetc()
+int mgetc()
 {
-  return (wgetch(Msgw));
+  int cursor_visibility = curs_set(1);
+  print_messages();
+  int player_input = wgetch(message_window);
+  curs_set(cursor_visibility);
+  return player_input;
 }
 
 /* case insensitive mgetc -- sends uppercase to lowercase */
 int mcigetc()
 {
-  int c = wgetch(Msgw);
+  print_messages();
+  int c = wgetch(message_window);
   if(c >= static_cast<int>('A') && c <= static_cast<int>('Z'))
   {
     return c + static_cast<int>('a' - 'A');
   }
   else
   {
-    return (c);
+    return c;
   }
 }
 
 char menugetc()
 {
-  return (wgetch(Menuw));
-}
-
-char lgetc()
-{
-  return (wgetch(Levelw));
+  print_messages();
+  return wgetch(menu_window);
 }
 
 int ynq()
 {
-  char p = '*'; /* the user's choice; start with something impossible
-                 * to prevent a loop. */
+  int cursor_visibility = curs_set(1);
+  print_messages();
+  char p = '*';
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != EOF) && (p != ' '))
   {
-    p = wgetch(Msgw);
+    p = wgetch(message_window);
   }
   switch(p)
   {
     case 'y':
-      wprintw(Msgw, "yes. ");
+      message_buffer.append("yes.", false);
       break;
+    case ' ':
+      p = 'n';
+      [[fallthrough]];
     case 'n':
-      wprintw(Msgw, "no. ");
+      message_buffer.append("no.", false);
       break;
     case ESCAPE:
       p = 'q';
       [[fallthrough]];
-    case ' ':
-      p = 'q';
-      [[fallthrough]];
     case 'q':
-      wprintw(Msgw, "quit. ");
+      message_buffer.append("quit.", false);
       break;
     default:
       assert(p == EOF);
   }
-  wrefresh(Msgw);
-  return (p);
+  curs_set(cursor_visibility);
+  print_messages();
+  return p;
 }
 
 int ynq1()
 {
-  char p = '*'; /* the user's choice; start with something impossible
-                 * to prevent a loop. */
+  int cursor_visibility = curs_set(1);
+  print_messages();
+  char p = '*';
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
   {
-    p = wgetch(Msg1w);
+    p = wgetch(message_window);
   }
   switch(p)
   {
     case 'y':
-      wprintw(Msg1w, "yes. ");
+      message_buffer.append("yes.", false);
       break;
+    case ' ':
+      p = 'n';
+      [[fallthrough]];
     case 'n':
-      wprintw(Msg1w, "no. ");
+      message_buffer.append("no.", false);
       break;
 
     case ESCAPE:
       p = 'q';
       [[fallthrough]];
-    case ' ':
-      p = 'q';
-      [[fallthrough]];
     case 'q':
-      wprintw(Msg1w, "quit. ");
+      message_buffer.append("quit.", false);
       break;
     default:
       assert(p == EOF);
   }
-  wrefresh(Msg1w);
-  return (p);
+  curs_set(cursor_visibility);
+  print_messages();
+  return p;
 }
 
 int ynq2()
 {
-  char p = '*'; /* the user's choice; start with something impossible
-                 * to prevent a loop. */
+  int cursor_visibility = curs_set(1);
+  print_messages();
+  char p = '*';
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
   {
-    p = wgetch(Msg2w);
+    p = wgetch(message_window);
   }
   switch(p)
   {
     case 'y':
-      wprintw(Msg2w, "yes. ");
+      message_buffer.append("yes. ", false);
       break;
+    case ' ':
+      p = 'n';
+      [[fallthrough]];
     case 'n':
-      wprintw(Msg2w, "no. ");
+      message_buffer.append("no. ", false);
       break;
     case ESCAPE:
       p = 'q';
       [[fallthrough]];
-    case ' ':
-      p = 'q';
-      [[fallthrough]];
     case 'q':
-      wprintw(Msg2w, "quit. ");
+      message_buffer.append("quit. ", false);
       break;
     default:
       assert(p == EOF);
   }
-  wrefresh(Msg2w);
-  return (p);
-}
-
-/* puts up a morewait to allow reading if anything in top two lines */
-void checkclear()
-{
-  if((getcurx(Msg1w) != 0) || (getcurx(Msg2w) != 0))
-  {
-    morewait();
-    wclear(Msg1w);
-    wclear(Msg2w);
-    wrefresh(Msg1w);
-    wrefresh(Msg2w);
-  }
-}
-
-/* for external call */
-void clearmsg()
-{
-  wclear(Msg1w);
-  wclear(Msg2w);
-  wclear(Msg3w);
-  Msgw = Msg1w;
-  wrefresh(Msg1w);
-  wrefresh(Msg2w);
-  wrefresh(Msg3w);
-}
-
-void clearmsg3()
-{
-  wclear(Msg3w);
-  wrefresh(Msg3w);
-}
-
-void clearmsg1()
-{
-  wclear(Msg1w);
-  wclear(Msg2w);
-  Msgw = Msg1w;
-  wrefresh(Msg1w);
-  wrefresh(Msg2w);
+  curs_set(cursor_visibility);
+  print_messages();
+  return p;
 }
 
 void erase_level()
 {
-  wclear(Levelw);
-  wrefresh(Levelw);
+  werase(level_window);
+  wrefresh(level_window);
 }
 
-/* direct print to first msg line */
+void queue_message(const std::string &message)
+{
+  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
+  {
+    message_buffer.receive(message);
+  }
+}
+void append_message(const std::string &message, bool force_break = false)
+{
+  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
+  {
+    message_buffer.append(message, true, force_break);
+  }
+}
+
 void print1(const std::string &s)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    buffercycle(s);
-    wclear(Msg1w);
-    wprintw(Msg1w, "%s", s.c_str());
-    wrefresh(Msg1w);
+    message_buffer.receive(s);
   }
 }
 
@@ -295,23 +458,15 @@ void nprint1(const std::string &s)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    if(bufferappend(s))
-    {
-      wprintw(Msg1w, "%s", s.c_str());
-      wrefresh(Msg1w);
-    }
+    message_buffer.receive(s);
   }
 }
 
-/* direct print to second msg line */
 void print2(const std::string &s)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    buffercycle(s);
-    wclear(Msg2w);
-    wprintw(Msg2w, "%s", s.c_str());
-    wrefresh(Msg2w);
+    message_buffer.receive(s);
   }
 }
 
@@ -320,24 +475,15 @@ void nprint2(const std::string &s)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    if(bufferappend(s))
-    {
-      wprintw(Msg2w, "%s", s.c_str());
-      wrefresh(Msg2w);
-    }
+    message_buffer.receive(s);
   }
 }
 
-/* msg line 3 is not part of the region that mprint or printm can reach */
-/* typical use of print3 is for "you can't do that" type error messages */
 void print3(const std::string &s)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    buffercycle(s);
-    wclear(Msg3w);
-    wprintw(Msg3w, "%s", s.c_str());
-    wrefresh(Msg3w);
+    message_buffer.receive(s);
   }
 }
 
@@ -346,11 +492,7 @@ void nprint3(const std::string &s)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    if(bufferappend(s))
-    {
-      wprintw(Msg3w, "%s", s.c_str());
-      wrefresh(Msg3w);
-    }
+    message_buffer.receive(s);
   }
 }
 
@@ -358,38 +500,9 @@ void nprint3(const std::string &s)
 it should morewait and clear window */
 void mprint(const std::string &s)
 {
-  int x;
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    x = getcurx(Msgw);
-    if(x + s.length() >= static_cast<size_t>(WIDTH))
-    {
-      buffercycle(s);
-      if(Msgw == Msg1w)
-      {
-        wclear(Msg2w);
-        Msgw = Msg2w;
-      }
-      else
-      {
-        morewait();
-        wclear(Msg1w);
-        wclear(Msg2w);
-        wrefresh(Msg2w);
-        Msgw = Msg1w;
-      }
-    }
-    else if(x > 0)
-    {
-      bufferappend(s);
-    }
-    else
-    {
-      buffercycle(s);
-    }
-    wprintw(Msgw, "%s", s.c_str());
-    waddch(Msgw, ' ');
-    wrefresh(Msgw);
+    message_buffer.receive(s);
   }
 }
 
@@ -399,70 +512,210 @@ void omega_title()
   clear();
   touchwin(stdscr);
   refresh();
-  /*  showscores();*/ /* DG */
 }
 
-/* blanks out ith line of Menuw or Levelw */
+/* blanks out ith line of menu_window or level_window */
 void hide_line(int i)
 {
-  wclear(Showline[i]);
+  werase(Showline[i]);
   touchwin(Showline[i]);
   wrefresh(Showline[i]);
 }
 
-/* initialize, screen, windows */
-void initgraf()
+void calculate_screen_size()
 {
-  initscr();
-  start_color();
-  clrgen_init();
   if(LINES < 24 || COLS < 80)
   {
-    printf("Minimum Screen Size: 24 Lines by 80 Columns.");
-    exit(0);
+    mprint("Minimum Screen Size: 24 Lines by 80 Columns.");
+    terminal_size_too_small = true;
   }
-  ScreenLength = LINES - 6;
-  Msg1w        = newwin(1, 80, 0, 0);
-  scrollok(Msg1w, 0); /* DJGPP curses defaults to scrollable new windows */
-  Msg2w = newwin(1, 80, 1, 0);
-  scrollok(Msg2w, 0);
-  Msg3w = newwin(1, 80, 2, 0);
-  scrollok(Msg3w, 0);
-  Msgw  = Msg1w;
-  Morew = newwin(1, 15, 3, 65);
-  scrollok(Morew, 0);
-  Locw = newwin(1, 80, ScreenLength + 3, 0);
-  scrollok(Locw, 0);
-  Levelw = newwin(ScreenLength, 64, 3, 0);
-  scrollok(Levelw, 0);
+  else
+  {
+    terminal_size_too_small = false;
+    ScreenLength            = std::min(MAXLENGTH, LINES - 6);
+    ScreenWidth             = std::min(MAXWIDTH, COLS - 42);
+    max_shown_entities      = LINES - 18;
+  }
+}
+
+void initialize_windows()
+{
+  calculate_screen_size();
+
   for(int i = 0; i < MAXITEMS; ++i)
   {
-    Showline[i] = newwin(1, 64, i + 3, 0);
-    scrollok(Showline[i], 0);
-    wclear(Showline[i]);
+    Showline[i] = newwin(1, (COLS - 42 < 64 ? COLS : 64), i, 0);
+    werase(Showline[i]);
   }
-  Menuw = newwin(ScreenLength, 64, 3, 0);
-  scrollok(Menuw, 0);
-  Dataw = newwin(2, 80, ScreenLength + 4, 0);
-  scrollok(Dataw, 0);
-  Timew = newwin(2, 15, 4, 65);
-  scrollok(Timew, 0);
-  Phasew = newwin(2, 15, 6, 65);
-  scrollok(Phasew, 0);
-  Flagw = newwin(4, 15, 9, 65);
-  scrollok(Flagw, 0);
-  Comwin = newwin(8, 15, 14, 65);
-  scrollok(Comwin, 0);
+  uint16_t menu_width = (COLS - 42 < 64 ? COLS : 64);
+  menu_window = newwin(ScreenLength, menu_width, 0, 0);
+  menu = new interactive_menu(menu_window, menu_width, ScreenLength);
 
-  noecho();
-  crmode();
+  message_window = newwin(6, COLS, ScreenLength, 0);
+  keypad(message_window, true);
+  level_window = newwin(ScreenLength, ScreenWidth, 0, 0);
+  keypad(level_window, true);
+  shown_entities_window     = newwin(max_shown_entities, 41, 13, ScreenWidth + 1);
+  name_window               = newwin(1, 33, 0, ScreenWidth + 1);
+  time_window               = newwin(1, 8, 0, ScreenWidth + 34);
+  health_label_window       = newwin(1, 3, 1, ScreenWidth + 1);
+  health_window             = newwin(1, 11, 1, ScreenWidth + 6);
+  health_meter_window       = newwin(1, 24, 1, ScreenWidth + 18);
+  mana_label_window         = newwin(1, 3, 2, ScreenWidth + 1);
+  mana_window               = newwin(1, 11, 2, ScreenWidth + 6);
+  mana_meter_window         = newwin(1, 24, 2, ScreenWidth + 18);
+  strength_label_window     = newwin(1, 4, 3, ScreenWidth + 1);
+  strength_window           = newwin(1, 7, 3, ScreenWidth + 6);
+  dexterity_label_window    = newwin(1, 4, 4, ScreenWidth + 1);
+  dexterity_window          = newwin(1, 7, 4, ScreenWidth + 6);
+  constitution_label_window = newwin(1, 4, 5, ScreenWidth + 1);
+  constitution_window       = newwin(1, 7, 5, ScreenWidth + 6);
+  agility_label_window      = newwin(1, 4, 6, ScreenWidth + 1);
+  agility_window            = newwin(1, 7, 6, ScreenWidth + 6);
+  intelligence_label_window = newwin(1, 4, 7, ScreenWidth + 1);
+  intelligence_window       = newwin(1, 7, 7, ScreenWidth + 6);
+  power_label_window        = newwin(1, 4, 8, ScreenWidth + 1);
+  power_window              = newwin(1, 7, 8, ScreenWidth + 6);
+  gold_label_window         = newwin(1, 3, 9, ScreenWidth + 1);
+  gold_window               = newwin(1, 6, 9, ScreenWidth + 6);
+  hitroll_label_window      = newwin(1, 4, 3, ScreenWidth + 18);
+  hitroll_window            = newwin(1, 3, 3, ScreenWidth + 25);
+  dmgroll_label_window      = newwin(1, 4, 4, ScreenWidth + 18);
+  dmgroll_window            = newwin(1, 3, 4, ScreenWidth + 25);
+  defense_label_window      = newwin(1, 4, 5, ScreenWidth + 18);
+  defense_window            = newwin(1, 3, 5, ScreenWidth + 25);
+  absorption_label_window   = newwin(1, 4, 6, ScreenWidth + 18);
+  absorption_window         = newwin(1, 3, 6, ScreenWidth + 25);
+  speed_label_window        = newwin(1, 4, 7, ScreenWidth + 18);
+  speed_window              = newwin(1, 4, 7, ScreenWidth + 25);
+  experience_label_window   = newwin(1, 6, 8, ScreenWidth + 18);
+  experience_window         = newwin(1, 9, 8, ScreenWidth + 25);
+  carry_label_window        = newwin(1, 6, 9, ScreenWidth + 18);
+  carry_window              = newwin(1, 11, 9, ScreenWidth + 25);
+  hunger_window             = newwin(1, 8, 3, ScreenWidth + 32);
+  poison_window             = newwin(1, 8, 4, ScreenWidth + 32);
+  disease_window            = newwin(1, 8, 5, ScreenWidth + 32);
+  footing_window            = newwin(1, 10, 6, ScreenWidth + 32);
+  location_window           = newwin(1, 41, 11, ScreenWidth + 1);
+  room_name_window          = newwin(1, 41, 12, ScreenWidth + 1);
 
   clear();
   touchwin(stdscr);
-  /*  omega_title();*/
-  /*  clear();*/
-  /*  touchwin(stdscr);*/
-  /*  refresh();*/ /* DG */
+}
+
+void resize_screen()
+{
+  calculate_screen_size();
+
+  for(int i = 0; i < MAXITEMS; ++i)
+  {
+    wresize(Showline[i], 1, (COLS - 42 < 64 ? COLS : 64));
+  }
+
+  wresize(level_window, ScreenLength, ScreenWidth);
+  wresize(shown_entities_window, max_shown_entities, 41);
+  wresize(message_window, 6, COLS);
+  menu->resize((COLS - 42 < 64 ? COLS : 64), ScreenLength);
+
+  mvwin(message_window, ScreenLength, 0);
+  mvwin(shown_entities_window, 13, ScreenWidth + 1);
+  mvwin(name_window, 0, ScreenWidth + 1);
+  mvwin(time_window, 0, ScreenWidth + 34);
+  mvwin(health_label_window, 1, ScreenWidth + 1);
+  mvwin(health_window, 1, ScreenWidth + 6);
+  mvwin(health_meter_window, 1, ScreenWidth + 18);
+  mvwin(mana_label_window, 2, ScreenWidth + 1);
+  mvwin(mana_window, 2, ScreenWidth + 6);
+  mvwin(mana_meter_window, 2, ScreenWidth + 18);
+  mvwin(strength_label_window, 3, ScreenWidth + 1);
+  mvwin(strength_window, 3, ScreenWidth + 6);
+  mvwin(dexterity_label_window, 4, ScreenWidth + 1);
+  mvwin(dexterity_window, 4, ScreenWidth + 6);
+  mvwin(constitution_label_window, 5, ScreenWidth + 1);
+  mvwin(constitution_window, 5, ScreenWidth + 6);
+  mvwin(agility_label_window, 6, ScreenWidth + 1);
+  mvwin(agility_window, 6, ScreenWidth + 6);
+  mvwin(intelligence_label_window, 7, ScreenWidth + 1);
+  mvwin(intelligence_window, 7, ScreenWidth + 6);
+  mvwin(power_label_window, 8, ScreenWidth + 1);
+  mvwin(power_window, 8, ScreenWidth + 6);
+  mvwin(gold_label_window, 9, ScreenWidth + 1);
+  mvwin(gold_window, 9, ScreenWidth + 6);
+  mvwin(hitroll_label_window, 3, ScreenWidth + 18);
+  mvwin(hitroll_window, 3, ScreenWidth + 25);
+  mvwin(dmgroll_label_window, 4, ScreenWidth + 18);
+  mvwin(dmgroll_window, 4, ScreenWidth + 25);
+  mvwin(defense_label_window, 5, ScreenWidth + 18);
+  mvwin(defense_window, 5, ScreenWidth + 25);
+  mvwin(absorption_label_window, 6, ScreenWidth + 18);
+  mvwin(absorption_window, 6, ScreenWidth + 25);
+  mvwin(speed_label_window, 7, ScreenWidth + 18);
+  mvwin(speed_window, 7, ScreenWidth + 25);
+  mvwin(experience_label_window, 8, ScreenWidth + 18);
+  mvwin(experience_window, 8, ScreenWidth + 25);
+  mvwin(carry_label_window, 9, ScreenWidth + 18);
+  mvwin(carry_window, 9, ScreenWidth + 25);
+  mvwin(hunger_window, 3, ScreenWidth + 32);
+  mvwin(poison_window, 4, ScreenWidth + 32);
+  mvwin(disease_window, 5, ScreenWidth + 32);
+  mvwin(footing_window, 6, ScreenWidth + 32);
+  mvwin(location_window, 11, ScreenWidth + 1);
+  mvwin(room_name_window, 12, ScreenWidth + 1);
+  xredraw();
+}
+
+int get_player_input(WINDOW *window)
+{
+  print_messages();
+  while(true)
+  {
+    int x, y;
+    getyx(window, y, x);
+    int player_input = mvwgetch(window, y, x);
+    if(player_input == KEY_RESIZE)
+    {
+      resize_screen();
+      print_messages();
+      if(IsMenu)
+      {
+        menu->print();
+      }
+      else
+      {
+        screencheck(Lastx, Lasty);
+        omshowcursor(Lastx, Lasty);
+      }
+    }
+    else if(!terminal_size_too_small)
+    {
+      return player_input;
+    }
+  }
+}
+
+int get_message_input()
+{
+  return get_player_input(message_window);
+}
+int get_level_input()
+{
+  return get_player_input(level_window);
+}
+
+
+// initialize, screen, windows
+void initgraf()
+{
+  initscr();
+  noecho();
+  crmode();
+  start_color();
+  clrgen_init();
+  initialize_windows();
+  curs_set(0);
+#ifndef PDCURSES
+  set_escdelay(0);
+#endif
 }
 
 int lastx = -1, lasty = -1;
@@ -471,37 +724,27 @@ void drawplayer()
 {
   if(Current_Environment == E_COUNTRYSIDE)
   {
-    if(inbounds(lastx, lasty) && !offscreen(lasty))
+    if(inbounds(lastx, lasty) && !offscreen(lastx, lasty))
     {
-      wmove(Levelw, screenmod(lasty), lastx);
-      int c = Country[lastx][lasty].current_terrain_type;
-      if(optionp(SHOW_COLOUR, Player))
-      {
-        wattrset(Levelw, CHARATTR(c));
-      }
-      waddch(Levelw, (c & 0xff));
+      Symbol c = Country[lastx][lasty].current_terrain_type;
+      color_mvwaddch(level_window, screenmod(lasty), screenmod_horizontal(lastx), c);
     }
-    wmove(Levelw, screenmod(Player.y), Player.x);
-    if(optionp(SHOW_COLOUR, Player))
-    {
-      wattrset(Levelw, CHARATTR(PLAYER));
-    }
-    waddch(Levelw, (PLAYER & 0xff));
+    color_mvwaddch(level_window, screenmod(Player.y), screenmod_horizontal(Player.x), PLAYER);
   }
   else
   {
-    if(inbounds(lastx, lasty) && !offscreen(lasty))
+    if(inbounds(lastx, lasty) && !offscreen(lastx, lasty))
     {
-      plotspot(lastx, lasty, (Player.status[BLINDED] > 0 ? false : true));
+      plotspot(lastx, lasty, !Player.status[BLINDED]);
     }
-    wmove(Levelw, screenmod(Player.y), Player.x);
-    if((!Player.status[INVISIBLE]) || Player.status[TRUESIGHT])
+    if(!Player.status[INVISIBLE] || Player.status[TRUESIGHT])
     {
-      if(optionp(SHOW_COLOUR, Player))
-      {
-        wattrset(Levelw, CHARATTR(PLAYER));
-      }
-      waddch(Levelw, (PLAYER & 0xff));
+      color_mvwaddch(level_window, screenmod(Player.y), screenmod_horizontal(Player.x), PLAYER);
+    }
+    else
+    {
+      Symbol c = getspot(Player.x, Player.y, false);
+      color_mvwaddch(level_window, screenmod(Player.y), screenmod_horizontal(Player.x), c | A_REVERSE);
     }
   }
   lastx = Player.x;
@@ -529,7 +772,7 @@ int litroom(int x, int y)
 void drawvision(int x, int y)
 {
   static int oldx = -1, oldy = -1;
-  int        i, j, c;
+  int        i, j;
 
   if(Current_Environment != E_COUNTRYSIDE)
   {
@@ -576,59 +819,54 @@ void drawvision(int x, int y)
     }
     if((!gamestatusp(FAST_MOVE, GameStatus)) || (!optionp(JUMPMOVE, Player)))
     {
-      omshowcursor(Player.x, Player.y);
+      wrefresh(level_window);
     }
     oldx = x;
     oldy = y;
   }
   else
   {
-    for(i = -1; i < 2; i++)
+    for(i = -1; i < 2; ++i)
     {
-      for(j = -1; j < 2; j++)
+      for(j = -1; j < 2; ++j)
       {
-        if(inbounds(x + i, y + j))
+        if(!inbounds(x + i, y + j) || c_statusp(x + i, y + j, SEEN, Country))
         {
-          c_set(x + i, y + j, SEEN, Country);
-          if(!offscreen(y + j))
-          {
-            wmove(Levelw, screenmod(y + j), x + i);
-            c = Country[x + i][y + j].current_terrain_type;
-            if(optionp(SHOW_COLOUR, Player))
-            {
-              wattrset(Levelw, CHARATTR(c));
-            }
-            waddch(Levelw, (c & 0xff));
-          }
+          continue;
+        }
+        c_set(x + i, y + j, SEEN, Country);
+        if(!offscreen(x + i, y + j))
+        {
+          Symbol c = Country[x + i][y + j].current_terrain_type;
+          color_mvwaddch(level_window, screenmod(y+j), screenmod_horizontal(x+i), c);
         }
       }
     }
     drawplayer();
-    omshowcursor(Player.x, Player.y);
+    wrefresh(level_window);
   }
 }
 
 void omshowcursor(int x, int y)
 {
-  if(!offscreen(y))
+  if(!offscreen(x, y))
   {
-    wmove(Levelw, screenmod(y), x);
-    wrefresh(Levelw);
+    wmove(level_window, screenmod(y), screenmod_horizontal(x));
+    wrefresh(level_window);
   }
 }
 
 void levelrefresh()
 {
-  wrefresh(Levelw);
+  wrefresh(level_window);
 }
 
 /* draws a particular spot under if in line-of-sight */
 void drawspot(int x, int y)
 {
-  Symbol c;
   if(inbounds(x, y))
   {
-    c = getspot(x, y, false);
+    Symbol c = getspot(x, y, false);
     if(c != Level->site[x][y].showchar)
     {
       if(view_los_p(Player.x, Player.y, x, y))
@@ -644,10 +882,9 @@ void drawspot(int x, int y)
 /* draws a particular spot regardless of line-of-sight */
 void dodrawspot(int x, int y)
 {
-  Symbol c;
   if(inbounds(x, y))
   {
-    c = getspot(x, y, false);
+    Symbol c = getspot(x, y, false);
     if(c != Level->site[x][y].showchar)
     {
       lset(x, y, SEEN, *Level);
@@ -679,11 +916,9 @@ void blotspot(int i, int j)
   {
     lreset(i, j, SEEN, *Level);
     Level->site[i][j].showchar = SPACE;
-    if(!offscreen(j))
+    if(!offscreen(i, j))
     {
-      wmove(Levelw, screenmod(j), i);
-      wattrset(Levelw, CHARATTR(SPACE));
-      waddch(Levelw, SPACE & 0xff);
+      color_mvwaddch(level_window, screenmod(j), screenmod_horizontal(i), SPACE);
     }
   }
 }
@@ -704,36 +939,30 @@ void plotspot(int x, int y, int showmonster)
 /* Puts c at x,y on screen. No fuss, no bother. */
 void putspot(int x, int y, Symbol c)
 {
-  if(!offscreen(y))
+  if(!offscreen(x, y))
   {
-    wmove(Levelw, screenmod(y), x);
-    if(optionp(SHOW_COLOUR, Player))
-    {
-      wattrset(Levelw, CHARATTR(c));
-    }
-    waddch(Levelw, (0xff & c));
+    color_mvwaddch(level_window, screenmod(y), screenmod_horizontal(x), c);
   }
 }
 
 /* regardless of line of sight, etc, draw a monster */
 void plotmon(struct monster *m)
 {
-  if(!offscreen(m->y))
+  if(!offscreen(m->x, m->y))
   {
-    wmove(Levelw, screenmod(m->y), m->x);
-    if(optionp(SHOW_COLOUR, Player))
-    {
-      wattrset(Levelw, CHARATTR(m->monchar));
-    }
-    waddch(Levelw, (m->monchar & 0xff));
+    color_mvwaddch(level_window, screenmod(m->y), screenmod_horizontal(m->x), m->monchar);
   }
 }
 
 /* if display, displays monsters, otherwise erases them */
 void drawmonsters(int display)
 {
-  pml ml;
-  for(ml = Level->mlist; ml != NULL; ml = ml->next)
+  shown_mobs.clear();
+  int left   = std::max(0, HorizontalOffset);
+  int top    = std::max(0, ScreenOffset);
+  int bottom = std::min(LENGTH, ScreenOffset + ScreenLength);
+  int right  = std::min(WIDTH, HorizontalOffset + ScreenWidth);
+  for(pml ml = Level->mlist; ml != NULL; ml = ml->next)
   {
     if(ml->m->hp > 0)
     {
@@ -746,12 +975,26 @@ void drawmonsters(int display)
             if(!optionp(SHOW_COLOUR, Player) && (ml->m->level > 5) && ((ml->m->monchar & 0xff) != '@') &&
                ((ml->m->monchar & 0xff) != '|'))
             {
-              wstandout(Levelw);
+              wstandout(level_window);
             }
             putspot(ml->m->x, ml->m->y, ml->m->monchar);
             if(!optionp(SHOW_COLOUR, Player))
             {
-              wstandend(Levelw);
+              wstandend(level_window);
+            }
+
+            const monster &m = *ml->m;
+            if(m.x < left || m.x > right || m.y < top || m.y > bottom)
+            {
+              continue;
+            }
+            if(shown_mobs.find(m.monstring) == shown_mobs.end())
+            {
+              shown_mobs[m.monstring] = {m.monstring, m.monchar, 1, m.level};
+            }
+            else
+            {
+              ++shown_mobs[m.monstring].count;
             }
           }
         }
@@ -762,6 +1005,7 @@ void drawmonsters(int display)
       }
     }
   }
+  print_shown_entities();
 }
 
 /* replace monster with what would be displayed if monster weren't there */
@@ -847,16 +1091,16 @@ Symbol getspot(int x, int y, int showmonster)
         {
           if(Level->site[x][y].things->next != NULL)
           {
-            return (PILE);
+            return PILE;
           }
           else
           {
-            return (Level->site[x][y].things->thing->objchar);
+            return Level->site[x][y].things->thing->objchar;
           }
         }
         else
         {
-          return (Level->site[x][y].locchar);
+          return Level->site[x][y].locchar;
         }
     }
   }
@@ -864,49 +1108,318 @@ Symbol getspot(int x, int y, int showmonster)
 
 void commanderror()
 {
-  wclear(Msg3w);
-  wprintw(Msg3w, "%c : unknown command", Cmd);
-  wrefresh(Msg3w);
+  std::string message = std::to_string(Cmd) + " : unknown command";
+  message_buffer.receive(message);
 }
 
 void timeprint()
 {
-  wclear(Timew);
-  wprintw(Timew, "%d:%d", showhour(), showminute());
+  werase(time_window);
+  enable_attr(time_window, A_BOLD);
+  wprintw(time_window, "%2d:%d", showhour(), showminute());
   if(showminute() == 0)
   {
-    waddch(Timew, '0');
+    waddch(time_window, '0');
   }
-  wprintw(Timew, hour() > 11 ? " PM \n" : " AM \n");
-  wprintw(Timew, "%s", month());
-  wprintw(Timew, " the %d", day());
-  wprintw(Timew, "%s", ordinal(day()));
-  wrefresh(Timew);
+  wprintw(time_window, hour() > 11 ? " PM" : " AM");
+  wrefresh(time_window);
 }
 
-void comwinprint()
+void print_name()
 {
-  wclear(Comwin);
-  wprintw(Comwin, "Hit: %d  \n", Player.hit);
-  wprintw(Comwin, "Dmg: %d  \n", Player.dmg);
-  wprintw(Comwin, "Def: %d  \n", Player.defense);
-  wprintw(Comwin, "Arm: %d  \n", Player.absorption);
-  wprintw(Comwin, "Spd: %d.%d  \n", 5 / Player.speed, 500 / Player.speed % 100);
-  wrefresh(Comwin);
+  werase(name_window);
+  enable_attr(name_window, A_BOLD);
+  wprintw(name_window, "%s, %s", Player.name, levelname(Player.level).c_str());
+  wnoutrefresh(name_window);
+}
+
+void print_combat_stats()
+{
+  werase(hitroll_label_window);
+  enable_attr(hitroll_label_window, CLR(GREY) | A_BOLD);
+  waddstr(hitroll_label_window, "Hit:");
+  wnoutrefresh(hitroll_label_window);
+
+  werase(hitroll_window);
+  enable_attr(hitroll_window, CLR(WHITE) | A_BOLD);
+  wprintw(hitroll_window, "%d", Player.hit);
+  wnoutrefresh(hitroll_window);
+
+  werase(dmgroll_label_window);
+  enable_attr(dmgroll_label_window, CLR(GREY));
+  waddstr(dmgroll_label_window, "Dmg:");
+  wnoutrefresh(dmgroll_label_window);
+
+  werase(dmgroll_window);
+  enable_attr(dmgroll_window, A_BOLD);
+  wprintw(dmgroll_window, "%d", Player.dmg);
+  wnoutrefresh(dmgroll_window);
+
+  werase(defense_label_window);
+  enable_attr(defense_label_window, CLR(GREY));
+  waddstr(defense_label_window, "Def:");
+  wnoutrefresh(defense_label_window);
+
+  werase(defense_window);
+  enable_attr(defense_window, A_BOLD);
+  wprintw(defense_window, "%d", Player.defense);
+  wnoutrefresh(defense_window);
+
+  werase(absorption_label_window);
+  enable_attr(absorption_label_window, CLR(GREY));
+  waddstr(absorption_label_window, "Arm:");
+  wnoutrefresh(absorption_label_window);
+
+  werase(absorption_window);
+  enable_attr(absorption_window, A_BOLD);
+  wprintw(absorption_window, "%d", Player.absorption);
+  wnoutrefresh(absorption_window);
+
+  werase(speed_label_window);
+  enable_attr(speed_label_window, CLR(GREY));
+  waddstr(speed_label_window, "Spd:");
+  wnoutrefresh(speed_label_window);
+
+  werase(speed_window);
+  enable_attr(speed_window, A_BOLD);
+  wprintw(speed_window, "%d.%d", 5 / Player.speed, 500 / Player.speed % 100);
+  wnoutrefresh(speed_window);
+
+  doupdate();
+}
+
+void print_health()
+{
+  int hp_meter_length = std::min(
+    24, Player.maxhp == 0 ? 0 : static_cast<int>(static_cast<float>(Player.hp) / Player.maxhp * 24));
+  char hp_meter_filled[25];
+  char hp_meter_empty[25];
+  memset(hp_meter_filled, '=', hp_meter_length);
+  hp_meter_filled[hp_meter_length] = '\0';
+  memset(hp_meter_empty, '-', 24 - hp_meter_length);
+  hp_meter_empty[24 - hp_meter_length] = '\0';
+
+  werase(health_label_window);
+  enable_attr(health_label_window, CLR(GREY));
+  waddstr(health_label_window, "HP:");
+  wnoutrefresh(health_label_window);
+
+  werase(health_window);
+  enable_attr(health_window, A_BOLD);
+  wprintw(health_window, "%d", Player.hp);
+  color_waddch(health_window, '/' | CLR(GREY));
+  enable_attr(health_window, A_BOLD);
+  wprintw(health_window, "%d", Player.maxhp);
+  wnoutrefresh(health_window);
+
+  werase(health_meter_window);
+  enable_attr(health_meter_window, CLR(GREEN) | A_BOLD);
+  waddstr(health_meter_window, hp_meter_filled);
+  enable_attr(health_meter_window, CLR(GREY));
+  waddstr(health_meter_window, hp_meter_empty);
+  wnoutrefresh(health_meter_window);
+}
+
+void print_mana()
+{
+  int mana_meter_length = std::min(
+    24,
+    Player.maxmana == 0 ? 0 : static_cast<int>(static_cast<float>(Player.mana) / Player.maxmana * 24));
+  char mana_meter_filled[25];
+  char mana_meter_empty[25];
+  memset(mana_meter_filled, '=', mana_meter_length);
+  mana_meter_filled[mana_meter_length] = '\0';
+  memset(mana_meter_empty, '-', 24 - mana_meter_length);
+  mana_meter_empty[24 - mana_meter_length] = '\0';
+
+  werase(mana_label_window);
+  enable_attr(mana_label_window, CLR(GREY));
+  waddstr(mana_label_window, "MP:");
+  wnoutrefresh(mana_label_window);
+
+  werase(mana_window);
+  enable_attr(mana_window, A_BOLD);
+  wprintw(mana_window, "%ld", Player.mana);
+  color_waddch(mana_window, '/' | CLR(GREY));
+  enable_attr(mana_window, A_BOLD);
+  wprintw(mana_window, "%ld", Player.maxmana);
+  wnoutrefresh(mana_window);
+
+  werase(mana_meter_window);
+  enable_attr(mana_meter_window, CLR(BLUE) | A_BOLD);
+  waddstr(mana_meter_window, mana_meter_filled);
+  enable_attr(mana_meter_window, CLR(GREY));
+  waddstr(mana_meter_window, mana_meter_empty);
+  wnoutrefresh(mana_meter_window);
+}
+
+void print_vitals()
+{
+  print_health();
+  print_mana();
+}
+
+void print_strength()
+{
+  werase(strength_label_window);
+  enable_attr(strength_label_window, CLR(GREY));
+  waddstr(strength_label_window, "Str:");
+  wnoutrefresh(strength_label_window);
+
+  werase(strength_window);
+  enable_attr(strength_window, A_BOLD);
+  wprintw(strength_window, "%d", Player.str);
+  color_waddch(strength_window, '/' | CLR(GREY));
+  enable_attr(strength_window, A_BOLD);
+  wprintw(strength_window, "%d", Player.maxstr);
+  wnoutrefresh(strength_window);
+}
+
+void print_dexterity()
+{
+  werase(dexterity_label_window);
+  enable_attr(dexterity_label_window, CLR(GREY));
+  waddstr(dexterity_label_window, "Dex:");
+  wnoutrefresh(dexterity_label_window);
+
+  werase(dexterity_window);
+  enable_attr(dexterity_window, A_BOLD);
+  wprintw(dexterity_window, "%d", Player.dex);
+  color_waddch(dexterity_window, '/' | CLR(GREY));
+  enable_attr(dexterity_window, A_BOLD);
+  wprintw(dexterity_window, "%d", Player.maxdex);
+  wnoutrefresh(dexterity_window);
+}
+
+void print_constitution()
+{
+
+  werase(constitution_label_window);
+  enable_attr(constitution_label_window, CLR(GREY));
+  waddstr(constitution_label_window, "Con:");
+  wnoutrefresh(constitution_label_window);
+
+  werase(constitution_window);
+  enable_attr(constitution_window, A_BOLD);
+  wprintw(constitution_window, "%d", Player.con);
+  color_waddch(constitution_window, '/' | CLR(GREY));
+  enable_attr(constitution_window, A_BOLD);
+  wprintw(constitution_window, "%d", Player.maxcon);
+  wnoutrefresh(constitution_window);
+}
+
+void print_agility()
+{
+  werase(agility_label_window);
+  enable_attr(agility_label_window, CLR(GREY));
+  waddstr(agility_label_window, "Agi:");
+  wnoutrefresh(agility_label_window);
+
+  werase(agility_window);
+  enable_attr(agility_window, A_BOLD);
+  wprintw(agility_window, "%d", Player.agi);
+  color_waddch(agility_window, '/' | CLR(GREY));
+  enable_attr(agility_window, A_BOLD);
+  wprintw(agility_window, "%d", Player.maxagi);
+  wnoutrefresh(agility_window);
+}
+
+void print_intelligence()
+{
+  werase(intelligence_label_window);
+  enable_attr(intelligence_label_window, CLR(GREY));
+  waddstr(intelligence_label_window, "Int:");
+  wnoutrefresh(intelligence_label_window);
+
+  werase(intelligence_window);
+  enable_attr(intelligence_window, A_BOLD);
+  wprintw(intelligence_window, "%d", Player.iq);
+  color_waddch(intelligence_window, '/' | CLR(GREY));
+  enable_attr(intelligence_window, A_BOLD);
+  wprintw(intelligence_window, "%d", Player.maxiq);
+  wnoutrefresh(intelligence_window);
+}
+
+void print_power()
+{
+  werase(power_label_window);
+  enable_attr(power_label_window, CLR(GREY));
+  waddstr(power_label_window, "Pow:");
+  wnoutrefresh(power_label_window);
+
+  werase(power_window);
+  enable_attr(power_window, A_BOLD);
+  wprintw(power_window, "%d", Player.pow);
+  color_waddch(power_window, '/' | CLR(GREY));
+  enable_attr(power_window, A_BOLD);
+  wprintw(power_window, "%d", Player.maxpow);
+  wnoutrefresh(power_window);
+}
+
+void print_attributes()
+{
+  print_strength();
+  print_dexterity();
+  print_constitution();
+  print_agility();
+  print_intelligence();
+  print_power();
+}
+
+void print_gold()
+{
+  werase(gold_label_window);
+  enable_attr(gold_label_window, CLR(GREY));
+  waddstr(gold_label_window, "Au:");
+  wnoutrefresh(gold_label_window);
+
+  werase(gold_window);
+  enable_attr(gold_window, A_BOLD);
+  wprintw(gold_window, "%ld", Player.cash);
+  wnoutrefresh(gold_window);
+}
+
+void print_level()
+{
+  werase(experience_label_window);
+  enable_attr(experience_label_window, CLR(GREY));
+  waddstr(experience_label_window, "Level:");
+  wnoutrefresh(experience_label_window);
+
+  werase(experience_window);
+  enable_attr(experience_window, A_BOLD);
+  wprintw(experience_window, "%d", Player.level);
+  color_waddch(experience_window, '/' | CLR(GREY));
+  enable_attr(experience_window, A_BOLD);
+  wprintw(experience_window, "%ld", Player.xp);
+  wnoutrefresh(experience_window);
+}
+
+void print_weight()
+{
+  werase(carry_label_window);
+  enable_attr(carry_label_window, CLR(GREY));
+  waddstr(carry_label_window, "Carry:");
+  wnoutrefresh(carry_label_window);
+
+  werase(carry_window);
+  enable_attr(carry_window, A_BOLD);
+  wprintw(carry_window, "%d", Player.itemweight);
+  color_waddch(carry_window, '/' | CLR(GREY));
+  enable_attr(carry_window, A_BOLD);
+  wprintw(carry_window, "%d", Player.maxweight);
+  wnoutrefresh(carry_window);
 }
 
 void dataprint()
 {
-  wclear(Dataw);
-  /* WDT HACK: I should make these fields spaced and appropriately justified.
-   * Maybe I don't feel like it right now. */
-  wprintw(Dataw, "Hp:%d/%d Mana:%ld/%ld Au:%ld Level:%d/%ld Carry:%d/%d \n", Player.hp, Player.maxhp,
-          Player.mana, Player.maxmana, Player.cash, Player.level, Player.xp, Player.itemweight,
-          Player.maxweight);
-  wprintw(Dataw, "Str:%d/%d Con:%d/%d Dex:%d/%d Agi:%d/%d Int:%d/%d Pow:%d/%d   ", Player.str,
-          Player.maxstr, Player.con, Player.maxcon, Player.dex, Player.maxdex, Player.agi, Player.maxagi,
-          Player.iq, Player.maxiq, Player.pow, Player.maxpow);
-  wrefresh(Dataw);
+  print_name();
+  print_vitals();
+  print_attributes();
+  print_gold();
+  print_level();
+  print_weight();
+  doupdate();
 }
 
 /* redraw everything currently displayed */
@@ -919,59 +1432,105 @@ void redraw()
 /* redraw each permanent window */
 void xredraw()
 {
-  touchwin(Msgw);
-  touchwin(Msg3w);
-  touchwin(Levelw);
-  touchwin(Timew);
-  touchwin(Flagw);
-  touchwin(Dataw);
-  touchwin(Locw);
-  touchwin(Morew);
-  touchwin(Phasew);
-  touchwin(Comwin);
-  wrefresh(Msgw);
-  wrefresh(Msg3w);
-  wrefresh(Levelw);
-  wrefresh(Timew);
-  wrefresh(Flagw);
-  wrefresh(Dataw);
-  wrefresh(Locw);
-  wrefresh(Morew);
-  wrefresh(Phasew);
-  wrefresh(Comwin);
+  touchwin(stdscr);
+  touchwin(message_window);
+  touchwin(level_window);
+  touchwin(name_window);
+  touchwin(time_window);
+  touchwin(health_label_window);
+  touchwin(health_window);
+  touchwin(health_meter_window);
+  touchwin(mana_label_window);
+  touchwin(mana_window);
+  touchwin(mana_meter_window);
+  touchwin(strength_label_window);
+  touchwin(strength_window);
+  touchwin(dexterity_label_window);
+  touchwin(dexterity_window);
+  touchwin(constitution_label_window);
+  touchwin(constitution_window);
+  touchwin(agility_label_window);
+  touchwin(agility_window);
+  touchwin(intelligence_label_window);
+  touchwin(intelligence_window);
+  touchwin(power_label_window);
+  touchwin(power_window);
+  touchwin(hitroll_label_window);
+  touchwin(hitroll_window);
+  touchwin(dmgroll_label_window);
+  touchwin(dmgroll_window);
+  touchwin(defense_label_window);
+  touchwin(defense_window);
+  touchwin(absorption_label_window);
+  touchwin(absorption_window);
+  touchwin(speed_label_window);
+  touchwin(speed_window);
+  touchwin(hunger_window);
+  touchwin(poison_window);
+  touchwin(disease_window);
+  touchwin(footing_window);
+  touchwin(carry_label_window);
+  touchwin(carry_window);
+  touchwin(gold_label_window);
+  touchwin(gold_window);
+  touchwin(experience_label_window);
+  touchwin(experience_window);
+  touchwin(location_window);
+  touchwin(shown_entities_window);
+
+  wnoutrefresh(stdscr);
+  wnoutrefresh(message_window);
+  wnoutrefresh(level_window);
+  wnoutrefresh(name_window);
+  wnoutrefresh(time_window);
+  wnoutrefresh(health_label_window);
+  wnoutrefresh(health_window);
+  wnoutrefresh(health_meter_window);
+  wnoutrefresh(mana_label_window);
+  wnoutrefresh(mana_window);
+  wnoutrefresh(mana_meter_window);
+  wnoutrefresh(strength_label_window);
+  wnoutrefresh(strength_window);
+  wnoutrefresh(dexterity_label_window);
+  wnoutrefresh(dexterity_window);
+  wnoutrefresh(constitution_label_window);
+  wnoutrefresh(constitution_window);
+  wnoutrefresh(agility_label_window);
+  wnoutrefresh(agility_window);
+  wnoutrefresh(intelligence_label_window);
+  wnoutrefresh(intelligence_window);
+  wnoutrefresh(power_label_window);
+  wnoutrefresh(power_window);
+  wnoutrefresh(hitroll_label_window);
+  wnoutrefresh(hitroll_window);
+  wnoutrefresh(dmgroll_label_window);
+  wnoutrefresh(dmgroll_window);
+  wnoutrefresh(defense_label_window);
+  wnoutrefresh(defense_window);
+  wnoutrefresh(absorption_label_window);
+  wnoutrefresh(absorption_window);
+  wnoutrefresh(speed_label_window);
+  wnoutrefresh(speed_window);
+  wnoutrefresh(hunger_window);
+  wnoutrefresh(poison_window);
+  wnoutrefresh(disease_window);
+  wnoutrefresh(footing_window);
+  wnoutrefresh(carry_label_window);
+  wnoutrefresh(carry_window);
+  wnoutrefresh(gold_label_window);
+  wnoutrefresh(gold_window);
+  wnoutrefresh(experience_label_window);
+  wnoutrefresh(experience_window);
+  wnoutrefresh(location_window);
+  wnoutrefresh(shown_entities_window);
+
+  doupdate();
 }
 
 void menuaddch(char c)
 {
-  waddch(Menuw, c);
-  wrefresh(Menuw);
-}
-
-void morewait()
-{
-  int display = true;
-  int c;
-  if(gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    return;
-  }
-  do
-  {
-    wclear(Morew);
-    if(display)
-    {
-      wprintw(Morew, "***  MORE  ***");
-    }
-    else
-    {
-      wprintw(Morew, "+++  MORE  +++");
-    }
-    display = !display;
-    wrefresh(Morew);
-    c = wgetch(Msgw);
-  } while((c != ' ') && (c != RETURN) && (c != EOF));
-  wclear(Morew);
-  wrefresh(Morew);
+  waddch(menu_window, c);
+  wrefresh(menu_window);
 }
 
 int stillonblock()
@@ -980,59 +1539,45 @@ int stillonblock()
   int c;
   do
   {
-    wclear(Morew);
+    werase(message_window);
     if(display)
     {
-      wprintw(Morew, "<<<STAY?>>>");
+      wprintw(message_window, "<<<STAY?>>>");
     }
     else
     {
-      wprintw(Morew, ">>>STAY?<<<");
+      wprintw(message_window, ">>>STAY?<<<");
     }
     display = !display;
-    wrefresh(Morew);
-    c = wgetch(Msgw);
+    wrefresh(message_window);
+    c = wgetch(message_window);
   } while((c != ' ') && (c != ESCAPE) && (c != EOF));
-  wclear(Morew);
-  wrefresh(Morew);
+  werase(message_window);
+  wrefresh(message_window);
   return (c == ' ');
 }
 
 void menuclear()
 {
-  wclear(Menuw);
-  touchwin(Menuw);
-  wrefresh(Menuw);
-}
-
-void menuspellprint(int i)
-{
-  if(getcury(Menuw) >= ScreenLength - 2)
-  {
-    wrefresh(Menuw);
-    morewait();
-    wclear(Menuw);
-    touchwin(Menuw);
-  }
-  wprintw(Menuw, "%s", spellid(i));
-  wprintw(Menuw, "(%d)\n", Spells[i].powerdrain);
+  werase(menu_window);
+  touchwin(menu_window);
+  wrefresh(menu_window);
 }
 
 void menuprint(const std::string &s)
 {
-  if(getcury(Menuw) >= ScreenLength - 2)
+  if(getcury(menu_window) >= ScreenLength - 2)
   {
-    wrefresh(Menuw);
-    morewait();
-    wclear(Menuw);
-    touchwin(Menuw);
+    wrefresh(menu_window);
+    werase(menu_window);
+    touchwin(menu_window);
   }
-  wprintw(Menuw, "%s", s.c_str());
+  wprintw(menu_window, "%s", s.c_str());
 }
 
 void showmenu()
 {
-  wrefresh(Menuw);
+  wrefresh(menu_window);
 }
 
 void endgraf()
@@ -1045,15 +1590,10 @@ void endgraf()
 
 void plotchar(Symbol pyx, int x, int y)
 {
-  if(!offscreen(y))
+  if(!offscreen(x, y))
   {
-    wmove(Levelw, screenmod(y), x);
-    if(optionp(SHOW_COLOUR, Player))
-    {
-      wattrset(Levelw, CHARATTR(pyx));
-    }
-    waddch(Levelw, (pyx & 0xff));
-    wrefresh(Levelw);
+    color_mvwaddch(level_window, screenmod(y), screenmod_horizontal(x), pyx);
+    wrefresh(level_window);
   }
 }
 
@@ -1078,48 +1618,53 @@ void draw_explosion(Symbol pyx, int x, int y)
   {
     plotspot(x + Dirs[0][i], y + Dirs[1][i], true);
   }
-  wrefresh(Levelw);
+  wrefresh(level_window);
 }
 
-char *msgscanstring()
+std::string msgscanstring()
 {
-  static char instring[80], byte = 'x';
-  int         i = 0;
-
-  instring[0] = 0;
-  byte        = mgetc();
-  while(byte != '\n')
+  int cursor_visibility = curs_set(1);
+  std::string input_str;
+  int player_input = mgetc();
+  while(player_input != '\n')
   {
-    if((byte == 8) || (byte == 127))
-    { /* ^h or delete */
-      if(i > 0)
+    if(player_input == KEY_BACKSPACE || player_input == '\b' || player_input == KEY_DC || player_input == DELETE)
+    {
+      if(!input_str.empty())
       {
-        i--;
+        input_str.pop_back();
         dobackspace();
       }
-      instring[i] = 0;
     }
-    else
+    else if(player_input >= 32 && player_input <= 126)
     {
-      instring[i] = byte;
-      waddch(Msgw, byte);
-      wrefresh(Msgw);
-      i++;
-      instring[i] = 0;
+      input_str.push_back(static_cast<char>(player_input));
+      message_buffer.append(std::string(1, player_input), false);
+      print_messages();
     }
-    byte = mgetc();
+    player_input = mgetc();
   }
-  return (instring);
+  curs_set(cursor_visibility);
+  return input_str;
 }
 
 void locprint(const std::string &s)
 {
-  wclear(Locw);
-  wprintw(Locw, "%s", s.c_str());
-  wrefresh(Locw);
+  werase(location_window);
+  enable_attr(location_window, A_BOLD);
+  waddstr(location_window, s.c_str());
+  wrefresh(location_window);
 }
 
-/* draw everything whether visible or not */
+void room_name_print(const std::string &room_name)
+{
+  werase(room_name_window);
+  enable_attr(room_name_window, A_BOLD);
+  waddstr(room_name_window, room_name.c_str());
+  wrefresh(room_name_window);
+}
+
+// draw everything whether visible or not
 void drawscreen()
 {
   int i, j;
@@ -1166,11 +1711,12 @@ int getnumber(int range)
   }
   else
   {
+    std::string message = "How many? Change with < or >, ESCAPE to select: " + std::to_string(value);
+    append_message(message, true);
     while(!done)
     {
-      clearmsg();
-      wprintw(Msg1w, "How many? Change with < or >, ESCAPE to select:");
-      mnumprint(value);
+      message = "How many? Change with < or >, ESCAPE to select: " + std::to_string(value);
+      message_buffer.replace_last(message);
       do
       {
         atom = mcigetc();
@@ -1197,54 +1743,49 @@ long parsenum()
 {
   int  number[8];
   int  place = -1;
-  int  i, x, y, mult = 1;
-  long num  = 0;
-  char byte = ' ';
+  int  i, mult = 1;
+  long num = 0;
 
-  while((byte != ESCAPE) && (byte != '\n'))
+  int player_input = ' ';
+  while(player_input != ESCAPE && player_input != '\n')
   {
-    byte = mgetc();
-    if((byte == BACKSPACE) || (byte == DELETE))
+    player_input = mgetc();
+    if(player_input == KEY_BACKSPACE || player_input == '\b' || player_input == KEY_DC || player_input == DELETE)
     {
       if(place > -1)
       {
         number[place] = 0;
-        place--;
-        getyx(Msgw, y, x);
-        wmove(Msgw, y, x - 1);
-        waddch(Msgw, ' ');
-        wmove(Msgw, y, x - 1);
-        wrefresh(Msgw);
+        --place;
+        dobackspace();
       }
     }
-    else if((byte <= '9') && (byte >= '0') && (place < 7))
+    else if(player_input <= '9' && player_input >= '0' && place < 7)
     {
-      place++;
-      number[place] = byte;
-      waddch(Msgw, byte);
-      wrefresh(Msgw);
+      ++place;
+      number[place] = player_input;
+      message_buffer.append(std::string(1, player_input), false);
+      print_messages();
     }
   }
-  waddch(Msgw, ' ');
-  if(byte == ESCAPE)
+  if(player_input == ESCAPE)
   {
-    return (ABORT);
+    return ABORT;
   }
   else
   {
-    for(i = place; i >= 0; i--)
+    for(i = place; i >= 0; --i)
     {
       num += mult * (number[i] - '0');
       mult *= 10;
     }
-    return (num);
+    return num;
   }
 }
 
 void maddch(char c)
 {
-  waddch(Msgw, c);
-  wrefresh(Msgw);
+  waddch(message_window, c);
+  wrefresh(message_window);
 }
 
 void display_death(const std::string &source)
@@ -1347,146 +1888,123 @@ void display_bigwin()
   extendlog(Str4, BIGWIN);
 }
 
-void mnumprint(int n)
-{
-  char numstr[20];
-  sprintf(numstr, "%d", n);
-  bufferappend(numstr);
-  wprintw(Msgw, "%d", n);
-  wrefresh(Msgw);
-}
-
-void mlongprint(long n)
-{
-  char numstr[20];
-  sprintf(numstr, "%ld", (long int)n);
-  bufferappend(numstr);
-  wprintw(Msgw, "%ld", n);
-  wrefresh(Msgw);
-}
-
-void menunumprint(int n)
-{
-  if(getcury(Menuw) >= ScreenLength - 2)
-  {
-    wrefresh(Menuw);
-    morewait();
-    wclear(Menuw);
-    touchwin(Menuw);
-  }
-  wprintw(Menuw, "%d", n);
-}
-
-void menulongprint(long n)
-{
-  if(getcury(Menuw) >= ScreenLength - 2)
-  {
-    wrefresh(Menuw);
-    morewait();
-    wclear(Menuw);
-    touchwin(Menuw);
-  }
-  wprintw(Menuw, "%ld", n);
-}
-
 void dobackspace()
 {
-  int x, y;
+  std::string last_message = message_buffer.get_message_history().back();
+  last_message.pop_back();
+  message_buffer.replace_last(last_message);
+  print_messages();
+}
 
-  getyx(Msgw, y, x);
-  if(x > 0)
+void print_hunger_status()
+{
+  werase(hunger_window);
+
+  if(Player.food < 0)
   {
-    waddch(Msgw, ' ');
-    wmove(Msgw, y, x - 1);
-    waddch(Msgw, ' ');
-    wmove(Msgw, y, x - 1);
+    wprintw(hunger_window, "Starving");
   }
-  wrefresh(Msgw);
+  else if(Player.food <= 3)
+  {
+    wprintw(hunger_window, "Weak");
+  }
+  else if(Player.food <= 10)
+  {
+    wprintw(hunger_window, "Ravenous");
+  }
+  else if(Player.food <= 20)
+  {
+    wprintw(hunger_window, "Hungry");
+  }
+  else if(Player.food <= 30)
+  {
+    wprintw(hunger_window, "Peckish");
+  }
+  else if(Player.food <= 36)
+  {
+    wprintw(hunger_window, "Content");
+  }
+  else if(Player.food <= 44)
+  {
+    wprintw(hunger_window, "Satiated");
+  }
+  else
+  {
+    wprintw(hunger_window, "Bloated");
+  }
+
+  wnoutrefresh(hunger_window);
+}
+
+void print_poison_status()
+{
+  werase(poison_window);
+
+  if(Player.status[POISONED] > 0)
+  {
+    wprintw(poison_window, "Poisoned");
+  }
+  else
+  {
+    wprintw(poison_window, "Vigorous");
+  }
+
+  wnoutrefresh(poison_window);
+}
+
+void print_disease_status()
+{
+  werase(disease_window);
+
+  if(Player.status[DISEASED] > 0)
+  {
+    wprintw(disease_window, "Diseased");
+  }
+  else
+  {
+    wprintw(disease_window, "Healthy");
+  }
+
+  wnoutrefresh(disease_window);
+}
+
+void print_footing_status()
+{
+  werase(footing_window);
+
+  if(gamestatusp(MOUNTED, GameStatus))
+  {
+    wprintw(footing_window, "Mounted");
+  }
+  else if(Player.status[LEVITATING])
+  {
+    wprintw(footing_window, "Levitating");
+  }
+  else
+  {
+    wprintw(footing_window, "Afoot");
+  }
+
+  wnoutrefresh(footing_window);
 }
 
 void showflags()
 {
-  phaseprint();
-  wclear(Flagw);
-  if(Player.food < 0)
-  {
-    wprintw(Flagw, "Starving\n");
-  }
-  else if(Player.food <= 3)
-  {
-    wprintw(Flagw, "Weak\n");
-  }
-  else if(Player.food <= 10)
-  {
-    wprintw(Flagw, "Ravenous\n");
-  }
-  else if(Player.food <= 20)
-  {
-    wprintw(Flagw, "Hungry\n");
-  }
-  else if(Player.food <= 30)
-  {
-    wprintw(Flagw, "A mite peckish\n");
-  }
-  else if(Player.food <= 36)
-  {
-    wprintw(Flagw, "Content\n");
-  }
-  else if(Player.food <= 44)
-  {
-    wprintw(Flagw, "Satiated\n");
-  }
-  else
-  {
-    wprintw(Flagw, "Bloated\n");
-  }
-
-  if(Player.status[POISONED] > 0)
-  {
-    wprintw(Flagw, "Poisoned\n");
-  }
-  else
-  {
-    wprintw(Flagw, "Vigorous\n");
-  }
-
-  if(Player.status[DISEASED] > 0)
-  {
-    wprintw(Flagw, "Diseased\n");
-  }
-  else
-  {
-    wprintw(Flagw, "Healthy\n");
-  }
-
-  if(gamestatusp(MOUNTED, GameStatus))
-  {
-    wprintw(Flagw, "Mounted\n");
-  }
-  else if(Player.status[LEVITATING])
-  {
-    wprintw(Flagw, "Levitating\n");
-  }
-  else
-  {
-    wprintw(Flagw, "Afoot\n");
-  }
-
-  wrefresh(Flagw);
+  print_hunger_status();
+  print_poison_status();
+  print_disease_status();
+  print_footing_status();
+  doupdate();
 }
 
 void drawomega()
 {
-  int i;
   clear();
   touchwin(stdscr);
-  for(i = 0; i < 7; i++)
+  for(int i = 0; i < 7; ++i)
   {
     move(1, 1);
-    if(optionp(SHOW_COLOUR, Player))
-    {
-      wattrset(stdscr, CHARATTR(CLR(LIGHT_BLUE)));
-    }
+    enable_attr(stdscr, CHARATTR(CLR(LIGHT_BLUE)));
     printw("\n\n\n");
     printw("\n                                    *****");
     printw("\n                               ******   ******");
@@ -1504,10 +2022,7 @@ void drawomega()
     refresh();
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     move(1, 1);
-    if(optionp(SHOW_COLOUR, Player))
-    {
-      wattrset(stdscr, CHARATTR(CLR(CYAN)));
-    }
+    enable_attr(stdscr, CHARATTR(CLR(CYAN)));
     printw("\n\n\n");
     printw("\n                                    +++++");
     printw("\n                               ++++++   ++++++");
@@ -1525,10 +2040,7 @@ void drawomega()
     refresh();
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     move(1, 1);
-    if(optionp(SHOW_COLOUR, Player))
-    {
-      wattrset(stdscr, CHARATTR(CLR(BLUE)));
-    }
+    enable_attr(stdscr, CHARATTR(CLR(BLUE)));
     printw("\n\n\n");
     printw("\n                                    .....");
     printw("\n                               ......   ......");
@@ -1553,15 +2065,17 @@ void drawomega()
 /* ScreenOffset is the upper left hand corner of the current screen
    in absolute coordinates */
 
-void screencheck(int y)
+void screencheck(int x, int y)
 {
-  ScreenOffset = std::max(y - ScreenLength / 2, 0);
+  Lastx = x;
+  Lasty = y;
+  calculate_offsets(x, y);
   show_screen();
   if(Current_Environment != E_COUNTRYSIDE)
   {
     drawmonsters(true);
   }
-  if(!offscreen(Player.y))
+  if(!offscreen(Player.x, Player.y))
   {
     drawplayer();
   }
@@ -1582,11 +2096,10 @@ void spreadroomlight(int x, int y, int roomno)
 /* illuminate one spot at x y */
 void lightspot(int x, int y)
 {
-  Symbol c;
   lset(x, y, LIT, *Level);
   lset(x, y, SEEN, *Level);
   lset(x, y, CHANGED, *Level);
-  c                          = getspot(x, y, false);
+  Symbol c = getspot(x, y, false);
   Level->site[x][y].showchar = c;
   putspot(x, y, c);
 }
@@ -1608,128 +2121,90 @@ void spreadroomdark(int x, int y, int roomno)
 
 void display_pack()
 {
-  int i;
   if(Player.packptr < 1)
   {
-    print3("Pack is empty.");
+    queue_message("Pack is empty.");
   }
   else
   {
-    menuclear();
-    menuprint("Items in Pack:\n");
-    for(i = 0; i < Player.packptr; i++)
+    std::vector<std::string> lines;
+    lines.emplace_back("Items in Pack:");
+    for(int i = 0; i < Player.packptr; i++)
     {
-      sprintf(Str1, "  %c: %s\n", i + 'A', itemid(Player.pack[i]));
-      menuprint(Str1);
+      lines.emplace_back("  " + std::string(1, i+'a') + ": " + itemid(Player.pack[i]));
     }
-    showmenu();
+    menu->load(lines);
+    menu->get_player_input();
   }
 }
 
-void display_possessions()
+object *find_first_pack_obj(int slot)
 {
-  int i;
-  for(i = 0; i < MAXITEMS; i++)
+  setgamestatus(SUPPRESS_PRINTING, GameStatus);
+  for(int i = 0; i < MAXPACK; ++i)
   {
-    display_inventory_slot(i, false);
-  }
-}
-
-void display_inventory_slot(int slotnum, int topline)
-{
-  WINDOW *W;
-  char    usechar = ')', idchar = '-';
-  if(Player.possessions[slotnum] != NULL)
-  {
-    if(Player.possessions[slotnum]->used)
+    if(slottable(Player.pack[i], slot))
     {
-      usechar = '>';
+      resetgamestatus(SUPPRESS_PRINTING, GameStatus);
+      return Player.pack[i];
     }
   }
-  if(topline)
+  resetgamestatus(SUPPRESS_PRINTING, GameStatus);
+  return nullptr;
+}
+
+const std::array<std::string, MAXITEMS> SLOT_NAMES {
+  "Up in Air     ",
+  "Ready Hand    ",
+  "Weapon Hand   ",
+  "Left Shoulder ",
+  "Right Shoulder",
+  "Belt          ",
+  "Belt          ",
+  "Belt          ",
+  "Shield        ",
+  "Armor         ",
+  "Boots         ",
+  "Cloak         ",
+  "Finger        ",
+  "Finger        ",
+  "Finger        ",
+  "Finger        ",
+};
+
+void print_inventory_menu(Symbol item_type = NULL_ITEM)
+{
+  std::vector<std::string> lines;
+  for(size_t i = 1; i < SLOT_NAMES.size(); ++i)
   {
-    W = Msg3w;
+    std::string line;
+    object *item = Player.possessions[i];
+
+    bool wildcard = (item_type == NULL_ITEM || item_type == CASH);
+    if((item && (item->objchar == item_type || wildcard)) ||
+        (!item && wildcard && find_first_pack_obj(i)))
+    {
+      line += std::string(1, index_to_key(i)) + " - ";
+    }
+    else
+    {
+      line += "    ";
+    }
+    line += SLOT_NAMES[i] + ": " + (item ? itemid(item) : "-");
+    lines.emplace_back(line);
   }
-  else
-  {
-    W = Showline[slotnum];
-    hide_line(slotnum);
-  }
-  idchar = index_to_key(slotnum);
-  touchwin(W);
-  wclear(W);
-  switch(slotnum)
-  {
-    case O_UP_IN_AIR:
-      wprintw(W, "-- Object 'up in air':");
-      break;
-    case O_READY_HAND:
-      wprintw(W, "-- %c%c ready hand: ", idchar, usechar);
-      break;
-    case O_WEAPON_HAND:
-      wprintw(W, "-- %c%c weapon hand: ", idchar, usechar);
-      break;
-    case O_LEFT_SHOULDER:
-      wprintw(W, "-- %c%c left shoulder: ", idchar, usechar);
-      break;
-    case O_RIGHT_SHOULDER:
-      wprintw(W, "-- %c%c right shoulder: ", idchar, usechar);
-      break;
-    case O_BELT1:
-      wprintw(W, "-- %c%c belt: ", idchar, usechar);
-      break;
-    case O_BELT2:
-      wprintw(W, "-- %c%c belt: ", idchar, usechar);
-      break;
-    case O_BELT3:
-      wprintw(W, "-- %c%c belt: ", idchar, usechar);
-      break;
-    case O_SHIELD:
-      wprintw(W, "-- %c%c shield: ", idchar, usechar);
-      break;
-    case O_ARMOR:
-      wprintw(W, "-- %c%c armor: ", idchar, usechar);
-      break;
-    case O_BOOTS:
-      wprintw(W, "-- %c%c boots: ", idchar, usechar);
-      break;
-    case O_CLOAK:
-      wprintw(W, "-- %c%c cloak: ", idchar, usechar);
-      break;
-    case O_RING1:
-      wprintw(W, "-- %c%c finger: ", idchar, usechar);
-      break;
-    case O_RING2:
-      wprintw(W, "-- %c%c finger: ", idchar, usechar);
-      break;
-    case O_RING3:
-      wprintw(W, "-- %c%c finger: ", idchar, usechar);
-      break;
-    case O_RING4:
-      wprintw(W, "-- %c%c finger: ", idchar, usechar);
-      break;
-  }
-  if(Player.possessions[slotnum] == NULL)
-  {
-    wprintw(W, "(slot vacant)");
-  }
-  else
-  {
-    wprintw(W, "%s", itemid(Player.possessions[slotnum]));
-  }
-  wrefresh(W);
+  menu->load(lines);
+  menu->print();
 }
 
 int move_slot(int oldslot, int newslot, int maxslot)
 {
   if((newslot >= 0) && (newslot < maxslot))
   {
-    wmove(Showline[oldslot], 0, 0);
-    waddstr(Showline[oldslot], "--");
+    mvwaddstr(Showline[oldslot], 0, 0, "--");
     wrefresh(Showline[oldslot]);
-    wmove(Showline[newslot], 0, 0);
     wstandout(Showline[newslot]);
-    waddstr(Showline[newslot], ">>");
+    mvwaddstr(Showline[newslot], 0, 0, ">>");
     wstandend(Showline[newslot]);
     wrefresh(Showline[newslot]);
     return (newslot);
@@ -1744,13 +2219,13 @@ void colour_on() {}
 
 void colour_off()
 {
-  wattrset(Levelw, CHARATTR(CLR(WHITE)));
+  wattrset(level_window, CHARATTR(CLR(WHITE)));
 }
 
 void display_option_slot(int slot)
 {
   hide_line(slot);
-  wclear(Showline[slot]);
+  werase(Showline[slot]);
   switch(slot)
   {
     case 1:
@@ -1772,14 +2247,6 @@ void display_option_slot(int slot)
     case 5:
       wprintw(Showline[slot], "-- Option CONFIRM [TF]: ");
       wprintw(Showline[slot], optionp(CONFIRM, Player) ? "(now T) " : "(now F) ");
-      break;
-    case 6:
-      wprintw(Showline[slot], "-- Option TOPINV [TF]: ");
-      wprintw(Showline[slot], optionp(TOPINV, Player) ? "(now T) " : "(now F) ");
-      break;
-    case 7:
-      wprintw(Showline[slot], "-- Option PACKADD [TF]: ");
-      wprintw(Showline[slot], optionp(PACKADD, Player) ? "(now T) " : "(now F) ");
       break;
     case 8:
       wprintw(Showline[slot], "-- Option PARANOID_CONFIRM [TF]: ");
@@ -1813,10 +2280,9 @@ void display_option_slot(int slot)
 
 void display_options()
 {
-  int i;
   menuclear();
   hide_line(0);
-  for(i = 1; i <= NUMOPTIONS; i++)
+  for(int i = 1; i <= NUMOPTIONS; ++i)
   {
     display_option_slot(i);
   }
@@ -1826,80 +2292,30 @@ void display_options()
 void deathprint()
 {
   mgetc();
-  waddch(Msgw, 'D');
-  wrefresh(Msgw);
+  waddch(message_window, 'D');
+  wrefresh(message_window);
   mgetc();
-  waddch(Msgw, 'e');
-  wrefresh(Msgw);
+  waddch(message_window, 'e');
+  wrefresh(message_window);
   mgetc();
-  waddch(Msgw, 'a');
-  wrefresh(Msgw);
+  waddch(message_window, 'a');
+  wrefresh(message_window);
   mgetc();
-  waddch(Msgw, 't');
-  wrefresh(Msgw);
+  waddch(message_window, 't');
+  wrefresh(message_window);
   mgetc();
-  waddch(Msgw, 'h');
-  wrefresh(Msgw);
+  waddch(message_window, 'h');
+  wrefresh(message_window);
   mgetc();
-}
-
-void clear_if_necessary()
-{
-  if(getcurx(Msg1w) != 0)
-  {
-    wclear(Msg1w);
-    wrefresh(Msg1w);
-  }
-
-  if(getcurx(Msg2w) != 0)
-  {
-    wclear(Msg2w);
-    wrefresh(Msg2w);
-  }
-
-  if(getcurx(Msg3w) != 0)
-  {
-    wclear(Msg3w);
-    wrefresh(Msg3w);
-  }
 }
 
 int bufferpos = 0;
 
-void buffercycle(const std::string &s)
-{
-  strcpy(Stringbuffer[bufferpos++], s.c_str());
-  if(bufferpos >= STRING_BUFFER_SIZE)
-  {
-    bufferpos = 0;
-  }
-}
-
-int bufferappend(const std::string &s)
-{
-  int pos = bufferpos - 1;
-
-  if(pos < 0)
-  {
-    pos = STRING_BUFFER_SIZE - 1;
-  }
-  if(strlen(Stringbuffer[pos]) + s.length() < 80 - 1)
-  {
-    strcat(Stringbuffer[pos], s.c_str());
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
 void bufferprint()
 {
   int i = bufferpos - 1, c, finished = 0;
-  clearmsg();
-  wprintw(Msg1w, "^p for previous message, ^n for next, anything else to quit.");
-  wrefresh(Msg1w);
+  wprintw(message_window, "^p for previous message, ^n for next, anything else to quit.");
+  wrefresh(message_window);
   do
   {
     if(i >= STRING_BUFFER_SIZE)
@@ -1910,9 +2326,9 @@ void bufferprint()
     {
       i = STRING_BUFFER_SIZE - 1;
     }
-    wclear(Msg2w);
-    wprintw(Msg2w, "%s", Stringbuffer[i]);
-    wrefresh(Msg2w);
+    werase(message_window);
+    wprintw(message_window, "%s", Stringbuffer[i]);
+    wrefresh(message_window);
     c = mgetc();
     if(c == 16)
     { /* ^p */
@@ -1927,7 +2343,6 @@ void bufferprint()
       finished = 1;
     }
   } while(!finished);
-  clearmsg();
   omshowcursor(Player.x, Player.y);
 }
 

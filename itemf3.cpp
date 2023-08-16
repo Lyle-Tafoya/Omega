@@ -22,7 +22,6 @@ void i_planes(pob)
     print1("You focus mana into the amulet....");
     Player.mana = std::max(0l, Player.mana - 100);
     dataprint();
-    morewait();
     strategic_teleport(1);
   }
 }
@@ -39,7 +38,6 @@ void i_sceptre(pob)
     HiMagicUse = Date; /* WDT: this looks like it's a good place to use
                         * the batteries. */
     print1("The Sceptre warps strangely for a second, and then subsides.");
-    morewait();
     print2("You smell ozone."); /* WDT: explain the battery use. */
   }
   else
@@ -53,7 +51,6 @@ void i_sceptre(pob)
     }
     print1("The sceptre seems to subside. You hear a high whine, as of");
     print2("capacitors beginning to recharge.");
-    morewait();
   }
 }
 
@@ -76,25 +73,21 @@ void i_stargem(pob o)
     {
       print1("The Star Gem shines brightly and emits a musical tone.");
       print2("You see a dark cloud roil away from it.");
-      morewait();
       o->blessing = 10;
     }
     print1("The star gem flares with golden light!");
-    morewait();
     if(Player.status[ILLUMINATION] < 1000)
     {
       print1("Interesting, you seem to be permanently accompanied");
       print2("by a friendly lambent glow....");
-      morewait();
       Player.status[ILLUMINATION] = 1500;
     }
     print1("You suddenly find yourself whisked away by some unknown force!");
-    morewait();
     setgamestatus(COMPLETED_ASTRAL, GameStatus);
     change_environment(E_COUNTRYSIDE);
     Player.x = 61;
     Player.y = 3;
-    screencheck(3);
+    screencheck(Player.x, Player.y);
     drawvision(Player.x, Player.y);
     locprint("Star Peak");
     Country[Player.x][Player.y].current_terrain_type = Country[Player.x][Player.y].base_terrain_type;
@@ -140,11 +133,12 @@ void i_juggernaut(pob o)
     else
     {
       print1("Vroom! ");
+      int cursor_visibility = curs_set(1);
       while(inbounds(x + Dirs[0][d], y + Dirs[1][d]))
       {
         x += Dirs[0][d];
         y += Dirs[1][d];
-        if(!view_unblocked(x, y) || offscreen(y))
+        if(!view_unblocked(x, y) || offscreen(x, y))
         {
           seen = 0;
         }
@@ -178,6 +172,7 @@ void i_juggernaut(pob o)
         plotspot(x, y, false);
         omshowcursor(x, y);
       }
+      curs_set(cursor_visibility);
       if(not_seen > 6)
       {
         print2("You hear many distant screams...");
@@ -215,11 +210,9 @@ void i_symbol(pob o)
     print1("You invoke the deity...");
     print2("...who for some reason seems rather annoyed at you...");
     print3("You are enveloped in Godsfire!");
-    morewait();
     for(; Player.hp > 1; Player.hp--)
     {
       dataprint();
-      morewait();
       for(i = 0; i < MAXITEMS; i++)
       {
         if(Player.possessions[i] != NULL)
@@ -272,10 +265,8 @@ void i_crystal(pob o)
       ViewHour = hour();
       print2("You sense the presence of life...");
       mondet(1);
-      morewait();
       print2("You sense the presence of objects...");
       objdet(1);
-      morewait();
       print2("You begin to see visions of things beyond your ken....");
       hint();
     }
@@ -297,7 +288,6 @@ void i_antioch(pob o)
     print1("Bring out the Holy Hand-Grenade of Antioch!");
     setspot(&x, &y);
     print2("Ok, you pull the pin.....");
-    morewait();
     print1("What do you count up to? ");
     count = (int)parsenum();
     if((count < 3) && (Level->site[x][y].creature != NULL))
@@ -305,8 +295,6 @@ void i_antioch(pob o)
       print1("`Three shall be the number of thy counting....");
       print2("And the number of thy counting shall be three.'");
       print3("Your target picks up the grenade and throws it back!");
-      morewait();
-      clearmsg();
       print1("Ka-Boom!");
       p_death("the Holy Hand-Grenade of Antioch");
     }
@@ -314,8 +302,6 @@ void i_antioch(pob o)
     {
       print1("`Three shall be the number of thy counting.");
       print2("And the number of thy counting shall be three.'");
-      morewait();
-      clearmsg();
       print1("Ka-Boom!");
       p_death("the Holy Hand-Grenade of Antioch");
     }
@@ -413,14 +399,12 @@ void i_helm(pob o)
 
 void i_death(pob)
 {
-  clearmsg();
   print1("Bad move...");
   p_death("the Potion of Death");
 }
 
 void i_life(pob o)
 {
-  clearmsg();
   print1("Good move.");
   Player.hp = Player.maxhp = 2 * Player.maxhp;
   dispose_lost_objects(1, o);
@@ -432,13 +416,10 @@ int orbcheck(char element)
   char response;
   print1("The orb begins to glow with increasing intensity!");
   print2("You have the feeling you need to do something more....");
-  morewait();
   print1("Burn it in fire [f] ");
   print2("Douse it with water [w] ");
-  morewait();
   print1("Smash it against the earth [e] ");
   print2("Toss is through the air [a] ");
-  morewait();
   print1("Mix the above actions, doing them in sequence [m] ");
   do
   {
@@ -604,12 +585,8 @@ void i_orbmastery(pob o)
     Player.con = Player.maxcon = 2 * Player.maxcon;
     Player.agi = Player.maxagi = 2 * Player.maxagi;
     dataprint();
-    morewait();
     print1("You have been imbued with a cosmic power....");
-    morewait();
     wish(1);
-    morewait();
-    clearmsg();
     print2("You feel much more experienced.");
     gain_experience(20000);
     *o = Objects[ARTIFACTID + 5];

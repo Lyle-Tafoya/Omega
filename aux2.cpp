@@ -6,11 +6,15 @@
    and aux3.c are not huge */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
+extern interactive_menu *menu;
 
 #ifdef SAVE_LEVELS
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
@@ -22,6 +26,8 @@ int statmod(int stat)
 {
   return ((stat - 10) / 2);
 }
+
+extern void calculate_offsets(int x, int y);
 
 /* effects of hitting */
 void p_hit(struct monster *m, int dmg, int dtype)
@@ -184,7 +190,6 @@ void drop_weapon()
     strcpy(Str1, "You dropped your ");
     strcat(Str1, Player.possessions[O_WEAPON_HAND]->objstr);
     mprint(Str1);
-    morewait();
     p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND]);
     conform_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
   }
@@ -199,22 +204,15 @@ void break_weapon()
 {
   if(Player.possessions[O_WEAPON_HAND] != NULL)
   {
-    strcpy(Str1, "Your ");
-    strcat(Str1, itemid(Player.possessions[O_WEAPON_HAND]));
-    strcat(Str1, " vibrates in your hand....");
-    mprint(Str1);
+    mprint("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
     (void)damage_item(Player.possessions[O_WEAPON_HAND]);
-    morewait();
   }
 }
 
 /* hooray */
 void p_win()
 {
-  morewait();
-  clearmsg();
   print1("You won!");
-  morewait();
   display_win();
   endgraf();
   exit(0);
@@ -228,7 +226,7 @@ void movecursor(int *x, int *y, int dx, int dy)
   {
     *x += dx;
     *y += dy;
-    screencheck(*y);
+    screencheck(*x, *y);
   }
   omshowcursor(*x, *y);
 }
@@ -373,8 +371,7 @@ void minute_status_check()
 void moon_check()
 {
   /* 24 day lunar cycle */
-  Phase = (Phase + 1) % 24;
-  phaseprint();
+  Phase    = (Phase + 1) % 24;
   Lunarity = 0;
   if(((Player.patron == DRUID) && ((Phase / 2 == 3) || (Phase / 2 == 9))) ||
      ((Player.alignment > 10) && (Phase / 2 == 6)) || ((Player.alignment < -10) && (Phase / 2 == 0)))
@@ -566,8 +563,7 @@ void tenminute_status_check()
 /* Increase in level at appropriate experience gain */
 void gain_level()
 {
-  int gained = false;
-  int hp_gain; /* FIXED! 12/30/98 */
+  int hp_gain;
 
   if(gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
@@ -575,16 +571,9 @@ void gain_level()
   }
   while(expval(Player.level + 1) <= Player.xp)
   {
-    if(!gained)
-    {
-      morewait();
-    }
-    gained = true;
     Player.level++;
     print1("You have attained a new experience level!");
-    print2("You are now ");
-    nprint2(getarticle(levelname(Player.level)));
-    nprint2(levelname(Player.level));
+    print2("You are now " + std::string(getarticle(levelname(Player.level))) + levelname(Player.level));
     hp_gain = random_range(Player.con) + 1; /* start fix 12/30/98 */
     if(Player.hp < Player.maxhp)
     {
@@ -600,11 +589,6 @@ void gain_level()
     /* If the character was given a bonus, let him keep it.  Otherwise
      * recharge him. */
     Player.mana = std::max(Player.mana, Player.maxmana); /* end fix 12/30/98 */
-    morewait();
-  }
-  if(gained)
-  {
-    clearmsg();
   }
   calc_melee();
 }
@@ -716,7 +700,6 @@ void p_drown()
   {
     while(Player.possessions[O_ARMOR] || Player.itemweight > ((int)(Player.maxweight / 2)))
     {
-      menuclear();
       switch(attempts--)
       {
         case 3:
@@ -731,11 +714,14 @@ void p_drown()
         case 0:
           p_death("drowning");
       }
-      morewait();
-      menuprint("a: Drop an item.\n");
-      menuprint("b: Bash an item.\n");
-      menuprint("c: Drop your whole pack.\n");
-      showmenu();
+      std::vector<std::string> lines =
+      {
+        {"a: Drop an item."},
+        {"b: Bash an item."},
+        {"c: Drop your whole pack."}
+      };
+      menu->load(lines);
+      menu->print();
       switch(menugetc())
       {
         case 'a':
@@ -1110,7 +1096,8 @@ void change_environment(char new_environment)
       Player.y = 7;
       setgamestatus(ARENA_MODE, GameStatus);
       load_arena();
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_ABYSS:
@@ -1121,7 +1108,8 @@ void change_environment(char new_environment)
       load_abyss();
       abyss_file();
       lose_all_items();
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_CIRCLE:
@@ -1134,38 +1122,30 @@ void change_environment(char new_environment)
       {
         print1("A bemused voice says:");
         print2("'Why are you here? You already have the Star Gem!'");
-        morewait();
       }
       else if(Player.rank[CIRCLE] > 0)
       {
         print1("You hear the voice of the Prime Sorceror:");
         print2("'Congratulations on your attainment of the Circle's Demesne.'");
-        morewait();
         print1("For the honor of the Circle, you may take the Star Gem");
         print2("and destroy it on the acme of Star Peak.");
-        morewait();
         print1("Beware the foul LawBringer who resides there...");
         print2("By the way, some of the members of the Circle seem to");
-        morewait();
         print1("have become a bit jealous of your success --");
         print2("I'd watch out for them too if I were you.");
-        morewait();
       }
       else if(Player.alignment > 0)
       {
         print1("A mysterious ghostly image materializes in front of you.");
         print2("It speaks: 'Greetings, fellow abider in Law. I am called");
-        morewait();
         print1("The LawBringer. If you wish to advance our cause, obtain");
         print2("the mystic Star Gem and return it to me on Star Peak.");
-        morewait();
         print1("Beware the power of the evil Circle of Sorcerors and the");
         print2("forces of Chaos which guard the gem.'");
-        morewait();
         print1("The strange form fades slowly.");
-        morewait();
       }
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_COURT:
@@ -1176,34 +1156,38 @@ void change_environment(char new_environment)
       LastCountryLocX = 6;
       LastCountryLocY = 1;
       load_court(true);
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_MANSION:
       WIDTH  = 64;
       LENGTH = 16;
       load_house(E_MANSION, true);
-      Player.y     = 8;
-      Player.x     = 2;
-      ScreenOffset = 0;
+      Player.y         = 8;
+      Player.x         = 2;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_HOUSE:
       WIDTH  = 64;
       LENGTH = 16;
       load_house(E_HOUSE, true);
-      Player.y     = 13;
-      Player.x     = 2;
-      ScreenOffset = 0;
+      Player.y         = 13;
+      Player.x         = 2;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_HOVEL:
       WIDTH  = 64;
       LENGTH = 16;
       load_house(E_HOVEL, true);
-      Player.y     = 9;
-      Player.x     = 2;
-      ScreenOffset = 0;
+      Player.y         = 9;
+      Player.x         = 2;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_DLAIR:
@@ -1212,7 +1196,8 @@ void change_environment(char new_environment)
       Player.y = 9;
       Player.x = 2;
       load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), true);
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_STARPEAK:
@@ -1221,7 +1206,8 @@ void change_environment(char new_environment)
       Player.y = 9;
       Player.x = 2;
       load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), true);
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_MAGIC_ISLE:
@@ -1230,16 +1216,18 @@ void change_environment(char new_environment)
       Player.y = 14;
       Player.x = 62;
       load_misle(gamestatusp(KILLED_EATER, GameStatus), true);
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_TEMPLE:
       WIDTH  = 64;
       LENGTH = 16;
       load_temple(Country[Player.x][Player.y].aux, true);
-      Player.y     = 15;
-      Player.x     = 32;
-      ScreenOffset = 0;
+      Player.y         = 15;
+      Player.x         = 32;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_CITY:
@@ -1264,8 +1252,8 @@ void change_environment(char new_environment)
       else
         msdos_changelevel(Level, new_environment, 0);
 #endif
-      Level        = City;
-      ScreenOffset = Player.y - (ScreenLength / 2);
+      Level = City;
+      calculate_offsets(Player.x, Player.y);
       show_screen();
       break;
     case E_VILLAGE:
@@ -1335,7 +1323,8 @@ void change_environment(char new_environment)
       {
         print1("You enter a small rural village.");
       }
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_CAVES:
@@ -1345,7 +1334,6 @@ void change_environment(char new_environment)
       print2("You note signs of recent passage in the dirt nearby.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        morewait();
         print1("Seeing as you might not be coming back, you feel compelled");
         print2("to let your horse go, rather than keep him hobbled outside.");
         resetgamestatus(MOUNTED, GameStatus);
@@ -1370,7 +1358,6 @@ void change_environment(char new_environment)
       print1("You pass down through the glowing crater.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        morewait();
         print1("Seeing as you might not be coming back, you feel compelled");
         print2("to let your horse go, rather than keep him hobbled outside.");
         resetgamestatus(MOUNTED, GameStatus);
@@ -1418,7 +1405,6 @@ void change_environment(char new_environment)
       print1("You cross the drawbridge. Strange forms move beneath the water.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        morewait();
         print1("Seeing as you might not be coming back, you feel compelled");
         print2("to let your horse go, rather than keep him hobbled outside.");
         resetgamestatus(MOUNTED, GameStatus);
@@ -1476,7 +1462,7 @@ void change_environment(char new_environment)
       {
         c_set(Player.x + Dirs[0][i], Player.y + Dirs[1][i], SEEN, Country);
       }
-      ScreenOffset = Player.y - (ScreenLength / 2);
+      calculate_offsets(Player.x, Player.y);
       show_screen();
       break;
     case E_TACTICAL_MAP:
@@ -1504,14 +1490,15 @@ void change_environment(char new_environment)
           Level->site[Player.x][Player.y].p_locf                                             = L_NO_OP;
         }
       }
-      ScreenOffset = 0;
+      ScreenOffset     = 0;
+      HorizontalOffset = 0;
       show_screen();
       break;
     case E_NEVER_NEVER_LAND:
     default:
       print1("There must be some mistake. You don't look like Peter Pan.");
       print2("(But here you are in Never-Never Land)");
-      ScreenOffset = Player.y - (ScreenLength / 2);
+      calculate_offsets(Player.x, Player.y);
       show_screen();
       break;
   }

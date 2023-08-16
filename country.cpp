@@ -129,7 +129,6 @@ void load_dlair(int empty, int populate)
   if(empty)
   {
     mprint("The Lair is now devoid of inhabitants and treasure.");
-    morewait();
   }
 
   if(!populate)
@@ -280,7 +279,6 @@ void load_speak(int empty, int populate)
   if(empty)
   {
     mprint("The peak is now devoid of inhabitants and treasure.");
-    morewait();
   }
 
   if(!populate)
@@ -429,7 +427,6 @@ void load_misle(int empty, int populate)
   if(empty)
   {
     mprint("The isle is now devoid of inhabitants and treasure.");
-    morewait();
   }
 
   if(!populate)

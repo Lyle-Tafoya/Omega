@@ -122,8 +122,8 @@ void m_dropstuff(struct monster *m)
     objectlist *tmp = possessions->next;
     if(merge_item_with_list(drop_pile, possessions->thing, possessions->thing->number))
     {
-      delete possessions->thing;
-      delete possessions;
+      free(possessions->thing);
+      free(possessions);
     }
     else
     {
@@ -377,7 +377,6 @@ void m_death(struct monster *m)
               else
               {
                 mprint("materializes, sheds a tear, and leaves.");
-                morewait();
               }
               alert_guards();
               /* will cause order to be destroyed if no guards or justiciar*/

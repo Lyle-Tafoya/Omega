@@ -4,8 +4,13 @@
 /* various item functions: potions,scrolls,boots,cloaks,things,food */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
+
+extern interactive_menu *menu;
 
 /* general item functions */
 
@@ -64,28 +69,27 @@ void i_jane_t(pob o)
       j = STICKID;
       k = ARTIFACTID;
   }
-  menuclear();
-  menuprint("You could probably now recognise:\n");
+  std::vector<std::string> lines;
+  lines.emplace_back("You could probably now recognize:");
   for(i = j; i < k; i++)
   {
     Objects[i].known = 1;
     v                = Objects[i].truename[0];
     if((v >= 'A' && v <= 'Z') || volume == 3)
     {
-      sprintf(Str1, "   %s\n", Objects[i].truename);
+      lines.emplace_back("   " + std::string(Objects[i].truename));
     }
     else if(v == 'a' || v == 'e' || v == 'i' || v == 'o' || v == 'u')
     {
-      sprintf(Str1, "   an %s\n", Objects[i].truename);
+      lines.emplace_back("   an " + std::string(Objects[i].truename));
     }
     else
     {
-      sprintf(Str1, "   a %s\n", Objects[i].truename);
+      lines.emplace_back("   a " + std::string(Objects[i].truename));
     }
-    menuprint(Str1);
   }
-  showmenu();
-  morewait();
+  menu->load(lines);
+  menu->get_player_input();
   xredraw();
 }
 
@@ -154,7 +158,6 @@ void i_spells(pob o)
     Objects[o->id].known = 1;
   }
   mprint("A scroll of spells.");
-  morewait();
   learnspell(o->blessing);
 }
 
@@ -490,15 +493,10 @@ void i_poison_food(pob)
 void i_pepper_food(pob)
 {
   mprint("You innocently start to chew the szechuan pepper.....");
-  morewait();
   mprint("hot.");
-  morewait();
   mprint("Hot.");
-  morewait();
   mprint("Hot!");
-  morewait();
   mprint("HOT!!!!!!");
-  morewait();
   p_damage(1, UNSTOPPABLE, "a szechuan pepper");
   mprint("Your sinuses melt and run out your ears.");
   mprint("Your mouth and throat seem to be permanently on fire.");

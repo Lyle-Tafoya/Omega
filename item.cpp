@@ -807,7 +807,6 @@ int twohandedp(int id)
 
 void call_item_function(int object_function, object *o)
 {
-  clearmsg();
   switch(object_function)
   {
     case -1:

@@ -5,6 +5,9 @@
 #include "glob.h"
 
 #include <algorithm>
+#include <ctime>
+
+extern void calculate_offsets(int x, int y);
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
@@ -155,9 +158,9 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
     stock_level();
   }
   find_stairs(fromlevel, tolevel);
-  ScreenOffset = Player.y - (ScreenLength / 2);
+  calculate_offsets(Player.x, Player.y);
   show_screen();
-  screencheck(Player.y);
+  screencheck(Player.x, Player.y);
   drawvision(Player.x, Player.y);
   /* synchronize with player on level change */
   Player.click = (Tick + 1) % 60;
@@ -283,213 +286,145 @@ void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, Symbol loc, char rs
   }
 }
 
-char *roomname(int index)
+const char *roomname(int index)
 {
   switch(index)
   {
     case RS_ZORCH:
-      strcpy(Str4, "A place zorched by powerful magic.");
-      break;
+      return "A place zorched by powerful magic";
     case RS_COURT:
-      strcpy(Str4, "The Court of the ArchMage.");
-      break;
+      return "The Court of the ArchMage";
     case RS_CIRCLE:
-      strcpy(Str4, "The Astral Demesne of the Circle of Sorcerors");
-      break;
+      return "Astral Demesne of the Circle of Sorcerors";
     case RS_MAGIC_ISLE:
-      strcpy(Str4, "An island positively reeking of magic");
-      break;
+      return "An island positively reeking of magic";
     case RS_STARPEAK:
-      strcpy(Str4, "Near the oddly glowing peak of a mountain");
-      break;
+      return "Near the oddly glowing peak of a mountain";
     case RS_VOLCANO:
-      strcpy(Str4, "Deep within the bowels of the earth");
-      break;
+      return "Deep within the bowels of the earth";
     case RS_HIGHASTRAL:
-      strcpy(Str4, "The High Astral Plane");
-      break;
+      return "The High Astral Plane";
     case RS_EARTHPLANE:
-      strcpy(Str4, "The Plane of Earth");
-      break;
+      return "The Plane of Earth";
     case RS_WATERPLANE:
-      strcpy(Str4, "The Plane of Water");
-      break;
+      return "The Plane of Water";
     case RS_FIREPLANE:
-      strcpy(Str4, "The Plane of Fire");
-      break;
+      return "The Plane of Fire";
     case RS_AIRPLANE:
-      strcpy(Str4, "The Plane of Air");
-      break;
+      return "The Plane of Air";
     case RS_KITCHEN:
-      strcpy(Str4, "A kitchen");
-      break;
+      return "A kitchen";
     case RS_BATHROOM:
-      strcpy(Str4, "A bathroom");
-      break;
+      return "A bathroom";
     case RS_BEDROOM:
-      strcpy(Str4, "A bedroom");
-      break;
+      return "A bedroom";
     case RS_DININGROOM:
-      strcpy(Str4, "A dining room");
-      break;
+      return "A dining room";
     case RS_SECRETPASSAGE:
-      strcpy(Str4, "A secret passage");
-      break;
+      return "A secret passage";
     case RS_CLOSET:
-      strcpy(Str4, "A stuffy closet");
-      break;
+      return "A stuffy closet";
     case RS_ARENA:
-      strcpy(Str4, "The Rampart Arena");
-      break;
+      return "The Rampart Arena";
     case RS_DROWNED_SEWER:
-      strcpy(Str4, "A water-filled sewer node");
-      break;
+      return "A water-filled sewer node";
     case RS_DRAINED_SEWER:
-      strcpy(Str4, "An unused sewer node");
-      break;
+      return "An unused sewer node";
     case RS_SEWER_DUCT:
-      strcpy(Str4, "A winding sewer duct");
-      break;
+      return "A winding sewer duct";
     case RS_DESTINY:
-      strcpy(Str4, "The Halls of Fate");
-      break;
+      return "The Halls of Fate";
     case RS_DRUID:
-      strcpy(Str4, "The Great Henge");
-      break;
+      return "The Great Henge";
     case RS_HECATE:
-      strcpy(Str4, "The Church of the Far Side");
-      break;
+      return "The Church of the Far Side";
     case RS_SET:
-      strcpy(Str4, "The Temple of the Black Hand");
-      break;
+      return "The Temple of the Black Hand";
     case RS_ATHENA:
-      strcpy(Str4, "The Parthenon");
-      break;
+      return "The Parthenon";
     case RS_ODIN:
-      strcpy(Str4, "The Shrine of the Noose");
-      break;
+      return "The Shrine of the Noose";
     case RS_ADEPT:
-      strcpy(Str4, "The Adept's Challenge");
-      break;
+      return "The Adept's Challenge";
     case RS_WYRM:
-      strcpy(Str4, "The Sunken Cavern of the Great Wyrm.");
-      break;
+      return "The Sunken Cavern of the Great Wyrm";
     case RS_OCEAN:
-      strcpy(Str4, "The Underground Ocean.");
-      break;
+      return "The Underground Ocean";
     case RS_PONDS:
-      strcpy(Str4, "A series of subterranean pools and streams.");
-      break;
+      return "A series of subterranean pools and streams";
     case RS_DRAGONLORD:
-      strcpy(Str4, "The Lair of the DragonLord.");
-      break;
+      return "The Lair of the DragonLord";
     case RS_GOBLINKING:
-      strcpy(Str4, "The Caves of the Goblins.");
-      break;
+      return "The Caves of the Goblins";
     case RS_CAVERN:
-      strcpy(Str4, "A vast natural cavern.");
-      break;
+      return "A vast natural cavern";
     case RS_CORRIDOR:
-      strcpy(Str4, "A dimly lit corridor.");
-      break;
+      return "A dimly lit corridor";
     case RS_WALLSPACE:
-      strcpy(Str4, "A niche hollowed out of the wall.");
-      break;
+      return "A niche hollowed out of the wall";
     case ROOMBASE + 0:
-      strcpy(Str4, "An abandoned garderobe.");
-      break;
+      return "An abandoned garderobe";
     case ROOMBASE + 1:
-      strcpy(Str4, "A dungeon cell.");
-      break;
+      return "A dungeon cell";
     case ROOMBASE + 2:
-      strcpy(Str4, "A tiled chamber.");
-      break;
+      return "A tiled chamber";
     case ROOMBASE + 3:
-      strcpy(Str4, "A crystal cavern.");
-      break;
+      return "A crystal cavern";
     case ROOMBASE + 4:
-      strcpy(Str4, "Someone's bedroom.");
-      break;
+      return "Someone's bedroom";
     case ROOMBASE + 5:
-      strcpy(Str4, "An old storeroom.");
-      break;
+      return "An old storeroom";
     case ROOMBASE + 6:
-      strcpy(Str4, "A room with charred walls.");
-      break;
+      return "A room with charred walls";
     case ROOMBASE + 7:
-      strcpy(Str4, "A marble hall.");
-      break;
+      return "A marble hall";
     case ROOMBASE + 8:
-      strcpy(Str4, "An eerie cave.");
-      break;
+      return "An eerie cave";
     case ROOMBASE + 9:
-      strcpy(Str4, "A ransacked treasure-chamber.");
-      break;
+      return "A ransacked treasure-chamber";
     case ROOMBASE + 10:
-      strcpy(Str4, "A smoke-filled room.");
-      break;
+      return "A smoke-filled room";
     case ROOMBASE + 11:
-      strcpy(Str4, "A well-appointed apartment.");
-      break;
+      return "A well-appointed apartment";
     case ROOMBASE + 12:
-      strcpy(Str4, "An antechamber.");
-      break;
+      return "An antechamber";
     case ROOMBASE + 13:
-      strcpy(Str4, "An unoccupied harem.");
-      break;
+      return "An unoccupied harem";
     case ROOMBASE + 14:
-      strcpy(Str4, "A multi-purpose room.");
-      break;
+      return "A multi-purpose room";
     case ROOMBASE + 15:
-      strcpy(Str4, "A room filled with stalactites.");
-      break;
+      return "A room filled with stalactites";
     case ROOMBASE + 16:
-      strcpy(Str4, "An underground greenhouse.");
-      break;
+      return "An underground greenhouse";
     case ROOMBASE + 17:
-      strcpy(Str4, "A water closet.");
-      break;
+      return "A water closet";
     case ROOMBASE + 18:
-      strcpy(Str4, "A study.");
-      break;
+      return "A study";
     case ROOMBASE + 19:
-      strcpy(Str4, "A living room.");
-      break;
+      return "A living room";
     case ROOMBASE + 20:
-      strcpy(Str4, "A comfortable den.");
-      break;
+      return "A comfortable den";
     case ROOMBASE + 21:
-      strcpy(Str4, "An abatoir.");
-      break;
+      return "An abatoir";
     case ROOMBASE + 22:
-      strcpy(Str4, "A boudoir.");
-      break;
+      return "A boudoir";
     case ROOMBASE + 23:
-      strcpy(Str4, "A star chamber.");
-      break;
+      return "A star chamber";
     case ROOMBASE + 24:
-      strcpy(Str4, "A manmade cavern.");
-      break;
+      return "A manmade cavern";
     case ROOMBASE + 25:
-      strcpy(Str4, "A sewer control room");
-      break;
+      return "A sewer control room";
     case ROOMBASE + 26:
-      strcpy(Str4, "A shrine to High Magic");
-      break;
+      return "A shrine to High Magic";
     case ROOMBASE + 27:
-      strcpy(Str4, "A magic laboratory");
-      break;
+      return "A magic laboratory";
     case ROOMBASE + 28:
-      strcpy(Str4, "A room with inscribed pentagram");
-      break;
+      return "A room with inscribed pentagram";
     case ROOMBASE + 29:
-      strcpy(Str4, "A chamber with a blue crystal omega dais");
-      break;
+      return "A chamber with a blue crystal omega dais";
     default:
-      strcpy(Str4, "A room of mystery and allure.");
-      break;
+      return "A room of mystery and allure";
   }
-  return (Str4);
 }
 
 /* puts the player on the first set of stairs from the apt level */

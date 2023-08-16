@@ -294,7 +294,6 @@ void load_city(int populate)
           break;
         default:
           printf("\nOops... missed a case: '%c'   \n", site);
-          morewait();
       }
 
       if(loc_statusp(i, j, SEEN, *Level))

@@ -20,16 +20,13 @@ void m_talk_druid(struct monster *m)
     if(!gamestatusp(SPOKE_TO_DRUID, GameStatus))
     {
       setgamestatus(SPOKE_TO_DRUID, GameStatus);
-      morewait();
       print1("The Archdruid congratulates you on reaching his sanctum.");
       print2("You feel competent.");
-      morewait();
       gain_experience(300);
       if(Player.patron == DRUID)
       {
         print1("The Archdruid conveys to you the wisdom of nature....");
         print2("You feel like a sage.");
-        morewait();
         for(i = 0; i < NUMRANKS; i++)
         {
           if(Player.guildxp[i] > 0)
@@ -252,13 +249,11 @@ void m_talk_guard(struct monster *m)
       {
         print1("Go directly to jail. Do not pass go, do not collect 200Au.");
         print2("You are taken to the city gaol.");
-        morewait();
         send_to_jail();
         drawvision(Player.x, Player.y);
       }
       else
       {
-        clearmsg();
         print1("Mollified, the guard disarms you and sends you away.");
         dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
         pacify_guards();
@@ -266,7 +261,6 @@ void m_talk_guard(struct monster *m)
     }
     else
     {
-      clearmsg();
       print1("All right, you criminal scum, you asked for it!");
     }
   }
@@ -284,12 +278,10 @@ void m_talk_guard(struct monster *m)
           CitySiteList[i][0] = true;
         }
       }
-      clearmsg();
       print1("You feel more knowledgeable!");
     }
     else
     {
-      clearmsg();
       print1("Next time you need help, you can ask someone else!");
     }
     received_directions = true;
@@ -345,7 +337,6 @@ void m_talk_thief(struct monster *m)
     print1("The cloaked figure makes a gesture which you recognize...");
     print2("...the thieves' guild recognition signal!");
     print3("'Sorry, mate, thought you were a mark....'");
-    morewait();
     m_vanish(m);
   }
   else
@@ -374,16 +365,12 @@ void m_talk_im(struct monster *m)
   else
   {
     m->possessions->thing->known = 2;
-    clearmsg();
-    mprint("I have a fine");
-    mprint(itemid(m->possessions->thing));
-    mprint("for only");
-    mlongprint(std::max(10l, 4 * true_item_value(m->possessions->thing)));
-    mprint("Au.");
-    mprint("Want it? [yn] ");
+    long price                   = std::max(10l, 4 * true_item_value(m->possessions->thing));
+    mprint("I have a fine " + std::string(itemid(m->possessions->thing)) + " for only " +
+           std::to_string(price) + " Au. Want it? [yn] ");
     if(ynq() == 'y')
     {
-      if(Player.cash < (std::max(10l, 4 * true_item_value(m->possessions->thing))))
+      if(Player.cash < price)
       {
         if(Player.alignment > 10)
         {
@@ -400,7 +387,7 @@ void m_talk_im(struct monster *m)
       else
       {
         mprint("Here you are. Have a good day.");
-        Player.cash -= std::max(10l, (4 * item_value(m->possessions->thing)));
+        Player.cash -= price;
         gain_item(m->possessions->thing);
         m->possessions = NULL;
       }
@@ -701,7 +688,6 @@ void m_talk_demonlover(struct monster *m)
   {
     strcat(Str2, " notices your disinterest and changes with a snarl...");
     mprint(Str2);
-    morewait();
   }
   else
   {
@@ -725,10 +711,8 @@ void m_talk_demonlover(struct monster *m)
       }
       strcat(Str2, " shows you a good time....");
       mprint(Str2);
-      morewait();
       mprint("You feel your life energies draining...");
       level_drain(random_range(3) + 1, "a demon's kiss");
-      morewait();
     }
   }
   m->talkf    = M_TALK_EVIL;
@@ -874,9 +858,7 @@ void m_talk_animal(struct monster *m)
 void m_talk_scream(struct monster *m)
 {
   mprint("A thinly echoing scream reaches your ears....");
-  morewait();
   mprint("You feel doomed....");
-  morewait();
   mprint("A bird appears and flies three times widdershins around your head.");
   summon(-1, QUAIL);
   m->talkf = M_TALK_EVIL;
@@ -961,7 +943,6 @@ void m_talk_prime(struct monster *m)
     {
       print1("The Prime nods brusquely at you, removes a gem from his");
       print2("sleeve, places it on the floor, and vanishes wordlessly.");
-      morewait();
       m_dropstuff(m);
       m_vanish(m);
     }
@@ -971,7 +952,6 @@ void m_talk_prime(struct monster *m)
       print2("glowing blue sparks... He winks mischievously at you....");
       if(Player.rank[CIRCLE] > 0)
       {
-        morewait();
         print1("The blue sparks strike you! You feel enhanced!");
         print2("You feel more experienced....");
         Player.pow += Player.rank[CIRCLE];

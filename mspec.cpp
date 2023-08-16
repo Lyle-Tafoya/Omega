@@ -286,7 +286,6 @@ void m_sp_surprise(struct monster *m)
             mprint("A shriek of hatred causes you to momentarily freeze up!");
             break;
         }
-        morewait();
         setgamestatus(SKIP_PLAYER, GameStatus);
         m_status_reset(*m, M_INVISIBLE);
       }
@@ -353,7 +352,6 @@ void m_sp_eater(struct monster *m)
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
       mprint("A strange numbing sensation comes over you...");
-      morewait();
       Player.mana = Player.mana / 2;
       if(random_range(4))
       {
@@ -874,7 +872,6 @@ void m_sp_lair(struct monster *m)
   {
     mprint("You notice a number of dragons waking up....");
     mprint("You are struck by a quantity of firebolts.");
-    morewait();
     for(ml = Level->mlist; ml != NULL; ml = ml->next)
     {
       if(ml->m->hp > 0 && ml->m->specialf == M_SP_LAIR)

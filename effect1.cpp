@@ -9,6 +9,8 @@
 extern void item_equip(object *);
 extern void item_unequip(object *);
 
+extern int get_message_input();
+
 /* enchant */
 void enchant(int delta)
 {
@@ -23,7 +25,6 @@ void enchant(int delta)
        Player.possessions[i]->objchar == MISSILEWEAPON)
     {
       print1("You feel fortunate.");
-      morewait();
     }
     else if(Player.possessions[i]->blessing < 0 ||
             (Player.possessions[i]->objchar == ARTIFACT && random_range(3)))
@@ -34,7 +35,6 @@ void enchant(int delta)
       }
       nprint1(itemid(Player.possessions[i]));
       nprint1(" glows, but the glow flickers out...");
-      morewait();
     }
     else
     {
@@ -49,7 +49,6 @@ void enchant(int delta)
       }
       nprint1(itemid(Player.possessions[i]));
       nprint1(" radiates an aura of mundanity!");
-      morewait();
       Player.possessions[i]->plus       = 0;
       Player.possessions[i]->charge     = -1;
       Player.possessions[i]->on_use     = I_NOTHING;
@@ -67,7 +66,6 @@ void enchant(int delta)
     if(i == ABORT)
     {
       print1("You feel unlucky.");
-      morewait();
     }
     else if(i == CASHVALUE)
     {
@@ -82,7 +80,6 @@ void enchant(int delta)
         print2("Maybe it wasn't such a good idea....");
       }
       Player.cash += change_cash;
-      morewait();
     }
     else if(Player.possessions[i]->objchar == ARTIFACT)
     {
@@ -96,8 +93,6 @@ void enchant(int delta)
         print1("The enchantment spell enfolds the ");
         nprint1(itemid(Player.possessions[i]));
         print2("and the potent enchantment of the Artifact causes a backlash!");
-        morewait();
-        clearmsg();
         manastorm(Player.x, Player.y, Player.possessions[i]->level * 5);
       }
     }
@@ -107,7 +102,6 @@ void enchant(int delta)
       {
         print1("Uh-oh, the force of the enchantment was too much!");
         print2("There is a loud explosion!");
-        morewait();
         manastorm(Player.x, Player.y, Player.possessions[i]->plus * 5);
         dispose_lost_objects(1, Player.possessions[i]);
       }
@@ -121,7 +115,6 @@ void enchant(int delta)
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
         print1("The item shines!");
-        morewait();
         Player.possessions[i]->plus += delta + 1;
         if(Player.possessions[i]->charge > -1 && Player.possessions[i]->objchar == STICK)
         {
@@ -150,7 +143,6 @@ void bless(int blessing)
     if(index == ABORT)
     {
       print1("You feel fortunate.");
-      morewait();
     }
     else
     {
@@ -160,7 +152,6 @@ void bless(int blessing)
         nprint1("your ");
       }
       nprint1(itemid(Player.possessions[index]));
-      morewait();
       used = (Player.possessions[index]->used);
       if(used)
       {
@@ -187,7 +178,6 @@ void bless(int blessing)
     if(index == CASHVALUE)
     {
       print1("Blessing your money has no effect.");
-      morewait();
     }
     else if(index != ABORT)
     {
@@ -202,26 +192,22 @@ void bless(int blessing)
       if(Player.possessions[index]->blessing < 0 - (blessing + 1))
       {
         print2("which is evil enough to resist the effect of the blessing!");
-        morewait();
       }
       else if(Player.possessions[index]->blessing < -1)
       {
         print2("which disintegrates under the influence of the holy aura!");
-        morewait();
         Player.itemweight -= Player.possessions[index]->weight;
         dispose_lost_objects(1, Player.possessions[index]);
       }
       else if(Player.possessions[index]->blessing < blessing + 1)
       {
         print2("which now seems affected by afflatus!");
-        morewait();
         Player.possessions[index]->blessing++;
         Player.possessions[index]->plus = abs(Player.possessions[index]->plus) + 1;
       }
       else
       {
         print2("The hierolux fades without any appreciable effect....");
-        morewait();
       }
       if(used && (Player.possessions[index] != NULL))
       {
@@ -308,7 +294,6 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
     default:
       assert(false); /* this should never happen, right? WDT */
   }
-  clearmsg();
 
   do_los(boltchar, &xx, &yy, tx, ty);
 
@@ -597,16 +582,15 @@ void mondet(int blessing)
     }
   }
   levelrefresh();
-  morewait();
+  get_message_input();
   show_screen();
 }
 
 void objdet(int blessing)
 {
-  int i, j;
-  for(i = 0; i < WIDTH; i++)
+  for(int i = 0; i < WIDTH; ++i)
   {
-    for(j = 0; j < LENGTH; j++)
+    for(int j = 0; j < LENGTH; ++j)
     {
       if(Level->site[i][j].things != NULL)
       {
@@ -622,15 +606,13 @@ void objdet(int blessing)
     }
   }
   levelrefresh();
-  morewait();
+  get_message_input();
   show_screen();
 }
 
 void identify(int blessing)
 {
   int index;
-
-  clearmsg();
 
   if(blessing == 0)
   {
@@ -731,9 +713,7 @@ int random_item()
 /* various kinds of wishes */
 void wish(int blessing)
 {
-  int  i;
-  char wishstr[80];
-  clearmsg();
+  std::string wishstr;
   print1("What do you wish for? ");
   if(blessing < 0)
   {
@@ -741,19 +721,19 @@ void wish(int blessing)
   }
   else
   {
-    strcpy(wishstr, msgscanstring());
+    wishstr = msgscanstring();
   }
-  if(blessing < 0 || strcmp(wishstr, "Death") == 0)
+  if(blessing < 0 ||  wishstr == "Death")
   {
     print2("As you wish, so shall it be.");
     p_death("a deathwish");
   }
-  if(strcmp(wishstr, "Power") == 0)
+  if(wishstr == "Power")
   {
     print2("You feel a sudden surge of energy");
     Player.mana = calcmana() * 10;
   }
-  else if(strcmp(wishstr, "Skill") == 0)
+  else if(wishstr == "Skill")
   {
     print2("You feel more competent.");
     if(gamestatusp(CHEATED, GameStatus))
@@ -765,34 +745,34 @@ void wish(int blessing)
       gain_experience(std::min(10000l, Player.xp));
     }
   }
-  else if(strcmp(wishstr, "Wealth") == 0)
+  else if(wishstr == "Wealth")
   {
     print2("You are submerged in shower of gold pieces!");
     Player.cash += 10000;
   }
-  else if(strcmp(wishstr, "Balance") == 0)
+  else if(wishstr == "Balance")
   {
     print2("You feel neutral.");
     Player.alignment = 0;
   }
-  else if(strcmp(wishstr, "Chaos") == 0)
+  else if(wishstr == "Chaos")
   {
     print2("You feel chaotic.");
     Player.alignment -= 25;
   }
-  else if(strcmp(wishstr, "Law") == 0)
+  else if(wishstr == "Law")
   {
     print2("You feel lawful.");
     Player.alignment += 25;
   }
-  else if(strcmp(wishstr, "Location") == 0)
+  else if(wishstr == "Location")
   {
     strategic_teleport(1);
   }
-  else if(strcmp(wishstr, "Knowledge") == 0)
+  else if(wishstr == "Knowledge")
   {
     print2("You feel more knowledgeable.");
-    i = random_range(NUMSPELLS);
+    int i = random_range(NUMSPELLS);
     if(Spells[i].known)
     {
       Spells[i].powerdrain = (std::max(1, Spells[i].powerdrain / 2));
@@ -802,26 +782,26 @@ void wish(int blessing)
       Spells[i].known = true;
     }
   }
-  else if(strcmp(wishstr, "Health") == 0)
+  else if(wishstr == "Health")
   {
     print2("You feel vigorous");
     Player.hp               = std::max(Player.hp, Player.maxhp);
     Player.status[DISEASED] = 0;
     Player.status[POISONED] = 0;
   }
-  else if(strcmp(wishstr, "Destruction") == 0)
+  else if(wishstr == "Destruction")
   {
     annihilate(gamestatusp(CHEATED, GameStatus));
   }
-  else if(strcmp(wishstr, "Acquisition") == 0)
+  else if(wishstr == "Acquisition")
   {
     acquire(gamestatusp(CHEATED, GameStatus));
   }
-  else if(strcmp(wishstr, "Summoning") == 0)
+  else if(wishstr == "Summoning")
   {
     summon(gamestatusp(CHEATED, GameStatus), -1);
   }
-  else if(strcmp(wishstr, "Stats") == 0 && gamestatusp(CHEATED, GameStatus))
+  else if(wishstr == "Stats" && gamestatusp(CHEATED, GameStatus))
   {
     Player.str = Player.maxstr = Player.con = Player.maxcon = Player.agi = Player.maxagi = Player.dex =
       Player.maxdex = Player.iq = Player.maxiq = Player.pow = Player.maxpow = 200;
@@ -854,7 +834,6 @@ void acquire(int blessing)
       print1("Smoke drifts out of your pack.... ");
       print2("Destroyed: ");
       nprint2(itemid(Player.possessions[index]));
-      morewait();
       dispose_lost_objects(1, Player.possessions[index]);
     }
   }

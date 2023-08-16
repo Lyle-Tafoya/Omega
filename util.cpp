@@ -46,10 +46,15 @@ int screenmod(int y)
 {
   return (y - ScreenOffset);
 }
-
-int offscreen(int y)
+int screenmod_horizontal(int x)
 {
-  return ((y < 0) || (y < ScreenOffset) || (y > ScreenOffset + ScreenLength - 1) || (y > LENGTH));
+  return x - HorizontalOffset;
+}
+
+int offscreen(int x, int y)
+{
+  return ((y < 0) || (y < ScreenOffset) || (y > ScreenOffset + ScreenLength - 1) || (y > LENGTH)) ||
+         ((x < 0) || (x < HorizontalOffset) || (x > HorizontalOffset + ScreenWidth - 1) || (x > WIDTH));
 }
 
 /* always hit on a natural 0; never hit on a natural 19 */
@@ -873,7 +878,7 @@ int confirmation()
   if(optionp(PARANOID_CONFIRM, Player))
   {
     mprint("[yes] [no]");
-    return strcmp(msgscanstring(), "yes") == 0;
+    return msgscanstring() == "yes";
   }
   else
   {
@@ -1015,7 +1020,6 @@ void *checkmalloc(unsigned int bytes)
   else
   {
     print1("Out of memory!  Saving and quitting.");
-    morewait();
     save(true);
     endgraf();
     exit(0);
@@ -1023,7 +1027,7 @@ void *checkmalloc(unsigned int bytes)
 }
 
 /* alloc just enough string space for str, strcpy, and return pointer */
-const char *salloc(char *str)
+const char *salloc(const char *str)
 {
   char *s = (char *)checkmalloc((unsigned)(strlen(str) + 1));
   strcpy(s, str);

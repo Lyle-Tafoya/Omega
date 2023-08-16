@@ -21,7 +21,6 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
 
   change_to_game_perms();
   fd = fopen(filestring.c_str(), optionstring.c_str());
-  clearmsg();
   while(fd == NULL)
   {
     print3("Warning! Error opening file:");
@@ -38,7 +37,6 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
     else
     {
       print2("Sorry 'bout that.... Saving character, then quitting.");
-      morewait();
       save(true);
       endgraf();
       exit(0);
@@ -384,7 +382,6 @@ void checkhigh(const std::string &descrip, int behavior)
       Hibehavior = behavior;
       save_hiscore_npc(0);
       mprint("Yow! A new high score!");
-      morewait();
     }
     if(Player.alignment < Chaos)
     {
@@ -394,7 +391,6 @@ void checkhigh(const std::string &descrip, int behavior)
       Chaoslordbehavior = behavior;
       save_hiscore_npc(13);
       mprint("Criminy! A new Lord of Chaos!");
-      morewait();
     }
     if(Player.alignment > Law)
     {
@@ -404,7 +400,6 @@ void checkhigh(const std::string &descrip, int behavior)
       Lawlordbehavior = behavior;
       save_hiscore_npc(14);
       mprint("Gosh! A new Lord of Law!");
-      morewait();
     }
   }
 }
@@ -617,42 +612,4 @@ void displaycryptfile(const std::string &filestr)
   clear();
   refresh();
   fclose(fd);
-}
-
-/* copy a file given a string name of file */
-void copyfile(const std::string &srcstr)
-{
-  char  deststr[STRING_LEN - 36];
-  char  buffer[STRING_LEN];
-  FILE *in, *out;
-
-  print1("Enter name of file to create: ");
-  strcpy(deststr, msgscanstring());
-  if(strlen(deststr) == 0)
-  {
-    print2("Aborting...");
-    morewait();
-    return;
-  }
-  in = checkfopen(srcstr, "rb");
-  change_to_user_perms();
-  out = fopen(deststr, "wb");
-  if(!out)
-  {
-    sprintf(buffer, "Unable to write to file %s - Aborting.", deststr);
-    print2(buffer);
-    change_to_game_perms();
-    morewait();
-    fclose(in);
-    return;
-  }
-  print2("Copying file....");
-  while(fgets(buffer, STRING_LEN, in))
-  {
-    fputs(buffer, out);
-  }
-  fclose(in);
-  fclose(out);
-  change_to_game_perms();
-  print3("Done.");
 }

@@ -11,6 +11,11 @@
 extern void kill_all_levels();
 #endif
 
+extern void print_combat_stats();
+extern void queue_message(const std::string &message);
+extern int get_level_input();
+extern void room_name_print(const std::string &room_name);
+
 /* check to see if too much tunneling has been done in this level */
 void tunnelcheck()
 {
@@ -66,92 +71,76 @@ void tunnelcheck()
 /* displays a room's name */
 void showroom(int i)
 {
-  strcpy(Str1, "");
-  strcpy(Str2, "");
+  std::string location;
+  std::string room_name;
   switch(Current_Environment)
   {
     case E_MANSION:
-      strcpy(Str2, "A luxurious mansion: ");
+      location = "A luxurious mansion: ";
       break;
     case E_HOUSE:
-      strcpy(Str2, "A house: ");
+      location = "A house: ";
       break;
     case E_HOVEL:
-      strcpy(Str2, "A hovel: ");
+      location = "A hovel: ";
       break;
     case E_CITY:
-      strcpy(Str2, "The City of Rampart");
+      location = "The City of Rampart";
       break;
     case E_VILLAGE:
       switch(Villagenum)
       {
         case 1:
-          strcpy(Str2, "The Village of Star View");
+          location = "The  Village of Star View";
           break;
         case 2:
-          strcpy(Str2, "The Village of Woodmere");
+          location = "The Village of Woodmere";
           break;
         case 3:
-          strcpy(Str2, "The Village of Stormwatch");
+          location = "The Village of Stormwatch";
           break;
         case 4:
-          strcpy(Str2, "The Village of Thaumaris");
+          location = "The Village of Thaumaris";
           break;
         case 5:
-          strcpy(Str2, "The Village of Skorch");
+          location = "The Village of Skorch";
           break;
         case 6:
-          strcpy(Str2, "The Village of Whorfen");
+          location = "The Village of Whorfen";
           break;
       }
       break;
     case E_CAVES:
-      strcpy(Str2, "The Goblin Caves: ");
+      location = "The Goblin Caves: ";
       break;
     case E_CASTLE:
-      strcpy(Str2, "The Archmage's Castle: ");
+      location = "The Archmage's Castle: ";
       break;
     case E_ASTRAL:
-      strcpy(Str2, "The Astral Plane: ");
+      location = "The Astral Plane: ";
       break;
     case E_VOLCANO:
-      strcpy(Str2, "The Volcano: ");
+      location = "The Volcano: ";
       break;
     case E_SEWERS:
-      strcpy(Str2, "The Sewers: ");
+      location = "The Sewers: ";
       break;
     case E_TACTICAL_MAP:
-      strcpy(Str2, "The Tactical Map ");
-      break;
-    default:
-      strcpy(Str2, "");
+      location = "The Tactical Map ";
       break;
   }
   if(Current_Environment == Current_Dungeon)
   {
-    strcpy(Str1, "Level ");
-    if(Level->depth < 10)
-    {
-      Str1[6] = Level->depth + '0';
-      Str1[7] = 0;
-    }
-    else
-    {
-      Str1[6] = (Level->depth / 10) + '0';
-      Str1[7] = (Level->depth % 10) + '0';
-      Str1[8] = 0;
-    }
-    strcat(Str1, " (");
-    strcat(Str1, roomname(i));
-    strcat(Str1, ")");
+    location += "Level " + std::to_string(Level->depth);
+    room_name = std::string("(") + roomname(i) + ")";
   }
-  else if(strlen(Str2) == 0 || Current_Environment == E_MANSION || Current_Environment == E_HOUSE ||
+  else if(location.empty() || Current_Environment == E_MANSION || Current_Environment == E_HOUSE ||
           Current_Environment == E_HOVEL)
   {
-    strcpy(Str1, roomname(i));
+    location += roomname(i);
   }
-  strcat(Str2, Str1);
-  locprint(Str2);
+  locprint(location);
+  room_name_print(room_name);
 }
 
 int player_on_sanctuary()
@@ -443,7 +432,7 @@ void calc_melee()
     Player.defense += Player.possessions[O_ARMOR]->plus - Player.possessions[O_ARMOR]->aux;
   }
 
-  comwinprint();
+  print_combat_stats();
   showflags();
   dataprint();
 }
@@ -515,22 +504,18 @@ int damage_item(pob o)
   /* special case -- break star gem */
   if(o->id == ARTIFACTID + 21)
   {
-    print1("The Star Gem shatters into a million glistening shards....");
+    queue_message("The Star Gem shatters into a million glistening shards....");
     if(Current_Environment == E_STARPEAK)
     {
       if(!gamestatusp(KILLED_LAWBRINGER, GameStatus))
       {
-        print2("You hear an agonizing scream of anguish and despair.");
+        queue_message("You hear an agonizing scream of anguish and despair.");
       }
-      morewait();
-      print1("A raging torrent of energy escapes in an explosion of magic!");
-      print2("The energy flows to the apex of Star Peak where there is");
-      morewait();
-      clearmsg();
-      print1("an enormous explosion!");
-      morewait();
+      queue_message("A raging torrent of energy escapes in an explosion of magic!");
+      queue_message("The energy flows to the apex of Star Peak where there is");
+      queue_message("an enormous explosion!");
       annihilate(1);
-      print3("You seem to gain strength in the chaotic glare of magic!");
+      queue_message("You seem to gain strength in the chaotic glare of magic!");
       Player.str = std::max(Player.str, Player.maxstr + 5); /* FIXED! 12/25/98 */
       Player.pow = std::max(Player.pow, Player.maxpow + 5); /* ditto */
       Player.alignment -= 200;
@@ -538,9 +523,8 @@ int damage_item(pob o)
     }
     else
     {
-      morewait();
-      print1("The shards coalesce back together again, and vanish");
-      print2("with a muted giggle.");
+      queue_message("The shards coalesce back together again, and vanish");
+      queue_message("with a muted giggle.");
       dispose_lost_objects(1, o);
       Objects[o->id].uniqueness = UNIQUE_UNMADE; /* FIXED! 12/30/98 */
       /* WDT HACK: the above is correct only if UNIQUE_UNMADE means that
@@ -561,7 +545,6 @@ int damage_item(pob o)
         strcat(Str1, (o->blessing >= 0 ? o->truename : o->cursestr));
         strcat(Str1, " explodes!");
         print1(Str1);
-        morewait();
         if(o->charge < 1)
         {
           nprint1(" Fzzz... Out of Power... Oh well...");
@@ -570,7 +553,6 @@ int damage_item(pob o)
         {
           nprint1(" Ka-Blamm!!!");
           /* general case. Some sticks will eventually do special things */
-          morewait();
           manastorm(Player.x, Player.y, o->charge * o->level * 10);
           dispose_lost_objects(1, o);
         }
@@ -578,25 +560,17 @@ int damage_item(pob o)
       }
       else if((o->blessing > 0) && (o->level > random_range(10)))
       {
-        strcpy(Str1, "Your ");
-        strcat(Str1, itemid(o));
-        strcat(Str1, " glows strongly.");
-        print1(Str1);
+        print1("Your " + itemid(o) + " glows strongly.");
         return 0;
       }
       else if((o->blessing < -1) && (o->level > random_range(10)))
       {
-        strcpy(Str1, "You hear an evil giggle from your ");
-        strcat(Str1, itemid(o));
-        print1(Str1);
+        print1("You hear an evil giggle from your " + itemid(o));
         return 0;
       }
       else if(o->plus > 0)
       {
-        strcpy(Str1, "Your ");
-        strcat(Str1, itemid(o));
-        strcat(Str1, " glows and then fades.");
-        print1(Str1);
+        print1("Your " + itemid(o) + " glows and fades.");
         o->plus--;
         return 0;
       }
@@ -610,11 +584,7 @@ int damage_item(pob o)
         {
           print1("You hear an agonized scream!");
         }
-        strcpy(Str1, "Your ");
-        strcat(Str1, itemid(o));
-        strcat(Str1, " shatters in a thousand lost fragments!");
-        print2(Str1);
-        morewait();
+        print2("Your " + itemid(o) + " shatters in a thousand lost fragments!");
         dispose_lost_objects(1, o);
         return 1;
       }
@@ -658,7 +628,6 @@ void p_death(const std::string &fromstring)
 {
   Player.hp = -1;
   print3("You died!");
-  morewait();
   display_death(fromstring);
 #ifdef SAVE_LEVELS
   kill_all_levels();
@@ -670,13 +639,14 @@ void p_death(const std::string &fromstring)
 /* move the cursor around, like for firing a wand, sets x and y to target */
 void setspot(int *x, int *y)
 {
-  char c = ' ';
   mprint("Targeting.... ? for help");
+  int cursor_visibility = curs_set(1);
   omshowcursor(*x, *y);
-  while((c != '.') && (c != ESCAPE))
+  int player_input;
+  do
   {
-    c = lgetc();
-    switch(c)
+    player_input = get_level_input();
+    switch(player_input)
     {
       case 'h':
       case '4':
@@ -711,17 +681,17 @@ void setspot(int *x, int *y)
         movecursor(x, y, 1, -1);
         break;
       case '?':
-        clearmsg();
         mprint("Use vi keys or numeric keypad to move cursor to target.");
         mprint("Hit the '.' key when done, or ESCAPE to abort.");
         break;
     }
-  }
-  if(c == ESCAPE)
+  } while(player_input != '.' && player_input != ESCAPE);
+  curs_set(cursor_visibility);
+  if(player_input == ESCAPE)
   {
     *x = *y = ABORT;
   }
-  screencheck(Player.y);
+  screencheck(Player.x, Player.y);
 }
 
 /* get a direction: return index into Dirs array corresponding to direction */
@@ -899,7 +869,6 @@ bool goberserk()
     {
       wentberserk = true;
       fight_monster(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
-      morewait();
     }
   }
   strcpy(Player.meleestr, meleestr);
@@ -1044,7 +1013,6 @@ void surrender(struct monster *m)
       if(ynq2() == 'y')
       {
         print2("The guard grabs you, and drags you to court.");
-        morewait();
         send_to_jail();
       }
       else
@@ -1059,7 +1027,6 @@ void surrender(struct monster *m)
   }
   else
   {
-    morewait();
     print1("Your surrender is accepted.");
     if(Player.cash > 0)
     {
@@ -1084,9 +1051,7 @@ void surrender(struct monster *m)
       print2("You also give away your best item... ");
       nprint2(itemid(Player.possessions[bestitem]));
       nprint2(".");
-      morewait();
       givemonster(m, Player.possessions[bestitem]);
-      morewait(); /* msgs come from givemonster */
       conform_unused_object(Player.possessions[bestitem]);
       Player.possessions[bestitem] = NULL;
     }
@@ -1099,8 +1064,6 @@ void surrender(struct monster *m)
     m->dmg += m->level;
     m->ac += m->level;
     m->xpv += m->level * 10;
-    morewait();
-    clearmsg();
     if((m->talkf == M_TALK_EVIL) && random_range(10))
     {
       print1("It continues to attack you, laughing evilly!");
@@ -1139,7 +1102,6 @@ void threaten(struct monster *m)
       mprint("You try to cow it with your awesome presence.");
       break;
   }
-  morewait(); /* FIXED! 12/25/98 */
   if(!m_statusp(*m, HOSTILE))
   {
     print3("You only annoy it with your futile demand.");
@@ -1185,7 +1147,6 @@ void threaten(struct monster *m)
       print2("'If you love something set it free ... '");
       if(random_range(100) == 13)
       {
-        morewait();
         print2("'...If it doesn't come back, hunt it down and kill it.'");
       }
       print3("It departs with a renewed sense of its own mortality.");
@@ -1202,51 +1163,51 @@ std::string levelname(int level)
   switch(level)
   {
     case 0:
-      return "neophyte";
+      return "Neophyte";
     case 1:
-      return "beginner";
+      return "Beginner";
     case 2:
-      return "tourist";
+      return "Tourist";
     case 3:
-      return "traveller";
+      return "Traveller";
     case 4:
-      return "wayfarer";
+      return "Wayfarer";
     case 5:
-      return "peregrinator";
+      return "Peregrinator";
     case 6:
-      return "wanderer";
+      return "Wanderer";
     case 7:
-      return "hunter";
+      return "Hunter";
     case 8:
-      return "scout";
+      return "Scout";
     case 9:
-      return "trailblazer";
+      return "Trailblazer";
     case 10:
-      return "discoverer";
+      return "Discoverer";
     case 11:
-      return "explorer";
+      return "Explorer";
     case 12:
-      return "senior explorer";
+      return "Senior Explorer";
     case 13:
-      return "ranger";
+      return "Ranger";
     case 14:
-      return "ranger captain";
+      return "Ranger Captain";
     case 15:
-      return "ranger knight";
+      return "Ranger Knight";
     case 16:
-      return "adventurer";
+      return "Adventurer";
     case 17:
-      return "experienced adventurer";
+      return "Experienced Adventurer";
     case 18:
-      return "skilled adventurer";
+      return "Skilled Adventurer";
     case 19:
-      return "master adventurer";
+      return "Master Adventurer";
     case 20:
-      return "hero";
+      return "Hero";
     case 21:
-      return "superhero";
+      return "Superhero";
     case 22:
-      return "demigod";
+      return "Demigod";
     default:
       if(level < 100)
       {

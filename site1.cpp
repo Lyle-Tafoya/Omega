@@ -3,12 +3,22 @@
 /* 1st half of site functions and aux functions to them */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
+#include "scrolling_buffer.hpp"
 
 #include <algorithm>
 #include <chrono>
+#include <string>
 #include <thread>
+#include <vector>
 
 extern void item_unequip(object *);
+
+extern void           print_messages();
+extern void           queue_message(const std::string &message);
+extern void           append_message(const std::string &message, bool force_break = false);
+extern scrolling_buffer message_buffer;
+extern interactive_menu *menu;
 
 /* the bank; can be broken into (!) */
 void l_bank()
@@ -16,97 +26,99 @@ void l_bank()
   int  done = false, valid = false;
   long amount;
   char response;
-  char passwd[64];
-  print1("First Bank of Omega: Autoteller Carrel.");
+  std::string passwd;
+  queue_message("First Bank of Omega: Autoteller Carrel.");
 
   if(gamestatusp(BANK_BROKEN, GameStatus))
   {
-    print2("You see a damaged autoteller.");
+    append_message("You see a damaged autoteller.", true);
   }
   else
   {
-    print2("The proximity sensor activates the autoteller as you approach.");
-    morewait();
-    clearmsg();
+    append_message("The proximity sensor activates the autoteller as you approach.", true);
     while(!done)
     {
-      print1("Current Balance: ");
-      mlongprint(Balance);
-      nprint1("Au. ");
-      nprint1(" Enter command (? for help) > ");
+      append_message("Current Balance: " + std::to_string(Balance) + "Au.", true);
+      append_message("Enter command (? for help) > ", true);
       response = mgetc();
       if(response == '?')
       {
-        menuclear();
-        menuprint("?: This List.\n");
+        std::vector<std::string> lines;
+        lines.emplace_back("?: This List");
         if(strcmp(Password, "") == 0)
         {
-          menuprint("O: Open an account.\n");
+          lines.emplace_back("O: Open an account");
         }
         else
         {
-          menuprint("P: Enter password.\n");
-          menuprint("D: Deposit.\n");
-          menuprint("W: Withdraw\n");
+          lines.emplace_back("P: Enter password");
+          lines.emplace_back("D: Deposit");
+          lines.emplace_back("W: Withdraw");
         }
-        menuprint("X: eXit\n");
-        showmenu();
-        morewait();
-        xredraw();
+        lines.emplace_back("X: eXit");
+        menu->load(lines);
+        menu->print();
         continue;
       }
       else if((response == 'P') && (strcmp(Password, "") != 0))
       {
-        clearmsg();
-        print1("Password: ");
-        strcpy(passwd, msgscanstring());
-        valid = (strcmp(passwd, Password) == 0);
+        append_message("Password: ", true);
+        passwd = msgscanstring();
+        valid = (passwd == Password);
         if(!valid)
         {
           done = true;
-          menuclear();
-          menuprint("Alert! Alert! Invalid Password!\n");
-          menuprint("The police are being summoned!\n");
-          menuprint("Please wait for the police to arrive....\n\n");
-          menuprint("----Hit space bar to continue----\n");
-          showmenu();
-          response = menugetc();
+          std::vector<std::string> lines =
+          {
+            {"Alert! Alert! Invalid Password!"},
+            {"The police are being summoned!"},
+            {"Please wait for the police to arrive...."},
+            {""},
+            {"----Hit space bar to continue----"}
+          };
+          menu->load(lines);
+          response = menu->get_player_input();
           if(response == ' ')
           {
             Player.alignment += 5;
             xredraw();
-            print1("Ah ha! Trying to rob the bank, eh?");
-            print2("Take him away, boys!");
-            morewait();
+            append_message("Ah ha! Trying to rob the bank, eh?", true);
+            append_message("Take him away, boys!");
             send_to_jail();
           }
           else
           {
             Player.alignment -= 5;
-            menuclear();
+            lines.clear();
+            menu->load(lines);
+            menu->print();
             std::this_thread::sleep_for(std::chrono::seconds(4));
-            menuprint("^@^@^@^@^@00AD1203BC0F0000FFFFFFFFFFFF\n");
-            menuprint("Interrupt in _get_space. Illegal Character.\n");
-            showmenu();
+            lines.emplace_back("^@^@^@^@^@00AD1203BC0F0000FFFFFFFFFFFF");
+            lines.emplace_back("Interrupt in _get_space. Illegal Character.");
+            menu->load(lines);
+            menu->print();
             std::this_thread::sleep_for(std::chrono::seconds(4));
-            menuprint("Aborting _police_alert.....\n");
-            menuprint("Attempting reboot.....\n");
-            showmenu();
+            lines.emplace_back("Aborting _police_alert.....");
+            lines.emplace_back("Attempting reboot.....");
+            menu->load(lines);
+            menu->print();
             std::this_thread::sleep_for(std::chrono::seconds(4));
-            menuprint("Warning: Illegal shmop at _count_cash.\n");
-            menuprint("Warning: Command Buffer NOT CLEARED\n");
-            showmenu();
+            lines.emplace_back("Warning: Illegal shmop at _count_cash.");
+            lines.emplace_back("Warning: Command Buffer NOT CLEARED");
+            menu->load(lines);
+            menu->print();
             std::this_thread::sleep_for(std::chrono::seconds(4));
-            menuprint("Reboot Complete. Execution Continuing.\n");
-            menuprint("Withdrawing: 4294967297 Au.\n");
-            menuprint("Warning: Arithmetic Overflow in _withdraw\n");
-            showmenu();
+            lines.emplace_back("Reboot Complete. Execution Continuing.");
+            lines.emplace_back("Withdrawing: 4294967297 Au.");
+            lines.emplace_back("Warning: Arithmetic Overflow in _withdraw");
+            menu->load(lines);
+            menu->print();
             std::this_thread::sleep_for(std::chrono::seconds(4));
-            menuprint("Yo mama. Core dumped.\n");
-            showmenu();
+            lines.emplace_back("Yo mama. Core dumped.");
+            menu->load(lines);
+            menu->print();
             std::this_thread::sleep_for(std::chrono::seconds(4));
             xredraw();
-            clearmsg();
             print1("The cash machine begins to spew gold pieces!");
             print2("You pick up your entire balance and then some!");
             Player.cash += Balance + 1000 + random_range(3000);
@@ -116,75 +128,71 @@ void l_bank()
         }
         else
         {
-          print2("Password accepted. Working.");
+          append_message("Password accepted. Working.", true);
         }
       }
       else if((response == 'D') && valid)
       {
-        clearmsg();
-        print1("Amount: ");
+        append_message("Amount: ", true);
         amount = get_money(Player.cash);
         if(amount < 1)
         {
-          print3("Transaction aborted.");
+          append_message("Transaction aborted.", true);
         }
         else if(amount > Player.cash)
         {
-          print3("Deposit too large -- transaction aborted.");
+          append_message("Deposit too large -- transaction aborted.", true);
         }
         else
         {
-          print2("Transaction accomplished.");
+          append_message("Transaction accomplished.", true);
           Balance += amount;
           Player.cash -= amount;
         }
       }
       else if((response == 'W') && valid)
       {
-        clearmsg();
-        print1("Amount: ");
+        append_message("Amount: ", true);
         amount = get_money(Balance);
         if(amount < 1)
         {
-          print3("Transaction aborted.");
+          append_message("Transaction aborted.", true);
         }
         else if(amount > Balance)
         {
-          print3("Withdrawal too large -- transaction aborted.");
+          append_message("Withdrawal too large -- transaction aborted.", true);
         }
         else
         {
-          print2("Transaction accomplished.");
+          append_message("Transaction accomplished.", true);
           Balance -= amount;
           Player.cash += amount;
         }
       }
       else if(response == 'X')
       {
-        clearmsg();
-        print1("Bye!");
+        append_message("Bye!", true);
         done = true;
       }
       else if((response == 'O') && (strcmp(Password, "") == 0))
       {
-        clearmsg();
-        print1("Opening new account.");
-        nprint1(" Please enter new password: ");
-        strcpy(Password, msgscanstring());
+        append_message("Opening new account.", true);
+        append_message(" Please enter new password: ");
+        strcpy(Password, msgscanstring().c_str());
         if(strcmp(Password, "") == 0)
         {
-          print3("Illegal to use null password -- aborted.");
+          append_message("Illegal to use null password -- aborted.", true);
           done = true;
         }
         else
         {
-          print2("Password validated; account saved.");
+          append_message("Password validated; account saved.", true);
           valid = true;
         }
       }
       else
       {
-        print3(" Illegal command.");
+        append_message("Illegal command.", true);
       }
       dataprint();
     }
@@ -194,32 +202,30 @@ void l_bank()
 
 void l_armorer()
 {
-  int  done = false;
-  char action;
+  int done = false;
   if(hour() == 12)
   {
-    print3("Unfortunately, this is Julie's lunch hour -- try again later.");
+    queue_message("Unfortunately, this is Julie's lunch hour -- try again later.");
   }
   else if(nighttime())
   {
-    print3("It seems that Julie keeps regular business hours.");
+    queue_message("It seems that Julie keeps regular business hours.");
   }
   else
   {
     while(!done)
     {
-      clearmsg();
-      print1("Julie's: Buy Armor, Weapons, or Leave [a,w,ESCAPE] ");
-      action = mgetc();
-      if(action == ESCAPE)
+      queue_message("Julie's: Buy Armor, Weapons, or Leave [a,w,ESCAPE] ");
+      int player_input = mgetc();
+      if(player_input == ESCAPE)
       {
         done = true;
       }
-      else if(action == 'a')
+      else if(player_input == 'a')
       {
         buyfromstock(ARMORID, 10);
       }
-      else if(action == 'w')
+      else if(player_input == 'w')
       {
         buyfromstock(WEAPONID, 23);
       }
@@ -230,46 +236,38 @@ void l_armorer()
 
 void buyfromstock(int base, int numitems)
 {
-  int  i;
-  char item;
-  pob  newitem;
+  pob newitem;
 
-  print2("Purchase which item? [ESCAPE to quit] ");
-  menuclear();
-  for(i = 0; i < numitems; i++)
+  append_message("Purchase which item? [ESCAPE to quit] ", true);
+  std::vector<std::string> lines;
+  for(int i = 0; i < numitems; ++i)
   {
-    strcpy(Str4, " :");
-    Str4[0] = i + 'a';
-    strcat(Str4, Objects[base + i].objstr);
-    menuprint(Str4);
-    menuprint("\n");
+    lines.emplace_back(std::string(1, i + 'a') + ":" + Objects[base + i].objstr);
   }
-  showmenu();
-  item = ' ';
-  while((item != ESCAPE) && ((item < 'a') || (item >= 'a' + numitems)))
+  menu->load(lines);
+  int player_input = ' ';
+  while(player_input != ESCAPE && (player_input < 'a' || player_input >= 'a' + numitems))
   {
-    item = mgetc();
+    player_input = menu->get_player_input();
   }
-  if(item != ESCAPE)
+  if(player_input != ESCAPE)
   {
-    i              = item - 'a';
+    int i          = player_input - 'a';
     newitem        = ((pob)checkmalloc(sizeof(objtype)));
     *newitem       = Objects[base + i];
     newitem->known = 2;
-    clearmsg();
-    print1("I can let you have it for ");
-    mlongprint(2 * true_item_value(newitem));
-    nprint1("Au. Buy it? [yn] ");
+    long price     = 2 * true_item_value(newitem);
+    append_message("I can let you have it for " + std::to_string(price) + " Au. Buy it? [yn] ", true);
     if(ynq1() == 'y')
     {
-      if(Player.cash < 2 * true_item_value(newitem))
+      if(Player.cash < price)
       {
-        print2("Why not try again some time you have the cash?");
+        append_message("Why not try again some time you have the cash?", true);
         free((char *)newitem);
       }
       else
       {
-        Player.cash -= 2 * true_item_value(newitem);
+        Player.cash -= price;
         dataprint();
         gain_item(newitem);
       }
@@ -286,30 +284,28 @@ void l_club()
 #define hinthour club_hinthour
   char response;
 
-  print1("Rampart Explorers' Club.");
+  queue_message("Rampart Explorers' Club.");
   if(!gamestatusp(CLUB_MEMBER, GameStatus))
   {
     if(Player.level < 2)
     {
-      print3("Only reknowned adventurers need apply.");
+      append_message("Only reknowned adventurers need apply.", true);
     }
     else
     {
-      print2("Dues are 100Au. Pay it? [yn] ");
+      append_message("Dues are 100Au. Pay it? [yn] ", true);
       if(ynq2() == 'y')
       {
         if(Player.cash < 100)
         {
-          print3("Beat it, or we'll blackball you!");
+          append_message("Beat it, or we'll blackball you!", true);
         }
         else
         {
-          print1("Welcome to the club! You are taught the spell of Return.");
-          print2("When cast on the first level of a dungeon it");
-          morewait();
-          clearmsg();
-          print1("will transport you down to the lowest level");
-          print2("you have explored, and vice versa.");
+          append_message("Welcome to the club! You are taught the spell of Return.", true);
+          append_message("When cast on the first level of a dungeon it", true);
+          append_message("will transport you down to the lowest level");
+          append_message("you have explored, and vice versa.");
           Spells[S_RETURN].known = true;
           Player.cash -= 100;
           setgamestatus(CLUB_MEMBER, GameStatus);
@@ -317,13 +313,13 @@ void l_club()
       }
       else
       {
-        print2("OK, but you're missing out on our benefits....");
+        append_message("OK, but you're missing out on our benefits....", true);
       }
     }
   }
   else
   {
-    print2("Shop at the club store or listen for rumors [sl] ");
+    append_message("Shop at the club store or listen for rumors [sl] ", true);
     do
     {
       response = (char)mcigetc();
@@ -332,11 +328,11 @@ void l_club()
     {
       if(hinthour == hour())
       {
-        print2("You don't hear anything useful.");
+        append_message("You don't hear anything useful.", true);
       }
       else
       {
-        print1("You overhear a conversation....");
+        append_message("You overhear a conversation....", true);
         hint();
         hinthour = hour();
       }
@@ -348,7 +344,7 @@ void l_club()
     }
     else if(response == ESCAPE)
     {
-      print2("Be seeing you, old chap!");
+      append_message("Be seeing you, old chap!", true);
     }
   }
 }
@@ -358,25 +354,30 @@ void l_gym()
 {
   int done    = true;
   int trained = 0;
-  clearmsg();
+  print_messages();
+  std::vector<std::string> lines =
+  {
+    {"The Rampart Gymnasium"},
+    {""},
+    {""},
+    {"Train for 2000 Au. Choose:"},
+    {""},
+    {"a: work out in the weight room"},
+    {"b: use our gymnastics equipment"},
+    {"c: take our new anaerobics course"},
+    {"d: enroll in dance lessons"},
+    {"ESCAPE: Leave this place"}
+  };
+  menu->load(lines);
+  menu->print();
+  append_message("The Rampart Gymnasium", true);
   do
   {
-    print1("The Rampart Gymnasium");
     if((Gymcredit > 0) || (Player.rank[ARENA]))
     {
-      nprint1("-- Credit: ");
-      mlongprint(Gymcredit);
-      nprint1("Au.");
+      append_message("-- Credit: " + std::to_string(Gymcredit) + " Au.");
     }
     done = false;
-    menuclear();
-    menuprint("Train for 2000 Au. Choose:\n");
-    menuprint("\na: work out in the weight room");
-    menuprint("\nb: use our gymnastics equipment");
-    menuprint("\nc: take our new anaerobics course");
-    menuprint("\nd: enroll in dance lessons.");
-    menuprint("\nESCAPE: Leave this place.");
-    showmenu();
     switch(mgetc())
     {
       case 'a':
@@ -392,18 +393,17 @@ void l_gym()
         gymtrain(&(Player.maxagi), &(Player.agi));
         break;
       case ESCAPE:
-        clearmsg();
         if(trained == 0)
         {
-          print1("Well, it's your body you're depriving!");
+          append_message("Well, it's your body you're depriving!", true);
         }
         else if(trained < 3)
         {
-          print1("You towel yourself off, and find the exit.");
+          append_message("You towel yourself off, and find the exit.", true);
         }
         else
         {
-          print1("A refreshing bath, and you're on your way.");
+          append_message("A refreshing bath, and you're on your way.", true);
         }
         done = true;
         break;
@@ -419,12 +419,10 @@ void l_gym()
 
 void l_healer()
 {
-  print1("Rampart Healers. Member RMA.");
-  morewait();
-  clearmsg();
-  print1("a: Heal injuries (50 crowns)");
-  print2("b: Cure disease (250 crowns)");
-  print3("ESCAPE: Leave these antiseptic alcoves.");
+  queue_message("Rampart Healers. Member RMA.");
+  append_message("a: Heal injuries (50 crowns)", true);
+  append_message("b: Cure disease (250 crowns)", true);
+  append_message("ESCAPE: Leave these antiseptic alcoves.", true);
   switch((char)mcigetc())
   {
     case 'a':
@@ -434,7 +432,7 @@ void l_healer()
       cureforpay();
       break;
     default:
-      print3("OK, but suppose you have Acute Satyriasis?");
+      append_message("OK, but suppose you have Acute Satyriasis?", true);
       break;
   }
 }
@@ -472,8 +470,6 @@ void statue_random(int x, int y)
       break;
     case 4:
       print1("The statue looks slightly pained. It speaks:");
-      morewait();
-      clearmsg();
       hint();
       break;
     case 5:
@@ -569,31 +565,35 @@ void l_casino()
 {
   int  i, done = false, a, b, c, match;
   char response;
-  print1("Rampart Mithril Nugget Casino.");
+  queue_message("Rampart Mithril Nugget Casino.");
   if(random_range(10) == 1)
   {
-    print2("Casino closed due to Grand Jury investigation.");
+    append_message("Casino closed due to Grand Jury investigation.", true);
   }
   else
   {
     while(!done)
     {
-      morewait();
-      clearmsg();
-      print1("a: Drop 100Au in the slots.");
-      print2("b: Risk 1000Au  at roulette.");
-      print3("ESCAPE: Leave this green baize hall.");
+      append_message("a: Drop 100Au in the slots.", true);
+      append_message("b: Risk 1000Au at roulette.", true);
+      append_message("ESCAPE: Leave this green baize hall.", true);
       response = (char)mcigetc();
       if(response == 'a')
       {
         if(Player.cash < 100)
         {
-          print3("No credit, jerk.");
+          append_message("No credit, jerk.", true);
         }
         else
         {
           Player.cash -= 100;
           dataprint();
+          print_messages();
+          const std::string REEL_VALUES[] = {
+            "<Slime Mold>", "<Lemon>", "<Copper>", "<Nymph>", "<Sword>",
+            "<Shield>",     "<Chest>", "<Bar>",    "<Orb>",   "<Mithril Nugget>",
+          };
+          append_message("", true);
           for(i = 0; i < 20; i++)
           {
             if(i == 19)
@@ -607,10 +607,8 @@ void l_casino()
             a = random_range(10);
             b = random_range(10);
             c = random_range(10);
-            clearmsg1();
-            mprint(slotstr(a));
-            mprint(slotstr(b));
-            mprint(slotstr(c));
+            message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
+            print_messages();
           }
           if(winnings > 0)
           {
@@ -627,41 +625,43 @@ void l_casino()
             b = random_range(10);
             c = random_range(10);
           }
-          clearmsg();
-          mprint(slotstr(a));
-          mprint(slotstr(b));
-          mprint(slotstr(c));
+          message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
+          print_messages();
           if((a == b) && (a == c))
           {
-            print3("Jackpot Winner!");
-            winnings += (a + 2) * (b + 2) * (c + 2) * 5;
-            Player.cash += (a + 2) * (b + 2) * (c + 2) * 5;
+            append_message("Jackpot Winner!", true);
+            long reward = (a + 2) * (b + 2) * (c + 2) * 5;
+            winnings += reward;
+            Player.cash += reward;
             dataprint();
           }
           else if(a == b)
           {
-            print3("Winner!");
-            Player.cash += (a + 2) * (b + 2) * 5;
+            append_message("Winner!", true);
+            long reward = (a + 2) * (b + 2) * 5;
+            winnings += reward;
+            Player.cash += reward;
             dataprint();
-            winnings += (a + 2) * (b + 2) * 5;
           }
           else if(a == c)
           {
-            print3("Winner!");
-            Player.cash += (a + 2) * (c + 2) * 5;
+            append_message("Winner!", true);
+            long reward = (a + 2) * (c + 2) * 5;
+            winnings += reward;
+            Player.cash += reward;
             dataprint();
-            winnings += (a + 2) * (c + 2) * 5;
           }
           else if(c == b)
           {
-            print3("Winner!");
-            Player.cash += (c + 2) * (b + 2) * 5;
+            append_message("Winner!", true);
+            long reward = (c + 2) * (b + 2) * 5;
+            winnings += reward;
+            Player.cash += reward;
             dataprint();
-            winnings += (c + 2) * (b + 2) * 5;
           }
           else
           {
-            print3("Loser!");
+            append_message("Loser!", true);
             winnings -= 100;
           }
         }
@@ -670,18 +670,19 @@ void l_casino()
       {
         if(Player.cash < 1000)
         {
-          mprint("No credit, jerk.");
+          append_message("No credit, jerk.", true);
         }
         else
         {
           Player.cash -= 1000;
           dataprint();
-          print1("Red or Black? [rb]");
+          append_message("Red or Black? [rb] ", true);
           do
           {
             response = (char)mcigetc();
           } while((response != 'r') && (response != 'b'));
           match = (response == 'r' ? 0 : 1);
+          append_message("", true);
           for(i = 0; i < 20; i++)
           {
             if(i == 19)
@@ -696,17 +697,17 @@ void l_casino()
             b = a % 2;
             if(a == 0)
             {
-              print1(" 0 ");
+              message_buffer.replace_last("0 ");
             }
             else if(a == 1)
             {
-              print1(" 0 - 0 ");
+              message_buffer.replace_last("0 - 0 ");
             }
             else
             {
-              print1((b == 0) ? "Red " : "Black ");
-              mnumprint(a - 1);
+              message_buffer.replace_last((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
             }
+            print_messages();
           }
           if(winnings > 0)
           {
@@ -723,27 +724,27 @@ void l_casino()
           }
           if(a == 0)
           {
-            print1(" 0 ");
+            message_buffer.replace_last("0 ");
           }
           else if(a == 1)
           {
-            print1(" 0 - 0 ");
+            message_buffer.replace_last(" 0 - 0 ");
           }
           else
           {
-            print1((b == 0) ? "Red " : "Black ");
-            mnumprint(a - 1);
+            message_buffer.replace_last((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
           }
+          print_messages();
           if((a > 1) && (b == match))
           {
-            print3(" Winner!");
+            append_message("Winner!", true);
             winnings += 1000;
             Player.cash += 2000;
             dataprint();
           }
           else
           {
-            print3(" Loser!");
+            append_message("Loser!", true);
             winnings -= 1000;
             dataprint();
           }
@@ -761,12 +762,11 @@ void l_commandant()
 {
   int num;
   pob food;
-  print1("Commandant Sonder's Rampart-fried Lyzzard partes. Open 24 hrs.");
-  print2("Buy a bucket! Only 5 Au. Make a purchase? [yn] ");
+  queue_message("Commandant Sonder's Rampart-fried Lyzzard partes. Open 24 hrs.");
+  append_message("Buy a bucket! Only 5 Au. Make a purchase? [yn] ", true);
   if(ynq2() == 'y')
   {
-    clearmsg();
-    print1("How many? ");
+    append_message("How many? ", true);
     num = (int)parsenum();
     if(num < 1)
     {
@@ -784,19 +784,18 @@ void l_commandant()
       food->number = num;
       if(num == 1)
       {
-        print2("There you go, mac! One Lyzzard Bucket, coming up.");
+        append_message("There you go, mac! One Lyzzard Bucket, coming up.", true);
       }
       else
       {
-        print2("A passel of Lyzzard Buckets, for your pleasure.");
+        append_message("A passel of Lyzzard Buckets, for your pleasure.", true);
       }
-      morewait();
       gain_item(food);
     }
   }
   else
   {
-    print2("Don't blame the Commandant if you starve!");
+    append_message("Don't blame the Commandant if you starve!", true);
   }
 }
 
@@ -855,14 +854,18 @@ void l_tavern()
   print1("The Centaur and Nymph -- J. Riley, prop.");
   if(nighttime())
   {
-    menuclear();
-    menuprint("Riley says: Whataya have?\n\n");
-    menuprint("a: Pint of Riley's ultra-dark 1Au\n");
-    menuprint("b: Shot of Tullimore Dew 10Au\n");
-    menuprint("c: Round for the House. 100Au\n");
-    menuprint("d: Bed and Breakfast. 25Au\n");
-    menuprint("ESCAPE: Leave this comfortable haven.\n");
-    showmenu();
+    std::vector<std::string> lines =
+    {
+      {"Riley says: Whataya have?"},
+      {""},
+      {"a: Pint of Riley's ultra-dark 1Au"},
+      {"b: Shot of Tullimore Dew 10Au"},
+      {"c: Round for the House. 100Au"},
+      {"d: Bed and Breakfast. 25Au"},
+      {"ESCAPE: Leave this comfortable haven."}
+    };
+    menu->load(lines);
+    menu->print();
     do
     {
       response = (char)mcigetc();
@@ -922,19 +925,14 @@ void l_tavern()
           print1("Whatta feeb!");
           print2("Outta my establishment.... Now!");
           p_damage(random_range(20), UNSTOPPABLE, "Riley's right cross");
-          morewait();
         }
         else
         {
           Player.cash -= 100;
           dataprint();
           print1("'What a guy!'");
-          morewait();
           print2("'Hey, thanks, fella.'");
-          morewait();
           print3("'Make mine a double...'");
-          morewait();
-          clearmsg();
           switch(random_range(4))
           {
             case 0:
@@ -993,7 +991,6 @@ void l_tavern()
         {
           Player.cash -= 25;
           print2("How about a shot o' the dew for a nightcap?");
-          morewait();
           Time += (6 + random_range(4)) * 60;
           Player.status[POISONED] = 0;
           Player.status[DISEASED] = 0;
@@ -1035,24 +1032,21 @@ void l_alchemist()
   int  i, done = false, mlevel;
   char response;
   pob  obj;
-  print1("Ambrosias' Potions et cie.");
+  queue_message("Ambrosias' Potions et cie.");
   if(nighttime())
   {
-    print2("Ambrosias doesn't seem to be in right now.");
+    append_message("Ambrosias doesn't seem to be in right now.", true);
   }
   else
   {
     while(!done)
     {
-      morewait();
-      clearmsg();
-      print1("a: Sell monster components.");
-      print2("b: Pay for transformation.");
-      print3("ESCAPE: Leave this place.");
+      append_message("a: Sell monster components.", true);
+      append_message("b: Pay for transformation.", true);
+      append_message("ESCAPE: Leave this place.", true);
       response = (char)mcigetc();
       if(response == 'a')
       {
-        clearmsg();
         done = true;
         i    = getitem(CORPSE);
         if((i != ABORT) && (Player.possessions[i] != NULL))
@@ -1060,19 +1054,17 @@ void l_alchemist()
           obj = Player.possessions[i];
           if(Monsters[obj->charge].transformid == -1)
           {
-            print1("I don't want such a thing.");
+            append_message("I don't want such a thing.", true);
             if(obj->basevalue > 0)
             {
-              print2("You might be able to sell it to someone else, though.");
+              append_message("You might be able to sell it to someone else, though.");
             }
           }
           else
           {
-            clearmsg();
-            print1("I'll give you ");
             long sell_price = obj->basevalue / 3;
-            mnumprint(obj->basevalue / 3);
-            nprint1("Au each. Take it? [yn] ");
+            append_message("I'll give you " + std::to_string(sell_price) + "Au each. Take it? [yn] ",
+                           true);
             if(ynq1() == 'y')
             {
               int n = getnumber(obj->number);
@@ -1081,18 +1073,17 @@ void l_alchemist()
             }
             else
             {
-              print2("Well, keep the smelly old thing, then!");
+              append_message("Well, keep the smelly old thing, then!", true);
             }
           }
         }
         else
         {
-          print2("So nu?");
+          append_message("So nu?", true);
         }
       }
       else if(response == 'b')
       {
-        clearmsg();
         done = true;
         i    = getitem(CORPSE);
         if((i != ABORT) && (Player.possessions[i] != NULL))
@@ -1100,28 +1091,28 @@ void l_alchemist()
           obj = Player.possessions[i];
           if(Monsters[obj->charge].transformid == -1)
           {
-            print1("Oy vey! You want me to transform such a thing?");
+            append_message("Oy vey! You want me to transform such a thing?", true);
           }
           else if(obj->number > 1 && Objects[Monsters[obj->charge].transformid].objchar == STICK)
           {
-            print1("I can only work with one of these at a time.");
+            append_message("I can only work with one of these at a time.", true);
           }
           else
           {
-            mlevel = Monsters[obj->charge].level;
-            print1("It'll cost you ");
+            mlevel               = Monsters[obj->charge].level;
             long transform_price = std::max(10l, obj->basevalue * 2 * obj->number);
-            mnumprint(transform_price);
-            nprint1("Au for the transformation. Pay it? [yn] ");
+            append_message("It'll cost you " + std::to_string(transform_price) +
+                             " Au for the transformation. Pay it? [yn] ",
+                           true);
             if(ynq1() == 'y')
             {
               if(Player.cash < transform_price)
               {
-                print2("You can't afford it!");
+                append_message("You can't afford it!", true);
               }
               else
               {
-                print1("Voila! A tap of the Philosopher's Stone...");
+                append_message("Voila! A tap of the Philosopher's Stone...", true);
                 Player.cash -= transform_price;
                 int n       = obj->number;
                 *obj        = Objects[Monsters[obj->charge].transformid];
@@ -1142,13 +1133,13 @@ void l_alchemist()
             }
             else
             {
-              print2("I don't need your business, anyhow.");
+              append_message("I don't need your business, anyhow.", true);
             }
           }
         }
         else
         {
-          print2("So nu?");
+          append_message("So nu?", true);
         }
       }
       else if(response == ESCAPE)
@@ -1161,37 +1152,35 @@ void l_alchemist()
 
 void l_dpw()
 {
-  print1("Rampart Department of Public Works.");
+  queue_message("Rampart Department of Public Works.");
   if(Date - LastDay < 7)
   {
-    print2("G'wan! Get a job!");
+    append_message("G'wan! Get a job!", true);
   }
   else if(Player.cash < 100)
   {
-    print2("Do you want to go on the dole? [yn] ");
+    append_message("Do you want to go on the dole? [yn] ", true);
     if(ynq2() == 'y')
     {
-      print1("Well, ok, but spend it wisely.");
-      morewait();
-      print1("Please enter your name for our records:");
-      strcpy(Str1, msgscanstring());
-      if(Str1[0] >= 'a' && Str1[0] <= 'z')
+      append_message("Well, ok, but spend it wisely.", true);
+      append_message("Please enter your name for our records:");
+      std::string name = msgscanstring();
+      if(name[0] >= 'a' && name[0] <= 'z')
       {
-        Str1[0] += 'A' - 'a';
+        name[0] += 'A' - 'a';
       }
-      if(Str1[0] == '\0')
+      if(name[0] == '\0')
       {
-        print1("Maybe you should come back when you've learned to write.");
+        append_message("Maybe you should come back when you've learned to write.", true);
       }
-      else if(strcmp(Player.name, Str1) != 0)
+      else if(name != Player.name)
       {
-        print3("Aha! Welfare Fraud! It's off to gaol for you, lout!");
-        morewait();
+        append_message("Aha! Welfare Fraud! It's off to gaol for you, lout!", true);
         send_to_jail();
       }
       else
       {
-        print2("Here's your handout, layabout!");
+        append_message("Here's your handout, layabout!", true);
         LastDay     = Date;
         Player.cash = 99;
         dataprint();
@@ -1209,33 +1198,28 @@ void l_library()
   char response;
   int  studied = false;
   int  done = false, fee = 1000;
-  print1("Rampart Public Library.");
+  queue_message("Rampart Public Library.");
   if(nighttime())
   {
     print2("CLOSED");
   }
   else
   {
-    morewait();
-    print1("Library Research Fee: 1000Au.");
+    append_message("Library Research Fee: 1000Au.", true);
     if(Player.maxiq < 18)
     {
-      print2("The Rampart student aid system has arranged a grant!");
-      morewait();
-      clearmsg();
-      print1("Your revised fee is: ");
-      mnumprint(fee = std::max(50, 1000 - (18 - Player.maxiq) * 125));
-      nprint1("Au.");
+      append_message("The Rampart student aid system has arranged a grant!", true);
+      fee = std::max(50, 1000 - (18 - Player.maxiq) * 125);
+      append_message("Your revised fee is: " + std::to_string(fee) + "Au.", true);
     }
-    morewait();
     while(!done)
     {
-      print1("Pay the fee? [yn] ");
+      append_message("Pay the fee? [yn] ", true);
       if(ynq1() == 'y')
       {
         if(Player.cash < fee)
         {
-          print2("No payee, No studee.");
+          append_message("No payee, No studee.", true);
           done = true;
         }
         else
@@ -1245,72 +1229,64 @@ void l_library()
           {
             studied = true;
             dataprint();
-            menuclear();
-            menuprint("Peruse a scroll:\n");
-            menuprint("a: Omegan Theology\n");
-            menuprint("b: Guide to Rampart\n");
-            menuprint("c: High Magick\n");
-            menuprint("d: Odd Uncatalogued Document\n");
-            menuprint("e: Attempt Advanced Research\n");
-            menuprint("ESCAPE: Leave this font of learning.\n");
-            showmenu();
+            std::vector<std::string> lines =
+            {
+              {"Peruse a scroll:"},
+              {"a: Omegan Theology"},
+              {"b: Guide to Rampart"},
+              {"c: High Magick"},
+              {"d: Odd Uncatalogued Document"},
+              {"e: Attempt Advanced Research"},
+              {"ESCAPE: Leave this font of learning."}
+            };
+            menu->load(lines);
+            menu->print();
             response = (char)mcigetc();
             if(response == 'a')
             {
-              print1("You unfurl an ancient, yellowing scroll...");
-              morewait();
+              append_message("You unfurl an ancient, yellowing scroll...", true);
               theologyfile();
             }
             else if(response == 'b')
             {
-              print1("You unroll a slick four-color document...");
-              morewait();
+              append_message("You unroll a slick four-color document...", true);
               cityguidefile();
             }
             else if(response == 'c')
             {
-              print1("This scroll is written in a strange magical script...");
-              morewait();
+              append_message("This scroll is written in a strange magical script...", true);
               wishfile();
             }
             else if(response == 'd')
             {
-              print1("You find a strange document, obviously misfiled");
-              print2("under the heading 'acrylic fungus painting technique'");
-              morewait();
+              append_message("You find a strange document, obviously misfiled", true);
+              append_message("under the heading 'acrylic fungus painting technique'");
               adeptfile();
             }
             else if(response == 'e')
             {
               if(random_range(30) > Player.iq)
               {
-                print2("You feel more knowledgeable!");
+                append_message("You feel more knowledgeable!", true);
                 Player.iq++;
                 Player.maxiq++;
                 dataprint();
                 if(Player.maxiq < 19 && fee != std::max(50, 1000 - (18 - Player.maxiq) * 125))
                 {
-                  morewait();
-                  clearmsg();
-                  print1("Your revised fee is: ");
-                  mnumprint(fee = std::max(50, 1000 - (18 - Player.maxiq) * 125));
-                  nprint1("Au.");
-                  morewait();
+                  fee = std::max(50, 1000 - (18 - Player.maxiq) * 125);
+                  append_message("Your revised fee is: " + std::to_string(fee) + "Au.", true);
                 }
               }
               else
               {
-                clearmsg1();
-                print1("You find advice in an ancient tome: ");
-                morewait();
+                append_message("You find advice in an ancient tome: ", true);
                 hint();
-                morewait();
               }
             }
             else if(response == ESCAPE)
             {
               done = true;
-              print1("That was an expensive browse...");
+              append_message("That was an expensive browse...", true);
             }
             else
             {
@@ -1325,11 +1301,11 @@ void l_library()
         done = true;
         if(studied)
         {
-          print2("Come back anytime we're open, 7am to 8pm.");
+          append_message("Come back anytime we're open, 7am to 8pm.", true);
         }
         else
         {
-          print2("You philistine!");
+          append_message("You philistine!", true);
         }
       }
     }
@@ -1338,12 +1314,11 @@ void l_library()
 
 void l_pawn_shop()
 {
-  int  i, j, k, limit, number, done = false;
-  char item, action;
+  int i, j, k, limit, number, done = false;
 
   if(nighttime())
   {
-    print1("Shop Closed: Have a Nice (K)Night");
+    queue_message("Shop Closed: Have a Nice (K)Night");
   }
   else
   {
@@ -1383,66 +1358,59 @@ void l_pawn_shop()
         }
       }
     }
+    queue_message("Knight's Pawn Shop:");
     while(!done)
     {
-      print1("Knight's Pawn Shop:");
-      print2("Buy item, Sell item, sell Pack contents, Leave [b,s,p,ESCAPE] ");
-      menuclear();
-      for(i = 0; i < PAWNITEMS; i++)
+      append_message("Buy item, Sell item, sell Pack contents, Leave [b,s,p,ESCAPE] ", true);
+      std::vector<std::string> lines;
+      for(i = 0; i < PAWNITEMS; ++i)
       {
-        if(Pawnitems[i] != NULL)
+        if(Pawnitems[i])
         {
-          strcpy(Str3, " :");
-          Str3[0] = i + 'a';
-          strcat(Str3, itemid(Pawnitems[i]));
-          menuprint(Str3);
-          menuprint("\n");
+          lines.emplace_back(std::string(1, i + 'a') + ":" + itemid(Pawnitems[i]));
         }
       }
-      showmenu();
-      action = (char)mcigetc();
-      if(action == ESCAPE)
+      menu->load(lines);
+      int player_input = menu->get_player_input();
+      if(player_input == ESCAPE)
       {
         done = true;
       }
-      else if(action == 'b')
+      else if(player_input == 'b')
       {
-        print2("Purchase which item? [ESCAPE to quit] ");
-        item = ' ';
-        while((item != ESCAPE) && ((item < 'a') || (item >= 'a' + PAWNITEMS)))
+        append_message("Purchase which item? [ESCAPE to quit] ", true);
+        player_input = ' ';
+        while(player_input != ESCAPE && (player_input < 'a' || player_input >= 'a' + PAWNITEMS))
         {
-          item = (char)mcigetc();
+          player_input = menu->get_player_input();
         }
-        if(item != ESCAPE)
+        if(player_input != ESCAPE)
         {
-          i = item - 'a';
+          i = player_input - 'a';
           if(Pawnitems[i] == NULL)
           {
-            print3("No such item!");
+            append_message("No such item!", true);
           }
           else if(true_item_value(Pawnitems[i]) <= 0)
           {
-            print1("Hmm, how did that junk get on my shelves?");
-            print2("I'll just remove it.");
+            append_message("Hmm, how did that junk get on my shelves?", true);
+            append_message("I'll just remove it.");
             free((char *)Pawnitems[i]);
             Pawnitems[i] = NULL;
           }
           else
           {
-            clearmsg();
-            print1("The low, low, cost is: ");
-            mlongprint(Pawnitems[i]->number * true_item_value(Pawnitems[i]));
-            nprint1(" Buy it? [ynq] ");
+            long price = Pawnitems[i]->number * true_item_value(Pawnitems[i]);
+            append_message("The low, low, cost is: " + std::to_string(price) + " Buy it? [ynq] ", true);
             if(ynq1() == 'y')
             {
-              if(Player.cash < Pawnitems[i]->number * true_item_value(Pawnitems[i]))
+              if(Player.cash < price)
               {
-                print2("No credit! Gwan, Beat it!");
-                morewait();
+                append_message("No credit! Gwan, Beat it!", true);
               }
               else
               {
-                Player.cash -= Pawnitems[i]->number * true_item_value(Pawnitems[i]);
+                Player.cash -= price;
                 Objects[Pawnitems[i]->id].known = 1;
                 gain_item(Pawnitems[i]);
                 Pawnitems[i] = NULL;
@@ -1451,7 +1419,7 @@ void l_pawn_shop()
           }
         }
       }
-      else if(action == 's')
+      else if(player_input == 's')
       {
         menuclear();
         print2("Sell which item: ");
@@ -1461,19 +1429,15 @@ void l_pawn_shop()
           if(cursed(Player.possessions[i]))
           {
             print1("No loans on cursed items! I been burned before....");
-            morewait();
           }
           else if(true_item_value(Player.possessions[i]) <= 0)
           {
             print1("That looks like a worthless piece of junk to me.");
-            morewait();
           }
           else
           {
-            clearmsg();
-            print1("You can get ");
-            mlongprint(item_value(Player.possessions[i]) / 2);
-            nprint1("Au each. Sell [yn]? ");
+            long price = item_value(Player.possessions[i]) / 2;
+            print1("You can get " + std::to_string(price) + " Au each. Sell [yn]? ");
             if(ynq1() == 'y')
             {
               number = getnumber(Player.possessions[i]->number);
@@ -1481,7 +1445,7 @@ void l_pawn_shop()
               {
                 item_unequip(Player.possessions[i]);
               }
-              Player.cash += number * item_value(Player.possessions[i]) / 2;
+              Player.cash += number * price;
               free((char *)Pawnitems[0]);
               for(j = 0; j < PAWNITEMS - 1; j++)
               {
@@ -1497,25 +1461,22 @@ void l_pawn_shop()
           }
         }
       }
-      else if(action == 'p')
+      else if(player_input == 'p')
       {
         for(i = 0; i < Player.packptr; i++)
         {
           if(Player.pack[i]->blessing > -1 && true_item_value(Player.pack[i]) > 0)
           {
-            clearmsg();
-            print1("Sell ");
-            nprint1(itemid(Player.pack[i]));
-            nprint1(" for ");
-            mlongprint(item_value(Player.pack[i]) / 2);
-            nprint1("Au each? [ynq] ");
-            int player_input = ynq1();
+            long price = item_value(Player.pack[i]) / 2;
+            print1("Sell " + std::string(itemid(Player.pack[i])) + " for " + std::to_string(price) +
+                   " Au each? [ynq] ");
+            player_input = ynq1();
             if(player_input == 'y')
             {
               number = getnumber(Player.pack[i]->number);
               if(number > 0)
               {
-                Player.cash += number * item_value(Player.pack[i]) / 2;
+                Player.cash += number * price;
                 free((char *)Pawnitems[0]);
                 for(j = 0; j < PAWNITEMS - 1; j++)
                 {

@@ -3,8 +3,17 @@
 /* functions having to do with spellcasting */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
+#include "scrolling_buffer.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
+
+extern void           append_message(const std::string &message, bool force_break = false);
+extern void           queue_message(const std::string &message);
+extern scrolling_buffer message_buffer;
+extern interactive_menu *menu;
 
 void s_wish()
 {
@@ -310,7 +319,6 @@ void s_ritual()
             if(Player.level > 10)
             {
               mprint("A curtain of blue flames leaps up from the omega.");
-              morewait();
               l_adept();
             }
             else
@@ -461,7 +469,7 @@ int getspell()
 
   do
   {
-    mprint("Cast Spell: [type spell abbrev, ?, or ESCAPE]: ");
+    queue_message("Cast Spell: [type spell abbrev, ?, or ESCAPE]: ");
     spell = spellparse();
   } while(spell < ABORT);
   return (spell);
@@ -878,61 +886,68 @@ static int spell_ids[] = {/* in the same order as spell_names[] */
                           S_SLEEP,    S_SUMMON,       S_TELEPORT,   S_WARP,      S_TRUESIGHT,
                           S_WISH};
 
-void showknownspells(int first, int last)
+std::vector<std::string> known_spells(int first, int last)
 {
-  int i, printed = false;
+  bool printed = false;
 
-  menuclear();
-  menuprint("\nPossible Spells:\n");
-  for(i = first; i <= last; i++)
+  std::vector<std::string> lines;
+  lines.emplace_back("Possible Spells:");
+  for(int i = first; i <= last; ++i)
   {
     if(Spells[spell_ids[i]].known)
     {
       printed = true;
-      menuprint(spell_names[i]);
-      menuprint(" (");
-      menunumprint(Spells[spell_ids[i]].powerdrain);
-      menuprint(" mana)");
-      menuprint("\n");
+      lines.emplace_back(std::string(spell_names[i]) +
+          " (" + std::to_string(Spells[spell_ids[i]].powerdrain) + " mana)");
     }
   }
   if(!printed)
   {
-    menuprint("\nNo spells match that prefix!");
+    lines.emplace_back("No spells match that prefix!");
   }
-  showmenu();
+  return lines;
 }
 
 int spellparse()
 {
-  int    first, last;
+  int    last;
   size_t pos;
-  char   byte, prefix[80];
+  char   prefix[80];
   int    found = 0;
   int    f, l;
 
-  first = 0;
+  int first = 0;
   while(first < NUMSPELLS && !Spells[spell_ids[first]].known)
   {
-    first++;
+    ++first;
   }
   if(first == NUMSPELLS)
   {
-    print1("You don't know any spells!");
+    append_message("You don't know any spells!", true);
     return ABORT;
   }
   last = NUMSPELLS - 1;
   pos  = 0;
-  print2("");
+  append_message("", true);
+  int player_input;
+  bool menu_shown = false;
   do
   {
-    byte = mgetc();
-    if(byte == BACKSPACE || byte == DELETE)
+    if(menu_shown)
+    {
+      menu->load(known_spells(first, last));
+      player_input = menu->get_player_input();
+    }
+    else
+    {
+      player_input = mgetc();
+    }
+    if(player_input == KEY_BACKSPACE || player_input == KEY_DC || player_input == '\b' || player_input == KEY_DC)
     {
       if(pos > 0)
       {
         prefix[--pos] = '\0';
-        byte          = prefix[pos - 1];
+        player_input  = prefix[pos - 1];
         f             = first;
         while(f >= 0 && !strncmp(prefix, spell_names[f], pos))
         {
@@ -940,7 +955,7 @@ int spellparse()
           {
             first = f;
           }
-          f--;
+          --f;
         }
         l = last;
         while(l < NUMSPELLS && !strncmp(prefix, spell_names[l], pos))
@@ -949,36 +964,35 @@ int spellparse()
           {
             last = l;
           }
-          l++;
+          ++l;
         }
         if(found)
         {
           found = 0;
         }
-        print2(prefix);
+        message_buffer.replace_last(prefix);
       }
       if(pos == 0)
       {
         first = 0;
         last  = NUMSPELLS - 1;
         found = 0;
-        print2("");
       }
     }
-    else if(byte == ESCAPE)
+    else if(player_input == ESCAPE)
     {
       xredraw();
       return ABORT;
     }
-    else if(byte == '?')
+    else if(player_input == '?')
     {
-      showknownspells(first, last);
+      menu_shown = true;
     }
-    else if(byte != '\n')
+    else if(player_input != '\n')
     {
-      if(byte >= 'A' && byte <= 'Z')
+      if(player_input >= 'A' && player_input <= 'Z')
       {
-        byte += 'a' - 'A';
+        player_input += 'a' - 'A';
       }
       if(found)
       {
@@ -986,32 +1000,32 @@ int spellparse()
       }
       f = first;
       l = last;
-      while(f < NUMSPELLS &&
-            (!Spells[spell_ids[f]].known || strlen(spell_names[f]) < pos || spell_names[f][pos] < byte))
+      while(f < NUMSPELLS && (!Spells[spell_ids[f]].known || strlen(spell_names[f]) < pos ||
+                              spell_names[f][pos] < player_input))
       {
-        f++;
+        ++f;
       }
-      while(l >= 0 &&
-            (!Spells[spell_ids[l]].known || strlen(spell_names[l]) < pos || spell_names[l][pos] > byte))
+      while(l >= 0 && (!Spells[spell_ids[l]].known || strlen(spell_names[l]) < pos ||
+                       spell_names[l][pos] > player_input))
       {
-        l--;
+        --l;
       }
       if(l < f)
       {
         continue;
       }
-      prefix[pos++] = byte;
+      prefix[pos++] = player_input;
       prefix[pos]   = '\0';
-      nprint2(prefix + pos - 1);
+      message_buffer.replace_last(prefix);
       first = f;
       last  = l;
       if(first == last && !found)
       { /* unique name */
         found = 1;
-        nprint2(spell_names[first] + pos);
+        message_buffer.replace_last(spell_names[first]);
       }
     }
-  } while(byte != '\n');
+  } while(player_input != '\n');
   xredraw();
   if(found)
   {
@@ -1019,7 +1033,7 @@ int spellparse()
   }
   else
   {
-    print3("That is an ambiguous abbreviation!");
+    append_message("That is an ambiguous abbreviation!", true);
     return ABORT;
   }
 }

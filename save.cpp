@@ -54,7 +54,6 @@ int save_game(const char *savestr)
   }
   if(!writeok)
   {
-    morewait();
     print2("Save aborted.");
   }
   else
@@ -117,8 +116,6 @@ int save_game(const char *savestr)
     {
       print1("Something didn't work... save aborted.");
     }
-    morewait();
-    clearmsg();
   }
   change_to_game_perms();
   return (writeok);
@@ -130,7 +127,6 @@ void signalsave(int)
   change_to_user_perms();
   save_game("Omega.Sav");
   print1("Signal - Saving file 'Omega.Sav'.");
-  morewait();
   endgraf();
   exit(0);
 }
@@ -495,12 +491,10 @@ int ok_outdated(int version)
   {
     case 80:
       print1("Converting version 0.80 savefile to current.");
-      morewait();
       return true;
       break;
     case 81:
       print1("Loading version 0.81 savefile.");
-      morewait();
       return true;
       break;
     default:
@@ -522,7 +516,6 @@ int restore_game(char *savestr)
   {
     print1("Unable to access save file: ");
     nprint1(savestr);
-    morewait();
     return false;
   }
   change_to_user_perms();
@@ -534,7 +527,6 @@ int restore_game(char *savestr)
     print1("Error restoring game -- aborted.");
     print2("File name was: ");
     nprint2(savestr);
-    morewait();
     change_to_game_perms();
     return (false);
   }
@@ -548,14 +540,10 @@ int restore_game(char *savestr)
     {
       change_to_game_perms();
       fclose(fd);
-      clearmsg();
       mprint(" Sorry, I can't restore an outdated save file!");
-      mprint(" savefile is version ");
-      mnumprint(version / 100);
-      nprint2(".");
-      mnumprint(version % 100);
-      morewait();
-      return (false);
+      mprint(" savefile is version " + std::to_string(version / 100) + "." +
+             std::to_string(version % 100));
+      return false;
     }
     restore_player(fd, version);
     restore_country(fd, version);

@@ -167,9 +167,6 @@ on save and restore. */
 
 /* some random characters */
 #define ESCAPE              27
-#define RETURN              '\n'
-#define LINEFEED            '\r'
-#define BACKSPACE           '\b'
 #define DELETE              127
 
 /* tac mode action definitions */
@@ -492,7 +489,7 @@ on save and restore. */
 #define STAIRS_UP               ('<' | CLR(WHITE))
 #define STAIRS_DOWN             ('>' | CLR(WHITE))
 #define FLOOR                   ('.' | CLR(BROWN))
-#define PLAYER                  ('@' | CLR(WHITE))
+#define PLAYER                  ('@' | CLRS(BLACK, WHITE))
 #define CORPSE                  ('+' | CLR(RED))
 #define STATUE                  ('1' | CLR(GREY))
 #define RUBBLE                  ('4' | CLR(GREY))
@@ -559,8 +556,6 @@ on save and restore. */
 #define RUNSTOP                 1 << 2
 #define PICKUP                  1 << 3
 #define CONFIRM                 1 << 4
-#define TOPINV                  1 << 5
-#define PACKADD                 1 << 6
 #define PARANOID_CONFIRM        1 << 7
 #define SHOW_COLOUR             1 << 8
 
@@ -1245,7 +1240,7 @@ for example. */
 
 /* typedefs needed by structs */
 
-typedef int Symbol;
+typedef chtype Symbol;
 
 /* structure definitions */
 

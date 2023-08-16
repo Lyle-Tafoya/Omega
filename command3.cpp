@@ -6,8 +6,11 @@
 
 #include "date.h"
 #include "glob.h"
+#include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 #ifdef SAVE_LEVELS
 extern void kill_all_levels();
@@ -15,13 +18,13 @@ extern void kill_all_levels();
 
 extern void item_unequip(object *);
 
+extern interactive_menu *menu;
+
 /* look at some spot */
 void examine()
 {
   pol ol;
   int x = Player.x, y = Player.y, drewmenu = false;
-
-  clearmsg();
 
   /* WDT HACK: I'm not sure I buy that one shouldn't be able to examine
    * when one is blind.  However, the 'right' way to do it is certainly
@@ -39,7 +42,6 @@ void examine()
   setspot(&x, &y);
   if(inbounds(x, y))
   {
-    clearmsg();
     if(Current_Environment == E_COUNTRYSIDE)
     {
       if(!c_statusp(x, y, SEEN, Country))
@@ -58,7 +60,6 @@ void examine()
     }
     else
     {
-      clearmsg();
       if(Level->site[x][y].creature != NULL)
       {
         mprint(mstatus_string(Level->site[x][y].creature));
@@ -219,18 +220,16 @@ void examine()
         else
         {
           drewmenu = true;
-          menuclear();
-          menuprint("Things on floor:\n");
+          std::vector<std::string> lines;
           while(ol != NULL)
           {
-            menuprint("\n");
-            menuprint(itemid(ol->thing));
+            lines.emplace_back(std::string("  ") + itemid(ol->thing));
             ol = ol->next;
           }
-          showmenu();
+          menu->load(lines, {{"Things on floor:"}});
+          menu->get_player_input();
         }
       }
-      morewait();
       sign_print(x, y, true);
     }
   }
@@ -247,25 +246,27 @@ void help()
   FILE *in, *out;
   int   n;
 
-  clearmsg();
   print1("Please enter the letter indicating what topic you want help on.");
-  menuclear();
-  menuprint("a: Overview\n");
-  menuprint("b: Characters\n");
-  menuprint("c: Inventories\n");
-  menuprint("d: Movement\n");
-  menuprint("e: Combat\n");
-  menuprint("f: Bugs\n");
-  menuprint("g: Magic\n");
-  menuprint("h: The Countryside\n");
-  menuprint("i: The Screen Display\n");
-  menuprint("j: Saving and Restoring\n");
-  menuprint("k: Options Settings\n");
-  menuprint("l: Dungeon/City/Other Command List\n");
-  menuprint("m: Countryside Command List\n");
-  menuprint("n: Everything\n");
-  menuprint("ESCAPE: Forget the whole thing.");
-  showmenu();
+  std::vector<std::string> lines =
+  {
+    {"a: Overview"},
+    {"b: Characters"},
+    {"c: Inventories"},
+    {"d: Movement"},
+    {"e: Combat"},
+    {"f: Bugs"},
+    {"g: Magic"},
+    {"h: The Countryside"},
+    {"i: The Screen Display"},
+    {"j: Saving and Restoring"},
+    {"k: Options Settings"},
+    {"l: Dungeon/City/Other Command List"},
+    {"m: Countryside Command List"},
+    {"n: Everything"},
+    {"ESCAPE: Forget the whole thing."}
+  };
+  menu->load(lines);
+  menu->print();
   do
   {
     c = (char)mcigetc();
@@ -298,19 +299,7 @@ void help()
   else if(c != ESCAPE)
   {
     sprintf(filestr, "%shelp%d.txt", Omegalib, c + 1 - 'a');
-    print1("Display help file, or Copy help file to file in wd. [dc] ");
-    do
-    {
-      c = (char)mcigetc();
-    } while((c != 'd') && (c != 'c') && (c != ESCAPE));
-    if(c == 'd')
-    {
-      displayfile(filestr);
-    }
-    else if(c == 'c')
-    {
-      copyfile(filestr);
-    }
+    displayfile(filestr);
   }
   xredraw();
 }
@@ -329,8 +318,6 @@ void fire()
   int             index, x1, y1, x2, y2;
   pob             obj;
   struct monster *m;
-
-  clearmsg();
 
   print1("Fire/Throw --");
   index = getitem(NULL_ITEM);
@@ -443,7 +430,6 @@ void fire()
 
 void quit(int)
 {
-  clearmsg();
   change_to_game_perms();
   mprint("Quit: Are you sure? [yn] ");
   if(ynq() == 'y')
@@ -477,7 +463,6 @@ void nap()
   {
     if(naptime-- < 1)
     {
-      clearmsg();
       mprint("Yawn. You wake up.");
       resetgamestatus(FAST_MOVE, GameStatus);
       drawvision(Player.x, Player.y);
@@ -485,7 +470,6 @@ void nap()
   }
   else
   {
-    clearmsg();
     mprint("Rest for how long? (in minutes) ");
     naptime = (int)parsenum();
     if(naptime > 600)
@@ -499,7 +483,6 @@ void nap()
     }
     if(naptime > 1)
     {
-      clearmsg();
       setgamestatus(FAST_MOVE, GameStatus);
       mprint("Resting.... ");
     }
@@ -512,7 +495,6 @@ void charid()
   int  countryside = false;
   char cstr[80];
 
-  clearmsg();
   mprint("Character to identify: ");
   id = mgetc();
   if(Current_Environment == E_COUNTRYSIDE)
@@ -666,7 +648,6 @@ void wizard()
   }
   else
   {
-    clearmsg();
     mprint("Really try to enter wizard mode? [yn] ");
     if(ynq() == 'y')
     {
@@ -713,8 +694,6 @@ void wizard()
 void vault()
 {
   int x = Player.x, y = Player.y, jumper = 0;
-
-  clearmsg();
 
   if(Player.possessions[O_BOOTS] != NULL)
   {
@@ -832,9 +811,7 @@ void tacoptions()
       showmenu();
       draw_again = false;
     }
-    clearmsg();
-    mprint("Maneuvers Left:");
-    mnumprint(actionsleft);
+    mprint("Maneuvers Left: " + std::to_string(actionsleft));
     switch(mgetc())
     {
       case '?':
@@ -889,13 +866,11 @@ void tacoptions()
             else
             {
               print3("Can't lunge with a missile weapon!");
-              morewait();
             }
           }
           else
           {
             print3("Can't lunge without a weapon!");
-            morewait();
           }
         }
         break;
@@ -919,18 +894,18 @@ void tacoptions()
             else
             {
               print3("Can't riposte without a thrusting weapon!");
-              morewait();
             }
           }
           else
           {
             print3("Can't riposte without a thrusting weapon!");
-            morewait();
           }
         }
         break;
-      case BACKSPACE:
+      case KEY_BACKSPACE:
+      case KEY_DC:
       case DELETE:
+      case '\b':
         place       = 0;
         actionsleft = maneuvers();
         draw_again  = true;
@@ -961,8 +936,8 @@ void tacoptions()
         showmenu();
         Player.meleestr[place * 2] = '\0';
         break;
-      case RETURN:
-      case LINEFEED:
+      case '\n':
+      case '\r':
       case ESCAPE:
         done = true;
         break;
@@ -977,8 +952,6 @@ void pickpocket()
 {
   int             dx, dy, index = 0;
   struct monster *m;
-
-  clearmsg();
 
   mprint("Pickpocketing --");
 
@@ -1015,7 +988,6 @@ void pickpocket()
         else
         {
           mprint("The guardsman places you under arrest.");
-          morewait();
           send_to_jail();
         }
       }
@@ -1043,23 +1015,18 @@ void pickpocket()
 void rename_player()
 {
   setgamestatus(SKIP_MONSTERS, GameStatus);
-  clearmsg();
   mprint("Rename Character: ");
-  strcpy(Str1, msgscanstring());
-  if(strlen(Str1) == 0)
+  std::string name = msgscanstring();
+  if(!name.empty())
   {
-    mprint(Player.name);
-  }
-  else
-  {
-    if(Str1[0] >= 'a' && Str1[0] <= 'z')
+    if(name[0] >= 'a' && name[0] <= 'z')
     {
-      Str1[0] += 'A' - 'a';
+      name[0] += 'A' - 'a';
     }
-    strcpy(Player.name, Str1);
+    strcpy(Player.name, name.c_str());
   }
-  sprintf(Str1, "Henceforth, you shall be known as %s", Player.name);
-  print2(Str1);
+  print2("Henceforth, you shall be known as " + std::string(Player.name));
+  dataprint();
 }
 
 void abortshadowform()
@@ -1081,7 +1048,6 @@ void tunnel()
 {
   int dir, ox, oy, aux;
 
-  clearmsg();
   mprint("Tunnel -- ");
   dir = getdir();
   if(dir == ABORT)
@@ -1292,7 +1258,6 @@ void dismount_steed()
 void city_move()
 {
   int site, x = Player.x, y = Player.y, toggle = false;
-  clearmsg();
   if(Current_Environment != E_CITY)
   {
     print3("This command only works in the city!");
@@ -1318,7 +1283,6 @@ void city_move()
     if(site != ABORT)
     {
       mprint("You're on your way...");
-      morewait();
       while((x != CitySiteList[site][1]) || (y != CitySiteList[site][2]))
       {
         toggle = !toggle;
@@ -1336,15 +1300,14 @@ void city_move()
         }
         x += sign(CitySiteList[site][1] - x);
         y += sign(CitySiteList[site][2] - y);
-        screencheck(y);
-        omshowcursor(x, y);
+        screencheck(x, y);
+        levelrefresh();
       }
       Player.x = x;
       Player.y = y;
-      screencheck(Player.y);
+      screencheck(Player.x, Player.y);
       mprint("Made it!");
       drawvision(Player.x, Player.y);
-      morewait();
       p_movefunction(Level->site[x][y].p_locf);
     }
   }

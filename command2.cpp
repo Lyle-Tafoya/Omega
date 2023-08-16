@@ -4,12 +4,16 @@
 /* This file contains toplevel commands called from command1.c */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
 
 #include <algorithm>
 #include <chrono>
 #include <thread>
+#include <string>
+#include <vector>
 
 extern void item_use(object *);
+extern interactive_menu *menu;
 
 /* no op a turn.... */
 void rest()
@@ -49,7 +53,6 @@ void rest()
         print3(" You sure have an early bedtime! ");
         break;
     }
-    morewait();
   }
 }
 
@@ -58,8 +61,6 @@ void peruse()
 {
   int            index;
   struct object *obj;
-
-  clearmsg();
 
   if(Player.status[BLINDED] > 0)
   {
@@ -88,7 +89,6 @@ void peruse()
       else
       {
         nprint1("You carefully unfurl the scroll....");
-        morewait();
         item_use(obj);
         dispose_lost_objects(1, obj);
       }
@@ -100,7 +100,6 @@ void quaff()
 {
   int            index;
   struct object *obj;
-  clearmsg();
   print1("Quaff --");
   index = getitem(POTION);
   if(index == ABORT)
@@ -119,7 +118,6 @@ void quaff()
     {
       print1("You drink it down.... ");
       item_use(obj);
-      morewait();
       dispose_lost_objects(1, obj);
     }
   }
@@ -129,8 +127,6 @@ void activate()
 {
   int  index;
   char response;
-
-  clearmsg();
 
   print1("Activate -- item [i] or artifact [a] or quit [ESCAPE]?");
   do
@@ -149,9 +145,7 @@ void activate()
     }
     if(index != ABORT)
     {
-      clearmsg();
       print1("You activate it.... ");
-      morewait();
       item_use(Player.possessions[index]);
     }
     else
@@ -169,8 +163,6 @@ void eat()
 {
   int            index;
   struct object *obj;
-
-  clearmsg();
 
   print1("Eat --");
   index = getitem(FOOD);
@@ -249,7 +241,7 @@ void floor_inv()
 {
   pol ol = Level->site[Player.x][Player.y].things;
   setgamestatus(SKIP_MONSTERS, GameStatus);
-  menuclear();
+  std::vector<std::string> lines;
   while(ol != NULL)
   {
     if(ol->thing == NULL)
@@ -258,21 +250,18 @@ void floor_inv()
     }
     else
     {
-      menuprint(itemid(ol->thing));
-      menuprint("\n");
+      lines.emplace_back(itemid(ol->thing));
     }
     ol = ol->next;
   }
-  showmenu();
-  morewait();
+  menu->load(lines);
+  menu->get_player_input();
   xredraw();
 }
 
 void drop()
 {
   int index, n;
-
-  clearmsg();
 
   print1("Drop --");
   index = getitem(CASH);
@@ -316,8 +305,6 @@ void talk()
   char            response;
   struct monster *m;
 
-  clearmsg();
-
   print1("Talk --");
   index = getdir();
 
@@ -339,19 +326,16 @@ void talk()
     else
     {
       m = Level->site[Player.x + dx][Player.y + dy].creature;
-      menuclear();
-      strcpy(Str1, "     Talk to ");
-      strcat(Str1, m->monstring);
-      strcat(Str1, ":");
-      menuprint(Str1);
-      menuprint("\na: Greet.");
-      menuprint("\nb: Threaten.");
-      menuprint("\nc: Surrender.");
-      menuprint("\nESCAPE: Clam up.");
-      showmenu();
+      std::vector<std::string> lines;
+      lines.emplace_back("     Talk to " + std::string(m->monstring) + ":");
+      lines.emplace_back("a: Greet.");
+      lines.emplace_back("b: Threaten.");
+      lines.emplace_back("c: Surrender.");
+      lines.emplace_back("ESCAPE: Clam up.");
+      menu->load(lines);
       do
       {
-        response = menugetc();
+        response = menu->get_player_input();
       } while((response != 'a') && (response != 'b') && (response != 'c') && (response != ESCAPE));
       switch(response)
       {
@@ -379,7 +363,6 @@ void disarm()
   int x, y, index = 0;
   pob o;
 
-  clearmsg();
   print1("Disarm -- ");
 
   index = getdir();
@@ -447,7 +430,6 @@ void disarm()
           if(o != NULL)
           {
             print2("You manage to retrieve the trap components!");
-            morewait();
             Objects[o->id].known = 1;
             o->known             = 1;
             gain_item(o);
@@ -482,8 +464,6 @@ void give()
   struct monster *m;
   pob             obj;
 
-  clearmsg();
-
   print1("Give to monster --");
   dindex = getdir();
   if(dindex == ABORT)
@@ -506,7 +486,6 @@ void give()
     else
     {
       m = Level->site[Player.x + dx][Player.y + dy].creature;
-      clearmsg();
       print1("Give what? ");
       index = getitem(CASH);
       if(index == ABORT)
@@ -526,7 +505,6 @@ void give()
         obj->number = 1;
         print2("Given: ");
         nprint2(itemid(obj));
-        morewait();
         /* WDT bug fix: I moved the print above the givemonster
          * call.  If that turns out looking ugly, I should change it to
          * a sprintf or strcat.  At any rate, it was wrong before because
@@ -549,8 +527,6 @@ void zapwand()
 {
   int            index;
   struct object *obj;
-
-  clearmsg();
 
   if(Player.status[AFRAID] > 0)
   {
@@ -589,7 +565,6 @@ void zapwand()
 void magic()
 {
   int index, drain;
-  clearmsg();
   if(Player.status[AFRAID] > 0)
   {
     print3("You are too afraid to concentrate on a spell!");
@@ -715,13 +690,11 @@ void setoptions()
   int slot = 1, to, done = false;
   int response;
 
-  clearmsg();
   menuclear();
 
   display_options();
 
   move_slot(1, 1, NUMOPTIONS);
-  clearmsg();
   print1("Currently selected option is preceded by highlit >>");
   print2("Move selected option with '>' and '<', ESCAPE to quit.");
   do
@@ -847,7 +820,6 @@ void callitem()
   int index;
   pob obj;
 
-  clearmsg();
   setgamestatus(SKIP_MONSTERS, GameStatus);
   print1("Call --");
   index = getitem(NULL_ITEM);
@@ -865,8 +837,7 @@ void callitem()
     else
     {
       print1("Call it:");
-      obj->objstr = salloc(msgscanstring());
-      clearmsg();
+      obj->objstr = salloc(msgscanstring().c_str());
       print2("Also call all similar items by that name? [yn] ");
       if(ynq2() == 'y')
       {
@@ -882,7 +853,6 @@ void opendoor()
   int dir;
   int ox, oy;
 
-  clearmsg();
   print1("Open --");
   dir = getdir();
   if(dir == ABORT)
@@ -936,7 +906,6 @@ void bash_location()
   int dir;
   int ox, oy;
 
-  clearmsg();
   print1("Bashing --");
   dir = getdir();
   if(dir == ABORT)
@@ -951,7 +920,6 @@ void bash_location()
     {
       print1("Back Door WIZARD Mode!");
       print2("You will invalidate your score if you proceed.");
-      morewait();
       print1("Enable WIZARD Mode? [yn] ");
       if(ynq1() == 'y')
       {
@@ -974,7 +942,6 @@ void bash_location()
       {
         print1("You hurl yourself through the open door!");
         print2("Yaaaaah! ... thud.");
-        morewait();
         Player.x = ox;
         Player.y = oy;
         p_damage(3, UNSTOPPABLE, "silliness");
@@ -1078,16 +1045,13 @@ void bash_location()
                    "a bolt of godsfire");
           if(Player.rank[PRIESTHOOD] * 20 + Player.pow + Player.level > random_range(200))
           {
-            morewait();
             print1("The altar crumbles...");
             Level->site[ox][oy].locchar = RUBBLE;
             Level->site[ox][oy].p_locf  = L_RUBBLE;
             lset(ox, oy, CHANGED, *Level);
-            morewait();
             if(Player.rank[PRIESTHOOD])
             {
               print2("You sense your deity's pleasure with you.");
-              morewait();
               print3("You are surrounded by a golden glow.");
               cleanse(1);
               heal(10);
@@ -1111,7 +1075,6 @@ void bash_item()
   int item;
   pob obj;
 
-  clearmsg();
   print1("Destroy an item --");
   item = getitem(NULL_ITEM);
   if(item == CASHVALUE)
@@ -1154,10 +1117,8 @@ void bash_item()
 /* if force is true, exiting due to some problem - don't bomb out */
 void save(int force)
 {
-  char fname[100];
-  int  pos, ok = true;
+  bool ok = true;
 
-  clearmsg();
   if(gamestatusp(ARENA_MODE, GameStatus))
   {
     if(force)
@@ -1206,25 +1167,24 @@ void save(int force)
   if(force || ok)
   {
     print1("Enter savefile name: ");
-    strcpy(fname, msgscanstring());
-    if(fname[0] == '\0')
+    std::string file_name = msgscanstring();
+    if(file_name.empty())
     {
       print1("No save file entered - save aborted.");
       ok = false;
     }
-    for(pos = 0; fname[pos] && isprint(fname[pos]) && !isspace(fname[pos]); pos++)
+    for(char c : file_name)
     {
-      ;
-    }
-    if(fname[pos])
-    {
-      sprintf(Str1, "Illegal character '%c' in filename - Save aborted.", fname[pos]);
-      print1(Str1);
-      ok = false;
+      if(!isprint(c) || isspace(c))
+      {
+        print1("Illegal character '" + std::string(1, c) + "' in filename - Save aborted.");
+        ok = false;
+        break;
+      }
     }
     if(ok)
     {
-      if(save_game(fname))
+      if(save_game(file_name.c_str()))
       {
         print3("Bye!");
         std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -1239,8 +1199,6 @@ void save(int force)
   }
   if(force)
   {
-    morewait();
-    clearmsg();
     print1("The game is quitting - you will lose your character.");
     print2("Try to save again? ");
     if(ynq2() == 'y')
@@ -1256,8 +1214,6 @@ void closedoor()
 {
   int dir;
   int ox, oy;
-
-  clearmsg();
 
   print1("Close --");
   dir = getdir();
@@ -1377,12 +1333,10 @@ void movepincountry(int dx, int dy)
       print2("Your steed bucks wildly and throws you off!");
       p_damage(10, UNSTOPPABLE, "a cruelly abused horse");
       resetgamestatus(MOUNTED, GameStatus);
-      morewait();
       print1("With a shrill neigh of defiance, your former steed gallops");
       print2("off into the middle distance....");
       if(Player.packptr != 0)
       {
-        morewait();
         print1("You remember (too late) that the contents of your pack");
         print2("were kept in your steed's saddlebags!");
         for(i = 0; i < MAXPACK; i++)
@@ -1408,7 +1362,6 @@ void movepincountry(int dx, int dy)
     if(gamestatusp(LOST, GameStatus))
     {
       print3("Being lost, you strike out randomly....");
-      morewait();
       dx = random_range(3) - 1;
       dy = random_range(3) - 1;
     }
@@ -1433,8 +1386,6 @@ void movepincountry(int dx, int dy)
               print2("You come down in a strange location....");
               Player.x = random_range(WIDTH);
               Player.y = random_range(LENGTH);
-              morewait();
-              clearmsg();
               print1("Your boots disintegrate with a malicious giggle...");
               dispose_lost_objects(1, Player.possessions[O_BOOTS]);
             }
@@ -1449,13 +1400,11 @@ void movepincountry(int dx, int dy)
            c_statusp(Player.x, Player.y, SEEN, Country))
         {
           print3("Ah! Now you know where you are!");
-          morewait();
           resetgamestatus(LOST, GameStatus);
         }
         else if(gamestatusp(LOST, GameStatus))
         {
           print3("You're still lost.");
-          morewait();
         }
         if(Precipitation > 0)
         {

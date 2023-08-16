@@ -6,9 +6,17 @@
    and aux2.c are not huge */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
+#include "scrolling_buffer.hpp"
 
 #include <algorithm>
 #include <cassert>
+#include <string>
+#include <vector>
+
+extern scrolling_buffer message_buffer;
+extern void           append_message(const std::string &message, bool force_break = false);
+extern interactive_menu *menu;
 
 /* check every ten minutes */
 void tenminute_check()
@@ -74,23 +82,18 @@ void indoors_random_event()
   {
     case 0:
       print3("You feel an unexplainable elation.");
-      morewait();
       break;
     case 1:
       print3("You hear a distant rumbling.");
-      morewait();
       break;
     case 2:
       print3("You realize your fly is open.");
-      morewait();
       break;
     case 3:
       print3("You have a sudden craving for a pecan twirl.");
-      morewait();
       break;
     case 4:
       print3("A mysterious healing flux settles over the level.");
-      morewait();
       for(ml = Level->mlist; ml != NULL; ml = ml->next)
       {
         if(ml->m->hp > 0)
@@ -102,32 +105,26 @@ void indoors_random_event()
       break;
     case 5:
       print3("You discover an itch just where you can't scratch it.");
-      morewait();
       break;
     case 6:
       print3("A cosmic ray strikes!");
       p_damage(10, UNSTOPPABLE, "a cosmic ray");
-      morewait();
       break;
     case 7:
       print3("You catch your second wind....");
       Player.maxhp++;
       Player.hp   = std::max(Player.hp, Player.maxhp);
       Player.mana = std::max(Player.mana, calcmana());
-      morewait();
       break;
     case 8:
       print3("You find some spare change in a hidden pocket.");
-      morewait();
       Player.cash += Player.level * Player.level + 1;
       break;
     case 9:
       print3("You feel strangely lucky.");
-      morewait();
       break;
     case 10:
       print3("You trip over something hidden in a shadow...");
-      morewait();
       ol        = ((pol)checkmalloc(sizeof(oltype)));
       ol->thing = create_object(difficulty()); /* FIXED!  12/30/98 */
       assert(ol->thing);                       /* WDT I want to make sure... */
@@ -137,9 +134,7 @@ void indoors_random_event()
       break;
     case 11:
       print3("A mysterious voice echoes all around you....");
-      morewait();
       hint();
-      morewait();
       break;
     case 12:
       if(Balance > 0)
@@ -194,28 +189,21 @@ void outdoors_random_event()
             mprint("It begins to snow. Heavily.");
           }
       }
-      morewait();
       mprint("Due to the inclement weather conditions, you have become lost.");
-      morewait();
       Precipitation += random_range(12) + 1;
       setgamestatus(LOST, GameStatus);
       break;
     case 1:
       mprint("You enter a field of brightly colored flowers...");
       mprint("Wow, man! These are some pretty poppies...");
-      morewait();
       mprint("poppies...");
-      morewait();
       mprint("poppies...");
-      morewait();
       print3("You become somewhat disoriented...");
       setgamestatus(LOST, GameStatus);
       break;
     case 2:
       mprint("You discover a sprig of athelas growing lonely in the wild.");
-      morewait();
       mprint("Using your herbalist lore you cook a cake of lembas....");
-      morewait();
       ob  = ((pob)checkmalloc(sizeof(objtype)));
       *ob = Objects[FOODID + 1];
       gain_item(ob);
@@ -225,7 +213,6 @@ void outdoors_random_event()
       {
         mprint("You are struck by a bolt of lightning!");
         p_damage(random_range(25), ELECTRICITY, "a lightning strike");
-        morewait();
       }
       else
       {
@@ -234,29 +221,22 @@ void outdoors_random_event()
       break;
     case 4:
       mprint("You find a fast-food establishment.");
-      morewait();
       l_commandant();
       break;
     case 5:
       mprint("A weird howling tornado hits from out of the West!");
-      morewait();
       mprint("You've been caught in a chaos storm!");
-      morewait();
       num = random_range(300);
       if(num < 10)
       {
         mprint("Your cell-structure was disrupted!");
         p_damage(random_range(100), UNSTOPPABLE, "a chaos storm");
-        morewait();
       }
       else if(num < 20)
       {
         mprint("The chaos storm warps your frame!");
-        morewait();
         mprint("Your statistical entropy has been maximized.");
-        morewait();
         mprint("You feel average...");
-        morewait();
         toggle_item_use(true); /* FIXED! 12/30/98 */
         Player.str = Player.maxstr = Player.con = Player.maxcon = Player.dex = Player.maxdex =
           Player.agi = Player.maxagi = Player.iq = Player.maxiq = Player.pow = Player.maxpow =
@@ -268,7 +248,6 @@ void outdoors_random_event()
       else if(num < 30)
       {
         mprint("Your entire body glows with an eerie flickering light.");
-        morewait();
         toggle_item_use(true); /* FIXED! 12/30/98 */
         for(i = 1; i < MAXITEMS; i++)
         {
@@ -285,12 +264,10 @@ void outdoors_random_event()
         toggle_item_use(false); /* FIXED! 12/30/98 */
         cleanse(1);
         mprint("You feel filled with energy!");
-        morewait();
         Player.maxpow += 5;
         Player.pow += 5;
         Player.mana = Player.maxmana = calcmana() * 5;
         mprint("You also feel weaker. Paradoxical, no?");
-        morewait();
         Player.con -= 5;
         Player.maxcon -= 5;
         if(Player.con < 3)
@@ -301,7 +278,6 @@ void outdoors_random_event()
       else if(num < 40)
       {
         mprint("Your entire body glows black.");
-        morewait();
         dispel(-1);
         dispel(-1);
         Player.pow -= 10;
@@ -310,18 +286,16 @@ void outdoors_random_event()
       else if(num < 60)
       {
         mprint("The storm deposits you in a strange place....");
-        morewait();
         do
         {
           Player.x = random_range(WIDTH);
           Player.y = random_range(LENGTH);
         } while(Country[Player.x][Player.y].current_terrain_type == CHAOS_SEA && !Player.rank[ADEPT]);
-        screencheck(Player.y);
+        screencheck(Player.x, Player.y);
       }
       else if(num < 70)
       {
         mprint("A tendril of the storm condenses and falls into your hands.");
-        morewait();
         ob = ((pob)checkmalloc(sizeof(objtype)));
         make_artifact(ob, -1);
         gain_item(ob);
@@ -331,36 +305,27 @@ void outdoors_random_event()
         if(gamestatusp(MOUNTED, GameStatus))
         {
           mprint("Your horse screams as he is transformed into an");
-          morewait();
           mprint("imaginary unseen dead tortoise.");
-          morewait();
           mprint("You are now on foot.");
-          morewait();
           resetgamestatus(MOUNTED, GameStatus);
         }
         else
         {
           mprint("You notice you are riding a horse. Odd. Very odd....");
-          morewait();
           mprint("Now that's a horse of a different color!");
-          morewait();
           setgamestatus(MOUNTED, GameStatus);
         }
       }
       else if(num < 90)
       {
         mprint("You feel imbued with godlike power....");
-        morewait();
         wish(1);
       }
       else if(num < 100)
       {
         mprint("The chaos storm has wiped your memory!");
-        morewait();
         mprint("You feel extraordinarily naive....");
-        morewait();
         mprint("You can't remember a thing! Not even your name.");
-        morewait();
         Player.xp    = 0;
         Player.level = 0;
         for(i = 0; i < NUMRANKS; i++)
@@ -376,9 +341,7 @@ void outdoors_random_event()
       else
       {
         mprint("You survive the chaos storm relatively unscathed.");
-        morewait();
         mprint("It was a learning experience.");
-        morewait();
         gain_experience(1000);
       }
       break;
@@ -388,12 +351,10 @@ void outdoors_random_event()
     case 9:
     case 10:
       mprint("An encounter!");
-      morewait();
       change_environment(E_TACTICAL_MAP);
       break;
     case 11:
       mprint("You find a Traveller's Aid station with maps of the local area.");
-      morewait();
       if(gamestatusp(LOST, GameStatus))
       {
         resetgamestatus(LOST, GameStatus);
@@ -428,7 +389,6 @@ void outdoors_random_event()
       break;
     case 14:
       mprint("A cosmic ray strikes!");
-      morewait();
       p_damage(10, UNSTOPPABLE, "a cosmic ray");
       break;
     case 15:
@@ -436,9 +396,7 @@ void outdoors_random_event()
       break;
     case 16:
       mprint("The west wind carries with it a weird echoing voice....");
-      morewait();
       hint();
-      morewait();
       break;
   }
   dataprint();
@@ -766,7 +724,6 @@ void terrain_check(int takestime)
         hourly_check();
       }
       mprint("You have entered the sea of chaos...");
-      morewait();
       l_chaos();
       break;
     case SWAMP:
@@ -913,7 +870,6 @@ void countrysearch()
       {
         if(Country[x][y].current_terrain_type != Country[x][y].base_terrain_type)
         {
-          clearmsg();
           mprint("Your search was fruitful!");
           Country[x][y].current_terrain_type = Country[x][y].base_terrain_type;
           c_set(x, y, CHANGED, Country);
@@ -1032,49 +988,53 @@ static int sitenums[] = {/* the order matches sitenames[] */
                          L_LIBRARY,   L_MERC_GUILD,  L_ORACLE,       L_ORDER,  L_PAWN_SHOP, L_SORCERORS,
                          L_TAVERN,    L_TEMPLE,      L_THIEVES_GUILD};
 
-void showknownsites(int first, int last)
+std::vector<std::string> known_sites(int first, int last)
 {
-  int i, printed = false;
-
-  menuclear();
-  menuprint("\nPossible Sites:\n");
-  for(i = first; i <= last; i++)
+  std::vector<std::string> lines;
+  int printed = false;
+  for(int i = first; i <= last; ++i)
   {
     if(CitySiteList[sitenums[i] - CITYSITEBASE][0])
     {
       printed = true;
-      menuprint(sitenames[i]);
-      menuprint("\n");
+      lines.emplace_back(std::string("  ") + sitenames[i]);
     }
   }
   if(!printed)
   {
-    menuprint("\nNo known sites match that prefix!");
+    lines.emplace_back("No known sites match that prefix!");
   }
-  showmenu();
+  return lines;
 }
 
 int parsecitysite()
 {
-  int    first, last;
-  size_t pos;
-  char   byte, prefix[80];
+  char   prefix[80];
   int    found = 0;
   int    f, l;
-
-  first = 0;
-  last  = NUMCITYSITES - 1;
-  pos   = 0;
-  print2("");
+  int    first          = 0;
+  int    last           = NUMCITYSITES - 1;
+  size_t pos            = 0;
+  bool   menu_displayed = false;
+  int    player_input;
+  append_message("", true);
   do
   {
-    byte = mgetc();
-    if(byte == BACKSPACE || byte == DELETE)
+    if(menu_displayed)
+    {
+      menu->load(known_sites(first, last), {"Possible Sites -"});
+      player_input = menu->get_player_input();
+    }
+    else
+    {
+      player_input = mgetc();
+    }
+    if(player_input == KEY_BACKSPACE || player_input == '\b' || player_input == DELETE || player_input == KEY_DC)
     {
       if(pos > 0)
       {
         prefix[--pos] = '\0';
-        byte          = prefix[pos - 1];
+        player_input  = prefix[pos - 1];
         f             = first;
         while(f >= 0 && !strncmp(prefix, sitenames[f], pos))
         {
@@ -1082,7 +1042,7 @@ int parsecitysite()
           {
             first = f;
           }
-          f--;
+          --f;
         }
         l = last;
         while(l < NUMCITYSITES && !strncmp(prefix, sitenames[l], pos))
@@ -1091,36 +1051,35 @@ int parsecitysite()
           {
             last = l;
           }
-          l++;
+          ++l;
         }
         if(found)
         {
           found = 0;
         }
-        print2(prefix);
+        message_buffer.replace_last(prefix);
       }
       if(pos == 0)
       {
         first = 0;
         last  = NUMCITYSITES - 1;
         found = 0;
-        print2("");
       }
     }
-    else if(byte == ESCAPE)
+    else if(player_input == ESCAPE)
     {
       xredraw();
       return ABORT;
     }
-    else if(byte == '?')
+    else if(player_input == '?')
     {
-      showknownsites(first, last);
+      menu_displayed = true;
     }
-    else if(byte != '\n')
+    else if(player_input != '\n')
     {
-      if(byte >= 'A' && byte <= 'Z')
+      if(player_input >= 'A' && player_input <= 'Z')
       {
-        byte += 'a' - 'A';
+        player_input += 'a' - 'A';
       }
       if(found)
       {
@@ -1129,31 +1088,31 @@ int parsecitysite()
       f = first;
       l = last;
       while(f < NUMCITYSITES && (!CitySiteList[sitenums[f] - CITYSITEBASE][0] ||
-                                 strlen(sitenames[f]) < pos || sitenames[f][pos] < byte))
+                                 strlen(sitenames[f]) < pos || sitenames[f][pos] < player_input))
       {
-        f++;
+        ++f;
       }
       while(l >= 0 && (!CitySiteList[sitenums[l] - CITYSITEBASE][0] || strlen(sitenames[l]) < pos ||
-                       sitenames[l][pos] > byte))
+                       sitenames[l][pos] > player_input))
       {
-        l--;
+        --l;
       }
       if(l < f)
       {
         continue;
       }
-      prefix[pos++] = byte;
+      prefix[pos++] = player_input;
       prefix[pos]   = '\0';
-      nprint2(prefix + pos - 1);
+      message_buffer.replace_last(prefix);
       first = f;
       last  = l;
       if(first == last && !found)
       { /* unique name */
         found = 1;
-        nprint2(sitenames[first] + pos);
+        message_buffer.replace_last(sitenames[first]);
       }
     }
-  } while(byte != '\n');
+  } while(player_input != '\n');
   xredraw();
   if(found)
   {
@@ -1161,7 +1120,7 @@ int parsecitysite()
   }
   else
   {
-    print3("That is an ambiguous abbreviation!");
+    append_message("That is an ambiguous abbreviation!", true);
     return ABORT;
   }
 }
@@ -1254,14 +1213,12 @@ int stonecheck(int alignment)
     case 3:
       print1("The stone glows microwave");
       print2("A vortex of antimana spins about you!");
-      morewait();
       dispel(-1);
       break;
     case 5:
       print1("The stone glows infrared");
       print2("A portal opens nearby and an obviously confused monster appears!");
       summon(-1, -1);
-      morewait();
       break;
     case 7:
       print1("The stone glows brick red");
@@ -1286,7 +1243,6 @@ int stonecheck(int alignment)
     case 15:
       print1("The stone glows yellow");
       print2("Oh no! The DREADED AQUAE MORTIS!");
-      morewait();
       print2("No, wait, it's just your imagination.");
       break;
     case 17:
@@ -1309,21 +1265,16 @@ int stonecheck(int alignment)
     case 23:
       print1("The stone glows cyan");
       print2("You feel a strange twisting sensation....");
-      morewait();
       strategic_teleport(-1);
       break;
     case 25:
       print1("The stone glows blue");
-      morewait();
       print1("You feel a tingle of an unearthly intuition:");
-      morewait();
       hint();
       break;
     case 27:
       print1("The stone glows navy blue");
       print2("A sudden shock of knowledge overcomes you.");
-      morewait();
-      clearmsg();
       identify(1);
       knowledge(1);
       break;
@@ -1341,7 +1292,6 @@ int stonecheck(int alignment)
       break;
     case 31:
       print1("The stone glows violet");
-      morewait();
       acquire(0);
       break;
     case 33:
@@ -1362,7 +1312,6 @@ int stonecheck(int alignment)
     case 39:
       print1("The stone glows gamma");
       print2("Your left hand shines silvery, and your right emits a golden aura.");
-      morewait();
       enchant(1);
       bless(1);
       print3("Your hands stop glowing.");
@@ -1384,7 +1333,6 @@ int stonecheck(int alignment)
     default:
       print1("The stone glows polka-dot (?!?!?!?)");
       print2("You feel a strange twisting sensation....");
-      morewait();
       *stone = 0;
       strategic_teleport(-1);
       break;
@@ -1421,7 +1369,6 @@ void alert_guards()
     suppress = gamestatusp(SUPPRESS_PRINTING, GameStatus);
     resetgamestatus(SUPPRESS_PRINTING, GameStatus);
     print2("The last member of the Order of Paladins dies....");
-    morewait();
     gain_experience(1000);
     Player.alignment -= 250;
     if(!gamestatusp(KILLED_LAWBRINGER, GameStatus))
@@ -1429,28 +1376,23 @@ void alert_guards()
       print1("A chime sounds from far away.... The sound grows stronger....");
       print2("Suddenly the great shadowy form of the LawBringer appears over");
       print3("the city. He points his finger at you....");
-      morewait();
       print1("\"Cursed art thou, minion of chaos! May thy strength fail thee");
       print2("in thy hour of need!\" You feel an unearthly shiver as the");
       print3("LawBringer waves his palm across the city skies....");
-      morewait();
       Player.str /= 2;
       dataprint();
       print1("You hear a bell tolling, and eerie moans all around you....");
       print2("Suddenly, the image of the LawBringer is gone.");
       print3("You hear a guardsman's whistle in the distance!");
-      morewait();
       resurrect_guards();
     }
     else
     {
       print1("The Order's magical defenses have dropped, and the");
       print2("Legions of Chaos strike....");
-      morewait();
       print1("The city shakes! An earthquake has struck!");
       print2("Cracks open in the street, and a chasm engulfs the Order HQ!");
       print3("Flames lick across the sky and you hear wild laughter....");
-      morewait();
       gain_experience(5000);
       destroy_order();
     }

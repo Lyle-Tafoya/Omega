@@ -33,29 +33,33 @@ struct spell Spells[NUMSPELLS + 1];
 int CitySiteList[NUMCITYSITES][3];
 
 /* Currently defined in caps since it is now a variable, was a constant */
-int LENGTH = MAXLENGTH;
-int WIDTH  = MAXWIDTH;
+int  LENGTH = MAXLENGTH;
+int  WIDTH  = MAXWIDTH;
+bool terminal_size_too_small;
 
 bool           received_directions = false;
-long           GameStatus          = 0L;     /* Game Status bit vector */
-int            ScreenLength        = 0;      /* How large is level window */
+bool           IsMenu              = false;
+long           GameStatus          = 0L; /* Game Status bit vector */
+int            ScreenLength        = 0;  /* How large is level window */
+int            ScreenWidth         = 0;
 struct player  Player;                       /* the player */
 struct terrain Country[MAXWIDTH][MAXLENGTH]; /* The countryside */
 #ifdef SAVE_LEVELS
 struct level TheLevel;
 #endif
-struct level   *City                = NULL;          /* The city of Rampart */
-struct level   *TempLevel           = NULL;          /* Place holder */
-struct level   *Level               = NULL;          /* Pointer to current Level */
-struct level   *Dungeon             = NULL;          /* Pointer to current Dungeon */
-int             Villagenum          = 0;             /* Current Village number */
-int             ScreenOffset        = 0;             /* Offset of displayed screen to level */
+struct level   *City                = NULL; /* The city of Rampart */
+struct level   *TempLevel           = NULL; /* Place holder */
+struct level   *Level               = NULL; /* Pointer to current Level */
+struct level   *Dungeon             = NULL; /* Pointer to current Dungeon */
+int             Villagenum          = 0;    /* Current Village number */
+int             ScreenOffset        = 0;    /* Offset of displayed screen to level */
+int             HorizontalOffset    = 0;
 int             MaxDungeonLevels    = 0;             /* Deepest level allowed in dungeon */
 int             Current_Dungeon     = -1;            /* What is Dungeon now */
 int             Current_Environment = E_CITY;        /* Which environment are we in */
 int             Last_Environment    = E_COUNTRYSIDE; /* Which environment were we in */
 int             Dirs[2][9];                          /* 9 xy directions */
-char            Cmd                  = 's';          /* last player command */
+int             Cmd                  = 's';          /* last player command */
 int             Command_Duration     = 0;            /* how long does current command take */
 struct monster *Arena_Monster        = NULL;         /* Opponent in arena */
 int             Arena_Opponent       = 0;            /* case label of opponent in l_arena()*/
@@ -300,7 +304,7 @@ int main(int argc, char *argv[])
     colour_off();
   }
 
-  screencheck(Player.y);
+  screencheck(Player.x, Player.y);
 
   /* game cycle */
   if(!continuing)
@@ -323,9 +327,7 @@ int main(int argc, char *argv[])
 void signalexit(int)
 {
   int reply;
-  clearmsg();
   mprint("Yikes!");
-  morewait();
   mprint("Sorry, caught a core-dump signal.");
   mprint("Want to try and save the game?");
   reply = ynq();

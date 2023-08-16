@@ -3,8 +3,11 @@
 /* Player generation */
 
 #include "glob.h"
+#include "scrolling_buffer.hpp"
 
 #include <algorithm>
+
+extern scrolling_buffer message_buffer;
 
 /* set player to begin with */
 void initplayer()
@@ -68,7 +71,6 @@ void initplayer()
     if(i != VERSION)
     {
       print1("Out of date .omegarc! Make another!");
-      morewait();
     }
     else
     {
@@ -114,7 +116,6 @@ FILE *omegarc_check()
       fd = NULL;
     }
   }
-  clearmsg();
   return (fd);
 }
 
@@ -190,7 +191,7 @@ int fixnpc(int status)
   { /* player is dead, all undead are chaotic */
     npcbehavior += CHAOTIC;
     npcbehavior += 10; /* melee */
-    npcbehavior += 100 * std::min(9, ((int)(Player.level / 3)));
+    npcbehavior += 100 * std::min(9, static_cast<int>((Player.level / 3)));
     npcbehavior += 1000; /* threaten */
   }
   else if(Behavior >= 0)
@@ -267,7 +268,7 @@ int competence_check(int attack)
     case 2: /* missle */
       ability += statmod(Player.dex);
       ability += Player.rank[LEGION];
-      ability += ((int)(Player.dmg / 10) - 1);
+      ability += static_cast<int>(Player.dmg/10 - 1);
       break;
     case 3: /* spellcasting */
       ability += statmod(Player.iq);
@@ -285,7 +286,7 @@ int competence_check(int attack)
       ability += 2 * statmod(Player.agi);
       break;
   }
-  ability += ((int)(Player.level / 5));
+  ability += static_cast<int>((Player.level / 5));
   if(ability < 0)
   {
     ability = 0;
@@ -299,11 +300,10 @@ int competence_check(int attack)
 
 void user_character_stats()
 {
-  int num, iqpts = 0, numints = 0, ok, agipts = 0, dexpts = 0, powpts = 0, conpts = 0;
-  print1("OK, now try to answer the following questions honestly:");
-  morewait();
-  print1("How many pounds can you bench press? ");
-  num = (int)parsenum();
+  int iqpts = 0, numints = 0, ok, agipts = 0, dexpts = 0, powpts = 0, conpts = 0;
+  message_buffer.receive("OK, now try to answer the following questions honestly:");
+  message_buffer.receive("How many pounds can you bench press? ");
+  int num = static_cast<int>(parsenum());
   if(num < 30)
   {
     Player.str = Player.maxstr = 3;
@@ -318,59 +318,51 @@ void user_character_stats()
   }
   if(Player.str > 18)
   {
-    print2("Even if it's true, I don't believe it.");
-    morewait();
-    clearmsg();
+    message_buffer.receive("Even if it's true, I don't believe it.");
     Player.str = Player.maxstr = 18;
   }
 
-  print1("Took an official IQ test? [yn] ");
+  message_buffer.receive("Took an official IQ test? [yn] ", true);
   if(ynq1() == 'y')
   {
-    print1("So, whadja get? ");
-    num = (int)parsenum() / 10;
+    message_buffer.receive("So, whadja get? ", true);
+    num = static_cast<int>(parsenum() / 10);
     if(num > 18)
     {
-      print2("Even if it's true, I don't believe it.");
-      morewait();
-      clearmsg();
+      message_buffer.receive("Even if it's true, I don't believe it.", true);
       num = 18;
     }
     iqpts += num;
     numints++;
   }
 
-  print1("Took Undergraduate entrance exams? [yn] ");
+  message_buffer.receive("Took Undergraduate entrance exams? [yn] ", true);
   if(ynq1() == 'y')
   {
     do
     {
-      print1("So, what percentile? ");
-      num = (int)parsenum();
+      message_buffer.receive("So, what percentile? ", true);
+      num = static_cast<int>(parsenum());
       ok  = (num < 100);
       if(!ok)
       {
-        print2("That's impossible!");
-        morewait();
-        clearmsg();
+        message_buffer.receive("That's impossible!", true);
       }
     } while(!ok);
     iqpts += (num - 49) * 9 / 50 + 9;
     numints++;
   }
-  print1("Took Graduate entrance exams? [yn] ");
+  message_buffer.receive("Took Graduate entrance exams? [yn] ", true);
   if(ynq1() == 'y')
   {
     do
     {
-      print1("So, what percentile? ");
-      num = (int)parsenum();
+      message_buffer.receive("So, what percentile? ", true);
+      num = static_cast<int>(parsenum());
       ok  = (num < 100);
       if(!ok)
       {
-        print2("That's impossible!");
-        morewait();
-        clearmsg();
+        message_buffer.receive("That's impossible!", true);
       }
     } while(!ok);
     iqpts += (num - 49) * 9 / 50 + 9;
@@ -379,19 +371,17 @@ void user_character_stats()
 
   if(numints == 0)
   {
-    print1("Pretty dumb, aren't you? [yn] ");
+    message_buffer.receive("Pretty dumb, aren't you? [yn] ", true);
     if(ynq1() == 'y')
     {
       Player.iq = random_range(3) + 3;
-      print2("I thought so....");
+      message_buffer.receive("I thought so....", true);
     }
     else
     {
       Player.iq = random_range(6) + 8;
-      print2("Well, not *that* dumb.");
+      message_buffer.receive("Well, not *that* dumb.", true);
     }
-    morewait();
-    clearmsg();
   }
   else
   {
@@ -399,143 +389,136 @@ void user_character_stats()
   }
   Player.maxiq = Player.iq;
   agipts       = 0;
-  print1("Can you dance? [yn] ");
+  message_buffer.receive("Can you dance? [yn] ", true);
   if(ynq1() == 'y')
   {
     agipts++;
-    nprint1(" Well? [yn] ");
+    message_buffer.receive("Well? [yn] ", true);
     if(ynq1() == 'y')
     {
       agipts += 2;
     }
   }
-  print1("Do you have training in a martial art or gymnastics? [yn] ");
+  message_buffer.receive("Do you have training in a martial art or gymnastics? [yn] ", true);
   if(ynq1() == 'y')
   {
     agipts += 2;
-    print2("Do you have dan rank or equivalent? [yn] ");
+    message_buffer.receive("Do you have dan rank or equivalent? [yn] ", true);
     if(ynq2() == 'y')
     {
       agipts += 4;
     }
   }
-  clearmsg();
-  print1("Do you play some field sport? [yn] ");
+  message_buffer.receive("Do you play some field sport? [yn] ", true);
   if(ynq1() == 'y')
   {
     agipts++;
-    nprint1(" Are you good? [yn] ");
+    message_buffer.receive("Are you good? [yn] ", true);
     if(ynq1() == 'y')
     {
       agipts++;
     }
   }
-  print1("Do you cave, mountaineer, etc.? [yn] ");
+  message_buffer.receive("Do you cave, mountaineer, etc.? [yn] ", true);
   if(ynq1() == 'y')
   {
     agipts += 3;
   }
-  print1("Do you skate or ski? [yn] ");
+  message_buffer.receive("Do you skate or ski? [yn] ", true);
   if(ynq1() == 'y')
   {
     agipts += 2;
-    nprint1(" Well? [yn] ");
+    message_buffer.receive("Well? [yn] ", true);
     if(ynq1() == 'y')
     {
       agipts += 2;
     }
   }
-  print1("Are you physically handicapped? [yn] ");
+  message_buffer.receive("Are you physically handicapped? [yn] ", true);
   if(ynq1() == 'y')
   {
     agipts -= 4;
   }
-  print1("Are you accident prone? [yn] ");
+  message_buffer.receive("Are you accident prone? [yn] ", true);
   if(ynq1() == 'y')
   {
     agipts -= 4;
   }
-  print1("Can you use a bicycle? [yn] ");
+  message_buffer.receive("Can you use a bicycle? [yn] ", true);
   if(ynq1() != 'y')
   {
     agipts -= 4;
   }
   Player.agi = Player.maxagi = 9 + agipts / 2;
-  print1("Do you play video games? [yn] ");
+  message_buffer.receive("Do you play video games? [yn] ", true);
   if(ynq1() == 'y')
   {
     dexpts += 2;
-    print2("Do you get high scores? [yn] ");
+    message_buffer.receive("Do you get high scores? [yn] ", true);
     if(ynq2() == 'y')
     {
       dexpts += 4;
     }
   }
-  clearmsg();
-  print1("Are you an archer, fencer, or marksman? [yn] ");
+  message_buffer.receive("Are you an archer, fencer, or marksman? [yn] ", true);
   if(ynq1() == 'y')
   {
     dexpts += 2;
-    print2("A good one? [yn] ");
+    message_buffer.receive("A good one? [yn] ", true);
     if(ynq2() == 'y')
     {
       dexpts += 4;
     }
   }
-  clearmsg();
-  print1("Have you ever picked a lock? [yn] ");
+  message_buffer.receive("Have you ever picked a lock? [yn] ", true);
   if(ynq1() == 'y')
   {
     dexpts += 2;
-    print2("Really. Well, the police are being notified.");
+    message_buffer.receive("Really. Well, the police are being notified.", true);
   }
-  morewait();
-  clearmsg();
-  print1("What's your typing speed (words per minute) ");
-  num = (int)parsenum();
+  message_buffer.receive("What's your typing speed (words per minute) ", true);
+  num = static_cast<int>(parsenum());
   if(num > 125)
   {
-    print2("Tell me another one....");
-    morewait();
-    clearmsg();
+    message_buffer.receive("Tell me another one....", true);
     num = 125;
   }
   dexpts += num / 25;
-  print1("Hold your arm out. Tense your fist. Hand shaking? [yn] ");
+  message_buffer.receive("Hold your arm out. Tense your fist. Hand shaking? [yn] ", true);
   if(ynq1() == 'y')
   {
     dexpts -= 3;
   }
-  print1("Ambidextrous, are you? [yn] ");
+  message_buffer.receive("Ambidextrous, are you? [yn] ", true);
   if(ynq1() == 'y')
   {
     dexpts += 4;
   }
-  print1("Can you cut a deck of cards with one hand? [yn] ");
+  message_buffer.receive("Can you cut a deck of cards with one hand? [yn] ", true);
   if(ynq1() == 'y')
   {
     dexpts += 2;
   }
-  print1("Can you tie your shoes blindfolded? [yn] ");
+  message_buffer.receive("Can you tie your shoes blindfolded? [yn] ", true);
   if(ynq1() != 'y')
   {
     dexpts -= 3;
   }
   Player.dex = Player.maxdex = 6 + dexpts / 2;
-  print1("Do you ever get colds? [yn] ");
+  message_buffer.receive("Do you ever get colds? [yn] ", true);
   if(ynq1() != 'y')
   {
     conpts += 4;
   }
   else
   {
-    nprint1(" Frequently? [yn] ");
+    message_buffer.receive("Frequently? [yn] ", true);
     if(ynq1() == 'y')
     {
       conpts -= 4;
     }
   }
-  print1("Had any serious accident or illness this year? [yn] ");
+  message_buffer.receive("Had any serious accident or illness this year? [yn] ", true);
   if(ynq1() == 'y')
   {
     conpts -= 4;
@@ -544,38 +527,36 @@ void user_character_stats()
   {
     conpts += 4;
   }
-  print1("Have a chronic disease? [yn] ");
+  message_buffer.receive("Have a chronic disease? [yn] ", true);
   if(ynq1() == 'y')
   {
     conpts -= 4;
   }
-  print1("Overweight or underweight by more than 20 percent? [yn] ");
+  message_buffer.receive("Overweight or underweight by more than 20 percent? [yn] ", true);
   if(ynq1() == 'y')
   {
     conpts -= 2;
   }
-  print1("High Blood Pressure? [yn] ");
+  message_buffer.receive("High Blood Pressure? [yn] ", true);
   if(ynq1() == 'y')
   {
     conpts -= 2;
   }
-  print1("Smoke? [yn] ");
+  message_buffer.receive("Smoke? [yn] ", true);
   if(ynq1() == 'y')
   {
     conpts -= 3;
   }
-  print1("Take aerobics classes? [yn] ");
+  message_buffer.receive("Take aerobics classes? [yn] ", true);
   if(ynq1() == 'y')
   {
     conpts += 2;
   }
-  print1("How many miles can you run? ");
-  num = (int)parsenum();
+  message_buffer.receive("How many miles can you run? ", true);
+  num = static_cast<int>(parsenum());
   if(num > 25)
   {
-    print2("Right. Sure. Give me a break.");
-    morewait();
-    clearmsg();
+    message_buffer.receive("Right. Sure. Give me a break.", true);
     conpts += 8;
   }
   else if(num < 1)
@@ -595,78 +576,64 @@ void user_character_stats()
     conpts += 8;
   }
   Player.con = Player.maxcon = 12 + conpts / 3;
-  print1("Do animals react oddly to your presence? [yn] ");
+  message_buffer.receive("Do animals react oddly to your presence? [yn] ", true);
   if(ynq1() == 'y')
   {
-    print2("How curious that must be.");
-    morewait();
-    clearmsg();
+    message_buffer.receive("How curious that must be.", true);
     powpts += 2;
   }
-  print1("Can you see auras? [yn] ");
+  message_buffer.receive("Can you see auras? [yn] ", true);
   if(ynq1() == 'y')
   {
-    nprint1(" How strange.");
-    morewait();
+    message_buffer.receive("How strange.", true);
     powpts += 3;
   }
-  print1("Ever have an out-of-body experience? [yn] ");
+  message_buffer.receive("Ever have an out-of-body experience? [yn] ", true);
   if(ynq1() == 'y')
   {
-    print2("Wow, man. Fly the friendly skies....");
-    morewait();
-    clearmsg();
+    message_buffer.receive("Wow, man. Fly the friendly skies....", true);
     powpts += 3;
   }
-  print1("Did you ever cast a spell? [yn] ");
+  message_buffer.receive("Did you ever cast a spell? [yn] ", true);
   if(ynq1() == 'y')
   {
     powpts += 3;
-    nprint1(" Did it work? [yn] ");
+    message_buffer.receive("Did it work? [yn] ", true);
     if(ynq1() == 'y')
     {
       powpts += 7;
-      print2("Sure it did.");
-      morewait();
-      clearmsg();
+      message_buffer.receive("Sure it did.", true);
     }
   }
-  print1("Do you have ESP? [yn] ");
+  message_buffer.receive("Do you have ESP? [yn] ", true);
   if(ynq1() == 'y')
   {
     powpts += 3;
-    print2("Somehow, I knew you were going to say that.");
-    morewait();
-    clearmsg();
+    message_buffer.receive("Somehow, I knew you were going to say that.", true);
   }
-  print1("Do you have PK? [yn] ");
+  message_buffer.receive("Do you have PK? [yn] ", true);
   if(ynq1() == 'y')
   {
     powpts += 6;
-    print2("I can't tell you how much that moves me.");
-    morewait();
-    clearmsg();
+    message_buffer.receive("I can't tell you how much that moves me.", true);
   }
-  print1("Do you believe in ghosts? [yn] ");
+  message_buffer.receive("Do you believe in ghosts? [yn] ", true);
   if(ynq1() == 'y')
   {
     powpts += 2;
-    print2("I do! I do! I do believe in ghosts!");
-    morewait();
-    clearmsg();
+    message_buffer.receive("I do! I do! I do believe in ghosts!", true);
   }
-  print1("Are you Irish? [yn] ");
+  message_buffer.receive("Are you Irish? [yn] ", true);
   if(ynq1() == 'y')
   {
     powpts += 2;
-    nprint1(" Is that blarney or what?");
-    morewait();
+    message_buffer.receive("Is that blarney or what?", true);
   }
   Player.pow = Player.maxpow = 3 + powpts / 2;
-  print1("Are you sexually attracted to males, females, both, or none? [mfbn] ");
+  message_buffer.receive("Are you sexually attracted to males, females, both, or none? [mfbn] ", true);
   do
   {
-    Player.preference = (char)mcigetc();
+    Player.preference = static_cast<char>(mcigetc());
   } while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
           (Player.preference != 'n')); /* :-) */
 }
@@ -695,9 +662,8 @@ void omegan_character_stats()
     calc_melee();
     dataprint();
   } while((i < REROLLS) && (mgetc() == ESCAPE));
-  clearmsg();
   print1("Please enter your character's name: ");
-  strcpy(Player.name, msgscanstring());
+  strcpy(Player.name, msgscanstring().c_str());
   if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
   {
     Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */

@@ -309,7 +309,6 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
     if(random_range(10) == 1)
     {
       mprint("... and shatters into a thousand lost fragments!");
-      morewait();
       p_damage(50, UNSTOPPABLE, "Demonblade exploding");
       conform_lost_object(o);
     }

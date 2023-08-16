@@ -18,14 +18,12 @@ void l_water()
     if((Player.possessions[O_ARMOR] != NULL))
     {
       print1("Your heavy armor drags you under the water!");
-      morewait();
       p_drown();
       print2("You reach the surface again.");
     }
     else if(Player.itemweight > ((int)(Player.maxweight / 2)))
     {
       print1("The weight of your burden drags you under water!");
-      morewait();
       p_drown();
       print2("You reach the surface again.");
     }
@@ -74,9 +72,7 @@ void l_chaos()
   {
     print1("Your steed tries to swim in the raw Chaos, but seems to");
     print2("be having some difficulties...");
-    morewait();
     print1("probably because it's just turned into a chaffinch.");
-    morewait();
     resetgamestatus(MOUNTED, GameStatus);
   }
   if(!onewithchaos)
@@ -107,7 +103,6 @@ void l_chaos()
     {
       nprint2("Nothing mysterious happens this time....");
     }
-    morewait();
     print1("Congratulations! You've achieved maximal entropy!");
     Player.alignment -= 50;
     gain_experience(1000);
@@ -166,7 +161,6 @@ void l_lava()
     print2("Your horse is incinerated... You fall in too!");
     resetgamestatus(MOUNTED, GameStatus);
   }
-  morewait();
   if(strcmp(Player.name, "Saltheart Foamfollower") == 0)
   {
     print1("Strangely enough, you don't seem terribly affected.");
@@ -200,20 +194,16 @@ void l_abyss()
   if(Current_Environment != Current_Dungeon)
   {
     print1("You fall through a dimensional portal!");
-    morewait();
     strategic_teleport(-1);
   }
   else
   {
     print1("You enter the infinite abyss!");
-    morewait();
     if(random_range(100) == 13)
     {
       print1("As you fall you see before you what seems like");
       print2("an infinite congerie of iridescent bubbles.");
       print3("You have met Yog Sothoth!!!");
-      morewait();
-      clearmsg();
       if(Player.alignment > -10)
       {
         p_death("the Eater of Souls");
@@ -222,7 +212,6 @@ void l_abyss()
       {
         print1("The All-In-One must have taken pity on you.");
         print2("A transdimensional portal appears...");
-        morewait();
         change_level(Level->depth, Level->depth + 1, false);
         gain_experience(2000);
         Player.alignment -= 50;
@@ -243,16 +232,13 @@ void l_abyss()
           nprint2("and fall... ");
         }
         i++;
-        morewait();
       }
       i++;
       print1("Finally,you emerge through an interdimensional interstice...");
-      morewait();
       if(Level->depth + i > MaxDungeonLevels)
       {
         print2("You emerge high above the ground!!!!");
         print3("Yaaaaaaaah........");
-        morewait();
         change_environment(E_COUNTRYSIDE);
         do
         {
@@ -264,7 +250,6 @@ void l_abyss()
       else
       {
         print2("You built up some velocity during your fall, though....");
-        morewait();
         p_damage(i * 5, NORMAL_DAMAGE, "a fall through the abyss");
         change_level(Level->depth, Level->depth + i, false);
         gain_experience(i * i * 50);
@@ -286,8 +271,6 @@ void l_lift()
   print1("You walk onto a shimmering disk....");
   print2("The disk vanishes, and a glow surrounds you.");
   print3("You feel weightless.... You feel ghostly....");
-  morewait();
-  clearmsg();
   print1("Go up, down, or neither [u,d,ESCAPE] ");
   do
   {
@@ -310,9 +293,7 @@ void l_lift()
       {
         nprint1("..");
         print2("...and keep going up!  You hang in mid air...");
-        morewait();
         print3("\"What goes up...\"");
-        morewait();
         print3("Yaaaaaaaah........");
         p_damage(distance * 10, NORMAL_DAMAGE, "a fall from a great height");
       }
@@ -445,7 +426,6 @@ void l_tactical_exit()
 {
   if(optionp(CONFIRM, Player))
   {
-    clearmsg();
     print1("Do you really want to leave this place? ");
     if(ynq1() != 'y')
     {
@@ -479,7 +459,6 @@ void l_rubble()
     print3("You're trapped in the pile!");
     Player.status[IMMOBILE] += 2;
     p_damage(screwup / 5, UNSTOPPABLE, "rubble and debris");
-    morewait();
   }
 }
 
@@ -489,7 +468,6 @@ void l_portcullis_trap()
   int i, j, slam = false;
 
   print3("Click.");
-  morewait();
   for(i = std::max(Player.x - 5, 0); i < std::min(Player.x + 6, WIDTH); i++)
   {
     for(j = std::max(Player.y - 5, 0); j < std::min(Player.y + 6, LENGTH); j++)
@@ -502,7 +480,6 @@ void l_portcullis_trap()
         if((i == Player.x) && (j == Player.y))
         {
           print3("Smash! You've been hit by a falling portcullis!");
-          morewait();
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
         }
         slam = true;
@@ -521,7 +498,6 @@ void l_drop_every_portcullis()
   int i, j, slam = false;
 
   print3("Click.");
-  morewait();
   for(i = 0; i < WIDTH; i++)
   {
     for(j = 0; j < LENGTH; j++)
@@ -539,7 +515,6 @@ void l_drop_every_portcullis()
         if((i == Player.x) && (j == Player.y))
         {
           print3("Smash! You've been hit by a falling portcullis!");
-          morewait();
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
         }
         slam = true;
@@ -586,7 +561,6 @@ void l_house_exit()
 {
   if(optionp(CONFIRM, Player))
   {
-    clearmsg();
     print1("Do you really want to leave this abode? ");
     if(ynq1() != 'y')
     {
@@ -600,18 +574,13 @@ void l_house_exit()
 
 void l_void()
 {
-  clearmsg();
   print1("Geronimo!");
-  morewait();
-  clearmsg();
   print1("You leap into the void.");
   if(Level->mlist)
   {
     print2("Death peers over the edge and gazes quizzically at you....");
-    morewait();
     print3("'Bye-bye,' he says... 'We'll meet again.'");
   }
-  morewait();
   while(Player.hp > 0)
   {
     Time += 60;
@@ -626,7 +595,6 @@ void l_fire_station()
   if(Player.immunity[FLAME])
   {
     print2("You feel the terrible heat despite your immunity to fire!");
-    morewait();
   }
   print2("Enter the flames? [yn] ");
   if(ynq2() == 'y')
@@ -673,16 +641,13 @@ void l_water_station()
 {
   print1("The fluid seems murky and unknowably deep.");
   print2("It bubbles and hisses threateningly.");
-  morewait();
   if(Player.status[BREATHING])
   {
     print1("You don't feel sanguine about trying to breathe that stuff!");
-    morewait();
   }
   if(Player.immunity[ACID])
   {
     print2("The vapor burns despite your immunity to acid!");
-    morewait();
   }
   print1("Enter the fluid? [yn] ");
   if(ynq1() == 'y')
@@ -697,9 +662,7 @@ void l_water_station()
     }
     dataprint();
     print2("You choke....");
-    morewait();
     nprint2("Your lungs burn....");
-    morewait();
     print2("Your body begins to disintegrate.... Leave the pool? [yn] ");
     if(ynq2() == 'y')
     {
@@ -707,7 +670,6 @@ void l_water_station()
     }
     else
     {
-      clearmsg();
       Player.con -= (15 + random_range(15));
       if(Player.con > 0)
       {
@@ -737,7 +699,6 @@ void l_air_station()
   {
     print2("You feel static cling despite your immunity to electricity!");
   }
-  morewait();
   print1("Enter the storm? [yn] ");
   if(ynq1() == 'y')
   {
@@ -788,7 +749,6 @@ void l_earth_station()
   {
     print2("A splash of salt water does nothing to dissuade the vines.");
   }
-  morewait();
   print1("Enter the overgrown mire? [yn] ");
   if(ynq1() == 'y')
   {
@@ -835,8 +795,6 @@ void stationcheck()
 {
   int stationsleft = false;
   int i, j;
-  morewait();
-  clearmsg();
   print1("You feel regenerated.");
   Player.hp = Player.maxhp;
   dataprint();
@@ -856,8 +814,6 @@ void stationcheck()
     print1("There is a noise like a wild horse's neigh.");
     print2("You spin around, and don't see anyone around at all");
     print3("except for a spurred black cloaked figure carrying a scythe.");
-    morewait();
-    clearmsg();
     print1("Death coughs apologetically. He seems a little embarrassed.");
     print2("A voice peals out:");
     print3("'An Adept must be able to conquer Death himself....");
@@ -879,7 +835,6 @@ void l_void_station()
     if(Level->mlist == NULL)
     {
       print2("You fall forever. Eventually you die of starvation.");
-      morewait();
       while(Player.hp > 0)
       {
         Time += 60;
@@ -891,7 +846,6 @@ void l_void_station()
     {
       print1("You enter the void.");
       print2("You feel a sudden surge of power from five directions.");
-      morewait();
       something = (Player.packptr > 0);
       if(!something)
       {
@@ -907,7 +861,6 @@ void l_void_station()
       {
         print1("The flow of power is disrupted by something!");
         print2("The power is unbalanced! You lose control!");
-        morewait();
         print1("Each of your cells explodes with a little scream of pain.");
         print2("Your disrupted essence merges with the megaflow.");
         p_death("the Power of the Void");
@@ -923,13 +876,9 @@ void l_void_station()
         print1("The flow of power rages through your body,");
         print2("but you manage to master the surge!");
         print3("You feel adept....");
-        morewait();
-        clearmsg();
         print1("With a thought, you soar up through the void to the");
         print2("place from whence you came.");
         print3("As the platform of the Challenge dwindles beneath you");
-        morewait();
-        clearmsg();
         print1("You see Death raise his scythe to you in a salute.");
         Player.rank[ADEPT] = 1;
         setgamestatus(COMPLETED_CHALLENGE, GameStatus);
@@ -938,7 +887,6 @@ void l_void_station()
         Player.x = 49;
         Player.y = 59;
         print2("You find yourself back in the Temple of Destiny.");
-        morewait();
         change_environment(E_TEMPLE);
       }
     }
@@ -976,7 +924,6 @@ void l_whirlwind()
     print2("You are jolted by lightning!");
     p_damage(random_range(difficulty() * 10), ELECTRICITY, "a magic whirlwind");
   }
-  morewait();
   if(random_range(2))
   {
     print1("The whirlwind carries you off....");
@@ -1017,7 +964,6 @@ void l_tome1()
   menuprint("\nreleasing chaotic energy, only the LawBringer can release");
   menuprint("\nthe lawful potential of the gem.");
   showmenu();
-  morewait();
   xredraw();
 }
 
@@ -1030,7 +976,6 @@ void l_tome2()
   menuprint("\nA marginal note says 'if only it could be reset to go somewhere");
   menuprint("\nbesides Star Peak, the gem might be useful....'");
   showmenu();
-  morewait();
   xredraw();
 }
 
@@ -1062,8 +1007,6 @@ void l_throne()
       Player.mana = 0;
       Player.hp   = 1;
       dispel(-1);
-      morewait();
-      clearmsg();
       print1("The radiance finally ceases. You can get up now.");
     }
     else
@@ -1119,7 +1062,6 @@ void l_throne()
             {
               print1("Mystic runes appear in the air before you:");
               print2("They appear to describe some high-powered spell.");
-              morewait();
               print1("You hear a distant voice....");
               print2("'You may now tread the path of High Magic.'");
               Spells[S_WISH].known = true;
@@ -1128,7 +1070,6 @@ void l_throne()
           case 17:
             print1("Weird flickering lights play over the throne.");
             print2("You hear a strange droning sound, as of a magical");
-            morewait();
             print1("artifact stressed by excessive use....");
             print2("With an odd tinkling sound the throne shatters!");
             Level->site[Player.x][Player.y].locchar = RUBBLE;
@@ -1136,7 +1077,6 @@ void l_throne()
             lset(Player.x, Player.y, CHANGED, *Level);
             if(find_and_remove_item(ARTIFACTID + 22, -1))
             {
-              morewait();
               print1("Your sceptre reverberates with the noise, and");
               print2("it too explodes in a spray of shards.");
             }
@@ -1153,7 +1093,6 @@ void l_escalator()
 {
   print1("You have found an extremely long stairway going straight up.");
   print2("The stairs are grilled steel and the bannister is rubber.");
-  morewait();
   print1("Take the stairway? [yn] ");
   if(ynq1() == 'y')
   {
@@ -1173,7 +1112,6 @@ void l_enter_court()
       if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
       {
         print2("A dulcet voice says: 'Jolly good show!'");
-        morewait();
       }
       setgamestatus(COMPLETED_CASTLE, GameStatus);
     }
@@ -1185,7 +1123,6 @@ void l_chaostone()
 {
   print1("This is a menhir carved of black marble with veins of gold.");
   print2("It emanates an aura of raw chaos, which is not terribly");
-  morewait();
   print1("surprising, considering its location.");
   if(Player.alignment < 0)
   {
@@ -1195,13 +1132,10 @@ void l_chaostone()
   {
     print2("You find it extremely difficult to approach the stone.");
   }
-  morewait();
-  clearmsg();
   print1("Touch it? [yn] ");
   if(ynq1() == 'y')
   {
     print1("A sudden flux of energy surrounds you!");
-    morewait();
     if(stonecheck(-1))
     {
       print2("You feel stronger!");
@@ -1219,8 +1153,6 @@ void l_balancestone()
 {
   print1("This is a massive granite slab teetering dangerously on a corner.");
   print2("You feel a sense of balance as you regard it.");
-  morewait();
-  clearmsg();
   print1("Touch it? [yn] ");
   if(ynq1() == 'y')
   {
@@ -1228,14 +1160,13 @@ void l_balancestone()
     if(abs(Player.alignment) > random_range(50))
     {
       print2("The cyclone whirls you off to a strange place!");
-      morewait();
       change_environment(E_COUNTRYSIDE);
       do
       {
         Player.x = random_range(WIDTH);
         Player.y = random_range(LENGTH);
       } while(Country[Player.x][Player.y].current_terrain_type == CHAOS_SEA);
-      screencheck(Player.y);
+      screencheck(Player.x, Player.y);
       drawvision(Player.x, Player.y);
     }
     else
@@ -1243,7 +1174,6 @@ void l_balancestone()
       print2("You are being drained of experience! Step back? [yn] ");
       if(ynq2() == 'y')
       {
-        clearmsg();
         print1("The vortex calms down, dimishes, and then disappears.");
       }
       else
@@ -1251,7 +1181,6 @@ void l_balancestone()
         Player.xp -= Player.xp / 4;
         dataprint();
         print2("The vortex vanishes. Suddenly, there is a clap of thunder!");
-        morewait();
         Player.alignment = 0;
         strategic_teleport(1);
       }
@@ -1267,7 +1196,6 @@ void l_lawstone()
 {
   print1("This is a stele carved of blueish-green feldspar.");
   print2("You feel an aura of serenity rising from it, and your gaze");
-  morewait();
   print1("is attracted to the bulk of Star Peak to the North-East.");
   if(Player.alignment > 0)
   {
@@ -1277,13 +1205,10 @@ void l_lawstone()
   {
     print2("You find the stone extremely distasteful to contemplate.");
   }
-  morewait();
-  clearmsg();
   print1("Touch it? [yn] ");
   if(ynq() == 'y')
   {
     print1("A matrix of power flows about you!");
-    morewait();
     if(stonecheck(1))
     {
       print2("You feel more vigorous!");
@@ -1301,13 +1226,10 @@ void l_voidstone()
 {
   print1("This is a grey and uninteresting stone.");
   print2("A feeling of nihility emanates from it.");
-  morewait();
-  clearmsg();
   print1("Touch it? [yn] ");
   if(ynq() == 'y')
   {
     print1("You feel negated.");
-    morewait();
     Player.mana = 0;
     toggle_item_use(true);
     for(int i = 0; i < NUMSTATI; ++i)
@@ -1340,7 +1262,6 @@ void l_sacrificestone()
   int oldmaxhp  = Player.maxhp;
   print1("You have come on a weathered basaltic block.");
   print2("On the top surface is an indentation in human shape.");
-  morewait();
   print1("You see old rust colored stains in the grain of the stone.");
   print2("You sense something awakening. Touch the block? [yn] ");
   if(ynq2() == 'y')
@@ -1351,7 +1272,6 @@ void l_sacrificestone()
     {
       print1("You are stuck fast to the block!");
       print2("You feel your life-force being sucked away!");
-      morewait();
       print1("Hit ESCAPE to try and get up at any moment, SPACE to remain.");
       do
       {
@@ -1381,7 +1301,6 @@ void l_sacrificestone()
       } while(stillonblock());
       print1("You manage to wrench yourself off the ancient altar!");
       print2("You leave some skin behind, though....");
-      morewait();
       if((oldmaxhp > 10) && (Player.maxhp < 3 * oldmaxhp / 4))
       {
         print1("A strange red glow arises from the altar.");
@@ -1414,14 +1333,12 @@ void l_mindstone()
 {
   print1("You approach a giant crystal of some opaline material.");
   print2("Flashes of irridescent light glint from the object.");
-  morewait();
   print1("You feel your attention being drawn by the intricate crystal.");
   print2("Look away from the interesting phenomenon? [yn] ");
   if(ynq2() == 'n')
   {
     print1("Your gaze focuses deeply on the gem....");
     print2("The crystal seems to open up and surround you!");
-    morewait();
     if(stonecheck(0))
     {
       print1("Your mind has been enhanced by the experience!");

@@ -2,11 +2,16 @@
 /* effect3.c */
 
 #include "glob.h"
+#include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
+extern void append_message(const std::string &message, bool force_break = false);
+extern interactive_menu *menu;
 
 /* if know id, then summon that monster; else (if < 0) get one. */
 void summon(int blessing, int id)
@@ -64,28 +69,27 @@ void summon(int blessing, int id)
 
 int itemlist(int itemindex, int num)
 {
-  int i, itemno;
+  append_message("Show ID list? ", true);
 
-  print2("Show ID list? ");
-  if(ynq2() == 'y')
+  int player_input = ynq2();
+  append_message("Item ID? ", true);
+  if(player_input == 'y')
   {
-    menuclear();
-    for(i = 0; i < num; i++)
+    std::vector<std::string> lines;
+    for(int i = 0; i < num; ++i)
     {
-      menunumprint(i + 1);
-      menuprint(":");
-      menuprint(Objects[i + itemindex].truename);
-      menuprint("\n");
+      lines.emplace_back(std::to_string(i + 1) + ":" + Objects[i + itemindex].truename);
     }
-    showmenu();
+    menu->load(lines);
+    player_input = menu->get_player_input();
+    ungetch(player_input);
   }
-  mprint("Item ID? ");
-  itemno = (int)parsenum() - 1;
-  if((itemno >= num) || (itemno < 0))
+  int itemno = (int)parsenum() - 1;
+  if(itemno >= num || itemno < 0)
   {
     itemno = ABORT;
   }
-  return (itemno);
+  return itemno;
 }
 
 int monsterlist()
@@ -96,22 +100,20 @@ int monsterlist()
   {
     do
     {
-      clearmsg();
       print1("Summon monster: ");
-      menuclear();
+      std::vector<std::string> lines;
       for(i = 0; i < NUMMONSTERS; i++)
       {
-        menunumprint(i + 1);
-        menuprint(":");
-        menuprint(Monsters[i].monstring);
-        menuprint("\n");
+        lines.emplace_back(std::to_string(i+1) + ":" + Monsters[i].monstring);
       }
-      showmenu();
+      menu->load(lines);
+      int player_input = menu->get_player_input();
+      ungetch(player_input);
+
       itemno = (int)parsenum() - 1;
       if((itemno < 0) || (itemno > NUMMONSTERS - 1))
       {
         print3("How about trying a real monster?");
-        morewait();
       }
     } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
   }
@@ -189,9 +191,7 @@ void annihilate(int blessing)
   {
     if(Current_Environment == E_COUNTRYSIDE)
     {
-      clearmsg();
       print1("Bolts of lightning flash down for as far as you can see!!!");
-      morewait();
       print1("There is a rain of small birds and insects from the sky, and you");
       print2("notice that you can't hear any animal noises around here any "
              "more...");
@@ -650,7 +650,7 @@ void p_teleport(int type)
       p_teleport(0);
     }
   }
-  screencheck(Player.y);
+  screencheck(Player.x, Player.y);
   roomcheck();
 }
 
@@ -718,7 +718,6 @@ void strategic_teleport(int blessing)
   mprint("Magic portals open up all around you!");
   if(blessing < 0)
   {
-    morewait();
     mprint("You are dragged into one!");
     change_environment(E_COUNTRYSIDE);
     do
@@ -840,7 +839,7 @@ void strategic_teleport(int blessing)
     }
   }
   setlastxy(Player.x, Player.y);
-  screencheck(Player.y);
+  screencheck(Player.x, Player.y);
   drawvision(Player.x, Player.y);
   if(Current_Environment == E_COUNTRYSIDE)
   {
@@ -907,7 +906,7 @@ void level_return()
     mprint("A mysterious force wafts you back home!");
     Player.x = 27;
     Player.y = 19;
-    screencheck(Player.y);
+    screencheck(Player.x, Player.y);
     drawvision(Player.x, Player.y);
     locprint("Back Outside Rampart.");
   }
@@ -1120,7 +1119,6 @@ void polymorph(int blessing)
   int             x = Player.x, y = Player.y, newmonster;
   struct monster *m;
   setspot(&x, &y);
-  clearmsg();
   if((x == Player.x) && (y == Player.y))
   {
     /* WDT HACK: shouldn't this use one of the 'getarticle' functions
@@ -1215,7 +1213,6 @@ void hellfire(int x, int y, int blessing)
     if(blessing < 0)
     {
       mprint("...and appears stronger.");
-      morewait();
       mprint("Much stronger.");
       m->hp += 1000;
       m->hit += 20;

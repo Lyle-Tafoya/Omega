@@ -7,6 +7,11 @@ which works.... */
 
 #include "glob.h"
 
+extern void print_messages();
+extern int get_level_input();
+extern int get_message_input();
+extern void print_inventory_menu(Symbol item_type = NULL_ITEM);
+
 /* deal with a new player command in dungeon or city mode*/
 void p_process()
 {
@@ -34,8 +39,8 @@ void p_process()
     if(!gamestatusp(FAST_MOVE, GameStatus))
     {
       searchval = 0;
-      Cmd       = mgetc();
-      clear_if_necessary();
+      print_messages();
+      Cmd = get_level_input();
     }
     Command_Duration = 0;
     switch(Cmd)
@@ -52,7 +57,6 @@ void p_process()
         break; /* ^g */
       case 9:
         display_pack();
-        morewait();
         xredraw();
         break; /* ^i */
       case 11:
@@ -175,17 +179,6 @@ void p_process()
         give();
         Command_Duration = 10;
         break;
-      case 'I':
-        if(!optionp(TOPINV, Player))
-        {
-          top_inventory_control();
-        }
-        else
-        {
-          display_possessions();
-          inventory_control();
-        }
-        break;
       case 'M':
         city_move();
         Command_Duration = 10;
@@ -284,11 +277,11 @@ void p_process()
         break;
       case '5':
         setgamestatus(SKIP_MONSTERS, GameStatus); /* don't do anything; a dummy turn */
-        Cmd = mgetc();
+        Cmd = get_message_input();
         while((Cmd != ESCAPE) && ((Cmd < '1') || (Cmd > '9') || (Cmd == '5')))
         {
           print3("Run in keypad direction [ESCAPE to abort]: ");
-          Cmd = mgetc();
+          Cmd = get_message_input();
         }
         if(Cmd != ESCAPE)
         {
@@ -343,6 +336,8 @@ void p_process()
         moveplayer(1, -1);
         Command_Duration = Player.speed * 4 / 5;
         break;
+      case ESCAPE:
+        break;
       default:
         commanderror();
         setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -353,7 +348,7 @@ void p_process()
   {
     roomcheck();
   }
-  screencheck(Player.y);
+  screencheck(Player.x, Player.y);
 }
 
 /* deal with a new player command in countryside mode */
@@ -365,8 +360,8 @@ void p_country_process()
   do
   {
     no_op = false;
-    Cmd   = mgetc();
-    clear_if_necessary();
+    print_messages();
+    Cmd = get_message_input();
     switch(Cmd)
     {
       case ' ':
@@ -420,18 +415,6 @@ void p_country_process()
         break;
       case 'H':
         hunt(Country[Player.x][Player.y].current_terrain_type);
-        break;
-      case 'I':
-        if(!optionp(TOPINV, Player))
-        {
-          top_inventory_control();
-        }
-        else
-        {
-          menuclear();
-          display_possessions();
-          inventory_control();
-        }
         break;
       case 'O':
         setoptions();
@@ -500,5 +483,5 @@ void p_country_process()
         break;
     }
   } while(no_op);
-  screencheck(Player.y);
+  screencheck(Player.x, Player.y);
 }

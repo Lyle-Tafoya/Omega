@@ -453,35 +453,6 @@ void learnclericalspells(int deity, int level)
   }
 }
 
-/* for the use of the casino slot machine */
-const char *slotstr(int num)
-{
-  switch(num)
-  {
-    case 0:
-      return ("<Slime Mold>");
-    case 1:
-      return ("<Lemon>");
-    case 2:
-      return ("<Copper>");
-    case 3:
-      return ("<Nymph>");
-    case 4:
-      return ("<Sword>");
-    case 5:
-      return ("<Shield>");
-    case 6:
-      return ("<Chest>");
-    case 7:
-      return ("<Bar>");
-    case 8:
-      return ("<Orb>");
-    case 9:
-      return ("<Mithril Nugget>");
-  }
-  return "Error - you should never see this...";
-}
-
 /* random names for various uses */
 char *nameprint()
 {
