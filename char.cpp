@@ -8,6 +8,7 @@
 #include <algorithm>
 
 extern scrolling_buffer message_buffer;
+extern void enable_attr(WINDOW *, attr_t);
 
 /* set player to begin with */
 void initplayer()
@@ -635,43 +636,116 @@ void user_character_stats()
   {
     Player.preference = static_cast<char>(mcigetc());
   } while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
-          (Player.preference != 'n')); /* :-) */
+          (Player.preference != 'n'));
 }
 
 void omegan_character_stats()
 {
-  int share1, share2, i = 0;
-  print1("To reroll hit ESCAPE; hit any other key to accept these stats.");
-  do
+  int stat_num = 0;
+  int stat_pool = 10;
+  int stats[6] = { 10, 10, 10, 10, 10, 10 };
+  std::string stat_names[6] = {"Str", "Dex", "Con", "Agi", "Int", "Pow"};
+  for(bool character_creation_done = false; !character_creation_done;)
   {
-    i++;
-    sprintf(Str1, "You have only %d chance%s to reroll... ", REROLLS - i,
-            (i == (REROLLS - 1)) ? "" : "s");
-    print2(Str1);
-    Player.iq = Player.maxiq =
-      4 + random_range(5) + (share1 = random_range(6)) + (share2 = random_range(6));
-    Player.pow = Player.maxpow = 4 + random_range(5) + share1 + share2;
-    Player.dex                 = Player.maxdex =
-      4 + random_range(5) + (share1 = random_range(6)) + (share2 = random_range(6));
-    Player.agi = Player.maxagi = 4 + random_range(5) + share1 + share2;
-    Player.str                 = Player.maxstr =
-      4 + random_range(5) + (share1 = random_range(6)) + (share2 = random_range(6));
-    Player.con = Player.maxcon = 4 + random_range(5) + share1 + share2;
-    Player.cash =
-      random_range(100) + random_range(100) + random_range(100) + random_range(100) + random_range(100);
-    calc_melee();
-    dataprint();
-  } while((i < REROLLS) && (mgetc() == ESCAPE));
-  print1("Please enter your character's name: ");
+
+    erase();
+    enable_attr(stdscr, A_NORMAL);
+    mvaddstr(0, 0, "Add or remove points from your stats using the point pool. Press ENTER to confirm.");
+    mvaddstr(1, 0, "Point Pool: ");
+    if(stat_pool > 0)
+    {
+      enable_attr(stdscr, CLR(GREEN));
+    }
+    printw("%d", stat_pool);
+    for(int i = 0; i < 6; ++i)
+    {
+      if(i == stat_num)
+      {
+        enable_attr(stdscr, CLR(GREY));
+        mvaddstr(3+i, 0, ">>");
+        enable_attr(stdscr, CLR(WHITE));
+      }
+      else
+      {
+        enable_attr(stdscr, CLR(GREY));
+      }
+      mvprintw(3+i, 3, "%s: ", stat_names[i].c_str());
+      if(stats[i] < 10)
+      {
+        enable_attr(stdscr, CLR(RED));
+      }
+      else if(stats[i] > 10)
+      {
+        enable_attr(stdscr, CLR(GREEN));
+      }
+      else
+      {
+        enable_attr(stdscr, A_BOLD);
+      }
+      printw("%d", stats[i]);
+    }
+    enable_attr(stdscr, A_NORMAL);
+
+    switch(getch())
+    {
+      case KEY_ENTER:
+      case '\r':
+      case '\n':
+        character_creation_done = true;
+        break;
+      case KEY_DOWN:
+      case 'j':
+        if(stat_num < 5)
+        {
+          ++stat_num;
+        }
+        break;
+      case KEY_UP:
+      case 'k':
+        if(stat_num > 0)
+        {
+          --stat_num;
+        }
+        break;
+      case KEY_LEFT:
+      case '<':
+      case 'h':
+        if(stats[stat_num] > 4)
+        {
+          --stats[stat_num];
+          ++stat_pool;
+        }
+        break;
+      case KEY_RIGHT:
+      case '>':
+      case 'l':
+        if(stats[stat_num] < 18 && stat_pool > 0)
+        {
+          ++stats[stat_num];
+          --stat_pool;
+        }
+        break;
+    }
+  }
+  erase();
+  Player.str = Player.maxstr = stats[0];
+  Player.dex = Player.maxdex = stats[1];
+  Player.con = Player.maxcon = stats[2];
+  Player.agi = Player.maxagi = stats[3];
+  Player.iq = Player.maxiq = stats[4];
+  Player.pow = Player.maxpow = stats[5];
+  Player.cash = 250;
+
+  message_buffer.receive("Please enter your character's name: ");
   strcpy(Player.name, msgscanstring().c_str());
   if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
   {
-    Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
+    Player.name[0] += 'A' - 'a'; // capitalise 1st letter
   }
-  print1("Is your character sexually attracted to males, females, both, or none? [mfbn] ");
+  message_buffer.receive("Is your character sexually attracted to males, females, both, or none? [mfbn] ");
   do
   {
-    Player.preference = (char)mcigetc();
+    Player.preference = static_cast<char>(mcigetc());
   } while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
-          (Player.preference != 'n')); /* :-) */
+          (Player.preference != 'n'));
 }

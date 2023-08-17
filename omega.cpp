@@ -14,6 +14,9 @@
 
 #include "glob.h"
 
+extern void expand_message_window();
+extern void shrink_message_window();
+
 #ifdef SAVE_LEVELS
 extern void msdos_init();
 #endif
@@ -275,8 +278,11 @@ int main(int argc, char *argv[])
     Date  = random_range(360);
     Phase = random_range(24);
     strcpy(Password, "");
+    expand_message_window();
     initplayer();
     init_world();
+    shrink_message_window();
+    xredraw();
     mprint("'?' for help or commandlist, 'Q' to quit.");
   }
   else

@@ -551,6 +551,7 @@ void initialize_windows()
   menu_window = newwin(ScreenLength, menu_width, 0, 0);
   menu = new interactive_menu(menu_window, menu_width, ScreenLength);
 
+  keypad(stdscr, true);
   message_window = newwin(6, COLS, ScreenLength, 0);
   keypad(message_window, true);
   level_window = newwin(ScreenLength, ScreenWidth, 0, 0);
