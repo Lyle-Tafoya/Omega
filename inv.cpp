@@ -80,38 +80,37 @@ long get_money(long limit)
    may drop things back onto the now null ground */
 void pickup_at(int x, int y)
 {
-  int  quit = false;
-  char response;
-  pol  ol = Level->site[x][y].things;
-  pol  temp;
-
   resetgamestatus(FAST_MOVE, GameStatus);
 
-  Level->site[x][y].things = NULL;
-
-  while(ol != NULL)
+  pol object_list = Level->site[x][y].things;
+  Level->site[x][y].things = nullptr;
+  if(object_list && !object_list->next)
   {
-    if(!quit)
+    gain_item(object_list->thing);
+  }
+  else
+  {
+    bool quit = false;
+    while(!quit && object_list)
     {
-      print1("Pick up: ");
-      nprint1(itemid(ol->thing));
-      nprint1(" [ynq]: ");
-      response = ynq1();
-      quit     = (response == 'q');
+      queue_message("Pick up: " + itemid(object_list->thing) + " [ynq] ");
+      switch(ynq())
+      {
+        case 'y':
+          gain_item(object_list->thing);
+          break;
+        case 'n':
+          drop_at(x, y, object_list->thing);
+          break;
+        case 'q':
+          drop_at(x, y, object_list->thing);
+          quit = true;
+          break;
+      }
+      pol tmp = object_list;
+      object_list = object_list->next;
+      free(tmp);
     }
-    if(response == 'y')
-    {
-      gain_item(ol->thing);
-    }
-    else
-    {
-      drop_at(x, y, ol->thing);
-    }
-    temp        = ol;
-    ol          = ol->next;
-    temp->thing = NULL;
-    temp->next  = NULL;
-    free((char *)temp);
   }
 }
 
