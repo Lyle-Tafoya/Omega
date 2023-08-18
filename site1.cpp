@@ -1029,122 +1029,122 @@ void l_tavern()
 
 void l_alchemist()
 {
-  int  i, done = false, mlevel;
-  char response;
-  pob  obj;
   queue_message("Ambrosias' Potions et cie.");
   if(nighttime())
   {
-    append_message("Ambrosias doesn't seem to be in right now.", true);
+    queue_message("Ambrosias doesn't seem to be in right now.");
   }
   else
   {
-    while(!done)
+    std::vector<std::string> lines;
+    lines.emplace_back("     Ambrosias' Potions et cie.");
+    lines.emplace_back("a: Sell monster components.");
+    lines.emplace_back("b: Pay for transformation.");
+    lines.emplace_back("ESCAPE: Leave this place.");
+    menu->load(lines);
+    for(bool done = false; !done;)
     {
-      append_message("a: Sell monster components.", true);
-      append_message("b: Pay for transformation.", true);
-      append_message("ESCAPE: Leave this place.", true);
-      response = (char)mcigetc();
-      if(response == 'a')
+      int i;
+      switch(menu->get_player_input())
       {
-        done = true;
-        i    = getitem(CORPSE);
-        if((i != ABORT) && (Player.possessions[i] != NULL))
-        {
-          obj = Player.possessions[i];
-          if(Monsters[obj->charge].transformid == -1)
+        case 'a':
+          done = true;
+          i    = getitem(CORPSE);
+          if(i != ABORT && Player.possessions[i])
           {
-            append_message("I don't want such a thing.", true);
-            if(obj->basevalue > 0)
+            pob obj = Player.possessions[i];
+            if(Monsters[obj->charge].transformid == -1)
             {
-              append_message("You might be able to sell it to someone else, though.");
-            }
-          }
-          else
-          {
-            long sell_price = obj->basevalue / 3;
-            append_message("I'll give you " + std::to_string(sell_price) + "Au each. Take it? [yn] ",
-                           true);
-            if(ynq1() == 'y')
-            {
-              int n = getnumber(obj->number);
-              Player.cash += sell_price * n;
-              conform_lost_objects(n, obj);
+              queue_message("I don't want such a thing.");
+              if(obj->basevalue > 0)
+              {
+                queue_message("You might be able to sell it to someone else, though.");
+              }
             }
             else
             {
-              append_message("Well, keep the smelly old thing, then!", true);
-            }
-          }
-        }
-        else
-        {
-          append_message("So nu?", true);
-        }
-      }
-      else if(response == 'b')
-      {
-        done = true;
-        i    = getitem(CORPSE);
-        if((i != ABORT) && (Player.possessions[i] != NULL))
-        {
-          obj = Player.possessions[i];
-          if(Monsters[obj->charge].transformid == -1)
-          {
-            append_message("Oy vey! You want me to transform such a thing?", true);
-          }
-          else if(obj->number > 1 && Objects[Monsters[obj->charge].transformid].objchar == STICK)
-          {
-            append_message("I can only work with one of these at a time.", true);
-          }
-          else
-          {
-            mlevel               = Monsters[obj->charge].level;
-            long transform_price = std::max(10l, obj->basevalue * 2 * obj->number);
-            append_message("It'll cost you " + std::to_string(transform_price) +
-                             " Au for the transformation. Pay it? [yn] ",
-                           true);
-            if(ynq1() == 'y')
-            {
-              if(Player.cash < transform_price)
+              long sell_price = obj->basevalue / 3;
+              queue_message("I'll give you " + std::to_string(sell_price) + "Au each. Take it? [yn] ");
+              if(ynq1() == 'y')
               {
-                append_message("You can't afford it!", true);
+                int n = getnumber(obj->number);
+                Player.cash += sell_price * n;
+                conform_lost_objects(n, obj);
               }
               else
               {
-                append_message("Voila! A tap of the Philosopher's Stone...", true);
-                Player.cash -= transform_price;
-                int n       = obj->number;
-                *obj        = Objects[Monsters[obj->charge].transformid];
-                obj->number = n;
-                if((obj->id >= STICKID) && (obj->id < STICKID + NUMSTICKS))
-                {
-                  obj->charge = 20;
-                }
-                if(obj->plus == 0)
-                {
-                  obj->plus = mlevel;
-                }
-                if(obj->blessing == 0)
-                {
-                  obj->blessing = 1;
-                }
+                queue_message("Well, keep the smelly old thing, then!");
               }
+            }
+          }
+          else
+          {
+            queue_message("So nu?");
+          }
+          break;
+        case 'b':
+          done = true;
+          i    = getitem(CORPSE);
+          if(i != ABORT && Player.possessions[i])
+          {
+            pob obj = Player.possessions[i];
+            if(Monsters[obj->charge].transformid == -1)
+            {
+              queue_message("Oy vey! You want me to transform such a thing?");
+            }
+            else if(obj->number > 1 && Objects[Monsters[obj->charge].transformid].objchar == STICK)
+            {
+              queue_message("I can only work with one of these at a time.");
             }
             else
             {
-              append_message("I don't need your business, anyhow.", true);
+              int mlevel = Monsters[obj->charge].level;
+              long transform_price = std::max(10l, obj->basevalue * 2 * obj->number);
+              queue_message("It'll cost you " + std::to_string(transform_price) +
+                               " Au for the transformation. Pay it? [yn] ");
+              if(ynq1() == 'y')
+              {
+                if(Player.cash < transform_price)
+                {
+                  queue_message("You can't afford it!");
+                }
+                else
+                {
+                  queue_message("Voila! A tap of the Philosopher's Stone...");
+                  Player.cash -= transform_price;
+                  int n       = obj->number;
+                  *obj        = Objects[Monsters[obj->charge].transformid];
+                  obj->number = n;
+                  if((obj->id >= STICKID) && (obj->id < STICKID + NUMSTICKS))
+                  {
+                    obj->charge = 20;
+                  }
+                  if(obj->plus == 0)
+                  {
+                    obj->plus = mlevel;
+                  }
+                  if(obj->blessing == 0)
+                  {
+                    obj->blessing = 1;
+                  }
+                }
+              }
+              else
+              {
+                queue_message("I don't need your business, anyhow.");
+              }
             }
           }
-        }
-        else
-        {
-          append_message("So nu?", true);
-        }
-      }
-      else if(response == ESCAPE)
-      {
-        done = true;
+          else
+          {
+            queue_message("So nu?");
+          }
+          break;
+        case ESCAPE:
+          done = true;
+          break;
+        default:
+          break;
       }
     }
   }
