@@ -563,8 +563,6 @@ void wake_statue(int x, int y, int first)
 
 void l_casino()
 {
-  int  i, done = false, a, b, c, match;
-  char response;
   queue_message("Rampart Mithril Nugget Casino.");
   if(random_range(10) == 1)
   {
@@ -572,129 +570,161 @@ void l_casino()
   }
   else
   {
-    while(!done)
+    std::vector<std::string> lines;
+    lines.emplace_back("     Rampart Mithril Nugget Casino.");
+    lines.emplace_back("a: Drop 100Au in the slots.");
+    lines.emplace_back("b: Risk 1000Au at roulette.");
+    lines.emplace_back("ESCAPE: Leave this green baize hall.");
+    menu->load(lines);
+    for(bool done = false; !done;)
     {
-      append_message("a: Drop 100Au in the slots.", true);
-      append_message("b: Risk 1000Au at roulette.", true);
-      append_message("ESCAPE: Leave this green baize hall.", true);
-      response = (char)mcigetc();
-      if(response == 'a')
+      switch(menu->get_player_input())
       {
-        if(Player.cash < 100)
-        {
-          append_message("No credit, jerk.", true);
-        }
-        else
-        {
-          Player.cash -= 100;
-          dataprint();
-          print_messages();
-          const std::string REEL_VALUES[] = {
-            "<Slime Mold>", "<Lemon>", "<Copper>", "<Nymph>", "<Sword>",
-            "<Shield>",     "<Chest>", "<Bar>",    "<Orb>",   "<Mithril Nugget>",
-          };
-          append_message("", true);
-          for(i = 0; i < 20; i++)
+        case 'a':
+          if(Player.cash < 100)
           {
-            if(i == 19)
+            append_message("No credit, jerk.", true);
+          }
+          else
+          {
+            Player.cash -= 100;
+            dataprint();
+            print_messages();
+            const std::string REEL_VALUES[] = {
+              "<Slime Mold>", "<Lemon>", "<Copper>", "<Nymph>", "<Sword>",
+              "<Shield>",     "<Chest>", "<Bar>",    "<Orb>",   "<Mithril Nugget>",
+            };
+            append_message("", true);
+            int a, b, c;
+            for(int i = 0; i < 20; ++i)
             {
-              std::this_thread::sleep_for(std::chrono::seconds(1));
+              if(i == 19)
+              {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+              }
+              else
+              {
+                std::this_thread::sleep_for(std::chrono::milliseconds(250));
+              }
+              a = random_range(10);
+              b = random_range(10);
+              c = random_range(10);
+              message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
+              print_messages();
+            }
+            if(winnings > 0)
+            {
+              do
+              {
+                a = random_range(10);
+                b = random_range(10);
+                c = random_range(10);
+              } while((a == b) || (a == c) || (b == c));
             }
             else
-            {
-              std::this_thread::sleep_for(std::chrono::milliseconds(250));
-            }
-            a = random_range(10);
-            b = random_range(10);
-            c = random_range(10);
-            message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
-            print_messages();
-          }
-          if(winnings > 0)
-          {
-            do
             {
               a = random_range(10);
               b = random_range(10);
               c = random_range(10);
-            } while((a == b) || (a == c) || (b == c));
-          }
-          else
-          {
-            a = random_range(10);
-            b = random_range(10);
-            c = random_range(10);
-          }
-          message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
-          print_messages();
-          if((a == b) && (a == c))
-          {
-            append_message("Jackpot Winner!", true);
-            long reward = (a + 2) * (b + 2) * (c + 2) * 5;
-            winnings += reward;
-            Player.cash += reward;
-            dataprint();
-          }
-          else if(a == b)
-          {
-            append_message("Winner!", true);
-            long reward = (a + 2) * (b + 2) * 5;
-            winnings += reward;
-            Player.cash += reward;
-            dataprint();
-          }
-          else if(a == c)
-          {
-            append_message("Winner!", true);
-            long reward = (a + 2) * (c + 2) * 5;
-            winnings += reward;
-            Player.cash += reward;
-            dataprint();
-          }
-          else if(c == b)
-          {
-            append_message("Winner!", true);
-            long reward = (c + 2) * (b + 2) * 5;
-            winnings += reward;
-            Player.cash += reward;
-            dataprint();
-          }
-          else
-          {
-            append_message("Loser!", true);
-            winnings -= 100;
-          }
-        }
-      }
-      else if(response == 'b')
-      {
-        if(Player.cash < 1000)
-        {
-          append_message("No credit, jerk.", true);
-        }
-        else
-        {
-          Player.cash -= 1000;
-          dataprint();
-          append_message("Red or Black? [rb] ", true);
-          do
-          {
-            response = (char)mcigetc();
-          } while((response != 'r') && (response != 'b'));
-          match = (response == 'r' ? 0 : 1);
-          append_message("", true);
-          for(i = 0; i < 20; i++)
-          {
-            if(i == 19)
+            }
+            message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
+            print_messages();
+            if((a == b) && (a == c))
             {
-              std::this_thread::sleep_for(std::chrono::seconds(1));
+              append_message("Jackpot Winner!", true);
+              long reward = (a + 2) * (b + 2) * (c + 2) * 5;
+              winnings += reward;
+              Player.cash += reward;
+              dataprint();
+            }
+            else if(a == b)
+            {
+              append_message("Winner!", true);
+              long reward = (a + 2) * (b + 2) * 5;
+              winnings += reward;
+              Player.cash += reward;
+              dataprint();
+            }
+            else if(a == c)
+            {
+              append_message("Winner!", true);
+              long reward = (a + 2) * (c + 2) * 5;
+              winnings += reward;
+              Player.cash += reward;
+              dataprint();
+            }
+            else if(c == b)
+            {
+              append_message("Winner!", true);
+              long reward = (c + 2) * (b + 2) * 5;
+              winnings += reward;
+              Player.cash += reward;
+              dataprint();
             }
             else
             {
-              std::this_thread::sleep_for(std::chrono::milliseconds(250));
+              append_message("Loser!", true);
+              winnings -= 100;
             }
-            a = random_range(37);
-            b = a % 2;
+          }
+          break;
+        case 'b':
+          if(Player.cash < 1000)
+          {
+            append_message("No credit, jerk.", true);
+          }
+          else
+          {
+            Player.cash -= 1000;
+            dataprint();
+            append_message("Red or Black? [rb] ", true);
+            int response;
+            do
+            {
+              response = static_cast<char>(mcigetc());
+            } while((response != 'r') && (response != 'b'));
+            int match = (response == 'r' ? 0 : 1);
+            append_message("", true);
+            int a, b;
+            for(int i = 0; i < 20; ++i)
+            {
+              if(i == 19)
+              {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+              }
+              else
+              {
+                std::this_thread::sleep_for(std::chrono::milliseconds(250));
+              }
+              a = random_range(37);
+              b = a % 2;
+              if(a == 0)
+              {
+                message_buffer.replace_last("0 ");
+              }
+              else if(a == 1)
+              {
+                message_buffer.replace_last("0 - 0 ");
+              }
+              else
+              {
+                message_buffer.replace_last((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
+              }
+              print_messages();
+            }
+            if(winnings > 0)
+            {
+              do
+              {
+                a = random_range(37);
+                b = a % 2;
+              } while(b == match);
+            }
+            else
+            {
+              a = random_range(37);
+              b = a % 2;
+            }
             if(a == 0)
             {
               message_buffer.replace_last("0 ");
@@ -708,51 +738,24 @@ void l_casino()
               message_buffer.replace_last((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
             }
             print_messages();
-          }
-          if(winnings > 0)
-          {
-            do
+            if((a > 1) && (b == match))
             {
-              a = random_range(37);
-              b = a % 2;
-            } while(b == match);
+              append_message("Winner!", true);
+              winnings += 1000;
+              Player.cash += 2000;
+              dataprint();
+            }
+            else
+            {
+              append_message("Loser!", true);
+              winnings -= 1000;
+              dataprint();
+            }
           }
-          else
-          {
-            a = random_range(37);
-            b = a % 2;
-          }
-          if(a == 0)
-          {
-            message_buffer.replace_last("0 ");
-          }
-          else if(a == 1)
-          {
-            message_buffer.replace_last(" 0 - 0 ");
-          }
-          else
-          {
-            message_buffer.replace_last((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
-          }
-          print_messages();
-          if((a > 1) && (b == match))
-          {
-            append_message("Winner!", true);
-            winnings += 1000;
-            Player.cash += 2000;
-            dataprint();
-          }
-          else
-          {
-            append_message("Loser!", true);
-            winnings -= 1000;
-            dataprint();
-          }
-        }
-      }
-      else if(response == ESCAPE)
-      {
-        done = true;
+          break;
+        case ESCAPE:
+          done = true;
+          break;
       }
     }
   }
