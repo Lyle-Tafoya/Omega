@@ -1,6 +1,7 @@
 # Omega
 
 My C++ fork of the 1987 roguelike "Omega", featuring numerous bug-fixes as well as balance and UI improvements.
+![Screenshot of Omega](Omega.png)
 
 ## Build Instructions
 
