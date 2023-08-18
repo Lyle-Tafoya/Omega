@@ -90,21 +90,21 @@ void pickup_at(int x, int y)
   }
   else
   {
-    bool quit = false;
-    while(!quit && object_list)
+    char player_input = 'y';
+    while(object_list)
     {
-      queue_message("Pick up: " + itemid(object_list->thing) + " [ynq] ");
-      switch(ynq())
+      if(player_input != 'q')
+      {
+        queue_message("Pick up: " + itemid(object_list->thing) + " [ynq] ");
+        player_input = ynq();
+      }
+      switch(player_input)
       {
         case 'y':
           gain_item(object_list->thing);
           break;
-        case 'n':
+        default:
           drop_at(x, y, object_list->thing);
-          break;
-        case 'q':
-          drop_at(x, y, object_list->thing);
-          quit = true;
           break;
       }
       pol tmp = object_list;
