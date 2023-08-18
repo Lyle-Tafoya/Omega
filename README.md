@@ -9,7 +9,7 @@ My C++ fork of the 1987 roguelike "Omega", featuring numerous bug-fixes as well 
 
 ```
 git clone https://github.com/Lyle-Tafoya/Omega.git
-cd omega
+cd Omega
 make
 ```
 
@@ -25,7 +25,7 @@ I use MSYS2 MingW x64. Installing MSYS2 and setting up your build environment ar
 
 ```
 git clone https://github.com/Lyle-Tafoya/Omega.git
-cd omega
+cd Omega
 ```
 
 You will have to make a couple changes to the Makefile.
