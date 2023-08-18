@@ -419,11 +419,13 @@ void l_gym()
 
 void l_healer()
 {
-  queue_message("Rampart Healers. Member RMA.");
-  append_message("a: Heal injuries (50 crowns)", true);
-  append_message("b: Cure disease (250 crowns)", true);
-  append_message("ESCAPE: Leave these antiseptic alcoves.", true);
-  switch((char)mcigetc())
+  std::vector<std::string> lines;
+  lines.emplace_back("     Rampart Healers. Member RMA.");
+  lines.emplace_back("a: Heal injuries (50 crowns).");
+  lines.emplace_back("b: Cure disease (250 crowns).");
+  lines.emplace_back("ESCAPE: Leave these antiseptic alcoves.");
+  menu->load(lines);
+  switch(menu->get_player_input())
   {
     case 'a':
       healforpay();
