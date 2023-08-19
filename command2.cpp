@@ -1301,36 +1301,36 @@ void moveplayer(int dx, int dy)
 
       if(Current_Environment != E_COUNTRYSIDE)
       {
-        if(gamestatusp(FAST_MOVE, GameStatus))
+        if(Level->site[Player.x][Player.y].things)
         {
-          if(Level->site[Player.x][Player.y].things)
+          pol item_list = Level->site[Player.x][Player.y].things;
+          if(!item_list->next)
           {
-            pol item_list = Level->site[Player.x][Player.y].things;
-            if(!item_list->next)
+            queue_message("You see here a " + itemid(item_list->thing) + ".");
+          }
+          else
+          {
+            std::string items = itemid(item_list->thing);
+            std::string item_characters(1, item_list->thing->objchar & A_CHARTEXT);
+            for(pol item = item_list->next; item; item = item->next)
             {
-              queue_message("You see here a " + itemid(item_list->thing) + ".");
+              items += ", " + itemid(item->thing);
+              item_characters += item->thing->objchar & A_CHARTEXT;
+            }
+            if(items.length() > static_cast<unsigned int>(COLS))
+            {
+              queue_message("Items here: " + item_characters);
             }
             else
             {
-              std::string items = itemid(item_list->thing);
-              std::string item_characters(1, item_list->thing->objchar & A_CHARTEXT);
-              for(pol item = item_list->next; item; item = item->next)
-              {
-                items += ", " + itemid(item->thing);
-                item_characters += item->thing->objchar & A_CHARTEXT;
-              }
-              if(items.length() > static_cast<unsigned int>(COLS))
-              {
-                queue_message("Items here: " + item_characters);
-              }
-              else
-              {
-                queue_message("Things that are here: ");
-                append_message(items, true);
-              }
+              queue_message("Things that are here: ");
+              append_message(items, true);
             }
           }
+        }
 
+        if(gamestatusp(FAST_MOVE, GameStatus))
+        {
           if((Level->site[Player.x][Player.y].things != NULL) ||
              (optionp(RUNSTOP, Player) && loc_statusp(Player.x, Player.y, STOPS, *Level)))
           {
