@@ -4,11 +4,6 @@
 
 #include "glob.h"
 
-#include <vector>
-
-extern void queue_message(const std::string &);
-extern void append_message(const std::string &, bool);
-
 void p_movefunction(int movef)
 {
   /* loc functs above traps should be activated whether levitating or not */
@@ -398,33 +393,6 @@ void p_movefunction(int movef)
     {
       resetgamestatus(FAST_MOVE, GameStatus);
       dataprint();
-    }
-  }
-  pol item_list = Level->site[Player.x][Player.y].things;
-  if(item_list)
-  {
-    if(!item_list->next)
-    {
-      queue_message("You see here a " + itemid(item_list->thing) + ".");
-    }
-    else
-    {
-      std::string items = itemid(item_list->thing);
-      std::string item_characters(1, item_list->thing->objchar & A_CHARTEXT);
-      for(pol item = item_list->next; item; item = item->next)
-      {
-        items += ", " + itemid(item->thing);
-        item_characters += item->thing->objchar & A_CHARTEXT;
-      }
-      if(items.length() > static_cast<unsigned int>(COLS))
-      {
-        queue_message("Items here: " + item_characters);
-      }
-      else
-      {
-        queue_message("Things that are here: ");
-        append_message(items, true);
-      }
     }
   }
 }
