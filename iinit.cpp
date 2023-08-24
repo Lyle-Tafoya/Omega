@@ -97,8 +97,8 @@ object Objects[TOTALITEMS] =
     2,
     THING,
     "twisted piece of metal",
-    "thieve's pick",
-    "thieve's pick"
+    "thieves' pick",
+    "thieves' pick"
   },
   {
     3,
