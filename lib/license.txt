@@ -10,12 +10,11 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 This project has been relicensed to GPLv3 effective Augst 24th, 2023.
 
-Permission for this change was received from Laurence Raphael Brothers via email
-on August 21st, 2023.
-Permission for this change was received from Nathan Glasser via LinkedIn message
-on August 24th, 2023.
-Permission for this change was received from Erik Max Francis via email on
-August 24th, 2023.
+Permission for this change was received from:
+  Laurence Raphael Brothers - August 21st, 2023 - email
+  Nathan Glasser            - August 24th, 2023 - LinkedIn message
+  Erik Max Francis          - August 24th, 2023 - email
+  Robert Rendell            - August 24th, 2023 - email
 
 ATTENTION:
 At the time this project was relicensed to GPLv3, it was my belief that
@@ -32,7 +31,6 @@ original licence (in the file "license.original") is still in effect unless a
 legal expert advises otherwise.
 
 A list of known contributors who I have not yet received permission from:
-  Robert Rendell
   William Tanksley
   Sheldon Simms
 
