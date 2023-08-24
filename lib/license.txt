@@ -1,0 +1,40 @@
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+This project has been relicensed to GPLv3 effective Augst 24th, 2023.
+
+Permission for this change was received from Laurence Raphael Brothers via email
+on August 21st, 2023.
+Permission for this change was received from Nathan Glasser via LinkedIn message
+on August 24th, 2023.
+Permission for this change was received from Erik Max Francis via email on
+August 24th, 2023.
+
+ATTENTION:
+At the time this project was relicensed to GPLv3, it was my belief that
+permission was only needed from Laurence Brothers due to a clause in his
+original license which stated: 'Any modifications are considered
+"works for hire" and ownership of omega will be retained by me'. However, some
+people have expressed some doubt as to whether this clause in the original
+license is legally binding. If it is legally binding, then no further permission
+should be necessary. However, if it is not, then every code contributor needs to
+give their permission before this can be relicensed as GPLv3. I am trying to
+obtain permission from all known contributors, just to be absolutely certain
+that the relicense to GPLv3 is valid. Until then, it should be assumed that the
+original licence (in the file "license.original") is still in effect unless a
+legal expert advises otherwise.
+
+A list of known contributors who I have not yet received permission from:
+  Robert Rendell
+  William Tanksley
+  Sheldon Simms
+
+Special thanks to Josh Backstein (https://github.com/joshbackstein) for helping
+to find and contact these contributors.

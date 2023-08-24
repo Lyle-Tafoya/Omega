@@ -87,7 +87,8 @@ void user_intro()
 
 void show_license()
 {
-  displayfile("COPYING");
+  std::string license_dir = Omegalib;
+  displayfile(license_dir + "license.txt");
   xredraw();
 }
 
@@ -478,7 +479,7 @@ const char *required_file_list[] = {"city.dat",     "country.dat",  "dlair.dat",
                                     "village5.dat", "village6.dat", "home1.dat",    "home2.dat",
                                     "home3.dat",    "arena.dat",    "maze1.dat",    "maze2.dat",
                                     "maze3.dat",    "maze4.dat",    "omega.hi",     "omega.log",
-                                    "motd.txt",     "license.current",  "circle.dat",   NULL};
+                                    "motd.txt",     "license.txt",  "circle.dat",   NULL};
 
 const char *optional_file_list[] = {
   "help1.txt",   "help2.txt",   "help3.txt",   "help4.txt",   "help5.txt",  "help6.txt",  "help7.txt",
