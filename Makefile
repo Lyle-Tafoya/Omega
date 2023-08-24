@@ -54,7 +54,7 @@ $(OBJ): clrgen.h defs.h extern.h glob.h interactive_menu.hpp scrolling_buffer.hp
 
 clrgen.h clrgen.cpp: genclr.cpp minit.cpp defs.h
 	$(MAKE) genclr
-	$(CPP) -DOMEGA_CLRGEN *.{cpp,h} | ./genclr clrgen.cpp clrgen.h
+	$(CPP) -DOMEGA_CLRGEN *.cpp *.h | ./genclr clrgen.cpp clrgen.h
 
 genclr: genclr.o
 	$(CXX) $(LDFLAGS) genclr.o -o genclr
