@@ -12,19 +12,18 @@ LDFLAGS = -lstdc++
 CPP = $(CXX) -E
 
 LIBS = -lncurses
-#LIBS = -lpdcurses
 
 #################### that's it for changing the Makefile ####################
 
-OBJ = omega.o abyss.o aux1.o aux2.o aux3.o char.o city.o\
-      clrgen.o command1.o command2.o command3.o\
-      country.o effect1.o effect2.o effect3.o\
-      etc.o env.o file.o gen1.o gen2.o guild1.o guild2.o house.o\
-      iinit.o interactive_menu.o inv.o item.o itemf1.o itemf2.o itemf3.o \
-      lev.o minit.o mmelee.o mmove.o mon.o move.o movef.o mspec.o\
-      mstrike.o mtalk.o priest.o\
-      save.o scr.o scrolling_buffer.o site1.o site2.o\
-      spell.o time.o trap.o util.o village.o
+OBJ = src/omega.o src/abyss.o src/aux1.o src/aux2.o src/aux3.o src/char.o src/city.o\
+      src/clrgen.o src/command1.o src/command2.o src/command3.o\
+      src/country.o src/effect1.o src/effect2.o src/effect3.o\
+      src/etc.o src/env.o src/file.o src/gen1.o src/gen2.o src/guild1.o src/guild2.o src/house.o\
+      src/iinit.o src/interactive_menu.o src/inv.o src/item.o src/itemf1.o src/itemf2.o src/itemf3.o \
+      src/lev.o src/minit.o src/mmelee.o src/mmove.o src/mon.o src/move.o src/movef.o src/mspec.o\
+      src/mstrike.o src/mtalk.o src/priest.o\
+      src/save.o src/scr.o src/scrolling_buffer.o src/site1.o src/site2.o\
+      src/spell.o src/time.o src/trap.o src/util.o src/village.o
 
 omega: $(OBJ)
 	$(CXX) $(LDFLAGS) $(OBJ) $(LIBS) -o omega
@@ -47,14 +46,14 @@ install_not_suid: omega $(BINDIR) $(LIBDIR)
 	chmod 0600 $(LIBDIR)/omegahi.bak
 
 clean:
-	rm -f $(OBJ) genclr genclr.o
+	rm -f $(OBJ) src/genclr src/genclr.o
 	rm -i omega
 
-$(OBJ): clrgen.h defs.h extern.h glob.h interactive_menu.hpp scrolling_buffer.hpp
+$(OBJ): src/clrgen.h src/defs.h src/extern.h src/glob.h src/interactive_menu.hpp src/scrolling_buffer.hpp
 
-clrgen.h clrgen.cpp: genclr.cpp minit.cpp defs.h
-	$(MAKE) genclr
-	$(CPP) -DOMEGA_CLRGEN *.cpp *.h | ./genclr clrgen.cpp clrgen.h
+src/clrgen.h src/clrgen.cpp: src/genclr.cpp src/minit.cpp src/defs.h
+	$(MAKE) src/genclr
+	$(CPP) -DOMEGA_CLRGEN src/*.cpp src/*.h | ./src/genclr
 
-genclr: genclr.o
-	$(CXX) $(LDFLAGS) genclr.o -o genclr
+genclr: src/genclr.o
+	$(CXX) $(LDFLAGS) src/genclr.o -o src/genclr
