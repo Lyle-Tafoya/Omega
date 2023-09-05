@@ -4,7 +4,7 @@ LIBDIR = /home/sdossey/omega/lib/
 
 # Add -DPLATFORM_WINDOWS when compiling for Windows
 # -DSAVE_LEVELS is broken
-CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -g
+CXXFLAGS = -std=c++23 -Wall -Wextra -pedantic -g
 
 CXX = g++
 

@@ -21,14 +21,11 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
    curses functions */
 
 #include <chrono>
-#include <fcntl.h>
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include <string>
 #include <thread>
-#ifndef PLATFORM_WINDOWS
-#  include <unistd.h>
-#endif
 #include "glob.h"
 
 FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
@@ -156,56 +153,49 @@ void showmotd()
 
 void lock_score_file()
 {
-#ifndef PLATFORM_WINDOWS
-  int   lock, attempts = 0, thispid, lastpid = 0;
-  FILE *lockfile;
+  int   attempts = 0;
+  int64_t timestamp, last_timestamp;
 
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "omega.hi.lock");
+  std::filesystem::path filepath = std::format("{}omega.hi.lock", Omegalib);
+  std::fstream lock;
   do
   {
-    lock = open(Str1, O_CREAT | O_EXCL, 0600); /* create lock file */
-    if(lock < 0 && errno == EEXIST)
+    std::chrono::system_clock::time_point current_time = std::chrono::system_clock::now();
+    std::chrono::milliseconds milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(current_time.time_since_epoch());
+    auto milliseconds_count = milliseconds.count();
+    lock = std::fstream{filepath, std::ios::out | std::ios::noreplace} << milliseconds_count;
+    if(!lock.is_open())
     {
-      lockfile = fopen(Str1, "rb");
-      if(lockfile)
+      std::fstream lockfile{filepath, std::ios::in};
+      if(lockfile.is_open())
       {
-        fscanf(lockfile, "%d", &thispid);
-        fclose(lockfile);
-        if(thispid != lastpid)
+        lockfile >> timestamp;
+        lockfile.close();
+        if(timestamp != last_timestamp)
         {
           attempts = 0;
         }
-        lastpid = thispid;
+        last_timestamp = timestamp;
       }
-      attempts++;
+      ++attempts;
       if(attempts > 10)
-      {               /* assume that lock file has been abandoned */
-        unlink(Str1); /* so we unlink it ourselves - ugly...	*/
+      {
+        // Assume that lock file has been abandoned
+        std::filesystem::remove(filepath);
       }
       else
       {
         std::this_thread::sleep_for(std::chrono::seconds(2));
       }
     }
-    else if(lock < 0)
-    { /* oops - something very wrong */
-      return;
-    }
-  } while(lock < 0);
-  sprintf(Str1, "%d", getpid());
-  write(lock, Str1, strlen(Str1));
-  close(lock);
-#endif
+  } while(!lock.is_open());
+  lock.close();
 }
 
 void unlock_score_file()
 {
-#ifndef PLATFORM_WINDOWS
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "omega.hi.lock");
-  unlink(Str1);
-#endif
+  std::filesystem::path filepath = std::format("{}omega.hi.lock", Omegalib);
+  std::filesystem::remove(filepath);
 }
 
 void showscores()
