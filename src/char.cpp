@@ -23,9 +23,26 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
+#include <string>
 
 extern scrolling_buffer message_buffer;
 extern void enable_attr(WINDOW *, attr_t);
+
+std::string get_username()
+{
+  char *env = getenv("USERNAME");
+  if(env && strlen(env) > 0)
+  {
+    return env;
+    env = getenv("USER");
+  }
+  env = getenv("USER");
+  if(env && strlen(env) > 0)
+  {
+    return env;
+  }
+  return "pcuser";
+}
 
 /* set player to begin with */
 void initplayer()
@@ -33,20 +50,7 @@ void initplayer()
   int   i;
   int   oldchar = false;
   FILE *fd;
-#ifdef PLATFORM_WINDOWS
-  const char *env = getenv("USERNAME");
-#else
-  const char *env = getenv("USER");
-#endif
-  std::string username;
-  if(!env || strlen(env) == 0)
-  {
-    username = "pcuser";
-  }
-  else
-  {
-    username = env;
-  }
+  std::string username = get_username();
   strcpy(Player.name, username.c_str());
 
   if(Player.name[0] >= 'a' && Player.name[0] <= 'z')

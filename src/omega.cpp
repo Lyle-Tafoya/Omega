@@ -225,11 +225,11 @@ int main(int argc, char *argv[])
 
   if(CATCH_SIGNALS)
   {
-#ifndef PLATFORM_WINDOWS
+#ifdef SIGQUIT
     signal(SIGQUIT, signalexit);
 #endif
     signal(SIGILL, signalexit);
-#ifndef PLATFORM_WINDOWS
+#ifdef SIGTRAP
     signal(SIGTRAP, signalexit);
 #endif
     signal(SIGFPE, signalexit);

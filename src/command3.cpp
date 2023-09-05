@@ -33,6 +33,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern void kill_all_levels();
 #endif
 
+extern std::string get_username();
 extern void item_unequip(object *);
 
 extern interactive_menu *menu;
@@ -668,17 +669,7 @@ void wizard()
     mprint("Really try to enter wizard mode? [yn] ");
     if(ynq() == 'y')
     {
-#ifdef PLATFORM_WINDOWS
-      const char *env = getenv("USER");
-#else
-      const char *env = getenv("USERNAME");
-#endif
-      std::string username;
-      if(!env || strlen(env) == 0)
-      {
-        username = "pcuser";
-      }
-      if(username == WIZARD)
+      if(get_username() == WIZARD)
       {
         setgamestatus(CHEATED, GameStatus);
         mprint("Wizard mode set.");
