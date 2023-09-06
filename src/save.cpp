@@ -19,8 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* save.c */
 
 #include "glob.h"
-
-#include <unistd.h>
+#include <filesystem>
 
 #ifdef SAVE_LEVELS
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
@@ -37,32 +36,32 @@ the country level, and the last or current dungeon level */
    The player, the city level, and the current dungeon level are saved.
 */
 
-int save_game(const char *savestr)
+bool save_game(const char *savestr)
 {
   FILE *fd;
 #ifdef SAVE_LEVELS
   int tmpdepth;
 #endif
-  int i, writeok = true;
+  int i;
+  bool writeok = true;
   plv current, save;
 
-  if(access(savestr, R_OK) == 0)
+  if(std::filesystem::exists(savestr))
   {
-    if(access(savestr, W_OK) == 0)
+    if(std::filesystem::is_regular_file(savestr))
     {
       mprint(" Overwrite old file?");
       writeok = (ynq() == 'y');
     }
     else
     {
-      mprint(" File already exists.");
       writeok = false;
     }
   }
   if(writeok)
   {
     fd = fopen(savestr, "wb");
-    if(fd == NULL)
+    if(!fd)
     {
       writeok = false;
       mprint(" Error opening file.");
@@ -521,12 +520,12 @@ int ok_outdated(int version)
    check on validity of save file, etc.
    return true if game restored, false otherwise */
 
-int restore_game(char *savestr)
+bool restore_game(char *savestr)
 {
   int   i, version;
   FILE *fd;
 
-  if(access(savestr, F_OK | R_OK | W_OK) == -1) /* access uses real uid */
+  if(!std::filesystem::exists(savestr) || !std::filesystem::is_regular_file(savestr))
   {
     print1("Unable to access save file: ");
     nprint1(savestr);
@@ -535,12 +534,12 @@ int restore_game(char *savestr)
 
   fd = fopen(savestr, "rb");
 
-  if(fd == NULL)
+  if(!fd)
   {
     print1("Error restoring game -- aborted.");
     print2("File name was: ");
     nprint2(savestr);
-    return (false);
+    return false;
   }
   else
   {
