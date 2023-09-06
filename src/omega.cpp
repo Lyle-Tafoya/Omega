@@ -22,9 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <csignal>
 #include <cstdlib>
 #include <ctime>
-#include <fcntl.h>
 #include <random>
-#include <unistd.h>
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */
 

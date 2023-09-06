@@ -27,7 +27,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <random>
 #include <string>
 #include <thread>
-#include <unistd.h>
 
 std::mt19937 generator;
 
