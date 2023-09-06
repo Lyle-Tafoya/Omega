@@ -22,7 +22,7 @@ I use MSYS2 UCRT64. Installing MSYS2 and setting up your build environment are b
 ```
 git clone https://github.com/Lyle-Tafoya/Omega.git
 cd Omega
-make CXXFLAGS='-std=c++23 -DPLATFORM_WINDOWS' LIBS='-lpdcurses'
+make LIBS='-lpdcurses'
 ```
 
 The curses implementation I use on Windows is PDCursesMod. Building PDCursesMod is beyond the scope of this guide. You should reference their official documentation if you need help with that.

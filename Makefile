@@ -2,7 +2,6 @@
 BINDIR = /home/sdossey/omega/
 LIBDIR = /home/sdossey/omega/lib/
 
-# Add -DPLATFORM_WINDOWS when compiling for Windows
 # -DSAVE_LEVELS is broken
 CXXFLAGS = -std=c++23 -Wall -Wextra -pedantic -g
 
