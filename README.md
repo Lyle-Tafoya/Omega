@@ -17,7 +17,7 @@ To build this project, you will need g++ version 13 or greater.
 
 ### Windows
 
-I use MSYS2 MingW x64. Installing MSYS2 and setting up your build environment are beyond the scope of this guide. You should reference their official documentation if you need help with that.
+I use MSYS2 UCRT64. Installing MSYS2 and setting up your build environment are beyond the scope of this guide. You should reference their official documentation if you need help with that.
 
 ```
 git clone https://github.com/Lyle-Tafoya/Omega.git

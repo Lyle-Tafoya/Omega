@@ -156,7 +156,7 @@ void lock_score_file()
   int   attempts = 0;
   int64_t timestamp, last_timestamp;
 
-  std::filesystem::path filepath = std::format("{}omega.hi.lock", Omegalib);
+  std::string filepath = std::format("{}omega.hi.lock", Omegalib);
   std::fstream lock;
   do
   {
@@ -194,8 +194,7 @@ void lock_score_file()
 
 void unlock_score_file()
 {
-  std::filesystem::path filepath = std::format("{}omega.hi.lock", Omegalib);
-  std::filesystem::remove(filepath);
+  std::filesystem::remove(std::format("{}omega.hi.lock", Omegalib));
 }
 
 void showscores()
