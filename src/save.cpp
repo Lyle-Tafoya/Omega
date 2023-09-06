@@ -146,10 +146,10 @@ void signalsave(int)
 
 /* also saves some globals like Level->depth... */
 
-int save_player(FILE *fd)
+bool save_player(FILE *fd)
 {
   int i;
-  int ok = 1;
+  bool ok = true;
 
   /* Save random global state information */
 
@@ -253,11 +253,11 @@ int save_player(FILE *fd)
 }
 
 /* Save whatever is pointed to by level */
-int save_level(FILE *fd, plv level)
+bool save_level(FILE *fd, plv level)
 {
   size_t            i, j, run;
   unsigned long int mask;
-  int               ok = 1;
+  bool              ok = true;
 
   ok &= (fwrite((char *)&level->depth, sizeof(char), 1, fd) > 0);
   ok &= (fwrite((char *)&level->numrooms, sizeof(char), 1, fd) > 0);
@@ -330,11 +330,11 @@ int save_level(FILE *fd, plv level)
   return ok;
 }
 
-int save_monsters(FILE *fd, pml ml)
+bool save_monsters(FILE *fd, pml ml)
 {
   pml           tml;
   int           nummonsters = 0;
-  int           ok          = 1;
+  bool          ok          = true;
   unsigned char type;
 
   /* First count monsters */
@@ -388,9 +388,9 @@ int save_monsters(FILE *fd, pml ml)
 
 /* Save o unless it's null, then save a special flag byte instead */
 /* Use other values of flag byte to indicate what strings are saved */
-int save_item(FILE *fd, pob o)
+bool save_item(FILE *fd, pob o)
 {
-  int           ok = 1;
+  bool          ok = true;
   unsigned char type;
 
   if(o == NULL)
@@ -431,11 +431,11 @@ int save_item(FILE *fd, pob o)
   return ok;
 }
 
-int save_itemlist(FILE *fd, pol ol)
+bool save_itemlist(FILE *fd, pol ol)
 {
   int numitems = 0;
   pol tol;
-  int ok = 1;
+  bool ok = 1;
 
   for(tol = ol; tol != NULL; tol = tol->next)
   {
@@ -449,10 +449,10 @@ int save_itemlist(FILE *fd, pol ol)
   return ok;
 }
 
-int save_country(FILE *fd)
+bool save_country(FILE *fd)
 {
   size_t            i, j, run;
-  int               ok = 1;
+  bool              ok = true;
   unsigned long int mask;
 
   for(i = 0; i < MAXWIDTH; i++)
@@ -498,7 +498,7 @@ int save_country(FILE *fd)
 }
 
 /* returns true if the given version can be restored by this version */
-int ok_outdated(int version)
+bool ok_outdated(int version)
 {
   switch(version)
   {
