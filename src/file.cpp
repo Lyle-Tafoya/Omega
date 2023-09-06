@@ -33,7 +33,6 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
   FILE *fd;
   char  response;
 
-  change_to_game_perms();
   fd = fopen(filestring.c_str(), optionstring.c_str());
   while(fd == NULL)
   {
@@ -416,7 +415,6 @@ void extendlog(const std::string &descrip, int lifestatus)
 
   if((Player.level > 0) && (!gamestatusp(CHEATED, GameStatus)))
   {
-    change_to_game_perms();
     npcbehavior = fixnpc(lifestatus);
     checkhigh(descrip, npcbehavior);
     strcpy(Str1, Omegalib);

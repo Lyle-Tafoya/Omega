@@ -86,7 +86,6 @@ void initplayer()
   Player.patron    = 0;
   Player.alignment = 0;
   Player.cash      = 250;
-  change_to_user_perms();
   if((fd = omegarc_check()) != NULL)
   {
     fread((char *)&i, sizeof(int), 1, fd);
@@ -108,7 +107,6 @@ void initplayer()
     }
     fclose(fd);
   }
-  change_to_game_perms();
   if(!oldchar)
   {
     optionset(RUNSTOP, Player);
@@ -171,7 +169,6 @@ void save_omegarc()
 {
   int   i = VERSION;
   FILE *fd;
-  change_to_user_perms();
   sprintf(Str1, "%s/.omegarc", getenv("HOME"));
   fd = fopen(Str1, "w");
   if(fd == NULL)
@@ -188,7 +185,6 @@ void save_omegarc()
     fwrite((char *)&Verbosity, sizeof(char), 1, fd);
     fclose(fd);
   }
-  change_to_game_perms();
 }
 
 long calcmana()

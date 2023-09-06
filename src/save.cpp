@@ -59,7 +59,6 @@ int save_game(const char *savestr)
       writeok = false;
     }
   }
-  change_to_user_perms();
   if(writeok)
   {
     fd = fopen(savestr, "wb");
@@ -134,14 +133,12 @@ int save_game(const char *savestr)
       print1("Something didn't work... save aborted.");
     }
   }
-  change_to_game_perms();
   return (writeok);
 }
 
 /* saves game on SIGHUP */
 void signalsave(int)
 {
-  change_to_user_perms();
   save_game("Omega.Sav");
   print1("Signal - Saving file 'Omega.Sav'.");
   endgraf();
@@ -535,7 +532,6 @@ int restore_game(char *savestr)
     nprint1(savestr);
     return false;
   }
-  change_to_user_perms();
 
   fd = fopen(savestr, "rb");
 
@@ -544,7 +540,6 @@ int restore_game(char *savestr)
     print1("Error restoring game -- aborted.");
     print2("File name was: ");
     nprint2(savestr);
-    change_to_game_perms();
     return (false);
   }
   else
@@ -555,7 +550,6 @@ int restore_game(char *savestr)
 
     if(VERSION != version && !ok_outdated(version))
     {
-      change_to_game_perms();
       fclose(fd);
       mprint(" Sorry, I can't restore an outdated save file!");
       mprint(" savefile is version " + std::to_string(version / 100) + "." +
@@ -610,7 +604,6 @@ int restore_game(char *savestr)
     print3("Restoration complete.");
     ScreenOffset = -1000; /* to force a redraw */
     setgamestatus(SKIP_MONSTERS, GameStatus);
-    change_to_game_perms();
     return (true);
   }
 }

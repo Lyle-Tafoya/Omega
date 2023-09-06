@@ -194,9 +194,7 @@ int game_restore(int argc, char *argv[])
       printf("Try again with the right save file, luser!\n");
       exit(0);
     }
-    change_to_user_perms();
     unlink(savestr);
-    change_to_game_perms();
     return (true);
   }
   else
@@ -263,7 +261,6 @@ int main(int argc, char *argv[])
   }
 
   /* all kinds of initialization */
-  init_perms();
   initgraf();
   initdirs();
   initrand(E_RANDOM, 0);

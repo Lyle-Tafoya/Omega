@@ -1060,28 +1060,3 @@ char cryptkey(const std::string &fname)
   }
   return (key & 0xff);
 }
-
-int game_uid;
-int user_uid;
-
-void init_perms()
-{
-#ifndef PLATFORM_WINDOWS
-  user_uid = getuid();
-  game_uid = geteuid();
-#endif
-}
-
-void change_to_user_perms()
-{
-#ifndef PLATFORM_WINDOWS
-  seteuid(user_uid);
-#endif
-}
-
-void change_to_game_perms()
-{
-#ifndef PLATFORM_WINDOWS
-  seteuid(game_uid);
-#endif
-}

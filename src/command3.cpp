@@ -295,7 +295,6 @@ void help()
     nprint1("Confirm [yn]");
     if(ynq1() == 'y')
     {
-      change_to_user_perms();
       out = checkfopen("omega.doc", "w");
       print2("Copying");
       for(n = 1; n <= 13; n++)
@@ -310,7 +309,6 @@ void help()
         fclose(in);
       }
       fclose(out);
-      change_to_game_perms();
       nprint2(" Done.");
     }
   }
@@ -448,7 +446,6 @@ void fire()
 
 void quit(int)
 {
-  change_to_game_perms();
   mprint("Quit: Are you sure? [yn] ");
   if(ynq() == 'y')
   {
