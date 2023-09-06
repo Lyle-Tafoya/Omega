@@ -21,6 +21,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifndef OMEGA_DATE_H_
 #define OMEGA_DATE_H_
 
-#define LAST_OMEGA_EDIT_DATE "Wed Dec 30 15:50 PST 1998"
+#define LAST_OMEGA_EDIT_DATE "Wed Sep 06 14:04 PST 2023"
 
 #endif
