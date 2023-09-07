@@ -1008,7 +1008,7 @@ void toggle_item_use(bool on)
       used[i] = false;
       if(Player.possessions[i])
       {
-        if(Player.possessions[i]->on_equip != I_NO_OP && (used[i] = Player.possessions[i]->used) == true)
+        if(Player.possessions[i]->on_equip != I_NO_OP && (used[i] = Player.possessions[i]->used))
         {
           item_unequip(Player.possessions[i]);
         }

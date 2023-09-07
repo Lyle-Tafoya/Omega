@@ -775,7 +775,8 @@ pob restore_item(FILE *fd, int)
 pol restore_itemlist(FILE *fd, int version)
 {
   pol ol = NULL, cur = NULL, new_pol = NULL;
-  int i, numitems, firsttime         = true;
+  int i, numitems;
+  bool firsttime = true;
   fread((char *)&numitems, sizeof(int), 1, fd);
   for(i = 0; i < numitems; i++)
   {

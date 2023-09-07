@@ -153,7 +153,7 @@ void showmotd()
 void lock_score_file()
 {
   int   attempts = 0;
-  int64_t timestamp, last_timestamp;
+  int64_t timestamp, last_timestamp = -1;
 
   std::string filepath = std::format("{}omega.hi.lock", Omegalib);
   std::fstream lock;

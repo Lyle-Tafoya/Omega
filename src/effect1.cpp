@@ -152,11 +152,9 @@ void enchant(int delta)
 /* bless */
 void bless(int blessing)
 {
-  int index, used;
-
   if(blessing < 0)
   {
-    index = random_item();
+    int index = random_item();
     if(index == ABORT)
     {
       print1("You feel fortunate.");
@@ -169,8 +167,7 @@ void bless(int blessing)
         nprint1("your ");
       }
       nprint1(itemid(Player.possessions[index]));
-      used = (Player.possessions[index]->used);
-      if(used)
+      if(Player.possessions[index]->used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
         item_unequip(Player.possessions[index]);
@@ -181,7 +178,7 @@ void bless(int blessing)
       {
         Player.possessions[index]->plus = abs(Player.possessions[index]->plus) - 1;
       }
-      if(used)
+      if(Player.possessions[index]->used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
         item_equip(Player.possessions[index]);
@@ -191,15 +188,14 @@ void bless(int blessing)
   }
   else
   {
-    index = getitem(NULL_ITEM);
+    int index = getitem(NULL_ITEM);
     if(index == CASHVALUE)
     {
       print1("Blessing your money has no effect.");
     }
     else if(index != ABORT)
     {
-      used = (Player.possessions[index]->used == true);
-      if(used)
+      if(Player.possessions[index]->used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
         item_unequip(Player.possessions[index]);
@@ -226,7 +222,7 @@ void bless(int blessing)
       {
         print2("The hierolux fades without any appreciable effect....");
       }
-      if(used && (Player.possessions[index] != NULL))
+      if(Player.possessions[index]->used && Player.possessions[index])
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
         item_equip(Player.possessions[index]);
