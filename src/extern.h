@@ -381,7 +381,7 @@ signed char index_to_key(int);
 long        get_money(long);
 const char *cashstr(void);
 std::string itemid(pob);
-int         cursed(pob);
+bool        cursed(pob);
 int         find_and_remove_item(int, int);
 int         find_item(pob *, int, int);
 int         get_item_number(pob);

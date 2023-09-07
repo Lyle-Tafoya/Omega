@@ -1163,16 +1163,15 @@ int get_item_number(pob o)
 
 void drop_from_slot(int slot)
 {
-  int n;
-  if(Player.possessions[slot] != NULL)
+  if(Player.possessions[slot])
   {
-    if(cursed(Player.possessions[slot]) == true + true)
+    if(cursed(Player.possessions[slot]) && Player.possessions[slot]->used)
     {
       print3("It sticks to your fingers!");
     }
     else
     {
-      n = get_item_number(Player.possessions[slot]);
+      int n = get_item_number(Player.possessions[slot]);
       if(n > 0)
       {
         p_drop_at(Player.x, Player.y, n, Player.possessions[slot]);
@@ -1317,11 +1316,16 @@ bool item_useable(pob o, int slot)
   }
 }
 
-/* returns false if not cursed, true if cursed but not used,
-   true + true if cursed and used */
-int cursed(pob obj)
+bool cursed(pob obj)
 {
-  return ((obj == NULL) ? false : ((obj->blessing < 0) ? (obj->used == true) + true : false));
+  if(!obj)
+  {
+    return false;
+  }
+  else
+  {
+    return obj->blessing < 0;
+  }
 }
 
 /* returns true if item with id and charge is found in pack or in
