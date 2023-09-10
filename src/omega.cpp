@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <csignal>
 #include <cstdlib>
 #include <ctime>
+#include <filesystem>
 #include <random>
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */
@@ -180,26 +181,25 @@ void initrand(int environment, int level)
   generator.seed(seed);
 }
 
-int game_restore(int argc, char *argv[])
+bool game_restore(int argc, char *argv[])
 {
   char savestr[80];
-  int  ok;
   if(argc == 2)
   {
     strcpy(savestr, argv[1]);
-    ok = restore_game(savestr);
+    bool ok = restore_game(savestr);
     if(!ok)
     {
       endgraf();
       printf("Try again with the right save file, luser!\n");
       exit(0);
     }
-    unlink(savestr);
-    return (true);
+    std::filesystem::remove(savestr);
+    return true;
   }
   else
   {
-    return (false);
+    return false;
   }
 }
 
@@ -207,11 +207,7 @@ void omega_title();
 
 int main(int argc, char *argv[])
 {
-  int continuing;
-  int count;
-
   /* always catch ^c and hang-up signals */
-
 #ifdef SIGINT
   signal(SIGINT, quit);
 #endif
@@ -266,7 +262,7 @@ int main(int argc, char *argv[])
   initrand(E_RANDOM, 0);
   initspells();
 
-  for(count = 0; count < STRING_BUFFER_SIZE; count++)
+  for(int count = 0; count < STRING_BUFFER_SIZE; ++count)
   {
     strcpy(Stringbuffer[count], "<nothing>");
   }
@@ -279,7 +275,7 @@ int main(int argc, char *argv[])
   showscores();
 
   /* game restore attempts to restore game if there is an argument */
-  continuing = game_restore(argc, argv);
+  bool continuing = game_restore(argc, argv);
 
   /* monsters initialized in game_restore if game is being restored */
   /* items initialized in game_restore if game is being restored */

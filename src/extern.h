@@ -28,7 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* omega.cpp functions */
 
 int  main(int, char *[]);
-int  game_restore(int, char *[]);
+bool game_restore(int, char *[]);
 void init_world(void);
 void inititem(int);
 void initrand(int, int);
