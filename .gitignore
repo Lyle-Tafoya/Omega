@@ -1,6 +1,3 @@
-clrgen.cpp
-clrgen.h
-genclr
 omega
 *.o
 *.lev

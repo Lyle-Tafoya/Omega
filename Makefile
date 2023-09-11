@@ -45,14 +45,7 @@ install_not_suid: omega $(BINDIR) $(LIBDIR)
 	chmod 0600 $(LIBDIR)/omegahi.bak
 
 clean:
-	rm -f $(OBJ) src/genclr src/genclr.o
+	rm -f $(OBJ)
 	rm -i omega
 
 $(OBJ): src/clrgen.h src/defs.h src/extern.h src/glob.h src/interactive_menu.hpp src/scrolling_buffer.hpp
-
-src/clrgen.h src/clrgen.cpp: src/genclr.cpp src/minit.cpp src/defs.h
-	$(MAKE) src/genclr
-	$(CPP) -DOMEGA_CLRGEN src/*.cpp src/*.h | ./src/genclr
-
-genclr: src/genclr.o
-	$(CXX) $(LDFLAGS) src/genclr.o -o src/genclr
