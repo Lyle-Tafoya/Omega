@@ -9,7 +9,9 @@ My C++ fork of the 1987 roguelike "Omega", featuring numerous bug-fixes as well 
 
 ```
 git clone https://github.com/Lyle-Tafoya/Omega.git
-cd Omega
+mkdir Omega/build
+cd Omega/build
+cmake ..
 make
 ```
 
@@ -17,12 +19,12 @@ To build this project, you will need g++ version 13 or greater.
 
 ### Windows
 
-I use MSYS2 UCRT64. Installing MSYS2 and setting up your build environment are beyond the scope of this guide. You should reference their official documentation if you need help with that.
+I have been building Omega for Windows using NMake from the "x64 Native Tools Command Prompt for VS 2022"
 
 ```
 git clone https://github.com/Lyle-Tafoya/Omega.git
-cd Omega
-make LIBS='-lpdcurses'
+mkdir Omega\build
+cd Omega\build
+cmake .. -G "NMake Makefiles"
+nmake
 ```
-
-The curses implementation I use on Windows is PDCursesMod. Building PDCursesMod is beyond the scope of this guide. You should reference their official documentation if you need help with that.
