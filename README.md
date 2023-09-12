@@ -28,3 +28,13 @@ cd Omega\build
 cmake .. -G "NMake Makefiles"
 nmake
 ```
+
+By default, Omega will run in an OpenGL window. To run in the Windows terminal instead, you can build with the following commands:
+
+```
+git clone https://github.com/Lyle-Tafoya/Omega.git
+mkdir Omega\build
+cd Omega\build
+cmake .. -G "NMake Makefiles" -DPDC_GL_BUILD=OFF
+nmake
+```

@@ -13,6 +13,15 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 endif()
 
 if(WIN32)
+  if(NOT DEFINED PDC_GL_BUILD)
+    set(PDC_GL_BUILD "ON")
+  endif()
+  if(PDC_GL_BUILD MATCHES "ON")
+    set(PDC_WINDOW_TYPE "gl")
+  else()
+    set(PDC_GL_BUILD "OFF")
+    set(PDC_WINDOW_TYPE "wincon")
+  endif()
   include(ExternalProject)
   ExternalProject_Add(
     PDCursesMod
@@ -22,8 +31,8 @@ if(WIN32)
     INSTALL_DIR ${CMAKE_BINARY_DIR}/installed
     CMAKE_ARGS
       -DPDC_SDL2_BUILD=OFF
-      -DPDC_SDL2_DEPS_BUILD=OFF
-      -DPDC_GL_BUILD=OFF
+      -DPDC_SDL2_DEPS_BUILD=${PDC_GL_BUILD}
+      -DPDC_GL_BUILD=${PDC_GL_BUILD}
       -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
       -DCMAKE_BUILD_TYPE=Release
       -DCMAKE_CONFIGURATION_TYPES=Release
@@ -31,7 +40,7 @@ if(WIN32)
     INSTALL_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release --target install
   )
   include_directories(${CMAKE_BINARY_DIR}/_deps/src/PDCursesMod)
-  link_directories(${CMAKE_BINARY_DIR}/installed/Release/lib/wincon)
+  link_directories(${CMAKE_BINARY_DIR}/installed/Release/lib/${PDC_WINDOW_TYPE})
 endif()
 
 add_executable(omega
@@ -101,9 +110,26 @@ if(WIN32)
   add_custom_command(
     TARGET omega POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_BINARY_DIR}/installed/Release/bin/wincon/pdcurses.dll
+    ${CMAKE_BINARY_DIR}/installed/Release/bin/${PDC_WINDOW_TYPE}/pdcurses.dll
     $<TARGET_FILE_DIR:omega>
   )
+  if(PDC_GL_BUILD MATCHES "ON")
+    add_custom_command(
+      TARGET omega POST_BUILD
+
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      ${CMAKE_BINARY_DIR}/installed/Release/bin/SDL2_ttf.dll
+      $<TARGET_FILE_DIR:omega>
+
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      ${CMAKE_BINARY_DIR}/installed/Release/bin/SDL2.dll
+      $<TARGET_FILE_DIR:omega>
+
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      ${CMAKE_BINARY_DIR}/installed/Release/bin/zlib.dll
+      $<TARGET_FILE_DIR:omega>
+    )
+  endif()
   target_link_libraries(omega pdcurses)
 else()
   find_package(Curses REQUIRED)
