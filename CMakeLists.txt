@@ -19,6 +19,7 @@ if(WIN32)
     PREFIX ${CMAKE_BINARY_DIR}/_deps
     GIT_REPOSITORY https://github.com/Bill-Gray/PDCursesMod
     GIT_TAG master
+    INSTALL_COMMAND ""
     CMAKE_ARGS
       -DPDC_SDL2_BUILD=OFF
       -DPDC_SDL2_DEPS_BUILD=OFF
