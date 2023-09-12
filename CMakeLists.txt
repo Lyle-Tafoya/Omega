@@ -19,14 +19,19 @@ if(WIN32)
     PREFIX ${CMAKE_BINARY_DIR}/_deps
     GIT_REPOSITORY https://github.com/Bill-Gray/PDCursesMod
     GIT_TAG master
-    INSTALL_COMMAND ""
+    INSTALL_DIR ${CMAKE_BINARY_DIR}/installed
     CMAKE_ARGS
       -DPDC_SDL2_BUILD=OFF
       -DPDC_SDL2_DEPS_BUILD=OFF
       -DPDC_GL_BUILD=OFF
+      -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+      -DCMAKE_BUILD_TYPE=Release
+      -DCMAKE_CONFIGURATION_TYPES=Release
+    BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
+    INSTALL_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release --target install
   )
   include_directories(${CMAKE_BINARY_DIR}/_deps/src/PDCursesMod)
-  link_directories(${CMAKE_BINARY_DIR}/_deps/src/PDCursesMod-build/wincon)
+  link_directories(${CMAKE_BINARY_DIR}/installed/Release/lib/wincon)
 endif()
 
 add_executable(omega
@@ -96,7 +101,7 @@ if(WIN32)
   add_custom_command(
     TARGET omega POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_BINARY_DIR}/_deps/src/PDCursesMod-build/wincon/pdcurses.dll
+    ${CMAKE_BINARY_DIR}/installed/Release/bin/wincon/pdcurses.dll
     $<TARGET_FILE_DIR:omega>
   )
   target_link_libraries(omega pdcurses)
