@@ -24,6 +24,11 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <ctime>
 #include <filesystem>
 #include <random>
+#ifdef PDC_GL_BUILD
+extern "C" {
+  #include <pdcgl.h>
+}
+#endif
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */
 
@@ -207,6 +212,12 @@ void omega_title();
 
 int main(int argc, char *argv[])
 {
+#ifdef PDC_GL_BUILD
+  putenv("PDC_COLS=106");
+  putenv("PDC_LINES=34");
+  pdc_resize_mode = PDC_GL_RESIZE_SCALE;
+#endif
+
   /* always catch ^c and hang-up signals */
 #ifdef SIGINT
   signal(SIGINT, quit);

@@ -4,20 +4,29 @@ project(Omega)
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
+
 set(CMAKE_CXX_STANDARD 23)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set(CMAKE_CXX_FLAGS_DEBUG "-Wall -Wextra -pedantic -g")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DPDC_DLL_BUILD /D_CRT_SECURE_NO_WARNINGS")
-  set(CMAKE_CXX_FLAGS_DEBUG "/Zi")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_CRT_SECURE_NO_WARNINGS")
+  set(CMAKE_CXX_FLAGS_RELEASE "/MT")
+  set(CMAKE_CXX_FLAGS_DEBUG "/Zi /MTd")
 endif()
 
 if(WIN32)
   if(NOT DEFINED PDC_GL_BUILD)
-    set(PDC_GL_BUILD "ON")
+    set(PDC_GL_BUILD ON)
   endif()
-  if(PDC_GL_BUILD MATCHES "ON")
+  if(PDC_GL_BUILD MATCHES ON)
     set(PDC_WINDOW_TYPE "gl")
+    include_directories(
+      ${CMAKE_BINARY_DIR}/_deps/src/PDCursesMod/gl
+      ${CMAKE_BINARY_DIR}/installed/Release/include/SDL2
+      ${CMAKE_BINARY_DIR}/installed/Release/include/SDL2_ttf
+    )
+    link_directories(${CMAKE_BINARY_DIR}/installed/Release/lib)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DPDC_GL_BUILD")
   else()
     set(PDC_GL_BUILD "OFF")
     set(PDC_WINDOW_TYPE "wincon")
@@ -30,6 +39,7 @@ if(WIN32)
     GIT_TAG master
     INSTALL_DIR ${CMAKE_BINARY_DIR}/installed
     CMAKE_ARGS
+      -DPDC_BUILD_SHARED=OFF
       -DPDC_SDL2_BUILD=OFF
       -DPDC_SDL2_DEPS_BUILD=${PDC_GL_BUILD}
       -DPDC_GL_BUILD=${PDC_GL_BUILD}
@@ -38,6 +48,7 @@ if(WIN32)
       -DCMAKE_CONFIGURATION_TYPES=Release
     BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
     INSTALL_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release --target install
+    UPDATE_COMMAND ""
   )
   include_directories(${CMAKE_BINARY_DIR}/_deps/src/PDCursesMod)
   link_directories(${CMAKE_BINARY_DIR}/installed/Release/lib/${PDC_WINDOW_TYPE})
@@ -107,30 +118,52 @@ add_custom_command(
 if(WIN32)
   add_dependencies(omega PDCursesMod)
   ExternalProject_Get_Property(PDCursesMod BINARY_DIR)
-  add_custom_command(
-    TARGET omega POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_BINARY_DIR}/installed/Release/bin/${PDC_WINDOW_TYPE}/pdcurses.dll
-    $<TARGET_FILE_DIR:omega>
-  )
   if(PDC_GL_BUILD MATCHES "ON")
-    add_custom_command(
-      TARGET omega POST_BUILD
-
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      ${CMAKE_BINARY_DIR}/installed/Release/bin/SDL2_ttf.dll
-      $<TARGET_FILE_DIR:omega>
-
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      ${CMAKE_BINARY_DIR}/installed/Release/bin/SDL2.dll
-      $<TARGET_FILE_DIR:omega>
-
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      ${CMAKE_BINARY_DIR}/installed/Release/bin/zlib.dll
-      $<TARGET_FILE_DIR:omega>
+    set_target_properties(omega PROPERTIES
+      WIN32_EXECUTABLE TRUE
+    )
+    set(RELEASE_LIBS
+      pdcursesstatic
+      SDL2main
+      SDL2-static
+      SDL2_ttf-static
+      zlibstatic
+      freetype
+      winmm
+      setupapi
+      version
+      imm32
+      msvcrt
+    )
+    set(DEBUG_LIBS
+      pdcursesstatic
+      SDL2main
+      SDL2-static
+      SDL2_ttf-static
+      zlibstatic
+      freetype
+      winmm
+      setupapi
+      version
+      imm32
+      msvcrtd
+    )
+  else()
+    set(RELEASE_LIBS
+      pdcursesstatic
+      winmm
+      msvcrt
+    )
+    set(DEBUG_LIBS
+      pdcursesstatic
+      winmm
+      msvcrtd
     )
   endif()
-  target_link_libraries(omega pdcurses)
+  target_link_libraries(omega
+    $<$<CONFIG:Debug>:${DEBUG_LIBS}>
+    $<$<CONFIG:Release>:${RELEASE_LIBS}>
+  )
 else()
   find_package(Curses REQUIRED)
   target_link_libraries(omega PRIVATE ${CURSES_LIBRARIES})

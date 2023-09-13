@@ -25,8 +25,8 @@ I have been building Omega for Windows using NMake from the "x64 Native Tools Co
 git clone https://github.com/Lyle-Tafoya/Omega.git
 mkdir Omega\build
 cd Omega\build
-cmake .. -G "NMake Makefiles"
-nmake
+cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release
+cmake --build .
 ```
 
 By default, Omega will run in an OpenGL window. To run in the Windows terminal instead, you can build with the following commands:
@@ -35,6 +35,6 @@ By default, Omega will run in an OpenGL window. To run in the Windows terminal i
 git clone https://github.com/Lyle-Tafoya/Omega.git
 mkdir Omega\build
 cd Omega\build
-cmake .. -G "NMake Makefiles" -DPDC_GL_BUILD=OFF
-nmake
+cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DPDC_GL_BUILD=OFF
+cmake --build .
 ```
