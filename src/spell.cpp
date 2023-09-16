@@ -998,6 +998,7 @@ int spellparse()
     }
     else if(player_input == ESCAPE)
     {
+      message_buffer.replace_last("_ Spell cancelled.");
       xredraw();
       return ABORT;
     }
