@@ -2,3 +2,5 @@ omega
 *.o
 *.lev
 *.swp
+build
+.cache
