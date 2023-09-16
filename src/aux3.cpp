@@ -1085,6 +1085,7 @@ int parsecitysite()
     }
     else if(player_input == ESCAPE)
     {
+      message_buffer.replace_last("_ Move cancelled.");
       xredraw();
       return ABORT;
     }
