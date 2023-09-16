@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <format>
 #include <string>
 #include <vector>
 
@@ -38,36 +39,36 @@ void l_condo()
 
   if(!gamestatusp(SOLD_CONDO, GameStatus))
   {
-    print1("Rampart Arms. Weekly Rentals and Purchases");
-    print2("Which are you interested in [r,p, or ESCAPE] ");
+    queue_message("Rampart Arms. Weekly Rentals and Purchases");
+    append_message("Which are you interested in [r,p, or ESCAPE] ", true);
     response = mgetc();
     if(response == 'p')
     {
-      print2("Only 50,000Au. Buy it? [yn] ");
+      queue_message("Only 50,000Au. Buy it? [yn] ");
       if(ynq2() == 'y')
       {
         if(Player.cash < 50000)
         {
-          print3("No mortgages, buddy.");
+          queue_message("No mortgages, buddy.");
         }
         else
         {
           setgamestatus(SOLD_CONDO, GameStatus);
           Player.cash -= 50000;
           dataprint();
-          print2("You are the proud owner of a luxurious condo penthouse.");
+          queue_message("You are the proud owner of a luxurious condo penthouse.");
           Condoitems = NULL;
         }
       }
     }
     else if(response == 'r')
     {
-      print2("Weekly Rental, 1000Au. Pay for it? [yn] ");
+      queue_message("Weekly Rental, 1000Au. Pay for it? [yn] ");
       if(ynq2() == 'y')
       {
         if(Player.cash < 1000)
         {
-          print2("Hey, pay the rent or out you go....");
+          queue_message("Hey, pay the rent or out you go....");
         }
         else
         {
@@ -79,12 +80,12 @@ void l_condo()
     }
     else
     {
-      print2("Please keep us in mind for your housing needs.");
+      queue_message("Please keep us in mind for your housing needs.");
     }
   }
   else
   {
-    std::vector<std::string> lines =
+    const std::vector<std::string> lines =
     {
       {"Home Sweet Home"},
       {"a: Leave items in your safe."},
@@ -93,11 +94,11 @@ void l_condo()
       {"d: Retire permanently."},
       {"ESCAPE: Leave this place."}
     };
-    menu->load(lines);
-    menu->print();
     while(!done)
     {
-      response = (char)mcigetc();
+      menu->load(lines);
+      menu->print();
+      response = static_cast<char>(menu->get_player_input());
       if(response == 'a')
       {
         i = getitem(NULL_ITEM);
@@ -105,7 +106,7 @@ void l_condo()
         {
           if(Player.possessions[i]->blessing < 0)
           {
-            print2("The item just doesn't want to be stored away...");
+            queue_message("The item just doesn't want to be stored away...");
           }
           else
           {
@@ -115,6 +116,7 @@ void l_condo()
             Condoitems = ol;
             conform_unused_object(Player.possessions[i]);
             Player.possessions[i] = NULL;
+            queue_message(std::format("Item stored in safe: {}", itemid(ol->thing)));
           }
         }
       }
@@ -150,11 +152,11 @@ void l_condo()
       else if(response == 'c')
       {
         weeksleep = true;
-        print1("You take a week off to rest...");
+        queue_message("You take a week off to rest...");
       }
       else if(response == 'd')
       {
-        print1("You sure you want to retire, now? [yn] ");
+        queue_message("You sure you want to retire, now? [yn] ");
         if(ynq1() == 'y')
         {
           p_win();
@@ -169,7 +171,7 @@ void l_condo()
   }
   if(weeksleep)
   {
-    print1("Taking a week off to rest...");
+    queue_message("Taking a week off to rest...");
     toggle_item_use(true);
     Player.hp  = Player.maxhp;
     Player.str = Player.maxstr;
@@ -187,7 +189,7 @@ void l_condo()
     }
     toggle_item_use(false);
     Player.food = 36;
-    print2("You're once again fit and ready to continue your adventure.");
+    queue_message("You're once again fit and ready to continue your adventure.");
     Time += 60 * 24 * 7;
     Date += 7;
     moon_check();
