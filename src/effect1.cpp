@@ -195,7 +195,8 @@ void bless(int blessing)
     }
     else if(index != ABORT)
     {
-      if(Player.possessions[index]->used)
+      bool used = Player.possessions[index]->used;
+      if(used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
         item_unequip(Player.possessions[index]);
@@ -222,7 +223,7 @@ void bless(int blessing)
       {
         print2("The hierolux fades without any appreciable effect....");
       }
-      if(Player.possessions[index]->used && Player.possessions[index])
+      if(used && Player.possessions[index])
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
         item_equip(Player.possessions[index]);
