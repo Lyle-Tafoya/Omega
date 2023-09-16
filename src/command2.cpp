@@ -1292,6 +1292,7 @@ void moveplayer(int dx, int dy)
     {
       Player.x += dx;
       Player.y += dy;
+      screencheck(Player.x, Player.y);
       p_movefunction(Level->site[Player.x][Player.y].p_locf);
 
       /* causes moves to take effectively 30 seconds in town without
