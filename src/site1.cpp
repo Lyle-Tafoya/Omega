@@ -958,8 +958,17 @@ void l_tavern()
           switch(random_range(4))
           {
             case 0:
-              print1("'You're a real pal. Say, have you heard.... ");
-              hint();
+              if(Player.alignment < 0 && !CitySiteList[L_THIEVES_GUILD-CITYSITEBASE][0])
+              {
+                queue_message("A shadowy figure nods his head at you and hands you a note.");
+                queue_message("It contains directions to the thieves' guild");
+                CitySiteList[L_THIEVES_GUILD-CITYSITEBASE][0] = true;
+              }
+              else
+              {
+                print1("'You're a real pal. Say, have you heard.... ");
+                hint();
+              }
               break;
             case 1:
               print1("A wandering priest of Dionysus blesses you...");
