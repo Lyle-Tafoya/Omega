@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
    curses functions */
 
 #include <chrono>
+#include <cstring>
 #include <filesystem>
 #include <format>
 #include <fstream>

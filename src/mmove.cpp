@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
+#include <cstring>
 
 /* like m_normal_move, but can open doors */
 void m_smart_move(struct monster *m)

@@ -27,20 +27,6 @@ definitions in the following section. */
 
 /*--------------------------USER DEFINITIONS--------------------------*/
 
-/* Implementor should uncomment the following if his system uses
-string.h instead of strings.h (try man string) */
-
-#define STRING
-
-/* Implementor should uncomment the following if omega appears to
-redraw the screen excessively. */
-
-#define EXCESSIVE_REDRAW
-
-/* The following definition is recommended. Remove it only if you have
-huge amounts of disk space and are annoyed at waiting a few more seconds
-on save and restore. */
-
 /* OMEGALIB is where all the data files reside.
    Note the final / is necessary.
    msdos note: \ is the C string escape character, so you need \\ in the
@@ -95,9 +81,6 @@ on save and restore. */
 
 /* number of lines back strings are recalled */
 #define STRING_BUFFER_SIZE  25
-
-/* number of rerolls allowed +1 */ /* added by dagibbs (DG) */
-#define REROLLS             31
 
 /* Verbosity levels */
 #define TERSE               0
@@ -1494,16 +1477,5 @@ inline void optionreset(int option, player &p)
 {
   p.options &= ~(option);
 }
-
-/* systemV for some reason uses string.h instead of strings.h */
-/* Also, random and srandom are unlikely to be found on system V... */
-
-#ifdef STRING
-#  include <cstring>
-#endif
-
-#ifndef STRING
-#  include <strings.h>
-#endif
 
 #endif

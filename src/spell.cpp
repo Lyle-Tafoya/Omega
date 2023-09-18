@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
+#include <cstring>
 #include <string>
 #include <vector>
 

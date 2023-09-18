@@ -21,6 +21,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <csignal>
 #include <cstdlib>
+#include <cstring>
+#include <string>
 #include <ctime>
 #include <filesystem>
 #include <random>

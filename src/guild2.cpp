@@ -26,6 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
+#include <cstring>
 
 extern void item_unequip(object *);
 

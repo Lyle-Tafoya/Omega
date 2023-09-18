@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <chrono>
+#include <cstring>
 #include <random>
 #include <string>
 #include <thread>

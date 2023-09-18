@@ -21,6 +21,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
+#include <cstring>
+
 void m_firebolt(struct monster *m)
 {
   fbolt(m->x, m->y, Player.x, Player.y, m->hit, m->dmg);

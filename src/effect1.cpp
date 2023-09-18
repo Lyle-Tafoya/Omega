@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cassert>
+#include <cstring>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);

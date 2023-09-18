@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <chrono>
+#include <cstring>
 #include <thread>
 
 extern void item_unequip(object *);

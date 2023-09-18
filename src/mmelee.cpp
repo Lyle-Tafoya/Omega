@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
+#include <cstring>
 
 void m_hit(monster *m, int dtype)
 {

@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
+#include <cstring>
 #include <filesystem>
 #include <regex>
 

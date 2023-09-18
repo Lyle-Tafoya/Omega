@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* some functions to make the city level */
 
 #include "glob.h"
+#include <cstring>
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;

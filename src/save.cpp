@@ -19,6 +19,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* save.c */
 
 #include "glob.h"
+
+#include <cstring>
 #include <filesystem>
 
 #ifdef SAVE_LEVELS

@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
+#include <cstring>
 #include <string>
 
 extern scrolling_buffer message_buffer;

@@ -26,6 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <cstring>
 #include <string>
 #include <vector>
 

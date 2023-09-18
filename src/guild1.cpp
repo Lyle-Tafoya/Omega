@@ -26,6 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
+#include <cstring>
 #include <string>
 
 extern void queue_message(const std::string &message);

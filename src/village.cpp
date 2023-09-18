@@ -21,6 +21,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
+#include <cstring>
+
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);

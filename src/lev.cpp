@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <cassert>
+#include <cstring>
 
 /* Functions dealing with dungeon and country levels aside from actual
 level structure generation */

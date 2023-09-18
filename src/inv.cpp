@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <array>
 #include <cassert>
+#include <cstring>
 #include <string>
 #include <vector>
 

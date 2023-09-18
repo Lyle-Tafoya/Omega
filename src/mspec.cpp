@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
+#include <cstring>
 
 void icebolt(int fx, int fy, int tx, int ty, int hit, int dmg);
 

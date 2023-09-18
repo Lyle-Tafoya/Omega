@@ -31,6 +31,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <cassert>
 #include <chrono>
 #include <curses.h>
+#include <cstring>
 #include <queue>
 #include <string>
 #include <thread>

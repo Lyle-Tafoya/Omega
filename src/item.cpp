@@ -20,6 +20,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
+#include <cstring>
+
 /* make a random new object, returning pointer */
 pob create_object(int itemlevel)
 {

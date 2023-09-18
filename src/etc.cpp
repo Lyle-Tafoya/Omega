@@ -21,6 +21,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
+#include <cstring>
+
 /* there are various ways for the player to receive one of these hints */
 void hint()
 {
