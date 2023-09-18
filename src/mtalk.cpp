@@ -22,8 +22,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
+#include <format>
 
 extern bool received_directions;
+extern void queue_message(const std::string &message);
 
 /* The druid's altar is in the northern forest */
 void m_talk_druid(struct monster *m)
@@ -654,83 +656,52 @@ void m_talk_ef(struct monster *m)
 
 void m_talk_seductor(struct monster *m)
 {
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
-  if(Player.preference == 'n')
+  queue_message(std::format("{} beckons seductively", monster_name));
+  queue_message("Flee? [yn] ");
+  if(ynq() == 'y')
   {
-    strcat(Str2, " notices your disinterest and leaves with a pout.");
-    mprint(Str2);
+    queue_message("You feel stupid.");
   }
   else
   {
-    strcat(Str2, " beckons seductively...");
-    mprint(Str2);
-    mprint("Flee? [yn] ");
-    if(ynq() == 'y')
-    {
-      mprint("You feel stupid.");
-    }
-    else
-    {
-      strcpy(Str2, "The ");
-      strcat(Str2, m->monstring);
-      strcat(Str2, " shows you a good time....");
-      mprint(Str2);
-      gain_experience(500);
-      Player.con++;
-    }
+    queue_message(std::format("{} shows you a good time....", monster_name));
+    gain_experience(500);
+    Player.con++;
   }
   m_vanish(m);
 }
 
 void m_talk_demonlover(struct monster *m)
 {
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
-  if(Player.preference == 'n')
+  queue_message(std::format("{} beckons seductively", monster_name));
+  queue_message("Flee? [yn] ");
+  if(ynq() == 'y')
   {
-    strcat(Str2, " notices your disinterest and changes with a snarl...");
-    mprint(Str2);
+    queue_message("You feel fortunate....");
   }
   else
   {
-    strcat(Str2, " beckons seductively...");
-    mprint(Str2);
-    mprint("Flee? [yn] ");
-    if(ynq() == 'y')
-    {
-      mprint("You feel fortunate....");
-    }
-    else
-    {
-      if(m->uniqueness == COMMON)
-      {
-        strcpy(Str2, "The ");
-        strcat(Str2, m->monstring);
-      }
-      else
-      {
-        strcpy(Str2, m->monstring);
-      }
-      strcat(Str2, " shows you a good time....");
-      mprint(Str2);
-      mprint("You feel your life energies draining...");
-      level_drain(random_range(3) + 1, "a demon's kiss");
-    }
+    queue_message(std::format("{} shows you a good time....", monster_name));
+    queue_message("You feel your life energies draining...");
+    level_drain(random_range(3) + 1, "a demon's kiss");
   }
   m->talkf    = M_TALK_EVIL;
   m->meleef   = M_MELEE_SPIRIT;
@@ -746,18 +717,8 @@ void m_talk_demonlover(struct monster *m)
     m->monchar   = 'S' | CLR(RED);
     m->monstring = "succubus";
   }
-  if(m->uniqueness == COMMON)
-  {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
-  }
-  else
-  {
-    strcpy(Str2, m->monstring);
-  }
-  strcat(Str2, " laughs insanely.");
-  mprint(Str2);
-  mprint("You now notice the fangs, claws, batwings...");
+  queue_message(std::format("{} laughs insanely.", monster_name));
+  queue_message("You now notice the fangs, claws, batwings...");
 }
 
 void m_talk_horse(struct monster *m)

@@ -648,12 +648,6 @@ void user_character_stats()
     message_buffer.receive("Is that blarney or what?", true);
   }
   Player.pow = Player.maxpow = 3 + powpts / 2;
-  message_buffer.receive("Are you sexually attracted to males, females, both, or none? [mfbn] ", true);
-  do
-  {
-    Player.preference = static_cast<char>(mcigetc());
-  } while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
-          (Player.preference != 'n'));
 }
 
 void omegan_character_stats()
@@ -759,10 +753,4 @@ void omegan_character_stats()
   {
     Player.name[0] += 'A' - 'a'; // capitalise 1st letter
   }
-  message_buffer.receive("Is your character sexually attracted to males, females, both, or none? [mfbn] ");
-  do
-  {
-    Player.preference = static_cast<char>(mcigetc());
-  } while((Player.preference != 'm') && (Player.preference != 'f') && (Player.preference != 'b') &&
-          (Player.preference != 'n'));
 }

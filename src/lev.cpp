@@ -627,7 +627,7 @@ pmt make_creature(int mid)
   else if((newmonster->monchar & 0xff) == '!')
   {
     /* the nymph/satyr and incubus/succubus */
-    if(Player.preference == 'f' || (Player.preference != 'm' && random_range(2)))
+    if(random_range(2))
     {
       newmonster->monchar   = 'n' | CLR(RED);
       newmonster->monstring = "nymph";

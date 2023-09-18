@@ -1308,7 +1308,6 @@ struct player
   long           mana, maxmana;
   long           cash;
   int            patron, birthday;
-  char           preference;
   int            sx, sy; /* sanctuary coordinates */
   int            x, y;   /* current player coordinates */
   int            itemweight, maxweight;

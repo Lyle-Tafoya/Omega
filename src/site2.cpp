@@ -582,9 +582,9 @@ void l_vault()
 void l_brothel()
 {
   char response;
-  print1("You come to a heavily reinforced inner door.");
-  print2("A sign reads `The House of the Eclipse'");
-  print1("Try to enter? [yn] ");
+  queue_message("You come to a heavily reinforced inner door.");
+  queue_message("A sign reads `The House of the Eclipse'");
+  queue_message("Try to enter? [yn] ");
   if(ynq1() == 'y')
   {
     std::vector<std::string> lines =
@@ -605,61 +605,67 @@ void l_brothel()
     {
       if(!nighttime())
       {
-        print2("There is no reponse.");
+        queue_message("There is no reponse.");
       }
       else
       {
-        print1("A window opens in the door.");
-        print2("`500Au, buddy. For the night.' pay it? [yn] ");
+        queue_message("A window opens in the door.");
+        queue_message("`500Au, buddy. For the night.' pay it? [yn] ");
         if(ynq2() == 'y')
         {
           if(Player.cash < 500)
           {
-            print1("`What, no roll?!'");
-            print2("The bouncer bounces you a little and lets you go.");
+            queue_message("`What, no roll?!'");
+            queue_message("The bouncer bounces you a little and lets you go.");
             p_damage(25, UNSTOPPABLE, "da bouncer");
           }
           else
           {
             Player.cash -= 500;
-            print1("You are ushered into an opulently appointed hall.");
-            print2("After an expensive dinner (takeout from Les Crapuleux)");
-            if(Player.preference == 'n')
+            queue_message("Would you like to see a male or female worker? [mf] ");
+            char preference;
+            do
+            {
+              preference = static_cast<char>(mcigetc());
+            } while(preference != 'm' && preference != 'f' && preference != 'n');
+            queue_message("You are ushered into an opulently appointed hall.");
+            queue_message("After an expensive dinner (takeout from Les Crapuleux)");
+            if(preference == 'n')
             {
               switch(random_range(4))
               {
                 case 0:
-                  print1("you spend the evening playing German Whist with");
+                  append_message("you spend the evening playing German Whist with");
                   break;
                 case 1:
-                  print1("you spend the evening discussing philosophy with");
+                  append_message("you spend the evening discussing philosophy with");
                   break;
                 case 2:
-                  print1("you spend the evening playing chess against");
+                  append_message("you spend the evening playing chess against");
                   break;
                 case 3:
-                  print1("you spend the evening telling your adventures to");
+                  append_message("you spend the evening telling your adventures to");
               }
-              print2("various employees of the House of the Eclipse.");
+              append_message("various employees of the House of the Eclipse.");
             }
             else
             {
-              print1("you spend an enjoyable and educational evening with");
-              if(Player.preference == 'm' || (Player.preference == 'b' && random_range(2)))
+              queue_message("you spend an enjoyable and educational evening with");
+              if(preference == 'm' || (preference == 'b' && random_range(2)))
               {
                 switch(random_range(4))
                 {
                   case 0:
-                    print2("Skarn the Insatiable, a satyr.");
+                    append_message("Skarn the Insatiable, a satyr.");
                     break;
                   case 1:
-                    print2("Dryden the Defanged, an incubus.");
+                    append_message("Dryden the Defanged, an incubus.");
                     break;
                   case 2:
-                    print2("Gorgar the Equipped, a centaur.");
+                    append_message("Gorgar the Equipped, a centaur.");
                     break;
                   case 3:
-                    print2("Hieronymus, the mendicant priest of Eros.");
+                    append_message("Hieronymus, the mendicant priest of Eros.");
                     break;
                 }
               }
@@ -668,16 +674,16 @@ void l_brothel()
                 switch(random_range(4))
                 {
                   case 0:
-                    print2("Noreen the Nymph (omaniac)");
+                    append_message("Noreen the Nymph (omaniac)");
                     break;
                   case 1:
-                    print2("Angelface, a recanted succubus.");
+                    append_message("Angelface, a recanted succubus.");
                     break;
                   case 2:
-                    print2("Corporal Sue of the City Guard (moonlighting).");
+                    append_message("Corporal Sue of the City Guard (moonlighting).");
                     break;
                   case 3:
-                    print2("Sheena the Queena the Jungle, a wereleopard.");
+                    append_message("Sheena the Queena the Jungle, a wereleopard.");
                     break;
                 }
               }
@@ -704,7 +710,7 @@ void l_brothel()
             Player.iq  = std::min(Player.iq, Player.maxiq);
             Player.pow = std::min(Player.pow, Player.maxpow);
             toggle_item_use(false);
-            if(Player.preference == 'n')
+            if(preference == 'n')
             {
               Player.iq++; /* whatever :-) */
             }
@@ -716,19 +722,19 @@ void l_brothel()
             timeprint();
             dataprint();
             showflags();
-            if(Player.preference == 'n')
+            if(preference == 'n')
             {
-              print1("You arise refreshed the next morning...");
+              queue_message("You arise refreshed the next morning...");
             }
             else
             {
-              print1("You arise, tired but happy, the next morning...");
+              queue_message("You arise, tired but happy, the next morning...");
             }
           }
         }
         else
         {
-          print2("What are you, some kinda prude?");
+          queue_message("What are you, some kinda prude?");
         }
       }
     }
@@ -736,30 +742,30 @@ void l_brothel()
     {
       if(nighttime())
       {
-        print1("As you fumble at the lock, the door opens....");
-        print2("The bouncer tosses you into the street.");
+        queue_message("As you fumble at the lock, the door opens....");
+        queue_message("The bouncer tosses you into the street.");
       }
       else
       {
-        print1("The door appears to be bolted and barred from behind.");
+        queue_message("The door appears to be bolted and barred from behind.");
       }
     }
     else if(response == 'c')
     {
       if(nighttime())
       {
-        print1("As you charge toward the door it opens....");
-        print2("Yaaaaah! Thud!");
-        print1("You run past the startled bouncer into a wall.");
+        queue_message("As you charge toward the door it opens....");
+        queue_message("Yaaaaah! Thud!");
+        queue_message("You run past the startled bouncer into a wall.");
         p_damage(20, UNSTOPPABLE, "a move worthy of Clouseau");
-        print2("The bouncer tosses you into the street.");
+        queue_message("The bouncer tosses you into the street.");
       }
       else
       {
-        print1("Ouch! The door resists your efforts.");
+        queue_message("Ouch! The door resists your efforts.");
         p_damage(1, UNSTOPPABLE, "a sturdy door");
-        print1("You hear an irritated voice from inside:");
-        print2("'Keep it down out there! Some of us are trying to sleep!'");
+        queue_message("You hear an irritated voice from inside:");
+        queue_message("'Keep it down out there! Some of us are trying to sleep!'");
       }
     }
   }
