@@ -22,12 +22,13 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "interactive_menu.hpp"
 
 #include <algorithm>
-#include <cstring>
+#include <format>
 #include <string>
 #include <vector>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
+extern void queue_message(const std::string &message);
 extern void append_message(const std::string &message, bool force_break = false);
 extern interactive_menu *menu;
 
@@ -236,8 +237,7 @@ void annihilate(int blessing)
 
 void sleep_monster(int blessing)
 {
-  pml             ml;
-  int             x = Player.x, y = Player.y;
+  int x = Player.x, y = Player.y;
   struct monster *target;
 
   if(blessing == 0)
@@ -251,8 +251,8 @@ void sleep_monster(int blessing)
   }
   else if(blessing > 0)
   {
-    mprint("A silence pervades the area.");
-    for(ml = Level->mlist; ml != NULL; ml = ml->next)
+    queue_message("A silence pervades the area.");
+    for(pml ml = Level->mlist; ml != NULL; ml = ml->next)
     {
       m_status_reset(*ml->m, AWAKE);
       ml->m->wakeup = 0;
@@ -263,30 +263,29 @@ void sleep_monster(int blessing)
     target = Level->site[x][y].creature;
     if(target != NULL)
     {
+      std::string monster_name;
       if(target->uniqueness == COMMON)
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, target->monstring);
+        monster_name = std::format("The {}", target->monstring);
       }
       else
       {
-        strcpy(Str1, target->monstring);
+        monster_name = target->monstring;
       }
       if(!m_immunityp(*target, SLEEP))
       {
-        strcat(Str1, " seems to have fallen asleep.");
+        queue_message(std::format("{} seems to have fallen asleep.", monster_name));
         m_status_reset(*target, AWAKE);
         target->wakeup = 0;
       }
       else
       {
-        strcat(Str1, " is bright eyed, and bushy tailed!");
+        queue_message(std::format("{} is bright eyed, and bushy tailed!", monster_name));
       }
-      mprint(Str1);
     }
     else
     {
-      mprint("Nothing to sleep there!");
+      queue_message("Nothing to sleep there!");
     }
   }
 }
@@ -437,34 +436,32 @@ void disrupt(int x, int y, int amount)
 
   if((x == Player.x) && (y == Player.y))
   {
-    mprint("You feel disrupted!");
+    queue_message("You feel disrupted!");
     p_damage(amount, NORMAL_DAMAGE, "magical disruption");
   }
   else
   {
     target = Level->site[x][y].creature;
-    if(target != NULL)
+    if(target)
     {
+      std::string monster_name;
       if(target->uniqueness == COMMON)
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, target->monstring);
+        monster_name = std::format("The {}", target->monstring);
       }
       else
       {
-        strcpy(Str1, target->monstring);
+        monster_name = target->monstring;
       }
       if(!m_immunityp(*target, NORMAL_DAMAGE))
       {
-        strcat(Str1, " was blasted!");
-        mprint(Str1);
+        queue_message(std::format("{} was blasted!", monster_name));
         m_damage(target, amount, NORMAL_DAMAGE);
         target->wakeup = 0;
       }
       else
       {
-        strcat(Str1, " does not seem affected.");
-        mprint(Str1);
+        queue_message(std::format("{} does not seem affected.", monster_name));
       }
     }
   }
@@ -506,25 +503,22 @@ void disintegrate(int x, int y)
     {
       if(target->uniqueness == COMMON)
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, target->monstring);
+        queue_message(std::format("The {} disintegrates!", target->monstring));
       }
       else
       {
-        strcpy(Str1, target->monstring);
+        queue_message(std::format("{} disintegrates!", target->monstring));
       }
-      strcat(Str1, " disintegrates!");
-      mprint(Str1);
       m_damage(target, 100, UNSTOPPABLE);
       if(target->hp > 0)
       {
-        mprint("It was partially protected by its armor.");
+        queue_message("It was partially protected by its armor.");
       }
     }
     else if(Level->site[x][y].locchar == ALTAR)
     {
-      mprint("Zzzzap! the altar seems unaffected...");
-      mprint("But an angry deity retaliates....");
+      queue_message("Zzzzap! the altar seems unaffected...");
+      queue_message("But an angry deity retaliates....");
       disintegrate(Player.x, Player.y);
     }
     else if(Level->site[x][y].p_locf == L_TRAP_PIT)
@@ -1155,9 +1149,7 @@ void polymorph(int blessing)
   {
     if(m_immunityp(*m, OTHER_MAGIC) || (m->level > random_range(12)))
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
-      strcat(Str1, " resists the change!");
+      queue_message(std::format("The {} resists the change!", m->monstring));
       m_status_set(*m, HOSTILE);
     }
     else
@@ -1439,15 +1431,13 @@ void drain_life(int amount)
       {
         mprint("You suffer a fatal heart attack!!!");
         Player.hp = 0;
-        strcpy(Str2, "a coronary");
-        p_death(Str2);
+        p_death("a coronary");
       }
     }
     else
     {
       mprint("The coldness saps your very soul...");
-      strcpy(Str2, "soul destruction");
-      level_drain(amount, Str2);
+      level_drain(amount, "soul destruction");
     }
   }
 }
@@ -1470,23 +1460,23 @@ void inflict_fear(int x, int y)
   }
   else if((m = Level->site[x][y].creature) != NULL)
   {
+    std::string monster_name;
     if(m->uniqueness == COMMON)
     {
-      strcpy(Str2, "The ");
-      strcat(Str2, m->monstring);
+      monster_name = std::format("The {}", m->monstring);
     }
     else
     {
-      strcpy(Str2, m->monstring);
+      monster_name = m->monstring;
     }
     m->speed = std::max(2, m->speed - 1);
     if(m_immunityp(*m, FEAR))
     {
-      strcat(Str2, "seems enraged!");
+      queue_message(std::format("{} seems enraged!", monster_name));
     }
     else
     {
-      strcat(Str2, "is terrorized!");
+      queue_message(std::format("{} is terrorized!", monster_name));
       m_dropstuff(m);
       if(m_statusp(*m, MOBILE))
       {

@@ -22,12 +22,13 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cassert>
-#include <cstring>
+#include <format>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
 
 extern int get_message_input();
+extern void queue_message(const std::string &message);
 
 /* enchant */
 void enchant(int delta)
@@ -345,63 +346,63 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
   {
     if(hitp(hit, target->ac))
     {
+      std::string damage_message;
       if(target->uniqueness == COMMON)
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, target->monstring);
+        damage_message = std::format("The {}", target->monstring);
       }
       else
       {
-        strcpy(Str1, target->monstring);
+        damage_message = target->monstring;
       }
       switch(dtype)
       {
           /* WDT: these sentances really ought to be livened up.  Especially
          * in full verbose mode. */
         case FLAME:
-          strcat(Str1, " was blasted by a firebolt!");
+          damage_message += " was blasted by a firebolt!";
           break;
         case ELECTRICITY:
-          strcat(Str1, " was zapped by lightning!");
+          damage_message += " was zapped by lightning!";
           break;
         case NORMAL_DAMAGE:
-          strcat(Str1, " was hit by a missile!");
+          damage_message += " was hit by a missile!";
           break;
         case COLD:
-          strcat(Str1, " was hit by an icicle!");
+          damage_message += " was hit by an icicle!";
           break;
       }
-      mprint(Str1);
+      queue_message(damage_message);
       m_status_set(*target, HOSTILE);
       m_damage(target, random_range(dmg), dtype);
     }
     else
     {
+      std::string miss_message;
       if(target->uniqueness == COMMON)
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, target->monstring);
+        miss_message = std::format("The {}", target->monstring);
       }
       else
       {
-        strcpy(Str1, target->monstring);
+        miss_message = target->monstring;
       }
       switch(dtype)
       {
         case FLAME:
-          strcat(Str1, " was missed by a firebolt!");
+          miss_message += " was missed by a firebolt!";
           break;
         case ELECTRICITY:
-          strcat(Str1, " was missed by lightning!");
+          miss_message += " was missed by lightning!";
           break;
         case NORMAL_DAMAGE:
-          strcat(Str1, " was missed by a missile!");
+          miss_message += " was missed by a missile!";
           break;
         case COLD:
-          strcat(Str1, " was missed by a flying icicle!");
+          miss_message += " was missed by a flying icicle!";
           break;
       }
-      mprint(Str1);
+      queue_message(miss_message);
     }
   }
   else if(Level->site[xx][yy].locchar == HEDGE)
@@ -514,31 +515,31 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
     {
       if(los_p(Player.x, Player.y, target->x, target->y))
       {
+        std::string hit_message;
         if(target->uniqueness == COMMON)
         {
-          strcpy(Str1, "The ");
-          strcat(Str1, target->monstring);
+          hit_message = std::format("The {}", target->monstring);
         }
         else
         {
-          strcpy(Str1, target->monstring);
+          hit_message = target->monstring;
         }
         switch(dtype)
         {
           case FLAME:
-            strcat(Str1, " was zorched by a fireball!");
+            hit_message += " was zorched by a fireball!";
             break;
           case COLD:
-            strcat(Str1, " was blasted by a snowball!");
+            hit_message += " was blasted by a snowball!";
             break;
           case ELECTRICITY:
-            strcat(Str1, " was zapped by ball lightning!");
+            hit_message += " was zapped by ball lightning!";
             break;
           case UNSTOPPABLE:
-            strcat(Str1, " was nuked by a manastorm!");
+            hit_message += " was nuked by a manastorm!";
             break;
         }
-        mprint(Str1);
+        queue_message(hit_message);
       }
       m_status_set(*target, HOSTILE);
       m_damage(target, random_range(dmg), dtype);

@@ -21,7 +21,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* accessible from the country and don't have their own files */
 
 #include "glob.h"
+
 #include <cstring>
+#include <format>
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
@@ -31,19 +33,12 @@ plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 /* loads the countryside level from the data file */
 void load_country()
 {
-  int  i, j;
-  char site;
+  FILE *fd = checkfopen(std::format("{}country.dat", Omegalib), "rb");
+  char site = cryptkey("country.dat");
 
-  FILE *fd;
-
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "country.dat");
-  fd   = checkfopen(Str3, "rb");
-  site = cryptkey("country.dat");
-
-  for(j = 0; j < LENGTH; j++)
+  for(int j = 0; j < LENGTH; j++)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; i++)
     {
       site                 = getc(fd) ^ site;
       Country[i][j].aux    = 0;
@@ -139,11 +134,6 @@ void load_country()
 /* loads the dragon's lair into Level*/
 void load_dlair(int empty, int populate)
 {
-  int  i, j;
-  char site;
-
-  FILE *fd;
-
   if(empty)
   {
     mprint("The Lair is now devoid of inhabitants and treasure.");
@@ -169,13 +159,11 @@ void load_dlair(int empty, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_DLAIR;
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "dlair.dat");
-  fd   = checkfopen(Str3, "rb");
-  site = cryptkey("dlair.dat");
-  for(j = 0; j < LENGTH; j++)
+  FILE *fd = checkfopen(std::format("{}dlair.dat", Omegalib), "rb");
+  char site = cryptkey("dlair.dat");
+  for(int j = 0; j < LENGTH; j++)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; i++)
     {
       Level->site[i][j].lstatus = 0;
       if(i < 48)
@@ -289,10 +277,7 @@ void load_dlair(int empty, int populate)
 /* loads the star peak into Level*/
 void load_speak(int empty, int populate)
 {
-  int  i, j, safe = Player.alignment > 0;
-  char site;
-
-  FILE *fd;
+  int safe = Player.alignment > 0;
 
   if(empty)
   {
@@ -320,13 +305,11 @@ void load_speak(int empty, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_STARPEAK;
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "speak.dat");
-  fd   = checkfopen(Str3, "rb");
-  site = cryptkey("speak.dat");
-  for(j = 0; j < LENGTH; j++)
+  FILE *fd   = checkfopen(std::format("{}speak.dat", Omegalib), "rb");
+  char site = cryptkey("speak.dat");
+  for(int j = 0; j < LENGTH; j++)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; i++)
     {
       Level->site[i][j].lstatus    = 0;
       Level->site[i][j].roomnumber = RS_STARPEAK;
@@ -437,11 +420,6 @@ void load_speak(int empty, int populate)
 /* loads the magic isle into Level*/
 void load_misle(int empty, int populate)
 {
-  int  i, j;
-  char site;
-
-  FILE *fd;
-
   if(empty)
   {
     mprint("The isle is now devoid of inhabitants and treasure.");
@@ -468,13 +446,11 @@ void load_misle(int empty, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_MAGIC_ISLE;
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "misle.dat");
-  fd   = checkfopen(Str3, "rb");
-  site = cryptkey("misle.dat");
-  for(j = 0; j < LENGTH; j++)
+  FILE *fd = checkfopen(std::format("{}misle.dat", Omegalib), "rb");
+  char site = cryptkey("misle.dat");
+  for(int j = 0; j < LENGTH; j++)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; i++)
     {
       Level->site[i][j].lstatus    = 0;
       Level->site[i][j].roomnumber = RS_MAGIC_ISLE;
@@ -542,11 +518,6 @@ void load_misle(int empty, int populate)
 /* loads a temple into Level*/
 void load_temple(int deity, int populate)
 {
-  int   i, j;
-  char  site;
-  pml   ml;
-  FILE *fd;
-
   /* WDT HACK: I don't know why this is wrong.  Shrug.  David Givens
    * suggested removing it, and he has more experience with Omega
    * than I, so... */
@@ -567,13 +538,11 @@ void load_temple(int deity, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_TEMPLE;
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "temple.dat");
-  fd   = checkfopen(Str3, "rb");
-  site = cryptkey("temple.dat");
-  for(j = 0; j < LENGTH; j++)
+  FILE *fd   = checkfopen(std::format("{}temple.dat", Omegalib), "rb");
+  char site = cryptkey("temple.dat");
+  for(int j = 0; j < LENGTH; j++)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; i++)
     {
       switch(deity)
       {
@@ -688,7 +657,7 @@ void load_temple(int deity, int populate)
   /* Main Temple is peaceful for player of same sect,druids always peaceful. */
   if((Player.patron == deity) || (deity == DRUID))
   {
-    for(ml = Level->mlist; ml != NULL; ml = ml->next)
+    for(pml ml = Level->mlist; ml != NULL; ml = ml->next)
     {
       m_status_reset(*ml->m, HOSTILE);
     }

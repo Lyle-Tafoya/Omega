@@ -24,10 +24,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cstring>
+#include <format>
 #include <string>
 
 extern scrolling_buffer message_buffer;
 extern void enable_attr(WINDOW *, attr_t);
+extern void queue_message(const std::string &message);
 
 std::string get_username()
 {
@@ -35,7 +37,6 @@ std::string get_username()
   if(env && strlen(env) > 0)
   {
     return env;
-    env = getenv("USER");
   }
   env = getenv("USER");
   if(env && strlen(env) > 0)
@@ -126,18 +127,17 @@ void initplayer()
 
 FILE *omegarc_check()
 {
-  FILE *fd;
-  sprintf(Str1, "%s/.omegarc", getenv("HOME"));
-  if((fd = fopen(Str1, "r")) != NULL)
+  FILE *fd = fopen(std::format("{}/.omegarc", getenv("HOME")).c_str(), "r");
+  if(fd)
   {
-    print2("Use .omegarc in home directory? [yn] ");
+    queue_message("Use .omegarc in home directory? [yn] ");
     if(ynq2() != 'y')
     {
       fclose(fd);
-      fd = NULL;
+      fd = nullptr;
     }
   }
-  return (fd);
+  return fd;
 }
 
 void initstats()
@@ -169,10 +169,8 @@ void initstats()
 void save_omegarc()
 {
   int   i = VERSION;
-  FILE *fd;
-  sprintf(Str1, "%s/.omegarc", getenv("HOME"));
-  fd = fopen(Str1, "w");
-  if(fd == NULL)
+  FILE *fd = fopen(std::format("{}/.omegarc", getenv("HOME")).c_str(), "w");
+  if(!fd)
   {
     print1("Sorry, couldn't save .omegarc for some reason.");
   }

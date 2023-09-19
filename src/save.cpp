@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <cstring>
 #include <filesystem>
+#include <format>
 
 #ifdef SAVE_LEVELS
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
@@ -954,10 +955,11 @@ void restore_hiscore_npc(pmt npc, int npcid)
   int  level, behavior;
   long status;
 
+  std::string npc_name;
   switch(npcid)
   {
     case 0:
-      strcpy(Str2, Hiscorer);
+      npc_name = Hiscorer;
       level    = Hilevel;
       behavior = Hibehavior;
       break;
@@ -967,59 +969,57 @@ void restore_hiscore_npc(pmt npc, int npcid)
     case 4:
     case 5:
     case 6:
-      strcpy(Str2, Priest[npcid]);
+      npc_name = Priest[npcid];
       level    = Priestlevel[npcid];
       behavior = Priestbehavior[npcid];
       break;
     case 7:
-      strcpy(Str2, Shadowlord);
+      npc_name = Shadowlord;
       level    = Shadowlordlevel;
       behavior = Shadowlordbehavior;
       break;
     case 8:
-      strcpy(Str2, Commandant);
+      npc_name = Commandant;
       level    = Commandantlevel;
       behavior = Commandantbehavior;
       break;
     case 9:
-      strcpy(Str2, Archmage);
+      npc_name = Archmage;
       level    = Archmagelevel;
       behavior = Archmagebehavior;
       break;
     case 10:
-      strcpy(Str2, Prime);
+      npc_name = Prime;
       level    = Primelevel;
       behavior = Primebehavior;
       break;
     case 11:
-      strcpy(Str2, Champion);
+      npc_name = Champion;
       level    = Championlevel;
       behavior = Championbehavior;
       break;
     case 12:
-      strcpy(Str2, Duke);
+      npc_name = Duke;
       level    = Dukelevel;
       behavior = Dukebehavior;
       break;
     case 13:
-      strcpy(Str2, Chaoslord);
+      npc_name = Chaoslord;
       level    = Chaoslordlevel;
       behavior = Chaoslordbehavior;
       break;
     case 14:
-      strcpy(Str2, Lawlord);
+      npc_name = Lawlord;
       level    = Lawlordlevel;
       behavior = Lawlordbehavior;
       break;
     default:
-      strcpy(Str2, Justiciar);
+      npc_name = Justiciar;
       level    = Justiciarlevel;
       behavior = Justiciarbehavior;
   }
-  npc->monstring = salloc(Str2);
-  strcpy(Str1, "The body of ");
-  strcat(Str1, Str2);
-  npc->corpsestr = salloc(Str1);
+  npc->monstring = salloc(npc_name.c_str());
+  npc->corpsestr = salloc(std::format("The body of {}", npc_name).c_str());
   if(!m_statusp(*npc, HOSTILE))
   {
     status = npc->status;

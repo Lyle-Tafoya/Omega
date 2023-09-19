@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "defs.h"
 
 #include <string>
+#include <string_view>
 
 /* omega.cpp functions */
 
@@ -95,7 +96,7 @@ void        weapon_use(int, pob, struct monster *);
 /* aux3.cpp functions */
 
 char  *citysiteid(int);
-char  *countryid(Symbol);
+std::string countryid(Symbol);
 char   getlocation(void);
 int    hostilemonstersnear(void);
 int    magic_resist(int);
@@ -287,7 +288,7 @@ void make_prime(int, int);
 
 /* etc.cpp functions */
 
-char       *nameprint(void);
+std::string_view nameprint(void);
 const char *wordnum(int);
 void        hint(void);
 void        learnclericalspells(int, int);

@@ -22,7 +22,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
+#include <format>
+
+extern void queue_message(const std::string &message);
 
 void icebolt(int fx, int fy, int tx, int ty, int hit, int dmg);
 
@@ -179,20 +181,16 @@ void m_sp_ghost(struct monster *m)
 /* random spell cast by monster */
 void m_sp_spell(struct monster *m)
 {
-  char action[80];
   if(m_statusp(*m, HOSTILE) && los_p(Player.x, Player.y, m->x, m->y))
   {
     if(m->uniqueness == COMMON)
     {
-      strcpy(action, "The ");
+      queue_message(std::format("The {} casts a spell...", m->monstring));
     }
     else
     {
-      strcpy(action, "");
+      queue_message(std::format("{} casts a spell...", m->monstring));
     }
-    strcat(action, m->monstring);
-    strcat(action, " casts a spell...");
-    mprint(action);
     if(!magic_resist(m->level))
     {
       switch(random_range(m->level + 7))
@@ -260,14 +258,12 @@ void m_sp_spell(struct monster *m)
         case 14:
           if(m->uniqueness == COMMON)
           {
-            strcpy(Str2, "a ");
-            strcat(Str2, m->monstring);
+            level_drain(m->level, std::format("a {}", m->monstring).c_str());
           }
           else
           {
-            strcpy(Str2, m->monstring);
+            level_drain(m->level, m->monstring);
           }
-          level_drain(m->level, Str2);
           break;
         case 15:
         case 16:
@@ -331,15 +327,12 @@ void m_sp_seductor(struct monster *m)
   {
     if(m->uniqueness == COMMON)
     {
-      strcpy(Str2, "The ");
-      strcat(Str2, m->monstring);
+      queue_message(std::format("The {} runs away screaming for help....", m->monstring));
     }
     else
     {
-      strcpy(Str2, m->monstring);
+      queue_message(std::format("{} runs away screaming for help....", m->monstring));
     }
-    strcat(Str2, " runs away screaming for help....");
-    mprint(Str2);
     m_vanish(m);
     summon(-1, -1);
     summon(-1, -1);
@@ -537,12 +530,8 @@ void m_sp_were(struct monster *m)
     m->meleef       = Monsters[mid].meleef;
     m->strikef      = Monsters[mid].strikef;
     m->specialf     = Monsters[mid].specialf;
-    strcpy(Str1, "were-");
-    strcat(Str1, Monsters[mid].monstring);
-    strcpy(Str2, "dead were-");
-    strcat(Str2, Monsters[mid].monstring);
-    m->monstring = salloc(Str1);
-    m->corpsestr = salloc(Str2);
+    m->monstring = salloc(std::format("were-{}", Monsters[mid].monstring).c_str());
+    m->corpsestr = salloc(std::format("dead were-{}", Monsters[mid].monstring).c_str());
     m->immunity += pow2(NORMAL_DAMAGE);
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
@@ -793,15 +782,12 @@ void m_thief_f(struct monster *m)
           mprint("You feel uneasy for a moment.");
           if(m->uniqueness == COMMON)
           {
-            strcpy(Str2, "The ");
-            strcat(Str2, m->monstring);
+            queue_message(std::format("The {} suddenly runs away for some reason.", m->monstring));
           }
           else
           {
-            strcpy(Str2, m->monstring);
+            queue_message(std::format("{} suddenly runs away for some reason.", m->monstring));
           }
-          strcat(Str2, " suddenly runs away for some reason.");
-          mprint(Str2);
           m_teleport(m);
           m->movef    = M_MOVE_SCAREDY;
           m->specialf = M_MOVE_SCAREDY;
@@ -829,15 +815,12 @@ void m_aggravate(struct monster *m)
   {
     if(m->uniqueness == COMMON)
     {
-      strcpy(Str2, "The ");
-      strcat(Str2, m->monstring);
+      queue_message(std::format("The {} emits an irritating humming sound.", m->monstring));
     }
     else
     {
-      strcpy(Str2, m->monstring);
+      queue_message(std::format("{} emits an irritating humming sound.", m->monstring));
     }
-    strcat(Str2, " emits an irritating humming sound.");
-    mprint(Str2);
     aggravate();
     m_status_reset(*m, HOSTILE);
   }

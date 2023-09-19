@@ -31,7 +31,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <cassert>
 #include <chrono>
 #include <curses.h>
-#include <cstring>
+#include <format>
 #include <queue>
 #include <string>
 #include <thread>
@@ -1211,12 +1211,8 @@ void print_health()
 {
   int hp_meter_length = std::min(
     24, Player.maxhp == 0 ? 0 : static_cast<int>(static_cast<float>(Player.hp) / Player.maxhp * 24));
-  char hp_meter_filled[25];
-  char hp_meter_empty[25];
-  memset(hp_meter_filled, '=', hp_meter_length);
-  hp_meter_filled[hp_meter_length] = '\0';
-  memset(hp_meter_empty, '-', 24 - hp_meter_length);
-  hp_meter_empty[24 - hp_meter_length] = '\0';
+  std::string hp_meter_filled(hp_meter_length, '=');
+  std::string hp_meter_empty(24-hp_meter_length, '-');
 
   werase(health_label_window);
   enable_attr(health_label_window, CLR(GREY));
@@ -1233,9 +1229,9 @@ void print_health()
 
   werase(health_meter_window);
   enable_attr(health_meter_window, CLR(GREEN) | A_BOLD);
-  waddstr(health_meter_window, hp_meter_filled);
+  waddstr(health_meter_window, hp_meter_filled.c_str());
   enable_attr(health_meter_window, CLR(GREY));
-  waddstr(health_meter_window, hp_meter_empty);
+  waddstr(health_meter_window, hp_meter_empty.c_str());
   wnoutrefresh(health_meter_window);
 }
 
@@ -1244,12 +1240,8 @@ void print_mana()
   int mana_meter_length = std::min(
     24,
     Player.maxmana == 0 ? 0 : static_cast<int>(static_cast<float>(Player.mana) / Player.maxmana * 24));
-  char mana_meter_filled[25];
-  char mana_meter_empty[25];
-  memset(mana_meter_filled, '=', mana_meter_length);
-  mana_meter_filled[mana_meter_length] = '\0';
-  memset(mana_meter_empty, '-', 24 - mana_meter_length);
-  mana_meter_empty[24 - mana_meter_length] = '\0';
+  std::string mana_meter_filled(mana_meter_length, '=');
+  std::string mana_meter_empty(24-mana_meter_length, '-');
 
   werase(mana_label_window);
   enable_attr(mana_label_window, CLR(GREY));
@@ -1266,9 +1258,9 @@ void print_mana()
 
   werase(mana_meter_window);
   enable_attr(mana_meter_window, CLR(BLUE) | A_BOLD);
-  waddstr(mana_meter_window, mana_meter_filled);
+  waddstr(mana_meter_window, mana_meter_filled.c_str());
   enable_attr(mana_meter_window, CLR(GREY));
-  waddstr(mana_meter_window, mana_meter_empty);
+  waddstr(mana_meter_window, mana_meter_empty.c_str());
   wnoutrefresh(mana_meter_window);
 }
 
@@ -1811,16 +1803,11 @@ void display_death(const std::string &source)
 {
   clear();
   touchwin(stdscr);
-  printw("\n\n\n\n");
-  printw("Requiescat In Pace, ");
-  printw("%s", Player.name);
-  printw(" (%ld points)", calc_points());
-  strcpy(Str4, "Killed by ");
-  strcat(Str4, source.c_str());
-  printw("\n");
-  printw("%s", Str4);
-  printw(".");
-  printw("\n\n\n\n\nHit 'c' to continue.");
+  addstr(std::format("\n\n\n\nRequiescat In Pace, {} ({} points)\n",
+        Player.name, calc_points()).c_str());
+  std::string killed_by{std::format("Killed by {}", source)};
+  addstr(killed_by.c_str());
+  addstr(".\n\n\n\n\nHit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
   {
@@ -1829,26 +1816,28 @@ void display_death(const std::string &source)
   clear();
   touchwin(stdscr);
   refresh();
-  extendlog(Str4, DEAD);
+  extendlog(killed_by, DEAD);
 }
 
 void display_win()
 {
   clear();
   touchwin(stdscr);
-  printw("\n\n\n\n");
-  printw("%s", Player.name);
+  std::string win_message;
   if(Player.rank[ADEPT])
   {
+    addstr(std::format("\n\n\n\n{} is a total master of omega with {} points!",
+          Player.name, FixedPoints).c_str());
     printw(" is a total master of omega with %ld points!", FixedPoints);
-    strcpy(Str4, "A total master of omega");
+    win_message = "A total master of omega";
   }
   else
   {
-    strcpy(Str4, "retired a winner");
-    printw(" triumphed in omega with %ld points!", calc_points());
+    win_message = "retired a winner";
+    addstr(std::format("\n\n\n\n{} triumphed in omega with {} points!",
+          Player.name, calc_points()).c_str());
   }
-  printw("\n\n\n\n\nHit 'c' to continue.");
+  addstr("\n\n\n\n\nHit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
   {
@@ -1859,11 +1848,11 @@ void display_win()
   refresh();
   if(Player.rank[ADEPT])
   {
-    extendlog(Str4, BIGWIN);
+    extendlog(win_message, BIGWIN);
   }
   else
   {
-    extendlog(Str4, WIN);
+    extendlog(win_message, WIN);
   }
 }
 
@@ -1871,11 +1860,10 @@ void display_quit()
 {
   clear();
   touchwin(stdscr);
-  printw("\n\n\n\n");
-  printw("%s", Player.name);
-  strcpy(Str4, "A quitter.");
-  printw(" wimped out with %ld points!", calc_points());
-  printw("\n\n\n\n\nHit 'c' to continue.");
+  std::string quit_message = "A quitter.";
+  addstr(std::format("\n\n\n\n{} wimped out with {} points!\n\n\n\n\n",
+        Player.name, calc_points()).c_str());
+  addstr("Hit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
   {
@@ -1884,18 +1872,17 @@ void display_quit()
   clear();
   touchwin(stdscr);
   refresh();
-  extendlog(Str4, QUIT);
+  extendlog(quit_message, QUIT);
 }
 
 void display_bigwin()
 {
   clear();
   touchwin(stdscr);
-  printw("\n\n\n\n");
-  printw("%s", Player.name);
-  strcpy(Str4, "retired, an Adept of Omega.");
-  printw(" retired, an Adept of Omega with %ld points!", FixedPoints);
-  printw("\n\n\n\n\nHit 'c' to continue.");
+  std::string win_message = "retired, an Adept of Omega.";
+  addstr(std::format("\n\n\n\n{} {} with {} points!\n\n\n\n\n",
+        Player.name, win_message, FixedPoints).c_str());
+  addstr("Hit 'c' to continue.");
   refresh();
   while(wgetch(stdscr) != 'c')
   {
@@ -1904,7 +1891,7 @@ void display_bigwin()
   clear();
   touchwin(stdscr);
   refresh();
-  extendlog(Str4, BIGWIN);
+  extendlog(win_message, BIGWIN);
 }
 
 void dobackspace()

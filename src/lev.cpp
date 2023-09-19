@@ -21,7 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <cassert>
-#include <cstring>
+#include <format>
 
 /* Functions dealing with dungeon and country levels aside from actual
 level structure generation */
@@ -593,37 +593,35 @@ pmt make_creature(int mid)
     {
       newmonster->aux1 = random_range(6) + 1;
     }
-    strcpy(Str3, Monsters[mid].monstring);
+    std::string angel_name;
     switch(newmonster->aux1)
     {
       case ODIN:
-        strcat(Str3, " of Odin");
+        angel_name = std::format("{} of Odin", Monsters[mid].monstring);
         break;
       case SET:
-        strcat(Str3, " of Set");
+        angel_name = std::format("{} of Set", Monsters[mid].monstring);
         break;
       case HECATE:
-        strcat(Str3, " of Hecate");
+        angel_name = std::format("{} of Hecate", Monsters[mid].monstring);
         break;
       case ATHENA:
-        strcat(Str3, " of Athena");
+        angel_name = std::format("{} of Athena", Monsters[mid].monstring);
         break;
       case DESTINY:
-        strcat(Str3, " of Destiny");
+        angel_name = std::format("{} of Destiny", Monsters[mid].monstring);
         break;
       case DRUID:
-        strcat(Str3, " of the Balance");
+        angel_name = std::format("{} of Balance", Monsters[mid].monstring);
         break;
     }
-    newmonster->monstring = salloc(Str3);
+    newmonster->monstring = salloc(angel_name.c_str());
   }
   else if(mid == ZERO_NPC || mid == WEREHUMAN)
   {
     /* generic 0th level human, or a were-human */
     newmonster->monstring = mantype();
-    strcpy(Str1, "dead ");
-    strcat(Str1, newmonster->monstring);
-    newmonster->corpsestr = salloc(Str1);
+    newmonster->corpsestr = salloc(std::format("dead {}", newmonster->monstring).c_str());
   }
   else if((newmonster->monchar & 0xff) == '!')
   {

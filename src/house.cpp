@@ -21,7 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
+#include <format>
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
@@ -53,27 +53,27 @@ void load_house(int kind, int populate)
   Level = ((plv)checkmalloc(sizeof(levtype)));
 #endif
   clear_level(Level);
-  strcpy(Str3, Omegalib);
+  std::string home_filepath;
   switch(kind)
   {
     case E_HOUSE:
-      strcat(Str3, "home1.dat");
+      home_filepath = std::format("{}home1.dat", Omegalib);
       Level->environment = E_HOUSE;
       site               = cryptkey("home1.dat");
       break;
     case E_MANSION:
-      strcat(Str3, "home2.dat");
+      home_filepath = std::format("{}home2.dat", Omegalib);
       Level->environment = E_MANSION;
       site               = cryptkey("home2.dat");
       break;
     default:
     case E_HOVEL:
-      strcat(Str3, "home3.dat");
+      home_filepath = std::format("{}home3.dat", Omegalib);
       Level->environment = E_HOVEL;
       site               = cryptkey("home3.dat");
       break;
   }
-  fd    = checkfopen(Str3, "rb");
+  fd    = checkfopen(home_filepath, "rb");
   stops = 0;
   for(j = 0; j < LENGTH; j++)
   {

@@ -38,8 +38,7 @@ void free_dungeon()
 #ifdef SAVE_LEVELS
   if(Dungeon != NULL)
   {
-    sprintf(Str2, "om%d.*.lev", Dungeon->environment);
-    kill_levels(Str2);
+    kill_levels(std::format("om{}.*.lev", Dungeon->environment));
   }
 #else
   plv tlv;

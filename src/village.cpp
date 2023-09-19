@@ -21,7 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
+#include <format>
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
@@ -31,11 +31,6 @@ plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 /* loads the village level into Level*/
 void load_village(int villagenum, int populate)
 {
-  int  i, j;
-  char site;
-
-  FILE *fd;
-
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
@@ -57,33 +52,11 @@ void load_village(int villagenum, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_VILLAGE;
-  strcpy(Str3, Omegalib);
-  switch(villagenum)
+  char site = cryptkey("village.dat");
+  FILE *fd = checkfopen(std::format("{}village{}.dat", Omegalib, villagenum), "rb");
+  for(int j = 0; j < LENGTH; j++)
   {
-    case 1:
-      strcat(Str3, "village1.dat");
-      break;
-    case 2:
-      strcat(Str3, "village2.dat");
-      break;
-    case 3:
-      strcat(Str3, "village3.dat");
-      break;
-    case 4:
-      strcat(Str3, "village4.dat");
-      break;
-    case 5:
-      strcat(Str3, "village5.dat");
-      break;
-    case 6:
-      strcat(Str3, "village6.dat");
-      break;
-  }
-  site = cryptkey("village.dat");
-  fd   = checkfopen(Str3, "rb");
-  for(j = 0; j < LENGTH; j++)
-  {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; i++)
     {
       lset(i, j, SEEN, *Level);
       site                     = getc(fd) ^ site;

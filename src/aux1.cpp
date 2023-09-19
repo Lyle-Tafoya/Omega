@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cstring>
+#include <format>
 #include <string>
 
 #ifdef SAVE_LEVELS
@@ -559,10 +560,7 @@ int damage_item(pob o)
     {
       if(o->objchar == STICK)
       {
-        strcpy(Str1, "Your ");
-        strcat(Str1, (o->blessing >= 0 ? o->truename : o->cursestr));
-        strcat(Str1, " explodes!");
-        print1(Str1);
+        queue_message(std::format("Your {} explodes!", (o->blessing >= 0 ? o->truename : o->cursestr)));
         if(o->charge < 1)
         {
           nprint1(" Fzzz... Out of Power... Oh well...");
@@ -763,53 +761,52 @@ int getdir()
 /* functions describes monster m's state for examine function */
 std::string mstatus_string(struct monster *m)
 {
+  std::string monster_status;
   if(m_statusp(*m, M_INVISIBLE) && !Player.status[TRUESIGHT])
   {
-    strcpy(Str2, "Some invisible creature");
+    monster_status = "Some invisible creature";
   }
   else if(m->uniqueness == COMMON)
   {
     if(m->hp < Monsters[m->id].hp / 3)
     {
-      strcpy(Str2, "a grievously injured ");
+      monster_status = "a grievously injured ";
     }
     else if(m->hp < Monsters[m->id].hp / 2)
     {
-      strcpy(Str2, "a severely injured ");
+      monster_status = "a severely injured ";
     }
     else if(m->hp < Monsters[m->id].hp)
     {
-      strcpy(Str2, "an injured ");
+      monster_status = "an injured ";
     }
     else
     {
-      strcpy(Str2, getarticle(m->monstring));
+      monster_status = getarticle(m->monstring);
     }
     if(m->level > Monsters[m->id].level)
     {
-      strcat(Str2, " (level ");
-      strcat(Str2, wordnum(m->level + 1 - Monsters[m->id].level));
-      strcat(Str2, ") ");
+      monster_status += std::format(" (level {}) ", wordnum(m->level+1-Monsters[m->id].level));
     }
-    strcat(Str2, m->monstring);
+    monster_status += m->monstring;
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_status = m->monstring;
     if(m->hp < Monsters[m->id].hp / 3)
     {
-      strcat(Str2, " who is grievously injured ");
+      monster_status += " who is grievously injured ";
     }
     else if(m->hp < Monsters[m->id].hp / 2)
     {
-      strcat(Str2, " who is severely injured ");
+      monster_status += " who is severely injured ";
     }
     else if(m->hp < Monsters[m->id].hp)
     {
-      strcat(Str2, " who is injured ");
+      monster_status += " who is injured ";
     }
   }
-  return (Str2);
+  return monster_status;
 }
 
 /* for the examine function */

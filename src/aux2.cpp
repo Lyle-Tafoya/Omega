@@ -27,12 +27,14 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cstring>
+#include <format>
 #include <string>
 #include <vector>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
 extern interactive_menu *menu;
+extern void queue_message(const std::string &message);
 
 #ifdef SAVE_LEVELS
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
@@ -52,24 +54,25 @@ void p_hit(struct monster *m, int dmg, int dtype)
 {
   int dmult;
 
+  std::string hit_message;
   /* chance for critical hit..., 3/10 */
   switch(random_range(10))
   {
     case 0:
       if(random_range(100) < Player.level)
       {
-        strcpy(Str3, "You annihilate ");
+        hit_message = "You annihilate ";
         dmult = 1000;
       }
       else
       {
-        strcpy(Str3, "You blast ");
+        hit_message = "You blast ";
         dmult = 5;
       }
       break;
     case 1:
     case 2:
-      strcpy(Str3, "You smash ");
+      hit_message = "You smash ";
       dmult = 2;
       break;
 
@@ -77,23 +80,23 @@ void p_hit(struct monster *m, int dmg, int dtype)
       dmult = 1;
       if(random_range(10))
       {
-        strcpy(Str3, "You hit ");
+        hit_message = "You hit ";
       }
       else
       {
         switch(random_range(4))
         {
           case 0:
-            strcpy(Str3, "You damage ");
+            hit_message = "You damage ";
             break;
           case 1:
-            strcpy(Str3, "You inflict bodily harm on ");
+            hit_message = "You inflict bodily harm on ";
             break;
           case 2:
-            strcpy(Str3, "You injure ");
+            hit_message = "You injure ";
             break;
           case 3:
-            strcpy(Str3, "You molest ");
+            hit_message = "You molest ";
             break;
         }
       }
@@ -109,22 +112,21 @@ void p_hit(struct monster *m, int dmg, int dtype)
   }
   if(m->uniqueness == COMMON)
   {
-    strcat(Str3, "the ");
+    hit_message += "the ";
   }
-  strcat(Str3, m->monstring);
-  strcat(Str3, ". ");
+  hit_message += std::format("{}.", m->monstring);
   if(Verbosity != TERSE)
   {
-    mprint(Str3);
+    queue_message(hit_message);
   }
   else
   {
-    mprint("You hit it.");
+    queue_message("You hit it.");
   }
   m_damage(m, dmult * random_range(dmg), dtype);
   if((Verbosity != TERSE) && (random_range(10) == 3) && (m->hp > 0))
   {
-    mprint("It laughs at the injury and fights on!");
+    queue_message("It laughs at the injury and fights on!");
   }
 }
 
@@ -205,15 +207,13 @@ void drop_weapon()
 {
   if(Player.possessions[O_WEAPON_HAND] != NULL)
   {
-    strcpy(Str1, "You dropped your ");
-    strcat(Str1, Player.possessions[O_WEAPON_HAND]->objstr);
-    mprint(Str1);
+    queue_message(std::format("You dropped your {}.", Player.possessions[O_WEAPON_HAND]->objstr));
     p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND]);
     conform_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
   }
   else
   {
-    mprint("You feel fortunate.");
+    queue_message("You feel fortunate.");
   }
 }
 
@@ -975,19 +975,19 @@ int player_hit(int hitmod, char hitloc, monster *m)
     int hit = hitp(Player.hit + hitmod, m->ac + goodblocks * 10);
     if(!hit && goodblocks > 0)
     {
+      std::string block_message;
       if(m->uniqueness == COMMON)
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, m->monstring);
+        block_message = std::format("The {}", m->monstring);
       }
       else
       {
-        strcpy(Str1, m->monstring);
+        block_message = m->monstring;
       }
-      strcat(Str1, " blocks it!");
+      block_message += " blocks it!";
       if(Verbosity == VERBOSE)
       {
-        mprint(Str1);
+        queue_message(block_message);
       }
     }
     return hit;

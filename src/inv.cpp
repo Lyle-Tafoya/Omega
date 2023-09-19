@@ -24,13 +24,14 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <array>
 #include <cassert>
-#include <cstring>
+#include <format>
 #include <string>
 #include <vector>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
 extern void queue_message(const std::string &message);
+extern void append_message(const std::string &message, bool force_break = false);
 extern void print_inventory_menu(Symbol item_type = NULL_ITEM);
 extern interactive_menu *menu;
 
@@ -500,33 +501,32 @@ void givemonster(struct monster *m, struct object *o)
   }
   else
   {
+    std::string monster_name;
     if(m->uniqueness == COMMON)
     {
-      strcpy(Str3, "The ");
-      strcat(Str3, m->monstring);
+      monster_name = std::format("The {}", m->monstring);
     }
     else
     {
-      strcpy(Str3, m->monstring);
+      monster_name = m->monstring;
     }
 
     if(m_statusp(*m, GREEDY) || m_statusp(*m, NEEDY))
     {
       m_pickup(m, o);
-      strcat(Str3, " takes your gift");
-      print1(Str3);
+      queue_message(std::format("{} takes your gift.", monster_name));
       Player.alignment++;
       if(m_statusp(*m, GREEDY) && (true_item_value(o) < (long)m->level * 100))
       {
-        nprint1("...but does not appear satisfied.");
+        append_message("...but does not appear satisfied.");
       }
       else if(m_statusp(*m, NEEDY) && (true_item_value(o) < (long)Level->depth * Level->depth))
       {
-        nprint1("...and looks chasteningly at you.");
+        append_message("...and looks chasteningly at you.");
       }
       else
       {
-        nprint1("...and seems happy with it.");
+        append_message("...and seems happy with it.");
         m_status_reset(*m, HOSTILE);
         m_status_reset(*m, GREEDY);
         m_status_reset(*m, NEEDY);
@@ -537,34 +537,31 @@ void givemonster(struct monster *m, struct object *o)
       if(((m->id == HORSE) && (o->id == FOODID + 15)) || /* grain */
          ((m->id != HORSE) && ((o->on_use == I_FOOD) || (o->on_use == I_POISON_FOOD))))
       {
-        strcat(Str3, " wolfs down your food ... ");
-        print1(Str3);
+        queue_message(std::format("{} wolfs dwn your food ...", monster_name));
         m_status_reset(*m, HUNGRY);
         m_status_reset(*m, HOSTILE);
         if(o->on_use == I_POISON_FOOD)
         {
           Player.alignment -= 2;
-          nprint1("...and chokes on the poisoned ration!");
+          append_message("...and chokes on the poisoned ration!");
           m_status_set(*m, HOSTILE);
           m_damage(m, 100, POISON);
         }
         else
         {
-          nprint1("...and now seems satiated.");
+          append_message("...and now seems satiated.");
         }
         free((char *)o);
       }
       else
       {
-        strcat(Str3, " spurns your offering and leaves it on the ground.");
-        print1(Str3);
+        queue_message(std::format("{} spurns your offering and leaves it on the ground.", monster_name));
         drop_at(m->x, m->y, o);
       }
     }
     else
     {
-      strcat(Str3, " doesn't care for your offering and drops it.");
-      print1(Str3);
+      queue_message(std::format("{} doesn't care for your offering and drops it.", monster_name));
       drop_at(m->x, m->y, o);
     }
   }
@@ -958,13 +955,12 @@ int aux_display_pack(int start_item, int slot)
         {
           depth_string = "  ";
         }
-        sprintf(Str1, "  %c: %s %s\n", i + 'a', depth_string, itemid(Player.pack[i]).c_str());
         if(items == 0)
         {
           menuprint("Items in Pack:\n");
         }
-        menuprint(Str1);
-        items++;
+        menuprint(std::format("  {}: {} {}\n", static_cast<char>('a'+i), depth_string, itemid(Player.pack[i])));
+        ++items;
       }
     }
     if(items == 0)

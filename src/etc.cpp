@@ -21,7 +21,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
+#include <array>
+#include <string_view>
 
 /* there are various ways for the player to receive one of these hints */
 void hint()
@@ -472,133 +473,54 @@ void learnclericalspells(int deity, int level)
   }
 }
 
-/* random names for various uses */
-char *nameprint()
+constexpr std::array names
 {
-  switch(random_range(40))
-  {
-    case 0:
-      strcpy(Str3, "Orion Splash");
-      break;
-    case 1:
-      strcpy(Str3, "Gorgar");
-      break;
-    case 2:
-      strcpy(Str3, "Hieronymous");
-      break;
-    case 3:
-      strcpy(Str3, "Quantifor Quotron");
-      break;
-    case 4:
-      strcpy(Str3, "Leon");
-      break;
-    case 5:
-      strcpy(Str3, "Joyce");
-      break;
-    case 6:
-      strcpy(Str3, "Leticia Smiley");
-      break;
-    case 7:
-      strcpy(Str3, "Ogilvy the Grim");
-      break;
-    case 8:
-      strcpy(Str3, "Salara Storn");
-      break;
-    case 9:
-      strcpy(Str3, "Murgo");
-      break;
-    case 10:
-      strcpy(Str3, "Jonathan Atwilder");
-      break;
-    case 11:
-      strcpy(Str3, "Xylos the Tan");
-      break;
-    case 12:
-      strcpy(Str3, "Terence");
-      break;
-    case 13:
-      strcpy(Str3, "Toronado");
-      break;
-    case 14:
-      strcpy(Str3, "Kelly");
-      break;
-    case 15:
-      strcpy(Str3, "Cantinflas");
-      break;
-    case 16:
-      strcpy(Str3, "Ixel");
-      break;
-    case 17:
-      strcpy(Str3, "Toto");
-      break;
-    case 18:
-      strcpy(Str3, "Frost");
-      break;
-    case 19:
-      strcpy(Str3, "Aliera Erinyes");
-      break;
-    case 20:
-      strcpy(Str3, "Godel");
-      break;
-    case 21:
-      strcpy(Str3, "Kerst Blackblade");
-      break;
-    case 22:
-      strcpy(Str3, "Ebenezer");
-      break;
-    case 23:
-      strcpy(Str3, "Jeremiah");
-      break;
-    case 24:
-      strcpy(Str3, "Triskelion Shadow");
-      break;
-    case 25:
-      strcpy(Str3, "Eleskir Eremar");
-      break;
-    case 26:
-      strcpy(Str3, "Tyron");
-      break;
-    case 27:
-      strcpy(Str3, "Morgon");
-      break;
-    case 28:
-      strcpy(Str3, "Achmed");
-      break;
-    case 29:
-      strcpy(Str3, "Chin");
-      break;
-    case 30:
-      strcpy(Str3, "Fujimoto");
-      break;
-    case 31:
-      strcpy(Str3, "Dos Santos");
-      break;
-    case 32:
-      strcpy(Str3, "Federico");
-      break;
-    case 33:
-      strcpy(Str3, "Jaime");
-      break;
-    case 34:
-      strcpy(Str3, "Siobhan");
-      break;
-    case 35:
-      strcpy(Str3, "Hans");
-      break;
-    case 36:
-      strcpy(Str3, "Gurkov");
-      break;
-    case 37:
-      strcpy(Str3, "Krilos the Slayer");
-      break;
-    case 38:
-      strcpy(Str3, "Oxxblud");
-      break;
-    case 39:
-      strcpy(Str3, "Dorian");
-      break;
-  }
-  return (Str3);
+  "Orion Splash",
+  "Gorgar",
+  "Hieronymous",
+  "Quantifor Quotron",
+  "Leon",
+  "Joyce",
+  "Leticia Smiley",
+  "Ogilvy the Grim",
+  "Salara Storn",
+  "Murgo",
+  "Jonathan Atwilder",
+  "Xylos the Tan",
+  "Terence",
+  "Toronado",
+  "Kelly",
+  "Cantinflas",
+  "Ixel",
+  "Toto",
+  "Frost",
+  "Aliera Erinyes",
+  "Godel",
+  "Kerst Blackblade",
+  "Ebenezer",
+  "Jeremiah",
+  "Triskelion Shadow",
+  "Eleskir Eremar",
+  "Tyron",
+  "Morgon",
+  "Achmed",
+  "Chin",
+  "Fujimoto",
+  "Dos Santos",
+  "Federico",
+  "Jaime",
+  "Siobhan",
+  "Hans",
+  "Gurkov",
+  "Krilos the Slayer",
+  "Oxxblud",
+  "Dorian"
+};
+
+/* random names for various uses */
+std::string_view nameprint()
+{
+  return names[random_range(names.size())];
 }
 
 /* returns english string equivalent of number */

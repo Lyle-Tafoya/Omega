@@ -25,6 +25,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <chrono>
+#include <format>
 #include <thread>
 #include <string>
 #include <vector>
@@ -522,13 +523,7 @@ void give()
         obj->used = false;
         conform_lost_objects(1, Player.possessions[index]);
         obj->number = 1;
-        print2("Given: ");
-        nprint2(itemid(obj));
-        /* WDT bug fix: I moved the print above the givemonster
-         * call.  If that turns out looking ugly, I should change it to
-         * a sprintf or strcat.  At any rate, it was wrong before because
-         * it was accessing an object which had already been freed as part
-         * of givemonster. */
+        queue_message(std::format("Given: {}.", itemid(obj)));
         givemonster(m, obj);
         calc_melee();
       }

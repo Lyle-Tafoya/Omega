@@ -21,8 +21,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
 #include <filesystem>
+#include <format>
 #include <regex>
 
 #ifdef SAVE_LEVELS
@@ -59,8 +59,7 @@ void msdos_init()
 
 static FILE *open_levfile(int env, int depth, int rw)
 {
-  sprintf(Str1, "%som%03d%03d.lev", Omegalib, env, depth);
-  return (fopen(Str1, (rw) ? "wb" : "rb"));
+  return (fopen(std::format("{}om{:03}{:03}.lev", Omegalib, env, depth).c_str(), (rw) ? "wb" : "rb"));
 }
 
 /* Saves oldlevel (unless NULL), and reads in the new level,
@@ -121,9 +120,8 @@ void load_abyss()
 
   clear_level(Level);
 
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "abyss.dat");
-  fd   = checkfopen(Str3, "rb");
+  std::string filepath{std::format("{}abyss.dat", Omegalib)};
+  fd   = checkfopen(filepath, "rb");
   site = cryptkey("abyss.dat");
   for(j = 0; j < LENGTH; j++)
   {

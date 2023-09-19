@@ -21,7 +21,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
+#include <format>
+
+extern void queue_message(const std::string &message);
 
 void m_firebolt(struct monster *m)
 {
@@ -50,33 +52,29 @@ void m_snowball(struct monster *m)
 
 void m_blind_strike(struct monster *m)
 {
-  pml ml;
   if((Player.status[BLINDED] == 0) && los_p(m->x, m->y, Player.x, Player.y) &&
      (distance(m->x, m->y, Player.x, Player.y) < 5))
   {
     if(m->uniqueness == COMMON)
     {
-      strcpy(Str2, "The ");
-      strcat(Str2, m->monstring);
+      queue_message(std::format("The {} gazes at you menacingly.", m->monstring));
     }
     else
     {
-      strcpy(Str2, m->monstring);
+      queue_message(std::format("{} gazes at you menacingly.", m->monstring));
     }
-    strcat(Str2, " gazes at you menacingly");
-    mprint(Str2);
     if(!p_immune(GAZE))
     {
-      mprint("You've been blinded!");
+      queue_message("You've been blinded!");
       Player.status[BLINDED] = random_range(4) + 1;
-      for(ml = Level->mlist; ml != NULL; ml = ml->next)
+      for(pml ml = Level->mlist; ml != NULL; ml = ml->next)
       {
         plotspot(ml->m->x, ml->m->y, false);
       }
     }
     else
     {
-      mprint("You gaze steadily back....");
+      queue_message("You gaze steadily back....");
     }
   }
 }
@@ -85,14 +83,11 @@ void m_strike_sonic(struct monster *m)
 {
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    queue_message(std::format("The {} screams at you!", m->monstring));
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    queue_message(std::format("{} screams at you!", m->monstring));
   }
-  strcat(Str2, " screams at you!");
-  mprint(Str2);
   p_damage(m->dmg, OTHER_MAGIC, "a sonic blast");
 }

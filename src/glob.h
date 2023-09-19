@@ -231,7 +231,7 @@ extern char Password[64];
 extern pol Condoitems;
 /* items in condo */
 
-extern char Str1[100], Str2[100], Str3[100], Str4[100];
+extern char Str1[100], Str2[100];
 /* Some string space, random uses */
 
 /* high score names, levels, behavior */

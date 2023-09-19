@@ -137,123 +137,114 @@ void m_talk_druid(struct monster *m)
 
 void m_talk_silent(struct monster *m)
 {
-  int reply = random_range(4);
-
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
-  switch(reply)
+  switch(random_range(4))
   {
     case 0:
-      strcat(Str2, " does not reply. ");
+      queue_message(std::format("{} does not reply.", monster_name));
       break;
     case 1:
-      strcat(Str2, " shrugs silently. ");
+      queue_message(std::format("{} shrugs silently.", monster_name));
       break;
     case 2:
-      strcat(Str2, " hold a finger to his mouth. ");
+      queue_message(std::format("{} holds a finger to his mouth.", monster_name));
       break;
     case 3:
-      strcat(Str2, " glares at you but says nothing. ");
+      queue_message(std::format("{} glares at you but says nothing.", monster_name));
       break;
   }
-  mprint(Str2);
 }
 
 void m_talk_stupid(struct monster *m)
 {
-  int reply = random_range(4);
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
-  switch(reply)
+  switch(random_range(4))
   {
     case 0:
-      strcat(Str2, " looks at you with mute incomprehension.");
+      queue_message(std::format("{} looks at you with mute incomprehension.", monster_name));
       break;
     case 1:
-      strcat(Str2, " growls menacingly and ignores you.");
+      queue_message(std::format("{} growls menacingly and ignores you.", monster_name));
       break;
     case 2:
-      strcat(Str2, " does not seem to have heard you.");
+      queue_message(std::format("{} does not seem to have heard you.", monster_name));
       break;
     case 3:
-      strcat(Str2, " tries to pretend it didn't hear you.");
+      queue_message(std::format("{} tries to pretend it didn't hear you.", monster_name));
       break;
   }
-  mprint(Str2);
 }
 
 void m_talk_greedy(struct monster *m)
 {
-  int reply = random_range(4);
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
-  switch(reply)
+  switch(random_range(4))
   {
     case 0:
-      strcat(Str2, " says: Give me a treasure.... ");
+      queue_message(std::format("{} says: Give me a treasure....", monster_name));
       break;
     case 1:
-      strcat(Str2, " says: Stand and deliver, knave! ");
+      queue_message(std::format("{} says: Stand and deliver, knave!", monster_name));
       break;
     case 2:
-      strcat(Str2, " says: Your money or your life! ");
+      queue_message(std::format(" says: Your money or your life!", monster_name));
       break;
     case 3:
-      strcat(Str2, " says: Yield or Die! ");
+      queue_message(std::format("{} says: Yield or Die!", monster_name));
       break;
   }
-  mprint(Str2);
 }
 
 void m_talk_hungry(struct monster *m)
 {
-  int reply = random_range(4);
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
-  switch(reply)
+  switch(random_range(4))
   {
     case 0:
-      strcat(Str2, " says: I hunger, foolish adventurer! ");
+      queue_message(std::format("{} says: I hunger, foolish adventurer!", monster_name));
       break;
     case 1:
-      strcat(Str2, " drools menacingly at you. ");
+      queue_message(std::format("{} drools menacingly at you.", monster_name));
       break;
     case 2:
-      strcat(Str2, " says: You're invited to be lunch! ");
+      queue_message(std::format(" says: You're invited to be lunch!", monster_name));
       break;
     case 3:
-      strcat(Str2, " says: Feeed Meee! ");
+      queue_message(std::format("{} says: Feeed Meee!", monster_name));
       break;
   }
-  mprint(Str2);
 }
 
 void m_talk_guard(struct monster *m)
@@ -325,15 +316,12 @@ void m_talk_titter(struct monster *m)
 {
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    queue_message(std::format("The {} titters obscenely at you.", m->monstring));
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    queue_message(std::format("{} titters obscenely at you.", m->monstring));
   }
-  strcat(Str2, " titters obscenely at you.");
-  mprint(Str2);
 }
 
 void m_talk_ninja(struct monster *)
@@ -422,122 +410,119 @@ void m_talk_im(struct monster *m)
 
 void m_talk_man(struct monster *m)
 {
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
   switch(random_range(5))
   {
     case 0:
-      strcat(Str2, " asks you for the way home.");
+      queue_message(std::format("{} asks you for the way home.", monster_name));
       break;
     case 1:
-      strcat(Str2, " wishes you a pleasant day.");
+      queue_message(std::format("{} wishes you a pleasant day.", monster_name));
       break;
     case 2:
-      strcat(Str2, " sneers at you contemptuously.");
+      queue_message(std::format("{} sneers at you contemptuously.", monster_name));
       break;
     case 3:
-      strcat(Str2, " smiles and nods.");
+      queue_message(std::format("{} smiles and nods.", monster_name));
       break;
     case 4:
-      strcat(Str2, " tells you a joke.");
+      queue_message(std::format("{} tells you a joke.", monster_name));
       break;
   }
-  mprint(Str2);
 }
 
 void m_talk_evil(struct monster *m)
 {
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
   switch(random_range(14))
   {
     case 0:
-      strcat(Str2, " says: 'THERE CAN BE ONLY ONE!'");
+      queue_message(std::format("{} says: 'THERE CAN BE ONLY ONE!'", monster_name));
       break;
     case 1:
-      strcat(Str2, " says: 'Prepare to die, Buckwheat!'");
+      queue_message(std::format("{} says: 'Prepare to die, Buckwheat!'", monster_name));
       break;
     case 2:
-      strcat(Str2, " says: 'Time to die!'");
+      queue_message(std::format("{} says: 'Time to die!'", monster_name));
       break;
     case 3:
-      strcat(Str2, " says: 'There will be no mercy.'");
+      queue_message(std::format("{} says: 'There will be no mercy.'", monster_name));
       break;
     case 4:
-      strcat(Str2, " insults your mother-in-law.");
+      queue_message(std::format("{} insults your mother-in-law.", monster_name));
       break;
     case 5:
-      strcat(Str2, " says: 'Kurav tu ando mul!'");
+      queue_message(std::format("{} says: 'Kurav tu ando mul!'", monster_name));
       break;
     case 6:
-      strcat(Str2, " says: '!va al infierno!'");
+      queue_message(std::format("{} says: '!va al infierno!'", monster_name));
       break;
     case 7:
-      strcat(Str2, " says: 'dame desu, nee.'");
+      queue_message(std::format("{} says: 'dame desu, nee.'", monster_name));
       break;
     case 8:
-      strcat(Str2, " spits on your rug and calls your cat a bastard.");
+      queue_message(std::format("{} spits on your rug and calls your cat a bastard.", monster_name));
       break;
     case 9:
-      strcat(Str2, " snickers malevolently and draws a weapon.");
+      queue_message(std::format("{} snickers malevolently and draws a weapon.", monster_name));
       break;
     case 10:
-      strcat(Str2, " sends 'rm -r *' to your shell!");
+      queue_message(std::format("{} sends 'rm -r *' to your shell!", monster_name));
       break;
     case 11:
-      strcat(Str2, " tweaks your nose and cackles evilly.");
+      queue_message(std::format("{} tweaks your nose and cackles evilly.", monster_name));
       break;
     case 12:
-      strcat(Str2, " thumbs you in the eyes.");
+      queue_message(std::format("{} thumbs you in the eyes.", monster_name));
       break;
     case 13:
-      strcat(Str2, " kicks you in the groin.");
+      queue_message(std::format("{} kicks you in the groin.", monster_name));
       break;
   }
-  mprint(Str2);
 }
 
 void m_talk_robot(struct monster *m)
 {
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
   switch(random_range(4))
   {
     case 0:
-      strcat(Str2, " says: 'exterminate...Exterminate...EXTERMINATE!!!'");
+      queue_message(std::format("{} says: 'exterminate...Exterminate...EXTERMINATE!!!'", monster_name));
       break;
     case 1:
-      strcat(Str2, " says: 'Kill ... Crush ... Destroy'");
+      queue_message(std::format("{} says: 'Kill ... Crush ... Destroy'", monster_name));
       break;
     case 2:
-      strcat(Str2, " says: 'Danger -- Danger'");
+      queue_message(std::format("{} says: 'Danger -- Danger'", monster_name));
       break;
     case 3:
-      strcat(Str2, " says: 'Yo Mama -- core dumped.'");
+      queue_message(std::format("{} says: 'Yo Mama -- core dumped.'", monster_name));
       break;
   }
-  mprint(Str2);
 }
 
 void m_talk_slithy(struct monster *)
@@ -554,52 +539,44 @@ void m_talk_burble(struct monster *m)
 {
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    queue_message(std::format("The {} burbles hatefully at you.", m->monstring));
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    queue_message(std::format("{} burbles hatefully at you.", m->monstring));
   }
-  strcat(Str2, " burbles hatefully at you.");
-  mprint(Str2);
 }
 
 void m_talk_beg(struct monster *m)
 {
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    queue_message(std::format("The {} asks you for alms.", m->monstring));
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    queue_message(std::format("{} asks you for alms.", m->monstring));
   }
-  strcat(Str2, " asks you for alms.");
-  mprint(Str2);
 }
 
 void m_talk_hint(struct monster *m)
 {
+  std::string monster_name;
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    monster_name = std::format("The {}", m->monstring);
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    monster_name = m->monstring;
   }
   if(m_statusp(*m, HOSTILE))
   {
-    strcat(Str2, " only sneers at you. ");
-    mprint(Str2);
+    queue_message(std::format("{} only sneers at you.", monster_name));
   }
   else
   {
-    strcat(Str2, " whispers in your ear: ");
-    mprint(Str2);
+    queue_message(std::format("{} whispers in your ear: ", monster_name));
     hint();
     m->talkf = M_TALK_SILENT;
   }
@@ -820,14 +797,12 @@ void m_talk_animal(struct monster *m)
 {
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    queue_message(std::format("The {}", m->monstring));
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    queue_message(std::format("{}", m->monstring));
   }
-  mprint(Str2);
   mprint("shows you a scholarly paper by Dolittle, D. Vet.");
   mprint("which demonstrates that animals don't have speech centers");
   mprint("complex enough to communicate in higher languages.");

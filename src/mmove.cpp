@@ -22,7 +22,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
+#include <format>
+
+extern void queue_message(const std::string &message);
 
 /* like m_normal_move, but can open doors */
 void m_smart_move(struct monster *m)
@@ -48,25 +50,24 @@ void m_simple_move(struct monster *m)
     dx       = -dx;
     dy       = -dy;
     m->movef = M_MOVE_SCAREDY;
+    std::string monster_name;
     if(m->uniqueness == COMMON)
     {
-      strcpy(Str2, "The ");
-      strcat(Str2, m->monstring);
+      monster_name = std::format("The {}", m->monstring);
     }
     else
     {
-      strcpy(Str2, m->monstring);
+      monster_name = m->monstring;
     }
-    if(m->possessions != NULL)
+    if(m->possessions)
     {
-      strcat(Str2, " drops its treasure and flees!");
+      queue_message(std::format("{} drops it's treasure and flees!", monster_name));
       m_dropstuff(m);
     }
     else
     {
-      strcat(Str2, " flees!");
+      queue_message(std::format("{} flees!", monster_name));
     }
-    mprint(Str2);
     m->speed = std::min(2, m->speed - 1);
   }
   if((!m_statusp(*m, HOSTILE) && !m_statusp(*m, NEEDY)) || (Player.status[INVISIBLE] > 0))
@@ -293,15 +294,12 @@ void m_vanish(struct monster *m)
 {
   if(m->uniqueness == COMMON)
   {
-    strcpy(Str2, "The ");
-    strcat(Str2, m->monstring);
+    queue_message(std::format("The {} vanishes in the twinkling of an eye!", m->monstring));
   }
   else
   {
-    strcpy(Str2, m->monstring);
+    queue_message(std::format("{} vanishes in the twinkling of an eye!", m->monstring));
   }
-  strcat(Str2, " vanishes in the twinkling of an eye!");
-  mprint(Str2);
   Level->site[m->x][m->y].creature = NULL;
   erase_monster(m);
   m->hp = -1; /* signals "death" -- no credit to player, though */
@@ -330,22 +328,20 @@ void m_move_leash(struct monster *m)
   }
   else if(distance(m->x, m->y, m->aux1, m->aux2) > 5)
   {
-    if(Level->site[m->aux1][m->aux2].creature != NULL)
+    monster *creature = Level->site[m->aux1][m->aux2].creature;
+    if(creature)
     {
       if(los_p(Player.x, Player.y, m->aux1, m->aux2))
       {
         /* some other monster is where the chain starts */
-        if(Level->site[m->aux1][m->aux2].creature->uniqueness == COMMON)
+        if(creature->uniqueness == COMMON)
         {
-          strcpy(Str1, "The ");
-          strcat(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
+          queue_message(std::format("The {} releases the dog's chain!", creature->monstring));
         }
         else
         {
-          strcpy(Str1, Level->site[m->aux1][m->aux2].creature->monstring);
+          queue_message(std::format("{} releases the dog's chain!", creature->monstring));
         }
-        strcat(Str1, " releases the dog's chain!");
-        mprint(Str1);
       }
       m->movef = M_MOVE_NORMAL;
       /* otherwise, we'd lose either the dog or the other monster. */
@@ -359,7 +355,7 @@ void m_move_leash(struct monster *m)
     {
       mprint("You hear a strangled sort of yelp!");
     }
-    Level->site[m->x][m->y].creature = NULL;
+    Level->site[m->x][m->y].creature = nullptr;
     m->x                             = m->aux1;
     m->y                             = m->aux2;
     Level->site[m->x][m->y].creature = m;

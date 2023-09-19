@@ -20,7 +20,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* some functions to make the city level */
 
 #include "glob.h"
-#include <cstring>
+
+#include <format>
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
@@ -38,9 +39,7 @@ void load_city(int populate)
 
   initrand(E_CITY, 0);
 
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "city.dat");
-  fd   = checkfopen(Str3, "rb");
+  fd   = checkfopen(std::format("{}city.dat", Omegalib), "rb");
   site = cryptkey("city.dat");
 
   TempLevel = Level;
@@ -535,9 +534,7 @@ void resurrect_guards()
 
   FILE *fd;
 
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "city.dat");
-  fd   = checkfopen(Str3, "rb");
+  fd   = checkfopen(std::format("{}city.dat", Omegalib), "rb");
   site = cryptkey("city.dat");
   for(j = 0; j < LENGTH; j++)
   {
@@ -572,11 +569,7 @@ void mazesite(int i, int j, int populate)
   static char  site;
   if(fd == NULL)
   {
-    strcpy(Str2, Omegalib);
-    strcpy(Str4, "maze .dat");
-    Str4[4] = '1' + random_range(4);
-    strcat(Str2, Str4);
-    fd   = checkfopen(Str2, "rb");
+    fd   = checkfopen(std::format("{}maze{}.dat", Omegalib, 1+random_range(4)), "rb");
     site = cryptkey("mazes");
   }
   site = getc(fd) ^ site;

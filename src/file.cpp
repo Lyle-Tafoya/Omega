@@ -61,94 +61,73 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
 
 void commandlist()
 {
-  strcpy(Str1, Omegalib);
   if(Current_Environment == E_COUNTRYSIDE)
   {
-    strcat(Str1, "help13.txt");
+    displayfile(std::format("{}help13.txt", Omegalib));
   }
   else
   {
-    strcat(Str1, "help12.txt");
+    displayfile(std::format("{}help12.txt", Omegalib));
   }
-  displayfile(Str1);
   xredraw();
 }
 
 void user_intro()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "intro.txt");
-  displaycryptfile(Str1);
+  displaycryptfile(std::format("{}intro.txt", Omegalib));
   xredraw();
 }
 
 void show_license()
 {
-  std::string license_dir = Omegalib;
-  displayfile(license_dir + "license.txt");
+  displayfile(std::format("{}license.txt", Omegalib));
   xredraw();
 }
 
 void abyss_file()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "abyss.txt");
-  displaycryptfile(Str1);
+  displaycryptfile(std::format("{}abyss.txt", Omegalib));
 }
 
 void inv_help()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "help3.txt");
-  displayfile(Str1);
+  displayfile(std::format("{}help3.txt", Omegalib));
   xredraw();
 }
 
 void combat_help()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "help5.txt");
-  displayfile(Str1);
+  displayfile(std::format("{}help5.txt", Omegalib));
   menuclear();
 }
 
 void cityguidefile()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "scroll2.txt");
-  displaycryptfile(Str1);
+  displaycryptfile(std::format("{}scroll2.txt", Omegalib));
   xredraw();
 }
 
 void wishfile()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "scroll3.txt");
-  displaycryptfile(Str1);
+  displaycryptfile(std::format("{}scroll3.txt", Omegalib));
   xredraw();
 }
 
 void adeptfile()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "scroll4.txt");
-  displaycryptfile(Str1);
+  displaycryptfile(std::format("{}scroll4.txt", Omegalib));
   xredraw();
 }
 
 void theologyfile()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "scroll1.txt");
-  displaycryptfile(Str1);
+  displaycryptfile(std::format("{}scroll1.txt", Omegalib));
   xredraw();
 }
 
 void showmotd()
 {
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "motd.txt");
-  displayfile(Str1);
+  displayfile(std::format("{}motd.txt", Omegalib));
 }
 
 void lock_score_file()
@@ -199,17 +178,12 @@ void unlock_score_file()
 
 void showscores()
 {
-  FILE *fd;
-  int   i;
-
   lock_score_file();
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "omega.hi");
-  fd = checkfopen(Str1, "rb");
+  FILE *fd = checkfopen(std::format("{}omega.hi", Omegalib), "rb");
   filescanstring(fd, Hiscorer);
   filescanstring(fd, Hidescrip);
   fscanf(fd, "%ld %d %d\n", &Hiscore, &Hilevel, &Hibehavior);
-  for(i = 1; i < 7; i++)
+  for(int i = 1; i < 7; i++)
   {
     filescanstring(fd, Priest[i]);
     fscanf(fd, "%d %d\n", &(Priestlevel[i]), &(Priestbehavior[i]));
@@ -277,22 +251,18 @@ void showscores()
 /* in this particular game, but the others as they appear in the file. */
 void save_hiscore_npc(int npc)
 {
-  FILE *infile, *outfile;
   char  buffer[80];
-  int   i;
 
   if(gamestatusp(CHEATED, GameStatus))
   {
     return;
   }
   lock_score_file();
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "omega.hi");
-  infile = checkfopen(Str1, "rb");
-  strcpy(Str2, Omegalib);
-  strcat(Str2, "omega.hi.new");
-  outfile = checkfopen(Str2, "wb");
-  for(i = 0; i < 16; i++)
+  std::string infile_name = std::format("{}omega.hi", Omegalib);
+  FILE *infile = checkfopen(infile_name, "rb");
+  std::string outfile_name = std::format("{}omega.hi.new", Omegalib);
+  FILE *outfile = checkfopen(outfile_name, "wb");
+  for(int i = 0; i < 16; i++)
   {
     if(npc == i)
     {
@@ -360,7 +330,7 @@ void save_hiscore_npc(int npc)
   fclose(infile);
   fclose(outfile);
 
-  std::filesystem::rename(Str2, Str1);
+  std::filesystem::rename(outfile_name, infile_name);
   unlock_score_file();
 }
 
@@ -411,16 +381,11 @@ void checkhigh(const std::string &descrip, int behavior)
 
 void extendlog(const std::string &descrip, int lifestatus)
 {
-  FILE *fd;
-  int   npcbehavior;
-
   if((Player.level > 0) && (!gamestatusp(CHEATED, GameStatus)))
   {
-    npcbehavior = fixnpc(lifestatus);
+    int npcbehavior = fixnpc(lifestatus);
     checkhigh(descrip, npcbehavior);
-    strcpy(Str1, Omegalib);
-    strcat(Str1, "omega.log");
-    fd = checkfopen(Str1, "a");
+    FILE *fd = checkfopen(std::format("{}omega.log", Omegalib), "a");
     fprintf(fd, " %d %d %d %s\n", lifestatus, Player.level, npcbehavior, Player.name);
     fclose(fd);
   }
@@ -480,11 +445,10 @@ int filecheck()
 {
   int impossible = false, badbutpossible = false;
   int endpos;
-  int file;
 
   strcpy(Str1, Omegalib);
   endpos = strlen(Str1);
-  for(file = 0; required_file_list[file]; file++)
+  for(int file = 0; required_file_list[file]; file++)
   {
     strcpy(&(Str1[endpos]), required_file_list[file]);
     if((strcmp(required_file_list[file], "omega.hi") == 0 ||
@@ -500,7 +464,7 @@ int filecheck()
       printf("\nError! File not accessible: %s", Str1);
     }
   }
-  for(file = 0; optional_file_list[file]; file++)
+  for(int file = 0; optional_file_list[file]; file++)
   {
     strcpy(&(Str1[endpos]), optional_file_list[file]);
     if(!test_file_access(Str1, 'r'))

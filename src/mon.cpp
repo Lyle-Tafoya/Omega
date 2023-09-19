@@ -23,8 +23,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cstring>
+#include <format>
 
 extern bool merge_item_with_list(objectlist *l, object *o, int n);
+extern void queue_message(const std::string &message);
 
 /*               Revised function                   */
 /* WDT: code contributed by David J. Robertson */
@@ -164,15 +166,12 @@ void m_damage(struct monster *m, int dmg, int dtype)
     {
       if(m->uniqueness != COMMON)
       {
-        strcpy(Str1, m->monstring);
+        queue_message(std::format("{} ignores the attack!", m->monstring));
       }
       else
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, m->monstring);
+        queue_message(std::format("The {} ignores the attack!", m->monstring));
       }
-      strcat(Str1, " ignores the attack!");
-      mprint(Str1);
     }
   }
   else if((m->hp -= dmg) < 1)
@@ -195,15 +194,12 @@ void m_death(struct monster *m)
     calc_melee();
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} is dead!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} is dead!", m->monstring));
     }
-    strcat(Str1, " is dead! ");
-    mprint(Str1);
   }
   m_dropstuff(m);
   if(m->id == DEATH)
@@ -275,41 +271,41 @@ void m_death(struct monster *m)
           case 5:
           case 6:
             mprint("You hear a faroff sound like angels crying....");
-            strcpy(Priest[m->aux2], nameprint());
+            strcpy(Priest[m->aux2], std::string{nameprint()}.c_str());
             Priestbehavior[m->aux2] = 2933;
             break;
           case 7:
             mprint("A furtive figure dashes out of the shadows, takes a look at");
             mprint("the corpse, and runs away!");
-            strcpy(Shadowlord, nameprint());
+            strcpy(Shadowlord, std::string{nameprint()}.c_str());
             Shadowlordbehavior = 2912;
             break;
           case 8:
             mprint("An aide-de-camp approaches, removes the corpse's insignia,");
             mprint("and departs.");
-            strcpy(Commandant, nameprint());
+            strcpy(Commandant, std::string{nameprint()}.c_str());
             Commandantbehavior = 2912;
             break;
           case 9:
             mprint("An odd glow surrounds the corpse, and slowly fades.");
-            strcpy(Archmage, nameprint());
+            strcpy(Archmage, std::string{nameprint()}.c_str());
             Archmagebehavior = 2933;
             break;
           case 10:
             mprint("A demon materializes, takes a quick look at the corpse,");
             mprint("and teleports away with a faint popping noise.");
-            strcpy(Prime, nameprint());
+            strcpy(Prime, std::string{nameprint()}.c_str());
             Primebehavior = 2932;
             break;
           case 11:
             mprint("A sports columnist rushes forward and takes a quick photo");
             mprint("of the corpse and rushes off muttering about a deadline.");
-            strcpy(Champion, nameprint());
+            strcpy(Champion, std::string{nameprint()}.c_str());
             Championbehavior = 2913;
             break;
           case 12:
             mprint("You hear a fanfare in the distance, and feel dismayed.");
-            strcpy(Duke, nameprint());
+            strcpy(Duke, std::string{nameprint()}.c_str());
             Dukebehavior = 2911;
             break;
           case 13:
@@ -321,7 +317,7 @@ void m_death(struct monster *m)
             {
               mprint("You feel ashamed.");
             }
-            strcpy(Chaoslord, nameprint());
+            strcpy(Chaoslord, std::string{nameprint()}.c_str());
             Chaoslordbehavior = 2912;
             break;
           case 14:
@@ -333,7 +329,7 @@ void m_death(struct monster *m)
             {
               mprint("You feel ashamed.");
             }
-            strcpy(Lawlord, nameprint());
+            strcpy(Lawlord, std::string{nameprint()}.c_str());
             Lawlordbehavior = 2911;
             break;
           case 15:
@@ -348,7 +344,7 @@ void m_death(struct monster *m)
                 prev = curr;
                 curr = curr->next;
               }
-              strcpy(Justiciar, nameprint());
+              strcpy(Justiciar, std::string{nameprint()}.c_str());
               Justiciarbehavior = 2911;
               mprint("In the distance you hear a trumpet. A Servant of Law");
               /* promote one of the city guards to be justiciar */
@@ -801,10 +797,11 @@ void make_hiscore_npc(pmt npc, int npcid)
   *npc      = Monsters[HISCORE_NPC];
   npc->aux2 = npcid;
   /* each of the high score npcs can be created here */
+  std::string npc_name;
   switch(npcid)
   {
     case 0:
-      strcpy(Str2, Hiscorer);
+      npc_name = Hiscorer;
       determine_npc_behavior(npc, Hilevel, Hibehavior);
       break;
     case 1:
@@ -813,7 +810,7 @@ void make_hiscore_npc(pmt npc, int npcid)
     case 4:
     case 5:
     case 6:
-      strcpy(Str2, Priest[npcid]);
+      npc_name = Priest[npcid];
       determine_npc_behavior(npc, Priestlevel[npcid], Priestbehavior[npcid]);
       st                     = ARTIFACTID + 13 + npcid; /* appropriate holy symbol... */
       Objects[st].uniqueness = UNIQUE_MADE;
@@ -827,11 +824,11 @@ void make_hiscore_npc(pmt npc, int npcid)
       }
       break;
     case 7:
-      strcpy(Str2, Shadowlord);
+      npc_name = Shadowlord;
       determine_npc_behavior(npc, Shadowlordlevel, Shadowlordbehavior);
       break;
     case 8:
-      strcpy(Str2, Commandant);
+      npc_name = Commandant;
       determine_npc_behavior(npc, Commandantlevel, Commandantbehavior);
       if(Player.rank[LEGION])
       {
@@ -839,7 +836,7 @@ void make_hiscore_npc(pmt npc, int npcid)
       }
       break;
     case 9:
-      strcpy(Str2, Archmage);
+      npc_name = Archmage;
       determine_npc_behavior(npc, Archmagelevel, Archmagebehavior);
       st         = ARTIFACTID + 9; /* kolwynia */
       npc->talkf = M_TALK_ARCHMAGE;
@@ -847,7 +844,7 @@ void make_hiscore_npc(pmt npc, int npcid)
       m_status_reset(*npc, HOSTILE);
       break;
     case 10:
-      strcpy(Str2, Prime);
+      npc_name = Prime;
       determine_npc_behavior(npc, Primelevel, Primebehavior);
       npc->talkf    = M_TALK_PRIME;
       npc->specialf = M_SP_PRIME;
@@ -857,7 +854,7 @@ void make_hiscore_npc(pmt npc, int npcid)
       }
       break;
     case 11:
-      strcpy(Str2, Champion);
+      npc_name = Champion;
       determine_npc_behavior(npc, Championlevel, Championbehavior);
       if(Player.rank[ARENA])
       {
@@ -865,11 +862,11 @@ void make_hiscore_npc(pmt npc, int npcid)
       }
       break;
     case 12:
-      strcpy(Str2, Duke);
+      npc_name = Duke;
       determine_npc_behavior(npc, Dukelevel, Dukebehavior);
       break;
     case 13:
-      strcpy(Str2, Chaoslord);
+      npc_name = Chaoslord;
       determine_npc_behavior(npc, Chaoslordlevel, Chaoslordbehavior);
       if(Player.alignment < 0 && random_range(2))
       {
@@ -877,7 +874,7 @@ void make_hiscore_npc(pmt npc, int npcid)
       }
       break;
     case 14:
-      strcpy(Str2, Lawlord);
+      npc_name = Lawlord;
       determine_npc_behavior(npc, Lawlordlevel, Lawlordbehavior);
       if(Player.alignment > 0)
       {
@@ -885,7 +882,7 @@ void make_hiscore_npc(pmt npc, int npcid)
       }
       break;
     case 15:
-      strcpy(Str2, Justiciar);
+      npc_name = Justiciar;
       determine_npc_behavior(npc, Justiciarlevel, Justiciarbehavior);
       st            = THINGID + 16; /* badge */
       npc->talkf    = M_TALK_GUARD;
@@ -900,10 +897,8 @@ void make_hiscore_npc(pmt npc, int npcid)
     *ob = Objects[st];
     m_pickup(npc, ob);
   }
-  npc->monstring = salloc(Str2);
-  strcpy(Str1, "The body of ");
-  strcat(Str1, Str2);
-  npc->corpsestr = salloc(Str1);
+  npc->monstring = salloc(npc_name.c_str());
+  npc->corpsestr = salloc(std::format("The body of {}", npc_name).c_str());
 }
 
 /* sets npc behavior given level and behavior code */
@@ -988,9 +983,8 @@ void determine_npc_behavior(pmt npc, int level, int behavior)
 /* makes an ordinary npc (maybe undead) */
 void make_log_npc(struct monster *npc)
 {
-  int   i, n;
+  int   i;
   int   behavior, status, level;
-  FILE *fd;
 
   /* in case the log file is null */
   behavior = 2718;
@@ -998,10 +992,8 @@ void make_log_npc(struct monster *npc)
   status   = 2;
   strcpy(Str2, "Malaprop the Misnamed");
 
-  strcpy(Str1, Omegalib);
-  strcat(Str1, "omega.log");
-  fd = checkfopen(Str1, "r");
-  n  = 1;
+  FILE *fd = checkfopen(std::format("{}omega.log", Omegalib), "r");
+  int n  = 1;
   while(fgets(Str1, STRING_LEN, fd))
   {
     if(random_range(n) == 0)
@@ -1018,40 +1010,36 @@ void make_log_npc(struct monster *npc)
   }
   fclose(fd);
   npc->hp = level * 20;
+  std::string npc_name;
   if(status == 1)
   {
     if(level < 3)
     {
       *npc = Monsters[GHOST];
-      strcpy(Str1, "ghost named ");
+      npc_name = "ghost named ";
     }
     else if(level < 7)
     {
       *npc = Monsters[HAUNT];
-      strcpy(Str1, "haunt named ");
+      npc_name = "haunt named ";
     }
     else if(level < 12)
     {
       *npc = Monsters[SPECTRE];
-      strcpy(Str1, "spectre named ");
+      npc_name = "spectre named ";
     }
     else
     {
       *npc = Monsters[LICHE];
-      strcpy(Str1, "lich named ");
+      npc_name = "lich named ";
     }
-    strcat(Str1, Str2);
-    npc->monstring = salloc(Str1);
-    strcpy(Str3, "the mortal remains of ");
-    strcat(Str3, Str2);
-    npc->corpsestr = salloc(Str3);
+    npc->monstring = salloc(std::format("{}{}", npc_name, Str2).c_str());
+    npc->corpsestr = salloc(std::format("the mortal remains of {}", Str2).c_str());
   }
   else
   {
     npc->monstring = salloc(Str2);
-    strcpy(Str3, "the corpse of ");
-    strcat(Str3, Str2);
-    npc->corpsestr = salloc(Str3);
+    npc->corpsestr = salloc(std::format("the corpse of {}", Str2).c_str());
   }
   determine_npc_behavior(npc, level, behavior);
 }
@@ -1062,15 +1050,12 @@ void m_trap_dart(struct monster *m)
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} was hit by a dart!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} was hit by a dart!", m->monstring));
     }
-    strcat(Str1, " was hit by a dart!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
@@ -1083,15 +1068,12 @@ void m_trap_pit(struct monster *m)
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} fell into a pit!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} fell into a pit!", m->monstring));
     }
-    strcat(Str1, " fell into a pit!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
@@ -1108,15 +1090,12 @@ void m_trap_door(struct monster *m)
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} fell into a trap door!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} fell into a trap door!", m->monstring));
     }
-    strcat(Str1, " fell into a trap door!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
@@ -1125,20 +1104,16 @@ void m_trap_door(struct monster *m)
 
 void m_trap_abyss(struct monster *m)
 {
-  char Str1[80];
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} fell into the infinite abyss!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} fell into the infinite abyss!", m->monstring));
     }
-    strcat(Str1, " fell into the infinite abyss!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = ABYSS;
     lset(m->x, m->y, CHANGED, *Level);
     Level->site[m->x][m->y].p_locf = L_ABYSS;
@@ -1151,22 +1126,18 @@ void m_trap_abyss(struct monster *m)
 
 void m_trap_snare(struct monster *m)
 {
-  char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} was caught in a snare!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} was caught in a snare!", m->monstring));
     }
-    strcat(Str1, " was caught in a snare!");
-    mprint(Str1);
   }
   if(!m_statusp(*m, INTANGIBLE))
   {
@@ -1176,106 +1147,86 @@ void m_trap_snare(struct monster *m)
 
 void m_trap_blade(struct monster *m)
 {
-  char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} was was hit by a blade trap!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} was was hit by a blade trap!", m->monstring));
     }
-    strcat(Str1, " was hit by a blade trap!");
-    mprint(Str1);
   }
   m_damage(m, (difficulty() + 1) * 7 - Player.defense, NORMAL_DAMAGE);
 }
 
 void m_trap_fire(struct monster *m)
 {
-  char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} was was hit by a fire trap!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} was was hit by a fire trap!", m->monstring));
     }
-    strcat(Str1, " was hit by a fire trap!");
-    mprint(Str1);
   }
   m_damage(m, (difficulty() + 1) * 5, FLAME);
 }
 
 void m_fire(struct monster *m)
 {
-  char Str1[80];
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} was was blasted by fire!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} was was blasted by fire!", m->monstring));
     }
-    strcat(Str1, " was blasted by fire!");
-    mprint(Str1);
   }
   m_damage(m, random_range(100), FLAME);
 }
 
 void m_trap_teleport(struct monster *m)
 {
-  char Str1[80];
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} walked into teleport trap!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} walked into teleport trap!", m->monstring));
     }
-    strcat(Str1, " walked into a teleport trap!");
-    mprint(Str1);
   }
   m_teleport(m);
 }
 
 void m_trap_disintegrate(struct monster *m)
 {
-  char Str1[80];
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} walked into a disintegration trap!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} walked into a disintegration trap!", m->monstring));
     }
-    strcat(Str1, " walked into a disintegration trap!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
@@ -1284,20 +1235,16 @@ void m_trap_disintegrate(struct monster *m)
 
 void m_trap_sleepgas(struct monster *m)
 {
-  char Str1[80];
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} walked into a sleepgas trap!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} walked into a sleepgas trap!", m->monstring));
     }
-    strcat(Str1, " walked into a sleepgas trap!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
@@ -1309,20 +1256,16 @@ void m_trap_sleepgas(struct monster *m)
 
 void m_trap_acid(struct monster *m)
 {
-  char Str1[80];
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} walked into an acid bath trap!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} walked into an acid bath trap!", m->monstring));
     }
-    strcat(Str1, " walked into an acid bath trap!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
@@ -1331,20 +1274,16 @@ void m_trap_acid(struct monster *m)
 
 void m_trap_manadrain(struct monster *m)
 {
-  char Str1[80];
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} walked into a manadrain trap!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} walked into a manadrain trap!", m->monstring));
     }
-    strcat(Str1, " walked into a manadrain trap!");
-    mprint(Str1);
     Level->site[m->x][m->y].locchar = TRAP;
     lset(m->x, m->y, CHANGED, *Level);
   }
@@ -1356,22 +1295,18 @@ void m_trap_manadrain(struct monster *m)
 
 void m_water(struct monster *m)
 {
-  char Str1[80];
   if((!m_statusp(*m, INTANGIBLE)) && (!m_statusp(*m, SWIMMING)) && (!m_statusp(*m, ONLYSWIM)))
   {
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
       if(m->uniqueness != COMMON)
       {
-        strcpy(Str1, m->monstring);
+        queue_message(std::format("{} drowned!", m->monstring));
       }
       else
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, m->monstring);
+        queue_message(std::format("The {} drowned!", m->monstring));
       }
-      strcat(Str1, " drowned!");
-      mprint(Str1);
     }
     m_death(m);
   }
@@ -1379,42 +1314,34 @@ void m_water(struct monster *m)
 
 void m_abyss(struct monster *m)
 {
-  char Str1[80];
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} fell into the infinite abyss!", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} fell into the infinite abyss!", m->monstring));
     }
-    strcat(Str1, " fell into the infinite abyss!");
-    mprint(Str1);
   }
   m_vanish(m);
 }
 
 void m_lava(struct monster *m)
 {
-  char Str1[80];
   if((!m_immunityp(*m, FLAME)) || ((!m_statusp(*m, SWIMMING)) && (!m_statusp(*m, ONLYSWIM))))
   {
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
       if(m->uniqueness != COMMON)
       {
-        strcpy(Str1, m->monstring);
+        queue_message(std::format("{} died in a pool of lava!", m->monstring));
       }
       else
       {
-        strcpy(Str1, "The ");
-        strcat(Str1, m->monstring);
+        queue_message(std::format("The {} died in a pool of lava!", m->monstring));
       }
-      strcat(Str1, " died in a pool of lava!");
-      mprint(Str1);
     }
     m_death(m);
   }
@@ -1430,15 +1357,12 @@ void m_altar(struct monster *m)
   {
     if(m->uniqueness != COMMON)
     {
-      strcpy(Str1, m->monstring);
+      queue_message(std::format("{} walks next to an altar...", m->monstring));
     }
     else
     {
-      strcpy(Str1, "The ");
-      strcat(Str1, m->monstring);
+      queue_message(std::format("The {} walks next to an altar...", m->monstring));
     }
-    strcat(Str1, " walks next to an altar...");
-    mprint(Str1);
   }
   if(!m_statusp(*m, HOSTILE))
   {

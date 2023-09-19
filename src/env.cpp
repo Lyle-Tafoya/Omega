@@ -21,7 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
+#include <format>
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
@@ -54,9 +54,7 @@ void load_arena()
 #endif
   clear_level(Level);
   Level->environment = E_ARENA;
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "arena.dat");
-  fd   = checkfopen(Str3, "rb");
+  fd   = checkfopen(std::format("{}arena.dat", Omegalib), "rb");
   site = cryptkey("arena.dat");
   for(j = 0; j < LENGTH; j++)
   {
@@ -128,9 +126,7 @@ void load_circle(int populate)
 #endif
   clear_level(Level);
   Level->environment = E_CIRCLE;
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "circle.dat");
-  fd   = checkfopen(Str3, "rb");
+  fd   = checkfopen(std::format("{}circle.dat",Omegalib), "rb");
   site = cryptkey("circle.dat");
   for(j = 0; j < LENGTH; j++)
   {
@@ -296,9 +292,7 @@ void load_court(int populate)
 #endif
   clear_level(Level);
   Level->environment = E_COURT;
-  strcpy(Str3, Omegalib);
-  strcat(Str3, "court.dat");
-  fd   = checkfopen(Str3, "rb");
+  fd   = checkfopen(std::format("{}court.dat", Omegalib), "rb");
   site = cryptkey("court.dat");
   for(j = 0; j < LENGTH; j++)
   {

@@ -27,6 +27,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cstring>
+#include <format>
 #include <string>
 
 extern void queue_message(const std::string &message);
@@ -336,7 +337,7 @@ void l_arena()
   char  response;
   pob   newitem;
   int   i, prize, monsterlevel;
-  char *name, *melee = nullptr;
+  char *melee = nullptr;
 
   print1("Rampart Coliseum");
   if(Player.rank[ARENA] == 0)
@@ -473,14 +474,9 @@ void l_arena()
     monsterlevel = Arena_Monster->level;
     if(Arena_Monster->id == HISCORE_NPC)
     {
-      strcpy(Str1, Champion);
-      strcat(Str1, ", the arena champion");
-      name = (char *)checkmalloc((unsigned)(strlen(Str1) + 1));
-      strcpy(name, Str1);
-      Arena_Monster->monstring = name;
-      strcpy(Str2, "The corpse of ");
-      strcat(Str2, Str1);
-      Arena_Monster->corpsestr = salloc(Str2);
+      std::string name = std::format("{}, the arena champion", Champion);
+      Arena_Monster->monstring = salloc(name.c_str());
+      Arena_Monster->corpsestr = salloc(std::format("The corse of {}", name).c_str());
       Arena_Monster->level     = 20;
       Arena_Monster->hp        = Championlevel * Championlevel * 5;
       Arena_Monster->hit       = Championlevel * 4;
@@ -500,15 +496,9 @@ void l_arena()
     }
     else
     {
-      strcpy(Str1, nameprint());
-      strcat(Str1, " the ");
-      strcat(Str1, Arena_Monster->monstring);
-      name                     = (char *)checkmalloc((unsigned)(strlen(Str1) + 1));
-      Arena_Monster->monstring = name;
-      strcpy(name, Str1);
-      strcpy(Str2, "The corpse of ");
-      strcat(Str2, Str1);
-      Arena_Monster->corpsestr = salloc(Str2);
+      std::string name{std::format("{} the {}", nameprint(), Arena_Monster->monstring)};
+      Arena_Monster->monstring = salloc(name.c_str());
+      Arena_Monster->corpsestr = salloc(std::format("The corpse of {}", name).c_str());
     }
     Arena_Monster->uniqueness = UNIQUE_MADE;
     print1("You have a challenger: ");
@@ -534,7 +524,6 @@ void l_arena()
      * memory leak.  Obviously, we need a special field just for names
      * in the monster struct.  Yadda yadda -- I'll mmark this with a
      * HACK!, and comme back to it later. */
-    free(name); /* hey - why waste space? */
     /* can not free the corpse string... it is referenced in the */
     /* corpse string of the corpse object.  */
     /* Unfortunately, this will cause a memory leak, but I don't see */

@@ -26,7 +26,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <cctype>
 #include <cstring>
+#include <format>
 #include <string>
 #include <vector>
 
@@ -34,6 +36,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern void kill_all_levels();
 #endif
 
+extern void queue_message(const std::string &message);
+extern void append_message(const std::string &message, bool force_break = false);
 extern std::string get_username();
 extern void item_unequip(object *);
 
@@ -261,9 +265,6 @@ void examine()
 void help()
 {
   char  c;
-  char  filestr[80];
-  FILE *in, *out;
-  int   n;
 
   print1("Please enter the letter indicating what topic you want help on.");
   std::vector<std::string> lines =
@@ -281,42 +282,17 @@ void help()
     {"k: Options Settings"},
     {"l: Dungeon/City/Other Command List"},
     {"m: Countryside Command List"},
-    {"n: Everything"},
     {"ESCAPE: Forget the whole thing."}
   };
   menu->load(lines);
   menu->print();
   do
   {
-    c = (char)mcigetc();
-  } while((c < 'a' || c > 'n') && c != ESCAPE);
-  if(c == 'n')
+    c = static_cast<char>(mcigetc());
+  } while((c < 'a' || c > 'm') && c != ESCAPE);
+  if(c != ESCAPE)
   {
-    print1("Trying to copy all help files to ./omega.doc ");
-    nprint1("Confirm [yn]");
-    if(ynq1() == 'y')
-    {
-      out = checkfopen("omega.doc", "w");
-      print2("Copying");
-      for(n = 1; n <= 13; n++)
-      {
-        nprint2(".");
-        sprintf(Str1, "%shelp%d.txt", Omegalib, n);
-        in = checkfopen(Str1, "r");
-        while(fgets(Str1, STRING_LEN, in))
-        {
-          fputs(Str1, out);
-        }
-        fclose(in);
-      }
-      fclose(out);
-      nprint2(" Done.");
-    }
-  }
-  else if(c != ESCAPE)
-  {
-    sprintf(filestr, "%shelp%d.txt", Omegalib, c + 1 - 'a');
-    displayfile(filestr);
+    displayfile(std::format("{}help{}.txt", Omegalib, c+1-'a'));
   }
   xredraw();
 }
@@ -507,23 +483,21 @@ void nap()
 
 void charid()
 {
-  char id;
   int  countryside = false;
-  char cstr[80];
 
   mprint("Character to identify: ");
-  id = mgetc();
+  char id = mgetc();
   if(Current_Environment == E_COUNTRYSIDE)
   {
     countryside = true;
-    strcpy(cstr, countryid(id));
-    if(strcmp(cstr, "I have no idea.") == 0)
+    std::string country_description{countryid(id)};
+    if(country_description == "I have no idea.")
     {
       countryside = false;
     }
     else
     {
-      mprint(cstr);
+      queue_message(country_description);
     }
   }
   if(!countryside)
@@ -660,36 +634,32 @@ void wizard()
   setgamestatus(SKIP_MONSTERS, GameStatus);
   if(gamestatusp(CHEATED, GameStatus))
   {
-    mprint("You're already in wizard mode!");
+    queue_message("You're already in wizard mode!");
   }
   else
   {
-    mprint("Really try to enter wizard mode? [yn] ");
+    queue_message("Really try to enter wizard mode? [yn] ");
     if(ynq() == 'y')
     {
       if(get_username() == WIZARD)
       {
         setgamestatus(CHEATED, GameStatus);
-        mprint("Wizard mode set.");
+        queue_message("Wizard mode set.");
       }
       else
       {
-        mprint("There is a shrieking sound, as of reality being distorted.");
-        strcpy(Str1, WIZARD);
-        strcat(Str1, ", the Wizard of Omega appears before you....");
-        if(Str1[0] >= 'a' && Str1[0] <= 'z')
-        {
-          Str1[0] += 'A' - 'a'; /* capitalise 1st letter */
-        }
-        mprint(Str1);
-        mprint("'Do not meddle in the affairs of Wizards --");
+        queue_message("There is a shrieking sound, as of reality being distorted.");
+        std::string message{std::format("{}, the Wizard of Omega appears before you....", WIZARD)};
+        message[0] = std::toupper(message[0]);
+        queue_message(message);
+        queue_message("'Do not meddle in the affairs of Wizards --");
         if(random_range(2))
         {
-          mprint("it makes them soggy and hard to light.'");
+          append_message("it makes them soggy and hard to light.'");
         }
         else
         {
-          mprint("for they are subtle, and swift to anger!'");
+          append_message("for they are subtle, and swift to anger!'");
         }
       }
     }
@@ -1021,17 +991,14 @@ void pickpocket()
 void rename_player()
 {
   setgamestatus(SKIP_MONSTERS, GameStatus);
-  mprint("Rename Character: ");
+  queue_message("Rename Character: ");
   std::string name = msgscanstring();
   if(!name.empty())
   {
-    if(name[0] >= 'a' && name[0] <= 'z')
-    {
-      name[0] += 'A' - 'a';
-    }
+    name[0] = std::toupper(name[0]);
     strcpy(Player.name, name.c_str());
   }
-  print2("Henceforth, you shall be known as " + std::string(Player.name));
+  queue_message(std::format("Henceforth, you shall be known as {}.", Player.name));
   dataprint();
 }
 
