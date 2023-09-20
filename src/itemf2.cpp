@@ -263,14 +263,34 @@ void i_perm_breathing(pob o)
 
 /* weapons functions */
 
-void weapon_acidwhip(int dmgmod, pob, struct monster *m)
+void weapon_hit(pob weapon, monster *m, int damage_modifier, int damage_type)
+{
+  if(weapon->used)
+  {
+    p_hit(m, Player.dmg + damage_modifier, damage_type);
+  }
+  else
+  {
+    pob weapon_hand_object = Player.possessions[O_WEAPON_HAND];
+    if(weapon_hand_object && weapon_hand_object->used)
+    {
+      p_hit(m, Player.dmg - weapon_hand_object->dmg - weapon_hand_object->plus + damage_modifier + weapon->dmg + weapon->plus, damage_type);
+    }
+    else
+    {
+      p_hit(m, Player.dmg + damage_modifier + weapon->dmg + weapon->plus, damage_type);
+    }
+  }
+}
+
+void weapon_acidwhip(int dmgmod, pob o, struct monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
     mprint("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
-  p_hit(m, Player.dmg + dmgmod, ACID);
+  weapon_hit(o, m, dmgmod, ACID);
 }
 
 void weapon_scythe(int, pob, struct monster *m)
@@ -317,7 +337,7 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
     }
     else
     {
-      p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
+      weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
     }
   }
   else
@@ -367,14 +387,14 @@ void weapon_lightsabre(int, pob o, struct monster *m)
   }
 }
 
-void weapon_tangle(int dmgmod, pob, struct monster *m)
+void weapon_tangle(int dmgmod, pob o, struct monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
     mprint("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
-  p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
+  weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
 }
 
 /* if wielding a bow, add bow damage to arrow damage */
@@ -407,7 +427,7 @@ void weapon_bolt(int dmgmod, pob o, struct monster *m)
   }
 }
 
-void weapon_mace_disrupt(int dmgmod, pob, struct monster *m)
+void weapon_mace_disrupt(int dmgmod, pob o, struct monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
@@ -416,13 +436,13 @@ void weapon_mace_disrupt(int dmgmod, pob, struct monster *m)
   }
   else
   {
-    p_hit(m, Player.dmg + dmgmod, UNSTOPPABLE);
+    weapon_hit(o, m, dmgmod, UNSTOPPABLE);
   }
 }
 
-void weapon_normal_hit(int dmgmod, pob, struct monster *m)
+void weapon_normal_hit(int dmgmod, pob o, struct monster *m)
 {
-  p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
+  weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
 }
 
 /* will be updated eventually */
@@ -501,7 +521,7 @@ void weapon_desecrate(int dmgmod, pob o, struct monster *m)
   if(Player.alignment < 0)
   {
     mprint("Your opponent screams in agony!");
-    p_hit(m, Player.dmg + dmgmod, UNSTOPPABLE);
+    weapon_hit(o, m, dmgmod, UNSTOPPABLE);
     Player.alignment--;
     if(Player.hp < Player.maxhp)
     {

@@ -337,10 +337,6 @@ void fire()
   }
   else
   {
-    if(Player.possessions[index]->used)
-    {
-      item_unequip(Player.possessions[index]);
-    }
     obj = Player.possessions[index];
     x1 = x2 = Player.x;
     y1 = y2 = Player.y;
@@ -360,6 +356,23 @@ void fire()
       do_object_los(obj->objchar, &x1, &y1, x2, y2);
       if((m = Level->site[x1][y1].creature) != NULL)
       {
+        int hitroll;
+        if(obj->used)
+        {
+          hitroll = Player.hit;
+        }
+        else
+        {
+          pob main_hand_object = Player.possessions[O_WEAPON_HAND];
+          if(main_hand_object && main_hand_object->used)
+          {
+            hitroll = Player.hit - main_hand_object->hit - main_hand_object->plus + obj->hit + obj->plus;
+          }
+          else
+          {
+            hitroll = Player.hit + obj->hit + obj->plus;
+          }
+        }
         if(obj->dmg == 0)
         {
           if(m->treasure > 0)
@@ -385,7 +398,7 @@ void fire()
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
           conform_lost_objects(1, obj);
         }
-        else if(hitp(Player.hit, m->ac))
+        else if(hitp(hitroll, m->ac))
         { /* ok already, hit the damn thing */
           weapon_use(2 * statmod(Player.str), obj, m);
           if((obj->id == WEAPONID + 28 || obj->id == WEAPONID + 29) && !random_range(4))
