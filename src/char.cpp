@@ -26,6 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <cstring>
 #include <format>
 #include <string>
+#include <string_view>
 
 extern scrolling_buffer message_buffer;
 extern void enable_attr(WINDOW *, attr_t);
@@ -44,6 +45,19 @@ std::string get_username()
     return env;
   }
   return "pcuser";
+}
+
+std::string_view get_home_path()
+{
+  char *home_path = getenv("HOME");
+  if(home_path)
+  {
+    return home_path;
+  }
+  else
+  {
+    return ".";
+  }
 }
 
 /* set player to begin with */
@@ -127,7 +141,7 @@ void initplayer()
 
 FILE *omegarc_check()
 {
-  FILE *fd = fopen(std::format("{}/.omegarc", getenv("HOME")).c_str(), "r");
+  FILE *fd = fopen(std::format("{}/.omegarc", get_home_path()).c_str(), "r");
   if(fd)
   {
     queue_message("Use .omegarc in home directory? [yn] ");
@@ -169,7 +183,7 @@ void initstats()
 void save_omegarc()
 {
   int   i = VERSION;
-  FILE *fd = fopen(std::format("{}/.omegarc", getenv("HOME")).c_str(), "w");
+  FILE *fd = fopen(std::format("{}/.omegarc", get_home_path()).c_str(), "w");
   if(!fd)
   {
     print1("Sorry, couldn't save .omegarc for some reason.");
