@@ -501,21 +501,19 @@ bool save_country(FILE *fd)
 }
 
 /* returns true if the given version can be restored by this version */
-bool ok_outdated(int version)
+bool ok_outdated(int savefile_version)
 {
-  switch(version)
+  int savefile_major_version = savefile_version / 10000;
+  int savefile_minor_version = (savefile_version - savefile_major_version) / 100;
+  int game_major_version = VERSION / 10000;
+  int game_minor_version = (VERSION - game_major_version) / 100;
+  if(game_major_version == savefile_major_version && game_minor_version == savefile_minor_version)
   {
-    case 80:
-      print1("Converting version 0.80 savefile to current.");
-      return true;
-      break;
-    case 81:
-      print1("Loading version 0.81 savefile.");
-      return true;
-      break;
-    default:
-      return false;
-      break;
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }
 
@@ -553,9 +551,12 @@ bool restore_game(char *savestr)
     if(VERSION != version && !ok_outdated(version))
     {
       fclose(fd);
-      mprint(" Sorry, I can't restore an outdated save file!");
-      mprint(" savefile is version " + std::to_string(version / 100) + "." +
-             std::to_string(version % 100));
+      int major_version = version / 10000;
+      int minor_version = (version - major_version) / 100;
+      int bugfix_version = version % 100;
+      mvaddstr(0, 0, "Sorry, I can't restore an outdated save file!");
+      mvaddstr(1, 0, std::format("Save file is version {}.{}.{}", major_version, minor_version, bugfix_version).c_str());
+      getch();
       return false;
     }
     restore_player(fd, version);

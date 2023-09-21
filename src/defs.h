@@ -58,8 +58,8 @@ definitions in the following section. */
 /*---------------------------SYSTEM DEFINITIONS---------------------------*/
 
 /* Don't change anything from here on (unless you know what you're doing) */
-#define VERSION             90
-#define VERSIONSTRING       "omega version 0.90"
+#define VERSION             400
+#define VERSIONSTRING       "omega rebirth version 0.4.0"
 
 #define VACANT              0
 #define ABORT               -1
