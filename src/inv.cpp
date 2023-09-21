@@ -139,7 +139,7 @@ void pickup_at(int x, int y)
  * any letters already used for commands.  Yes, there are more here
  * than could be needed, but I don't want to short myself for later.
  */
-signed char inventory_keymap[] = "-abcfghimnoqruvwyz";
+char inventory_keymap[] = "-abcfghimnoqruvwyz";
 int         key_to_index(signed char key)
 {
   assert(MAXITEMS > 0); /* must have room for an item, or this loop will
@@ -155,7 +155,7 @@ int         key_to_index(signed char key)
   return O_UP_IN_AIR;
 }
 
-signed char index_to_key(signed int index)
+char index_to_key(signed int index)
 {
   if(index < MAXITEMS)
   {
@@ -273,8 +273,7 @@ void p_drop_at(int x, int y, int n, pob o)
   {
     if((Level->site[x][y].locchar != VOID_CHAR) && (Level->site[x][y].locchar != ABYSS))
     {
-      print2("Dropped ");
-      nprint2(itemid(o));
+      queue_message(std::format("Dropped {}", itemid(o)));
       if(merge_item_with_list(Level->site[x][y].things, o, n))
       {
         return;

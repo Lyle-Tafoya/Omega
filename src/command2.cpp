@@ -26,9 +26,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <chrono>
 #include <format>
+#include <list>
 #include <thread>
 #include <string>
-#include <vector>
+#include <utility>
 
 extern void item_use(object *);
 extern interactive_menu *menu;
@@ -279,12 +280,122 @@ void floor_inv()
   xredraw();
 }
 
-void drop()
+void drop_pack_item()
 {
-  int index, n;
+  if(!Player.packptr && Player.cash <= 0)
+  {
+    queue_message("You have nothing to drop.");
+    return;
+  }
+  std::list<std::pair<object *, char>> food;
+  std::list<std::pair<object *, char>> weapons;
+  std::list<std::pair<object *, char>> scrolls;
+  std::list<std::pair<object *, char>> potions;
+  std::list<std::pair<object *, char>> armor;
+  std::list<std::pair<object *, char>> sticks;
+  std::list<std::pair<object *, char>> jewelery;
+  std::list<std::pair<object *, char>> artifacts;
+  std::list<std::pair<object *, char>> other;
+  const std::array object_categories
+  {
+    std::pair{"Food", &food},
+    std::pair{"Weapons", &weapons},
+    std::pair{"Scrolls", &scrolls},
+    std::pair{"Potions", &potions},
+    std::pair{"Armor", &armor},
+    std::pair{"Sticks", &sticks},
+    std::pair{"Jewelery", &jewelery},
+    std::pair{"Artifacts", &artifacts},
+    std::pair{"Miscellaneous", &other}
+  };
+  for(int i = 0; i < Player.packptr; ++i)
+  {
+    object *pack_item = Player.pack[i];
+    switch(pack_item->objchar)
+    {
+      case FOOD:
+        food.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case WEAPON:
+      case MISSILEWEAPON:
+        weapons.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case SCROLL:
+        scrolls.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case POTION:
+        potions.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case ARMOR:
+      case SHIELD:
+      case CLOAK:
+      case BOOTS:
+        armor.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case STICK:
+        sticks.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case RING:
+        jewelery.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case ARTIFACT:
+        artifacts.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+      case THING:
+      default:
+        other.emplace_back(std::make_pair(pack_item, 'a'+i));
+        break;
+    }
+  }
+  std::vector<std::string> lines;
+  if(Player.cash > 0)
+  {
+    lines.emplace_back("Cash");
+    lines.emplace_back(std::format("   $ - {} gold pieces", Player.cash));
+  }
+  for(auto &object_category : object_categories)
+  {
+    if(!object_category.second->empty())
+    {
+      lines.emplace_back(object_category.first);
+      for(auto item : *object_category.second)
+      {
+        lines.emplace_back(std::format("   {} - {}", item.second, itemid(item.first)));
+      }
+    }
+  }
+  menu->load(lines, {"Drop Item:", ""});
 
+  int player_input;
+  do
+  {
+    player_input = menu->get_player_input();
+    if(player_input == ESCAPE)
+    {
+      return;
+    }
+    else if(player_input == '$' && Player.cash > 0)
+    {
+      drop_money();
+      calc_melee();
+      return;
+    }
+  } while((player_input < 'a' || player_input > 'a'+Player.packptr-1));
+  int index = player_input-'a';
+  object *item = Player.pack[index];
+  for(int i = index; i < Player.packptr-1; ++i)
+  {
+    Player.pack[i] = Player.pack[i+1];
+  }
+  Player.pack[--Player.packptr] = nullptr;
+  p_drop_at(Player.x, Player.y, item->number, item);
+  calc_melee();
+}
+
+void drop_equipped_item()
+{
   print1("Drop --");
-  index = getitem(CASH);
+  int index = getitem(CASH);
   if(index == ABORT)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -304,7 +415,7 @@ void drop()
       }
       else
       {
-        n = getnumber(Player.possessions[index]->number);
+        int n = getnumber(Player.possessions[index]->number);
         p_drop_at(Player.x, Player.y, n, Player.possessions[index]);
         conform_lost_objects(n, Player.possessions[index]);
       }

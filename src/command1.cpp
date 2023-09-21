@@ -116,7 +116,7 @@ void p_process()
         Command_Duration = Player.speed * 2 / 5;
         break;
       case 'd':
-        drop();
+        drop_pack_item();
         Command_Duration = Player.speed * 5 / 5;
         break;
       case 'e':
@@ -413,7 +413,7 @@ void p_country_process()
         }
         break; /* ^x */
       case 'd':
-        drop();
+        drop_pack_item();
         break;
       case 'e':
         eat();

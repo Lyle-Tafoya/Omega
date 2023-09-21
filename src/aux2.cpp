@@ -743,7 +743,7 @@ void p_drown()
       switch(menugetc())
       {
         case 'a':
-          drop();
+          drop_equipped_item();
           if(Level->site[Player.x][Player.y].p_locf == L_WATER && Level->site[Player.x][Player.y].things)
           {
             mprint("It sinks without a trace.");

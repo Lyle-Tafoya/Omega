@@ -2137,7 +2137,7 @@ void display_pack()
     lines.emplace_back("Items in Pack:");
     for(int i = 0; i < Player.packptr; i++)
     {
-      lines.emplace_back("  " + std::string(1, i+'a') + ": " + itemid(Player.pack[i]));
+      lines.emplace_back(std::format("  {}: {}", static_cast<char>('a'+i), itemid(Player.pack[i])));
     }
     menu->load(lines);
     menu->get_player_input();
@@ -2159,7 +2159,8 @@ object *find_first_pack_obj(int slot)
   return nullptr;
 }
 
-const std::array<std::string, MAXITEMS> SLOT_NAMES {
+constexpr std::array SLOT_NAMES
+{
   "Up in Air     ",
   "Ready Hand    ",
   "Weapon Hand   ",
@@ -2181,22 +2182,22 @@ const std::array<std::string, MAXITEMS> SLOT_NAMES {
 void print_inventory_menu(Symbol item_type = NULL_ITEM)
 {
   std::vector<std::string> lines;
+  std::string line;
   for(size_t i = 1; i < SLOT_NAMES.size(); ++i)
   {
-    std::string line;
     object *item = Player.possessions[i];
 
     bool wildcard = (item_type == NULL_ITEM || item_type == CASH);
     if((item && (item->objchar == item_type || wildcard)) ||
         (!item && wildcard && find_first_pack_obj(i)))
     {
-      line += std::string(1, index_to_key(i)) + " - ";
+      line = std::format("{} - ", index_to_key(i));
     }
     else
     {
-      line += "    ";
+      line = "    ";
     }
-    line += SLOT_NAMES[i] + ": " + (item ? itemid(item) : "-");
+    line += std::format("{}: {}", SLOT_NAMES[i], (item ? itemid(item) : "-"));
     lines.emplace_back(line);
   }
   menu->load(lines);

@@ -151,7 +151,8 @@ void callitem(void);
 void closedoor(void);
 void disarm(void);
 void downstairs(void);
-void drop(void);
+void drop_equipped_item(void);
+void drop_pack_item(void);
 void eat(void);
 void floor_inv(void);
 void give(void);
@@ -378,7 +379,7 @@ void make_mansion_npc(int, int);
 
 void        do_inventory_control(void);
 int         key_to_index(signed char);
-signed char index_to_key(int);
+char        index_to_key(int);
 long        get_money(long);
 const char *cashstr(void);
 std::string itemid(pob);
