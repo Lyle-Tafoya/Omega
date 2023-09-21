@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <format>
 #include <list>
