@@ -34,7 +34,9 @@ definitions in the following section. */
    This might usually be "/usr/games/lib/omegalib/", for unix,
    or something like "c:\\games\\omega\\omegalib\\" for msdos */
 
-#define OMEGALIB            "./lib/"
+#ifndef OMEGALIB
+#  define OMEGALIB            "./lib/"
+#endif
 
 /* Comment the following line out if you want users to be able to override */
 /* the OMEGALIB define, above, by setting the environment variable OMEGALIB */
@@ -48,7 +50,9 @@ definitions in the following section. */
 
 /* set WIZARD to maintainers's username */
 
-#define WIZARD              "wtanksle"
+#ifndef WIZARD
+#  define WIZARD            "wtanksle"
+#endif
 
 /* If CATCH_SIGNALS is set to 1, will not dump core, nicer for players. */
 /* dbx still intercepts the signals first, so it's ok for debugging */
