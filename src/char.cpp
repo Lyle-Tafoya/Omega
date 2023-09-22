@@ -31,6 +31,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern scrolling_buffer message_buffer;
 extern void enable_attr(WINDOW *, attr_t);
 extern void queue_message(const std::string &message);
+extern void expand_message_window();
+extern void shrink_message_window();
 
 std::string get_username()
 {
@@ -102,6 +104,7 @@ void initplayer()
   Player.patron    = 0;
   Player.alignment = 0;
   Player.cash      = 250;
+  expand_message_window();
   if((fd = omegarc_check()) != NULL)
   {
     fread((char *)&i, sizeof(int), 1, fd);
@@ -137,6 +140,7 @@ void initplayer()
   strcpy(Player.meleestr, "ACBC");
   calc_melee();
   ScreenOffset = -1000; /* to force a redraw */
+  shrink_message_window();
 }
 
 FILE *omegarc_check()
@@ -174,6 +178,7 @@ void initstats()
            "directory? [yn] ");
     if(ynq1() == 'y')
     {
+      shrink_message_window();
       save_omegarc();
     }
   }
