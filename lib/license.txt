@@ -16,6 +16,9 @@ Permission for this change was received from:
   Erik Max Francis          - August 24th, 2023 - email
   Robert Rendell            - August 24th, 2023 - email
 
+Special thanks to Josh Backstein (https://github.com/joshbackstein) for helping
+to find and contact these contributors.
+
 ATTENTION:
 At the time this project was relicensed to GPLv3, it was my belief that
 permission was only needed from Laurence Brothers due to a clause in his
@@ -33,6 +36,21 @@ legal expert advises otherwise.
 A list of known contributors who I have not yet received permission from:
   William Tanksley
   Sheldon Simms
+  David Gibbs
+  Alan L. Bostick
+  William Fang
+  Djuara Kurniawan
+  Alan Light
+  John O'Hare
+  Daniel Phillips
+  Ian Richards
+  Kevin W. Thomas
+  John Tomicich
 
-Special thanks to Josh Backstein (https://github.com/joshbackstein) for helping
-to find and contact these contributors.
+A list of possible contributors who I have not yet been in contact with:
+  John Green
+  Daniel Packman
+  Tero Jyri Michael Pelander
+  Rupert G. Goldie
+  Chris Herborth
+  Charles William Swiger
