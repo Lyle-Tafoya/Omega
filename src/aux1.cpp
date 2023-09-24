@@ -248,7 +248,7 @@ int p_moveable(int x, int y)
     return false;
   }
   else if(optionp(CONFIRM, Player) &&
-          !(Player.status[LEVITATING] && Level->site[x][y].p_locf > LEVITATION_AVOIDANCE))
+          !(Player.status[LEVITATING] && Level->site[x][y].p_locf > LEVITATION_AVOIDANCE && Level->site[x][y].locchar != HEDGE))
   {
     if((Level->site[x][y].locchar == HEDGE) || (Level->site[x][y].locchar == LAVA) ||
        (Level->site[x][y].locchar == FIRE) || (Level->site[x][y].locchar == WHIRLWIND) ||
