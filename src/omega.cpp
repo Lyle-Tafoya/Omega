@@ -25,6 +25,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <ctime>
 #include <filesystem>
+#include <format>
 #include <random>
 #ifdef PDC_GL_BUILD
 extern "C" {
@@ -41,6 +42,7 @@ extern void msdos_init();
 #endif
 
 extern std::mt19937 generator;
+extern std::string get_username();
 
 /* most globals originate in omega.c */
 
@@ -185,20 +187,12 @@ void initrand(int environment, int level)
   generator.seed(seed);
 }
 
-bool game_restore(int argc, char *argv[])
+bool game_restore()
 {
-  char savestr[80];
-  if(argc == 2)
+  std::string save_file_name = std::format("{}saves/{}.sav", Omegalib, get_username());
+  if(std::filesystem::exists(save_file_name) && restore_game(save_file_name))
   {
-    strcpy(savestr, argv[1]);
-    bool ok = restore_game(savestr);
-    if(!ok)
-    {
-      endgraf();
-      printf("Try again with the right save file, luser!\n");
-      exit(0);
-    }
-    std::filesystem::remove(savestr);
+    std::filesystem::remove(save_file_name);
     return true;
   }
   else
@@ -209,7 +203,7 @@ bool game_restore(int argc, char *argv[])
 
 void omega_title();
 
-int main(int argc, char *argv[])
+int main()
 {
 #ifdef PDC_GL_BUILD
   putenv("PDC_COLS=106");
@@ -285,7 +279,7 @@ int main(int argc, char *argv[])
   showscores();
 
   /* game restore attempts to restore game if there is an argument */
-  bool continuing = game_restore(argc, argv);
+  bool continuing = game_restore();
 
   /* monsters initialized in game_restore if game is being restored */
   /* items initialized in game_restore if game is being restored */

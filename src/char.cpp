@@ -49,7 +49,7 @@ std::string get_username()
   return "pcuser";
 }
 
-std::string_view get_home_path()
+std::string get_home_path()
 {
   char *home_path = getenv("HOME");
   if(home_path)

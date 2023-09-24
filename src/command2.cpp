@@ -26,7 +26,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <filesystem>
 #include <format>
+#include <iostream>
 #include <list>
 #include <thread>
 #include <string>
@@ -36,6 +38,7 @@ extern void item_use(object *);
 extern interactive_menu *menu;
 extern void queue_message(const std::string &);
 extern void append_message(const std::string &, bool);
+extern std::string get_username();
 
 /* no op a turn.... */
 void rest()
@@ -1290,37 +1293,30 @@ void save(int force)
     print1("Confirm Save? [yn] ");
     ok = (ynq1() == 'y');
   }
+  std::string save_file_directory{std::format("{}saves", Omegalib)};
+  if(ok)
+  {
+    if(!std::filesystem::exists(save_file_directory))
+    {
+      if(!std::filesystem::create_directory(save_file_directory))
+      {
+        queue_message(std::format("Cannot create save file directory: {}", save_file_directory));
+        ok = false;
+      }
+    }
+  }
   if(force || ok)
   {
-    print1("Enter savefile name: ");
-    std::string file_name = msgscanstring();
-    if(file_name.empty())
+    std::string file_name = std::format("{}/{}.sav", save_file_directory, get_username());
+    if(save_game(file_name))
     {
-      print1("No save file entered - save aborted.");
-      ok = false;
+      endgraf();
+      std::cout << "Bye!" << std::endl;
+      exit(0);
     }
-    for(char c : file_name)
+    else
     {
-      if(!isprint(c) || isspace(c))
-      {
-        print1("Illegal character '" + std::string(1, c) + "' in filename - Save aborted.");
-        ok = false;
-        break;
-      }
-    }
-    if(ok)
-    {
-      if(save_game(file_name.c_str()))
-      {
-        print3("Bye!");
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        endgraf();
-        exit(0);
-      }
-      else
-      {
-        print1("Save Aborted.");
-      }
+      print1("Save Aborted.");
     }
   }
   if(force)

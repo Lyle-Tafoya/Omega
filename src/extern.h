@@ -28,8 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 /* omega.cpp functions */
 
-int  main(int, char *[]);
-bool game_restore(int, char *[]);
+bool game_restore();
 void init_world(void);
 void inititem(int);
 void initrand(int, int);
@@ -801,7 +800,7 @@ void make_hp(pob);
 /* save.cpp functions */
 
 bool ok_outdated(int);
-bool restore_game(char *);
+bool restore_game(const std::string &);
 void restore_hiscore_npc(pmt, int);
 pob  restore_item(FILE *, int);
 pol  restore_itemlist(FILE *, int);
@@ -809,7 +808,7 @@ void restore_country(FILE *, int);
 void restore_level(FILE *, int);
 void restore_monsters(FILE *, plv, int);
 void restore_player(FILE *, int);
-bool save_game(const char *);
+bool save_game(const std::string &);
 bool save_country(FILE *);
 bool save_item(FILE *, pob);
 bool save_itemlist(FILE *, pol);

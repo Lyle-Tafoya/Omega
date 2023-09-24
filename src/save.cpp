@@ -28,6 +28,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
+extern void queue_message(const std::string &message);
+
 /*Various functions for doing game saves and restores */
 /*The game remembers various player information, the city level,
 the country level, and the last or current dungeon level */
@@ -39,37 +41,27 @@ the country level, and the last or current dungeon level */
    The player, the city level, and the current dungeon level are saved.
 */
 
-bool save_game(const char *savestr)
+bool save_game(const std::string &save_file_name)
 {
-  FILE *fd;
 #ifdef SAVE_LEVELS
   int tmpdepth;
 #endif
   int i;
-  bool writeok = true;
   plv current, save;
 
-  if(std::filesystem::exists(savestr))
+  bool writeok = true;
+  if(std::filesystem::exists(save_file_name))
   {
-    if(std::filesystem::is_regular_file(savestr))
-    {
-      mprint(" Overwrite old file?");
-      writeok = (ynq() == 'y');
-    }
-    else
-    {
-      writeok = false;
-    }
+    queue_message( "Save file already exists. Overwrite it? [yn] ");
+    writeok = (ynq() == 'y');
   }
-  if(writeok)
+  FILE *fd = fopen(save_file_name.c_str(), "wb");
+  if(!fd)
   {
-    fd = fopen(savestr, "wb");
-    if(!fd)
-    {
-      writeok = false;
-      mprint(" Error opening file.");
-    }
+    writeok = false;
+    queue_message(" Error opening file.");
   }
+
   if(!writeok)
   {
     print2("Save aborted.");
@@ -135,14 +127,14 @@ bool save_game(const char *savestr)
       print1("Something didn't work... save aborted.");
     }
   }
-  return (writeok);
+  return writeok;
 }
 
 /* saves game on SIGHUP */
 void signalsave(int)
 {
-  save_game("Omega.Sav");
-  print1("Signal - Saving file 'Omega.Sav'.");
+  save_game("Omega.sav");
+  print1("Signal - Saving file 'Omega.sav'.");
   endgraf();
   exit(0);
 }
@@ -521,7 +513,7 @@ bool ok_outdated(int savefile_version)
    check on validity of save file, etc.
    return true if game restored, false otherwise */
 
-bool restore_game(char *savestr)
+bool restore_game(const std::string &savestr)
 {
   int   i, version;
   FILE *fd;
@@ -533,7 +525,7 @@ bool restore_game(char *savestr)
     return false;
   }
 
-  fd = fopen(savestr, "rb");
+  fd = fopen(savestr.c_str(), "rb");
 
   if(!fd)
   {
