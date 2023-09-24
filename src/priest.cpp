@@ -26,6 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
+extern void queue_message(const std::string &message);
 
 /* prayer occurs at altars, hence name of function */
 void l_altar()
@@ -66,8 +67,18 @@ void l_altar()
       print1("This oaken altar is ornately engraved with leaves.");
       break;
   }
-  print2("Worship at this altar? [yn] ");
-  if(ynq2() == 'y')
+  bool confirm;
+  if(optionp(PARANOID_CONFIRM, Player))
+  {
+    queue_message("Worship at this altar? (yes) [no] ");
+    confirm = (msgscanstring() == "yes");
+  }
+  else
+  {
+    queue_message("Worship at this altar? [yn] ");
+    confirm = (ynq() == 'y');
+  }
+  if(confirm)
   {
     if(Player.rank[PRIESTHOOD] == 0)
     {
