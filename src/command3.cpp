@@ -939,12 +939,12 @@ void tacoptions()
 /* Do the Artful Dodger trick */
 void pickpocket()
 {
-  int             dx, dy, index = 0;
+  int             dx, dy;
   struct monster *m;
 
   mprint("Pickpocketing --");
 
-  index = getdir();
+  int index = getdir();
 
   if(index == ABORT)
   {
@@ -955,8 +955,7 @@ void pickpocket()
     dx = Dirs[0][index];
     dy = Dirs[1][index];
 
-    if((!inbounds(Player.x + dx, Player.y + dy)) ||
-       (Level->site[Player.x + dx][Player.y + dy].creature == NULL))
+    if(!inbounds(Player.x + dx, Player.y + dy) || !Level->site[Player.x + dx][Player.y + dy].creature)
     {
       print3("There's nothing there to steal from!!!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -980,22 +979,31 @@ void pickpocket()
           send_to_jail();
         }
       }
-      else if(m->possessions == NULL)
+      else
       {
-        mprint("You couldn't find anything worth taking!");
-        mprint("But you managed to annoy it...");
-        m_status_set(*m, HOSTILE);
-      }
-      else if(Player.dex * 5 + Player.rank[THIEVES] * 20 + random_range(100) >
-              random_range(100) + m->level * 20)
-      {
-        mprint("You successfully complete your crime!");
-        mprint("You stole:");
-        mprint(itemid(m->possessions->thing));
-        Player.alignment--;
-        gain_experience(m->level * m->level);
-        gain_item(m->possessions->thing);
-        m->possessions = m->possessions->next;
+        bool success = (Player.dex*5 + Player.rank[THIEVES]*20 - m->level*20) > random_range(100);
+        if(!m->possessions)
+        {
+          queue_message("You couldn't find anything worth taking!");
+        }
+        else if(success)
+        {
+          queue_message(std::format("You stole: {}", itemid(m->possessions->thing)));
+          Player.alignment--;
+          gain_experience(m->level * m->level);
+          gain_item(m->possessions->thing);
+          m->possessions = m->possessions->next;
+        }
+        else
+        {
+          queue_message("You fail to obtain anything.");
+        }
+        bool caught = (Player.dex*4 + Player.rank[THIEVES]*20 - m->level*10) < random_range(100);
+        if(caught && (!Player.status[INVISIBLE] || random_range(2)))
+        {
+          queue_message("You manage to annoy it...");
+          m_status_set(*m, HOSTILE);
+        }
       }
     }
   }
