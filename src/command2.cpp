@@ -1215,10 +1215,11 @@ void bash_item()
     obj = Player.possessions[item];
     if(Player.str + random_range(20) > obj->fragility + random_range(20))
     {
+      int item_level = obj->level;
       if(damage_item(obj) && Player.alignment < 0)
       {
         print2("That was fun....");
-        gain_experience(obj->level * obj->level * 5);
+        gain_experience(item_level * item_level * 5);
       }
     }
     else
