@@ -764,7 +764,7 @@ void p_drown()
               {
                 p_drop_at(Player.x, Player.y, Player.pack[i]->number, Player.pack[i]);
               }
-              free((char *)Player.pack[i]);
+              free(Player.pack[i]);
               Player.pack[i] = NULL;
             }
           }

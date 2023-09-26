@@ -97,7 +97,7 @@ void m_pulse(struct monster *m)
         m_pickup(m, Level->site[m->x][m->y].things->thing);
         prev                           = Level->site[m->x][m->y].things;
         Level->site[m->x][m->y].things = Level->site[m->x][m->y].things->next;
-        free((char *)prev);
+        free(prev);
       }
     }
     /* prevents monsters from casting spells from other side of dungeon */

@@ -550,7 +550,7 @@ void givemonster(struct monster *m, struct object *o)
         {
           append_message("...and now seems satiated.");
         }
-        free((char *)o);
+        free(o);
       }
       else
       {
@@ -607,7 +607,7 @@ void dispose_lost_objects(int n, pob obj)
   }
   if(obj->number < 1)
   {
-    free((char *)obj);
+    free(obj);
   }
 }
 
@@ -844,7 +844,7 @@ void gain_item(object *o)
   {
     print2("You gained some cash.");
     Player.cash += o->basevalue;
-    free((char *)o);
+    free(o);
     dataprint();
   }
   else if(merge_item_with_inventory(o))
@@ -1392,7 +1392,7 @@ int find_and_remove_item(int id, int chargeval)
           Player.pack[i]->number--;
           if(Player.pack[i]->number == 0)
           {
-            free((char *)Player.pack[i]);
+            free(Player.pack[i]);
             Player.pack[i] = NULL;
           }
           found = true;
@@ -1420,7 +1420,7 @@ void lose_all_items()
   {
     if(Player.pack[i] != NULL)
     {
-      free((char *)Player.pack[i]);
+      free(Player.pack[i]);
     }
     Player.pack[i] = NULL;
   }

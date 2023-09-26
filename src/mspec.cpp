@@ -666,7 +666,7 @@ void m_sp_raise(struct monster *m)
             summon(-1, Level->site[x][y].things->thing->charge);
             t                        = Level->site[x][y].things;
             Level->site[x][y].things = Level->site[x][y].things->next;
-            free((char *)t);
+            free(t);
           }
         }
       }

@@ -338,7 +338,7 @@ void l_thieves_guild()
                     {
                       Objects[Player.pack[i]->id].uniqueness = UNIQUE_UNMADE;
                     }
-                    free((char *)Player.pack[i]);
+                    free(Player.pack[i]);
                     Player.pack[i] = NULL;
                   }
                   calc_melee();

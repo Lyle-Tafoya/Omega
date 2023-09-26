@@ -281,7 +281,7 @@ void buyfromstock(int base, int numitems)
       if(Player.cash < price)
       {
         append_message("Why not try again some time you have the cash?", true);
-        free((char *)newitem);
+        free(newitem);
       }
       else
       {
@@ -292,7 +292,7 @@ void buyfromstock(int base, int numitems)
     }
     else
     {
-      free((char *)newitem);
+      free(newitem);
     }
   }
 }
@@ -1365,7 +1365,7 @@ void l_pawn_shop()
           Objects[Pawnitems[0]->id].uniqueness = UNIQUE_UNMADE;
         }
         /* could turn up anywhere, really :) */
-        free((char *)Pawnitems[0]);
+        free(Pawnitems[0]);
         Pawnitems[0] = NULL;
       }
       for(i = 0; i < PAWNITEMS - 1; i++)
@@ -1427,7 +1427,7 @@ void l_pawn_shop()
           {
             append_message("Hmm, how did that junk get on my shelves?", true);
             append_message("I'll just remove it.");
-            free((char *)Pawnitems[i]);
+            free(Pawnitems[i]);
             Pawnitems[i] = NULL;
           }
           else
@@ -1478,7 +1478,7 @@ void l_pawn_shop()
                 item_unequip(Player.possessions[i]);
               }
               Player.cash += number * price;
-              free((char *)Pawnitems[0]);
+              free(Pawnitems[0]);
               for(j = 0; j < PAWNITEMS - 1; j++)
               {
                 Pawnitems[j] = Pawnitems[j + 1];
@@ -1509,7 +1509,7 @@ void l_pawn_shop()
               if(number > 0)
               {
                 Player.cash += number * price;
-                free((char *)Pawnitems[0]);
+                free(Pawnitems[0]);
                 for(j = 0; j < PAWNITEMS - 1; j++)
                 {
                   Pawnitems[j] = Pawnitems[j + 1];
@@ -1521,7 +1521,7 @@ void l_pawn_shop()
                 Player.pack[i]->number -= number;
                 if(Player.pack[i]->number < 1)
                 {
-                  free((char *)Player.pack[i]);
+                  free(Player.pack[i]);
                   Player.pack[i] = NULL;
                 }
                 dataprint();

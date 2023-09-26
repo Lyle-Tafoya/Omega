@@ -1495,7 +1495,7 @@ void movepincountry(int dx, int dy)
         {
           if(Player.pack[i] != NULL)
           {
-            free((char *)Player.pack[i]);
+            free(Player.pack[i]);
           }
           Player.pack[i] = NULL;
         }

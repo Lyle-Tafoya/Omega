@@ -87,7 +87,7 @@ pob create_object(int itemlevel)
           ((o->level < itemlevel + random_range(3)) || (random_range(100) == 23)));
     if(!ok)
     {
-      free((char *)o);
+      free(o);
     }
   }
   if(o->uniqueness == UNIQUE_UNMADE)
