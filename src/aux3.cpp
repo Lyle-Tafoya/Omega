@@ -28,7 +28,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cassert>
-#include <cstring>
+#include <cctype>
+#include <format>
 #include <string>
 #include <vector>
 
@@ -948,34 +949,36 @@ std::string countryid(Symbol terrain)
   }
 }
 
-static const char *sitenames[] = {/* alphabetical listing */
-                                  "alchemist",
-                                  "arena",
-                                  "armorer",
-                                  "bank",
-                                  "brothel",
-                                  "casino",
-                                  "castle",
-                                  "city gates",
-                                  "collegium magii",
-                                  "condo",
-                                  "department of public works",
-                                  "diner",
-                                  "explorers' club",
-                                  "fast food",
-                                  "gymnasium",
-                                  "healer",
-                                  "hospice",
-                                  "les crapuleux",
-                                  "library",
-                                  "mercenary guild",
-                                  "oracle",
-                                  "order of paladins",
-                                  "pawn shop",
-                                  "sorcerors' guild ",
-                                  "tavern",
-                                  "temple",
-                                  "thieves' guild"};
+const std::string sitenames[]
+{
+  "alchemist",
+  "arena",
+  "armorer",
+  "bank",
+  "brothel",
+  "casino",
+  "castle",
+  "city gates",
+  "collegium magii",
+  "condo",
+  "department of public works",
+  "diner",
+  "explorers' club",
+  "fast food",
+  "gymnasium",
+  "healer",
+  "hospice",
+  "les crapuleux",
+  "library",
+  "mercenary guild",
+  "oracle",
+  "order of paladins",
+  "pawn shop",
+  "sorcerors' guild ",
+  "tavern",
+  "temple",
+  "thieves' guild"
+};
 
 static int sitenums[] = {/* the order matches sitenames[] */
                          L_ALCHEMIST, L_ARENA,       L_ARMORER,      L_BANK,   L_BROTHEL,   L_CASINO,
@@ -993,7 +996,7 @@ std::vector<std::string> known_sites(int first, int last)
     if(CitySiteList[sitenums[i] - CITYSITEBASE][0])
     {
       printed = true;
-      lines.emplace_back(std::string("  ") + sitenames[i]);
+      lines.emplace_back(std::format("  {}", sitenames[i]));
     }
   }
   if(!printed)
@@ -1005,12 +1008,10 @@ std::vector<std::string> known_sites(int first, int last)
 
 int parsecitysite()
 {
-  char   prefix[80];
-  int    found = 0;
-  int    f, l;
+  std::string prefix;
+  bool   found          = false;
   int    first          = 0;
   int    last           = NUMCITYSITES - 1;
-  size_t pos            = 0;
   bool   menu_displayed = false;
   int    player_input;
   append_message("", true);
@@ -1025,89 +1026,88 @@ int parsecitysite()
     {
       player_input = mgetc();
     }
-    if(player_input == KEY_BACKSPACE || player_input == '\b' || player_input == DELETE || player_input == KEY_DC)
+    switch(player_input)
     {
-      if(pos > 0)
-      {
-        prefix[--pos] = '\0';
-        player_input  = prefix[pos - 1];
-        f             = first;
-        while(f >= 0 && !strncmp(prefix, sitenames[f], pos))
+      case KEY_BACKSPACE:
+      case DELETE:
+      case KEY_DC:
+      case '\b':
+        if(!prefix.empty())
         {
-          if(CitySiteList[sitenums[f] - CITYSITEBASE][0])
+          prefix.pop_back();
+          for(int f = first; f >= 0 && sitenames[f].starts_with(prefix); --f)
           {
-            first = f;
+            if(CitySiteList[sitenums[f] - CITYSITEBASE][0])
+            {
+              first = f;
+            }
           }
-          --f;
+          for(int l = last; l < NUMCITYSITES && sitenames[l].starts_with(prefix); ++l)
+          {
+            if(CitySiteList[sitenums[l] - CITYSITEBASE][0])
+            {
+              last = l;
+            }
+          }
+          if(found)
+          {
+            found = false;
+          }
+          message_buffer.replace_last(prefix);
         }
-        l = last;
-        while(l < NUMCITYSITES && !strncmp(prefix, sitenames[l], pos))
+        if(prefix.empty())
         {
-          if(CitySiteList[sitenums[l] - CITYSITEBASE][0])
-          {
-            last = l;
-          }
-          ++l;
+          first = 0;
+          last  = NUMCITYSITES - 1;
+          found = false;
+        }
+        break;
+      case ESCAPE:
+        message_buffer.replace_last("_ Move cancelled.");
+        xredraw();
+        return ABORT;
+      case '?':
+        menu_displayed = true;
+        break;
+      case '\n':
+        break;
+      default:
+        if(std::isupper(player_input))
+        {
+          player_input = std::tolower(player_input);
         }
         if(found)
         {
-          found = 0;
+          continue;
         }
+        int f = first;
+        while(f < NUMCITYSITES && (!CitySiteList[sitenums[f] - CITYSITEBASE][0] ||
+             sitenames[f].length() < prefix.length() ||
+             sitenames[f][prefix.length()] < player_input))
+        {
+          ++f;
+        }
+        int l = last;
+        while(l >= 0 && (!CitySiteList[sitenums[l] - CITYSITEBASE][0] ||
+             sitenames[l].length() < prefix.length() ||
+             sitenames[l][prefix.length()] > player_input))
+        {
+          --l;
+        }
+        if(l < f)
+        {
+          continue;
+        }
+        prefix.push_back(player_input);
         message_buffer.replace_last(prefix);
-      }
-      if(pos == 0)
-      {
-        first = 0;
-        last  = NUMCITYSITES - 1;
-        found = 0;
-      }
-    }
-    else if(player_input == ESCAPE)
-    {
-      message_buffer.replace_last("_ Move cancelled.");
-      xredraw();
-      return ABORT;
-    }
-    else if(player_input == '?')
-    {
-      menu_displayed = true;
-    }
-    else if(player_input != '\n')
-    {
-      if(player_input >= 'A' && player_input <= 'Z')
-      {
-        player_input += 'a' - 'A';
-      }
-      if(found)
-      {
-        continue;
-      }
-      f = first;
-      l = last;
-      while(f < NUMCITYSITES && (!CitySiteList[sitenums[f] - CITYSITEBASE][0] ||
-                                 strlen(sitenames[f]) < pos || sitenames[f][pos] < player_input))
-      {
-        ++f;
-      }
-      while(l >= 0 && (!CitySiteList[sitenums[l] - CITYSITEBASE][0] || strlen(sitenames[l]) < pos ||
-                       sitenames[l][pos] > player_input))
-      {
-        --l;
-      }
-      if(l < f)
-      {
-        continue;
-      }
-      prefix[pos++] = player_input;
-      prefix[pos]   = '\0';
-      message_buffer.replace_last(prefix);
-      first = f;
-      last  = l;
-      if(first == last && !found)
-      { /* unique name */
-        found = 1;
-        message_buffer.replace_last(sitenames[first]);
-      }
+        first = f;
+        last  = l;
+        if(first == last && !found)
+        { /* unique name */
+          found = true;
+          message_buffer.replace_last(sitenames[first]);
+        }
+        break;
     }
   } while(player_input != '\n');
   xredraw();
