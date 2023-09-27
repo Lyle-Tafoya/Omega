@@ -36,14 +36,14 @@ plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 void free_dungeon()
 {
 #ifdef SAVE_LEVELS
-  if(Dungeon != NULL)
+  if(Dungeon)
   {
     kill_levels(std::format("om{}.*.lev", Dungeon->environment));
   }
 #else
   plv tlv;
 
-  while(Dungeon != NULL)
+  while(Dungeon)
   {
     tlv     = Dungeon;
     Dungeon = Dungeon->next;
@@ -56,7 +56,7 @@ void free_dungeon()
 void clear_level(struct level *dungeon_level)
 {
   int i, j;
-  if(dungeon_level != nullptr)
+  if(dungeon_level)
   {
     dungeon_level->generated    = false;
     dungeon_level->numrooms     = 0;
@@ -84,14 +84,14 @@ void clear_level(struct level *dungeon_level)
 }
 
 /* Looks for level tolevel in current dungeon which is named by
-Dungeon, which may be NULL. If the level is found, and rewrite_level
+Dungeon, which may be nullptr. If the level is found, and rewrite_level
 is false, and the level has already been generated, nothing happens
 beyond Level being set correctly. Otherwise the level is recreated
 from scratch */
 
 void change_level(char fromlevel, char tolevel, char rewrite_level)
 {
-  struct level *thislevel = NULL;
+  struct level *thislevel = nullptr;
   Player.sx               = -1;
   Player.sy               = -1; /* sanctuary effect dispelled */
 #ifdef SAVE_LEVELS
@@ -100,7 +100,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
   thislevel = findlevel(Dungeon, tolevel);
 #endif
   deepest[Current_Environment] = std::max(deepest[Current_Environment], static_cast<int>(tolevel));
-  if(thislevel == NULL)
+  if(!thislevel)
   {
 #ifdef SAVE_LEVELS
     thislevel = &TheLevel;
@@ -185,16 +185,16 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
 
 #ifndef SAVE_LEVELS
 /* tries to find the level of depth levelnum in dungeon; if can't find
-   it returns NULL */
+   it returns nullptr */
 plv findlevel(struct level *dungeon, char levelnum)
 {
-  if(dungeon == nullptr)
+  if(!dungeon)
   {
-    return (nullptr);
+    return nullptr;
   }
   else
   {
-    while((dungeon->next != nullptr) && (dungeon->depth != levelnum))
+    while(dungeon->next && (dungeon->depth != levelnum))
     {
       dungeon = dungeon->next;
     }
@@ -205,7 +205,7 @@ plv findlevel(struct level *dungeon, char levelnum)
     }
     else
     {
-      return (nullptr);
+      return nullptr;
     }
   }
 }
@@ -566,7 +566,7 @@ void cavern_level()
     {
       findspace(&tx, &ty, -1);
       Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
-      Level->mlist->next = NULL;
+      Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(GOBLIN_KING)); /* goblin king */
       Level->mlist->m->x = tx;
@@ -579,7 +579,7 @@ void cavern_level()
     {
       findspace(&tx, &ty, -1);
       Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
-      Level->mlist->next = NULL;
+      Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(DEMON_EMP)); /* The dark emp */
       Level->mlist->m->x = tx;
@@ -627,7 +627,7 @@ void sewer_level()
     {
       findspace(&tx, &ty, -1);
       Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
-      Level->mlist->next = NULL;
+      Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(GREAT_WYRM)); /* The Great Wyrm */
       Level->mlist->m->x = tx;

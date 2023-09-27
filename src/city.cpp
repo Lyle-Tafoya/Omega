@@ -48,7 +48,7 @@ void load_city(int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -332,7 +332,7 @@ void load_city(int populate)
   /* make all city monsters asleep, and shorten their wakeup range to 2 */
   /* to prevent players from being molested by vicious monsters on */
   /* the streets */
-  for(ml = Level->mlist; ml != NULL; ml = ml->next)
+  for(ml = Level->mlist; ml; ml = ml->next)
   {
     m_status_reset(*ml->m, AWAKE);
     ml->m->wakeup = 2;
@@ -564,10 +564,10 @@ void resurrect_guards()
 
 void mazesite(int i, int j, int populate)
 {
-  static FILE *fd = NULL;
+  static FILE *fd = nullptr;
   static int   k  = 0;
   static char  site;
-  if(fd == NULL)
+  if(!fd)
   {
     fd   = checkfopen(std::format("{}maze{}.dat", Omegalib, 1+random_range(4)), "rb");
     site = cryptkey("mazes");

@@ -117,7 +117,7 @@ void time_clock(int reset)
 /* remedies occasional defective monsters */
 void fix_phantom(struct monster *m)
 {
-  if(Level->site[m->x][m->y].creature == NULL)
+  if(!Level->site[m->x][m->y].creature)
   {
     mprint("You hear a sound like a sigh of relief....");
     Level->site[m->x][m->y].creature = m;

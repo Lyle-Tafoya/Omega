@@ -237,7 +237,7 @@ void l_thieves_guild()
           count = 0;
           for(i = 1; i < MAXITEMS; i++)
           {
-            if(Player.possessions[i] != NULL)
+            if(Player.possessions[i])
             {
               if(Player.possessions[i]->known < 2)
               {
@@ -247,7 +247,7 @@ void l_thieves_guild()
           }
           for(i = 0; i < Player.packptr; i++)
           {
-            if(Player.pack[i] != NULL)
+            if(Player.pack[i])
             {
               if(Player.pack[i]->known < 2)
               {
@@ -283,7 +283,7 @@ void l_thieves_guild()
           if((char)mcigetc() == 'i')
           {
             i = getitem(NULL_ITEM);
-            if((i == ABORT) || (Player.possessions[i] == NULL))
+            if(i == ABORT || !Player.possessions[i])
             {
               print2("Huh, Is this some kind of set-up?");
             }
@@ -339,7 +339,7 @@ void l_thieves_guild()
                       Objects[Player.pack[i]->id].uniqueness = UNIQUE_UNMADE;
                     }
                     free(Player.pack[i]);
-                    Player.pack[i] = NULL;
+                    Player.pack[i] = nullptr;
                   }
                   calc_melee();
                   dataprint();
@@ -807,7 +807,7 @@ void l_order()
     }
     if(ml)
     {
-      Level->site[ml->m->x][ml->m->y].creature = NULL;
+      Level->site[ml->m->x][ml->m->y].creature = nullptr;
       erase_monster(ml->m);
       ml->m->hp = -1; /* signals "death" -- no credit to player, though */
     }

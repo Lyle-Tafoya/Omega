@@ -33,7 +33,7 @@ void l_water()
 {
   if(!gamestatusp(MOUNTED, GameStatus))
   {
-    if((Player.possessions[O_ARMOR] != NULL))
+    if(Player.possessions[O_ARMOR])
     {
       print1("Your heavy armor drags you under the water!");
       p_drown();
@@ -154,7 +154,7 @@ void l_hedge()
         Player.status[IMMOBILE] += random_range(5) + 1;
         break;
       case 3:
-        if(Player.possessions[O_CLOAK] != NULL)
+        if(Player.possessions[O_CLOAK])
         {
           print2("Your cloak was torn on the brambles!");
           dispose_lost_objects(1, Player.possessions[O_CLOAK]);
@@ -391,7 +391,7 @@ void l_magic_pool()
   }
   else if(possibilities < 80)
   {
-    if(Player.possessions[O_WEAPON_HAND] != NULL)
+    if(Player.possessions[O_WEAPON_HAND])
     {
       print1("You drop your weapon in the pool! It's gone forever!");
       dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
@@ -403,7 +403,7 @@ void l_magic_pool()
   }
   else if(possibilities < 90)
   {
-    if(Player.possessions[O_WEAPON_HAND] != NULL)
+    if(Player.possessions[O_WEAPON_HAND])
     {
       print1("Your weapon leaves the pool with a new edge....");
       Player.possessions[O_WEAPON_HAND]->plus += random_range(10) + 1;
@@ -452,7 +452,7 @@ void l_tactical_exit()
   }
   /* Free up monsters and items, and the level, if not SAVE_LEVELS */
   free_level(Level);
-  Level = NULL;
+  Level = nullptr;
   if((Current_Environment == E_TEMPLE) || (Current_Environment == E_TACTICAL_MAP))
   {
     change_environment(E_COUNTRYSIDE);
@@ -571,7 +571,7 @@ void l_arena_exit()
 {
   resetgamestatus(ARENA_MODE, GameStatus);
   free_level(Level);
-  Level = NULL;
+  Level = nullptr;
   change_environment(E_CITY);
 }
 
@@ -586,7 +586,7 @@ void l_house_exit()
     }
   }
   free_level(Level);
-  Level = NULL;
+  Level = nullptr;
   change_environment(Last_Environment);
 }
 
@@ -850,7 +850,7 @@ void l_void_station()
   print1("You are at the brink of an endless void. Enter it? [yn] ");
   if(ynq() == 'y')
   {
-    if(Level->mlist == NULL)
+    if(!Level->mlist)
     {
       print2("You fall forever. Eventually you die of starvation.");
       while(Player.hp > 0)
@@ -869,7 +869,7 @@ void l_void_station()
       {
         for(i = 0; ((i < MAXITEMS) && (!something)); i++)
         {
-          if(Player.possessions[i] != NULL)
+          if(Player.possessions[i])
           {
             something = true;
           }

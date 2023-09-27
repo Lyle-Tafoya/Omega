@@ -104,7 +104,7 @@ bool save_game(const std::string &save_file_name)
       writeok = false;
     }
 #ifdef SAVE_LEVELS
-    Level = msdos_changelevel(NULL, Current_Environment, tmpdepth);
+    Level = msdos_changelevel(nullptr, Current_Environment, tmpdepth);
 #endif
     for(current = save; current; current = current->next)
     {
@@ -220,7 +220,7 @@ bool save_player(FILE *fd)
 
   if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
   {
-    Player.possessions[O_READY_HAND] = NULL;
+    Player.possessions[O_READY_HAND] = nullptr;
   }
   for(i = 0; i < MAXITEMS; i++)
   {
@@ -333,7 +333,7 @@ bool save_monsters(FILE *fd, pml ml)
   unsigned char type;
 
   /* First count monsters */
-  for(tml = ml; tml != NULL; tml = tml->next)
+  for(tml = ml; tml; tml = tml->next)
   {
     if(tml->m->hp > 0)
     {
@@ -344,7 +344,7 @@ bool save_monsters(FILE *fd, pml ml)
   ok &= (fwrite((char *)&nummonsters, sizeof(int), 1, fd) > 0);
 
   /* Now save monsters */
-  for(tml = ml; tml != NULL; tml = tml->next)
+  for(tml = ml; tml; tml = tml->next)
   {
     if(tml->m->hp > 0)
     {
@@ -388,7 +388,7 @@ bool save_item(FILE *fd, pob o)
   bool          ok = true;
   unsigned char type;
 
-  if(o == NULL)
+  if(!o)
   {
     type = 0xff;
     ok &= (fwrite((char *)&type, sizeof(type), 1, fd) > 0);
@@ -432,12 +432,12 @@ bool save_itemlist(FILE *fd, pol ol)
   pol tol;
   bool ok = 1;
 
-  for(tol = ol; tol != NULL; tol = tol->next)
+  for(tol = ol; tol; tol = tol->next)
   {
     numitems++;
   }
   ok &= (fwrite((char *)&numitems, sizeof(int), 1, fd) > 0);
-  for(tol = ol; tol != NULL; tol = tol->next)
+  for(tol = ol; tol; tol = tol->next)
   {
     ok &= save_item(fd, tol->thing);
   }
@@ -724,13 +724,13 @@ void restore_player(FILE *fd, int version)
   }
 }
 
-/* Restore an item, the first byte tells us if it's NULL, and what strings */
+/* Restore an item, the first byte tells us if it's nullptr, and what strings */
 /* have been saved as different from the typical */
 pob restore_item(FILE *fd, int)
 {
   char          tempstr[80];
   unsigned char type;
-  pob           obj = NULL;
+  pob           obj = nullptr;
 
   fread((char *)&type, sizeof(type), 1, fd);
   if(type != 0xff)
@@ -770,7 +770,7 @@ pob restore_item(FILE *fd, int)
 
 pol restore_itemlist(FILE *fd, int version)
 {
-  pol ol = NULL, cur = NULL, new_pol = NULL;
+  pol ol = nullptr, cur = nullptr, new_pol = nullptr;
   int i, numitems;
   bool firsttime = true;
   fread((char *)&numitems, sizeof(int), 1, fd);
@@ -778,7 +778,7 @@ pol restore_itemlist(FILE *fd, int version)
   {
     new_pol        = ((pol)checkmalloc(sizeof(oltype)));
     new_pol->thing = restore_item(fd, version);
-    new_pol->next  = NULL;
+    new_pol->next  = nullptr;
     if(firsttime == true)
     {
       ol = cur  = new_pol;
@@ -908,8 +908,8 @@ void restore_level(FILE *fd, int version)
     for(; i < run; i++)
     {
       fread((char *)&Level->site[i][j], sizeof(struct location), 1, fd);
-      Level->site[i][j].creature = NULL;
-      Level->site[i][j].things   = NULL;
+      Level->site[i][j].creature = nullptr;
+      Level->site[i][j].things   = nullptr;
     }
     fread((char *)&i, sizeof(int), 1, fd);
     fread((char *)&j, sizeof(int), 1, fd);
@@ -1023,13 +1023,13 @@ void restore_hiscore_npc(pmt npc, int npcid)
 
 void restore_monsters(FILE *fd, plv level, int version)
 {
-  pml           ml = NULL;
+  pml           ml = nullptr;
   int           i, nummonsters;
   char          tempstr[80];
   int           temp_x, temp_y;
   unsigned char type;
 
-  level->mlist = NULL;
+  level->mlist = nullptr;
 
   fread((char *)&nummonsters, sizeof(int), 1, fd);
 
@@ -1037,7 +1037,7 @@ void restore_monsters(FILE *fd, plv level, int version)
   {
     ml       = ((pml)checkmalloc(sizeof(mltype)));
     ml->m    = ((pmt)checkmalloc(sizeof(montype)));
-    ml->next = NULL;
+    ml->next = nullptr;
     fread((char *)ml->m, sizeof(montype), 1, fd);
     if(ml->m->id == HISCORE_NPC)
     {

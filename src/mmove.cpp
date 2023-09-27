@@ -300,7 +300,7 @@ void m_vanish(struct monster *m)
   {
     queue_message(std::format("{} vanishes in the twinkling of an eye!", m->monstring));
   }
-  Level->site[m->x][m->y].creature = NULL;
+  Level->site[m->x][m->y].creature = nullptr;
   erase_monster(m);
   m->hp = -1; /* signals "death" -- no credit to player, though */
 }
@@ -311,7 +311,7 @@ void m_teleport(struct monster *m)
   erase_monster(m);
   if(m_statusp(*m, AWAKE))
   {
-    Level->site[m->x][m->y].creature = NULL;
+    Level->site[m->x][m->y].creature = nullptr;
     putspot(m->x, m->y, getspot(m->x, m->y, false));
     findspace(&(m->x), &(m->y), -1);
     Level->site[m->x][m->y].creature = m;

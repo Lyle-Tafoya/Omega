@@ -44,7 +44,7 @@ void load_arena()
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -94,7 +94,7 @@ void load_arena()
   m_status_set(*Arena_Monster, AWAKE);
   Level->mlist       = (pml)checkmalloc(sizeof(mltype));
   Level->mlist->m    = Arena_Monster;
-  Level->mlist->next = NULL;
+  Level->mlist->next = nullptr;
   /* hehehehe cackled the dungeon master.... */
   print2("Your opponent holds the only way you can leave!");
   Arena_Monster->hp += Arena_Monster->level * 10;
@@ -116,7 +116,7 @@ void load_circle(int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -264,7 +264,7 @@ void make_prime(int i, int j)
     o              = ((pob)checkmalloc(sizeof(objtype)));
     *o             = Objects[ARTIFACTID + 21];
     ol->thing      = o;
-    ol->next       = NULL;
+    ol->next       = nullptr;
     m->possessions = ol;
   }
 }
@@ -282,7 +282,7 @@ void load_court(int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);

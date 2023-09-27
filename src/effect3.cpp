@@ -55,8 +55,8 @@ void summon(int blessing, int id)
   {
     x       = Player.x + Dirs[0][i];
     y       = Player.y + Dirs[1][i];
-    looking = ((!inbounds(x, y)) || (Level->site[x][y].locchar != FLOOR) ||
-               (Level->site[x][y].creature != NULL));
+    looking = (!inbounds(x, y) || Level->site[x][y].locchar != FLOOR ||
+               Level->site[x][y].creature);
   }
 
   if(!looking)
@@ -158,7 +158,7 @@ void cleanse(int blessing)
     {
       for(i = 0; i < MAXITEMS; i++)
       {
-        if(Player.possessions[i] != NULL)
+        if(Player.possessions[i])
         {
           if((Player.possessions[i]->used) && (Player.possessions[i]->blessing < 0))
           {
@@ -200,7 +200,7 @@ void annihilate(int blessing)
     mprint("Lightning strikes flash all around you!!!");
     for(i = 0; i < 9; i++)
     {
-      if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature != NULL)
+      if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature)
       {
         m_death(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
       }
@@ -219,9 +219,9 @@ void annihilate(int blessing)
     else
     {
       mprint("Thousands of bolts of lightning flash throughout the level!!!");
-      for(ml = Level->mlist; ml != NULL; ml = ml->next)
+      for(ml = Level->mlist; ml; ml = ml->next)
       {
-        if(ml->m != NULL && ml->m->hp > 0)
+        if(ml->m && ml->m->hp > 0)
         {
           m_death(ml->m);
         }
@@ -252,7 +252,7 @@ void sleep_monster(int blessing)
   else if(blessing > 0)
   {
     queue_message("A silence pervades the area.");
-    for(pml ml = Level->mlist; ml != NULL; ml = ml->next)
+    for(pml ml = Level->mlist; ml; ml = ml->next)
     {
       m_status_reset(*ml->m, AWAKE);
       ml->m->wakeup = 0;
@@ -261,7 +261,7 @@ void sleep_monster(int blessing)
   else
   {
     target = Level->site[x][y].creature;
-    if(target != NULL)
+    if(target)
     {
       std::string monster_name;
       if(target->uniqueness == COMMON)
@@ -343,7 +343,7 @@ void aggravate()
 {
   pml tm;
 
-  for(tm = Level->mlist; tm != NULL; tm = tm->next)
+  for(tm = Level->mlist; tm; tm = tm->next)
   {
     m_status_set(*tm->m, AWAKE);
     m_status_set(*tm->m, HOSTILE);
@@ -476,12 +476,12 @@ void disintegrate(int x, int y)
   }
   else if((x == Player.x) && (y == Player.y))
   {
-    if(Player.possessions[O_CLOAK] != NULL)
+    if(Player.possessions[O_CLOAK])
     {
       mprint("Your cloak disintegrates!");
       dispose_lost_objects(1, Player.possessions[O_CLOAK]);
     }
-    else if(Player.possessions[O_ARMOR] != NULL)
+    else if(Player.possessions[O_ARMOR])
     {
       mprint("Your armor disintegrates!");
       dispose_lost_objects(1, Player.possessions[O_ARMOR]);
@@ -499,7 +499,7 @@ void disintegrate(int x, int y)
     {
       setgamestatus(SUPPRESS_PRINTING, GameStatus);
     }
-    if((target = Level->site[x][y].creature) != NULL)
+    if((target = Level->site[x][y].creature))
     {
       if(target->uniqueness == COMMON)
       {
@@ -603,13 +603,13 @@ void disintegrate(int x, int y)
 void acid_cloud()
 {
   mprint("You are caught in an acid cloud!  ");
-  if(Player.possessions[O_CLOAK] != NULL)
+  if(Player.possessions[O_CLOAK])
   {
     (void)damage_item(Player.possessions[O_CLOAK]);
     mprint("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
   }
-  else if(Player.possessions[O_ARMOR] != NULL)
+  else if(Player.possessions[O_ARMOR])
   {
     mprint("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
@@ -655,8 +655,8 @@ void p_teleport(int type)
   else
   {
     setspot(&Player.x, &Player.y);
-    if((Level->site[Player.x][Player.y].locchar != FLOOR) ||
-       (Level->site[Player.x][Player.y].creature != NULL))
+    if(Level->site[Player.x][Player.y].locchar != FLOOR ||
+       Level->site[Player.x][Player.y].creature)
     {
       mprint("You feel deflected.");
       p_teleport(0);
@@ -687,7 +687,7 @@ void apport(int blessing)
   {
     mprint("Apport from:");
     setspot(&x, &y);
-    if(Level->site[x][y].things != NULL)
+    if(Level->site[x][y].things)
     {
       pickup_at(x, y);
       plotspot(x, y, true);
@@ -1011,7 +1011,7 @@ void dispel(int blessing)
       for(i = 0; i < MAXITEMS; i++)
       {
         o = Player.possessions[i];
-        if(o != NULL)
+        if(o)
         {
           if((o->used) && (o->blessing < 0))
           {
@@ -1036,7 +1036,7 @@ void dispel(int blessing)
         }
       }
     }
-    else if(Level->site[x][y].creature != NULL)
+    else if(Level->site[x][y].creature)
     {
       if(Level->site[x][y].creature->level < blessing * 3)
       {
@@ -1141,7 +1141,7 @@ void polymorph(int blessing)
     mprint("But your game is over....");
     p_death("polymorphing oneself");
   }
-  else if((m = Level->site[x][y].creature) == NULL)
+  else if(!(m = Level->site[x][y].creature))
   {
     mprint("Nothing happens.");
   }
@@ -1212,7 +1212,7 @@ void hellfire(int x, int y, int blessing)
     mprint("You have been completely annihilated. Congratulations.");
     p_death("hellfire");
   }
-  else if((m = Level->site[x][y].creature) == NULL)
+  else if(!(m = Level->site[x][y].creature))
   {
     mprint("The gods are angry over your waste of power...");
     level_drain(5, "indiscriminate use of hellfire");
@@ -1237,7 +1237,7 @@ void hellfire(int x, int y, int blessing)
         m->corpsestr = "a greasy spot";
         m->id        = 0;
         free_objlist(m->possessions);
-        m->possessions = NULL;
+        m->possessions = nullptr;
       }
       else
       {
@@ -1260,7 +1260,7 @@ void drain(int blessing)
     mprint("Uh, oh, positive feedback....");
     level_drain(Player.level, "self-vampirism");
   }
-  else if((m = Level->site[x][y].creature) != NULL)
+  else if((m = Level->site[x][y].creature))
   {
     if((blessing > -1) && (!m_immunityp(*m, NEGENERGY)))
     {
@@ -1458,7 +1458,7 @@ void inflict_fear(int x, int y)
       Player.status[AFRAID] += 10;
     }
   }
-  else if((m = Level->site[x][y].creature) != NULL)
+  else if((m = Level->site[x][y].creature))
   {
     std::string monster_name;
     if(m->uniqueness == COMMON)

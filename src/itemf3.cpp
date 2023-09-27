@@ -172,7 +172,7 @@ void i_juggernaut(pob o)
         }
         lreset(x, y, SECRET, *Level);
         lset(x, y, CHANGED, *Level);
-        if(Level->site[x][y].creature != NULL)
+        if(Level->site[x][y].creature)
         {
           if(seen)
           {
@@ -232,7 +232,7 @@ void i_symbol(pob o)
       dataprint();
       for(i = 0; i < MAXITEMS; i++)
       {
-        if(Player.possessions[i] != NULL)
+        if(Player.possessions[i])
         {
           dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
         }
@@ -307,7 +307,7 @@ void i_antioch(pob o)
     print2("Ok, you pull the pin.....");
     print1("What do you count up to? ");
     count = (int)parsenum();
-    if((count < 3) && (Level->site[x][y].creature != NULL))
+    if(count < 3 && Level->site[x][y].creature)
     {
       print1("`Three shall be the number of thy counting....");
       print2("And the number of thy counting shall be three.'");
@@ -329,12 +329,12 @@ void i_antioch(pob o)
       Level->site[x][y].locchar = TRAP;
       Level->site[x][y].p_locf  = L_TRAP_DOOR;
       lset(x, y, CHANGED, *Level);
-      if(Level->site[x][y].creature != NULL)
+      if(Level->site[x][y].creature)
       {
         m_death(Level->site[x][y].creature);
         print2("You are covered with gore.");
       }
-      Level->site[x][y].things = NULL;
+      Level->site[x][y].things = nullptr;
     }
   }
   dispose_lost_objects(1, o);
@@ -517,17 +517,17 @@ void i_orbearth(pob o)
       print3("Your possessions disintegrate!");
       for(i = 0; i < MAXITEMS; i++)
       {
-        if(Player.possessions[i] != NULL)
+        if(Player.possessions[i])
         {
           dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
         }
       }
       for(i = 0; i < MAXPACK; i++)
       {
-        if(Player.pack[i] != NULL)
+        if(Player.pack[i])
         {
           free(Player.pack[i]);
-          Player.pack[i] = NULL;
+          Player.pack[i] = nullptr;
         }
       }
       Player.packptr = 0;
@@ -627,7 +627,7 @@ void i_orbdead(pob)
   print2("You feel not at all like a mage.");
   for(i = 0; i < MAXITEMS; i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
       bool used = Player.possessions[i]->used;
       if(used)

@@ -42,7 +42,7 @@ void drop_money()
 
   /* WDT HACK!  Let me guess -- this is yet another memory leak, right? */
   money = detach_money();
-  if(money != NULL)
+  if(money)
   {
     if(Current_Environment == E_CITY)
     {
@@ -65,7 +65,7 @@ void drop_money()
 pob detach_money()
 {
   long c;
-  pob  cash = NULL;
+  pob  cash = nullptr;
   c         = get_money(Player.cash);
   if(c != ABORT)
   {
@@ -172,7 +172,7 @@ char index_to_key(signed int index)
 int aux_slottable(pob o, int slot)
 {
   int ok = true;
-  if(o == NULL)
+  if(!o)
   {
     ok = false;
   }
@@ -463,7 +463,7 @@ void give_money(struct monster *m)
   pob cash;
 
   cash = detach_money();
-  if(cash == NULL)
+  if(!cash)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
@@ -569,7 +569,7 @@ void givemonster(struct monster *m, struct object *o)
 /* will clear all, not just one of an object. */
 void conform_lost_object(pob obj)
 {
-  if(obj != NULL)
+  if(obj)
   {
     conform_lost_objects(obj->number, obj);
   }
@@ -581,7 +581,7 @@ void dispose_lost_objects(int n, pob obj)
 {
   int i, conformed = false, subtracted = false;
 
-  if(obj == NULL)
+  if(!obj)
   {
     return;
   }
@@ -601,7 +601,7 @@ void dispose_lost_objects(int n, pob obj)
           conform_unused_object(obj);
           conformed = true;
         }
-        Player.possessions[i] = NULL;
+        Player.possessions[i] = nullptr;
       }
     }
   }
@@ -616,7 +616,7 @@ void dispose_lost_objects(int n, pob obj)
 void conform_lost_objects(int n, pob obj)
 {
   int i, conformed = false, subtracted = false;
-  if(obj != NULL)
+  if(obj)
   {
     for(i = 0; i < MAXITEMS; i++)
     {
@@ -634,7 +634,7 @@ void conform_lost_objects(int n, pob obj)
             conform_unused_object(obj);
             conformed = true;
           }
-          Player.possessions[i] = NULL;
+          Player.possessions[i] = nullptr;
         }
       }
     }
@@ -665,14 +665,14 @@ int getitem(Symbol itype)
   char key;
   int  i, k = 0, ok = false, drewmenu = false, found = false;
 
-  found     = ((itype == NULL_ITEM) || ((itype == CASH) && (Player.cash > 0)));
+  found     = (itype == NULL_ITEM || (itype == CASH && Player.cash > 0));
   invstr[0] = 0;
   for(i = 1; i < MAXITEMS; i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
-      if((itype == NULL_ITEM) || (itype == CASH) || (Player.possessions[i]->objchar == itype) ||
-         ((itype == FOOD) && (Player.possessions[i]->objchar == CORPSE)))
+      if(itype == NULL_ITEM || itype == CASH || Player.possessions[i]->objchar == itype ||
+         (itype == FOOD && Player.possessions[i]->objchar == CORPSE))
       {
         found       = true;
         invstr[k++] = index_to_key(i);
@@ -897,15 +897,15 @@ void use_pack_item(int response, int slot)
   {
     Player.pack[i] = Player.pack[i + 1];
   }
-  Player.pack[--Player.packptr] = NULL;
+  Player.pack[--Player.packptr] = nullptr;
 
   if((slot == O_READY_HAND || slot == O_WEAPON_HAND) && twohandedp(item->id))
   {
-    if(Player.possessions[O_READY_HAND] == NULL)
+    if(!Player.possessions[O_READY_HAND])
     {
       Player.possessions[O_READY_HAND] = item;
     }
-    if(Player.possessions[O_WEAPON_HAND] == NULL)
+    if(!Player.possessions[O_WEAPON_HAND])
     {
       Player.possessions[O_WEAPON_HAND] = item;
     }
@@ -1190,8 +1190,8 @@ void drop_from_slot(int slot)
    number value of item and Player.itemweight */
 pob split_item(int num, pob item)
 {
-  pob newitem = NULL;
-  if(item != NULL)
+  pob newitem = nullptr;
+  if(item)
   {
     newitem  = ((pob)checkmalloc(sizeof(objtype)));
     *newitem = *item;
@@ -1227,7 +1227,7 @@ int objequal(struct object *o, struct object *p)
 int slottable(pob o, int slot)
 {
   int ok = true;
-  if(o == NULL)
+  if(!o)
   {
     ok = false;
   }
@@ -1330,10 +1330,10 @@ bool cursed(pob obj)
 int find_item(pob *o, int id, int chargeval)
 {
   int i, found = false;
-  *o = NULL;
+  *o = nullptr;
   for(i = 1; ((i < MAXITEMS) && (!found)); i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
       if((Player.possessions[i]->id == id) &&
          ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
@@ -1347,7 +1347,7 @@ int find_item(pob *o, int id, int chargeval)
   {
     for(i = 0; ((i < Player.packptr) && (!found)); i++)
     {
-      if(Player.pack[i] != NULL)
+      if(Player.pack[i])
       {
         if((Player.pack[i]->id == id) && ((chargeval == -1) || (Player.pack[i]->charge == chargeval)))
         {
@@ -1366,11 +1366,11 @@ int find_item(pob *o, int id, int chargeval)
 int find_and_remove_item(int id, int chargeval)
 {
   int i, found = false;
-  pob o = NULL;
+  pob o = nullptr;
 
   for(i = 1; ((i < MAXITEMS) && (!found)); i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
       if((Player.possessions[i]->id == id) &&
          ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
@@ -1385,7 +1385,7 @@ int find_and_remove_item(int id, int chargeval)
   {
     for(i = 0; ((i < Player.packptr) && (!found)); i++)
     {
-      if(Player.pack[i] != NULL)
+      if(Player.pack[i])
       {
         if((Player.pack[i]->id == id) && ((chargeval == -1) || (Player.pack[i]->charge == chargeval)))
         {
@@ -1393,7 +1393,7 @@ int find_and_remove_item(int id, int chargeval)
           if(Player.pack[i]->number == 0)
           {
             free(Player.pack[i]);
-            Player.pack[i] = NULL;
+            Player.pack[i] = nullptr;
           }
           found = true;
         }
@@ -1410,19 +1410,19 @@ void lose_all_items()
   print1("You notice that you are completely devoid of all possessions.");
   for(i = 0; i < MAXITEMS; i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
       dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
-      Player.possessions[i] = NULL;
+      Player.possessions[i] = nullptr;
     }
   }
   for(i = 0; i < MAXPACK; i++)
   {
-    if(Player.pack[i] != NULL)
+    if(Player.pack[i])
     {
       free(Player.pack[i]);
     }
-    Player.pack[i] = NULL;
+    Player.pack[i] = nullptr;
   }
   Player.packptr = 0;
   calc_melee();
@@ -1456,11 +1456,11 @@ void fixpack()
   int i, tctr = 0;
   for(i = 0; i < MAXPACK; i++)
   {
-    tpack[i] = NULL;
+    tpack[i] = nullptr;
   }
   for(i = 0; i < MAXPACK; i++)
   {
-    if(Player.pack[i] != NULL)
+    if(Player.pack[i])
     {
       tpack[tctr++] = Player.pack[i];
     }

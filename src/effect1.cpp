@@ -342,7 +342,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
       }
     }
   }
-  else if(NULL != (target = Level->site[xx][yy].creature))
+  else if((target = Level->site[xx][yy].creature))
   {
     if(hitp(hit, target->ac))
     {
@@ -511,7 +511,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
           break;
       }
     }
-    if(NULL != (target = Level->site[ex][ey].creature))
+    if((target = Level->site[ex][ey].creature))
     {
       if(los_p(Player.x, Player.y, target->x, target->y))
       {
@@ -583,7 +583,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
 void mondet(int blessing)
 {
   pml ml;
-  for(ml = Level->mlist; ml != NULL; ml = ml->next)
+  for(ml = Level->mlist; ml; ml = ml->next)
   {
     if(ml->m->hp > 0) /* FIXED 12/30/98 DG */
     {
@@ -608,7 +608,7 @@ void objdet(int blessing)
   {
     for(int j = 0; j < LENGTH; ++j)
     {
-      if(Level->site[i][j].things != NULL)
+      if(Level->site[i][j].things)
       {
         if(blessing < 0)
         {
@@ -662,7 +662,7 @@ void identify(int blessing)
     print2("You feel forgetful.");
     for(index = 0; index < MAXITEMS; index++)
     {
-      if(Player.possessions[index] != NULL)
+      if(Player.possessions[index])
       {
         Player.possessions[index]->known             = 0;
         Objects[Player.possessions[index]->id].known = 0;
@@ -674,7 +674,7 @@ void identify(int blessing)
     print2("You feel encyclopaedic.");
     for(index = 0; index < MAXITEMS; index++)
     {
-      if(Player.possessions[index] != NULL)
+      if(Player.possessions[index])
       {
         if(Player.possessions[index]->objchar == FOOD)
         {
@@ -689,7 +689,7 @@ void identify(int blessing)
     }
     for(index = 0; index < Player.packptr; index++)
     {
-      if(Player.pack[index] != NULL)
+      if(Player.pack[index])
       {
         if(Player.pack[index]->objchar == FOOD)
         {
@@ -714,7 +714,7 @@ int random_item()
 
   for(tries = 0; tries < MAXITEMS; tries++)
   {
-    if(Player.possessions[tries] != NULL)
+    if(Player.possessions[tries])
     {
       number++;
       if(random_range(number) == 0)

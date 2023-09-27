@@ -515,7 +515,7 @@ void statue_random(int x, int y)
       dispel(-1);
       break;
     case 8: /* I think this is particularly evil. Heh heh. */
-      if(Player.possessions[O_WEAPON_HAND] != NULL)
+      if(Player.possessions[O_WEAPON_HAND])
       {
         print1("Your weapon sinks deeply into the statue and is sucked away!");
         item = Player.possessions[O_WEAPON_HAND];
@@ -1358,7 +1358,7 @@ void l_pawn_shop()
     Pawndate = Date;
     for(k = 0; k < limit; k++)
     {
-      if(Pawnitems[0] != NULL)
+      if(Pawnitems[0])
       {
         if(Objects[Pawnitems[0]->id].uniqueness > UNIQUE_UNMADE)
         {
@@ -1366,20 +1366,20 @@ void l_pawn_shop()
         }
         /* could turn up anywhere, really :) */
         free(Pawnitems[0]);
-        Pawnitems[0] = NULL;
+        Pawnitems[0] = nullptr;
       }
       for(i = 0; i < PAWNITEMS - 1; i++)
       {
         Pawnitems[i] = Pawnitems[i + 1];
       }
-      Pawnitems[PAWNITEMS - 1] = NULL;
+      Pawnitems[PAWNITEMS - 1] = nullptr;
       for(i = 0; i < PAWNITEMS; i++)
       {
-        if(Pawnitems[i] == NULL)
+        if(!Pawnitems[i])
         {
           do
           {
-            if(Pawnitems[i] != NULL)
+            if(Pawnitems[i])
             {
               free(Pawnitems[i]);
             }
@@ -1419,7 +1419,7 @@ void l_pawn_shop()
         if(player_input != ESCAPE)
         {
           i = player_input - 'a';
-          if(Pawnitems[i] == NULL)
+          if(!Pawnitems[i])
           {
             append_message("No such item!", true);
           }
@@ -1428,7 +1428,7 @@ void l_pawn_shop()
             append_message("Hmm, how did that junk get on my shelves?", true);
             append_message("I'll just remove it.");
             free(Pawnitems[i]);
-            Pawnitems[i] = NULL;
+            Pawnitems[i] = nullptr;
           }
           else
           {
@@ -1445,7 +1445,7 @@ void l_pawn_shop()
                 Player.cash -= price;
                 Objects[Pawnitems[i]->id].known = 1;
                 gain_item(Pawnitems[i]);
-                Pawnitems[i] = NULL;
+                Pawnitems[i] = nullptr;
               }
             }
           }
@@ -1456,7 +1456,7 @@ void l_pawn_shop()
         menuclear();
         print2("Sell which item: ");
         i = getitem(NULL_ITEM);
-        if((i != ABORT) && (Player.possessions[i] != NULL))
+        if(i != ABORT && Player.possessions[i])
         {
           if(cursed(Player.possessions[i]))
           {
@@ -1522,7 +1522,7 @@ void l_pawn_shop()
                 if(Player.pack[i]->number < 1)
                 {
                   free(Player.pack[i]);
-                  Player.pack[i] = NULL;
+                  Player.pack[i] = nullptr;
                 }
                 dataprint();
               }

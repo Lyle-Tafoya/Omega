@@ -247,7 +247,7 @@ void search(int *searchval)
 /* pick up a thing where the player is */
 void pickup()
 {
-  if(Level->site[Player.x][Player.y].things == NULL)
+  if(!Level->site[Player.x][Player.y].things)
   {
     print3("There's nothing there!");
   }
@@ -267,9 +267,9 @@ void floor_inv()
   pol ol = Level->site[Player.x][Player.y].things;
   setgamestatus(SKIP_MONSTERS, GameStatus);
   std::vector<std::string> lines;
-  while(ol != NULL)
+  while(ol)
   {
-    if(ol->thing == NULL)
+    if(!ol->thing)
     {
       print3("***Error; null thing on things list***");
     }
@@ -452,8 +452,8 @@ void talk()
     dx = Dirs[0][index];
     dy = Dirs[1][index];
 
-    if((!inbounds(Player.x + dx, Player.y + dy)) ||
-       (Level->site[Player.x + dx][Player.y + dy].creature == NULL))
+    if(!inbounds(Player.x + dx, Player.y + dy) ||
+       !Level->site[Player.x + dx][Player.y + dy].creature)
     {
       print3("There's nothing there to talk to!!!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -559,10 +559,10 @@ void disarm()
               break;
             default:
               free(o);
-              o = NULL;
+              o = nullptr;
               break;
           }
-          if(o != NULL)
+          if(o)
           {
             print2("You manage to retrieve the trap components!");
             Objects[o->id].known = 1;
@@ -613,7 +613,7 @@ void give()
     {
       print3("Whoa, off the map...");
     }
-    else if(Level->site[Player.x + dx][Player.y + dy].creature == NULL)
+    else if(!Level->site[Player.x + dx][Player.y + dy].creature)
     {
       print3("There's nothing there to give something to!!!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -1453,13 +1453,13 @@ void moveplayer(int dx, int dy)
 
         if(gamestatusp(FAST_MOVE, GameStatus))
         {
-          if((Level->site[Player.x][Player.y].things != NULL) ||
+          if(Level->site[Player.x][Player.y].things ||
              (optionp(RUNSTOP, Player) && loc_statusp(Player.x, Player.y, STOPS, *Level)))
           {
             resetgamestatus(FAST_MOVE, GameStatus);
           }
         }
-        if((Level->site[Player.x][Player.y].things != NULL) && (optionp(PICKUP, Player)))
+        if(Level->site[Player.x][Player.y].things && optionp(PICKUP, Player))
         {
           pickup();
         }
@@ -1493,11 +1493,11 @@ void movepincountry(int dx, int dy)
         print2("were kept in your steed's saddlebags!");
         for(i = 0; i < MAXPACK; i++)
         {
-          if(Player.pack[i] != NULL)
+          if(Player.pack[i])
           {
             free(Player.pack[i]);
           }
-          Player.pack[i] = NULL;
+          Player.pack[i] = nullptr;
         }
         Player.packptr = 0;
         calc_melee();
@@ -1527,7 +1527,7 @@ void movepincountry(int dx, int dy)
       {
         Player.x += dx;
         Player.y += dy;
-        if((!gamestatusp(MOUNTED, GameStatus)) && (Player.possessions[O_BOOTS] != NULL))
+        if(!gamestatusp(MOUNTED, GameStatus) && Player.possessions[O_BOOTS])
         {
           if(Player.possessions[O_BOOTS]->on_equip == I_BOOTS_7LEAGUE)
           {

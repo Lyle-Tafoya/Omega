@@ -44,7 +44,7 @@ void load_house(int kind, int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);

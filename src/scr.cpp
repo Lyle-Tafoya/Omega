@@ -981,7 +981,7 @@ void drawmonsters(int display)
   int top    = std::max(0, ScreenOffset);
   int bottom = std::min(LENGTH, ScreenOffset + ScreenLength);
   int right  = std::min(WIDTH, HorizontalOffset + ScreenWidth);
-  for(pml ml = Level->mlist; ml != NULL; ml = ml->next)
+  for(pml ml = Level->mlist; ml; ml = ml->next)
   {
     if(ml->m->hp > 0)
     {
@@ -1052,7 +1052,7 @@ Symbol getspot(int x, int y, int showmonster)
     switch(Level->site[x][y].locchar)
     {
       case WATER:
-        if(Level->site[x][y].creature == NULL)
+        if(!Level->site[x][y].creature)
         {
           return (WATER);
         }
@@ -1077,7 +1077,7 @@ Symbol getspot(int x, int y, int showmonster)
       /* rubble and hedge don't show items on their location */
       case RUBBLE:
       case HEDGE:
-        if(showmonster && (Level->site[x][y].creature != NULL))
+        if(showmonster && Level->site[x][y].creature)
         {
           if((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) && (!Player.status[TRUESIGHT]))
           {
@@ -1095,7 +1095,7 @@ Symbol getspot(int x, int y, int showmonster)
       /* everywhere else, first try to show monster, next show items, next show
        location char */
       default:
-        if(showmonster && (Level->site[x][y].creature != NULL))
+        if(showmonster && Level->site[x][y].creature)
         {
           if((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) && (!Player.status[TRUESIGHT]))
           {
@@ -1106,9 +1106,9 @@ Symbol getspot(int x, int y, int showmonster)
             return (Level->site[x][y].creature->monchar);
           }
         }
-        else if(Level->site[x][y].things != NULL)
+        else if(Level->site[x][y].things)
         {
-          if(Level->site[x][y].things->next != NULL)
+          if(Level->site[x][y].things->next)
           {
             return PILE;
           }

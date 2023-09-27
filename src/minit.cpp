@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 struct monster Monsters[NUMMONSTERS] =
 {
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -63,7 +63,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -100,7 +100,7 @@ struct monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -137,7 +137,7 @@ struct monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -174,7 +174,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -211,7 +211,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -248,7 +248,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ALBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -285,7 +285,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -322,7 +322,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -359,7 +359,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -396,7 +396,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -433,7 +433,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -470,7 +470,7 @@ struct monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -507,7 +507,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ALAL"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -546,7 +546,7 @@ struct monster Monsters[NUMMONSTERS] =
 
     /* WDT: this one used to blink.  I HATE BLINKING. */
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -583,7 +583,7 @@ struct monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -620,7 +620,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -657,7 +657,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -694,7 +694,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACBC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -731,7 +731,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -768,7 +768,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -805,7 +805,7 @@ struct monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -842,7 +842,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ALAL"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -879,7 +879,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AH"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -916,7 +916,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -953,7 +953,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -990,7 +990,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AL"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1027,7 +1027,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AL"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1064,7 +1064,7 @@ struct monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1101,7 +1101,7 @@ struct monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1138,7 +1138,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AH"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1175,7 +1175,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1212,7 +1212,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1249,7 +1249,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1286,7 +1286,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXB?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1323,7 +1323,7 @@ struct monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1360,7 +1360,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ALBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1397,7 +1397,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1434,7 +1434,7 @@ struct monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1471,7 +1471,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1508,7 +1508,7 @@ struct monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1545,7 +1545,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1582,7 +1582,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1619,7 +1619,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1656,7 +1656,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1693,7 +1693,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1730,7 +1730,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1767,7 +1767,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1804,7 +1804,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1841,7 +1841,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1878,7 +1878,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1915,7 +1915,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1952,7 +1952,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AH"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -1989,7 +1989,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2026,7 +2026,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2063,7 +2063,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2100,7 +2100,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2137,7 +2137,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2174,7 +2174,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2211,7 +2211,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2248,7 +2248,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACACACACAC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2285,7 +2285,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2322,7 +2322,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2359,7 +2359,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACBC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2396,7 +2396,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AL"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2433,7 +2433,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AHAH"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2470,7 +2470,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2507,7 +2507,7 @@ struct monster Monsters[NUMMONSTERS] =
     "(null)"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2544,7 +2544,7 @@ struct monster Monsters[NUMMONSTERS] =
     "(null)"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2581,7 +2581,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ALALBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2618,7 +2618,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2655,7 +2655,7 @@ struct monster Monsters[NUMMONSTERS] =
     "LXLXLX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2692,7 +2692,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2729,7 +2729,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2766,7 +2766,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXAX?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2803,7 +2803,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2840,7 +2840,7 @@ struct monster Monsters[NUMMONSTERS] =
     "LX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2877,7 +2877,7 @@ struct monster Monsters[NUMMONSTERS] =
     "LHAHLH"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2914,7 +2914,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?R?R"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2951,7 +2951,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -2988,7 +2988,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3025,7 +3025,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3062,7 +3062,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3099,7 +3099,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3136,7 +3136,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3173,7 +3173,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3210,7 +3210,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACACAC"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3247,7 +3247,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXB?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3284,7 +3284,7 @@ struct monster Monsters[NUMMONSTERS] =
     "R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3321,7 +3321,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3358,7 +3358,7 @@ struct monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3395,7 +3395,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3432,7 +3432,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3469,7 +3469,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXRXRX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3506,7 +3506,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXAXBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3543,7 +3543,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3580,7 +3580,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3617,7 +3617,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3654,7 +3654,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3691,7 +3691,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3728,7 +3728,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3765,7 +3765,7 @@ struct monster Monsters[NUMMONSTERS] =
     "LX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3802,7 +3802,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?L?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3839,7 +3839,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?L?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3876,7 +3876,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?R?RX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3913,7 +3913,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?R?R?R"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3950,7 +3950,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AHBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -3987,7 +3987,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4024,7 +4024,7 @@ struct monster Monsters[NUMMONSTERS] =
     "ACACB?B?B?B?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4061,7 +4061,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4098,7 +4098,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4135,7 +4135,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4172,7 +4172,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4209,7 +4209,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?L?L?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4246,7 +4246,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4283,7 +4283,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4320,7 +4320,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXL?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4357,7 +4357,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXL?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4394,7 +4394,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4431,7 +4431,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4468,7 +4468,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?L?R?R?R?RXRXRX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4505,7 +4505,7 @@ struct monster Monsters[NUMMONSTERS] =
     "B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4542,7 +4542,7 @@ struct monster Monsters[NUMMONSTERS] =
     "B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4579,7 +4579,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4616,7 +4616,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4653,7 +4653,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?A?A?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4690,7 +4690,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4727,7 +4727,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4764,7 +4764,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?R?R?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4801,7 +4801,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4838,7 +4838,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4875,7 +4875,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4912,7 +4912,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?R?RXRX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4949,7 +4949,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AHAHB?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -4986,7 +4986,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5023,7 +5023,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AXAXAXBXBX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5060,7 +5060,7 @@ struct monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5097,7 +5097,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?B?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5134,7 +5134,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5171,7 +5171,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?R?R?R?R?R?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5208,7 +5208,7 @@ struct monster Monsters[NUMMONSTERS] =
     "LLLCLHRLRCRHRLRCRH"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5245,7 +5245,7 @@ struct monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5282,7 +5282,7 @@ struct monster Monsters[NUMMONSTERS] =
     "B?B?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5319,7 +5319,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?B?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5356,7 +5356,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?A?A?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5393,7 +5393,7 @@ struct monster Monsters[NUMMONSTERS] =
     "L?L?L?L?L?R?R?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5430,7 +5430,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5467,7 +5467,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?A?A?A?A?A?A?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5504,7 +5504,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?B?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,
@@ -5541,7 +5541,7 @@ struct monster Monsters[NUMMONSTERS] =
     "A?A?A?R?R?R?R?"
   },
   {
-    NULL,
+    nullptr,
     0,
     0,
     0,

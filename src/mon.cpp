@@ -92,7 +92,7 @@ void m_pulse(struct monster *m)
     /* if monster is greedy, picks up treasure it finds */
     if(m_statusp(*m, GREEDY) && (m->hp > 0))
     {
-      while(Level->site[m->x][m->y].things != NULL)
+      while(Level->site[m->x][m->y].things)
       {
         m_pickup(m, Level->site[m->x][m->y].things->thing);
         prev                           = Level->site[m->x][m->y].things;
@@ -111,13 +111,13 @@ void m_pulse(struct monster *m)
 /* actually make a move */
 void movemonster(struct monster *m, int newx, int newy)
 {
-  if(Level->site[newx][newy].creature != NULL)
+  if(Level->site[newx][newy].creature)
   {
     return;
   }
   if(Level->site[m->x][m->y].creature == m)
   {
-    Level->site[m->x][m->y].creature = NULL;
+    Level->site[m->x][m->y].creature = nullptr;
   }
   m->x                             = newx;
   m->y                             = newy;
@@ -185,7 +185,7 @@ void m_death(struct monster *m)
   pob corpse;
   pml ml;
   int x, y, found = false;
-  pol curr, prev = NULL;
+  pol curr, prev = nullptr;
 
   m->hp = -1;
   if(los_p(Player.x, Player.y, m->x, m->y))
@@ -244,7 +244,7 @@ void m_death(struct monster *m)
   }
   else
   {
-    Level->site[m->x][m->y].creature = NULL;
+    Level->site[m->x][m->y].creature = nullptr;
     if(m == Arena_Monster)
     {
       Arena_Victory = true; /* won this round of arena combat */
@@ -349,7 +349,7 @@ void m_death(struct monster *m)
               mprint("In the distance you hear a trumpet. A Servant of Law");
               /* promote one of the city guards to be justiciar */
               ml = City->mlist;
-              while((!found) && (ml != NULL))
+              while(!found && ml)
               {
                 found = ((ml->m->id == GUARD) && (ml->m->hp > 0));
                 if(!found)
@@ -357,7 +357,7 @@ void m_death(struct monster *m)
                   ml = ml->next;
                 }
               }
-              if(ml != NULL)
+              if(ml)
               {
                 if(curr)
                 {
@@ -1473,7 +1473,7 @@ void strengthen_death(struct monster *m)
   m->hp          = std::min(100000, 100 + m->dmg * 10);
   *scythe        = Objects[WEAPONID + 39];
   ol->thing      = scythe;
-  ol->next       = NULL;
+  ol->next       = nullptr;
   m->possessions = ol;
 }
 

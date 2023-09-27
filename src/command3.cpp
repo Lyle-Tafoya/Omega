@@ -83,7 +83,7 @@ void examine()
     }
     else
     {
-      if(Level->site[x][y].creature != NULL)
+      if(Level->site[x][y].creature)
       {
         mprint(mstatus_string(Level->site[x][y].creature));
       }
@@ -234,9 +234,9 @@ void examine()
             break;
         }
       }
-      if((ol = Level->site[x][y].things) != NULL && !loc_statusp(x, y, SECRET, *Level))
+      if((ol = Level->site[x][y].things) && !loc_statusp(x, y, SECRET, *Level))
       {
-        if(ol->next == NULL)
+        if(!ol->next)
         {
           print3(itemid(ol->thing));
         }
@@ -244,7 +244,7 @@ void examine()
         {
           drewmenu = true;
           std::vector<std::string> lines;
-          while(ol != NULL)
+          while(ol)
           {
             lines.emplace_back(std::string("  ") + itemid(ol->thing));
             ol = ol->next;
@@ -327,7 +327,7 @@ void fire()
     print3("You can't seem to get rid of it!");
     /* load a crossbow */
   }
-  else if((Player.possessions[O_WEAPON_HAND] != NULL) &&
+  else if(Player.possessions[O_WEAPON_HAND] &&
           (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) &&
           (Player.possessions[O_WEAPON_HAND]->aux != LOADED) &&
           (Player.possessions[index]->id == WEAPONID + 29))
@@ -354,7 +354,7 @@ void fire()
     else
     {
       do_object_los(obj->objchar, &x1, &y1, x2, y2);
-      if((m = Level->site[x1][y1].creature) != NULL)
+      if((m = Level->site[x1][y1].creature))
       {
         int hitroll;
         if(obj->used)
@@ -684,7 +684,7 @@ void vault()
 {
   int x = Player.x, y = Player.y, jumper = 0;
 
-  if(Player.possessions[O_BOOTS] != NULL)
+  if(Player.possessions[O_BOOTS])
   {
     if(Player.possessions[O_BOOTS]->on_equip == I_BOOTS_JUMPING)
     {
@@ -713,7 +713,7 @@ void vault()
     {
       print3("The jump is too far for you.");
     }
-    else if(Level->site[x][y].creature != NULL)
+    else if(Level->site[x][y].creature)
     {
       print3("You can't jump on another creature.");
     }
@@ -735,7 +735,7 @@ void vault()
       p_movefunction(Level->site[Player.x][Player.y].p_locf);
       if(Current_Environment != E_COUNTRYSIDE)
       {
-        if((Level->site[Player.x][Player.y].things != NULL) && (optionp(PICKUP, Player)))
+        if((Level->site[Player.x][Player.y].things) && (optionp(PICKUP, Player)))
         {
           pickup();
         }
@@ -746,7 +746,7 @@ void vault()
 
 std::string attack_string()
 {
-  if(Player.possessions[O_WEAPON_HAND] == NULL)
+  if(!Player.possessions[O_WEAPON_HAND])
   {
     return "Punch";
   }
@@ -843,7 +843,7 @@ void tacoptions()
         }
         else
         {
-          if(Player.possessions[O_WEAPON_HAND] != NULL)
+          if(Player.possessions[O_WEAPON_HAND])
           {
             if(Player.possessions[O_WEAPON_HAND]->type != MISSILE)
             {
@@ -871,7 +871,7 @@ void tacoptions()
         }
         else
         {
-          if(Player.possessions[O_WEAPON_HAND] != NULL)
+          if(Player.possessions[O_WEAPON_HAND])
           {
             if(Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
             {
@@ -1066,7 +1066,7 @@ void tunnel()
       aux = Level->site[ox][oy].aux;
       if(random_range(20) == 1)
       {
-        if(Player.possessions[O_WEAPON_HAND] == NULL)
+        if(!Player.possessions[O_WEAPON_HAND])
         {
           mprint("Ouch! broke a fingernail...");
           p_damage(Player.str / 6, UNSTOPPABLE, "a broken fingernail");
@@ -1083,7 +1083,7 @@ void tunnel()
           mprint("Your digging implement shows no sign of breaking.");
         }
       }
-      if(Player.possessions[O_WEAPON_HAND] == NULL)
+      if(!Player.possessions[O_WEAPON_HAND])
       {
         if((aux > 0) && ((Player.str / 3) + random_range(100) > aux))
         {

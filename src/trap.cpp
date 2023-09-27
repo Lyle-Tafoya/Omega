@@ -57,7 +57,7 @@ void l_trap_siren()
       summon(-1, DEMON_PRINCE);
       summon(-1, DEMON_PRINCE);
     }
-    for(ml = Level->mlist; ml != NULL; ml = ml->next)
+    for(ml = Level->mlist; ml; ml = ml->next)
     {
       m_status_set(*ml->m, AWAKE);
       ml->m->sense *= 2;
@@ -294,7 +294,7 @@ void l_trap_acid()
       itemdamage = random_range(5);
       for(i = k = 0; ((i < MAXITEMS) && (k < itemdamage)); i++)
       {
-        if(Player.possessions[i] != NULL)
+        if(Player.possessions[i])
         {
           k++;
           (void)damage_item(Player.possessions[i]);

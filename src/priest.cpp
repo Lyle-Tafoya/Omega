@@ -126,7 +126,7 @@ void l_altar()
         {
           i = 0;
         }
-        if(Player.possessions[i] == NULL)
+        if(!Player.possessions[i])
         {
           print1("You have insulted your deity!");
           print2("Not a good idea, as it turns out...");
@@ -222,7 +222,7 @@ int check_sacrilege(int deity)
             print1("You are wreathed in clouds of smoke.");
             for(i = 0; i < MAXITEMS; i++)
             {
-              if((Player.possessions[i] != NULL) && (Player.possessions[i]->blessing > -1))
+              if(Player.possessions[i] && Player.possessions[i]->blessing > -1)
               {
                 conform_lost_object(Player.possessions[i]);
               }

@@ -37,7 +37,7 @@ void load_village(int villagenum, int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 
   initrand(Current_Environment, villagenum);

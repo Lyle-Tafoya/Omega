@@ -205,7 +205,7 @@ void p_fumble(int dtype)
 /* try to drop a weapon (from fumbling) */
 void drop_weapon()
 {
-  if(Player.possessions[O_WEAPON_HAND] != NULL)
+  if(Player.possessions[O_WEAPON_HAND])
   {
     queue_message(std::format("You dropped your {}.", Player.possessions[O_WEAPON_HAND]->objstr));
     p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND]);
@@ -220,7 +220,7 @@ void drop_weapon()
 /* try to break a weapon (from fumbling) */
 void break_weapon()
 {
-  if(Player.possessions[O_WEAPON_HAND] != NULL)
+  if(Player.possessions[O_WEAPON_HAND])
   {
     mprint("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
     (void)damage_item(Player.possessions[O_WEAPON_HAND]);
@@ -748,7 +748,7 @@ void p_drown()
           {
             mprint("It sinks without a trace.");
             free_objlist(Level->site[Player.x][Player.y].things);
-            Level->site[Player.x][Player.y].things = NULL;
+            Level->site[Player.x][Player.y].things = nullptr;
           }
           break;
         case 'b':
@@ -758,14 +758,14 @@ void p_drown()
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           for(i = 0; i < MAXPACK; i++)
           {
-            if(Player.pack[i] != NULL)
+            if(Player.pack[i])
             {
               if(Level->site[Player.x][Player.y].p_locf != L_WATER)
               {
                 p_drop_at(Player.x, Player.y, Player.pack[i]->number, Player.pack[i]);
               }
               free(Player.pack[i]);
-              Player.pack[i] = NULL;
+              Player.pack[i] = nullptr;
             }
           }
           if(Level->site[Player.x][Player.y].p_locf == L_WATER)
@@ -786,7 +786,7 @@ void p_drown()
 /* the effect of some weapon on monster m, with dmgmod a bonus to damage */
 void weapon_use(int dmgmod, pob weapon, struct monster *m)
 {
-  int aux = (weapon == NULL ? -2 : weapon->aux); /* bare hands */
+  int aux = (!weapon ? -2 : weapon->aux); /* bare hands */
   switch(aux)
   {
     case -2:
@@ -1262,7 +1262,7 @@ void change_environment(char new_environment)
         Player.x = 62;
         Player.y = 21;
       }
-      if(City == NULL)
+      if(!City)
       {
         load_city(true);
       }
@@ -1317,7 +1317,7 @@ void change_environment(char new_environment)
             break;
         }
       }
-      if((!emerging) || (TempLevel == NULL))
+      if(!emerging || !TempLevel)
       {
         load_village(Villagenum, true);
       }
@@ -1364,8 +1364,8 @@ void change_environment(char new_environment)
         msdos_changelevel(Level, 0, -1);
 #endif
         free_dungeon();
-        Dungeon         = NULL;
-        Level           = NULL;
+        Dungeon         = nullptr;
+        Level           = nullptr;
         Current_Dungeon = E_CAVES;
       }
       change_level(0, 1, false);
@@ -1388,8 +1388,8 @@ void change_environment(char new_environment)
         msdos_changelevel(Level, 0, -1);
 #endif
         free_dungeon();
-        Dungeon         = NULL;
-        Level           = NULL;
+        Dungeon         = nullptr;
+        Level           = nullptr;
         Current_Dungeon = E_VOLCANO;
       }
       change_level(0, 1, false);
@@ -1411,8 +1411,8 @@ void change_environment(char new_environment)
         msdos_changelevel(Level, 0, -1);
 #endif
         free_dungeon();
-        Dungeon         = NULL;
-        Level           = NULL;
+        Dungeon         = nullptr;
+        Level           = nullptr;
         Current_Dungeon = E_ASTRAL;
       }
       change_level(0, 1, false);
@@ -1434,8 +1434,8 @@ void change_environment(char new_environment)
         msdos_changelevel(Level, 0, -1);
 #endif
         free_dungeon();
-        Dungeon         = NULL;
-        Level           = NULL;
+        Dungeon         = nullptr;
+        Level           = nullptr;
         Current_Dungeon = E_CASTLE;
       }
       change_level(0, 1, false);
@@ -1456,8 +1456,8 @@ void change_environment(char new_environment)
         msdos_changelevel(Level, 0, -1);
 #endif
         free_dungeon();
-        Dungeon         = NULL;
-        Level           = NULL;
+        Dungeon         = nullptr;
+        Level           = nullptr;
         Current_Dungeon = E_SEWERS;
       }
       change_level(0, 1, false);

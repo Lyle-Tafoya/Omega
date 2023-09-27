@@ -658,7 +658,7 @@ void m_sp_raise(struct monster *m)
     {
       if(inbounds(x, y))
       {
-        if(Level->site[x][y].things != NULL)
+        if(Level->site[x][y].things)
         {
           if(Level->site[x][y].things->thing->id == CORPSEID)
           {
@@ -793,7 +793,7 @@ void m_thief_f(struct monster *m)
           m->specialf = M_MOVE_SCAREDY;
           m_pickup(m, Player.possessions[i]);
           conform_unused_object(Player.possessions[i]);
-          Player.possessions[i] = NULL;
+          Player.possessions[i] = nullptr;
         }
       }
     }
@@ -835,7 +835,7 @@ void m_sp_merchant(struct monster *m)
     {
       mprint("The merchant screams: 'Help! Murder! Guards! Help!'");
       mprint("You hear the sound of police whistles and running feet.");
-      for(ml = Level->mlist; ml != NULL; ml = ml->next)
+      for(ml = Level->mlist; ml; ml = ml->next)
       {
         m_status_set(*ml->m, AWAKE);
         m_status_set(*ml->m, HOSTILE);
@@ -853,7 +853,7 @@ void m_sp_court(struct monster *m)
   if(m_statusp(*m, HOSTILE))
   {
     mprint("A storm of spells hits you!");
-    for(ml = Level->mlist; ml != NULL; ml = ml->next)
+    for(ml = Level->mlist; ml; ml = ml->next)
     {
       m_status_set(*ml->m, HOSTILE);
       m_sp_spell(ml->m);
@@ -873,7 +873,7 @@ void m_sp_lair(struct monster *m)
   {
     mprint("You notice a number of dragons waking up....");
     mprint("You are struck by a quantity of firebolts.");
-    for(ml = Level->mlist; ml != NULL; ml = ml->next)
+    for(ml = Level->mlist; ml; ml = ml->next)
     {
       if(ml->m->hp > 0 && ml->m->specialf == M_SP_LAIR)
       {

@@ -366,7 +366,7 @@ void m_talk_im(struct monster *m)
   {
     m->monstring = "itinerant merchant";
   }
-  if(m->possessions == NULL)
+  if(!m->possessions)
   {
     mprint("The merchant says: Alas! I have nothing to sell!");
   }
@@ -385,7 +385,7 @@ void m_talk_im(struct monster *m)
           mprint("Well, I'll let you have it for what you've got.");
           Player.cash = 0;
           gain_item(m->possessions->thing);
-          m->possessions = NULL;
+          m->possessions = nullptr;
         }
         else
         {
@@ -397,7 +397,7 @@ void m_talk_im(struct monster *m)
         mprint("Here you are. Have a good day.");
         Player.cash -= price;
         gain_item(m->possessions->thing);
-        m->possessions = NULL;
+        m->possessions = nullptr;
       }
     }
     else
@@ -723,7 +723,7 @@ void m_talk_horse(struct monster *m)
     if(ynq() == 'y')
     {
       m->hp                            = -1;
-      Level->site[m->x][m->y].creature = NULL;
+      Level->site[m->x][m->y].creature = nullptr;
       putspot(m->x, m->y, getspot(m->x, m->y, false));
       setgamestatus(MOUNTED, GameStatus);
       calc_melee();
@@ -763,7 +763,7 @@ void m_talk_servant(struct monster *m)
     show_screen();
     drawmonsters(true);
     setspot(&x, &y);
-    if(Level->site[x][y].creature != NULL)
+    if(Level->site[x][y].creature)
     {
       if(Level->site[x][y].creature->id == target)
       {
@@ -771,7 +771,7 @@ void m_talk_servant(struct monster *m)
         mprint("In a blaze of combat, the Servants annihilate each other!");
         gain_experience(m->xpv);
         m_death(Level->site[x][y].creature);
-        Level->site[m->x][m->y].creature = NULL;
+        Level->site[m->x][m->y].creature = nullptr;
         m->x                             = x;
         m->y                             = y;
         Level->site[x][y].creature       = m;

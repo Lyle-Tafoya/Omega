@@ -71,10 +71,10 @@ struct terrain Country[MAXWIDTH][MAXLENGTH]; /* The countryside */
 #ifdef SAVE_LEVELS
 struct level TheLevel;
 #endif
-struct level   *City                = NULL; /* The city of Rampart */
-struct level   *TempLevel           = NULL; /* Place holder */
-struct level   *Level               = NULL; /* Pointer to current Level */
-struct level   *Dungeon             = NULL; /* Pointer to current Dungeon */
+struct level   *City                = nullptr; /* The city of Rampart */
+struct level   *TempLevel           = nullptr; /* Place holder */
+struct level   *Level               = nullptr; /* Pointer to current Level */
+struct level   *Dungeon             = nullptr; /* Pointer to current Dungeon */
 int             Villagenum          = 0;    /* Current Village number */
 int             ScreenOffset        = 0;    /* Offset of displayed screen to level */
 int             HorizontalOffset    = 0;
@@ -85,7 +85,7 @@ int             Last_Environment    = E_COUNTRYSIDE; /* Which environment were w
 int             Dirs[2][9];                          /* 9 xy directions */
 int             Cmd                  = 's';          /* last player command */
 int             Command_Duration     = 0;            /* how long does current command take */
-struct monster *Arena_Monster        = NULL;         /* Opponent in arena */
+struct monster *Arena_Monster        = nullptr;         /* Opponent in arena */
 int             Arena_Opponent       = 0;            /* case label of opponent in l_arena()*/
 int             Arena_Victory        = 0;            /* did player win in arena? */
 int             Imprisonment         = 0;            /* amount of time spent in jail */
@@ -94,7 +94,7 @@ int             Lunarity             = 0;            /* Effect of the moon on ch
 int             Phase                = 0;            /* Phase of the moon */
 int             Date                 = 0;            /* Starting date */
 int             Pawndate             = -1;           /* Pawn Shop item generation date */
-pob             Pawnitems[PAWNITEMS] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+pob             Pawnitems[PAWNITEMS] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 /* items in pawn shop */
 int  SymbolUseHour = -1;                   /* holy symbol use marker */
 int  ViewHour      = -1;                   /* crystal ball use marker */
@@ -129,7 +129,7 @@ char Password[64];                         /* autoteller password */
 char Str1[STRING_LEN], Str2[STRING_LEN];
 /* Some string space, random uses */
 
-pol Condoitems = NULL; /* Items in condo */
+pol Condoitems = nullptr; /* Items in condo */
 
 /* high score names, levels, behavior */
 int  Shadowlordbehavior, Archmagebehavior, Primebehavior, Commandantbehavior;
@@ -364,7 +364,7 @@ void init_world()
 {
   int env, i;
 
-  City = Level = TempLevel = Dungeon = NULL;
+  City = Level = TempLevel = Dungeon = nullptr;
   for(env = 0; env <= E_MAX; env++)
   {
     level_seed[env] = random_range(RAND_MAX);

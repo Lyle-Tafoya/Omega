@@ -62,17 +62,17 @@ static FILE *open_levfile(int env, int depth, int rw)
   return (fopen(std::format("{}om{:03}{:03}.lev", Omegalib, env, depth).c_str(), (rw) ? "wb" : "rb"));
 }
 
-/* Saves oldlevel (unless NULL), and reads in the new level,
+/* Saves oldlevel (unless nullptr), and reads in the new level,
    unless depth is < 0. */
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth)
 {
   FILE *fp;
 
-  if(oldlevel != NULL)
+  if(oldlevel)
   {
     if(oldlevel->environment == newenv && oldlevel->depth == newdepth)
       return (oldlevel);
-    if((fp = open_levfile(oldlevel->environment, oldlevel->depth, 1)) != NULL)
+    if((fp = open_levfile(oldlevel->environment, oldlevel->depth, 1)))
     {
       save_level(fp, oldlevel);
       fclose(fp);
@@ -84,13 +84,13 @@ plv msdos_changelevel(plv oldlevel, int newenv, int newdepth)
   }
   if(newdepth >= 0)
   {
-    if((fp = open_levfile(newenv, newdepth, 0)) == NULL)
-      return (NULL);
+    if(!(fp = open_levfile(newenv, newdepth, 0)))
+      return nullptr;
     restore_level(fp, VERSION);
     fclose(fp);
-    return (Level);
+    return Level;
   }
-  return (NULL);
+  return nullptr;
 }
 
 #endif
@@ -109,7 +109,7 @@ void load_abyss()
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifndef SAVE_LEVELS
   Level = ((plv)checkmalloc(sizeof(levtype)));

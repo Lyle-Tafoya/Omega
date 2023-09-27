@@ -101,7 +101,7 @@ int distance(int x1, int y1, int x2, int y2)
 /* can you shoot, or move monsters through a spot? */
 int unblocked(int x, int y)
 {
-  if((!inbounds(x, y)) || (Level->site[x][y].creature != NULL) || (Level->site[x][y].locchar == WALL) ||
+  if(!inbounds(x, y) || Level->site[x][y].creature || Level->site[x][y].locchar == WALL ||
      (Level->site[x][y].locchar == PORTCULLIS) || (Level->site[x][y].locchar == STATUE) ||
      (Level->site[x][y].locchar == HEDGE) || (Level->site[x][y].locchar == CLOSED_DOOR) ||
      loc_statusp(x, y, SECRET, *Level) || ((x == Player.x) && (y == Player.y)))
@@ -121,7 +121,7 @@ int m_unblocked(struct monster *m, int x, int y)
   {
     return (false);
   }
-  else if((Level->site[x][y].creature != NULL) || (Level->site[x][y].locchar == SPACE))
+  else if(Level->site[x][y].creature || Level->site[x][y].locchar == SPACE)
   {
     return (false);
   }
@@ -413,7 +413,7 @@ void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
       std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
   } while((*x1 != x2 || *y1 != y2) && !blocked);
-  if(Level->site[*x1][*y1].creature == NULL && blocked)
+  if(!Level->site[*x1][*y1].creature && blocked)
   {
     *x1 = ox;
     *y1 = oy;
@@ -644,7 +644,7 @@ long calc_points()
 
   for(i = 0; i < MAXITEMS; i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
       points += Player.possessions[i]->level * (Player.possessions[i]->known + 1);
     }
@@ -652,7 +652,7 @@ long calc_points()
 
   for(i = 0; i < MAXPACK; i++)
   {
-    if(Player.pack[i] != NULL)
+    if(Player.pack[i])
     {
       points += Player.pack[i]->level * (Player.pack[i]->known + 1);
     }
@@ -797,8 +797,8 @@ const char *month()
 sets x,y there. There must *be* floor space somewhere on level.... */
 int spaceok(int i, int j, int baux)
 {
-  return ((Level->site[i][j].locchar == FLOOR) && (Level->site[i][j].creature == NULL) &&
-          (!loc_statusp(i, j, SECRET, *Level)) && (Level->site[i][j].buildaux != baux));
+  return (Level->site[i][j].locchar == FLOOR && !Level->site[i][j].creature &&
+          !loc_statusp(i, j, SECRET, *Level) && Level->site[i][j].buildaux != baux);
 }
 
 void findspace(int *x, int *y, int baux)
@@ -922,19 +922,19 @@ void calc_weight()
 
   for(i = 1; i < MAXITEMS; i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
       weight += Player.possessions[i]->weight * Player.possessions[i]->number;
     }
   }
-  if((Player.possessions[O_WEAPON_HAND] != NULL) &&
-     (Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND]))
+  if(Player.possessions[O_WEAPON_HAND] &&
+     Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
   {
     weight -= Player.possessions[O_READY_HAND]->weight * Player.possessions[O_READY_HAND]->number;
   }
   for(i = 0; i < MAXPACK; i++)
   {
-    if(Player.pack[i] != NULL)
+    if(Player.pack[i])
     {
       weight += Player.pack[i]->weight * Player.pack[i]->number;
     }
@@ -946,9 +946,9 @@ void calc_weight()
 /* returns true if its ok to get rid of a level */
 int ok_to_free(plv level)
 {
-  if(level == NULL)
+  if(!level)
   {
-    return (false);
+    return false;
   }
   else
   {
@@ -995,7 +995,7 @@ void free_level(plv level)
       if(level->site[i][j].things)
       {
         free_objlist(level->site[i][j].things);
-        level->site[i][j].things = NULL;
+        level->site[i][j].things = nullptr;
       }
     }
   }
@@ -1004,7 +1004,7 @@ void free_level(plv level)
 #endif
 }
 
-/* malloc function that checks its return value - if NULL, tries to free */
+/* malloc function that checks its return value - if nullptr, tries to free */
 /* some memory... */
 void *checkmalloc(unsigned int bytes)
 {

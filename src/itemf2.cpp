@@ -90,7 +90,7 @@ void i_perm_burden(pob o)
   Player.itemweight = 0;
   for(i = 0; i < MAXITEMS; i++)
   {
-    if(Player.possessions[i] != NULL)
+    if(Player.possessions[i])
     {
       Player.itemweight += (Player.possessions[i]->weight * Player.possessions[i]->number);
     }
@@ -400,7 +400,7 @@ void weapon_tangle(int dmgmod, pob o, struct monster *m)
 /* if wielding a bow, add bow damage to arrow damage */
 void weapon_arrow(int dmgmod, pob o, struct monster *m)
 {
-  if((Player.possessions[O_WEAPON_HAND] != NULL) &&
+  if(Player.possessions[O_WEAPON_HAND] &&
      (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
   { /* ie, using a bow */
     p_hit(m, Player.dmg + o->plus + o->dmg + dmgmod, NORMAL_DAMAGE);
@@ -414,7 +414,7 @@ void weapon_arrow(int dmgmod, pob o, struct monster *m)
 /* if wielding a crossbow, add bow damage to arrow damage */
 void weapon_bolt(int dmgmod, pob o, struct monster *m)
 {
-  if((Player.possessions[O_WEAPON_HAND] != NULL) &&
+  if(Player.possessions[O_WEAPON_HAND] &&
      (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) && /*ie using a crossbow */
      (Player.possessions[O_WEAPON_HAND]->aux == LOADED))
   {

@@ -29,7 +29,7 @@ level structure generation */
 /* monsters for tactical encounters */
 void make_country_monsters(Symbol terrain)
 {
-  pml        tml, ml = NULL;
+  pml        tml, ml = nullptr;
   static int plains[10] = {BUNNY, BUNNY, HORNET, QUAIL, HAWK, DEER, WOLF, LION, BRIGAND, RANDOM};
   /*    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};*/
   /* DG changed (WDT: I'd like to see a blacksnake). */
@@ -73,13 +73,13 @@ void make_country_monsters(Symbol terrain)
       monsters = tundra;
       break;
     default:
-      monsters = NULL;
+      monsters = nullptr;
   }
   for(i = 0; i < nummonsters; i++)
   {
     tml    = ((pml)checkmalloc(sizeof(mltype)));
     tml->m = ((pmt)checkmalloc(sizeof(montype)));
-    if(monsters == NULL)
+    if(!monsters)
     {
       tml->m = m_create(random_range(WIDTH), random_range(LENGTH), true, difficulty());
     }
@@ -460,9 +460,9 @@ void populate_level(int monstertype)
     tml          = tml->next;
   }
 
-  if(Level->mlist == NULL)
+  if(!Level->mlist)
   {
-    tml->next    = NULL;
+    tml->next    = nullptr;
     Level->mlist = head->next;
   }
   else
@@ -680,7 +680,7 @@ pmt make_creature(int mid)
         {
           Objects[ob->id].uniqueness = UNIQUE_UNMADE;
           free(ob);
-          ob = NULL;
+          ob = nullptr;
         }
       } while(!ob);
       m_pickup(newmonster, ob);
@@ -709,7 +709,7 @@ void stock_level()
     Level->site[i][j].things        = ((pol)checkmalloc(sizeof(oltype)));
     Level->site[i][j].things->thing = ((pob)checkmalloc(sizeof(objtype)));
     make_cash(Level->site[i][j].things->thing, difficulty());
-    Level->site[i][j].things->next = NULL;
+    Level->site[i][j].things->next = nullptr;
     /* caves have more random cash strewn around */
     if(Current_Dungeon == E_CAVES)
     {
@@ -718,13 +718,13 @@ void stock_level()
       Level->site[i][j].things        = ((pol)checkmalloc(sizeof(oltype)));
       Level->site[i][j].things->thing = ((pob)checkmalloc(sizeof(objtype)));
       make_cash(Level->site[i][j].things->thing, difficulty());
-      Level->site[i][j].things->next  = NULL;
+      Level->site[i][j].things->next  = nullptr;
       i                               = random_range(WIDTH);
       j                               = random_range(LENGTH);
       Level->site[i][j].things        = ((pol)checkmalloc(sizeof(oltype)));
       Level->site[i][j].things->thing = ((pob)checkmalloc(sizeof(objtype)));
       make_cash(Level->site[i][j].things->thing, difficulty());
-      Level->site[i][j].things->next = NULL;
+      Level->site[i][j].things->next = nullptr;
     }
   }
 }
@@ -760,7 +760,7 @@ void make_specific_treasure(int i, int j, int itemid)
 int difficulty()
 {
   int depth = 1;
-  if(Level != NULL)
+  if(Level)
   {
     depth = Level->depth;
   }

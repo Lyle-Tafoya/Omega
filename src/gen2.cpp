@@ -80,7 +80,7 @@ void make_country_screen(Symbol terrain)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -393,7 +393,7 @@ void room_level()
     {
       findspace(&tx, &ty, -1);
       Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
-      Level->mlist->next = NULL;
+      Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(GREAT_WYRM)); /* The Great Wyrm */
       Level->mlist->m->x = tx;
@@ -415,7 +415,7 @@ void room_level()
     {
       findspace(&tx, &ty, -1);
       Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
-      Level->mlist->next = NULL;
+      Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(DEMON_EMP)); /* The demon emp */
       Level->mlist->m->x = tx;
@@ -554,7 +554,7 @@ void maze_level()
     {
       findspace(&tx, &ty, -1);
       Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
-      Level->mlist->next = NULL;
+      Level->mlist->next = nullptr;
       Level->mlist->m = Level->site[tx][ty].creature = ((pmt)make_creature(mid));
       Level->mlist->m->x                             = tx;
       Level->mlist->m->y                             = ty;
@@ -566,7 +566,7 @@ void maze_level()
     {
       findspace(&tx, &ty, -1);
       Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
-      Level->mlist->next = NULL;
+      Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(DEMON_EMP)); /* The demon emp */
       Level->mlist->m->x = tx;

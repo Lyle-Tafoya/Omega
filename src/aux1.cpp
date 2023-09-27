@@ -219,7 +219,7 @@ int p_moveable(int x, int y)
     }
     return false;
   }
-  else if(Level->site[x][y].creature != NULL)
+  else if(Level->site[x][y].creature)
   {
     if(!gamestatusp(FAST_MOVE, GameStatus))
     {
@@ -427,7 +427,7 @@ void calc_melee()
   /* weapon */
   /* have to check for used since it could be a 2h weapon just carried
      in one hand */
-  if(Player.possessions[O_WEAPON_HAND] != NULL)
+  if(Player.possessions[O_WEAPON_HAND])
   {
     if(Player.possessions[O_WEAPON_HAND]->used &&
        ((Player.possessions[O_WEAPON_HAND]->objchar == WEAPON) ||
@@ -439,13 +439,13 @@ void calc_melee()
   }
 
   /* shield or defensive weapon */
-  if(Player.possessions[O_SHIELD] != NULL)
+  if(Player.possessions[O_SHIELD])
   {
     Player.defense += Player.possessions[O_SHIELD]->aux + Player.possessions[O_SHIELD]->plus;
   }
 
   /* armor */
-  if(Player.possessions[O_ARMOR] != NULL)
+  if(Player.possessions[O_ARMOR])
   {
     Player.absorption += Player.possessions[O_ARMOR]->dmg;
     Player.defense += Player.possessions[O_ARMOR]->plus - Player.possessions[O_ARMOR]->aux;
@@ -880,7 +880,7 @@ bool goberserk()
   strcpy(Player.meleestr, "LLLCLH");
   for(uint8_t i = 0; i < 8; ++i)
   {
-    if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature != NULL)
+    if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature)
     {
       wentberserk = true;
       fight_monster(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
@@ -972,7 +972,7 @@ void foodcheck()
 void roomcheck()
 {
   static int oldroomno = -1;
-  static plv oldlevel  = NULL;
+  static plv oldlevel  = nullptr;
   int        roomno    = Level->site[Player.x][Player.y].roomnumber;
 
   if((roomno == RS_CAVERN) || (roomno == RS_SEWER_DUCT) || (roomno == RS_KITCHEN) ||
@@ -1052,7 +1052,7 @@ void surrender(struct monster *m)
     bestitem    = ABORT;
     for(i = 1; i < MAXITEMS; i++)
     {
-      if(Player.possessions[i] != NULL)
+      if(Player.possessions[i])
       {
         if(bestvalue < true_item_value(Player.possessions[i]))
         {
@@ -1068,7 +1068,7 @@ void surrender(struct monster *m)
       nprint2(".");
       givemonster(m, Player.possessions[bestitem]);
       conform_unused_object(Player.possessions[bestitem]);
-      Player.possessions[bestitem] = NULL;
+      Player.possessions[bestitem] = nullptr;
     }
     print2("You feel less experienced... ");
     Player.xp = std::max(0l, Player.xp - m->xpv);
@@ -1153,7 +1153,7 @@ void threaten(struct monster *m)
       print2("It drops its treasure and flees.");
       m_dropstuff(m);
       m->hp                            = -1;
-      Level->site[m->x][m->y].creature = NULL;
+      Level->site[m->x][m->y].creature = nullptr;
       putspot(m->x, m->y, getspot(m->x, m->y, false));
     }
     else
@@ -1166,7 +1166,7 @@ void threaten(struct monster *m)
       }
       print3("It departs with a renewed sense of its own mortality.");
       m->hp                            = -1;
-      Level->site[m->x][m->y].creature = NULL;
+      Level->site[m->x][m->y].creature = nullptr;
       putspot(m->x, m->y, getspot(m->x, m->y, false));
     }
   }

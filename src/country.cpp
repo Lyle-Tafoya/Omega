@@ -149,7 +149,7 @@ void load_dlair(int empty, int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -295,7 +295,7 @@ void load_speak(int empty, int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -436,7 +436,7 @@ void load_misle(int empty, int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -528,7 +528,7 @@ void load_temple(int deity, int populate)
 #ifndef SAVE_LEVELS
     free_level(TempLevel);
 #endif
-    TempLevel = NULL;
+    TempLevel = nullptr;
   }
 #ifdef SAVE_LEVELS
   msdos_changelevel(TempLevel, 0, -1);
@@ -657,7 +657,7 @@ void load_temple(int deity, int populate)
   /* Main Temple is peaceful for player of same sect,druids always peaceful. */
   if((Player.patron == deity) || (deity == DRUID))
   {
-    for(pml ml = Level->mlist; ml != NULL; ml = ml->next)
+    for(pml ml = Level->mlist; ml; ml = ml->next)
     {
       m_status_reset(*ml->m, HOSTILE);
     }

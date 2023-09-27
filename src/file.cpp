@@ -31,11 +31,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
 {
-  FILE *fd;
   char  response;
 
-  fd = fopen(filestring.c_str(), optionstring.c_str());
-  while(fd == NULL)
+  FILE *fd = fopen(filestring.c_str(), optionstring.c_str());
+  while(!fd)
   {
     print3("Warning! Error opening file:");
     nprint3(filestring);
@@ -432,12 +431,12 @@ const char *required_file_list[] = {"city.dat",     "country.dat",  "dlair.dat",
                                     "village5.dat", "village6.dat", "home1.dat",    "home2.dat",
                                     "home3.dat",    "arena.dat",    "maze1.dat",    "maze2.dat",
                                     "maze3.dat",    "maze4.dat",    "omega.hi",     "omega.log",
-                                    "motd.txt",     "license.txt",  "circle.dat",   NULL};
+                                    "motd.txt",     "license.txt",  "circle.dat",   nullptr};
 
 const char *optional_file_list[] = {
   "help1.txt",   "help2.txt",   "help3.txt",   "help4.txt",   "help5.txt",  "help6.txt",  "help7.txt",
   "help8.txt",   "help9.txt",   "help10.txt",  "help11.txt",  "help12.txt", "help13.txt", "abyss.txt",
-  "scroll1.txt", "scroll2.txt", "scroll3.txt", "scroll4.txt", NULL};
+  "scroll1.txt", "scroll2.txt", "scroll3.txt", "scroll4.txt", nullptr};
 
 /* Checks existence of omega data files */
 /* Returns 1 if OK, 0 if impossible to run, -1 if possible but not OK */

@@ -113,7 +113,7 @@ void indoors_random_event()
       break;
     case 4:
       print3("A mysterious healing flux settles over the level.");
-      for(ml = Level->mlist; ml != NULL; ml = ml->next)
+      for(ml = Level->mlist; ml; ml = ml->next)
       {
         if(ml->m->hp > 0)
         {
@@ -270,7 +270,7 @@ void outdoors_random_event()
         toggle_item_use(true); /* FIXED! 12/30/98 */
         for(i = 1; i < MAXITEMS; i++)
         {
-          if(Player.possessions[i] != NULL)
+          if(Player.possessions[i])
           {
             Player.possessions[i]->plus++;
             if(Player.possessions[i]->objchar == STICK)
@@ -1133,7 +1133,7 @@ int hostilemonstersnear()
     {
       if(inbounds(i, j))
       {
-        if(Level->site[i][j].creature != NULL)
+        if(Level->site[i][j].creature)
         {
           hostile = m_statusp(*Level->site[i][j].creature, HOSTILE);
         }
@@ -1199,10 +1199,10 @@ int stonecheck(int alignment)
       print3("Your pack has disintegrated!");
       for(i = 0; i < MAXPACK; i++)
       {
-        if(Player.pack[i] != NULL)
+        if(Player.pack[i])
         {
           free(Player.pack[i]);
-          Player.pack[i] = NULL;
+          Player.pack[i] = nullptr;
         }
       }
       Player.packptr = 0;
@@ -1343,7 +1343,7 @@ void alert_guards()
   int foundguard = false;
   pml ml;
   int suppress = 0;
-  for(ml = Level->mlist; ml != NULL; ml = ml->next)
+  for(ml = Level->mlist; ml; ml = ml->next)
   {
     if(((ml->m->id == GUARD) || ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) && /*justiciar*/
        (ml->m->hp > 0))
@@ -1428,10 +1428,10 @@ void destroy_order()
           Level->site[i][j].p_locf  = L_RUBBLE;
           lset(i, j, CHANGED, *Level);
         }
-        if(Level->site[i][j].creature != NULL)
+        if(Level->site[i][j].creature)
         {
           Level->site[i][j].creature->hp = -1;
-          Level->site[i][j].creature     = NULL;
+          Level->site[i][j].creature     = nullptr;
         }
         make_site_monster(i, j, GHOST);
         Level->site[i][j].creature->monstring = "ghost of a Paladin";

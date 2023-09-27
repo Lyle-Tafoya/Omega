@@ -33,7 +33,7 @@ extern interactive_menu *menu;
 
 void l_condo()
 {
-  pol  ol, prev = NULL;
+  pol  ol, prev = nullptr;
   int  i, done = false, over = false, weeksleep = false;
   char response;
 
@@ -57,7 +57,7 @@ void l_condo()
           Player.cash -= 50000;
           dataprint();
           queue_message("You are the proud owner of a luxurious condo penthouse.");
-          Condoitems = NULL;
+          Condoitems = nullptr;
         }
       }
     }
@@ -115,7 +115,7 @@ void l_condo()
             ol->next   = Condoitems;
             Condoitems = ol;
             conform_unused_object(Player.possessions[i]);
-            Player.possessions[i] = NULL;
+            Player.possessions[i] = nullptr;
             queue_message(std::format("Item stored in safe: {}", itemid(ol->thing)));
           }
         }
@@ -123,7 +123,7 @@ void l_condo()
       else if(response == 'b')
       {
         ol = Condoitems;
-        while((ol != NULL) && (!over))
+        while(ol && !over)
         {
           print1("Retrieve ");
           nprint1(itemid(ol->thing));
@@ -136,7 +136,7 @@ void l_condo()
             {
               Condoitems = Condoitems->next;
             }
-            else if(prev != NULL)
+            else if(prev)
             {
               prev->next = ol->next;
             }
@@ -272,7 +272,7 @@ void pacify_guards()
 {
   pml ml;
 
-  for(ml = Level->mlist; ml != NULL; ml = ml->next)
+  for(ml = Level->mlist; ml; ml = ml->next)
   {
     if((ml->m->id == GUARD) || /*guard*/
        ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15)))
@@ -283,7 +283,7 @@ void pacify_guards()
       {
         if(Level->site[ml->m->x][ml->m->y].creature == ml->m)
         {
-          Level->site[ml->m->x][ml->m->y].creature = NULL;
+          Level->site[ml->m->x][ml->m->y].creature = nullptr;
         }
         ml->m->x                                 = ml->m->aux1;
         ml->m->y                                 = ml->m->aux2;
@@ -293,7 +293,7 @@ void pacify_guards()
       {
         if(Level->site[ml->m->x][ml->m->y].creature == ml->m)
         {
-          Level->site[ml->m->x][ml->m->y].creature = NULL;
+          Level->site[ml->m->x][ml->m->y].creature = nullptr;
         }
         ml->m->x                                 = 40;
         ml->m->y                                 = 62;
@@ -1163,13 +1163,13 @@ void l_safe()
     else if(attempt < -3)
     {
       print1("You are hit by an acid spray!");
-      if(Player.possessions[O_CLOAK] != NULL)
+      if(Player.possessions[O_CLOAK])
       {
         print2("Your cloak is destroyed!");
         conform_lost_object(Player.possessions[O_CLOAK]);
         p_damage(10, ACID, "a safe");
       }
-      else if(Player.possessions[O_ARMOR] != NULL)
+      else if(Player.possessions[O_ARMOR])
       {
         print2("Your armor corrodes!");
         Player.possessions[O_ARMOR]->dmg -= 3;

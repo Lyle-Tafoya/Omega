@@ -82,11 +82,11 @@ void initplayer()
   Player.options    = 0;
   for(i = 0; i < MAXITEMS; i++)
   {
-    Player.possessions[i] = NULL;
+    Player.possessions[i] = nullptr;
   }
   for(i = 0; i < MAXPACK; i++)
   {
-    Player.pack[i] = NULL;
+    Player.pack[i] = nullptr;
   }
   for(i = 0; i < NUMIMMUNITIES; i++)
   {
@@ -105,7 +105,7 @@ void initplayer()
   Player.alignment = 0;
   Player.cash      = 250;
   expand_message_window();
-  if((fd = omegarc_check()) != NULL)
+  if((fd = omegarc_check()))
   {
     fread((char *)&i, sizeof(int), 1, fd);
     if(i != VERSION)
