@@ -21,8 +21,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
-
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
@@ -86,7 +84,7 @@ void make_country_screen(Symbol terrain)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_TACTICAL_MAP;
@@ -130,15 +128,14 @@ void make_country_screen(Symbol terrain)
   }
 }
 
-void make_general_map(const char *terrain)
+void make_general_map(const std::string &terrain)
 {
-  int  i, j;
-  int  size = strlen(terrain);
+  size_t size = terrain.length();
   char curr;
 
-  for(i = 0; i < WIDTH; i++)
+  for(int i = 0; i < WIDTH; i++)
   {
-    for(j = 0; j < LENGTH; j++)
+    for(int j = 0; j < LENGTH; j++)
     {
       if((i == 0 && j == 0) || !random_range(5))
       {
@@ -392,7 +389,7 @@ void room_level()
     if(Level->depth == SEWERLEVELS)
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
+      Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(GREAT_WYRM)); /* The Great Wyrm */
@@ -414,7 +411,7 @@ void room_level()
     if(Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
+      Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(DEMON_EMP)); /* The demon emp */
@@ -553,7 +550,7 @@ void maze_level()
     if(!gamestatusp(COMPLETED_ASTRAL, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
+      Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
       Level->mlist->m = Level->site[tx][ty].creature = ((pmt)make_creature(mid));
       Level->mlist->m->x                             = tx;
@@ -565,7 +562,7 @@ void maze_level()
     if(Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
+      Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(DEMON_EMP)); /* The demon emp */

@@ -24,7 +24,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
-#include <cstring>
+#include <array>
+#include <format>
 #include <string>
 #include <vector>
 
@@ -346,7 +347,7 @@ void s_ritual()
                 mprint("Your patrons take pity on you.");
                 if((Player.rank[PRIESTHOOD] < SPRIEST) && (!find_item(&symbol, ARTIFACTID + 19, -1)))
                 {
-                  symbol         = ((pob)checkmalloc(sizeof(objtype)));
+                  symbol         = new object;
                   *symbol        = Objects[ARTIFACTID + 19];
                   symbol->known  = 2;
                   symbol->charge = 17;
@@ -493,94 +494,94 @@ int getspell()
   return (spell);
 }
 
-const char *spellid(int id)
+const std::string spellid(int id)
 {
   switch(id)
   {
     case S_MON_DET:
-      return ("monster detection");
+      return "monster detection";
     case S_OBJ_DET:
-      return ("object detection");
+      return "object detection";
     case S_IDENTIFY:
-      return ("identification");
+      return "identification";
     case S_FIREBOLT:
-      return ("firebolt");
+      return "firebolt";
     case S_LBALL:
-      return ("ball lightning");
+      return "ball lightning";
     case S_SLEEP:
-      return ("sleep");
+      return "sleep";
     case S_DISRUPT:
-      return ("disrupt");
+      return "disrupt";
     case S_DISINTEGRATE:
-      return ("disintegrate");
+      return "disintegrate";
     case S_TELEPORT:
-      return ("teleport");
+      return "teleport";
     case S_MISSILE:
-      return ("magic missile");
+      return "magic missile";
     case S_HEAL:
-      return ("healing");
+      return "healing";
     case S_DISPEL:
-      return ("dispelling");
+      return "dispelling";
     case S_BREATHE:
-      return ("breathing");
+      return "breathing";
     case S_INVISIBLE:
-      return ("invisibility");
+      return "invisibility";
     case S_WARP:
-      return ("the warp");
+      return "the warp";
     case S_ENCHANT:
-      return ("enchantment");
+      return "enchantment";
     case S_BLESS:
-      return ("blessing");
+      return "blessing";
     case S_RESTORE:
-      return ("restoration");
+      return "restoration";
     case S_CURE:
-      return ("curing");
+      return "curing";
     case S_TRUESIGHT:
-      return ("true sight");
+      return "true sight";
     case S_HELLFIRE:
-      return ("hellfire");
+      return "hellfire";
     case S_KNOWLEDGE:
-      return ("self knowledge");
+      return "self knowledge";
     case S_HERO:
-      return ("heroism");
+      return "heroism";
     case S_RETURN:
-      return ("return");
+      return "return";
     case S_DESECRATE:
-      return ("desecration");
+      return "desecration";
     case S_HASTE:
-      return ("haste");
+      return "haste";
     case S_SUMMON:
-      return ("summoning");
+      return "summoning";
     case S_SANCTUARY:
-      return ("sanctuary");
+      return "sanctuary";
     case S_ACCURACY:
-      return ("accuracy");
+      return "accuracy";
     case S_RITUAL:
-      return ("ritual magic");
+      return "ritual magic";
     case S_APPORT:
-      return ("apportation");
+      return "apportation";
     case S_SHADOWFORM:
-      return ("shadow form");
+      return "shadow form";
     case S_ALERT:
-      return ("alertness");
+      return "alertness";
     case S_REGENERATE:
-      return ("regeneration");
+      return "regeneration";
     case S_SANCTIFY:
-      return ("sanctification");
+      return "sanctification";
     case S_CLAIRVOYANCE:
-      return ("clairvoyance");
+      return "clairvoyance";
     case S_DRAIN:
-      return ("energy drain");
+      return "energy drain";
     case S_LEVITATE:
-      return ("levitate");
+      return "levitate";
     case S_POLYMORPH:
-      return ("polymorph");
+      return "polymorph";
     case S_FEAR:
-      return ("fear");
+      return "fear";
     case S_WISH:
-      return ("wishing");
+      return "wishing";
     default:
-      return ("???");
+      return "???";
   }
 }
 
@@ -850,59 +851,95 @@ void cast_spell(int spell)
   }
 }
 
-static const char *spell_names[] = {/* alphabetical listing */
-                                    "accuracy",
-                                    "alertness",
-                                    "apportation",
-                                    "ball lightning",
-                                    "blessing",
-                                    "breathing",
-                                    "clairvoyance",
-                                    "curing",
-                                    "desecration",
-                                    "disintegrate",
-                                    "dispelling",
-                                    "disrupt",
-                                    "enchantment",
-                                    "energy drain",
-                                    "fear",
-                                    "firebolt",
-                                    "haste",
-                                    "healing",
-                                    "hellfire",
-                                    "heroism",
-                                    "identification",
-                                    "invisibility",
-                                    "levitate",
-                                    "magic missile",
-                                    "monster detection",
-                                    "object detection",
-                                    "polymorph",
-                                    "regeneration",
-                                    "restoration",
-                                    "return",
-                                    "ritual magic",
-                                    "sanctification",
-                                    "sanctuary",
-                                    "self knowledge",
-                                    "shadow form",
-                                    "sleep",
-                                    "summoning",
-                                    "teleport",
-                                    "the warp",
-                                    "true sight",
-                                    "wishing"};
+const std::string spell_names[]
+{
+  "accuracy",
+  "alertness",
+  "apportation",
+  "ball lightning",
+  "blessing",
+  "breathing",
+  "clairvoyance",
+  "curing",
+  "desecration",
+  "disintegrate",
+  "dispelling",
+  "disrupt",
+  "enchantment",
+  "energy drain",
+  "fear",
+  "firebolt",
+  "haste",
+  "healing",
+  "hellfire",
+  "heroism",
+  "identification",
+  "invisibility",
+  "levitate",
+  "magic missile",
+  "monster detection",
+  "object detection",
+  "polymorph",
+  "regeneration",
+  "restoration",
+  "return",
+  "ritual magic",
+  "sanctification",
+  "sanctuary",
+  "self knowledge",
+  "shadow form",
+  "sleep",
+  "summoning",
+  "teleport",
+  "the warp",
+  "true sight",
+  "wishing"
+};
 
-static int spell_ids[] = {/* in the same order as spell_names[] */
-                          S_ACCURACY, S_ALERT,        S_APPORT,     S_LBALL,     S_BLESS,
-                          S_BREATHE,  S_CLAIRVOYANCE, S_CURE,       S_DESECRATE, S_DISINTEGRATE,
-                          S_DISPEL,   S_DISRUPT,      S_ENCHANT,    S_DRAIN,     S_FEAR,
-                          S_FIREBOLT, S_HASTE,        S_HEAL,       S_HELLFIRE,  S_HERO,
-                          S_IDENTIFY, S_INVISIBLE,    S_LEVITATE,   S_MISSILE,   S_MON_DET,
-                          S_OBJ_DET,  S_POLYMORPH,    S_REGENERATE, S_RESTORE,   S_RETURN,
-                          S_RITUAL,   S_SANCTIFY,     S_SANCTUARY,  S_KNOWLEDGE, S_SHADOWFORM,
-                          S_SLEEP,    S_SUMMON,       S_TELEPORT,   S_WARP,      S_TRUESIGHT,
-                          S_WISH};
+const int spell_ids[]
+{
+  S_ACCURACY,
+  S_ALERT,
+  S_APPORT,
+  S_LBALL,
+  S_BLESS,
+  S_BREATHE,
+  S_CLAIRVOYANCE,
+  S_CURE,
+  S_DESECRATE,
+  S_DISINTEGRATE,
+  S_DISPEL,
+  S_DISRUPT,
+  S_ENCHANT,
+  S_DRAIN,
+  S_FEAR,
+  S_FIREBOLT,
+  S_HASTE,
+  S_HEAL,
+  S_HELLFIRE,
+  S_HERO,
+  S_IDENTIFY,
+  S_INVISIBLE,
+  S_LEVITATE,
+  S_MISSILE,
+  S_MON_DET,
+  S_OBJ_DET,
+  S_POLYMORPH,
+  S_REGENERATE,
+  S_RESTORE,
+  S_RETURN,
+  S_RITUAL,
+  S_SANCTIFY,
+  S_SANCTUARY,
+  S_KNOWLEDGE,
+  S_SHADOWFORM,
+  S_SLEEP,
+  S_SUMMON,
+  S_TELEPORT,
+  S_WARP,
+  S_TRUESIGHT,
+  S_WISH
+};
 
 std::vector<std::string> known_spells(int first, int last)
 {
@@ -915,8 +952,7 @@ std::vector<std::string> known_spells(int first, int last)
     if(Spells[spell_ids[i]].known)
     {
       printed = true;
-      lines.emplace_back(std::string(spell_names[i]) +
-          " (" + std::to_string(Spells[spell_ids[i]].powerdrain) + " mana)");
+      lines.emplace_back(std::format("  {} ({} mana)", spell_names[i], Spells[spell_ids[i]].powerdrain));
     }
   }
   if(!printed)
@@ -930,7 +966,6 @@ int spellparse()
 {
   int    last;
   size_t pos;
-  char   prefix[80];
   int    found = 0;
   int    f, l;
 
@@ -949,6 +984,7 @@ int spellparse()
   append_message("", true);
   int player_input;
   bool menu_shown = false;
+  std::string prefix;
   do
   {
     if(menu_shown)
@@ -964,10 +1000,10 @@ int spellparse()
     {
       if(pos > 0)
       {
-        prefix[--pos] = '\0';
+        --pos;
         player_input  = prefix[pos - 1];
         f             = first;
-        while(f >= 0 && !strncmp(prefix, spell_names[f], pos))
+        while(f >= 0 && spell_names[f].starts_with(prefix))
         {
           if(Spells[spell_ids[f]].known)
           {
@@ -976,7 +1012,7 @@ int spellparse()
           --f;
         }
         l = last;
-        while(l < NUMSPELLS && !strncmp(prefix, spell_names[l], pos))
+        while(l < NUMSPELLS && spell_names[l].starts_with(prefix))
         {
           if(Spells[spell_ids[l]].known)
           {
@@ -1019,12 +1055,12 @@ int spellparse()
       }
       f = first;
       l = last;
-      while(f < NUMSPELLS && (!Spells[spell_ids[f]].known || strlen(spell_names[f]) < pos ||
+      while(f < NUMSPELLS && (!Spells[spell_ids[f]].known || spell_names[f].length() < pos ||
                               spell_names[f][pos] < player_input))
       {
         ++f;
       }
-      while(l >= 0 && (!Spells[spell_ids[l]].known || strlen(spell_names[l]) < pos ||
+      while(l >= 0 && (!Spells[spell_ids[l]].known || spell_names[l].length() < pos ||
                        spell_names[l][pos] > player_input))
       {
         --l;

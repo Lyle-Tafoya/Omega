@@ -1148,7 +1148,7 @@ void print_name()
 {
   werase(name_window);
   enable_attr(name_window, A_BOLD);
-  wprintw(name_window, "%s, %s", Player.name, levelname(Player.level).c_str());
+  waddstr(name_window, std::format("{}, {}", Player.name, levelname(Player.level)).c_str());
   wnoutrefresh(name_window);
 }
 
@@ -2334,7 +2334,7 @@ void bufferprint()
       i = STRING_BUFFER_SIZE - 1;
     }
     werase(message_window);
-    wprintw(message_window, "%s", Stringbuffer[i]);
+    waddstr(message_window, Stringbuffer[i].c_str());
     wrefresh(message_window);
     c = mgetc();
     if(c == 16)

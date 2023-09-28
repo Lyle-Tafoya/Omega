@@ -526,7 +526,7 @@ void i_orbearth(pob o)
       {
         if(Player.pack[i])
         {
-          free(Player.pack[i]);
+          delete Player.pack[i];
           Player.pack[i] = nullptr;
         }
       }

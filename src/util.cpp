@@ -24,7 +24,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <chrono>
-#include <cstring>
 #include <random>
 #include <string>
 #include <thread>
@@ -715,17 +714,17 @@ int nighttime()
   return ((hour() > 20) || (hour() < 7));
 }
 
-const char *getarticle(const std::string &str)
+const std::string getarticle(const std::string &str)
 {
   if((str[0] == 'a') || (str[0] == 'A') || (str[0] == 'e') || (str[0] == 'E') || (str[0] == 'i') ||
      (str[0] == 'I') || (str[0] == 'o') || (str[0] == 'O') || (str[0] == 'u') || (str[0] == 'U') ||
      (((str[0] == 'h') || (str[0] == 'H')) && ((str[1] == 'i') || (str[1] == 'e'))))
   {
-    return ("an ");
+    return "an ";
   }
   else
   {
-    return ("a ");
+    return "a ";
   }
 }
 
@@ -734,60 +733,60 @@ int day()
   return ((Date % 30) + 1);
 }
 
-const char *ordinal(int number)
+const std::string ordinal(int number)
 {
   if((number == 11) || (number == 12) || (number == 13))
   {
-    return ("th");
+    return "th";
   }
   else
   {
     switch(number % 10)
     {
       case 1:
-        return ("st");
+        return "st";
       case 2:
-        return ("nd");
+        return "nd";
       case 3:
-        return ("rd");
+        return "rd";
       default:
-        return ("th");
+        return "th";
     }
   }
 }
 
-const char *month()
+const std::string month()
 {
   switch((Date % 360) / 30)
   {
     case 0:
-      return ("Freeze");
+      return "Freeze";
     case 1:
-      return ("Ice");
+      return "Ice";
     case 2:
-      return ("Mud");
+      return "Mud";
     case 3:
-      return ("Storm");
+      return "Storm";
     case 4:
-      return ("Breeze");
+      return "Breeze";
     case 5:
-      return ("Light");
+      return "Light";
     case 6:
-      return ("Flame");
+      return "Flame";
     case 7:
-      return ("Broil");
+      return "Broil";
     case 8:
-      return ("Cool");
+      return "Cool";
     case 9:
-      return ("Haunt");
+      return "Haunt";
     case 10:
-      return ("Chill");
+      return "Chill";
     case 11:
-      return ("Dark");
+      return "Dark";
     case 12:
-      return ("Twixt");
+      return "Twixt";
     default:
-      return ("***Error***");
+      return "***Error***";
   }
 }
 
@@ -963,9 +962,9 @@ void free_objlist(pol pobjlist)
 
   while(pobjlist)
   {
-    free((tmp = pobjlist)->thing);
+    delete (tmp = pobjlist)->thing;
     pobjlist = pobjlist->next;
-    free(tmp);
+    delete tmp;
   }
 }
 
@@ -976,9 +975,9 @@ void free_mons_and_objs(pml mlist)
   while(mlist)
   {
     free_objlist((tmp = mlist)->m->possessions);
-    free(tmp->m);
+    delete tmp->m;
     mlist = mlist->next;
-    free(tmp);
+    delete tmp;
   }
 }
 
@@ -1000,55 +999,8 @@ void free_level(plv level)
     }
   }
 #ifndef SAVE_LEVELS
-  free(level);
+  delete level;
 #endif
-}
-
-/* malloc function that checks its return value - if nullptr, tries to free */
-/* some memory... */
-void *checkmalloc(unsigned int bytes)
-{
-  void         *ptr = malloc(bytes);
-  struct level *curr, **prev, **oldest;
-
-  if(ptr)
-  {
-    return ptr;
-  }
-  for(curr = Dungeon, oldest = prev = &Dungeon; curr; curr = curr->next)
-  {
-    if((*oldest)->last_visited > curr->last_visited)
-    {
-      oldest = prev;
-    }
-    prev = &(curr->next);
-  }
-  if(*oldest && *oldest != Level)
-  {
-    curr    = *oldest;
-    *oldest = (*oldest)->next;
-    free_level(curr);
-    ptr = malloc(bytes);
-  }
-  if(ptr)
-  {
-    return ptr;
-  }
-  else
-  {
-    print1("Out of memory!  Saving and quitting.");
-    save(true);
-    endgraf();
-    exit(0);
-  }
-}
-
-/* alloc just enough string space for str, strcpy, and return pointer */
-const char *salloc(const char *str)
-{
-  char *s = (char *)checkmalloc((unsigned)(strlen(str) + 1));
-  strcpy(s, str);
-  return (s);
 }
 
 char cryptkey(const std::string &fname)

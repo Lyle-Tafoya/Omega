@@ -94,7 +94,6 @@ void        weapon_use(int, pob, struct monster *);
 
 /* aux3.cpp functions */
 
-char  *citysiteid(int);
 std::string countryid(Symbol);
 char   getlocation(void);
 int    hostilemonstersnear(void);
@@ -114,7 +113,6 @@ void   terrain_check(int);
 /* char.cpp functions */
 
 long  calcmana(void);
-FILE *omegarc_check(void);
 int   competence_check(int);
 int   fixnpc(int);
 void  initplayer(void);
@@ -242,7 +240,6 @@ void warp(int);
 /* effect3.cpp functions */
 
 int  itemlist(int, int);
-int  monsterlist(void);
 void acid_cloud(void);
 void aggravate(void);
 void amnesia(void);
@@ -264,7 +261,7 @@ void hide(int, int);
 void illuminate(int);
 void inflict_fear(int, int);
 void learnspell(int);
-void level_drain(int, const char *);
+void level_drain(int, const std::string &);
 void level_return(void);
 void levitate(int);
 void p_poison(int);
@@ -289,7 +286,7 @@ void make_prime(int, int);
 /* etc.cpp functions */
 
 std::string_view nameprint(void);
-const char *wordnum(int);
+const std::string wordnum(int);
 void        hint(void);
 void        learnclericalspells(int, int);
 
@@ -309,7 +306,7 @@ void  commandlist(void);
 void  displayfile(const std::string &);
 void  displaycryptfile(const std::string &);
 void  extendlog(const std::string &, int);
-void  filescanstring(FILE *, char *); /* in util.c if MSDOS defined */
+void  filescanstring(FILE *, std::string &);
 void  inv_help(void);
 void  save_hiscore_npc(int);
 void  show_license(void);
@@ -321,7 +318,7 @@ void  wishfile(void);
 
 /* gen1.cpp functions */
 
-const char *roomname(int);
+const std::string roomname(int);
 plv         findlevel(struct level *, char);
 void        build_room(int, int, int, char, int);
 void        build_square_room(int, int, int, char, int);
@@ -341,7 +338,6 @@ void        straggle_corridor(int, int, int, int, Symbol, char);
 /* gen2.cpp functions */
 
 void make_country_screen(Symbol);
-void make_general_map(char *);
 void make_forest(void);
 void make_jungle(void);
 void make_mountains(void);
@@ -380,7 +376,7 @@ void        do_inventory_control(void);
 int         key_to_index(signed char);
 char        index_to_key(int);
 long        get_money(long);
-const char *cashstr(void);
+const std::string cashstr(void);
 std::string itemid(pob);
 bool        cursed(pob);
 int         find_and_remove_item(int, int);
@@ -411,13 +407,13 @@ void        pickup_at(int, int);
 /* item.cpp functions */
 
 void        shuffle(int[], int);
-const char *bootname(int);
-const char *cloakname(int);
-const char *grotname(void);
-const char *potionname(int);
-const char *ringname(int);
-const char *scrollname(int);
-const char *stickname(int);
+const std::string bootname(int);
+const std::string cloakname(int);
+const std::string grotname(void);
+const std::string potionname(int);
+const std::string ringname(int);
+const std::string scrollname(int);
+const std::string stickname(int);
 int         itemblessing(void);
 int         itemcharge(void);
 int         itemplus(void);
@@ -938,7 +934,7 @@ void send_to_jail(void);
 
 /* spell.cpp functions */
 
-const char *spellid(int);
+const std::string spellid(int);
 int         getspell(void);
 int         spellparse(void);
 void        cast_spell(int);
@@ -1010,10 +1006,9 @@ void l_trap_teleport(void);
 /* util.cpp functions */
 
 long        calc_points(void);
-const char *getarticle(const std::string &);
-const char *month(void);
-const char *ordinal(int);
-const char *salloc(const char *);
+const std::string getarticle(const std::string &);
+const std::string month(void);
+const std::string ordinal(int);
 char        inversedir(int);
 int         confirmation(void);
 char        cryptkey(const std::string &);
@@ -1030,7 +1025,6 @@ int         ok_to_free(plv);
 void        free_level(plv);
 void        free_mons_and_objs(pml);
 void        free_objlist(pol);
-void       *checkmalloc(unsigned int);
 int         random_range(int);
 int         screenmod(int);
 int         screenmod_horizontal(int);

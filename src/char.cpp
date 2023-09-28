@@ -23,26 +23,27 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
-#include <cstring>
 #include <format>
+#include <fstream>
 #include <string>
-#include <string_view>
 
 extern scrolling_buffer message_buffer;
 extern void enable_attr(WINDOW *, attr_t);
 extern void queue_message(const std::string &message);
 extern void expand_message_window();
 extern void shrink_message_window();
+extern void read_omegarc(std::ifstream &omegarc_file);
+extern void save_omegarc();
 
 std::string get_username()
 {
   char *env = getenv("USERNAME");
-  if(env && strlen(env) > 0)
+  if(env && env[0] != '\0')
   {
     return env;
   }
   env = getenv("USER");
-  if(env && strlen(env) > 0)
+  if(env && env[0] != '\0')
   {
     return env;
   }
@@ -62,41 +63,51 @@ std::string get_home_path()
   }
 }
 
+std::ifstream omegarc_check()
+{
+  std::string omegarc_filename = std::format("{}/.omegarc", get_home_path());
+  std::ifstream omegarc_file(omegarc_filename, std::ios::binary);
+  if(omegarc_file.is_open())
+  {
+    queue_message("Use .omegarc in home directory? [yn] ");
+    if(ynq2() != 'y')
+    {
+      omegarc_file.close();
+    }
+  }
+  return omegarc_file;
+}
+
 /* set player to begin with */
 void initplayer()
 {
-  int   i;
-  int   oldchar = false;
-  FILE *fd;
-  std::string username = get_username();
-  strcpy(Player.name, username.c_str());
-
-  if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
+  Player.name = get_username();
+  if(std::islower(Player.name.front()))
   {
-    Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
+    Player.name.front() = std::toupper(Player.name.front());
   }
   Player.itemweight = 0;
   Player.food       = 36;
   Player.packptr    = 0;
   Behavior          = -1;
   Player.options    = 0;
-  for(i = 0; i < MAXITEMS; i++)
+  for(int i = 0; i < MAXITEMS; i++)
   {
     Player.possessions[i] = nullptr;
   }
-  for(i = 0; i < MAXPACK; i++)
+  for(int i = 0; i < MAXPACK; i++)
   {
     Player.pack[i] = nullptr;
   }
-  for(i = 0; i < NUMIMMUNITIES; i++)
+  for(int i = 0; i < NUMIMMUNITIES; i++)
   {
     Player.immunity[i] = 0;
   }
-  for(i = 0; i < NUMSTATI; i++)
+  for(int i = 0; i < NUMSTATI; i++)
   {
     Player.status[i] = 0;
   }
-  for(i = 0; i < NUMRANKS; i++)
+  for(int i = 0; i < NUMRANKS; i++)
   {
     Player.rank[i]    = 0;
     Player.guildxp[i] = 0;
@@ -104,58 +115,28 @@ void initplayer()
   Player.patron    = 0;
   Player.alignment = 0;
   Player.cash      = 250;
+  optionset(RUNSTOP, Player);
+  optionset(CONFIRM, Player);
+  optionset(SHOW_COLOUR, Player);
   expand_message_window();
-  if((fd = omegarc_check()))
+  std::ifstream omegarc_file = omegarc_check();
+  if(omegarc_file.is_open())
   {
-    fread((char *)&i, sizeof(int), 1, fd);
-    if(i != VERSION)
-    {
-      print1("Out of date .omegarc! Make another!");
-    }
-    else
-    {
-      oldchar = true;
-      fread((char *)&Player, sizeof(Player), 1, fd);
-      fread((char *)&Searchnum, sizeof(int), 1, fd);
-      fread((char *)&Verbosity, sizeof(char), 1, fd);
-      strcpy(Player.name, username.c_str());
-      if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
-      {
-        Player.name[0] += 'A' - 'a'; /* capitalise 1st letter */
-      }
-    }
-    fclose(fd);
+    read_omegarc(omegarc_file);
+    omegarc_file.close();
   }
-  if(!oldchar)
+  else
   {
-    optionset(RUNSTOP, Player);
-    optionset(CONFIRM, Player);
-    optionset(SHOW_COLOUR, Player);
     initstats();
   }
   Searchnum = std::max(1, std::min(9, Searchnum));
   Player.hp = Player.maxhp = Player.maxcon;
   Player.mana = Player.maxmana = calcmana();
   Player.click                 = 1;
-  strcpy(Player.meleestr, "ACBC");
+  Player.meleestr = "ACBC";
   calc_melee();
   ScreenOffset = -1000; /* to force a redraw */
   shrink_message_window();
-}
-
-FILE *omegarc_check()
-{
-  FILE *fd = fopen(std::format("{}/.omegarc", get_home_path()).c_str(), "r");
-  if(fd)
-  {
-    queue_message("Use .omegarc in home directory? [yn] ");
-    if(ynq2() != 'y')
-    {
-      fclose(fd);
-      fd = nullptr;
-    }
-  }
-  return fd;
 }
 
 void initstats()
@@ -183,26 +164,6 @@ void initstats()
     }
   }
   xredraw();
-}
-
-void save_omegarc()
-{
-  int   i = VERSION;
-  FILE *fd = fopen(std::format("{}/.omegarc", get_home_path()).c_str(), "w");
-  if(!fd)
-  {
-    print1("Sorry, couldn't save .omegarc for some reason.");
-  }
-  else
-  {
-    fwrite((char *)&i, sizeof(int), 1, fd);
-    print1("First, set options.");
-    setoptions();
-    fwrite((char *)&Player, sizeof(Player), 1, fd);
-    fwrite((char *)&Searchnum, sizeof(int), 1, fd);
-    fwrite((char *)&Verbosity, sizeof(char), 1, fd);
-    fclose(fd);
-  }
 }
 
 long calcmana()
@@ -766,9 +727,9 @@ void omegan_character_stats()
   Player.cash = 250;
 
   message_buffer.receive("Please enter your character's name: ");
-  strcpy(Player.name, msgscanstring().c_str());
-  if(Player.name[0] >= 'a' && Player.name[0] <= 'z')
+  Player.name = msgscanstring();
+  if(std::islower(Player.name.front()))
   {
-    Player.name[0] += 'A' - 'a'; // capitalise 1st letter
+    Player.name.front() = std::toupper(Player.name.front());
   }
 }

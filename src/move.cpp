@@ -23,7 +23,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <chrono>
-#include <cstring>
 #include <thread>
 
 extern void item_unequip(object *);
@@ -179,7 +178,7 @@ void l_lava()
     print2("Your horse is incinerated... You fall in too!");
     resetgamestatus(MOUNTED, GameStatus);
   }
-  if(strcmp(Player.name, "Saltheart Foamfollower") == 0)
+  if(Player.name == "Saltheart Foamfollower")
   {
     print1("Strangely enough, you don't seem terribly affected.");
     p_damage(1, UNSTOPPABLE, "slow death in a pool of lava");

@@ -22,7 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
+#include <string>
 
 void m_hit(monster *m, int dtype)
 {
@@ -47,7 +47,7 @@ void tacmonster(monster *m)
 {
   drawvision(Player.x, Player.y);
   transcribe_monster_actions(m);
-  for(size_t i = 0; i < strlen(m->meleestr) && m->hp > 0; i += 2)
+  for(size_t i = 0; i < m->meleestr.length() && m->hp > 0; i += 2)
   {
     std::string monster_name;
     if(m->uniqueness == COMMON)
@@ -247,7 +247,7 @@ bool monster_hit(monster *m, char hitloc, int bonus)
 {
   int    goodblocks = 0;
   bool   blocks = false, riposte = false;
-  size_t meleestr_length = std::min(strlen(Player.meleestr), maneuvers() * 2);
+  size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);
   for(size_t i = 0; i < meleestr_length; i += 2)
   {
     if(Player.meleestr[i] == 'B' || (Player.meleestr[i] == 'R'))
@@ -302,7 +302,7 @@ bool monster_hit(monster *m, char hitloc, int bonus)
 void transcribe_monster_actions(monster *m)
 {
   char        attack_loc, block_loc;
-  static char mmstr[80];
+  static std::string mmstr;
 
   int p_blocks[3];
   int p_attacks[3];
@@ -313,7 +313,7 @@ void transcribe_monster_actions(monster *m)
   }
 
   /* Find which area player blocks and attacks least in */
-  size_t meleestr_length = std::min(strlen(Player.meleestr), maneuvers() * 2);
+  size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);
   for(size_t i = 0; i < meleestr_length; i += 2)
   {
     if((Player.meleestr[i] == 'B') || (Player.meleestr[i] == 'R'))
@@ -376,18 +376,18 @@ void transcribe_monster_actions(monster *m)
 
   if(m->id != NPC)
   {
-    strcpy(mmstr, Monsters[m->id].meleestr);
+    mmstr = Monsters[m->id].meleestr;
   }
   else
   {
-    strcpy(mmstr, "");
+    mmstr.clear();
     for(int i = 0; i < m->level; i += 2)
     {
-      strcat(mmstr, "L?R?");
+      mmstr += "L?R?";
     }
   }
 
-  for(size_t i = 0; i < strlen(m->meleestr); i += 2)
+  for(size_t i = 0; i < m->meleestr.length(); i += 2)
   {
     if(m->meleestr[i] == 'A' || m->meleestr[i] == 'L')
     {

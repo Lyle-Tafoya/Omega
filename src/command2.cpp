@@ -462,7 +462,7 @@ void talk()
     {
       m = Level->site[Player.x + dx][Player.y + dy].creature;
       std::vector<std::string> lines;
-      lines.emplace_back("     Talk to " + std::string(m->monstring) + ":");
+      lines.emplace_back(std::format("     Talk to {}:", m->monstring));
       lines.emplace_back("a: Greet.");
       lines.emplace_back("b: Threaten.");
       lines.emplace_back("c: Surrender.");
@@ -527,7 +527,7 @@ void disarm()
         print1("You disarmed the trap!");
         if(random_range(100) < Player.dex + Player.rank[THIEVES] * 10)
         {
-          o = ((pob)checkmalloc(sizeof(objtype)));
+          o = new object;
           switch(Level->site[x][y].p_locf)
           {
             case L_TRAP_DART:
@@ -558,7 +558,7 @@ void disarm()
               *o = Objects[THINGID + 25];
               break;
             default:
-              free(o);
+              delete o;
               o = nullptr;
               break;
           }
@@ -633,7 +633,7 @@ void give()
       }
       else if(!cursed(Player.possessions[index]))
       {
-        obj       = ((pob)checkmalloc(sizeof(objtype)));
+        obj       = new object;
         *obj      = *(Player.possessions[index]);
         obj->used = false;
         conform_lost_objects(1, Player.possessions[index]);
@@ -966,7 +966,7 @@ void callitem()
     else
     {
       print1("Call it:");
-      obj->objstr = salloc(msgscanstring().c_str());
+      obj->objstr = msgscanstring();
       print2("Also call all similar items by that name? [yn] ");
       if(ynq2() == 'y')
       {
@@ -1495,7 +1495,7 @@ void movepincountry(int dx, int dy)
         {
           if(Player.pack[i])
           {
-            free(Player.pack[i]);
+            delete Player.pack[i];
           }
           Player.pack[i] = nullptr;
         }

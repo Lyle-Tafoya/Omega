@@ -25,7 +25,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <chrono>
-#include <cstring>
 #include <string>
 #include <thread>
 #include <vector>
@@ -56,14 +55,14 @@ void l_bank()
     append_message("The proximity sensor activates the autoteller as you approach.", true);
     while(!done)
     {
-      append_message("Current Balance: " + std::to_string(Balance) + "Au.", true);
+      append_message(std::format("Current Balance: {}Au.", Balance), true);
       append_message("Enter command (? for help) > ", true);
       response = mgetc();
       if(response == '?')
       {
         std::vector<std::string> lines;
         lines.emplace_back("?: This List");
-        if(strcmp(Password, "") == 0)
+        if(Password.empty())
         {
           lines.emplace_back("O: Open an account");
         }
@@ -78,7 +77,7 @@ void l_bank()
         menu->print();
         continue;
       }
-      else if((response == 'P') && (strcmp(Password, "") != 0))
+      else if(response == 'P' && !Password.empty())
       {
         append_message("Password: ", true);
         passwd = msgscanstring();
@@ -192,12 +191,12 @@ void l_bank()
         append_message("Bye!", true);
         done = true;
       }
-      else if((response == 'O') && (strcmp(Password, "") == 0))
+      else if(response == 'O' && Password.empty())
       {
         append_message("Opening new account.", true);
         append_message(" Please enter new password: ");
-        strcpy(Password, msgscanstring().c_str());
-        if(strcmp(Password, "") == 0)
+        Password = msgscanstring();
+        if(Password.empty())
         {
           append_message("Illegal to use null password -- aborted.", true);
           done = true;
@@ -260,7 +259,7 @@ void buyfromstock(int base, int numitems)
   std::vector<std::string> lines;
   for(int i = 0; i < numitems; ++i)
   {
-    lines.emplace_back(std::string(1, i + 'a') + ":" + Objects[base + i].objstr);
+    lines.emplace_back(std::format("{}:{}", static_cast<char>(i+'a'), Objects[base + i].objstr));
   }
   menu->load(lines);
   int player_input = ' ';
@@ -271,17 +270,17 @@ void buyfromstock(int base, int numitems)
   if(player_input != ESCAPE)
   {
     int i          = player_input - 'a';
-    newitem        = ((pob)checkmalloc(sizeof(objtype)));
+    newitem        = new object;
     *newitem       = Objects[base + i];
     newitem->known = 2;
     long price     = 2 * true_item_value(newitem);
-    append_message("I can let you have it for " + std::to_string(price) + " Au. Buy it? [yn] ", true);
+    append_message(std::format("I can let you have it for {} Au. Buy it? [yn] ", price), true);
     if(ynq1() == 'y')
     {
       if(Player.cash < price)
       {
         append_message("Why not try again some time you have the cash?", true);
-        free(newitem);
+        delete newitem;
       }
       else
       {
@@ -292,7 +291,7 @@ void buyfromstock(int base, int numitems)
     }
     else
     {
-      free(newitem);
+      delete newitem;
     }
   }
 }
@@ -393,7 +392,7 @@ void l_gym()
   {
     if((Gymcredit > 0) || (Player.rank[ARENA]))
     {
-      append_message("-- Credit: " + std::to_string(Gymcredit) + " Au.");
+      append_message(std::format("-- Credit: {} Au.", Gymcredit));
     }
     done = false;
     switch(mgetc())
@@ -569,7 +568,7 @@ void wake_statue(int x, int y, int first)
     }
     Level->site[x][y].locchar = FLOOR;
     lset(x, y, CHANGED, *Level);
-    tml    = ((pml)checkmalloc(sizeof(mltype)));
+    tml    = new monsterlist;
     tml->m = (Level->site[x][y].creature = m_create(x, y, 0, difficulty() + 1));
     m_status_set(*Level->site[x][y].creature, HOSTILE);
     tml->next    = Level->mlist;
@@ -802,7 +801,7 @@ void l_commandant()
     else
     {
       Player.cash -= num * 5;
-      food         = ((pob)checkmalloc(sizeof(objtype)));
+      food         = new object;
       *food        = Objects[FOODID + 0]; /* food ration */
       food->number = num;
       if(num == 1)
@@ -1096,7 +1095,7 @@ void l_alchemist()
             else
             {
               long sell_price = obj->basevalue / 3;
-              queue_message("I'll give you " + std::to_string(sell_price) + "Au each. Take it? [yn] ");
+              queue_message(std::format("I'll give you {}Au each. Take it? [yn]", sell_price));
               if(ynq1() == 'y')
               {
                 int n = getnumber(obj->number);
@@ -1132,8 +1131,7 @@ void l_alchemist()
             {
               int mlevel = Monsters[obj->charge].level;
               long transform_price = std::max(10l, obj->basevalue * 2 * obj->number);
-              queue_message("It'll cost you " + std::to_string(transform_price) +
-                               " Au for the transformation. Pay it? [yn] ");
+              queue_message(std::format("It'll cost you {} Au for the transformation. Pay it? [yn] ", transform_price));
               if(ynq1() == 'y')
               {
                 if(Player.cash < transform_price)
@@ -1242,7 +1240,7 @@ void l_library()
     {
       append_message("The Rampart student aid system has arranged a grant!", true);
       fee = std::max(50, 1000 - (18 - Player.maxiq) * 125);
-      append_message("Your revised fee is: " + std::to_string(fee) + "Au.", true);
+      append_message(std::format("Your revised fee is: {}Au.", fee), true);
     }
     while(!done)
     {
@@ -1306,7 +1304,7 @@ void l_library()
                 if(Player.maxiq < 19 && fee != std::max(50, 1000 - (18 - Player.maxiq) * 125))
                 {
                   fee = std::max(50, 1000 - (18 - Player.maxiq) * 125);
-                  append_message("Your revised fee is: " + std::to_string(fee) + "Au.", true);
+                  append_message(std::format("Your revised fee is: {}Au.", fee), true);
                 }
               }
               else
@@ -1365,7 +1363,7 @@ void l_pawn_shop()
           Objects[Pawnitems[0]->id].uniqueness = UNIQUE_UNMADE;
         }
         /* could turn up anywhere, really :) */
-        free(Pawnitems[0]);
+        delete Pawnitems[0];
         Pawnitems[0] = nullptr;
       }
       for(i = 0; i < PAWNITEMS - 1; i++)
@@ -1381,7 +1379,7 @@ void l_pawn_shop()
           {
             if(Pawnitems[i])
             {
-              free(Pawnitems[i]);
+              delete Pawnitems[i];
             }
             Pawnitems[i]        = create_object(5);
             Pawnitems[i]->known = 2;
@@ -1399,7 +1397,7 @@ void l_pawn_shop()
       {
         if(Pawnitems[i])
         {
-          lines.emplace_back(std::string(1, i + 'a') + ":" + itemid(Pawnitems[i]));
+          lines.emplace_back(std::format("{}:{}", static_cast<char>(i+'a'), itemid(Pawnitems[i])));
         }
       }
       menu->load(lines);
@@ -1427,13 +1425,13 @@ void l_pawn_shop()
           {
             append_message("Hmm, how did that junk get on my shelves?", true);
             append_message("I'll just remove it.");
-            free(Pawnitems[i]);
+            delete Pawnitems[i];
             Pawnitems[i] = nullptr;
           }
           else
           {
             long price = Pawnitems[i]->number * true_item_value(Pawnitems[i]);
-            append_message("The low, low, cost is: " + std::to_string(price) + " Buy it? [ynq] ", true);
+            append_message(std::format("The low, low, cost is: {}Au. Buy it? [ynq] ", price), true);
             if(ynq1() == 'y')
             {
               if(Player.cash < price)
@@ -1469,7 +1467,7 @@ void l_pawn_shop()
           else
           {
             long price = item_value(Player.possessions[i]) / 2;
-            print1("You can get " + std::to_string(price) + " Au each. Sell [yn]? ");
+            print1(std::format("You can get {} Au each. Sell? [yn] ", price));
             if(ynq1() == 'y')
             {
               number = getnumber(Player.possessions[i]->number);
@@ -1478,12 +1476,12 @@ void l_pawn_shop()
                 item_unequip(Player.possessions[i]);
               }
               Player.cash += number * price;
-              free(Pawnitems[0]);
+              delete Pawnitems[0];
               for(j = 0; j < PAWNITEMS - 1; j++)
               {
                 Pawnitems[j] = Pawnitems[j + 1];
               }
-              Pawnitems[PAWNITEMS - 1]         = ((pob)checkmalloc(sizeof(objtype)));
+              Pawnitems[PAWNITEMS - 1]         = new object;
               *(Pawnitems[PAWNITEMS - 1])      = *(Player.possessions[i]);
               Pawnitems[PAWNITEMS - 1]->number = number;
               Pawnitems[PAWNITEMS - 1]->known  = 2;
@@ -1500,8 +1498,7 @@ void l_pawn_shop()
           if(Player.pack[i]->blessing > -1 && true_item_value(Player.pack[i]) > 0)
           {
             long price = item_value(Player.pack[i]) / 2;
-            print1("Sell " + std::string(itemid(Player.pack[i])) + " for " + std::to_string(price) +
-                   " Au each? [ynq] ");
+            print1(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price));
             player_input = ynq1();
             if(player_input == 'y')
             {
@@ -1509,19 +1506,19 @@ void l_pawn_shop()
               if(number > 0)
               {
                 Player.cash += number * price;
-                free(Pawnitems[0]);
+                delete Pawnitems[0];
                 for(j = 0; j < PAWNITEMS - 1; j++)
                 {
                   Pawnitems[j] = Pawnitems[j + 1];
                 }
-                Pawnitems[PAWNITEMS - 1]         = ((pob)checkmalloc(sizeof(objtype)));
+                Pawnitems[PAWNITEMS - 1]         = new object;
                 *(Pawnitems[PAWNITEMS - 1])      = *(Player.pack[i]);
                 Pawnitems[PAWNITEMS - 1]->number = number;
                 Pawnitems[PAWNITEMS - 1]->known  = 2;
                 Player.pack[i]->number -= number;
                 if(Player.pack[i]->number < 1)
                 {
-                  free(Player.pack[i]);
+                  delete Player.pack[i];
                   Player.pack[i] = nullptr;
                 }
                 dataprint();

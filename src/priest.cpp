@@ -22,7 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
+#include <string>
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
@@ -320,7 +320,7 @@ int increase_priest_rank(int deity)
         if(Player.alignment > 0)
         {
           print1("Odin hears your prayer!");
-          print2(std::string(Priest[ODIN]) + " personally blesses you.");
+          print2(Priest[ODIN] + " personally blesses you.");
           nprint2("You are now a lay devotee of Odin.");
           Player.patron              = ODIN;
           Player.rank[PRIESTHOOD]    = LAY;
@@ -336,7 +336,7 @@ int increase_priest_rank(int deity)
         if(Player.alignment < 0)
         {
           print1("Set hears your prayer!");
-          print2(std::string(Priest[SET]) + " personally blesses you.");
+          print2(Priest[SET] + " personally blesses you.");
           nprint2("You are now a lay devotee of Set.");
           Player.patron              = SET;
           Player.rank[PRIESTHOOD]    = LAY;
@@ -352,7 +352,7 @@ int increase_priest_rank(int deity)
         if(Player.alignment > 0)
         {
           print1("Athena hears your prayer!");
-          print2(std::string(Priest[ATHENA]) + " personally blesses you.");
+          print2(Priest[ATHENA] + " personally blesses you.");
           nprint2("You are now a lay devotee of Athena.");
           Player.patron              = ATHENA;
           Player.rank[PRIESTHOOD]    = LAY;
@@ -368,7 +368,7 @@ int increase_priest_rank(int deity)
         if(Player.alignment < 0)
         {
           print1("Hecate hears your prayer!");
-          print2(std::string(Priest[HECATE]) + " personally blesses you.");
+          print2(Priest[HECATE] + " personally blesses you.");
           nprint2("You are now a lay devotee of Hecate.");
           Player.patron              = HECATE;
           Player.rank[PRIESTHOOD]    = LAY;
@@ -383,7 +383,7 @@ int increase_priest_rank(int deity)
       case DRUID:
         if(abs(Player.alignment) < 10)
         {
-          print1(std::string(Priest[DRUID]) + " personally blesses you.");
+          print1(Priest[DRUID] + " personally blesses you.");
           print2("You are now a lay devotee of the Druids.");
           Player.patron              = DRUID;
           Player.rank[PRIESTHOOD]    = LAY;
@@ -644,7 +644,7 @@ void make_hp(pob o)
     print1("Your deity raises you to the post of High Priest!");
   }
   print2("You feel holy.");
-  strcpy(Priest[Player.patron], Player.name);
+  Priest[Player.patron] = Player.name;
   Priestlevel[Player.patron]    = Player.level;
   Player.rank[PRIESTHOOD]       = HIGHPRIEST;
   Priestbehavior[Player.patron] = fixnpc(4);

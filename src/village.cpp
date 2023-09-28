@@ -48,7 +48,7 @@ void load_village(int villagenum, int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_VILLAGE;
@@ -173,7 +173,7 @@ void load_village(int villagenum, int populate)
 
 void make_guard(int i, int j)
 {
-  pml tml      = ((pml)(checkmalloc(sizeof(mltype))));
+  pml tml      = new monsterlist;
   tml->m       = (Level->site[i][j].creature = make_creature(GUARD));
   tml->m->x    = i;
   tml->m->y    = j;
@@ -183,7 +183,7 @@ void make_guard(int i, int j)
 
 void make_sheep(int i, int j)
 {
-  pml tml      = ((pml)(checkmalloc(sizeof(mltype))));
+  pml tml      = new monsterlist;
   tml->m       = (Level->site[i][j].creature = make_creature(SHEEP));
   tml->m->x    = i;
   tml->m->y    = j;
@@ -198,8 +198,8 @@ void make_food_bin(int i, int j)
 
   for(k = 0; k < 10; k++)
   {
-    tol        = ((pol)checkmalloc(sizeof(oltype)));
-    tol->thing = ((pob)checkmalloc(sizeof(objtype)));
+    tol        = new objectlist;
+    tol->thing = new object;
     make_food(tol->thing, 15); /* grain */
     tol->next                = Level->site[i][j].things;
     Level->site[i][j].things = tol;
@@ -208,7 +208,7 @@ void make_food_bin(int i, int j)
 
 void make_horse(int i, int j)
 {
-  pml tml      = ((pml)(checkmalloc(sizeof(mltype))));
+  pml tml      = new monsterlist;
   tml->m       = (Level->site[i][j].creature = make_creature(HORSE));
   tml->m->x    = i;
   tml->m->y    = j;
@@ -218,7 +218,7 @@ void make_horse(int i, int j)
 
 void make_merchant(int i, int j)
 {
-  pml tml      = ((pml)(checkmalloc(sizeof(mltype))));
+  pml tml      = new monsterlist;
   tml->m       = (Level->site[i][j].creature = make_creature(MERCHANT));
   tml->m->x    = i;
   tml->m->y    = j;

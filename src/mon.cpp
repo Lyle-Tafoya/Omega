@@ -22,11 +22,14 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
+#include <string>
 #include <format>
+#include <fstream>
+#include <sstream>
 
 extern bool merge_item_with_list(objectlist *l, object *o, int n);
 extern void queue_message(const std::string &message);
+extern std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode);
 
 /*               Revised function                   */
 /* WDT: code contributed by David J. Robertson */
@@ -97,7 +100,7 @@ void m_pulse(struct monster *m)
         m_pickup(m, Level->site[m->x][m->y].things->thing);
         prev                           = Level->site[m->x][m->y].things;
         Level->site[m->x][m->y].things = Level->site[m->x][m->y].things->next;
-        free(prev);
+        delete prev;
       }
     }
     /* prevents monsters from casting spells from other side of dungeon */
@@ -128,7 +131,7 @@ void movemonster(struct monster *m, int newx, int newy)
 /* give object o to monster m */
 void m_pickup(struct monster *m, struct object *o)
 {
-  pol tmp        = ((pol)checkmalloc(sizeof(oltype)));
+  pol tmp        = new objectlist;
   tmp->thing     = o;
   tmp->next      = m->possessions;
   m->possessions = tmp;
@@ -142,8 +145,8 @@ void m_dropstuff(struct monster *m)
     objectlist *tmp = possessions->next;
     if(merge_item_with_list(drop_pile, possessions->thing, possessions->thing->number))
     {
-      free(possessions->thing);
-      free(possessions);
+      delete possessions->thing;
+      delete possessions;
     }
     else
     {
@@ -251,7 +254,7 @@ void m_death(struct monster *m)
     }
     if(random_range(2) || (m->uniqueness != COMMON))
     {
-      corpse = ((pob)checkmalloc(sizeof(objtype)));
+      corpse = new object;
       make_corpse(corpse, m);
       drop_at(m->x, m->y, corpse);
     }
@@ -271,41 +274,41 @@ void m_death(struct monster *m)
           case 5:
           case 6:
             mprint("You hear a faroff sound like angels crying....");
-            strcpy(Priest[m->aux2], std::string{nameprint()}.c_str());
+            Priest[m->aux2] = nameprint();
             Priestbehavior[m->aux2] = 2933;
             break;
           case 7:
             mprint("A furtive figure dashes out of the shadows, takes a look at");
             mprint("the corpse, and runs away!");
-            strcpy(Shadowlord, std::string{nameprint()}.c_str());
+            Shadowlord = nameprint();
             Shadowlordbehavior = 2912;
             break;
           case 8:
             mprint("An aide-de-camp approaches, removes the corpse's insignia,");
             mprint("and departs.");
-            strcpy(Commandant, std::string{nameprint()}.c_str());
+            Commandant = nameprint();
             Commandantbehavior = 2912;
             break;
           case 9:
             mprint("An odd glow surrounds the corpse, and slowly fades.");
-            strcpy(Archmage, std::string{nameprint()}.c_str());
+            Archmage = nameprint();
             Archmagebehavior = 2933;
             break;
           case 10:
             mprint("A demon materializes, takes a quick look at the corpse,");
             mprint("and teleports away with a faint popping noise.");
-            strcpy(Prime, std::string{nameprint()}.c_str());
+            Prime = nameprint();
             Primebehavior = 2932;
             break;
           case 11:
             mprint("A sports columnist rushes forward and takes a quick photo");
             mprint("of the corpse and rushes off muttering about a deadline.");
-            strcpy(Champion, std::string{nameprint()}.c_str());
+            Champion = nameprint();
             Championbehavior = 2913;
             break;
           case 12:
             mprint("You hear a fanfare in the distance, and feel dismayed.");
-            strcpy(Duke, std::string{nameprint()}.c_str());
+            Duke = nameprint();
             Dukebehavior = 2911;
             break;
           case 13:
@@ -317,7 +320,7 @@ void m_death(struct monster *m)
             {
               mprint("You feel ashamed.");
             }
-            strcpy(Chaoslord, std::string{nameprint()}.c_str());
+            Chaoslord = nameprint();
             Chaoslordbehavior = 2912;
             break;
           case 14:
@@ -329,7 +332,7 @@ void m_death(struct monster *m)
             {
               mprint("You feel ashamed.");
             }
-            strcpy(Lawlord, std::string{nameprint()}.c_str());
+            Lawlord = nameprint();
             Lawlordbehavior = 2911;
             break;
           case 15:
@@ -344,7 +347,7 @@ void m_death(struct monster *m)
                 prev = curr;
                 curr = curr->next;
               }
-              strcpy(Justiciar, std::string{nameprint()}.c_str());
+              Justiciar = nameprint();
               Justiciarbehavior = 2911;
               mprint("In the distance you hear a trumpet. A Servant of Law");
               /* promote one of the city guards to be justiciar */
@@ -372,7 +375,7 @@ void m_death(struct monster *m)
                   {
                     Level->site[m->x][m->y].things = curr->next;
                   }
-                  free(curr);
+                  delete curr;
                 }
                 else
                 {
@@ -893,12 +896,12 @@ void make_hiscore_npc(pmt npc, int npcid)
   }
   if(st > -1 && Objects[st].uniqueness == UNIQUE_MADE)
   {
-    ob  = ((pob)checkmalloc(sizeof(objtype)));
+    ob  = new object;
     *ob = Objects[st];
     m_pickup(npc, ob);
   }
-  npc->monstring = salloc(npc_name.c_str());
-  npc->corpsestr = salloc(std::format("The body of {}", npc_name).c_str());
+  npc->monstring = npc_name;
+  npc->corpsestr = std::format("The body of {}", npc_name);
 }
 
 /* sets npc behavior given level and behavior code */
@@ -983,63 +986,56 @@ void determine_npc_behavior(pmt npc, int level, int behavior)
 /* makes an ordinary npc (maybe undead) */
 void make_log_npc(struct monster *npc)
 {
-  int   i;
-  int   behavior, status, level;
+  // in case the log file is null
+  int behavior = 2718, level = 1, status = 2;
+  std::string npc_name = "Malaprop the Misnamed";
 
-  /* in case the log file is null */
-  behavior = 2718;
-  level    = 1;
-  status   = 2;
-  strcpy(Str2, "Malaprop the Misnamed");
-
-  FILE *fd = checkfopen(std::format("{}omega.log", Omegalib), "r");
-  int n  = 1;
-  while(fgets(Str1, STRING_LEN, fd))
+  std::string file_path = std::format("{}omega.log", Omegalib);
+  std::fstream log_file = check_fstream_open(file_path, std::ios::in);
+  std::string buffer;
+  for(int n = 1; std::getline(log_file, buffer); ++n)
   {
     if(random_range(n) == 0)
-    { /* this algo. from Knuth 2 - cute, eh? */
-      sscanf(Str1, "%d %d %d", &status, &level, &behavior);
-      for(i = 0; (Str1[i] < 'a' || Str1[i] > 'z') && (Str1[i] < 'A' || Str1[i] > 'Z'); i++)
-      {
-        ;
-      }
-      strcpy(Str2, Str1 + i);
-      Str2[strlen(Str2) - 1] = '\0'; /* 'cos fgets reads in the \n */
+    {
+      std::istringstream iss{buffer};
+      iss >> status >> level >> behavior;
+      iss.ignore(1);
+      std::getline(iss, npc_name);
     }
-    n++;
   }
-  fclose(fd);
+  log_file.close();
+
   npc->hp = level * 20;
-  std::string npc_name;
+  std::string npc_prefix;
   if(status == 1)
   {
     if(level < 3)
     {
       *npc = Monsters[GHOST];
-      npc_name = "ghost named ";
+      npc_prefix = "ghost named ";
     }
     else if(level < 7)
     {
       *npc = Monsters[HAUNT];
-      npc_name = "haunt named ";
+      npc_prefix = "haunt named ";
     }
     else if(level < 12)
     {
       *npc = Monsters[SPECTRE];
-      npc_name = "spectre named ";
+      npc_prefix = "spectre named ";
     }
     else
     {
       *npc = Monsters[LICHE];
-      npc_name = "lich named ";
+      npc_prefix = "lich named ";
     }
-    npc->monstring = salloc(std::format("{}{}", npc_name, Str2).c_str());
-    npc->corpsestr = salloc(std::format("the mortal remains of {}", Str2).c_str());
+    npc->monstring = std::format("{}{}", npc_prefix, npc_name);
+    npc->corpsestr = std::format("the mortal remains of {}", npc_name);
   }
   else
   {
-    npc->monstring = salloc(Str2);
-    npc->corpsestr = salloc(std::format("the corpse of {}", Str2).c_str());
+    npc->monstring = npc_name;
+    npc->corpsestr = std::format("the corpse of {}", npc_name);
   }
   determine_npc_behavior(npc, level, behavior);
 }
@@ -1462,8 +1458,8 @@ const char *mantype()
 
 void strengthen_death(struct monster *m)
 {
-  pol ol     = ((pol)checkmalloc(sizeof(oltype)));
-  pob scythe = ((pob)checkmalloc(sizeof(objtype)));
+  pol ol     = new objectlist;
+  pob scythe = new object;
   m->xpv += std::min(10000l, m->xpv + 1000);
   m->hit += std::min(1000, m->hit + 10);
   m->dmg = std::min(10000, m->dmg * 2);

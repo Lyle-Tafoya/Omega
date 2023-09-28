@@ -26,7 +26,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "interactive_menu.hpp"
 
 #include <algorithm>
-#include <cstring>
 #include <format>
 #include <string>
 #include <vector>
@@ -590,8 +589,8 @@ void gain_level()
   while(expval(Player.level + 1) <= Player.xp)
   {
     Player.level++;
-    print1("You have attained a new experience level!");
-    print2("You are now " + std::string(getarticle(levelname(Player.level))) + levelname(Player.level));
+    queue_message("You have attained a new experience level!");
+    queue_message(std::format("You are now {}{}", getarticle(levelname(Player.level)), levelname(Player.level)));
     hp_gain = random_range(Player.con) + 1; /* start fix 12/30/98 */
     if(Player.hp < Player.maxhp)
     {
@@ -764,7 +763,7 @@ void p_drown()
               {
                 p_drop_at(Player.x, Player.y, Player.pack[i]->number, Player.pack[i]);
               }
-              free(Player.pack[i]);
+              delete Player.pack[i];
               Player.pack[i] = nullptr;
             }
           }
@@ -857,7 +856,7 @@ std::string actionlocstr(char dir)
 /* execute player combat actions versus monster m */
 void tacplayer(monster *m)
 {
-  size_t meleestr_length = std::min(strlen(Player.meleestr), maneuvers() * 2);
+  size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);
   for(size_t i = 0; i < meleestr_length; i += 2)
   {
     if(m->hp <= 0)
@@ -956,7 +955,7 @@ int player_hit(int hitmod, char hitloc, monster *m)
     bool blocks     = false;
     int  goodblocks = 0;
 
-    for(size_t i = 0; i < strlen(m->meleestr); i += 2)
+    for(size_t i = 0; i < m->meleestr.length(); i += 2)
     {
       if((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R'))
       {

@@ -26,7 +26,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
+#include <format>
+#include <string>
 
 extern void item_unequip(object *);
 
@@ -49,7 +50,7 @@ void l_thieves_guild()
       print1("The Badge is put in a place of honor in the Guild Hall.");
       print2("You are now the Shadowlord of the Thieves' Guild!");
       print1("Who says there's no honor among thieves?");
-      strcpy(Shadowlord, Player.name);
+      Shadowlord = Player.name;
       Shadowlordlevel    = Player.level;
       Shadowlordbehavior = fixnpc(4);
       save_hiscore_npc(7);
@@ -100,7 +101,7 @@ void l_thieves_guild()
           dues += dues * (12 - Player.dex) / 9;
           dues += Player.alignment * 5;
           dues = std::max(100, dues);
-          mprint("Dues are " + std::to_string(dues) + "Au. Pay it? [yn] ");
+          mprint(std::format("Dues are {}Au. Pay it? [yn] ", dues));
           if(ynq1() == 'y')
           {
             if(Player.cash < dues)
@@ -111,12 +112,11 @@ void l_thieves_guild()
             }
             else
             {
-              print1("Shadowlord " + std::string(Shadowlord) +
-                     " enters your name into the roll of the guild.");
+              print1(std::format("Shadowlord {} enters your name into the roll of the guild.", Shadowlord));
               print1("As a special bonus, you get a free lockpick.");
               print2("You are taught the spell of Object Detection.");
               Spells[S_OBJ_DET].known = true;
-              lockpick                = ((pob)checkmalloc(sizeof(objtype)));
+              lockpick                = new object;
               *lockpick               = Objects[THINGID + 2]; /* lock pick */
               gain_item(lockpick);
               Player.cash -= dues;
@@ -255,7 +255,7 @@ void l_thieves_guild()
               }
             }
           }
-          print1("The fee will be: " + std::to_string(std::max(count * fee, fee)) + "Au. Pay it? [yn] ");
+          print1(std::format("The fee will be: {}Au. Pay it? [yn] ", std::max(count * fee, fee)));
           if(ynq1() == 'y')
           {
             if(Player.cash < std::max(count * fee, fee))
@@ -294,7 +294,7 @@ void l_thieves_guild()
             else
             {
               long price = 2 * item_value(Player.possessions[i]) / 3;
-              print1("I'll give you " + std::to_string(price) + " Au each. OK? [yn] ");
+              print1(std::format("I'll give you {} Au each. OK? [yn] ", price));
               if(ynq1() == 'y')
               {
                 number = getnumber(Player.possessions[i]->number);
@@ -324,8 +324,7 @@ void l_thieves_guild()
               if(Player.pack[i]->blessing > -1)
               {
                 long price = 2 * item_value(Player.pack[i]) / 3;
-                print1("Sell " + std::string(itemid(Player.pack[i])) + " for " + std::to_string(price) +
-                       " Au each? [ynq] ");
+                print1(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price));
                 if((c = ynq1()) == 'y')
                 {
                   number = getnumber(Player.pack[i]->number);
@@ -338,7 +337,7 @@ void l_thieves_guild()
                     {
                       Objects[Player.pack[i]->id].uniqueness = UNIQUE_UNMADE;
                     }
-                    free(Player.pack[i]);
+                    delete Player.pack[i];
                     Player.pack[i] = nullptr;
                   }
                   calc_melee();
@@ -378,7 +377,7 @@ void l_college()
         print1("You brought back the heart of the Eater of Magic!");
         print1("The Heart is sent to the labs for analysis.");
         print2("The Board of Trustees appoints you Archmage!");
-        strcpy(Archmage, Player.name);
+        Archmage = Player.name;
         Archmagelevel        = Player.level;
         Player.rank[COLLEGE] = ARCHMAGE;
         Player.maxiq += 5;
@@ -544,7 +543,7 @@ void l_college()
       {
         if(Spellsleft > 0)
         {
-          print1("Research permitted: " + std::to_string(Spellsleft) + " Spells.");
+          print1(std::format("Research permitted: {} Spells.", Spellsleft));
         }
         if(Spellsleft < 1)
         {
@@ -597,7 +596,7 @@ void l_sorcerors()
         print2("You obtained the Crown of the Lawgiver!");
         print1("The Crown is ritually sacrificed to the Lords of Chaos.");
         print2("You are now the Prime Sorceror of the Inner Circle!");
-        strcpy(Prime, Player.name);
+        Prime = Player.name;
         Primelevel    = Player.level;
         Primebehavior = fixnpc(4);
         save_hiscore_npc(10);
@@ -638,7 +637,7 @@ void l_sorcerors()
           fee += Player.alignment * 100;
           fee += fee * (12 - Player.pow) / 9;
           fee = std::max(100, fee);
-          mprint("For you, there is an initiation fee of " + std::to_string(fee) + " Au.");
+          mprint(std::format("For you, there is an initiation fee of {} Au.", fee));
           print2("Pay it? [yn] ");
           if(ynq2() == 'y')
           {
@@ -648,8 +647,7 @@ void l_sorcerors()
             }
             else
             {
-              print1("Prime Sorceror " + std::string(Prime) +
-                     " conducts your initiation into the circle of novices.");
+              print1(std::format("Prime Sorceror {} conducts your initiation into the circle of novices.", Prime));
               print1("You learn the Spell of Magic Missiles.");
               Spells[S_MISSILE].known = true;
               Player.cash -= fee;
@@ -760,7 +758,7 @@ void l_sorcerors()
         {
           fee = fee / 2;
         }
-        print1("That will be: " + std::to_string(fee) + " Au. Pay it? [yn] ");
+        print1(std::format("That will be: {} Au. Pay it? [yn] ", fee));
         if(ynq1() == 'y')
         {
           if(Player.cash < fee)
@@ -800,7 +798,7 @@ void l_order()
     print1("You have succeeded in your quest!");
     print1("The previous Justiciar steps down in your favor.");
     print2("You are now the Justiciar of Rampart and the Order!");
-    strcpy(Justiciar, Player.name);
+    Justiciar = Player.name;
     for(ml = Level->mlist; ml && (ml->m->id != HISCORE_NPC || ml->m->aux2 != 15); ml = ml->next)
     {
       /* just scan for current Justicar */;
@@ -815,7 +813,7 @@ void l_order()
     Justiciarbehavior = fixnpc(4);
     save_hiscore_npc(15);
     print1("You are awarded a blessed shield of deflection!");
-    newitem           = ((pob)checkmalloc(sizeof(objtype)));
+    newitem           = new object;
     *newitem          = Objects[SHIELDID + 7]; /* shield of deflection */
     newitem->blessing = 9;
     gain_item(newitem);
@@ -867,7 +865,7 @@ void l_order()
         Player.rank[ORDER]    = GALLANT;
         Player.guildxp[ORDER] = 1;
         setgamestatus(MOUNTED, GameStatus);
-        newitem           = ((pob)checkmalloc(sizeof(objtype)));
+        newitem           = new object;
         *newitem          = Objects[WEAPONID + 19]; /* spear */
         newitem->blessing = 9;
         newitem->plus     = 1;
@@ -921,7 +919,7 @@ void l_order()
       {
         print1("You are made a Paladin of the Order!");
         print2("You learn the Spell of Heroism and get Mithril Plate!");
-        newitem           = ((pob)checkmalloc(sizeof(objtype)));
+        newitem           = new object;
         *newitem          = Objects[ARMORID + 11]; /* mithril plate armor */
         newitem->blessing = 9;
         newitem->known    = 2;
@@ -951,7 +949,7 @@ void l_order()
         Player.rank[ORDER] = CHEVALIER;
         print1("You are made a Chevalier of the Order!");
         print2("You are given a Mace of Disruption!");
-        newitem        = ((pob)checkmalloc(sizeof(objtype)));
+        newitem        = new object;
         *newitem       = Objects[WEAPONID + 25]; /* mace of disruption */
         newitem->known = 2;
         gain_item(newitem);
@@ -974,7 +972,7 @@ void l_order()
         print1("You hear a nasal monotone in the distance....");
         print2("'...and the number of thy counting shall be 3...'");
         Player.rank[ORDER] = GUARDIAN;
-        newitem            = ((pob)checkmalloc(sizeof(objtype)));
+        newitem            = new object;
         *newitem           = Objects[ARTIFACTID + 7]; /* holy hand grenade. */
         newitem->known     = 2;
         gain_item(newitem);

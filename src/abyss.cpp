@@ -51,7 +51,7 @@ void msdos_init()
 {
   /* Allocate the inner level of pointers for TheLevel */
   for(int i = 0; i < MAXWIDTH; i++)
-    TheLevel.site[i] = (plc)checkmalloc(MAXLENGTH * sizeof(loctype));
+    TheLevel.site[i] = new location[MAXLENGTH];
 
   /* Remove old level files */
   kill_all_levels();
@@ -112,7 +112,7 @@ void load_abyss()
     TempLevel = nullptr;
   }
 #ifndef SAVE_LEVELS
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;;
 #else
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;

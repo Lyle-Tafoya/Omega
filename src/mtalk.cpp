@@ -22,7 +22,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
 #include <format>
 
 extern bool received_directions;
@@ -362,7 +361,7 @@ void m_talk_assassin(struct monster *m)
 
 void m_talk_im(struct monster *m)
 {
-  if(strcmp(m->monstring, "itinerant merchant") != 0)
+  if(m->monstring != "itinerant merchant")
   {
     m->monstring = "itinerant merchant";
   }
@@ -374,8 +373,7 @@ void m_talk_im(struct monster *m)
   {
     m->possessions->thing->known = 2;
     long price                   = std::max(10l, 4 * true_item_value(m->possessions->thing));
-    mprint("I have a fine " + std::string(itemid(m->possessions->thing)) + " for only " +
-           std::to_string(price) + " Au. Want it? [yn] ");
+    mprint(std::format("I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions->thing), price));
     if(ynq() == 'y')
     {
       if(Player.cash < price)

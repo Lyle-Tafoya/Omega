@@ -26,7 +26,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
 #include <format>
 #include <string>
 
@@ -84,14 +83,14 @@ void l_merc_guild()
           {
             append_message("You are tested for strength and stamina...", true);
             append_message("and you pass!");
-            append_message("Commandant " + std::string(Commandant) + " shakes your hand.", true);
+            append_message(std::format("Commandant {} shakes your hand.", Commandant), true);
             append_message("The Legion pays you a 500Au induction fee.", true);
             append_message("You are also issued a shortsword and leather.");
             append_message("You are now a Legionaire.", true);
-            newitem  = ((pob)checkmalloc(sizeof(objtype)));
+            newitem  = new object;
             *newitem = Objects[WEAPONID + 1]; /* shortsword */
             gain_item(newitem);
-            newitem  = ((pob)checkmalloc(sizeof(objtype)));
+            newitem  = new object;
             *newitem = Objects[ARMORID + 1]; /* leather */
             gain_item(newitem);
             Player.cash += 500;
@@ -119,7 +118,7 @@ void l_merc_guild()
           print2("and announces his own overdue retirement.");
           print1("You are the new Commandant of the Legion!");
           print2("The Emperor's Regalia is sold for a ridiculous sum.");
-          strcpy(Commandant, Player.name);
+          Commandant = Player.name;
           Commandantlevel    = Player.level;
           Commandantbehavior = fixnpc(4);
           save_hiscore_npc(8);
@@ -299,7 +298,7 @@ void l_castle()
         print2("Oh, you can keep the Orb, by the way....");
         Player.rank[NOBILITY] = DUKE;
         gain_experience(10000);
-        strcpy(Duke, Player.name);
+        Duke = Player.name;
         Dukebehavior = fixnpc(4);
         save_hiscore_npc(12);
         for(y = 52; y < 63; y++)
@@ -337,7 +336,6 @@ void l_arena()
   char  response;
   pob   newitem;
   int   i, prize, monsterlevel;
-  char *melee = nullptr;
 
   print1("Rampart Coliseum");
   if(Player.rank[ARENA] == 0)
@@ -387,10 +385,10 @@ void l_arena()
     {
       print1("Ok, yer now an Arena Trainee.");
       print2("Here's a wooden sword, and a shield");
-      newitem  = ((pob)checkmalloc(sizeof(objtype)));
+      newitem  = new object;
       *newitem = Objects[WEAPONID + 17]; /* club */
       gain_item(newitem);
-      newitem  = ((pob)checkmalloc(sizeof(objtype)));
+      newitem  = new object;
       *newitem = Objects[SHIELDID + 2]; /* shield */
       gain_item(newitem);
       Player.rank[ARENA] = TRAINEE;
@@ -402,7 +400,7 @@ void l_arena()
   else if(response == 'e')
   {
     print1("OK, we're arranging a match....");
-    Arena_Monster = ((pmt)checkmalloc(sizeof(montype)));
+    Arena_Monster = new monster;
     Arena_Victory = false;
     switch(Arena_Opponent)
     {
@@ -475,8 +473,8 @@ void l_arena()
     if(Arena_Monster->id == HISCORE_NPC)
     {
       std::string name = std::format("{}, the arena champion", Champion);
-      Arena_Monster->monstring = salloc(name.c_str());
-      Arena_Monster->corpsestr = salloc(std::format("The corse of {}", name).c_str());
+      Arena_Monster->monstring = name;
+      Arena_Monster->corpsestr = std::format("The corse of {}", name);
       Arena_Monster->level     = 20;
       Arena_Monster->hp        = Championlevel * Championlevel * 5;
       Arena_Monster->hit       = Championlevel * 4;
@@ -484,21 +482,18 @@ void l_arena()
       Arena_Monster->dmg       = 100 + Championlevel * 2;
       Arena_Monster->xpv       = Championlevel * Championlevel * 5;
       Arena_Monster->speed     = 3;
-      melee                    = (char *)checkmalloc(30 * sizeof(char));
-      strcpy(melee, "");
       for(i = 0; i < Championlevel / 5; i++)
       {
-        strcat(melee, "L?R?");
+        Arena_Monster->meleestr += "L?R?";
       }
-      Arena_Monster->meleestr = melee;
       m_status_set(*Arena_Monster, MOBILE);
       m_status_set(*Arena_Monster, HOSTILE);
     }
     else
     {
       std::string name{std::format("{} the {}", nameprint(), Arena_Monster->monstring)};
-      Arena_Monster->monstring = salloc(name.c_str());
-      Arena_Monster->corpsestr = salloc(std::format("The corpse of {}", name).c_str());
+      Arena_Monster->monstring = name;
+      Arena_Monster->corpsestr = std::format("The corpse of {}", name);
     }
     Arena_Monster->uniqueness = UNIQUE_MADE;
     print1("You have a challenger: ");
@@ -531,10 +526,6 @@ void l_arena()
     /* problem. -DAG */
     /* free(corpse); */
 
-    if(melee)
-    {
-      free(melee);
-    }
     if(!Arena_Victory)
     {
       print1("The crowd boos your craven behavior!!!");
@@ -559,12 +550,12 @@ void l_arena()
         {
           print2("You are the new Arena Champion!");
           Championlevel = Player.level;
-          strcpy(Champion, Player.name);
+          Champion = Player.name;
           Player.rank[ARENA] = 5;
           Championbehavior   = fixnpc(4);
           save_hiscore_npc(11);
           print1("You are awarded the Champion's Spear: Victrix!");
-          newitem  = ((pob)checkmalloc(sizeof(objtype)));
+          newitem  = new object;
           *newitem = Objects[WEAPONID + 35];
           gain_item(newitem);
         }
@@ -579,7 +570,7 @@ void l_arena()
       {
         prize *= 2;
       }
-      print1("Good fight! Your prize is: " + std::to_string(prize) + "Au.");
+      print1(std::format("Good fight! Your prize is: {}Au.", prize));
       Player.cash += prize;
       if((Player.rank[ARENA] < 4) && (Arena_Opponent > 5) && (Arena_Opponent % 3 == 0))
       {

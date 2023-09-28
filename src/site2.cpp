@@ -110,7 +110,7 @@ void l_condo()
           }
           else
           {
-            ol         = ((pol)checkmalloc(sizeof(oltype)));
+            ol         = new objectlist;
             ol->thing  = Player.possessions[i];
             ol->next   = Condoitems;
             Condoitems = ol;

@@ -77,8 +77,8 @@ void make_country_monsters(Symbol terrain)
   }
   for(i = 0; i < nummonsters; i++)
   {
-    tml    = ((pml)checkmalloc(sizeof(mltype)));
-    tml->m = ((pmt)checkmalloc(sizeof(montype)));
+    tml    = new monsterlist;
+    tml->m = new monster;
     if(!monsters)
     {
       tml->m = m_create(random_range(WIDTH), random_range(LENGTH), true, difficulty());
@@ -126,7 +126,7 @@ void populate_level(int monstertype)
     nummonsters += 20;
   }
 
-  head = tml = ((pml)checkmalloc(sizeof(mltype)));
+  head = tml = new monsterlist;
 
   for(k = 0; k < nummonsters; k++)
   {
@@ -455,7 +455,7 @@ void populate_level(int monstertype)
       lset(i, j, CHANGED, *Level);
     }
 
-    tml->next    = ((pml)checkmalloc(sizeof(mltype)));
+    tml->next    = new monsterlist;
     tml->next->m = Level->site[i][j].creature;
     tml          = tml->next;
   }
@@ -480,7 +480,7 @@ void wandercheck()
   if(random_range(MaxDungeonLevels) < difficulty())
   {
     findspace(&x, &y, -1);
-    tml       = ((pml)checkmalloc(sizeof(mltype)));
+    tml       = new monsterlist;
     tml->next = Level->mlist;
     tml->m = Level->site[x][y].creature = m_create(x, y, WANDERING, difficulty());
     Level->mlist                        = tml;
@@ -490,7 +490,7 @@ void wandercheck()
 /* call make_creature and place created monster on Level->mlist and Level */
 void make_site_monster(int i, int j, int mid)
 {
-  pml ml = ((pml)checkmalloc(sizeof(mltype)));
+  pml ml = new monsterlist;
   pmt m;
   if(mid > -1)
   {
@@ -573,7 +573,7 @@ pmt m_create(int x, int y, int kind, int level)
 /* make creature allocates space for the creature */
 pmt make_creature(int mid)
 {
-  pmt newmonster = ((pmt)checkmalloc(sizeof(montype)));
+  monster *newmonster = new monster;
   pob ob;
   int i, treasures;
 
@@ -615,13 +615,13 @@ pmt make_creature(int mid)
         angel_name = std::format("{} of Balance", Monsters[mid].monstring);
         break;
     }
-    newmonster->monstring = salloc(angel_name.c_str());
+    newmonster->monstring = angel_name;
   }
   else if(mid == ZERO_NPC || mid == WEREHUMAN)
   {
     /* generic 0th level human, or a were-human */
     newmonster->monstring = mantype();
-    newmonster->corpsestr = salloc(std::format("dead {}", newmonster->monstring).c_str());
+    newmonster->corpsestr = std::format("dead {}", newmonster->monstring);
   }
   else if((newmonster->monchar & 0xff) == '!')
   {
@@ -666,7 +666,7 @@ pmt make_creature(int mid)
     }
     if(newmonster->startthing > -1 && Objects[newmonster->startthing].uniqueness <= UNIQUE_MADE)
     {
-      ob  = ((pob)checkmalloc(sizeof(objtype)));
+      ob  = new object;
       *ob = Objects[newmonster->startthing];
       m_pickup(newmonster, ob);
     }
@@ -679,7 +679,7 @@ pmt make_creature(int mid)
         if(ob->uniqueness != COMMON)
         {
           Objects[ob->id].uniqueness = UNIQUE_UNMADE;
-          free(ob);
+          delete ob;
           ob = nullptr;
         }
       } while(!ob);
@@ -706,8 +706,8 @@ void stock_level()
     make_site_treasure(i, j, difficulty());
     i                               = random_range(WIDTH);
     j                               = random_range(LENGTH);
-    Level->site[i][j].things        = ((pol)checkmalloc(sizeof(oltype)));
-    Level->site[i][j].things->thing = ((pob)checkmalloc(sizeof(objtype)));
+    Level->site[i][j].things        = new objectlist;
+    Level->site[i][j].things->thing = new object;
     make_cash(Level->site[i][j].things->thing, difficulty());
     Level->site[i][j].things->next = nullptr;
     /* caves have more random cash strewn around */
@@ -715,14 +715,14 @@ void stock_level()
     {
       i                               = random_range(WIDTH);
       j                               = random_range(LENGTH);
-      Level->site[i][j].things        = ((pol)checkmalloc(sizeof(oltype)));
-      Level->site[i][j].things->thing = ((pob)checkmalloc(sizeof(objtype)));
+      Level->site[i][j].things        = new objectlist;
+      Level->site[i][j].things->thing = new object;
       make_cash(Level->site[i][j].things->thing, difficulty());
       Level->site[i][j].things->next  = nullptr;
       i                               = random_range(WIDTH);
       j                               = random_range(LENGTH);
-      Level->site[i][j].things        = ((pol)checkmalloc(sizeof(oltype)));
-      Level->site[i][j].things->thing = ((pob)checkmalloc(sizeof(objtype)));
+      Level->site[i][j].things        = new objectlist;
+      Level->site[i][j].things->thing = new object;
       make_cash(Level->site[i][j].things->thing, difficulty());
       Level->site[i][j].things->next = nullptr;
     }
@@ -732,7 +732,7 @@ void stock_level()
 /* make a new object (of at most level itemlevel) at site i,j on level*/
 void make_site_treasure(int i, int j, int itemlevel)
 {
-  pol tmp                  = ((pol)checkmalloc(sizeof(oltype)));
+  pol tmp                  = new objectlist;
   tmp->thing               = ((pob)create_object(itemlevel));
   tmp->next                = Level->site[i][j].things;
   Level->site[i][j].things = tmp;
@@ -746,8 +746,8 @@ void make_specific_treasure(int i, int j, int itemid)
   {
     return;
   }
-  tmp                      = ((pol)checkmalloc(sizeof(oltype)));
-  tmp->thing               = ((pob)checkmalloc(sizeof(objtype)));
+  tmp                      = new objectlist;
+  tmp->thing               = new object;
   *(tmp->thing)            = Objects[itemid];
   tmp->next                = Level->site[i][j].things;
   Level->site[i][j].things = tmp;

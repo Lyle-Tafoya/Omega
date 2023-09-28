@@ -94,15 +94,15 @@ void i_jane_t(pob o)
     v                = Objects[i].truename[0];
     if((v >= 'A' && v <= 'Z') || volume == 3)
     {
-      lines.emplace_back("   " + std::string(Objects[i].truename));
+      lines.emplace_back("   " + Objects[i].truename);
     }
     else if(v == 'a' || v == 'e' || v == 'i' || v == 'o' || v == 'u')
     {
-      lines.emplace_back("   an " + std::string(Objects[i].truename));
+      lines.emplace_back("   an " + Objects[i].truename);
     }
     else
     {
-      lines.emplace_back("   a " + std::string(Objects[i].truename));
+      lines.emplace_back("   a " + Objects[i].truename);
     }
   }
   menu->load(lines);

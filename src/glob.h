@@ -189,7 +189,7 @@ extern long Time;
 extern int Tick;
 /* current second in minute; action coordinator */
 
-extern char Stringbuffer[STRING_BUFFER_SIZE][80];
+extern std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer;
 /* the last printed strings */
 
 extern long Gymcredit;
@@ -225,23 +225,20 @@ extern int LastTownLocX;
 extern int LastTownLocY;
 /* previous position in village or city */
 
-extern char Password[64];
+extern std::string Password;
 /* autoteller password */
 
 extern pol Condoitems;
 /* items in condo */
-
-extern char Str1[100], Str2[100];
-/* Some string space, random uses */
 
 /* high score names, levels, behavior */
 
 extern int  Shadowlordbehavior, Archmagebehavior, Primebehavior, Justiciarbehavior;
 extern int  Commandantbehavior, Chaoslordbehavior, Lawlordbehavior;
 extern int  Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
-extern char Shadowlord[80], Archmage[80], Prime[80], Commandant[80], Duke[80];
-extern char Champion[80], Priest[7][80], Hiscorer[80], Hidescrip[80];
-extern char Chaoslord[80], Lawlord[80], Justiciar[80];
+extern std::string Shadowlord, Archmage, Prime, Commandant, Duke;
+extern std::string Champion, Priest[7], Hiscorer, Hidescrip;
+extern std::string Chaoslord, Lawlord, Justiciar;
 extern int  Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel, Dukelevel;
 extern int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel;
 extern long Hiscore;

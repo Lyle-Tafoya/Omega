@@ -32,6 +32,42 @@ extern void queue_message(const std::string &message);
 extern void append_message(const std::string &message, bool force_break = false);
 extern interactive_menu *menu;
 
+int list_monsters()
+{
+  int i, itemno;
+  print2("Show ID list? ");
+  if(ynq2() == 'y')
+  {
+    do
+    {
+      print1("Summon monster: ");
+      std::vector<std::string> lines;
+      for(i = 0; i < NUMMONSTERS; i++)
+      {
+        lines.emplace_back(std::format("{}:{}", i+1, Monsters[i].monstring));
+      }
+      menu->load(lines);
+      int player_input = menu->get_player_input();
+      ungetch(player_input);
+
+      itemno = (int)parsenum() - 1;
+      if((itemno < 0) || (itemno > NUMMONSTERS - 1))
+      {
+        print3("How about trying a real monster?");
+      }
+    } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
+  }
+  else
+  {
+    do
+    {
+      print1("Summon monster: ");
+      itemno = (int)parsenum() - 1;
+    } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
+  }
+  return (itemno);
+}
+
 /* if know id, then summon that monster; else (if < 0) get one. */
 void summon(int blessing, int id)
 {
@@ -42,7 +78,7 @@ void summon(int blessing, int id)
   {
     if(blessing > 0)
     {
-      id = monsterlist();
+      id = list_monsters();
       xredraw();
     }
     /* for (id ==0) case, see below -- get a "fair" monster */
@@ -71,7 +107,7 @@ void summon(int blessing, int id)
     }
     Level->site[x][y].creature->x = x;
     Level->site[x][y].creature->y = y;
-    tml                           = ((pml)checkmalloc(sizeof(mltype)));
+    tml                           = new monsterlist;
     tml->m                        = Level->site[x][y].creature;
     if(blessing > 0)
     {
@@ -97,7 +133,7 @@ int itemlist(int itemindex, int num)
     std::vector<std::string> lines;
     for(int i = 0; i < num; ++i)
     {
-      lines.emplace_back(std::to_string(i + 1) + ":" + Objects[i + itemindex].truename);
+      lines.emplace_back(std::format("{}:{}", i+1, Objects[i + itemindex].truename));
     }
     menu->load(lines);
     player_input = menu->get_player_input();
@@ -109,42 +145,6 @@ int itemlist(int itemindex, int num)
     itemno = ABORT;
   }
   return itemno;
-}
-
-int monsterlist()
-{
-  int i, itemno;
-  print2("Show ID list? ");
-  if(ynq2() == 'y')
-  {
-    do
-    {
-      print1("Summon monster: ");
-      std::vector<std::string> lines;
-      for(i = 0; i < NUMMONSTERS; i++)
-      {
-        lines.emplace_back(std::to_string(i+1) + ":" + Monsters[i].monstring);
-      }
-      menu->load(lines);
-      int player_input = menu->get_player_input();
-      ungetch(player_input);
-
-      itemno = (int)parsenum() - 1;
-      if((itemno < 0) || (itemno > NUMMONSTERS - 1))
-      {
-        print3("How about trying a real monster?");
-      }
-    } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
-  }
-  else
-  {
-    do
-    {
-      print1("Summon monster: ");
-      itemno = (int)parsenum() - 1;
-    } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
-  }
-  return (itemno);
 }
 
 /* uncurse all items, cure diseases, and neutralize poison */
@@ -415,7 +415,7 @@ void amnesia()
 }
 
 /*affects player only */
-void level_drain(int levels, const char *source)
+void level_drain(int levels, const std::string &source)
 {
   int decrement = ((int)(Player.maxhp / (Player.level + 1)));
 

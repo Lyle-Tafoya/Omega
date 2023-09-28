@@ -19,9 +19,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* this file includes main() and some top-level functions */
 /* omega.c */
 
+#include <array>
 #include <csignal>
 #include <cstdlib>
-#include <cstring>
 #include <string>
 #include <ctime>
 #include <filesystem>
@@ -113,7 +113,7 @@ int  Behavior;                             /* Player NPC behavior */
 int  Verbosity = VERBOSE;                  /* verbosity level */
 long Time      = 0;                        /* turn number */
 int  Tick      = 0;                        /* 10 a turn; action coordinator */
-char Stringbuffer[STRING_BUFFER_SIZE][80]; /* last strings printed */
+std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer; /* last strings printed */
 long Gymcredit       = 0;                  /* credit at rampart gym */
 int  Spellsleft      = 0;                  /* research allowance at college */
 int  StarGemUse      = 0;                  /* last date of star gem use */
@@ -125,9 +125,7 @@ int  LastTownLocX    = 0;                  /* previous position in village or ci
 int  LastTownLocY    = 0;                  /* previous position in village or city */
 int  LastCountryLocX = 0;                  /* previous position in countryside */
 int  LastCountryLocY = 0;                  /* previous position in countryside */
-char Password[64];                         /* autoteller password */
-char Str1[STRING_LEN], Str2[STRING_LEN];
-/* Some string space, random uses */
+std::string Password;                      /* autoteller password */
 
 pol Condoitems = nullptr; /* Items in condo */
 
@@ -135,9 +133,9 @@ pol Condoitems = nullptr; /* Items in condo */
 int  Shadowlordbehavior, Archmagebehavior, Primebehavior, Commandantbehavior;
 int  Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
 int  Chaoslordbehavior, Lawlordbehavior, Justiciarbehavior;
-char Shadowlord[80], Archmage[80], Prime[80], Commandant[80], Duke[80];
-char Champion[80], Priest[7][80], Hiscorer[80], Hidescrip[80];
-char Chaoslord[80], Lawlord[80], Justiciar[80];
+std::string Shadowlord, Archmage, Prime, Commandant, Duke;
+std::string Champion, Priest[7], Hiscorer, Hidescrip;
+std::string Chaoslord, Lawlord, Justiciar;
 int  Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel, Dukelevel;
 int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel;
 long Hiscore        = 0L;
@@ -266,9 +264,9 @@ int main()
   initrand(E_RANDOM, 0);
   initspells();
 
-  for(int count = 0; count < STRING_BUFFER_SIZE; ++count)
+  for(std::string &buffer_string : Stringbuffer)
   {
-    strcpy(Stringbuffer[count], "<nothing>");
+    buffer_string = "<nothing>";
   }
 
 #ifdef SAVE_LEVELS
@@ -288,7 +286,6 @@ int main()
     inititem(true);
     Date  = random_range(360);
     Phase = random_range(24);
-    strcpy(Password, "");
     initplayer();
     init_world();
     xredraw();

@@ -22,7 +22,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
 #include <format>
 
 #ifdef SAVE_LEVELS
@@ -155,7 +154,7 @@ void load_dlair(int empty, int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_DLAIR;
@@ -301,7 +300,7 @@ void load_speak(int empty, int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_STARPEAK;
@@ -442,7 +441,7 @@ void load_misle(int empty, int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_MAGIC_ISLE;
@@ -534,7 +533,7 @@ void load_temple(int deity, int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_TEMPLE;
@@ -575,7 +574,7 @@ void load_temple(int deity, int populate)
           break;
         case 'H':
           Level->site[i][j].locchar = FLOOR;
-          if(populate && (!Player.patron || strcmp(Player.name, Priest[Player.patron]) ||
+          if(populate && (!Player.patron || Player.name != Priest[Player.patron] ||
                           Player.rank[PRIESTHOOD] != HIGHPRIEST))
           {
             make_high_priest(i, j, deity);
@@ -583,7 +582,7 @@ void load_temple(int deity, int populate)
           break;
         case 'S':
           Level->site[i][j].locchar = FLOOR;
-          if(!Player.patron || strcmp(Player.name, Priest[Player.patron]) ||
+          if(!Player.patron || Player.name != Priest[Player.patron] ||
              Player.rank[PRIESTHOOD] != HIGHPRIEST)
           {
             lset(i, j, SECRET, *Level);
@@ -709,8 +708,8 @@ void random_temple_site(int i, int j, int, int populate)
 
 void make_high_priest(int i, int j, int deity)
 {
-  pml ml = ((pml)checkmalloc(sizeof(mltype)));
-  pmt m  = ((pmt)checkmalloc(sizeof(montype)));
+  pml ml = new monsterlist;
+  pmt m  = new monster;
   make_hiscore_npc(m, deity);
   m->x                       = i;
   m->y                       = j;

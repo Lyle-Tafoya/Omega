@@ -20,9 +20,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
 #include <filesystem>
 #include <format>
+#include <string>
 
 #ifdef SAVE_LEVELS
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
@@ -150,8 +150,9 @@ bool save_player(FILE *fd)
 
   Player.click = (Tick + 1) % 60;
   ok &= (fwrite((char *)&Player, sizeof(Player), 1, fd) > 0);
-  ok &= (fprintf(fd, "%s\n", Password) >= 0);
-  ok &= (fprintf(fd, "%s\n", Player.name) >= 0);
+  ok &= (fprintf(fd, "%s\n", Password.c_str()) >= 0);
+  ok &= (fprintf(fd, "%s\n", Player.name.c_str()) >= 0);
+  ok &= (fprintf(fd, "%s\n", Player.meleestr.c_str()) >= 0);
   ok &= (fwrite((char *)CitySiteList, sizeof(CitySiteList), 1, fd) > 0);
   ok &= (fwrite((char *)&GameStatus, sizeof(long), 1, fd) > 0);
   ok &= (fwrite((char *)&Current_Environment, sizeof(int), 1, fd) > 0);
@@ -352,22 +353,22 @@ bool save_monsters(FILE *fd, pml ml)
       if(tml->m->id != HISCORE_NPC)
       {
         type = 0x0;
-        if(strcmp(tml->m->monstring, Monsters[tml->m->id].monstring))
+        if(tml->m->monstring != Monsters[tml->m->id].monstring)
         {
           type |= 0x1;
         }
-        if(strcmp(tml->m->corpsestr, Monsters[tml->m->id].corpsestr))
+        if(tml->m->corpsestr != Monsters[tml->m->id].corpsestr)
         {
           type |= 0x2;
         }
         ok &= (fwrite((char *)&type, sizeof(unsigned char), 1, fd) > 0);
         if(type & 1)
         {
-          ok &= (fprintf(fd, "%s\n", tml->m->monstring) >= 0);
+          ok &= (fprintf(fd, "%s\n", tml->m->monstring.c_str()) >= 0);
         }
         if(type & 2)
         {
-          ok &= (fprintf(fd, "%s\n", tml->m->corpsestr) >= 0);
+          ok &= (fprintf(fd, "%s\n", tml->m->corpsestr.c_str()) >= 0);
         }
         /* WDT: line moved from here... */
       } /* else it'll be reloaded from the hiscore file on restore */
@@ -396,15 +397,15 @@ bool save_item(FILE *fd, pob o)
   else
   {
     type = 0;
-    if(strcmp(o->objstr, Objects[o->id].objstr))
+    if(o->objstr != Objects[o->id].objstr)
     {
       type |= 1;
     }
-    if(strcmp(o->truename, Objects[o->id].truename))
+    if(o->truename != Objects[o->id].truename)
     {
       type |= 2;
     }
-    if(strcmp(o->cursestr, Objects[o->id].cursestr))
+    if(o->cursestr != Objects[o->id].cursestr)
     {
       type |= 4;
     }
@@ -412,15 +413,15 @@ bool save_item(FILE *fd, pob o)
     ok &= (fwrite((char *)o, sizeof(objtype), 1, fd) > 0);
     if(type & 1)
     {
-      ok &= (fprintf(fd, "%s\n", o->objstr) >= 0);
+      ok &= (fprintf(fd, "%s\n", o->objstr.c_str()) >= 0);
     }
     if(type & 2)
     {
-      ok &= (fprintf(fd, "%s\n", o->truename) >= 0);
+      ok &= (fprintf(fd, "%s\n", o->truename.c_str()) >= 0);
     }
     if(type & 4)
     {
-      ok &= (fprintf(fd, "%s\n", o->cursestr) >= 0);
+      ok &= (fprintf(fd, "%s\n", o->cursestr.c_str()) >= 0);
     }
   }
   return ok;
@@ -606,9 +607,14 @@ bool restore_game(const std::string &savestr)
 void restore_player(FILE *fd, int version)
 {
   int i;
+  Player.name.~basic_string();
+  Player.meleestr.~basic_string();
   fread((char *)&Player, sizeof(Player), 1, fd);
+  new (&Player.name) std::string;
+  new (&Player.meleestr) std::string;
   filescanstring(fd, Password);
   filescanstring(fd, Player.name);
+  filescanstring(fd, Player.meleestr);
   fread((char *)CitySiteList, sizeof(CitySiteList), 1, fd);
   fread((char *)&GameStatus, sizeof(long), 1, fd);
   fread((char *)&Current_Environment, sizeof(int), 1, fd);
@@ -728,19 +734,23 @@ void restore_player(FILE *fd, int version)
 /* have been saved as different from the typical */
 pob restore_item(FILE *fd, int)
 {
-  char          tempstr[80];
   unsigned char type;
   pob           obj = nullptr;
 
   fread((char *)&type, sizeof(type), 1, fd);
   if(type != 0xff)
   {
-    obj = ((pob)checkmalloc(sizeof(objtype)));
+    obj = new object;
+    obj->objstr.~basic_string();
+    obj->truename.~basic_string();
+    obj->cursestr.~basic_string();
     fread((char *)obj, sizeof(objtype), 1, fd);
+    new (&obj->objstr) std::string;
+    new (&obj->truename) std::string;
+    new (&obj->cursestr) std::string;
     if(type & 1)
     {
-      filescanstring(fd, tempstr);
-      obj->objstr = salloc(tempstr);
+      filescanstring(fd, obj->objstr);
     }
     else
     {
@@ -748,8 +758,7 @@ pob restore_item(FILE *fd, int)
     }
     if(type & 2)
     {
-      filescanstring(fd, tempstr);
-      obj->truename = salloc(tempstr);
+      filescanstring(fd, obj->truename);
     }
     else
     {
@@ -757,8 +766,7 @@ pob restore_item(FILE *fd, int)
     }
     if(type & 4)
     {
-      filescanstring(fd, tempstr);
-      obj->cursestr = salloc(tempstr);
+      filescanstring(fd, obj->cursestr);
     }
     else
     {
@@ -776,7 +784,7 @@ pol restore_itemlist(FILE *fd, int version)
   fread((char *)&numitems, sizeof(int), 1, fd);
   for(i = 0; i < numitems; i++)
   {
-    new_pol        = ((pol)checkmalloc(sizeof(oltype)));
+    new_pol        = new objectlist;
     new_pol->thing = restore_item(fd, version);
     new_pol->next  = nullptr;
     if(firsttime == true)
@@ -799,7 +807,7 @@ void restore_level(FILE *fd, int version)
   unsigned long int mask;
   int               temp_env;
 
-  Level = (plv)checkmalloc(sizeof(levtype));
+  Level = new level;
   clear_level(Level);
   fread((char *)&Level->depth, sizeof(char), 1, fd);
   fread((char *)&Level->numrooms, sizeof(char), 1, fd);
@@ -1011,8 +1019,8 @@ void restore_hiscore_npc(pmt npc, int npcid)
       level    = Justiciarlevel;
       behavior = Justiciarbehavior;
   }
-  npc->monstring = salloc(npc_name.c_str());
-  npc->corpsestr = salloc(std::format("The body of {}", npc_name).c_str());
+  npc->monstring = npc_name;
+  npc->corpsestr = std::format("The body of {}", npc_name);
   if(!m_statusp(*npc, HOSTILE))
   {
     status = npc->status;
@@ -1025,7 +1033,6 @@ void restore_monsters(FILE *fd, plv level, int version)
 {
   pml           ml = nullptr;
   int           i, nummonsters;
-  char          tempstr[80];
   int           temp_x, temp_y;
   unsigned char type;
 
@@ -1035,10 +1042,16 @@ void restore_monsters(FILE *fd, plv level, int version)
 
   for(i = 0; i < nummonsters; i++)
   {
-    ml       = ((pml)checkmalloc(sizeof(mltype)));
-    ml->m    = ((pmt)checkmalloc(sizeof(montype)));
+    ml       = new monsterlist;
+    ml->m    = new monster;
+    ml->m->monstring.~basic_string();
+    ml->m->corpsestr.~basic_string();
+    ml->m->meleestr.~basic_string();
     ml->next = nullptr;
     fread((char *)ml->m, sizeof(montype), 1, fd);
+    new (&ml->m->monstring) std::string;
+    new (&ml->m->corpsestr) std::string;
+    new (&ml->m->meleestr) std::string;
     if(ml->m->id == HISCORE_NPC)
     {
       if(version == 80)
@@ -1059,8 +1072,7 @@ void restore_monsters(FILE *fd, plv level, int version)
       fread((char *)&type, sizeof(unsigned char), 1, fd);
       if(type & 1)
       {
-        filescanstring(fd, tempstr);
-        ml->m->monstring = salloc(tempstr);
+        filescanstring(fd, ml->m->monstring);
       }
       else
       {
@@ -1068,8 +1080,7 @@ void restore_monsters(FILE *fd, plv level, int version)
       }
       if(type & 2)
       {
-        filescanstring(fd, tempstr);
-        ml->m->corpsestr = salloc(tempstr);
+        filescanstring(fd, ml->m->corpsestr);
       }
       else
       {

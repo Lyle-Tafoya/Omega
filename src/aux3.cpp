@@ -144,7 +144,7 @@ void indoors_random_event()
       break;
     case 10:
       print3("You trip over something hidden in a shadow...");
-      ol        = ((pol)checkmalloc(sizeof(oltype)));
+      ol        = new objectlist;
       ol->thing = create_object(difficulty()); /* FIXED!  12/30/98 */
       assert(ol->thing);                       /* WDT I want to make sure... */
       ol->next                               = Level->site[Player.x][Player.y].things;
@@ -223,7 +223,7 @@ void outdoors_random_event()
     case 2:
       mprint("You discover a sprig of athelas growing lonely in the wild.");
       mprint("Using your herbalist lore you cook a cake of lembas....");
-      ob  = ((pob)checkmalloc(sizeof(objtype)));
+      ob  = new object;
       *ob = Objects[FOODID + 1];
       gain_item(ob);
       break;
@@ -315,7 +315,7 @@ void outdoors_random_event()
       else if(num < 70)
       {
         mprint("A tendril of the storm condenses and falls into your hands.");
-        ob = ((pob)checkmalloc(sizeof(objtype)));
+        ob = new object;
         make_artifact(ob, -1);
         gain_item(ob);
       }
@@ -1201,7 +1201,7 @@ int stonecheck(int alignment)
       {
         if(Player.pack[i])
         {
-          free(Player.pack[i]);
+          delete Player.pack[i];
           Player.pack[i] = nullptr;
         }
       }

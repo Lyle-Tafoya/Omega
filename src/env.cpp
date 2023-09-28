@@ -33,7 +33,7 @@ void load_arena()
 {
   int   i, j;
   char  site;
-  pob   box = ((pob)checkmalloc(sizeof(objtype)));
+  pob   box = new object;
   FILE *fd;
 
   *box = Objects[THINGID + 0];
@@ -50,7 +50,7 @@ void load_arena()
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_ARENA;
@@ -92,7 +92,7 @@ void load_arena()
   Arena_Monster->sense        = 50;
   m_pickup(Arena_Monster, box);
   m_status_set(*Arena_Monster, AWAKE);
-  Level->mlist       = (pml)checkmalloc(sizeof(mltype));
+  Level->mlist       = new monsterlist;
   Level->mlist->m    = Arena_Monster;
   Level->mlist->next = nullptr;
   /* hehehehe cackled the dungeon master.... */
@@ -122,7 +122,7 @@ void load_circle(int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_CIRCLE;
@@ -246,8 +246,8 @@ void load_circle(int populate)
 /* make the prime sorceror */
 void make_prime(int i, int j)
 {
-  pml ml = ((pml)checkmalloc(sizeof(mltype)));
-  pmt m  = ((pmt)checkmalloc(sizeof(montype)));
+  pml ml = new monsterlist;
+  pmt m  = new monster;
   pol ol;
   pob o;
   make_hiscore_npc(m, 10); /* 10 is index for prime */
@@ -260,8 +260,8 @@ void make_prime(int i, int j)
 
   if(Objects[ARTIFACTID + 21].uniqueness != UNIQUE_TAKEN)
   {
-    ol             = ((pol)checkmalloc(sizeof(oltype)));
-    o              = ((pob)checkmalloc(sizeof(objtype)));
+    ol             = new objectlist;
+    o              = new object;
     *o             = Objects[ARTIFACTID + 21];
     ol->thing      = o;
     ol->next       = nullptr;
@@ -288,7 +288,7 @@ void load_court(int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->environment = E_COURT;
@@ -372,8 +372,8 @@ void load_court(int populate)
 /* make the archmage */
 void make_archmage(int i, int j)
 {
-  pml ml = ((pml)checkmalloc(sizeof(mltype)));
-  pmt m  = ((pmt)checkmalloc(sizeof(montype)));
+  pml ml = new monsterlist;
+  pmt m  = new monster;
   make_hiscore_npc(m, 9); /* 9 is index for archmage */
   m->x                       = i;
   m->y                       = j;

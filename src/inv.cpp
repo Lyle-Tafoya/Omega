@@ -70,7 +70,7 @@ pob detach_money()
   if(c != ABORT)
   {
     Player.cash -= c;
-    cash = ((pob)checkmalloc(sizeof(objtype)));
+    cash = new object;
     make_cash(cash, difficulty());
     cash->basevalue = c;
   }
@@ -128,7 +128,7 @@ void pickup_at(int x, int y)
       }
       pol tmp = object_list;
       object_list = object_list->next;
-      free(tmp);
+      delete tmp;
     }
   }
 }
@@ -251,8 +251,8 @@ void drop_at(int x, int y, pob o)
       {
         return;
       }
-      cpy                      = ((pob)checkmalloc(sizeof(objtype)));
-      tmp                      = ((pol)checkmalloc(sizeof(oltype)));
+      cpy                      = new object;
+      tmp                      = new objectlist;
       *cpy                     = *o;
       cpy->used                = false;
       tmp->thing               = cpy;
@@ -278,8 +278,8 @@ void p_drop_at(int x, int y, int n, pob o)
       {
         return;
       }
-      pol tmp                  = ((pol)checkmalloc(sizeof(oltype)));
-      tmp->thing               = ((pob)checkmalloc(sizeof(objtype)));
+      pol tmp                  = new objectlist;
+      tmp->thing               = new object;
       *(tmp->thing)            = *o;
       tmp->thing->used         = false;
       tmp->thing->number       = n;
@@ -379,11 +379,11 @@ std::string itemid(pob obj)
       }
       if(obj->blessing < 0)
       {
-        item_name += "cursed " + std::string(obj->cursestr);
+        item_name += "cursed " + obj->cursestr;
       }
       else if(obj->blessing > 0)
       {
-        item_name += "blessed " + std::string(obj->truename);
+        item_name += "blessed " + obj->truename;
       }
       else
       {
@@ -410,23 +410,22 @@ std::string itemid(pob obj)
       }
       if(obj->objchar == WEAPON)
       {
-        item_name += " (" + std::to_string(obj->hit + obj->plus) + "," +
-          std::to_string(obj->dmg + obj->plus) + ")";
+        item_name += std::format(" ({},{})", obj->hit+obj->plus, obj->dmg+obj->plus);
       }
       else if(obj->objchar == ARMOR)
       {
-        item_name += " [" + std::to_string(obj->plus - obj->aux) + "," + std::to_string(obj->dmg) + "]";
+        item_name += std::format(" [{},{}]", obj->plus-obj->aux, obj->dmg);
       }
       else if(obj->objchar == SHIELD)
       {
-        item_name += " [" + std::to_string(obj->plus + obj->aux) + ",0]";
+        item_name += std::format(" [{},0]", obj->plus+obj->aux);
       }
     }
     return item_name;
   }
 }
 
-const char *cashstr()
+const std::string cashstr()
 {
   if(difficulty() < 3)
   {
@@ -496,7 +495,7 @@ void givemonster(struct monster *m, struct object *o)
     gain_experience(2000);
     setgamestatus(GAVE_STARGEM, GameStatus);
     /* WDT HACK!!!  Where else would this ever get freed?? */
-    free(o);
+    delete o;
   }
   else
   {
@@ -550,7 +549,7 @@ void givemonster(struct monster *m, struct object *o)
         {
           append_message("...and now seems satiated.");
         }
-        free(o);
+        delete o;
       }
       else
       {
@@ -607,7 +606,7 @@ void dispose_lost_objects(int n, pob obj)
   }
   if(obj->number < 1)
   {
-    free(obj);
+    delete obj;
   }
 }
 
@@ -759,7 +758,7 @@ bool merge_item_with_pack(object *o)
     if(pack_item && objequal(o, pack_item))
     {
       pack_item->number += o->number;
-      free(o);
+      delete o;
       return true;
     }
   }
@@ -779,7 +778,7 @@ bool merge_item_with_inventory(object *o)
     if(pack_item && objequal(o, pack_item))
     {
       pack_item->number += o->number;
-      free(o);
+      delete o;
       return true;
     }
   }
@@ -844,7 +843,7 @@ void gain_item(object *o)
   {
     print2("You gained some cash.");
     Player.cash += o->basevalue;
-    free(o);
+    delete o;
     dataprint();
   }
   else if(merge_item_with_inventory(o))
@@ -1139,7 +1138,7 @@ int get_item_number(pob o)
   }
   do
   {
-    print1("How many? -- max " + std::to_string(o->number) + " :");
+    print1(std::format("How many? -- max {}:", o->number));
     n = (int)parsenum();
     if(n > o->number)
     {
@@ -1193,7 +1192,7 @@ pob split_item(int num, pob item)
   pob newitem = nullptr;
   if(item)
   {
-    newitem  = ((pob)checkmalloc(sizeof(objtype)));
+    newitem  = new object;
     *newitem = *item;
     if(num <= item->number)
     {
@@ -1392,7 +1391,7 @@ int find_and_remove_item(int id, int chargeval)
           Player.pack[i]->number--;
           if(Player.pack[i]->number == 0)
           {
-            free(Player.pack[i]);
+            delete Player.pack[i];
             Player.pack[i] = nullptr;
           }
           found = true;
@@ -1420,7 +1419,7 @@ void lose_all_items()
   {
     if(Player.pack[i])
     {
-      free(Player.pack[i]);
+      delete Player.pack[i];
     }
     Player.pack[i] = nullptr;
   }
@@ -1431,7 +1430,7 @@ void lose_all_items()
 /* prevents people from wielding 3 short swords, etc. */
 void pack_extra_items(pob item)
 {
-  pob extra     = ((pob)checkmalloc(sizeof(objtype)));
+  pob extra     = new object;
   *extra        = *item;
   extra->number = item->number - 1;
   extra->used   = false;

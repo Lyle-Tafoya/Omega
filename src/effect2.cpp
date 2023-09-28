@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "interactive_menu.hpp"
 
 #include <algorithm>
+#include <format>
 #include <string>
 #include <vector>
 
@@ -244,7 +245,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[LEGION] > 0)
     {
-      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[LEGION]) + " XP)";
+      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[LEGION]);
     }
     switch(Player.rank[ARENA])
     {
@@ -269,7 +270,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[ARENA] > 0)
     {
-      lines[lines.size()-1] += " (Opponent " + std::to_string(Arena_Opponent) + ")";
+      lines[lines.size()-1] += std::format(" (Opponent {})", Arena_Opponent);
     }
     switch(Player.rank[COLLEGE])
     {
@@ -291,7 +292,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[COLLEGE] > 0)
     {
-      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[COLLEGE]) + " XP)";
+      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[COLLEGE]);
     }
     switch(Player.rank[NOBILITY])
     {
@@ -316,8 +317,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[NOBILITY] > 1)
     {
-      lines[lines.size()-1] += " (" + std::to_string(Player.rank[NOBILITY] - 1) +
-        ordinal(Player.rank[NOBILITY] - 1) + " Quest Completed)";
+      lines[lines.size()-1] += std::format(" ({}{} Quest Completed)", Player.rank[NOBILITY] - 1, ordinal(Player.rank[NOBILITY] - 1));
     }
     else if(Player.rank[NOBILITY] == 1)
     {
@@ -346,7 +346,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[CIRCLE] > 0)
     {
-      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[CIRCLE]) + " XP)";
+      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[CIRCLE]);
     }
     switch(Player.rank[ORDER])
     {
@@ -371,7 +371,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[ORDER] > 0)
     {
-      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[ORDER]) + " XP)";
+      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[ORDER]);
     }
     switch(Player.rank[THIEVES])
     {
@@ -393,7 +393,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[THIEVES] > 0)
     {
-      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[THIEVES]) + " XP)";
+      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[THIEVES]);
     }
     switch(Player.rank[PRIESTHOOD])
     {
@@ -436,7 +436,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[PRIESTHOOD] > 0)
     {
-      lines[lines.size()-1] += " (" + std::to_string(Player.guildxp[PRIESTHOOD]) + " XP)";
+      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[PRIESTHOOD]);
     }
     if(Player.rank[ADEPT] > 0)
     {

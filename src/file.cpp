@@ -20,14 +20,91 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* functions with file access in them. Also some direct calls to
    curses functions */
 
+#include <array>
 #include <chrono>
-#include <cstring>
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <thread>
 #include "glob.h"
+
+extern std::string get_home_path();
+extern void queue_message(const std::string &message);
+
+template<typename T>
+void file_write(std::ofstream &file, T &data)
+{
+  file.write(reinterpret_cast<char *>(&data), sizeof(data));
+}
+template<typename T>
+void file_read(std::ifstream &file, T &data)
+{
+  file.read(reinterpret_cast<char *>(&data), sizeof(data));
+}
+
+void save_omegarc()
+{
+  std::string omegarc_filename = std::format("{}/.omegarc", get_home_path());
+  std::ofstream omegarc_file(omegarc_filename, std::ios::binary);
+  if(!omegarc_file)
+  {
+    queue_message("Sorry, couldn't save .omegarc for some reason.");
+  }
+  else
+  {
+    file_write(omegarc_file, Player.maxstr);
+    file_write(omegarc_file, Player.maxcon);
+    file_write(omegarc_file, Player.maxdex);
+    file_write(omegarc_file, Player.maxagi);
+    file_write(omegarc_file, Player.maxiq);
+    file_write(omegarc_file, Player.maxpow);
+  }
+}
+
+void read_omegarc(std::ifstream &omegarc_file)
+{
+  file_read(omegarc_file, Player.maxstr);
+  file_read(omegarc_file, Player.maxcon);
+  file_read(omegarc_file, Player.maxdex);
+  file_read(omegarc_file, Player.maxagi);
+  file_read(omegarc_file, Player.maxiq);
+  file_read(omegarc_file, Player.maxpow);
+  Player.str = Player.maxstr;
+  Player.con = Player.maxcon;
+  Player.dex = Player.maxdex;
+  Player.agi = Player.maxagi;
+  Player.iq = Player.maxiq;
+  Player.pow = Player.maxpow;
+}
+
+std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode)
+{
+  std::fstream file{file_path, mode};
+  while(!file)
+  {
+    queue_message("Warning! Error opening file: " + file_path);
+    queue_message(" Abort or Retry? [ar] ");
+    char response;
+    do
+    {
+      response = static_cast<char>(mcigetc());
+    } while(response != 'a' && response != 'r');
+    if(response == 'r')
+    {
+      file.open(file_path);
+    }
+    else
+    {
+      queue_message("Sorry 'bout that.... Saving character, then quitting.");
+      save(true);
+      endgraf();
+      exit(0);
+    }
+  }
+  return file;
+}
 
 FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
 {
@@ -208,39 +285,48 @@ void showscores()
   fclose(fd);
   unlock_score_file();
   clear();
-  printw("High Score: %ld", Hiscore);
-  printw(", by %s (%s)", Hiscorer, levelname(Hilevel).c_str());
-  printw("\n%s\n", Hidescrip);
-  printw("\nLord of Chaos: %s (%s)", Chaoslord, levelname(Chaoslordlevel).c_str());
-  printw("\nLord of Law: %s (%s)", Lawlord, levelname(Lawlordlevel).c_str());
-  printw("\n\nDuke of Rampart:              ");
-  printw("%s (%s)", Duke, levelname(Dukelevel).c_str());
-  printw("\nJusticiar:                    ");
-  printw("%s (%s)", Justiciar, levelname(Justiciarlevel).c_str());
-  printw("\nCommandant:                   ");
-  printw("%s (%s)", Commandant, levelname(Commandantlevel).c_str());
-  printw("\nChampion:                     ");
-  printw("%s (%s)", Champion, levelname(Championlevel).c_str());
-  printw("\nArchmage:                     ");
-  printw("%s (%s)", Archmage, levelname(Archmagelevel).c_str());
-  printw("\nPrime Sorceror:               ");
-  printw("%s (%s)", Prime, levelname(Primelevel).c_str());
-  printw("\nShadowlord:                   ");
-  printw("%s (%s)", Shadowlord, levelname(Shadowlordlevel).c_str());
-  printw("\n\nHigh Priests:");
-  printw("\n of Odin:                     ");
-  printw("%s (%s)", Priest[ODIN], levelname(Priestlevel[ODIN]).c_str());
-  printw("\n of Set:                      ");
-  printw("%s (%s)", Priest[SET], levelname(Priestlevel[SET]).c_str());
-  printw("\n of Athena:                   ");
-  printw("%s (%s)", Priest[ATHENA], levelname(Priestlevel[ATHENA]).c_str());
-  printw("\n of Hecate:                   ");
-  printw("%s (%s)", Priest[HECATE], levelname(Priestlevel[HECATE]).c_str());
-  printw("\n of the Lords of Destiny:     ");
-  printw("%s (%s)", Priest[DESTINY], levelname(Priestlevel[DESTINY]).c_str());
-  printw("\nThe ArchDruid:                ");
-  printw("%s (%s)", Priest[DRUID], levelname(Priestlevel[DRUID]).c_str());
-  printw("\n\nHit any key to continue.");
+  addstr(std::format(
+      "High Score: {}, by {} ({})\n"
+      "{}\n"
+      "\n"
+      "Lord of Chaos: {} ({})\n"
+      "Lord of Law: {} ({})\n"
+      "\n"
+      "Duke of Rampart:              {} ({})\n"
+      "Justiciar:                    {} ({})\n"
+      "Commanadnt:                   {} ({})\n"
+      "Champion:                     {} ({})\n"
+      "Archmage:                     {} ({})\n"
+      "Prime Sorceror:               {} ({})\n"
+      "Shadowlord:                   {} ({})\n"
+      "\n"
+      "High Preists:\n"
+      " of Odin:                     {} ({})\n"
+      " of Set:                      {} ({})\n"
+      " of Athena:                   {} ({})\n"
+      " of Hecate:                   {} ({})\n"
+      " of the Lords of Destiny      {} ({})\n"
+      "The ArchDruid:                {} ({})\n"
+      "\n"
+      "Hit any key to continue.",
+      Hiscore, Hiscorer, levelname(Hilevel),
+      Hidescrip,
+      Chaoslord, levelname(Chaoslordlevel),
+      Lawlord, levelname(Lawlordlevel),
+      Duke, levelname(Dukelevel),
+      Justiciar, levelname(Justiciarlevel),
+      Commandant, levelname(Commandantlevel),
+      Champion, levelname(Championlevel),
+      Archmage, levelname(Archmagelevel),
+      Prime, levelname(Primelevel),
+      Shadowlord, levelname(Shadowlordlevel),
+      Priest[ODIN], levelname(Priestlevel[ODIN]),
+      Priest[SET], levelname(Priestlevel[SET]),
+      Priest[ATHENA], levelname(Priestlevel[ATHENA]),
+      Priest[HECATE], levelname(Priestlevel[HECATE]),
+      Priest[DESTINY], levelname(Priestlevel[DESTINY]),
+      Priest[DRUID], levelname(Priestlevel[DRUID])
+  ).c_str());
   refresh();
   wgetch(stdscr);
   clear_screen();
@@ -250,25 +336,23 @@ void showscores()
 /* in this particular game, but the others as they appear in the file. */
 void save_hiscore_npc(int npc)
 {
-  char  buffer[80];
-
   if(gamestatusp(CHEATED, GameStatus))
   {
     return;
   }
   lock_score_file();
   std::string infile_name = std::format("{}omega.hi", Omegalib);
-  FILE *infile = checkfopen(infile_name, "rb");
+  std::fstream infile = check_fstream_open(infile_name, std::ios::in);
   std::string outfile_name = std::format("{}omega.hi.new", Omegalib);
-  FILE *outfile = checkfopen(outfile_name, "wb");
-  for(int i = 0; i < 16; i++)
+  std::fstream outfile = check_fstream_open(outfile_name, std::ios::out);
+  for(int i = 0; i < 16; ++i)
   {
     if(npc == i)
     {
       switch(i)
       {
         case 0:
-          fprintf(outfile, "%s\n%s\n%ld %d %d\n", Hiscorer, Hidescrip, Hiscore, Hilevel, Hibehavior);
+          outfile << std::format("{}\n{}\n{} {} {}\n", Hiscorer, Hidescrip, Hiscore, Hilevel, Hibehavior);
           break;
         case 1:
         case 2:
@@ -276,58 +360,59 @@ void save_hiscore_npc(int npc)
         case 4:
         case 5:
         case 6:
-          fprintf(outfile, "%s\n%d %d\n", Priest[i], Priestlevel[i], Priestbehavior[i]);
+          outfile << std::format("{}\n{} {}\n", Priest[i], Priestlevel[i], Priestbehavior[i]);
           break;
         case 7:
-          fprintf(outfile, "%s\n%d %d\n", Shadowlord, Shadowlordlevel, Shadowlordbehavior);
+          outfile << std::format("{}\n{} {}\n", Shadowlord, Shadowlordlevel, Shadowlordbehavior);
           break;
         case 8:
-          fprintf(outfile, "%s\n%d %d\n", Commandant, Commandantlevel, Commandantbehavior);
+          outfile << std::format("{}\n{} {}\n", Commandant, Commandantlevel, Commandantbehavior);
           break;
         case 9:
-          fprintf(outfile, "%s\n%d %d\n", Archmage, Archmagelevel, Archmagebehavior);
+          outfile << std::format("{}\n{} {}\n", Archmage, Archmagelevel, Archmagebehavior);
           break;
         case 10:
-          fprintf(outfile, "%s\n%d %d\n", Prime, Primelevel, Primebehavior);
+          outfile << std::format("{}\n{} {}\n", Prime, Primelevel, Primebehavior);
           break;
         case 11:
-          fprintf(outfile, "%s\n%d %d\n", Champion, Championlevel, Championbehavior);
+          outfile << std::format("{}\n{} {}\n", Champion, Championlevel, Championbehavior);
           break;
         case 12:
-          fprintf(outfile, "%s\n%d %d\n", Duke, Dukelevel, Dukebehavior);
+          outfile << std::format("{}\n{} {}\n", Duke, Dukelevel, Dukebehavior);
           break;
         case 13:
-          fprintf(outfile, "%s\n%d %d %d\n", Chaoslord, Chaoslordlevel, Chaos, Chaoslordbehavior);
+          outfile << std::format("{}\n{} {} {}\n", Chaoslord, Chaoslordlevel, Chaos, Chaoslordbehavior);
           break;
         case 14:
-          fprintf(outfile, "%s\n%d %d %d\n", Lawlord, Lawlordlevel, Law, Lawlordbehavior);
+          outfile << std::format("{}\n{} {} {}\n", Lawlord, Lawlordlevel, Law, Lawlordbehavior);
           break;
         case 15:
-          fprintf(outfile, "%s\n%d %d\n", Justiciar, Justiciarlevel, Justiciarbehavior);
+          outfile << std::format("{}\n{} {}\n", Justiciar, Justiciarlevel, Justiciarbehavior);
           break;
       }
     }
+    std::string buffer;
     if(i == 0)
     {
-      fgets(buffer, 80, infile);
+      std::getline(infile, buffer);
       if(i != npc)
       {
-        fputs(buffer, outfile);
+        outfile << buffer << '\n';
       }
     }
-    fgets(buffer, 80, infile);
+    std::getline(infile, buffer);
     if(i != npc)
     {
-      fputs(buffer, outfile);
+      outfile << buffer << '\n';
     }
-    fgets(buffer, 80, infile);
+    std::getline(infile, buffer);
     if(i != npc)
     {
-      fputs(buffer, outfile);
+      outfile << buffer << '\n';
     }
   }
-  fclose(infile);
-  fclose(outfile);
+  infile.close();
+  outfile.close();
 
   std::filesystem::rename(outfile_name, infile_name);
   unlock_score_file();
@@ -349,8 +434,8 @@ void checkhigh(const std::string &descrip, int behavior)
   {
     if(Hiscore < points)
     {
-      strcpy(Hiscorer, Player.name);
-      strcpy(Hidescrip, descrip.c_str());
+      Hiscorer = Player.name;
+      Hidescrip = descrip;
       Hiscore    = points;
       Hilevel    = Player.level;
       Hibehavior = behavior;
@@ -359,7 +444,7 @@ void checkhigh(const std::string &descrip, int behavior)
     }
     if(Player.alignment < Chaos)
     {
-      strcpy(Chaoslord, Player.name);
+      Chaoslord = Player.name;
       Chaoslordlevel    = Player.level;
       Chaos             = Player.alignment;
       Chaoslordbehavior = behavior;
@@ -368,7 +453,7 @@ void checkhigh(const std::string &descrip, int behavior)
     }
     if(Player.alignment > Law)
     {
-      strcpy(Lawlord, Player.name);
+      Lawlord = Player.name;
       Lawlordlevel    = Player.level;
       Law             = Player.alignment;
       Lawlordbehavior = behavior;
@@ -385,22 +470,27 @@ void extendlog(const std::string &descrip, int lifestatus)
     int npcbehavior = fixnpc(lifestatus);
     checkhigh(descrip, npcbehavior);
     FILE *fd = checkfopen(std::format("{}omega.log", Omegalib), "a");
-    fprintf(fd, " %d %d %d %s\n", lifestatus, Player.level, npcbehavior, Player.name);
+    fprintf(fd, " %d %d %d %s\n", lifestatus, Player.level, npcbehavior, Player.name.c_str());
     fclose(fd);
   }
 }
 
 /* reads a string from a file. If it is a line with more than 80 char's,
    then remainder of line to \n is consumed */
-void filescanstring(FILE *fd, char *fstr)
+void filescanstring(FILE *fd, std::string &fstr)
 {
-  int i    = -1;
-  int byte = 'x';
-  while((i < 80) && (byte != '\n') && (byte != EOF))
+  int byte;
+  for(int i = 0; i < 80; ++i)
   {
-    i++;
-    byte    = fgetc(fd);
-    fstr[i] = byte;
+    byte = fgetc(fd);
+    if(byte == '\n' || byte == EOF)
+    {
+      break;
+    }
+    else
+    {
+      fstr.push_back(byte);
+    }
   }
   if(byte != '\n')
   {
@@ -409,7 +499,6 @@ void filescanstring(FILE *fd, char *fstr)
       byte = fgetc(fd);
     }
   }
-  fstr[i] = 0;
 }
 
 bool test_file_access(const std::string &file_name, char mode)
@@ -425,86 +514,125 @@ bool test_file_access(const std::string &file_name, char mode)
   return true;
 }
 
-const char *required_file_list[] = {"city.dat",     "country.dat",  "dlair.dat",    "misle.dat",
-                                    "court.dat",    "speak.dat",    "temple.dat",   "abyss.dat",
-                                    "village1.dat", "village2.dat", "village3.dat", "village4.dat",
-                                    "village5.dat", "village6.dat", "home1.dat",    "home2.dat",
-                                    "home3.dat",    "arena.dat",    "maze1.dat",    "maze2.dat",
-                                    "maze3.dat",    "maze4.dat",    "omega.hi",     "omega.log",
-                                    "motd.txt",     "license.txt",  "circle.dat",   nullptr};
+const std::array<std::string, 27> required_file_list
+{
+  "city.dat",
+  "country.dat",
+  "dlair.dat",
+  "misle.dat",
+  "court.dat",
+  "speak.dat",
+  "temple.dat",
+  "abyss.dat",
+  "village1.dat",
+  "village2.dat",
+  "village3.dat",
+  "village4.dat",
+  "village5.dat",
+  "village6.dat",
+  "home1.dat",
+  "home2.dat",
+  "home3.dat",
+  "arena.dat",
+  "maze1.dat",
+  "maze2.dat",
+  "maze3.dat",
+  "maze4.dat",
+  "omega.hi",
+  "omega.log",
+  "motd.txt",
+  "license.txt",
+  "circle.dat"
+};
 
-const char *optional_file_list[] = {
-  "help1.txt",   "help2.txt",   "help3.txt",   "help4.txt",   "help5.txt",  "help6.txt",  "help7.txt",
-  "help8.txt",   "help9.txt",   "help10.txt",  "help11.txt",  "help12.txt", "help13.txt", "abyss.txt",
-  "scroll1.txt", "scroll2.txt", "scroll3.txt", "scroll4.txt", nullptr};
+const std::array<std::string, 18> optional_file_list
+{
+  "help1.txt",
+  "help2.txt",
+  "help3.txt",
+  "help4.txt",
+  "help5.txt",
+  "help6.txt",
+  "help7.txt",
+  "help8.txt",
+  "help9.txt",
+  "help10.txt",
+  "help11.txt",
+  "help12.txt",
+  "help13.txt",
+  "abyss.txt",
+  "scroll1.txt",
+  "scroll2.txt",
+  "scroll3.txt",
+  "scroll4.txt"
+};
 
 /* Checks existence of omega data files */
 /* Returns 1 if OK, 0 if impossible to run, -1 if possible but not OK */
 int filecheck()
 {
   int impossible = false, badbutpossible = false;
-  int endpos;
 
-  strcpy(Str1, Omegalib);
-  endpos = strlen(Str1);
-  for(int file = 0; required_file_list[file]; file++)
+  std::string omega_lib_path = Omegalib;
+  for(const std::string &file_name : required_file_list)
   {
-    strcpy(&(Str1[endpos]), required_file_list[file]);
-    if((strcmp(required_file_list[file], "omega.hi") == 0 ||
-        strcmp(required_file_list[file], "omega.log") == 0) &&
-       !test_file_access(Str1, 'w'))
+    std::string file_path = omega_lib_path + file_name;
+    if(file_name == "omega.hi" || file_name == "omega.log")
     {
-      impossible = true;
-      printf("\nError! File not appendable or accessible: %s", Str1);
+      if(!test_file_access(file_path, 'w'))
+      {
+        impossible = true;
+        std::cout << "\nError! File not appendabe or accessible: " << file_path;
+      }
     }
-    else if(!test_file_access(Str1, 'r'))
+    else if(!test_file_access(file_path, 'r'))
     {
       impossible = true;
-      printf("\nError! File not accessible: %s", Str1);
+      std::cout << "\nError! File not accessible: " << file_path;
     }
   }
-  for(int file = 0; optional_file_list[file]; file++)
+  for(const std::string &file_name : optional_file_list)
   {
-    strcpy(&(Str1[endpos]), optional_file_list[file]);
-    if(!test_file_access(Str1, 'r'))
+    std::string file_path = omega_lib_path + file_name;
+    if(!test_file_access(file_path, 'r'))
     {
       badbutpossible = true;
-      printf("\nWarning! File not accessible: %s", Str1);
+      std::cout << "\nWarning! File not accessible: " << file_path;
     }
   }
   if(impossible)
   {
     printf("\nFurther execution is impossible. Sorry.");
-    if(strcmp(Omegalib, OMEGALIB))
+    if(omega_lib_path != OMEGALIB)
     {
-      printf("\nEnvironment variable OMEGALIB badly set\n");
+      std::cout << "\nEnvironment variable OMEGALIB badly set\n";
     }
     else
     {
-      printf("\nOMEGALIB may be badly #defined in defs.h\n");
+      std::cout << "\nOMEGALIB may be badly #defined in defs.h\n";
 #ifndef FIXED_OMEGALIB
-      printf("\nYou can set the environment variable OMEGALIB to\n");
-      printf("the location of the omegalib directory.\n");
+      std::cout << "\nYou can set the environment variable OMEGALIB to\n";
+      std::cout << "the location of the omegalib directory.\n";
 #endif
     }
-    return (0);
+    return 0;
   }
   else if(badbutpossible)
   {
-    printf("\nFurther execution may cause anomalous behavior.");
-    printf("\nContinue anyhow? [yn] ");
+    std::cout << "\nFurther execution may cause anomalous behavior.";
+    std::cout << "\nContinue anyhow? [yn] ";
     if(getchar() == 'y')
     {
-      return (-1);
+      return -1;
     }
     else
     {
-      return (0);
+      return 0;
     }
   }
   else
   {
-    return (1);
+    return 1;
   }
 }
 

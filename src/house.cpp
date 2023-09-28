@@ -50,7 +50,7 @@ void load_house(int kind, int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   std::string home_filepath;
@@ -232,9 +232,9 @@ void load_house(int kind, int populate)
 /* makes a log npc for houses and hovels */
 void make_house_npc(int i, int j)
 {
-  pml ml = ((pml)checkmalloc(sizeof(mltype)));
+  pml ml = new monsterlist;
   pob ob;
-  ml->m    = ((pmt)checkmalloc(sizeof(montype)));
+  ml->m    = new monster;
   *(ml->m) = Monsters[NPC];
   make_log_npc(ml->m);
   if(ml->m->id == NPC)
@@ -263,7 +263,7 @@ void make_house_npc(int i, int j)
   }
   if(ml->m->startthing > -1)
   {
-    ob  = ((pob)checkmalloc(sizeof(objtype)));
+    ob  = new object;
     *ob = Objects[ml->m->startthing];
     m_pickup(ml->m, ob);
   }
@@ -272,8 +272,8 @@ void make_house_npc(int i, int j)
 /* makes a hiscore npc for mansions */
 void make_mansion_npc(int i, int j)
 {
-  pml ml   = ((pml)checkmalloc(sizeof(mltype)));
-  ml->m    = ((pmt)checkmalloc(sizeof(montype)));
+  pml ml   = new monsterlist;
+  ml->m    = new monster;
   *(ml->m) = Monsters[NPC];
   make_hiscore_npc(ml->m, random_range(14) + 1);
   mprint("You detect signs of life in this house.");

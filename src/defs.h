@@ -1242,6 +1242,8 @@ for example. */
 #define O_RING3                 14
 #define O_RING4                 15
 
+#include <string>
+
 /* typedefs needed by structs */
 
 typedef chtype Symbol;
@@ -1257,9 +1259,9 @@ struct room
 
 struct spell
 {
-  char known;
-  char id;
-  char powerdrain;
+  bool known;
+  int id;
+  int powerdrain;
 };
 
 struct monster
@@ -1275,39 +1277,15 @@ struct monster
   int                talkf, movef, meleef, strikef, specialf;
   long               status, immunity;
   Symbol             monchar;
-  const char        *monstring;
-  const char        *corpsestr;
-  const char        *meleestr;
+  std::string        monstring;
+  std::string        corpsestr;
+  std::string        meleestr;
 };
 
 struct monsterlist
 {
-  struct monster     *m;
-  struct monsterlist *next;
-};
-
-struct player
-{
-  int            str, con, dex, agi, iq, pow, maxstr, maxcon, maxdex, maxagi, maxiq, maxpow;
-  long           xp;
-  int            level, hp, maxhp, hit, dmg, absorption, speed, click;
-  int            defense, food, alignment;
-  long           mana, maxmana;
-  long           cash;
-  int            patron, birthday;
-  int            sx, sy; /* sanctuary coordinates */
-  int            x, y;   /* current player coordinates */
-  int            itemweight, maxweight;
-  int            immunity[NUMIMMUNITIES];
-  int            status[NUMSTATI];
-  long           options;
-  int            rank[NUMRANKS];
-  long           guildxp[NUMRANKS];
-  char           name[64];
-  char           meleestr[64];
-  struct object *possessions[MAXITEMS];
-  struct object *pack[MAXPACK];
-  int            packptr;
+  monster     *m;
+  monsterlist *next;
 };
 
 struct object
@@ -1332,9 +1310,33 @@ struct object
   int           on_unequip;
   unsigned char level;
   Symbol        objchar;
-  const char   *objstr;
-  const char   *truename;
-  const char   *cursestr;
+  std::string   objstr;
+  std::string   truename;
+  std::string   cursestr;
+};
+
+struct player
+{
+  int            str, con, dex, agi, iq, pow, maxstr, maxcon, maxdex, maxagi, maxiq, maxpow;
+  long           xp;
+  int            level, hp, maxhp, hit, dmg, absorption, speed, click;
+  int            defense, food, alignment;
+  long           mana, maxmana;
+  long           cash;
+  int            patron, birthday;
+  int            sx, sy; /* sanctuary coordinates */
+  int            x, y;   /* current player coordinates */
+  int            itemweight, maxweight;
+  int            immunity[NUMIMMUNITIES];
+  int            status[NUMSTATI];
+  long           options;
+  int            rank[NUMRANKS];
+  long           guildxp[NUMRANKS];
+  std::string    name;
+  std::string    meleestr;
+  object        *possessions[MAXITEMS];
+  object        *pack[MAXPACK];
+  int            packptr;
 };
 
 struct objectlist
@@ -1379,14 +1381,14 @@ struct level
   char                generated;    /* has the level been made (visited) yet? */
   char                numrooms;     /* number of rooms on level */
   char                tunnelled;    /* amount of tunnelling done on this level */
-  struct monsterlist *mlist;        /* List of monsters on level */
+  monsterlist        *mlist;        /* List of monsters on level */
   int                 environment;  /* where kind of level is this? */
   int                 last_visited; /* time player was last on this level */
 };
 
 /* random typedef's */
 
-typedef struct monsterlist mltype;
+typedef monsterlist mltype;
 typedef mltype            *pml;
 
 typedef struct monster montype;

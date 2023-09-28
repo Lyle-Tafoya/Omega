@@ -22,7 +22,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 
 #include <algorithm>
-#include <cstring>
 #include <format>
 #include <string>
 
@@ -151,7 +150,7 @@ void showroom(int i)
   if(Current_Environment == Current_Dungeon)
   {
     location += "Level " + std::to_string(Level->depth);
-    room_name = std::string("(") + roomname(i) + ")";
+    room_name = std::format("({})", roomname(i));
   }
   else if(location.empty() || Current_Environment == E_MANSION || Current_Environment == E_HOUSE ||
           Current_Environment == E_HOVEL)
@@ -875,9 +874,9 @@ void gain_experience(int amount)
 bool goberserk()
 {
   bool wentberserk = false;
-  char meleestr[64];
-  strcpy(meleestr, Player.meleestr);
-  strcpy(Player.meleestr, "LLLCLH");
+  std::string meleestr;
+  meleestr = Player.meleestr;
+  Player.meleestr = "LLLCLH";
   for(uint8_t i = 0; i < 8; ++i)
   {
     if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature)
@@ -886,7 +885,7 @@ bool goberserk()
       fight_monster(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature);
     }
   }
-  strcpy(Player.meleestr, meleestr);
+  Player.meleestr = meleestr;
   return wentberserk;
 }
 
@@ -1227,7 +1226,7 @@ std::string levelname(int level)
       if(level < 100)
       {
         int order = level / 10 - 2;
-        return "Order " + std::to_string(order) + " Master of Omega";
+        return std::format("Order {} Master of Omega", order);
       }
       else
       {

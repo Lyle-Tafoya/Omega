@@ -19,6 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* city.c */
 /* some functions to make the city level */
 
+#include "defs.h"
 #include "glob.h"
 
 #include <format>
@@ -54,7 +55,7 @@ void load_city(int populate)
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;
 #else
-  Level = ((plv)checkmalloc(sizeof(levtype)));
+  Level = new level;
 #endif
   clear_level(Level);
   Level->depth       = 0;
@@ -513,8 +514,8 @@ void assign_city_function(int x, int y)
 /* makes a hiscore npc for mansions */
 void make_justiciar(int i, int j)
 {
-  pml ml   = ((pml)checkmalloc(sizeof(mltype)));
-  ml->m    = ((pmt)checkmalloc(sizeof(montype)));
+  monsterlist *ml   = new monsterlist;
+  ml->m    = new monster;
   *(ml->m) = Monsters[NPC];
   make_hiscore_npc(ml->m, 15);
   ml->m->x                   = i;

@@ -20,8 +20,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 
-#include <cstring>
-
 /* make a random new object, returning pointer */
 pob create_object(int itemlevel)
 {
@@ -31,7 +29,7 @@ pob create_object(int itemlevel)
 
   while(!ok)
   {
-    o = ((pob)checkmalloc(sizeof(objtype)));
+    o = new object;
     r = random_range(135);
     if(r < 20)
     {
@@ -87,14 +85,14 @@ pob create_object(int itemlevel)
           ((o->level < itemlevel + random_range(3)) || (random_range(100) == 23)));
     if(!ok)
     {
-      free(o);
+      delete o;
     }
   }
   if(o->uniqueness == UNIQUE_UNMADE)
   {
     Objects[o->id].uniqueness = UNIQUE_MADE;
   }
-  return (o);
+  return o;
 }
 
 void make_cash(pob o, int level)
@@ -224,7 +222,7 @@ void make_thing(pob o, int id)
     id = random_range(NUMTHINGS);
   }
   *o = Objects[THINGID + id];
-  if(strcmp(o->objstr, "grot") == 0)
+  if(o->objstr == "grot")
   {
     o->objstr   = grotname();
     o->truename = o->cursestr = o->objstr;
@@ -411,7 +409,7 @@ void shuffle(int ids[], int number)
 
 /* item name functions */
 
-const char *scrollname(int id)
+const std::string scrollname(int id)
 {
   switch(scroll_ids[id])
   {
@@ -479,7 +477,7 @@ const char *scrollname(int id)
   }
 }
 
-const char *grotname()
+const std::string grotname()
 {
   switch(random_range(20))
   {
@@ -527,7 +525,7 @@ const char *grotname()
   }
 }
 
-const char *potionname(int id)
+const std::string potionname(int id)
 {
   switch(potion_ids[id])
   {
@@ -575,7 +573,7 @@ const char *potionname(int id)
   }
 }
 
-const char *stickname(int id)
+const std::string stickname(int id)
 {
   switch(stick_ids[id])
   {
@@ -623,7 +621,7 @@ const char *stickname(int id)
   }
 }
 
-const char *ringname(int id)
+const std::string ringname(int id)
 {
   switch(ring_ids[id])
   {
@@ -673,7 +671,7 @@ const char *ringname(int id)
   }
 }
 
-const char *cloakname(int id)
+const std::string cloakname(int id)
 {
   switch(cloak_ids[id])
   {
@@ -723,7 +721,7 @@ const char *cloakname(int id)
   }
 }
 
-const char *bootname(int id)
+const std::string bootname(int id)
 {
   switch(boot_ids[id])
   {

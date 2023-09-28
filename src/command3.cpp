@@ -27,7 +27,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cctype>
-#include <cstring>
 #include <format>
 #include <string>
 #include <vector>
@@ -246,7 +245,7 @@ void examine()
           std::vector<std::string> lines;
           while(ol)
           {
-            lines.emplace_back(std::string("  ") + itemid(ol->thing));
+            lines.emplace_back(std::format("  {}", itemid(ol->thing)));
             ol = ol->next;
           }
           menu->load(lines, {{"Things on floor:"}});
@@ -1016,8 +1015,8 @@ void rename_player()
   std::string name = msgscanstring();
   if(!name.empty())
   {
-    name[0] = std::toupper(name[0]);
-    strcpy(Player.name, name.c_str());
+    name.front() = std::toupper(name.front());
+    Player.name = name;
   }
   queue_message(std::format("Henceforth, you shall be known as {}.", Player.name));
   dataprint();
@@ -1236,8 +1235,8 @@ void dismount_steed()
   {
     resetgamestatus(MOUNTED, GameStatus);
     ;
-    ml                                       = ((pml)checkmalloc(sizeof(mltype)));
-    ml->m                                    = ((pmt)checkmalloc(sizeof(montype)));
+    ml                                       = new monsterlist;
+    ml->m                                    = new monster;
     *(ml->m)                                 = Monsters[HORSE];
     ml->m->x                                 = Player.x;
     ml->m->y                                 = Player.y;

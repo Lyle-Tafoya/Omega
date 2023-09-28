@@ -105,7 +105,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
 #ifdef SAVE_LEVELS
     thislevel = &TheLevel;
 #else
-    thislevel = ((plv)checkmalloc(sizeof(levtype)));
+    thislevel = new level;
 #endif
     clear_level(thislevel);
     Level       = thislevel;
@@ -302,7 +302,7 @@ void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, Symbol loc, char rs
   }
 }
 
-const char *roomname(int index)
+const std::string roomname(int index)
 {
   switch(index)
   {
@@ -565,7 +565,7 @@ void cavern_level()
     if((Level->depth == CAVELEVELS) && (!gamestatusp(COMPLETED_CAVES, GameStatus)))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
+      Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(GOBLIN_KING)); /* goblin king */
@@ -578,7 +578,7 @@ void cavern_level()
     if(Level->depth == VOLCANOLEVELS)
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
+      Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(DEMON_EMP)); /* The dark emp */
@@ -626,7 +626,7 @@ void sewer_level()
     if((Level->depth == SEWERLEVELS) && (!gamestatusp(COMPLETED_SEWERS, GameStatus)))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = ((pml)checkmalloc(sizeof(mltype)));
+      Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
       Level->mlist->m    = Level->site[tx][ty].creature =
         ((pmt)make_creature(GREAT_WYRM)); /* The Great Wyrm */

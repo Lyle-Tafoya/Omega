@@ -855,7 +855,7 @@ void acquire(int blessing)
   }
   else
   {
-    newthing     = ((pob)checkmalloc(sizeof(objtype)));
+    newthing     = new object;
     newthing->id = -1;
     if(gamestatusp(CHEATED, GameStatus))
     {
