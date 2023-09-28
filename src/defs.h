@@ -57,7 +57,9 @@ definitions in the following section. */
 /* If CATCH_SIGNALS is set to 1, will not dump core, nicer for players. */
 /* dbx still intercepts the signals first, so it's ok for debugging */
 
-#define CATCH_SIGNALS       1
+#ifndef CATCH_SIGNALS
+#  define CATCH_SIGNALS       1
+#endif
 
 /*---------------------------SYSTEM DEFINITIONS---------------------------*/
 
