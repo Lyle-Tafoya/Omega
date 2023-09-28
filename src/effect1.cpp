@@ -834,13 +834,9 @@ void wish(int blessing)
 /* gain for an item */
 void acquire(int blessing)
 {
-  char otype;
-  int  index, id = ABORT;
-  pob  newthing;
-
   if(blessing < 0)
   {
-    index = random_item();
+    int index = random_item();
     if(index == ABORT)
     {
       mprint("You feel fortunate.");
@@ -855,7 +851,7 @@ void acquire(int blessing)
   }
   else
   {
-    newthing     = new object;
+    object *newthing = new object;
     newthing->id = -1;
     if(gamestatusp(CHEATED, GameStatus))
     {
@@ -865,7 +861,8 @@ void acquire(int blessing)
     {
       print1("Acquire which kind of item: !?][}{)/=%%\\ ");
     }
-    otype = mgetc();
+    int id = ABORT;
+    char otype = mgetc();
     switch(otype)
     {
       case(POTION & 0xff):
@@ -1097,6 +1094,10 @@ void acquire(int blessing)
       }
       newthing->used = false;
       gain_item(newthing);
+    }
+    else
+    {
+      delete newthing;
     }
   }
 }
