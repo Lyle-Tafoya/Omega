@@ -22,6 +22,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifndef OMEGA_DEFS_H_
 #define OMEGA_DEFS_H_
 
+#include <string>
+
 /* omega will NOT function unless the implementor sets the appropriate
 definitions in the following section. */
 
@@ -46,266 +48,299 @@ definitions in the following section. */
 /* It would be downright insecure to comment this line out in a multi-user */
 /* environment, especially if you're going to run omega setuid.) */
 
-/*#define FIXED_OMEGALIB*/
+//#define FIXED_OMEGALIB
 
-/* set WIZARD to maintainers's username */
-
+// set WIZARD to maintainers's username
 #ifndef WIZARD
 #  define WIZARD            "wtanksle"
 #endif
 
-/* If CATCH_SIGNALS is set to 1, will not dump core, nicer for players. */
-/* dbx still intercepts the signals first, so it's ok for debugging */
-
+// If CATCH_SIGNALS is set to 1, will not dump core, nicer for players.
+// dbx still intercepts the signals first, so it's ok for debugging
 #ifndef CATCH_SIGNALS
 #  define CATCH_SIGNALS       1
 #endif
 
-/*---------------------------SYSTEM DEFINITIONS---------------------------*/
+//---------------------------SYSTEM DEFINITIONS---------------------------
 
-/* Don't change anything from here on (unless you know what you're doing) */
-#define VERSION             401
-#define VERSIONSTRING       "omega rebirth version 0.4.1"
+// Don't change anything from here on (unless you know what you're doing)
+constexpr int VERSION           = 401;
+const std::string VERSIONSTRING = "omega rebirth version 0.4.1";
 
-#define VACANT              0
-#define ABORT               -1
-#define CASHVALUE           -2
+constexpr int VACANT    = 0;
+constexpr int ABORT     = -1;
+constexpr int CASHVALUE = -2;
 
-/* moderately arbitrary but probably cannot be easily changed */
-#define MAXWIDTH            64
-#define MAXLENGTH           64
-#define SMALLSCREENLENGTH   16
+// moderately arbitrary but probably cannot be easily changed
+constexpr int MAXWIDTH           = 64;
+constexpr int MAXLENGTH          = 64;
+constexpr int SMALLSCREENLENGTH  = 16;
 
-/* number of slots in inventory. Cannot be changed without work */
-#define MAXITEMS            16
+// number of slots in inventory. Cannot be changed without work
+constexpr int MAXITEMS           = 16;
 
-/* number of slots in pack. Should be <= 26. */
-#define MAXPACK             26
+// number of slots in pack. Should be <= 26
+constexpr int MAXPACK            = 26;
 
-/* number of items in pawn shop. Should be <= 26 */
-#define PAWNITEMS           20 /* DG -- the more the merrier.  WDT -- I agree. */
+// number of items in pawn shop. Should be <= 26
+constexpr int PAWNITEMS          = 20;
 
-/* number of lines back strings are recalled */
-#define STRING_BUFFER_SIZE  25
+// number of lines back strings are recalled
+constexpr int STRING_BUFFER_SIZE = 25;
 
-/* Verbosity levels */
-#define TERSE               0
-#define MEDIUM              1
-#define VERBOSE             2
+// Verbosity levels
+enum verbosity_levels
+{
+  TERSE,
+  MEDIUM,
+  VERBOSE
+};
 
-/* Arbitrary. Max of the levels in the dungeons */
-#define MAXLEVELS           21
+// Arbitrary. Max of the levels in the dungeons
+constexpr int MAXLEVELS     = 21;
 
-/* levels in each dungeon */
-#define ASTRALLEVELS        5
-#define SEWERLEVELS         18
-#define CASTLELEVELS        16
-#define CAVELEVELS          10
-#define VOLCANOLEVELS       20
+// levels in each dungeon
+constexpr int ASTRALLEVELS  = 5;
+constexpr int SEWERLEVELS   = 18;
+constexpr int CASTLELEVELS  = 16;
+constexpr int CAVELEVELS    = 10;
+constexpr int VOLCANOLEVELS = 20;
 
-/* Overall Game Progress Vector Bits */
-/* Long had BETTER have at least 32 bits.... */
-#define SPOKE_TO_DRUID      0x1
-#define COMPLETED_CAVES     0x2
-#define COMPLETED_SEWERS    0x4
-#define COMPLETED_CASTLE    0x8
-#define COMPLETED_ASTRAL    0x10
-#define COMPLETED_VOLCANO   0x20
-#define KILLED_DRAGONLORD   0x40
-#define KILLED_EATER        0x80
-#define KILLED_LAWBRINGER   0x100
-#define COMPLETED_CHALLENGE 0x200
-#define SOLD_CONDO          0x400
-#define FAST_MOVE           0x800
-#define SKIP_PLAYER         0x1000
-#define SKIP_MONSTERS       0x2000
-#define MOUNTED             0x4000
-#define SUPPRESS_PRINTING   0x8000
-#define LOST                0x10000
-#define ARENA_MODE          0x20000
-#define CHEATED             0x40000
-#define BANK_BROKEN         0x80000
-#define CLUB_MEMBER         0x100000
-#define PREPARED_VOID       0x200000
-#define DESTROYED_ORDER     0x400000
-#define GAVE_STARGEM        0x800000
-#define ATTACKED_ORACLE     0x1000000
-#define UNDEAD_GUARDS       0x2000000
+// Overall Game Progress Vector Bits
+enum game_progress_bits : long
+{
+  SPOKE_TO_DRUID      = (1 << 0),
+  COMPLETED_CAVES     = (1 << 1),
+  COMPLETED_SEWERS    = (1 << 2),
+  COMPLETED_CASTLE    = (1 << 3),
+  COMPLETED_ASTRAL    = (1 << 4),
+  COMPLETED_VOLCANO   = (1 << 5),
+  KILLED_DRAGONLORD   = (1 << 6),
+  KILLED_EATER        = (1 << 7),
+  KILLED_LAWBRINGER   = (1 << 8),
+  COMPLETED_CHALLENGE = (1 << 9),
+  SOLD_CONDO          = (1 << 10),
+  FAST_MOVE           = (1 << 11),
+  SKIP_PLAYER         = (1 << 12),
+  SKIP_MONSTERS       = (1 << 13),
+  MOUNTED             = (1 << 14),
+  SUPPRESS_PRINTING   = (1 << 15),
+  LOST                = (1 << 16),
+  ARENA_MODE          = (1 << 17),
+  CHEATED             = (1 << 18),
+  BANK_BROKEN         = (1 << 19),
+  CLUB_MEMBER         = (1 << 20),
+  PREPARED_VOID       = (1 << 21),
+  DESTROYED_ORDER     = (1 << 22),
+  GAVE_STARGEM        = (1 << 23),
+  ATTACKED_ORACLE     = (1 << 24),
+  UNDEAD_GUARDS       = (1 << 25)
+};
 
-/* non-existant environments for the random number seeding routine */
-/* added 12/30/98 (DG) */
-#define E_RESTORE           -2
-#define E_RANDOM            -1
-/* general environment types */
-#define E_NEVER_NEVER_LAND  0
-#define E_COUNTRYSIDE       1
-#define E_CITY              2
-#define E_VILLAGE           3
-#define E_TACTICAL_MAP      4
-#define E_SEWERS            5
-#define E_CASTLE            6
-#define E_CAVES             7
-#define E_VOLCANO           8
-#define E_ASTRAL            9
-#define E_ARENA             10
-#define E_HOVEL             11
-#define E_MANSION           12
-#define E_HOUSE             13
-#define E_DLAIR             14
-#define E_ABYSS             15
-#define E_STARPEAK          16
-#define E_MAGIC_ISLE        17
-#define E_TEMPLE            18
-#define E_CIRCLE            19
-#define E_COURT             20
-#define E_MAX               E_COURT
+// non-existant environments for the random number seeding routine
+constexpr int E_RESTORE = -2;
+constexpr int E_RANDOM = -1;
 
-/* player game status */
-#define DEAD                1
-#define QUIT                2
-#define WIN                 3
-#define BIGWIN              4
+// general environment types
+enum environment_id
+{
+  E_NEVER_NEVER_LAND,
+  E_COUNTRYSIDE,
+  E_CITY,
+  E_VILLAGE,
+  E_TACTICAL_MAP,
+  E_SEWERS,
+  E_CASTLE,
+  E_CAVES,
+  E_VOLCANO,
+  E_ASTRAL,
+  E_ARENA,
+  E_HOVEL,
+  E_MANSION,
+  E_HOUSE,
+  E_DLAIR,
+  E_ABYSS,
+  E_STARPEAK,
+  E_MAGIC_ISLE,
+  E_TEMPLE,
+  E_CIRCLE,
+  E_COURT,
+};
+constexpr int E_MAX = E_COURT;
 
-/* kind of arbitrary */
-#define MAXROOMS            48
-#define MAXCONNECTIONS      4
-#define STRING_LEN          100
+// player game status
+enum game_end_status
+{
+  DEAD = 1,
+  QUIT,
+  WIN,
+  BIGWIN,
+};
 
-/* some random characters */
-#define ESCAPE              27
-#define DELETE              127
+// kind of arbitrary
+constexpr int MAXROOMS       = 48;
+constexpr int MAXCONNECTIONS = 4;
+constexpr int STRING_LEN     = 100;
 
-/* tac mode action definitions */
-/* have to remember to find where these are used, mostly unused, now! */
-#define DISENGAGE           10
-#define BLOCK               20
-#define CUT                 30
-#define THRUST              40
-#define MAGIC               50
-#define LUNGE               60
-#define RIPOSTE             70
-#define WIELD               80
-#define PICK_UP             90
+// some random characters
+constexpr int ESCAPE         = 27;
+constexpr int DELETE         = 127;
 
-/* as in attack low, block high, etc. */
-/* These values may be added to the ones above to get things like
-   block high, cut low, etc. CLEVER is only used by some monsters
-   to cheat with.... */
-#define LOW                 1
-#define CENTER              2
-#define HIGH                3
-#define CLEVER              4
+// weapon types
+enum weapon_type
+{
+  CUTTING = 1,
+  THRUSTING,
+  STRIKING,
+  MISSILE,
+};
 
-/* weapon types */
-#define CUTTING             1
-#define THRUSTING           2
-#define STRIKING            3
-#define MISSILE             4
+// random aux constants
+// aux field for private residences in city
+enum building_status
+{
+  BURGLED  = 2,
+  LOCKED   = 3,
+  UNLOCKED = 0
+};
 
-/* random aux constants */
-/* aux field for private residences in city */
-#define BURGLED             2
-#define LOCKED              3
-#define UNLOCKED            0
-
-/* cannot use M command on site with this aux value */
-#define NOCITYMOVE          666
+// cannot use M command on site with this aux value
+constexpr int NOCITYMOVE = 666;
 
 /* bow and crossbow object aux fields */
-#define LOADED              1
-#define UNLOADED            0
+enum bow_status
+{
+  UNLOADED,
+  LOADED
+};
 
-/* alignment used randomly throughout*/
-#define LAWFUL              1
-#define CHAOTIC             2
-#define NEUTRAL             3
+// alignment used randomly throughout
+enum alignment_id
+{
+  LAWFUL  = 1,
+  CHAOTIC,
+  NEUTRAL,
+};
 
-/* ranks in guilds, etc */
-#define NUMRANKS            9
 
-#define LEGION              0
-#define ARENA               1
-#define COLLEGE             2
-#define THIEVES             3
-#define ORDER               4
-#define CIRCLE              5
-#define NOBILITY            6
-#define PRIESTHOOD          7
-#define ADEPT               8
+// ranks in guilds, etc
+enum guild_id
+{
+  LEGION,
+  ARENA,
+  COLLEGE,
+  THIEVES,
+  ORDER,
+  CIRCLE,
+  NOBILITY,
+  PRIESTHOOD,
+  ADEPT
+};
+constexpr int NUMRANKS = 9;
 
-#define LEGIONAIRE          1
-#define CENTURION           2
-#define FORCE_LEADER        3
-#define COLONEL             4
-#define COMMANDANT          5
+enum legion_ranks
+{
+  LEGIONAIRE = 1,
+  CENTURION,
+  FORCE_LEADER,
+  COLONEL,
+  COMMANDANT
+};
 
-#define TRAINEE             1
-#define BESTIARIUS          2
-#define RETIARIUS           3
-#define GLADIATOR           4
-#define CHAMPION            5
+enum arena_ranks
+{
+  TRAINEE = 1,
+  BESTIARIUS,
+  RETIARIUS,
+  GLADIATOR,
+  CHAMPION
+};
 
-#define NOVICE              1
-#define STUDENT             2
-#define PRECEPTOR           3
-#define MAGE                4
-#define ARCHMAGE            5
+enum college_ranks
+{
+  NOVICE = 1,
+  STUDENT,
+  PRECEPTOR,
+  MAGE,
+  ARCHMAGE
+};
 
-#define TMEMBER             1
-#define ATHIEF              2
-#define THIEF               3
-#define TMASTER             4
-#define SHADOWLORD          5
+enum thieves_ranks
+{
+  TMEMBER = 1,
+  ATHIEF,
+  THIEF,
+  TMASTER,
+  SHADOWLORD
+};
 
-#define GALLANT             1
-#define GUARDIAN            2
-#define CHEVALIER           3
-#define PALADIN             4
-#define JUSTICIAR           5
+enum order_ranks
+{
+  GALLANT = 1,
+  GUARDIAN,
+  CHEVALIER,
+  PALADIN,
+  JUSTICIAR
+};
 
-#define INITIATE            1
-#define ENCHANTER           2
-#define SORCEROR            3
-#define HIGHSORCEROR        4
-#define PRIME               5
+enum circle_ranks
+{
+  INITIATE = 1,
+  ENCHANTER,
+  SORCEROR,
+  HIGHSORCEROR,
+  PRIME
+};
 
-#define COMMONER            1
-#define ESQUIRE             2
-#define KNIGHT              3
-#define LORD                4
-#define DUKE                5
+enum nobility_ranks
+{
+  COMMONER = 1,
+  ESQUIRE,
+  KNIGHT,
+  LORD,
+  DUKE
+};
 
-#define LAY                 1
-#define ACOLYTE             2
-#define PRIEST              3
-#define SPRIEST             4
-#define HIGHPRIEST          5
+enum priesthood_ranks
+{
+  LAY = 1,
+  ACOLYTE,
+  PRIEST,
+  SPRIEST,
+  HIGHPRIEST
+};
 
-/* different priesthoods */
-#define ODIN                1
-#define SET                 2
-#define ATHENA              3
-#define HECATE              4
-#define DRUID               5
-#define DESTINY             6
+// different priesthoods
+enum priesthood_id
+{
+  ODIN = 1,
+  SET,
+  ATHENA,
+  HECATE,
+  DRUID,
+  DESTINY
+};
 
-/* MONSTER STATUS/ABILITY BITS */
-#define AWAKE               1
-#define MOBILE              2
-#define HOSTILE             4
-#define WANDERING           16
-#define HUNGRY              32
-#define GREEDY              64
-#define NEEDY               128
-#define ONLYSWIM            256
-#define FLYING              512
-#define INTANGIBLE          1024
-#define M_INVISIBLE         2048
-#define SWIMMING            4096
-#define POISONOUS           8192
-#define EDIBLE              16384
+// MONSTER STATUS/ABILITY BITS
+enum monster_status_bits
+{
+  AWAKE       = (1 << 0),
+  MOBILE      = (1 << 1),
+  HOSTILE     = (1 << 2),
+  WANDERING   = (1 << 4),
+  HUNGRY      = (1 << 5),
+  GREEDY      = (1 << 6),
+  NEEDY       = (1 << 7),
+  ONLYSWIM    = (1 << 8),
+  FLYING      = (1 << 9),
+  INTANGIBLE  = (1 << 10),
+  M_INVISIBLE = (1 << 11),
+  SWIMMING    = (1 << 12),
+  POISONOUS   = (1 << 13),
+  EDIBLE      = (1 << 14)
+};
 
-/* PLAYER STATUS INDICES */
+// PLAYER STATUS INDICES
 enum status_id
 {
   ACCURACY,
@@ -332,13 +367,13 @@ enum status_id
   ILLUMINATION,
   DEFLECTION,
   PROTECTION, // PROTECTION is deviant -- indicates protective value, not duration
-  RETURNING  // RETURNING is somewhat deviant--how many turns 'til RETURN spell goes off
+  RETURNING   // RETURNING is somewhat deviant--how many turns 'til RETURN spell goes off
 };
 constexpr int NUMSTATI = 25;
 
-/* player immunity indices */
-/* also monster immunity bits (2^n) */
-/* also damage types */
+// player immunity indices
+// also monster immunity bits (2^n)
+// also damage types
 enum immunity_id
 {
   EVERYTHING = -1,
@@ -359,57 +394,59 @@ enum immunity_id
 };
 constexpr int NUMIMMUNITIES = 14;
 
-/* location lstatus bits */
-#define SEEN                1
-#define LIT                 2
-#define SECRET              4
-#define STOPS               8
-#define CHANGED             16
+// location lstatus bits
+enum lstatus_bits
+{
+  SEEN    = (1 << 0),
+  LIT     = (1 << 1),
+  SECRET  = (1 << 2),
+  STOPS   = (1 << 3),
+  CHANGED = (1 << 4)
+};
 
-/* room string id */
-/* for use in roomname() */
-#define NUMROOMNAMES        30
+// room string id for use in roomname()
+constexpr int NUMROOMNAMES = 30;
 
-/* normal room name indices start after the RS_ constants */
-#define ROOMBASE            39
-#define RS_COURT            38
-#define RS_ZORCH            37
-#define RS_CIRCLE           36
-#define RS_MAGIC_ISLE       35
-#define RS_STARPEAK         34
-#define RS_VOLCANO          33
-#define RS_HIGHASTRAL       32
-#define RS_FIREPLANE        31
-#define RS_AIRPLANE         30
-#define RS_WATERPLANE       29
-#define RS_EARTHPLANE       28
-#define RS_LOWERASTRAL      27
-#define RS_CLOSET           26
-#define RS_SECRETPASSAGE    25
-#define RS_DININGROOM       24
-#define RS_BATHROOM         23
-#define RS_BEDROOM          22
-#define RS_KITCHEN          21
-#define RS_DROWNED_SEWER    20
-#define RS_DRAINED_SEWER    19
-#define RS_SEWER_DUCT       18
-#define RS_ARENA            17
-#define RS_COUNTRYSIDE      16
-#define RS_DRUID            15
-#define RS_HECATE           14
-#define RS_ATHENA           13
-#define RS_SET              12
-#define RS_ODIN             11
-#define RS_DESTINY          10
-#define RS_ADEPT            9
-#define RS_WYRM             8
-#define RS_OCEAN            7
-#define RS_PONDS            6
-#define RS_DRAGONLORD       5
-#define RS_GOBLINKING       4
-#define RS_CAVERN           3
-#define RS_CORRIDOR         2
 #define RS_WALLSPACE        1
+#define RS_CORRIDOR         2
+#define RS_CAVERN           3
+#define RS_GOBLINKING       4
+#define RS_DRAGONLORD       5
+#define RS_PONDS            6
+#define RS_OCEAN            7
+#define RS_WYRM             8
+#define RS_ADEPT            9
+#define RS_DESTINY          10
+#define RS_ODIN             11
+#define RS_SET              12
+#define RS_ATHENA           13
+#define RS_HECATE           14
+#define RS_DRUID            15
+#define RS_COUNTRYSIDE      16
+#define RS_ARENA            17
+#define RS_SEWER_DUCT       18
+#define RS_DRAINED_SEWER    19
+#define RS_DROWNED_SEWER    20
+#define RS_KITCHEN          21
+#define RS_BEDROOM          22
+#define RS_BATHROOM         23
+#define RS_DININGROOM       24
+#define RS_SECRETPASSAGE    25
+#define RS_CLOSET           26
+#define RS_LOWERASTRAL      27
+#define RS_EARTHPLANE       28
+#define RS_WATERPLANE       29
+#define RS_AIRPLANE         30
+#define RS_FIREPLANE        31
+#define RS_HIGHASTRAL       32
+#define RS_VOLCANO          33
+#define RS_STARPEAK         34
+#define RS_MAGIC_ISLE       35
+#define RS_CIRCLE           36
+#define RS_ZORCH            37
+#define RS_COURT            38
+
+#define ROOMBASE            39 // normal room name indices start after the RS_ constants
 
 #include <curses.h>
 
@@ -433,7 +470,7 @@ constexpr int NUMIMMUNITIES = 14;
 
 #endif
 
-/* objects, locations, and terrain; characters to draw */
+// objects, locations, and terrain; characters to draw
 #define NULL_ITEM               '\0'
 #define SPACE                   (' ' | CLR(WHITE))
 #define WALL                    ('#' | CLR(GREY))
@@ -457,8 +494,8 @@ constexpr int NUMIMMUNITIES = 14;
 #define STATUE                  ('1' | CLR(GREY))
 #define RUBBLE                  ('4' | CLR(GREY))
 #define ALTAR                   ('8' | CLR(LIGHT_BLUE))
-#define CASH                    ('$' | CLR(YELLOW))       /* various kinds of money */
-#define PILE                    ('*' | CLR(BRIGHT_WHITE)) /* several objects in one place */
+#define CASH                    ('$' | CLR(YELLOW))       // various kinds of money
+#define PILE                    ('*' | CLR(BRIGHT_WHITE)) // several objects in one place
 #define FOOD                    ('%' | CLR(BROWN))
 #define WEAPON                  (')' | CLR(GREY))
 #define MISSILEWEAPON           ('(' | CLR(BROWN))
@@ -474,7 +511,7 @@ constexpr int NUMIMMUNITIES = 14;
 #define THING                   ('\\' | CLR(WHITE))
 #define ARTIFACT                ('&' | CLR(YELLOW))
 
-/* TERRAIN TYPES */
+// TERRAIN TYPES
 #define PLAINS                  ('-' | CLR(LIGHT_GREEN))
 #define TUNDRA                  ('_' | CLR(GREY))
 #define ROAD                    ('.' | CLR(BROWN))
@@ -501,26 +538,27 @@ constexpr int NUMIMMUNITIES = 14;
 #define FURNITURE               ('2' | CLR(BROWN))
 #define BED                     ('9' | CLR(CYAN))
 
-/* wow, all characters used! */
+// total number of player options
+constexpr int NUMOPTIONS      = 11;
 
-/* total number of player options */
-#define NUMOPTIONS              11
+// number of options with true/false values
+constexpr int NUMTFOPTIONS    = 9;
 
-/* number of options with true/false values */
-#define NUMTFOPTIONS            9
-
-/* The slot number of the two options not in Player.options */
-#define VERBOSITY_LEVEL         10
-#define SEARCH_DURATION         11
+// The slot number of the two options not in Player.options
+constexpr int VERBOSITY_LEVEL = 10;
+constexpr int SEARCH_DURATION = 11;
 
 /* Player.options bits */
-#define BELLICOSE               1 << 0
-#define JUMPMOVE                1 << 1
-#define RUNSTOP                 1 << 2
-#define PICKUP                  1 << 3
-#define CONFIRM                 1 << 4
-#define PARANOID_CONFIRM        1 << 7
-#define SHOW_COLOUR             1 << 8
+enum options_bits
+{
+  BELLICOSE        = (1 << 0),
+  JUMPMOVE         = (1 << 1),
+  RUNSTOP          = (1 << 2),
+  PICKUP           = (1 << 3),
+  CONFIRM          = (1 << 4),
+  PARANOID_CONFIRM = (1 << 7),
+  SHOW_COLOUR      = (1 << 8)
+};
 
 /* This has to be changed whenever an item is added */
 #define NUMSCROLLS              24
@@ -1181,27 +1219,26 @@ for example. */
 
 #define L_ABYSS                 106
 
-/* player possession slots */
-/* slot 0 should not be filled when out of inventory_control() */
-
-#define O_UP_IN_AIR             0
-#define O_READY_HAND            1
-#define O_WEAPON_HAND           2
-#define O_LEFT_SHOULDER         3
-#define O_RIGHT_SHOULDER        4
-#define O_BELT1                 5
-#define O_BELT2                 6
-#define O_BELT3                 7
-#define O_SHIELD                8
-#define O_ARMOR                 9
-#define O_BOOTS                 10
-#define O_CLOAK                 11
-#define O_RING1                 12
-#define O_RING2                 13
-#define O_RING3                 14
-#define O_RING4                 15
-
-#include <string>
+// player possession slots
+enum inventory_slots
+{
+  O_UP_IN_AIR,
+  O_READY_HAND,
+  O_WEAPON_HAND,
+  O_LEFT_SHOULDER,
+  O_RIGHT_SHOULDER,
+  O_BELT1,
+  O_BELT2,
+  O_BELT3,
+  O_SHIELD,
+  O_ARMOR,
+  O_BOOTS,
+  O_CLOAK,
+  O_RING1,
+  O_RING2,
+  O_RING3,
+  O_RING4
+};
 
 /* typedefs needed by structs */
 
@@ -1276,8 +1313,8 @@ struct player
   long           mana, maxmana;
   long           cash;
   int            patron, birthday;
-  int            sx, sy; /* sanctuary coordinates */
-  int            x, y;   /* current player coordinates */
+  int            sx, sy; // sanctuary coordinates
+  int            x, y;   // current player coordinates
   int            itemweight, maxweight;
   int            immunity[NUMIMMUNITIES];
   int            status[NUMSTATI];
@@ -1297,7 +1334,7 @@ struct objectlist
   struct objectlist *next;
 };
 
-/* terrain locations */
+// terrain locations
 struct terrain
 {
   Symbol base_terrain_type;
@@ -1306,36 +1343,36 @@ struct terrain
   char   status;
 };
 
-/* dungeon locations */
+// dungeon locations
 struct location
 {
-  char               p_locf;     /* function executed when moved on */
-  unsigned char      lstatus;    /* seen,stopsrun,lit,secret, */
-  char               roomnumber; /* so room can be named */
-  Symbol             locchar;    /* terrain type */
-  Symbol             showchar;   /*char instantaneously drawn for site */
-  int                aux;        /* signifies various things */
-  unsigned char      buildaux;   /* used in constructing level */
+  char               p_locf;     // function executed when moved on
+  unsigned char      lstatus;    // seen,stopsrun,lit,secret,
+  char               roomnumber; // so room can be named
+  Symbol             locchar;    // terrain type
+  Symbol             showchar;   // char instantaneously drawn for site
+  int                aux;        // signifies various things
+  unsigned char      buildaux;   // used in constructing level
   struct objectlist *things;
   struct monster    *creature;
 };
 
 struct level
 {
-  char          depth; /* which level is this */
-  struct level *next;  /* pointer to next level in dungeon */
+  char          depth; // which level is this
+  struct level *next;  // pointer to next level in dungeon
 #ifdef SAVE_LEVELS
-  /* Over 64K worth of data! */
-  struct location *site[MAXWIDTH]; /* dungeon data */
+  // Over 64K worth of data!
+  struct location *site[MAXWIDTH]; // dungeon data
 #else
-  struct location site[MAXWIDTH][MAXLENGTH]; /* dungeon data */
+  struct location site[MAXWIDTH][MAXLENGTH]; // dungeon data
 #endif
-  char                generated;    /* has the level been made (visited) yet? */
-  char                numrooms;     /* number of rooms on level */
-  char                tunnelled;    /* amount of tunnelling done on this level */
-  monsterlist        *mlist;        /* List of monsters on level */
-  int                 environment;  /* where kind of level is this? */
-  int                 last_visited; /* time player was last on this level */
+  char                generated;    // has the level been made (visited) yet?
+  char                numrooms;     // number of rooms on level
+  char                tunnelled;    // amount of tunnelling done on this level
+  monsterlist        *mlist;        // List of monsters on level
+  int                 environment;  // where kind of level is this?
+  int                 last_visited; // time player was last on this level
 };
 
 /* random typedef's */
