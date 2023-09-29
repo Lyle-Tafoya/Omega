@@ -602,9 +602,6 @@ std::vector<std::string> known_spells(int first, int last)
 
 std::optional<spell::spell_id> spellparse()
 {
-  int    found = 0;
-  int    f, l;
-
   spell_id_type first = 0;
   while(first < spell::NUM_SPELLS && !spell::Spells[first].known)
   {
@@ -615,12 +612,12 @@ std::optional<spell::spell_id> spellparse()
     append_message("You don't know any spells!", true);
     return {};
   }
-  size_t pos  = 0;
-  append_message("", true);
-  int player_input;
-  bool menu_shown = false;
-  spell_id_type last = spell::NUM_SPELLS - 1;
   std::string prefix;
+  bool found = false;
+  spell_id_type last = spell::NUM_SPELLS - 1;
+  bool menu_shown = false;
+  int player_input;
+  append_message("", true);
   do
   {
     if(menu_shown)
@@ -632,89 +629,86 @@ std::optional<spell::spell_id> spellparse()
     {
       player_input = mgetc();
     }
-    if(player_input == KEY_BACKSPACE || player_input == KEY_DC || player_input == '\b' || player_input == KEY_DC)
+    switch(player_input)
     {
-      if(pos > 0)
-      {
-        --pos;
-        player_input  = prefix[pos - 1];
-        f             = first;
-        while(f >= 0 && spell::spell_names[f].starts_with(prefix))
+      case KEY_BACKSPACE:
+      case KEY_DC:
+      case DELETE:
+      case '\b':
+        if(!prefix.empty())
         {
-          if(spell::Spells[f].known)
+          prefix.pop_back();
+          for(int f = first; f >= 0 && spell::spell_names[f].starts_with(prefix); --f)
           {
-            first = f;
+            if(spell::Spells[f].known)
+            {
+              first = f;
+            }
           }
-          --f;
+          for(int l = last; l < spell::NUM_SPELLS && spell::spell_names[l].starts_with(prefix); ++l)
+          {
+            if(spell::Spells[l].known)
+            {
+              last = l;
+            }
+          }
+          if(found)
+          {
+            found = 0;
+          }
+          message_buffer.replace_last(prefix);
         }
-        l = last;
-        while(l < spell::NUM_SPELLS && spell::spell_names[l].starts_with(prefix))
+        if(prefix.empty())
         {
-          if(spell::Spells[l].known)
-          {
-            last = l;
-          }
-          ++l;
+          first = 0;
+          last  = spell::NUM_SPELLS - 1;
+          found = 0;
+        }
+        break;
+      case ESCAPE:
+        message_buffer.replace_last("_ Spell cancelled.");
+        xredraw();
+        return {};
+      case '?':
+        menu_shown = true;
+        break;
+      case '\n':
+        break;
+      default:
+        if(std::isupper(player_input))
+        {
+          player_input = std::tolower(player_input);
         }
         if(found)
         {
-          found = 0;
+          continue;
         }
+        int f = first;
+        while(f < spell::NUM_SPELLS && (!spell::Spells[f].known || spell::spell_names[f].length() < prefix.length() ||
+                                spell::spell_names[f][prefix.length()] < player_input))
+        {
+          ++f;
+        }
+        int l = last;
+        while(l >= 0 && (!spell::Spells[l].known || spell::spell_names[l].length() < prefix.length() ||
+                         spell::spell_names[l][prefix.length()] > player_input))
+        {
+          --l;
+        }
+        if(l < f)
+        {
+          continue;
+        }
+        prefix += player_input;
         message_buffer.replace_last(prefix);
-      }
-      if(pos == 0)
-      {
-        first = 0;
-        last  = spell::NUM_SPELLS - 1;
-        found = 0;
-      }
-    }
-    else if(player_input == ESCAPE)
-    {
-      message_buffer.replace_last("_ Spell cancelled.");
-      xredraw();
-      return {};
-    }
-    else if(player_input == '?')
-    {
-      menu_shown = true;
-    }
-    else if(player_input != '\n')
-    {
-      if(player_input >= 'A' && player_input <= 'Z')
-      {
-        player_input += 'a' - 'A';
-      }
-      if(found)
-      {
-        continue;
-      }
-      f = first;
-      l = last;
-      while(f < spell::NUM_SPELLS && (!spell::Spells[f].known || spell::spell_names[f].length() < pos ||
-                              spell::spell_names[f][pos] < player_input))
-      {
-        ++f;
-      }
-      while(l >= 0 && (!spell::Spells[l].known || spell::spell_names[l].length() < pos ||
-                       spell::spell_names[l][pos] > player_input))
-      {
-        --l;
-      }
-      if(l < f)
-      {
-        continue;
-      }
-      prefix[pos++] = player_input;
-      prefix[pos]   = '\0';
-      message_buffer.replace_last(prefix);
-      first = f;
-      last  = l;
-      if(first == last && !found)
-      { /* unique name */
-        found = 1;
-        message_buffer.replace_last(spell::spell_names[first]);
-      }
+        first = f;
+        last  = l;
+        if(first == last && !found) // unique name
+        {
+          found = 1;
+          message_buffer.replace_last(spell::spell_names[first]);
+        }
+        break;
     }
   } while(player_input != '\n');
   xredraw();
