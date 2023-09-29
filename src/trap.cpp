@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* trap movement functions */
 
 #include "glob.h"
+#include "spell.h"
 
 /* various traps */
 
@@ -140,7 +141,7 @@ void l_trap_door()
     {
       mprint("You and your horse fall through a trap door!");
       mprint("Your horse breaks its back. Snif.");
-      if(Level->site[Player.x][Player.y].aux != S_DISINTEGRATE)
+      if(Level->site[Player.x][Player.y].aux != spell::DISINTEGRATE)
       {
         mprint("You're hit by a rockslide!");
         p_damage(Level->depth * difficulty(), UNSTOPPABLE, "a rockslide");
@@ -158,7 +159,7 @@ void l_trap_door()
     {
       mprint("You fell through a trap door!");
       p_damage(difficulty(), NORMAL_DAMAGE, "a trap door");
-      if(Level->site[Player.x][Player.y].aux != S_DISINTEGRATE)
+      if(Level->site[Player.x][Player.y].aux != spell::DISINTEGRATE)
       {
         mprint("You're hit by a rockslide!");
         p_damage(Level->depth * difficulty(), UNSTOPPABLE, "a rockslide");

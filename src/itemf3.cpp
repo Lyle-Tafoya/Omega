@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* mostly artifact and stick functions */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <algorithm>
 
@@ -353,9 +354,9 @@ void i_kolwynia(pob o)
     gain_experience(5000);
     print1("You seem to have gained complete mastery of magic.");
     Player.pow = Player.maxpow = 2 * Player.maxpow;
-    for(i = 0; i < NUMSPELLS; i++)
+    for(i = 0; i < spell::NUM_SPELLS; i++)
     {
-      Spells[i].known = true;
+      spell::Spells[i].known = true;
     }
   }
   dispose_lost_objects(1, o);
@@ -463,7 +464,7 @@ void i_orbfire(pob o)
   else
   {
     print1("The Orb of Fire flares a brilliant red!");
-    Spells[S_FIREBOLT].known = true;
+    spell::Spells[spell::FIREBOLT].known = true;
     gain_experience(10000);
     Player.immunity[FLAME] += 100;
     print2("You feel fiery!");
@@ -489,7 +490,7 @@ void i_orbwater(pob o)
   else
   {
     print1("The Orb of Water pulses a deep green!");
-    Spells[S_DISRUPT].known = true;
+    spell::Spells[spell::DISRUPT].known = true;
     Player.immunity[POISON] += 100;
     gain_experience(10000);
     print2("You feel wet!");
@@ -540,7 +541,7 @@ void i_orbearth(pob o)
   else
   {
     print1("The Orb of Earth emanates a brownish aura!");
-    Spells[S_DISINTEGRATE].known = true;
+    spell::Spells[spell::DISINTEGRATE].known = true;
     gain_experience(10000);
     Player.immunity[NEGENERGY] += 100;
     print2("You feel earthy!");
@@ -566,7 +567,7 @@ void i_orbair(pob o)
   else
   {
     print1("The Orb of Air flashes blue!");
-    Spells[S_LBALL].known = true; /* lball */
+    spell::Spells[spell::BALL_LIGHTNING].known = true; /* lball */
     gain_experience(10000);
     print2("You feel airy!");
     Player.immunity[ELECTRICITY] += 100;
@@ -618,14 +619,13 @@ void i_orbmastery(pob o)
 
 void i_orbdead(pob)
 {
-  int i;
   print1("The burnt-out orb drains all your energy!");
-  for(i = 0; i < NUMSPELLS; i++)
+  for(int i = 0; i < spell::NUM_SPELLS; ++i)
   {
-    Spells[i].known = false;
+    spell::Spells[i].known = false;
   }
   print2("You feel not at all like a mage.");
-  for(i = 0; i < MAXITEMS; i++)
+  for(int i = 0; i < MAXITEMS; ++i)
   {
     if(Player.possessions[i])
     {

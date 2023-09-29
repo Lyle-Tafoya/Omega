@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "spell.h"
 
 #include <algorithm>
 #include <array>
@@ -693,22 +694,22 @@ void zapwand()
 /* cast a spell */
 void magic()
 {
-  int index, drain;
+  int drain;
   if(Player.status[AFRAID] > 0)
   {
     print3("You are too afraid to concentrate on a spell!");
   }
   else
   {
-    index = getspell();
+    std::optional<spell::spell_id> id = getspell();
     xredraw();
-    if(index == ABORT)
+    if(!id.has_value())
     {
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
     {
-      drain = Spells[index].powerdrain;
+      drain = spell::Spells[id.value()].powerdrain;
       if(Lunarity == 1)
       {
         drain = drain / 2;
@@ -731,7 +732,7 @@ void magic()
       else
       {
         Player.mana -= drain;
-        cast_spell(index);
+        cast_spell(id.value());
       }
     }
   }

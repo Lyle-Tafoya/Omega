@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* functions for clerics. */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <algorithm>
 #include <string>
@@ -176,7 +177,7 @@ void l_altar()
 
 int check_sacrilege(int deity)
 {
-  int i, sacrilege = false;
+  int sacrilege = false;
   if((Player.patron != deity) && (Player.patron > 0))
   {
     sacrilege = true;
@@ -220,7 +221,7 @@ int check_sacrilege(int deity)
           if(Player.hp > 0)
           {
             print1("You are wreathed in clouds of smoke.");
-            for(i = 0; i < MAXITEMS; i++)
+            for(int i = 0; i < MAXITEMS; ++i)
             {
               if(Player.possessions[i] && Player.possessions[i]->blessing > -1)
               {
@@ -248,9 +249,9 @@ int check_sacrilege(int deity)
             print2("The beams leach you of magical power!");
             Player.maxpow = Player.maxpow / 5;
             Player.pow    = std::min(Player.pow, Player.maxpow);
-            for(i = 0; i < NUMSPELLS; i++)
+            for(int i = 0; i < spell::NUM_SPELLS; ++i)
             {
-              Spells[i].known = false;
+              spell::Spells[i].known = false;
             }
           }
         }

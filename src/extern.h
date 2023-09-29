@@ -932,56 +932,6 @@ void l_vault(void);
 void pacify_guards(void);
 void send_to_jail(void);
 
-/* spell.cpp functions */
-
-const std::string spellid(int);
-int         getspell(void);
-int         spellparse(void);
-void        cast_spell(int);
-void        initspells(void);
-void        s_accuracy(void);
-void        s_alert(void);
-void        s_apport(void);
-void        s_bless(void);
-void        s_breathe(void);
-void        s_clairvoyance(void);
-void        s_cure(void);
-void        s_desecrate(void);
-void        s_disintegrate(void);
-void        s_dispel(void);
-void        s_disrupt(void);
-void        s_drain(void);
-void        s_enchant(void);
-void        s_fear(void);
-void        s_firebolt(void);
-void        s_haste(void);
-void        s_heal(void);
-void        s_hellfire(void);
-void        s_hero(void);
-void        s_identify(void);
-void        s_invisible(void);
-void        s_knowledge(void);
-void        s_lball(void);
-void        s_levitate(void);
-void        s_missile(void);
-void        s_mondet(void);
-void        s_objdet(void);
-void        s_polymorph(void);
-void        s_regenerate(void);
-void        s_restore(void);
-void        s_return(void);
-void        s_ritual(void);
-void        s_sanctify(void);
-void        s_sanctuary(void);
-void        s_shadowform(void);
-void        s_sleep(void);
-void        s_summon(void);
-void        s_teleport(void);
-void        s_truesight(void);
-void        s_warp(void);
-void        s_wish(void);
-void        showknownspells(int, int);
-
 /* time.cpp functions */
 
 void fix_phantom(struct monster *);

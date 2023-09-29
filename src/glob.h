@@ -35,9 +35,6 @@ extern const char *Omegalib;
 /* one of each monster */
 extern struct monster Monsters[NUMMONSTERS];
 
-/* one of each spell */
-extern struct spell Spells[NUMSPELLS + 1];
-
 /* one of each item */
 extern struct object Objects[TOTALITEMS];
 

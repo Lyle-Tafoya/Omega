@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 #include "interactive_menu.hpp"
 #include "scrolling_buffer.hpp"
+#include "spell.h"
 
 #include <algorithm>
 #include <chrono>
@@ -323,7 +324,7 @@ void l_club()
           append_message("When cast on the first level of a dungeon it", true);
           append_message("will transport you down to the lowest level");
           append_message("you have explored, and vice versa.");
-          Spells[S_RETURN].known = true;
+          spell::Spells[spell::RETURN].known = true;
           Player.cash -= 100;
           setgamestatus(CLUB_MEMBER, GameStatus);
         }

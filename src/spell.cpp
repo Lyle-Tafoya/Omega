@@ -19,20 +19,28 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* spell.c */
 /* functions having to do with spellcasting */
 
+#include "extern.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
 #include "scrolling_buffer.hpp"
+#include "spell.h"
 
 #include <algorithm>
 #include <array>
+#include <optional>
 #include <format>
 #include <string>
 #include <vector>
 
-extern void           append_message(const std::string &message, bool force_break = false);
-extern void           queue_message(const std::string &message);
+extern void append_message(const std::string &message, bool force_break = false);
+extern void queue_message(const std::string &message);
 extern scrolling_buffer message_buffer;
 extern interactive_menu *menu;
+
+void cast_spell(spell::spell_id id)
+{
+  spell::Spells[id].cast();
+}
 
 void s_wish()
 {
@@ -40,16 +48,16 @@ void s_wish()
   {
     mprint("Your concentration is flawed!");
     mprint("The spell energy backfires!");
-    p_damage(random_range(Spells[S_WISH].powerdrain), UNSTOPPABLE, "a backfired wish spell");
+    p_damage(random_range(spell::Spells[spell::WISH].powerdrain), UNSTOPPABLE, "a backfired wish spell");
   }
   else
   {
     wish(0);
-    if(Spells[S_WISH].known)
+    if(spell::Spells[spell::WISH].known)
     {
       mprint("The power of the spell is too much for you to withstand!");
       mprint("All memory of the spell is expunged from your brain.");
-      Spells[S_WISH].known = false;
+      spell::Spells[spell::WISH].known = false;
     }
   }
 }
@@ -208,7 +216,7 @@ void s_fear()
 void s_ritual()
 {
   pob symbol;
-  int i, roomno;
+  int roomno;
   int x, y;
 
   mprint("You begin your ritual....");
@@ -267,7 +275,7 @@ void s_ritual()
         {
           case ROOMBASE + 9: /* ransacked treasure chamber */
             mprint("Your spell sets off frenetic growth all around you!");
-            for(i = 0; i < 8; i++)
+            for(int i = 0; i < 8; ++i)
             {
               Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].locchar = HEDGE;
               Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].p_locf  = L_TRIFID;
@@ -303,29 +311,29 @@ void s_ritual()
             y = Player.y;
             while(x >= 0 && Level->site[x - 1][y].roomnumber == ROOMBASE + 26)
             {
-              x--;
+              --x;
             }
             while(y >= 0 && Level->site[x][y - 1].roomnumber == ROOMBASE + 26)
             {
-              y--;
+              --y;
             }
-            for(i = 0; Level->site[x][y].roomnumber == ROOMBASE + 26;)
+            for(int i = 0; Level->site[x][y].roomnumber == ROOMBASE + 26;)
             {
               Level->site[x][y].roomnumber = RS_ZORCH;
-              x++;
-              i++;
+              ++x;
+              ++i;
               if(Level->site[x][y].roomnumber != ROOMBASE + 26)
               {
                 x -= i;
                 i = 0;
-                y++;
+                ++y;
               }
             }
             lset(Player.x, Player.y, CHANGED, *Level);
             break;
           case ROOMBASE + 27: /* magician's lab */
             mprint("Your magical activity sets off a latent spell in the lab!");
-            cast_spell(random_range(NUMSPELLS));
+            cast_spell(static_cast<spell::spell_id>(random_range(spell::NUM_SPELLS)));
             break;
           case ROOMBASE + 28: /* pentagram room */
             mprint("A smoky form begins to coalesce....");
@@ -481,377 +489,52 @@ void s_mondet()
   mondet(1);
 }
 
-/* select a spell to cast */
-int getspell()
-{
-  int spell = ABORT - 1;
+std::array<spell, spell::NUM_SPELLS> spell::Spells
+{{
+  { spell::ACCURACY, 20, s_accuracy },
+  { spell::ALERTNESS, 15, s_alert },
+  { spell::APPORTATION, 15, s_apport },
+  { spell::BALL_LIGHTNING, 25, s_lball },
+  { spell::BLESSING, 30, s_bless },
+  { spell::BREATHING, 20, s_breathe },
+  { spell::CLAIRVOYANCE, 10, s_clairvoyance },
+  { spell::CURING, 20, s_cure },
+  { spell::DESECRATION, 50, s_desecrate },
+  { spell::DISINTEGRATE, 40, s_disintegrate },
+  { spell::DISPELLING, 40, s_dispel },
+  { spell::DISRUPT, 30, s_disrupt },
+  { spell::ENCHANTMENT, 30,s_enchant },
+  { spell::ENERGY_DRAIN, 40, s_drain },
+  { spell::FEAR, 10, s_fear },
+  { spell::FIREBOLT, 20, s_firebolt },
+  { spell::HASTE, 15, s_haste },
+  { spell::HEALING, 15, s_heal },
+  { spell::HELLFIRE, 90, s_hellfire },
+  { spell::HEROISM, 20, s_hero },
+  { spell::IDENTIFICATION, 10, s_identify },
+  { spell::INVISIBILITY, 15, s_invisible },
+  { spell::LEVITATE, 25, s_levitate },
+  { spell::MAGIC_MISSILE, 10, s_missile },
+  { spell::MONSTER_DETECTION, 3, s_mondet },
+  { spell::OBJECT_DETECTION, 3, s_objdet },
+  { spell::POLYMORPH, 30, s_polymorph },
+  { spell::REGENERATE, 20, s_regenerate },
+  { spell::RESTORATION, 20, s_restore },
+  { spell::RETURN, 10, s_return },
+  { spell::RITUAL_MAGIC, 50, s_ritual },
+  { spell::SANCTIFICATION, 75, s_sanctify },
+  { spell::SANCTUARY, 75, s_sanctuary },
+  { spell::SELF_KNOWLEDGE, 10, s_knowledge },
+  { spell::SHADOWFORM, 50, s_shadowform },
+  { spell::SLEEP, 15, s_sleep },
+  { spell::SUMMONING, 20, s_summon },
+  { spell::TELEPORT, 20, s_teleport },
+  { spell::THE_WARP, 50, s_warp },
+  { spell::TRUESIGHT, 20, s_truesight },
+  { spell::WISH, 100, s_wish }
+}};
 
-  do
-  {
-    queue_message("Cast Spell: [type spell abbrev, ?, or ESCAPE]: ");
-    spell = spellparse();
-  } while(spell < ABORT);
-  return (spell);
-}
-
-const std::string spellid(int id)
-{
-  switch(id)
-  {
-    case S_MON_DET:
-      return "monster detection";
-    case S_OBJ_DET:
-      return "object detection";
-    case S_IDENTIFY:
-      return "identification";
-    case S_FIREBOLT:
-      return "firebolt";
-    case S_LBALL:
-      return "ball lightning";
-    case S_SLEEP:
-      return "sleep";
-    case S_DISRUPT:
-      return "disrupt";
-    case S_DISINTEGRATE:
-      return "disintegrate";
-    case S_TELEPORT:
-      return "teleport";
-    case S_MISSILE:
-      return "magic missile";
-    case S_HEAL:
-      return "healing";
-    case S_DISPEL:
-      return "dispelling";
-    case S_BREATHE:
-      return "breathing";
-    case S_INVISIBLE:
-      return "invisibility";
-    case S_WARP:
-      return "the warp";
-    case S_ENCHANT:
-      return "enchantment";
-    case S_BLESS:
-      return "blessing";
-    case S_RESTORE:
-      return "restoration";
-    case S_CURE:
-      return "curing";
-    case S_TRUESIGHT:
-      return "true sight";
-    case S_HELLFIRE:
-      return "hellfire";
-    case S_KNOWLEDGE:
-      return "self knowledge";
-    case S_HERO:
-      return "heroism";
-    case S_RETURN:
-      return "return";
-    case S_DESECRATE:
-      return "desecration";
-    case S_HASTE:
-      return "haste";
-    case S_SUMMON:
-      return "summoning";
-    case S_SANCTUARY:
-      return "sanctuary";
-    case S_ACCURACY:
-      return "accuracy";
-    case S_RITUAL:
-      return "ritual magic";
-    case S_APPORT:
-      return "apportation";
-    case S_SHADOWFORM:
-      return "shadow form";
-    case S_ALERT:
-      return "alertness";
-    case S_REGENERATE:
-      return "regeneration";
-    case S_SANCTIFY:
-      return "sanctification";
-    case S_CLAIRVOYANCE:
-      return "clairvoyance";
-    case S_DRAIN:
-      return "energy drain";
-    case S_LEVITATE:
-      return "levitate";
-    case S_POLYMORPH:
-      return "polymorph";
-    case S_FEAR:
-      return "fear";
-    case S_WISH:
-      return "wishing";
-    default:
-      return "???";
-  }
-}
-
-void initspells()
-{
-  int i;
-
-  for(i = 0; i < NUMSPELLS; i++)
-  {
-    Spells[i].known = false;
-  }
-
-  Spells[S_MON_DET].powerdrain = 3;
-  Spells[S_MON_DET].id         = S_MON_DET;
-
-  Spells[S_OBJ_DET].powerdrain = 3;
-  Spells[S_OBJ_DET].id         = S_OBJ_DET;
-
-  Spells[S_IDENTIFY].powerdrain = 10;
-  Spells[S_IDENTIFY].id         = S_IDENTIFY;
-
-  Spells[S_FIREBOLT].powerdrain = 20;
-  Spells[S_FIREBOLT].id         = S_FIREBOLT;
-
-  Spells[S_SLEEP].powerdrain = 15;
-  Spells[S_SLEEP].id         = S_SLEEP;
-
-  Spells[S_LBALL].powerdrain = 25;
-  Spells[S_LBALL].id         = S_LBALL;
-
-  Spells[S_TELEPORT].powerdrain = 20;
-  Spells[S_TELEPORT].id         = S_TELEPORT;
-
-  Spells[S_DISRUPT].powerdrain = 30;
-  Spells[S_DISRUPT].id         = S_DISRUPT;
-
-  Spells[S_DISINTEGRATE].powerdrain = 40;
-  Spells[S_DISINTEGRATE].id         = S_DISINTEGRATE;
-
-  Spells[S_MISSILE].powerdrain = 10;
-  Spells[S_MISSILE].id         = S_MISSILE;
-
-  Spells[S_HEAL].powerdrain = 15;
-  Spells[S_HEAL].id         = S_HEAL;
-
-  Spells[S_DISPEL].powerdrain = 40;
-  Spells[S_DISPEL].id         = S_DISPEL;
-
-  Spells[S_BREATHE].powerdrain = 20;
-  Spells[S_BREATHE].id         = S_BREATHE;
-
-  Spells[S_INVISIBLE].powerdrain = 15;
-  Spells[S_INVISIBLE].id         = S_INVISIBLE;
-
-  Spells[S_WARP].powerdrain = 50;
-  Spells[S_WARP].id         = S_WARP;
-
-  Spells[S_ENCHANT].powerdrain = 30;
-  Spells[S_ENCHANT].id         = S_ENCHANT;
-
-  Spells[S_BLESS].powerdrain = 30;
-  Spells[S_BLESS].id         = S_BLESS;
-
-  Spells[S_RESTORE].powerdrain = 20;
-  Spells[S_RESTORE].id         = S_RESTORE;
-
-  Spells[S_CURE].powerdrain = 20;
-  Spells[S_CURE].id         = S_CURE;
-
-  Spells[S_TRUESIGHT].powerdrain = 20;
-  Spells[S_TRUESIGHT].id         = S_TRUESIGHT;
-
-  Spells[S_HELLFIRE].powerdrain = 90;
-  Spells[S_HELLFIRE].id         = S_HELLFIRE;
-
-  Spells[S_KNOWLEDGE].powerdrain = 10;
-  Spells[S_KNOWLEDGE].id         = S_KNOWLEDGE;
-
-  Spells[S_HERO].powerdrain = 20;
-  Spells[S_HERO].id         = S_HERO;
-
-  Spells[S_RETURN].powerdrain = 10;
-  Spells[S_RETURN].id         = S_RETURN;
-
-  Spells[S_DESECRATE].powerdrain = 50;
-  Spells[S_DESECRATE].id         = S_DESECRATE;
-
-  Spells[S_HASTE].powerdrain = 15;
-  Spells[S_HASTE].id         = S_HASTE;
-
-  Spells[S_SUMMON].powerdrain = 20;
-  Spells[S_SUMMON].id         = S_SUMMON;
-
-  Spells[S_SANCTUARY].powerdrain = 75;
-  Spells[S_SANCTUARY].id         = S_SANCTUARY;
-
-  Spells[S_ACCURACY].powerdrain = 20;
-  Spells[S_ACCURACY].id         = S_ACCURACY;
-
-  Spells[S_RITUAL].powerdrain = 50;
-  Spells[S_RITUAL].id         = S_RITUAL;
-
-  Spells[S_APPORT].powerdrain = 15;
-  Spells[S_APPORT].id         = S_APPORT;
-
-  Spells[S_SHADOWFORM].powerdrain = 50;
-  Spells[S_SHADOWFORM].id         = S_SHADOWFORM;
-
-  Spells[S_ALERT].powerdrain = 15;
-  Spells[S_ALERT].id         = S_ALERT;
-
-  Spells[S_REGENERATE].powerdrain = 20;
-  Spells[S_REGENERATE].id         = S_REGENERATE;
-
-  Spells[S_SANCTIFY].powerdrain = 75;
-  Spells[S_SANCTIFY].id         = S_SANCTIFY;
-
-  Spells[S_CLAIRVOYANCE].powerdrain = 10;
-  Spells[S_CLAIRVOYANCE].id         = S_CLAIRVOYANCE;
-
-  Spells[S_DRAIN].powerdrain = 40;
-  Spells[S_DRAIN].id         = S_DRAIN;
-
-  Spells[S_LEVITATE].powerdrain = 25;
-  Spells[S_LEVITATE].id         = S_LEVITATE;
-
-  Spells[S_POLYMORPH].powerdrain = 30;
-  Spells[S_POLYMORPH].id         = S_POLYMORPH;
-
-  Spells[S_FEAR].powerdrain = 10;
-  Spells[S_FEAR].id         = S_FEAR;
-
-  Spells[S_WISH].powerdrain = 100;
-  Spells[S_WISH].id         = S_WISH;
-}
-
-void cast_spell(int spell)
-{
-  switch(spell)
-  {
-    case S_MON_DET:
-      s_mondet();
-      break;
-    case S_OBJ_DET:
-      s_objdet();
-      break;
-    case S_IDENTIFY:
-      s_identify();
-      break;
-    case S_FIREBOLT:
-      s_firebolt();
-      break;
-    case S_SLEEP:
-      s_sleep();
-      break;
-    case S_LBALL:
-      s_lball();
-      break;
-    case S_TELEPORT:
-      s_teleport();
-      break;
-    case S_DISRUPT:
-      s_disrupt();
-      break;
-    case S_DISINTEGRATE:
-      s_disintegrate();
-      break;
-    case S_MISSILE:
-      s_missile();
-      break;
-    case S_HEAL:
-      s_heal();
-      break;
-    case S_DISPEL:
-      s_dispel();
-      break;
-    case S_BREATHE:
-      s_breathe();
-      break;
-    case S_INVISIBLE:
-      s_invisible();
-      break;
-    case S_WARP:
-      s_warp();
-      break;
-    case S_ENCHANT:
-      s_enchant();
-      break;
-    case S_BLESS:
-      s_bless();
-      break;
-    case S_RESTORE:
-      s_restore();
-      break;
-    case S_CURE:
-      s_cure();
-      break;
-    case S_TRUESIGHT:
-      s_truesight();
-      break;
-    case S_HELLFIRE:
-      s_hellfire();
-      break;
-    case S_KNOWLEDGE:
-      s_knowledge();
-      break;
-    case S_HERO:
-      s_hero();
-      break;
-    case S_RETURN:
-      s_return();
-      break;
-    case S_DESECRATE:
-      s_desecrate();
-      break;
-    case S_HASTE:
-      s_haste();
-      break;
-    case S_SUMMON:
-      s_summon();
-      break;
-    case S_SANCTUARY:
-      s_sanctuary();
-      break;
-    case S_ACCURACY:
-      s_accuracy();
-      break;
-    case S_RITUAL:
-      s_ritual();
-      break;
-    case S_APPORT:
-      s_apport();
-      break;
-    case S_SHADOWFORM:
-      s_shadowform();
-      break;
-    case S_ALERT:
-      s_alert();
-      break;
-    case S_REGENERATE:
-      s_regenerate();
-      break;
-    case S_SANCTIFY:
-      s_sanctify();
-      break;
-    case S_CLAIRVOYANCE:
-      s_clairvoyance();
-      break;
-    case S_DRAIN:
-      s_drain();
-      break;
-    case S_LEVITATE:
-      s_levitate();
-      break;
-    case S_FEAR:
-      s_fear();
-      break;
-    case S_POLYMORPH:
-      s_polymorph();
-      break;
-    case S_WISH:
-      s_wish();
-      break;
-    default:
-      mprint("Your odd spell fizzles with a small 'sput'.");
-      break;
-  }
-}
-
-const std::string spell_names[]
+const std::array<std::string, spell::NUM_SPELLS> spell::spell_names
 {
   "accuracy",
   "alertness",
@@ -896,63 +579,18 @@ const std::string spell_names[]
   "wishing"
 };
 
-const int spell_ids[]
-{
-  S_ACCURACY,
-  S_ALERT,
-  S_APPORT,
-  S_LBALL,
-  S_BLESS,
-  S_BREATHE,
-  S_CLAIRVOYANCE,
-  S_CURE,
-  S_DESECRATE,
-  S_DISINTEGRATE,
-  S_DISPEL,
-  S_DISRUPT,
-  S_ENCHANT,
-  S_DRAIN,
-  S_FEAR,
-  S_FIREBOLT,
-  S_HASTE,
-  S_HEAL,
-  S_HELLFIRE,
-  S_HERO,
-  S_IDENTIFY,
-  S_INVISIBLE,
-  S_LEVITATE,
-  S_MISSILE,
-  S_MON_DET,
-  S_OBJ_DET,
-  S_POLYMORPH,
-  S_REGENERATE,
-  S_RESTORE,
-  S_RETURN,
-  S_RITUAL,
-  S_SANCTIFY,
-  S_SANCTUARY,
-  S_KNOWLEDGE,
-  S_SHADOWFORM,
-  S_SLEEP,
-  S_SUMMON,
-  S_TELEPORT,
-  S_WARP,
-  S_TRUESIGHT,
-  S_WISH
-};
-
 std::vector<std::string> known_spells(int first, int last)
 {
-  bool printed = false;
-
   std::vector<std::string> lines;
   lines.emplace_back("Possible Spells:");
+
+  bool printed = false;
   for(int i = first; i <= last; ++i)
   {
-    if(Spells[spell_ids[i]].known)
+    if(spell::Spells[i].known)
     {
       printed = true;
-      lines.emplace_back(std::format("  {} ({} mana)", spell_names[i], Spells[spell_ids[i]].powerdrain));
+      lines.emplace_back(std::format("  {} ({} mana)", spell::spell_names[i], spell::Spells[i].powerdrain));
     }
   }
   if(!printed)
@@ -962,28 +600,26 @@ std::vector<std::string> known_spells(int first, int last)
   return lines;
 }
 
-int spellparse()
+std::optional<spell::spell_id> spellparse()
 {
-  int    last;
-  size_t pos;
   int    found = 0;
   int    f, l;
 
-  int first = 0;
-  while(first < NUMSPELLS && !Spells[spell_ids[first]].known)
+  spell_id_type first = 0;
+  while(first < spell::NUM_SPELLS && !spell::Spells[first].known)
   {
     ++first;
   }
-  if(first == NUMSPELLS)
+  if(first == spell::NUM_SPELLS)
   {
     append_message("You don't know any spells!", true);
-    return ABORT;
+    return {};
   }
-  last = NUMSPELLS - 1;
-  pos  = 0;
+  size_t pos  = 0;
   append_message("", true);
   int player_input;
   bool menu_shown = false;
+  spell_id_type last = spell::NUM_SPELLS - 1;
   std::string prefix;
   do
   {
@@ -1003,18 +639,18 @@ int spellparse()
         --pos;
         player_input  = prefix[pos - 1];
         f             = first;
-        while(f >= 0 && spell_names[f].starts_with(prefix))
+        while(f >= 0 && spell::spell_names[f].starts_with(prefix))
         {
-          if(Spells[spell_ids[f]].known)
+          if(spell::Spells[f].known)
           {
             first = f;
           }
           --f;
         }
         l = last;
-        while(l < NUMSPELLS && spell_names[l].starts_with(prefix))
+        while(l < spell::NUM_SPELLS && spell::spell_names[l].starts_with(prefix))
         {
-          if(Spells[spell_ids[l]].known)
+          if(spell::Spells[l].known)
           {
             last = l;
           }
@@ -1029,7 +665,7 @@ int spellparse()
       if(pos == 0)
       {
         first = 0;
-        last  = NUMSPELLS - 1;
+        last  = spell::NUM_SPELLS - 1;
         found = 0;
       }
     }
@@ -1037,7 +673,7 @@ int spellparse()
     {
       message_buffer.replace_last("_ Spell cancelled.");
       xredraw();
-      return ABORT;
+      return {};
     }
     else if(player_input == '?')
     {
@@ -1055,13 +691,13 @@ int spellparse()
       }
       f = first;
       l = last;
-      while(f < NUMSPELLS && (!Spells[spell_ids[f]].known || spell_names[f].length() < pos ||
-                              spell_names[f][pos] < player_input))
+      while(f < spell::NUM_SPELLS && (!spell::Spells[f].known || spell::spell_names[f].length() < pos ||
+                              spell::spell_names[f][pos] < player_input))
       {
         ++f;
       }
-      while(l >= 0 && (!Spells[spell_ids[l]].known || spell_names[l].length() < pos ||
-                       spell_names[l][pos] > player_input))
+      while(l >= 0 && (!spell::Spells[l].known || spell::spell_names[l].length() < pos ||
+                       spell::spell_names[l][pos] > player_input))
       {
         --l;
       }
@@ -1077,18 +713,24 @@ int spellparse()
       if(first == last && !found)
       { /* unique name */
         found = 1;
-        message_buffer.replace_last(spell_names[first]);
+        message_buffer.replace_last(spell::spell_names[first]);
       }
     }
   } while(player_input != '\n');
   xredraw();
   if(found)
   {
-    return spell_ids[first];
+    return static_cast<spell::spell_id>(first);
   }
   else
   {
     append_message("That is an ambiguous abbreviation!", true);
-    return ABORT;
+    return {};
   }
+}
+/* select a spell to cast */
+std::optional<spell::spell_id> getspell()
+{
+  queue_message("Cast Spell: [type spell abbrev, ?, or ESCAPE]: ");
+  return spellparse();
 }

@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* general functions for player moving */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <algorithm>
 #include <chrono>
@@ -1006,7 +1007,6 @@ void l_temple_warning()
 void l_throne()
 {
   pob o;
-  int i;
   print1("You have come upon a huge ornately appointed throne!");
   print2("Sit in it? [yn] ");
   if(ynq1() == 'y')
@@ -1016,9 +1016,9 @@ void l_throne()
       print1("The throne emits an eerie violet-black radiance.");
       print2("You find, to your horror, that you cannot get up!");
       print3("You feel an abstract sucking sensation...");
-      for(i = 0; i < NUMSPELLS; i++)
+      for(int i = 0; i < spell::NUM_SPELLS; ++i)
       {
-        Spells[i].known = false;
+        spell::Spells[i].known = false;
       }
       Player.pow  = 3;
       Player.mana = 0;
@@ -1070,7 +1070,7 @@ void l_throne()
             Player.maxpow += 5;
             break;
           default:
-            if(Spells[S_WISH].known)
+            if(spell::Spells[spell::WISH].known)
             {
               print1("A mysterious voice mutters peevishly....");
               print2("So what do you want now? A medal?");
@@ -1081,7 +1081,7 @@ void l_throne()
               print2("They appear to describe some high-powered spell.");
               print1("You hear a distant voice....");
               print2("'You may now tread the path of High Magic.'");
-              Spells[S_WISH].known = true;
+              spell::Spells[spell::WISH].known = true;
             }
             break;
           case 17:

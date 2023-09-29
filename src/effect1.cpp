@@ -19,6 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* effect1.c */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <algorithm>
 #include <cassert>
@@ -788,14 +789,14 @@ void wish(int blessing)
   else if(wishstr == "Knowledge")
   {
     print2("You feel more knowledgeable.");
-    int i = random_range(NUMSPELLS);
-    if(Spells[i].known)
+    int i = random_range(spell::NUM_SPELLS);
+    if(spell::Spells[i].known)
     {
-      Spells[i].powerdrain = (std::max(1, Spells[i].powerdrain / 2));
+      spell::Spells[i].powerdrain = (std::max(1, spell::Spells[i].powerdrain / 2));
     }
     else
     {
-      Spells[i].known = true;
+      spell::Spells[i].known = true;
     }
   }
   else if(wishstr == "Health")

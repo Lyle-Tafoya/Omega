@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "spell.h"
 
 #include <algorithm>
 #include <format>
@@ -352,17 +353,17 @@ void aggravate()
 
 void learnspell(int blessing)
 {
-  int i, spell, done = false;
+  int i, done = false;
   if(blessing < 0)
   {
-    for(i = NUMSPELLS; ((i > -1) && (!done)); i--)
+    for(i = spell::NUM_SPELLS; ((i > -1) && (!done)); i--)
     {
-      if(Spells[i].known)
+      if(spell::Spells[i].known)
       {
         done                        = true;
         Objects[SCROLLID + 1].known = true;
         mprint("You feel forgetful.");
-        Spells[i].known = false;
+        spell::Spells[i].known = false;
       }
     }
     if(i == ABORT)
@@ -373,23 +374,23 @@ void learnspell(int blessing)
   else
   {
     Objects[SCROLLID + 1].known = true;
-    spell                       = random_range(NUMSPELLS);
+    spell::spell_id id = static_cast<spell::spell_id>(random_range(spell::NUM_SPELLS));
     print1("Spell Research");
-    if((random_range(4 * Spells[spell].powerdrain) + Spells[spell].powerdrain) <
+    if((random_range(4 * spell::Spells[id].powerdrain) + spell::Spells[id].powerdrain) <
        (4 * Player.iq + 8 * Player.level))
     {
       nprint1(" -- Research successful: ");
-      nprint1(spellid(spell));
-      if(Spells[spell].known)
+      nprint1(spell::spell_names[id]);
+      if(spell::Spells[id].known)
       {
         print2("...is now easier to cast.");
-        Spells[spell].powerdrain = ((int)((Spells[spell].powerdrain + 1) / 2));
+        spell::Spells[id].powerdrain = (spell::Spells[id].powerdrain + 1) / 2;
       }
       else
       {
         print2("...is added to your repertoire");
-        Spells[spell].known = true;
-        gain_experience(Spells[spell].powerdrain * 10);
+        spell::Spells[id].known = true;
+        gain_experience(spell::Spells[id].powerdrain * 10);
       }
     }
     else
@@ -528,7 +529,7 @@ void disintegrate(int x, int y)
         mprint("A hole is blasted in the base of the pit!");
         Level->site[x][y].locchar = TRAP;
         Level->site[x][y].p_locf  = L_TRAP_DOOR;
-        Level->site[x][y].aux     = S_DISINTEGRATE;
+        Level->site[x][y].aux     = spell::DISINTEGRATE;
         lset(x, y, CHANGED, *Level);
       }
       else

@@ -48,11 +48,6 @@ extern std::string get_username();
 
 const char *Omegalib; /* contains the path to the library files */
 
-/* Objects and Monsters are allocated and initialized in init.c */
-
-/* one of each spell */
-struct spell Spells[NUMSPELLS + 1];
-
 /* locations of city sites [0] - found, [1] - x, [2] - y */
 int CitySiteList[NUMCITYSITES][3];
 
@@ -262,7 +257,6 @@ int main()
   initgraf();
   initdirs();
   initrand(E_RANDOM, 0);
-  initspells();
 
   for(std::string &buffer_string : Stringbuffer)
   {

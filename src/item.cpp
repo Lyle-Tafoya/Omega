@@ -19,6 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* item.c */
 
 #include "glob.h"
+#include "spell.h"
 
 /* make a random new object, returning pointer */
 pob create_object(int itemlevel)
@@ -239,7 +240,7 @@ void make_scroll(pob o, int id)
   /* if a scroll of spells, aux is the spell id in Spells */
   if(o->id == SCROLLID + 1)
   {
-    o->aux = random_range(NUMSPELLS);
+    o->aux = random_range(spell::NUM_SPELLS);
   }
 }
 

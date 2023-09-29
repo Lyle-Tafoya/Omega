@@ -25,6 +25,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 #include "interactive_menu.hpp"
 #include "scrolling_buffer.hpp"
+#include "spell.h"
 
 #include <algorithm>
 #include <cassert>
@@ -184,7 +185,7 @@ void indoors_random_event()
 
 void outdoors_random_event()
 {
-  int num, i, j;
+  int num;
   pob ob;
 
   switch(random_range(300))
@@ -268,7 +269,7 @@ void outdoors_random_event()
       {
         mprint("Your entire body glows with an eerie flickering light.");
         toggle_item_use(true); /* FIXED! 12/30/98 */
-        for(i = 1; i < MAXITEMS; i++)
+        for(int i = 1; i < MAXITEMS; ++i)
         {
           if(Player.possessions[i])
           {
@@ -347,13 +348,13 @@ void outdoors_random_event()
         mprint("You can't remember a thing! Not even your name.");
         Player.xp    = 0;
         Player.level = 0;
-        for(i = 0; i < NUMRANKS; i++)
+        for(int i = 0; i < NUMRANKS; ++i)
         {
           Player.rank[i] = 0;
         }
-        for(i = 0; i < NUMSPELLS; i++)
+        for(int i = 0; i < spell::NUM_SPELLS; ++i)
         {
-          Spells[i].known = false;
+          spell::Spells[i].known = false;
         }
         rename_player();
       }
@@ -379,9 +380,9 @@ void outdoors_random_event()
         resetgamestatus(LOST, GameStatus);
         mprint("You know where you are now.");
       }
-      for(i = Player.x - 5; i < Player.x + 6; i++)
+      for(int i = Player.x - 5; i < Player.x + 6; ++i)
       {
-        for(j = Player.y - 5; j < Player.y + 6; j++)
+        for(int j = Player.y - 5; j < Player.y + 6; ++j)
         {
           if(inbounds(i, j))
           {
@@ -1125,11 +1126,11 @@ int parsecitysite()
 /* are there hostile monsters within 2 moves? */
 int hostilemonstersnear()
 {
-  int i, j, hostile = false;
+  int hostile = false;
 
-  for(i = Player.x - 2; ((i < Player.x + 3) && (!hostile)); i++)
+  for(int i = Player.x - 2; ((i < Player.x + 3) && (!hostile)); ++i)
   {
-    for(j = Player.y - 2; ((j < Player.y + 3) && (!hostile)); j++)
+    for(int j = Player.y - 2; ((j < Player.y + 3) && (!hostile)); ++j)
     {
       if(inbounds(i, j))
       {
@@ -1148,7 +1149,7 @@ int hostilemonstersnear()
 /* if alignment of stone is alignment of player, gets done sooner */
 int stonecheck(int alignment)
 {
-  int *stone, match = false, cycle = false, i;
+  int *stone, match = false, cycle = false;
 
   if(alignment == 1)
   {
@@ -1197,7 +1198,7 @@ int stonecheck(int alignment)
       print1("The stone glows black");
       print2("A burden has been removed from your shoulders.....");
       print3("Your pack has disintegrated!");
-      for(i = 0; i < MAXPACK; i++)
+      for(int i = 0; i < MAXPACK; ++i)
       {
         if(Player.pack[i])
         {
@@ -1278,11 +1279,11 @@ int stonecheck(int alignment)
     case 29:
       print1("The stone glows blue-violet");
       print2("You feel forgetful.");
-      for(i = 0; i < NUMSPELLS; i++)
+      for(int i = 0; i < spell::NUM_SPELLS; ++i)
       {
-        if(Spells[i].known)
+        if(spell::Spells[i].known)
         {
-          Spells[i].known = false;
+          spell::Spells[i].known = false;
           break;
         }
       }
@@ -1403,7 +1404,6 @@ void alert_guards()
 /* can only occur when player is in city, so OK to use Level */
 void destroy_order()
 {
-  int i, j;
   setgamestatus(DESTROYED_ORDER, GameStatus);
   if(Level != City)
   {
@@ -1411,9 +1411,9 @@ void destroy_order()
   }
   else
   {
-    for(i = 35; i < 46; i++)
+    for(int i = 35; i < 46; ++i)
     {
-      for(j = 60; j < 63; j++)
+      for(int j = 60; j < 63; ++j)
       {
         if(i == 40 && (j == 60 || j == 61))
         {

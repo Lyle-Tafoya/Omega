@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* grab bag of random functions used in random places */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <array>
 #include <string_view>
@@ -331,51 +332,51 @@ void learnclericalspells(int deity, int level)
     case LAY:
       if(deity == ODIN)
       {
-        Spells[S_MISSILE].known = true;
+        spell::Spells[spell::MAGIC_MISSILE].known = true;
       }
       else if(deity == SET)
       {
-        Spells[S_INVISIBLE].known = true;
+        spell::Spells[spell::INVISIBILITY].known = true;
       }
       else if(deity == ATHENA)
       {
-        Spells[S_IDENTIFY].known = true;
+        spell::Spells[spell::IDENTIFICATION].known = true;
       }
       else if(deity == HECATE)
       {
-        Spells[S_DRAIN].known = true;
+        spell::Spells[spell::ENERGY_DRAIN].known = true;
       }
       else if(deity == DRUID)
       {
-        Spells[S_KNOWLEDGE].known = true;
-        Spells[S_MON_DET].known   = true;
+        spell::Spells[spell::SELF_KNOWLEDGE].known = true;
+        spell::Spells[spell::MONSTER_DETECTION].known   = true;
       }
       break;
     case ACOLYTE:
       if(deity == ODIN)
       {
-        Spells[S_LBALL].known     = true;
-        Spells[S_TRUESIGHT].known = true;
+        spell::Spells[spell::BALL_LIGHTNING].known     = true;
+        spell::Spells[spell::TRUESIGHT].known = true;
       }
       else if(deity == SET)
       {
-        Spells[S_SUMMON].known   = true;
-        Spells[S_FIREBOLT].known = true;
+        spell::Spells[spell::SUMMONING].known   = true;
+        spell::Spells[spell::FIREBOLT].known = true;
       }
       else if(deity == ATHENA)
       {
-        Spells[S_HEAL].known      = true;
-        Spells[S_SANCTUARY].known = true;
+        spell::Spells[spell::HEALING].known      = true;
+        spell::Spells[spell::SANCTUARY].known = true;
       }
       else if(deity == HECATE)
       {
-        Spells[S_SLEEP].known  = true;
-        Spells[S_DISPEL].known = true;
+        spell::Spells[spell::SLEEP].known  = true;
+        spell::Spells[spell::DISPELLING].known = true;
       }
       else if(deity == DRUID)
       {
-        Spells[S_HEAL].known = true;
-        Spells[S_CURE].known = true;
+        spell::Spells[spell::HEALING].known = true;
+        spell::Spells[spell::CURING].known = true;
       }
       else if(deity == DESTINY)
       {
@@ -383,32 +384,32 @@ void learnclericalspells(int deity, int level)
       }
       break;
     case PRIEST:
-      Spells[S_SANCTIFY].known = true;
+      spell::Spells[spell::SANCTIFICATION].known = true;
       if(deity == ODIN)
       {
-        Spells[S_HERO].known = true;
-        Spells[S_HEAL].known = true;
+        spell::Spells[spell::HEROISM].known = true;
+        spell::Spells[spell::HEALING].known = true;
       }
       else if(deity == SET)
       {
-        Spells[S_INVISIBLE].known = true;
-        Spells[S_DISPEL].known    = true;
+        spell::Spells[spell::INVISIBILITY].known = true;
+        spell::Spells[spell::DISPELLING].known    = true;
       }
       else if(deity == ATHENA)
       {
-        Spells[S_REGENERATE].known = true;
-        Spells[S_ACCURACY].known   = true;
+        spell::Spells[spell::REGENERATE].known = true;
+        spell::Spells[spell::ACCURACY].known   = true;
       }
       else if(deity == HECATE)
       {
-        Spells[S_SHADOWFORM].known = true;
-        Spells[S_CURE].known       = true;
+        spell::Spells[spell::SHADOWFORM].known = true;
+        spell::Spells[spell::CURING].known       = true;
       }
       else if(deity == DRUID)
       {
-        Spells[S_DISRUPT].known      = true;
-        Spells[S_ALERT].known        = true;
-        Spells[S_CLAIRVOYANCE].known = true;
+        spell::Spells[spell::DISRUPT].known      = true;
+        spell::Spells[spell::ALERTNESS].known        = true;
+        spell::Spells[spell::CLAIRVOYANCE].known = true;
       }
       else if(deity == DESTINY)
       {
@@ -416,27 +417,27 @@ void learnclericalspells(int deity, int level)
       }
       break;
     case SPRIEST:
-      Spells[S_BLESS].known = true;
+      spell::Spells[spell::BLESSING].known = true;
       if(deity == ODIN)
       {
-        Spells[S_ACCURACY].known = true;
+        spell::Spells[spell::ACCURACY].known = true;
       }
       else if(deity == SET)
       {
-        Spells[S_SHADOWFORM].known = true;
+        spell::Spells[spell::SHADOWFORM].known = true;
       }
       else if(deity == ATHENA)
       {
-        Spells[S_HERO].known = true;
+        spell::Spells[spell::HEROISM].known = true;
       }
       else if(deity == HECATE)
       {
-        Spells[S_POLYMORPH].known = true;
+        spell::Spells[spell::POLYMORPH].known = true;
       }
       else if(deity == DRUID)
       {
-        Spells[S_POLYMORPH].known = true;
-        Spells[S_LEVITATE].known  = true;
+        spell::Spells[spell::POLYMORPH].known = true;
+        spell::Spells[spell::LEVITATE].known  = true;
       }
       else if(deity == DESTINY)
       {
@@ -446,24 +447,24 @@ void learnclericalspells(int deity, int level)
     case HIGHPRIEST:
       if(deity == ODIN)
       {
-        Spells[S_RESTORE].known = true;
+        spell::Spells[spell::RESTORATION].known = true;
       }
       else if(deity == SET)
       {
-        Spells[S_HELLFIRE].known = true;
+        spell::Spells[spell::HELLFIRE].known = true;
       }
       else if(deity == ATHENA)
       {
-        Spells[S_HELLFIRE].known = true;
+        spell::Spells[spell::HELLFIRE].known = true;
       }
       else if(deity == HECATE)
       {
-        Spells[S_DESECRATE].known = true;
+        spell::Spells[spell::DESECRATION].known = true;
       }
       else if(deity == DRUID)
       {
-        Spells[S_DISINTEGRATE].known = true;
-        Spells[S_HERO].known         = true;
+        spell::Spells[spell::DISINTEGRATE].known = true;
+        spell::Spells[spell::HEROISM].known         = true;
       }
       else if(deity == DESTINY)
       {

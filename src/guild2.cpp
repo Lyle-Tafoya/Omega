@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* at some site or other. */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <algorithm>
 #include <format>
@@ -55,7 +56,7 @@ void l_thieves_guild()
       Shadowlordbehavior = fixnpc(4);
       save_hiscore_npc(7);
       print1("You learn the Spell of Shadowform.");
-      Spells[S_SHADOWFORM].known = true;
+      spell::Spells[spell::SHADOWFORM].known = true;
       Player.rank[THIEVES]       = SHADOWLORD;
       Player.maxagi += 2;
       Player.maxdex += 2;
@@ -115,7 +116,7 @@ void l_thieves_guild()
               print1(std::format("Shadowlord {} enters your name into the roll of the guild.", Shadowlord));
               print1("As a special bonus, you get a free lockpick.");
               print2("You are taught the spell of Object Detection.");
-              Spells[S_OBJ_DET].known = true;
+              spell::Spells[spell::OBJECT_DETECTION].known = true;
               lockpick                = new object;
               *lockpick               = Objects[THINGID + 2]; /* lock pick */
               gain_item(lockpick);
@@ -165,7 +166,7 @@ void l_thieves_guild()
             print1("To advance to the next level you must return with");
             print2("the badge of the Justiciar (cursed be his name).");
             print1("The Justiciar's office is just south of the gaol.");
-            Spells[S_APPORT].known = true;
+            spell::Spells[spell::APPORTATION].known = true;
             Player.rank[THIEVES]   = TMASTER;
             Player.maxagi++;
             Player.maxdex++;
@@ -183,7 +184,7 @@ void l_thieves_guild()
           {
             print1("You are now a ranking Thief of the Guild!");
             print2("You learn the Spell of Invisibility.");
-            Spells[S_INVISIBLE].known = true;
+            spell::Spells[spell::INVISIBILITY].known = true;
             Player.rank[THIEVES]      = THIEF;
             Player.agi++;
             Player.maxagi++;
@@ -199,7 +200,7 @@ void l_thieves_guild()
           {
             print1("You are now an Apprentice Thief!");
             print2("You are taught the Spell of Levitation.");
-            Spells[S_LEVITATE].known = true;
+            spell::Spells[spell::LEVITATE].known = true;
             Player.rank[THIEVES]     = ATHIEF;
             Player.dex++;
             Player.maxdex++;
@@ -510,7 +511,7 @@ void l_college()
             print2("You are taught the basics of ritual magic.");
             print1("Your position allows you to research 4 spells.");
             Spellsleft += 4;
-            Spells[S_RITUAL].known = true;
+            spell::Spells[spell::RITUAL_MAGIC].known = true;
             Player.rank[COLLEGE]   = PRECEPTOR;
             Player.maxiq += 1;
             Player.iq += 1;
@@ -530,7 +531,7 @@ void l_college()
             print2("You are taught the spell of identification.");
             print1("Thesis research credit is 2 spells.");
             Spellsleft += 2;
-            Spells[S_IDENTIFY].known = true;
+            spell::Spells[spell::IDENTIFICATION].known = true;
             Player.rank[COLLEGE]     = STUDENT;
             Player.maxiq += 1;
             Player.iq += 1;
@@ -601,7 +602,7 @@ void l_sorcerors()
         Primebehavior = fixnpc(4);
         save_hiscore_npc(10);
         print1("You learn the Spell of Disintegration!");
-        Spells[S_DISINTEGRATE].known = true;
+        spell::Spells[spell::DISINTEGRATE].known = true;
         Player.rank[CIRCLE]          = PRIME;
         Player.maxpow += 10;
         Player.pow += 10;
@@ -649,7 +650,7 @@ void l_sorcerors()
             {
               print1(std::format("Prime Sorceror {} conducts your initiation into the circle of novices.", Prime));
               print1("You learn the Spell of Magic Missiles.");
-              Spells[S_MISSILE].known = true;
+              spell::Spells[spell::MAGIC_MISSILE].known = true;
               Player.cash -= fee;
               dataprint();
               Player.rank[CIRCLE]    = INITIATE;
@@ -711,7 +712,7 @@ void l_sorcerors()
             print2("You learn the Spell of Disruption!");
             print1("To advance you must return with the LawBringer's Crown!");
             print2("The LawBringer resides on Star Peak.");
-            Spells[S_DISRUPT].known = true;
+            spell::Spells[spell::DISRUPT].known = true;
             Player.rank[CIRCLE]     = HIGHSORCEROR;
             Player.maxpow += 5;
             Player.pow += 5;
@@ -727,7 +728,7 @@ void l_sorcerors()
           {
             print1("You are now a member of the Circle of Sorcerors!");
             print2("You learn the Spell of Ball Lightning!");
-            Spells[S_LBALL].known = true;
+            spell::Spells[spell::BALL_LIGHTNING].known = true;
             Player.rank[CIRCLE]   = SORCEROR;
             Player.maxpow += 2;
             Player.pow += 2;
@@ -743,7 +744,7 @@ void l_sorcerors()
           {
             print1("You are now a member of the Circle of Enchanters!");
             print2("You learn the Spell of Firebolts.");
-            Spells[S_FIREBOLT].known = true;
+            spell::Spells[spell::FIREBOLT].known = true;
             Player.rank[CIRCLE]      = ENCHANTER;
             Player.maxpow += 2;
             Player.pow += 2;
@@ -930,7 +931,7 @@ void l_order()
         print2("whose headquarters may be found beyond the Astral Plane.");
         print1("The Oracle will send you to the Astral Plane if you");
         print2("prove yourself worthy to her.");
-        Spells[S_HERO].known = true;
+        spell::Spells[spell::HEROISM].known = true;
         Player.rank[ORDER]   = PALADIN;
       }
     }

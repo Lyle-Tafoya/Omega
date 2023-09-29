@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* at some site or other. */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <algorithm>
 #include <format>
@@ -123,7 +124,7 @@ void l_merc_guild()
           Commandantbehavior = fixnpc(4);
           save_hiscore_npc(8);
           print1("You now know the Spell of Regeneration.");
-          Spells[S_REGENERATE].known = true;
+          spell::Spells[spell::REGENERATE].known = true;
           Player.rank[LEGION]        = COMMANDANT;
           Player.maxstr += 2;
           Player.str += 2;
@@ -157,7 +158,7 @@ void l_merc_guild()
           print1("The Demon Emperor holds court at the base of a volcano");
           print2("to the far south, in the heart of a swamp.");
           print1("You have been taught the spell of heroism!");
-          Spells[S_HERO].known = true;
+          spell::Spells[spell::HEROISM].known = true;
           Player.rank[LEGION]  = COLONEL;
           Player.maxstr++;
           Player.str++;

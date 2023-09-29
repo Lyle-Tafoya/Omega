@@ -19,6 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* save.c */
 
 #include "glob.h"
+#include "spell.h"
 
 #include <filesystem>
 #include <format>
@@ -191,7 +192,11 @@ bool save_player(FILE *fd)
   ok &= (fwrite((char *)&LastTownLocY, sizeof(int), 1, fd) > 0);
   ok &= (fwrite((char *)&Pawndate, sizeof(int), 1, fd) > 0);
 
-  ok &= (fwrite((char *)Spells, sizeof(Spells), 1, fd) > 0);
+  for(const spell &s : spell::Spells)
+  {
+    ok &= (fwrite((char *)&s.powerdrain, sizeof(s.powerdrain), 1, fd) > 0);
+    ok &= (fwrite((char *)&s.known, sizeof(s.known), 1, fd) > 0);
+  }
 
   ok &= (fwrite((char *)&Command_Duration, sizeof(Command_Duration), 1, fd) > 0);
   ok &= (fwrite((char *)&Precipitation, sizeof(Precipitation), 1, fd) > 0);
@@ -671,7 +676,11 @@ void restore_player(FILE *fd, int version)
   fread((char *)&LastTownLocY, sizeof(int), 1, fd);
   fread((char *)&Pawndate, sizeof(int), 1, fd);
 
-  fread((char *)Spells, sizeof(Spells), 1, fd);
+  for(const spell &s : spell::Spells)
+  {
+    fread((char *)&s.powerdrain, sizeof(s.powerdrain), 1, fd);
+    fread((char *)&s.known, sizeof(s.known), 1, fd);
+  }
 
   fread((char *)&Command_Duration, sizeof(Command_Duration), 1, fd);
   fread((char *)&Precipitation, sizeof(Precipitation), 1, fd);
