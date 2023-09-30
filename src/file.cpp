@@ -20,6 +20,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* functions with file access in them. Also some direct calls to
    curses functions */
 
+#include "glob.h"
+#include "file.h"
+
 #include <array>
 #include <chrono>
 #include <filesystem>
@@ -28,21 +31,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <string>
 #include <thread>
-#include "glob.h"
 
 extern std::string get_home_path();
 extern void queue_message(const std::string &message);
-
-template<typename T>
-void file_write(std::ofstream &file, T &data)
-{
-  file.write(reinterpret_cast<char *>(&data), sizeof(data));
-}
-template<typename T>
-void file_read(std::ifstream &file, T &data)
-{
-  file.read(reinterpret_cast<char *>(&data), sizeof(data));
-}
 
 void save_omegarc()
 {
