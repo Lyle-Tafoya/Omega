@@ -241,7 +241,7 @@ void i_symbol(pob o)
       Player.mana = 0;
     }
   }
-  else if(SymbolUseHour == hour())
+  else if(SymbolUseDay == day() && SymbolUseHour == hour())
   {
     print1("Your deity frowns upon this profligate use of power...");
     print2("Shazam! A bolt of Godsfire! Your symbol shatters!");
@@ -252,6 +252,7 @@ void i_symbol(pob o)
   else
   {
     print1("A mystic flow of theurgic energy courses through your body!");
+    SymbolUseDay = day();
     SymbolUseHour = hour();
     cleanse(1);
     heal(10);
@@ -268,18 +269,20 @@ void i_crystal(pob o)
   else
   {
     print1("You gaze into your crystal ball.");
-    if(ViewHour == hour())
+    if(ViewDay == day() && ViewHour == hour())
     {
       print2("All you get is Gilligan's Island reruns.");
     }
     else if((o->blessing < 0) || (Player.iq + Player.level < random_range(30)))
     {
+      ViewDay = day();
       ViewHour = hour();
       print2("Weird interference patterns from the crystal fog your mind....");
       amnesia();
     }
     else
     {
+      ViewDay = day();
       ViewHour = hour();
       print2("You sense the presence of life...");
       mondet(1);
@@ -365,18 +368,20 @@ void i_kolwynia(pob o)
 void i_enchantment(pob o)
 {
   char response;
-  if(ZapHour == hour())
+  if(ZapDay == day() && ZapHour == hour())
   {
     print1("The staff doesn't seem to have recharged yet.");
   }
   else if(!o->known)
   {
+    ZapDay = day();
     ZapHour = hour();
     print1("You blast the staff backwards....");
     dispel(-1);
   }
   else
   {
+    ZapDay = day();
     ZapHour = hour();
     print1("Zap with white or black end [wb] ");
     do
@@ -397,18 +402,20 @@ void i_enchantment(pob o)
 
 void i_helm(pob o)
 {
-  if(HelmHour == hour())
+  if(HelmDay == day() && HelmHour == hour())
   {
     print1("The helm doesn't seem to have recharged yet.");
   }
   else if(!o->known)
   {
+    HelmDay = day();
     HelmHour = hour();
     print1("You put the helm on backwards....");
     p_teleport(-1);
   }
   else
   {
+    HelmDay = day();
     HelmHour = hour();
     print1("Your environment fades.... and rematerializes.");
     p_teleport(o->blessing);

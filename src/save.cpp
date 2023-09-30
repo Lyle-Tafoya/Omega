@@ -133,12 +133,16 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, Phase);
   file_write(save_file, Date);
   file_write(save_file, Spellsleft);
+  file_write(save_file, SymbolUseDay);
   file_write(save_file, SymbolUseHour);
+  file_write(save_file, ViewDay);
   file_write(save_file, ViewHour);
+  file_write(save_file, HelmDay);
   file_write(save_file, HelmHour);
   file_write(save_file, Constriction);
   file_write(save_file, Blessing);
   file_write(save_file, LastDay);
+  file_write(save_file, RitualDay);
   file_write(save_file, RitualHour);
   file_write(save_file, Lawstone);
   file_write(save_file, Chaostone);
@@ -164,6 +168,7 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, Command_Duration);
   file_write(save_file, Precipitation);
   file_write(save_file, Lunarity);
+  file_write(save_file, ZapDay);
   file_write(save_file, ZapHour);
   file_write(save_file, RitualRoom);
 
@@ -611,12 +616,16 @@ void restore_player(std::ifstream &save_file)
   file_read(save_file, Phase);
   file_read(save_file, Date);
   file_read(save_file, Spellsleft);
+  file_read(save_file, SymbolUseDay);
   file_read(save_file, SymbolUseHour);
+  file_read(save_file, ViewDay);
   file_read(save_file, ViewHour);
+  file_read(save_file, HelmDay);
   file_read(save_file, HelmHour);
   file_read(save_file, Constriction);
   file_read(save_file, Blessing);
   file_read(save_file, LastDay);
+  file_read(save_file, RitualDay);
   file_read(save_file, RitualHour);
   file_read(save_file, Lawstone);
   file_read(save_file, Chaostone);
@@ -644,6 +653,7 @@ void restore_player(std::ifstream &save_file)
   file_read(save_file, Command_Duration);
   file_read(save_file, Precipitation);
   file_read(save_file, Lunarity);
+  file_read(save_file, ZapDay);
   file_read(save_file, ZapHour);
   file_read(save_file, RitualRoom);
 

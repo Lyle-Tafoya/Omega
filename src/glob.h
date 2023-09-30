@@ -132,15 +132,19 @@ extern int Pawndate;
 extern pob Pawnitems[PAWNITEMS];
 /* items in pawn shop */
 
+extern int ViewDay;
 extern int ViewHour;
 /* crystal ball use marker */
 
+extern int ZapDay;
 extern int ZapHour;
 /* staff of enchantment use marker */
 
+extern int HelmDay;
 extern int HelmHour;
 /* helm of teleportation use marker*/
 
+extern int SymbolUseDay;
 extern int SymbolUseHour;
 /* holy symbol use marker */
 
@@ -153,6 +157,7 @@ extern int Blessing;
 extern int LastDay;
 /* DPW date of dole */
 
+extern int RitualDay;
 extern int RitualHour;
 /* last use of ritual magic */
 

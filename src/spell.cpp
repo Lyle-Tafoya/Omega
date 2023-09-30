@@ -231,7 +231,7 @@ void s_ritual()
   time_clock(false);
   setgamestatus(SKIP_PLAYER, GameStatus);
   time_clock(false);
-  if(RitualHour == hour())
+  if(RitualDay == day() && RitualHour == hour())
   {
     mprint("Your mental fatigue prevents from completing the ritual!");
   }
@@ -253,6 +253,7 @@ void s_ritual()
     time_clock(false);
     setgamestatus(SKIP_PLAYER, GameStatus);
     time_clock(false);
+    RitualDay = day();
     RitualHour = hour();
     /* set of random conditions for different ritual effects */
     if(Current_Environment == E_CITY)
