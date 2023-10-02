@@ -263,9 +263,6 @@ void examine()
 
 void help()
 {
-  char  c;
-
-  print1("Please enter the letter indicating what topic you want help on.");
   std::vector<std::string> lines =
   {
     {"a: Overview"},
@@ -281,10 +278,13 @@ void help()
     {"k: Options Settings"},
     {"l: Dungeon/City/Other Command List"},
     {"m: Countryside Command List"},
-    {"ESCAPE: Forget the whole thing."}
+    {"ESCAPE: Forget the whole thing."},
+    {""},
+    {"Please enter the letter indcating what topic you want help on."}
   };
   menu->load(lines);
   menu->print();
+  char  c;
   do
   {
     c = static_cast<char>(mcigetc());

@@ -1295,12 +1295,12 @@ void save(int force)
     print1("Confirm Save? [yn] ");
     ok = (ynq1() == 'y');
   }
-  std::string save_file_directory{std::format("{}saves", Omegalib)};
+  std::string save_file_directory{std::format("{}saves/{}", Omegalib, get_username())};
   if(ok)
   {
     if(!std::filesystem::exists(save_file_directory))
     {
-      if(!std::filesystem::create_directory(save_file_directory))
+      if(!std::filesystem::create_directories(save_file_directory))
       {
         queue_message(std::format("Cannot create save file directory: {}", save_file_directory));
         ok = false;
@@ -1309,7 +1309,7 @@ void save(int force)
   }
   if(force || ok)
   {
-    std::string file_name = std::format("{}/{}.sav", save_file_directory, get_username());
+    std::string file_name = std::format("{}/{}.sav", save_file_directory, Player.name);
     if(save_game(file_name))
     {
       endgraf();

@@ -185,12 +185,11 @@ void initrand(int environment, int level)
   generator.seed(seed);
 }
 
-bool game_restore()
+bool game_restore(const std::filesystem::path &save_file_path)
 {
-  std::string save_file_name = std::format("{}saves/{}.sav", Omegalib, get_username());
-  if(std::filesystem::exists(save_file_name) && restore_game(save_file_name))
+  if(std::filesystem::exists(save_file_path) && restore_game(save_file_path))
   {
-    std::filesystem::remove(save_file_name);
+    std::filesystem::remove(save_file_path);
     return true;
   }
   else
@@ -209,7 +208,7 @@ int main()
   pdc_resize_mode = PDC_GL_RESIZE_SCALE;
 #endif
 
-  /* always catch ^c and hang-up signals */
+  // always catch ^c and hang-up signals
 #ifdef SIGINT
   signal(SIGINT, quit);
 #endif
@@ -252,13 +251,13 @@ int main()
     Omegalib = OMEGALIB;
   }
 
-  /* if filecheck is 0, some necessary data files are missing */
-  if(filecheck() == 0)
+  // if filecheck is false, some necessary data files are missing
+  if(!filecheck())
   {
-    exit(0);
+    exit(1);
   }
 
-  /* all kinds of initialization */
+  // all kinds of initialization
   initgraf();
   initdirs();
   initrand(E_RANDOM, 0);
@@ -273,13 +272,17 @@ int main()
 #endif
 
   omega_title();
-  showscores();
 
-  /* game restore attempts to restore game if there is an argument */
-  bool continuing = game_restore();
+  bool continuing = false;
 
-  /* monsters initialized in game_restore if game is being restored */
-  /* items initialized in game_restore if game is being restored */
+#ifdef MULTI_USER_SYSTEM
+  std::string player_name = get_username();
+  player_name.front() = std::toupper(player_name.front());
+  continuing = game_restore(std::format("{}saves/{}/{}.sav", Omegalib, get_username(), player_name));
+#endif
+
+  // monsters initialized in game_restore if game is being restored
+  // items initialized in game_restore if game is being restored
   if(!continuing)
   {
     inititem(true);
@@ -292,6 +295,7 @@ int main()
   }
   else
   {
+    showscores();
     mprint("Your adventure continues....");
   }
 
@@ -317,7 +321,7 @@ int main()
 
   screencheck(Player.x, Player.y);
 
-  /* game cycle */
+  // game cycle
   if(!continuing)
   {
     time_clock(true);

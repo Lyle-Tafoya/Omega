@@ -345,7 +345,9 @@ void outdoors_random_event()
       {
         mprint("The chaos storm has wiped your memory!");
         mprint("You feel extraordinarily naive....");
+#ifndef MULTI_USER_SYSTEM
         mprint("You can't remember a thing! Not even your name.");
+#endif
         Player.xp    = 0;
         Player.level = 0;
         for(int i = 0; i < NUMRANKS; ++i)
@@ -356,7 +358,9 @@ void outdoors_random_event()
         {
           spell::Spells[i].known = false;
         }
+#ifndef MULTI_USER_SYSTEM
         rename_player();
+#endif
       }
       else
       {

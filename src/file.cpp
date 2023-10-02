@@ -318,7 +318,6 @@ void showscores()
       Priest[DESTINY], levelname(Priestlevel[DESTINY]),
       Priest[DRUID], levelname(Priestlevel[DRUID])
   ).c_str());
-  refresh();
   wgetch(stdscr);
   clear_screen();
 }

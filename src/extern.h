@@ -28,7 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 /* omega.cpp functions */
 
-bool game_restore();
 void init_world(void);
 void inititem(int);
 void initrand(int, int);
@@ -116,7 +115,6 @@ long  calcmana(void);
 int   competence_check(int);
 int   fixnpc(int);
 void  initplayer(void);
-void  initstats(void);
 void  omegan_character_stats(void);
 void  save_omegarc(void);
 void  user_character_stats(void);

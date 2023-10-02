@@ -209,9 +209,11 @@ void p_process()
       case 'Q':
         quit();
         break;
+#ifndef MULTI_USER_SYSTEM
       case 'R':
         rename_player();
         break;
+#endif
       case 'S':
         save(false);
         break;
@@ -442,9 +444,11 @@ void p_country_process()
       case 'Q':
         quit();
         break;
+#ifndef MULTI_USER_SYSTEM
       case 'R':
         rename_player();
         break;
+#endif
       case 'S':
         save(false);
         break;

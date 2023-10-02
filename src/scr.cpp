@@ -567,6 +567,7 @@ void initialize_windows()
   }
   uint16_t menu_width = (COLS - 42 < 64 ? COLS : 64);
   menu_window = newwin(ScreenLength, menu_width, 0, 0);
+  keypad(menu_window, true);
   menu = new interactive_menu(menu_window, menu_width, ScreenLength);
 
   keypad(stdscr, true);

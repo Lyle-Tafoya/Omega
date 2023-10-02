@@ -565,24 +565,24 @@ objectlist *restore_itemlist(std::ifstream &save_file)
   return ol;
 }
 
-void restore_player(std::ifstream &save_file)
+void restore_player(std::ifstream &save_file, player &p)
 {
-  Player.name.~basic_string();
-  Player.meleestr.~basic_string();
-  file_read(save_file, Player);
-  new (&Player.name) std::string;
-  new (&Player.meleestr) std::string;
+  p.name.~basic_string();
+  p.meleestr.~basic_string();
+  file_read(save_file, p);
+  new (&p.name) std::string;
+  new (&p.meleestr) std::string;
 
   size_t size;
   file_read(save_file, size);
   Password.resize(size);
   save_file.read(&Password[0], size);
   file_read(save_file, size);
-  Player.name.resize(size);
-  save_file.read(&Player.name[0], size);
+  p.name.resize(size);
+  save_file.read(&p.name[0], size);
   file_read(save_file, size);
-  Player.meleestr.resize(size);
-  save_file.read(&Player.meleestr[0], size);
+  p.meleestr.resize(size);
+  save_file.read(&p.meleestr[0], size);
 
   file_read(save_file, CitySiteList);
   file_read(save_file, GameStatus);
@@ -680,18 +680,18 @@ void restore_player(std::ifstream &save_file)
 
   for(int i = 0; i < MAXITEMS; ++i)
   {
-    Player.possessions[i] = restore_item(save_file);
+    p.possessions[i] = restore_item(save_file);
   }
 
-  if(!Player.possessions[O_READY_HAND] && Player.possessions[O_WEAPON_HAND] &&
-     twohandedp(Player.possessions[O_WEAPON_HAND]->id))
+  if(!p.possessions[O_READY_HAND] && p.possessions[O_WEAPON_HAND] &&
+     twohandedp(p.possessions[O_WEAPON_HAND]->id))
   {
-    Player.possessions[O_READY_HAND] = Player.possessions[O_WEAPON_HAND];
+    p.possessions[O_READY_HAND] = p.possessions[O_WEAPON_HAND];
   }
 
   for(int i = 0; i < MAXPACK; ++i)
   {
-    Player.pack[i] = restore_item(save_file);
+    p.pack[i] = restore_item(save_file);
   }
   for(int i = 0; i < PAWNITEMS; ++i)
   {
@@ -1060,7 +1060,7 @@ bool restore_game(const std::string &save_file_name)
       getch();
       return false;
     }
-    restore_player(save_file);
+    restore_player(save_file, Player);
     restore_country(save_file);
     restore_level(save_file); // the city level
     int i;

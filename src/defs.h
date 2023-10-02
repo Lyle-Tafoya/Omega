@@ -52,7 +52,7 @@ definitions in the following section. */
 
 // set WIZARD to maintainers's username
 #ifndef WIZARD
-#  define WIZARD            "wtanksle"
+#  define WIZARD              "wtanksle"
 #endif
 
 // If CATCH_SIGNALS is set to 1, will not dump core, nicer for players.
@@ -60,6 +60,9 @@ definitions in the following section. */
 #ifndef CATCH_SIGNALS
 #  define CATCH_SIGNALS       1
 #endif
+
+// You can uncomment this if you want to run a public Omega server (ie. dgamelaunch)
+//#define MULTI_USER_SYSTEM
 
 //---------------------------SYSTEM DEFINITIONS---------------------------
 
