@@ -600,7 +600,7 @@ int filecheck()
     else
     {
       std::cout << "\nOMEGALIB may be badly #defined in defs.h\n";
-#ifndef FIXED_OMEGALIB
+#ifdef USER_DEFINED_OMEGALIB
       std::cout << "\nYou can set the environment variable OMEGALIB to\n";
       std::cout << "the location of the omegalib directory.\n";
 #endif

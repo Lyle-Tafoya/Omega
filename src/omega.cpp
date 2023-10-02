@@ -244,10 +244,10 @@ int main()
 #endif
   }
 
-#ifndef FIXED_OMEGALIB
+#ifdef USER_DEFINED_OMEGALIB
   if(!(Omegalib = getenv("OMEGALIB")))
-  {
 #endif
+  {
     Omegalib = OMEGALIB;
   }
 

@@ -24,31 +24,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <string>
 
-/* omega will NOT function unless the implementor sets the appropriate
-definitions in the following section. */
+//--------------------------USER DEFINITIONS--------------------------
 
-/*--------------------------USER DEFINITIONS--------------------------*/
-
-/* OMEGALIB is where all the data files reside.
-   Note the final / is necessary.
-   msdos note: \ is the C string escape character, so you need \\ in the
-   path given in OMEGALIB
-   This might usually be "/usr/games/lib/omegalib/", for unix,
-   or something like "c:\\games\\omega\\omegalib\\" for msdos */
-
+// OMEGALIB is where all the data files reside
 #ifndef OMEGALIB
 #  define OMEGALIB            "./lib/"
 #endif
-
-/* Comment the following line out if you want users to be able to override */
-/* the OMEGALIB define, above, by setting the environment variable OMEGALIB */
-/* (I recommend leaving this line uncommented, unless you're compiling */
-/* for someone else and don't know where they'll be putting the omegalib */
-/* directory, as is the case with compiling executables for home computers. */
-/* It would be downright insecure to comment this line out in a multi-user */
-/* environment, especially if you're going to run omega setuid.) */
-
-//#define FIXED_OMEGALIB
 
 // set WIZARD to maintainers's username
 #ifndef WIZARD
@@ -61,8 +42,13 @@ definitions in the following section. */
 #  define CATCH_SIGNALS       1
 #endif
 
-// You can uncomment this if you want to run a public Omega server (ie. dgamelaunch)
+// Uncomment this if you want to run a public Omega server (ie. dgamelaunch)
+// It disables the title menu and 'R'ename command
 //#define MULTI_USER_SYSTEM
+
+// Uncomment the following line out if you want users to be able to override
+// the OMEGALIB define, above, by setting the environment variable OMEGALIB
+//#define USER_DEFINED_OMEGALIB
 
 //---------------------------SYSTEM DEFINITIONS---------------------------
 
