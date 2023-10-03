@@ -122,6 +122,13 @@ void load_city(int populate)
           CitySiteList[L_MERC_GUILD - CITYSITEBASE][1] = i;
           CitySiteList[L_MERC_GUILD - CITYSITEBASE][2] = j;
           break;
+        case 'K':
+          Level->site[i][j].locchar = OPEN_DOOR;
+          Level->site[i][j].p_locf  = L_MONASTERY;
+          CitySiteList[L_MONASTERY-CITYSITEBASE][0] = true;
+          CitySiteList[L_MONASTERY-CITYSITEBASE][1] = i;
+          CitySiteList[L_MONASTERY-CITYSITEBASE][2] = j;
+          break;
         case 'c':
           Level->site[i][j].locchar                = OPEN_DOOR;
           Level->site[i][j].p_locf                 = L_CASTLE;

@@ -939,6 +939,10 @@ void sign_print(int x, int y, int signp)
       print1("You notice a sign:");
       print2("Rampart City Gaol -- always room for more.");
       break;
+    case L_MONASTERY:
+      queue_message("You notice a sign:");
+      queue_message("Tholian Monastery. Truthseekers welcome.");
+      break;
     case L_ORACLE:
       print1("You notice a sign:");
       print2("The Oracle of the Cyan Flames");

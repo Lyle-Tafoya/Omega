@@ -2376,7 +2376,7 @@ void showscores()
       "\n"
       "Duke of Rampart:              {} ({})\n"
       "Justiciar:                    {} ({})\n"
-      "Commanadnt:                   {} ({})\n"
+      "Commandant:                   {} ({})\n"
       "Champion:                     {} ({})\n"
       "Archmage:                     {} ({})\n"
       "Prime Sorceror:               {} ({})\n"
@@ -2387,8 +2387,9 @@ void showscores()
       " of Set:                      {} ({})\n"
       " of Athena:                   {} ({})\n"
       " of Hecate:                   {} ({})\n"
-      " of the Lords of Destiny      {} ({})\n"
+      " of the Lords of Destiny:     {} ({})\n"
       "The ArchDruid:                {} ({})\n"
+      "Tholian Grandmaster:          {} ({})\n"
       "\n"
       "Hit any key to continue.",
       Hiscore, Hiscorer, levelname(Hilevel),
@@ -2407,7 +2408,8 @@ void showscores()
       Priest[ATHENA], levelname(Priestlevel[ATHENA]),
       Priest[HECATE], levelname(Priestlevel[HECATE]),
       Priest[DESTINY], levelname(Priestlevel[DESTINY]),
-      Priest[DRUID], levelname(Priestlevel[DRUID])
+      Priest[DRUID], levelname(Priestlevel[DRUID]),
+      Grandmaster, levelname(Grandmasterlevel)
   ).c_str());
   wgetch(stdscr);
   clear_screen();

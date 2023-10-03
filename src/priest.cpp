@@ -81,7 +81,11 @@ void l_altar()
   }
   if(confirm)
   {
-    if(Player.rank[PRIESTHOOD] == 0)
+    if(Player.rank[MONKS] > 0)
+    {
+      queue_message("A monk seeks truth within.");
+    }
+    else if(Player.rank[PRIESTHOOD] == 0)
     {
       increase_priest_rank(deity);
     }

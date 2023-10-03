@@ -227,9 +227,10 @@ enum guild_id
   CIRCLE,
   NOBILITY,
   PRIESTHOOD,
+  MONKS,
   ADEPT
 };
-constexpr int NUMRANKS = 9;
+constexpr int NUMRANKS = ADEPT+1;
 
 enum legion_ranks
 {
@@ -301,6 +302,17 @@ enum priesthood_ranks
   PRIEST,
   SPRIEST,
   HIGHPRIEST
+};
+
+enum monk_ranks
+{
+  MONK_TRAINEE = 1,
+  MONK_MONK,
+  MONK_MASTER,
+  MONK_MASTER_SIGHS,
+  MONK_MASTER_PAINS,
+  MONK_MASTER_TEARS,
+  MONK_GRANDMASTER
 };
 
 // different priesthoods
@@ -1110,6 +1122,7 @@ enum location_id
   L_TEMPLE,
   L_COUNTRYSIDE,
   L_BROTHEL,
+  L_MONASTERY,
   // end of city sites
 
   L_JAIL,
@@ -1208,7 +1221,7 @@ enum location_id
   L_ABYSS
 };
 constexpr int CITYSITEBASE = L_CHARITY;
-constexpr int NUMCITYSITES = L_BROTHEL - CITYSITEBASE + 1;
+constexpr int NUMCITYSITES = L_MONASTERY - CITYSITEBASE + 1;
 
 // player possession slots
 enum inventory_slots

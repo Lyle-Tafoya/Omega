@@ -56,7 +56,7 @@ void p_hit(struct monster *m, int dmg, int dtype)
   switch(random_range(10))
   {
     case 0:
-      if(random_range(100) < Player.level)
+      if(random_range(100) < Player.level + std::max(0, Player.rank[MONKS]))
       {
         hit_message = "You annihilate ";
         dmult = 1000;
@@ -120,6 +120,12 @@ void p_hit(struct monster *m, int dmg, int dtype)
   {
     queue_message("You hit it.");
   }
+
+  if(!Player.possessions[O_WEAPON_HAND] && Player.rank[MONKS] > MONK_MASTER_SIGHS)
+  {
+    dtype = UNSTOPPABLE;
+  }
+
   m_damage(m, dmult * random_range(dmg), dtype);
   if((Verbosity != TERSE) && (random_range(10) == 3) && (m->hp > 0))
   {

@@ -134,6 +134,7 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, Phase);
   file_write(save_file, Date);
   file_write(save_file, Spellsleft);
+  file_write(save_file, Studiesleft);
   file_write(save_file, SymbolUseDay);
   file_write(save_file, SymbolUseHour);
   file_write(save_file, ViewDay);
@@ -601,6 +602,7 @@ void restore_player(std::ifstream &save_file, player &p)
   file_read(save_file, Phase);
   file_read(save_file, Date);
   file_read(save_file, Spellsleft);
+  file_read(save_file, Studiesleft);
   file_read(save_file, SymbolUseDay);
   file_read(save_file, SymbolUseHour);
   file_read(save_file, ViewDay);
@@ -753,10 +755,16 @@ void restore_hiscore_npc(monster *npc, int npcid)
       level    = Lawlordlevel;
       behavior = Lawlordbehavior;
       break;
-    default:
+    case 15:
       npc_name = Justiciar;
       level    = Justiciarlevel;
       behavior = Justiciarbehavior;
+      break;
+    case 16:
+      npc_name = Grandmaster;
+      level    = Grandmasterlevel;
+      behavior = Grandmasterbehavior;
+      break;
   }
   npc->monstring = npc_name;
   npc->corpsestr = std::format("The body of {}", npc_name);

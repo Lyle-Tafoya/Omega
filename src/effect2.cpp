@@ -439,6 +439,37 @@ void knowledge(int blessing)
     {
       lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[PRIESTHOOD]);
     }
+    if(Player.rank[MONKS] > 0)
+    {
+      switch(Player.rank[MONKS])
+      {
+        case MONK_GRANDMASTER:
+          lines.emplace_back("Tholian Monks: Grandmaster");
+          break;
+        case MONK_MASTER_TEARS:
+          lines.emplace_back("Tholian Monks: Master of Tears");
+          break;
+        case MONK_MASTER_PAINS:
+          lines.emplace_back("Tholian Monks: Master of Pain");
+          break;
+        case MONK_MASTER_SIGHS:
+          lines.emplace_back("Tholian Monks: Master of Sighs");
+          break;
+        case MONK_MASTER:
+          lines.emplace_back("Tholian Monks: Master");
+          break;
+        case MONK_MONK:
+          lines.emplace_back("Tholian Monks: Monk");
+          break;
+        case MONK_TRAINEE:
+          lines.emplace_back("Tholian Monks: Trainee");
+          break;
+      }
+      if(Player.rank[MONKS] > 0)
+      {
+        lines.back() += std::format(" ({} XP)", Player.guildxp[MONKS]);
+      }
+    }
     if(Player.rank[ADEPT] > 0)
     {
       lines.emplace_back("");

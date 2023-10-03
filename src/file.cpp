@@ -309,6 +309,8 @@ void read_scores()
   high_score_file >> Lawlordlevel >> Law >> Lawlordbehavior >> std::ws;
   std::getline(high_score_file, Justiciar);
   high_score_file >> Justiciarlevel >> Justiciarbehavior >> std::ws;
+  std::getline(high_score_file, Grandmaster);
+  high_score_file >> Grandmasterlevel >> Grandmasterbehavior >> std::ws;
 
   high_score_file.close();
 
@@ -372,6 +374,8 @@ void save_hiscore_npc(int npc)
         case 15:
           outfile << std::format("{}\n{} {}\n", Justiciar, Justiciarlevel, Justiciarbehavior);
           break;
+        case 16:
+          outfile << std::format("{}\n{} {}", Grandmaster, Grandmasterlevel, Grandmasterbehavior);
       }
     }
     std::string buffer;

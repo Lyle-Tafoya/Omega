@@ -119,6 +119,7 @@ int  Tick      = 0;                        /* 10 a turn; action coordinator */
 std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer; /* last strings printed */
 long Gymcredit       = 0;                  /* credit at rampart gym */
 int  Spellsleft      = 0;                  /* research allowance at college */
+int  Studiesleft     = 0;                  // Study allowance at monastery
 int  StarGemUse      = 0;                  /* last date of star gem use */
 int  HiMagicUse      = 0;                  /* last date of high magic use */
 int  HiMagic         = 0;                  /* current level for l_throne */
@@ -135,12 +136,12 @@ pol Condoitems = nullptr; /* Items in condo */
 /* high score names, levels, behavior */
 int  Shadowlordbehavior, Archmagebehavior, Primebehavior, Commandantbehavior;
 int  Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
-int  Chaoslordbehavior, Lawlordbehavior, Justiciarbehavior;
+int  Chaoslordbehavior, Lawlordbehavior, Justiciarbehavior, Grandmasterbehavior;
 std::string Shadowlord, Archmage, Prime, Commandant, Duke;
 std::string Champion, Priest[7], Hiscorer, Hidescrip;
-std::string Chaoslord, Lawlord, Justiciar;
+std::string Chaoslord, Lawlord, Justiciar, Grandmaster;
 int  Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel, Dukelevel;
-int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel;
+int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel, Grandmasterlevel;
 long Hiscore        = 0L;
 int  Chaoslordlevel = 0, Lawlordlevel = 0, Chaos = 0, Law = 0;
 

@@ -275,6 +275,9 @@ void p_movefunction(int movef)
       case L_MERC_GUILD:
         l_merc_guild();
         break;
+      case L_MONASTERY:
+        l_monastery();
+        break;
       case L_ALCHEMIST:
         l_alchemist();
         break;

@@ -404,6 +404,11 @@ void m_death(struct monster *m)
               mprint("snickers a bit, and vanishes.");
             }
             break;
+          case 16:
+            queue_message("The universal equilibrium slides down a notch.");
+            Grandmaster = nameprint();
+            Grandmasterbehavior = 2933;
+            break;
         }
         save_hiscore_npc(m->aux2);
         break;
@@ -892,6 +897,10 @@ void make_hiscore_npc(pmt npc, int npcid)
       npc->specialf = M_SP_WHISTLEBLOWER;
       m_status_reset(*npc, WANDERING);
       m_status_reset(*npc, HOSTILE);
+      break;
+    case 16:
+      npc_name = Grandmaster;
+      determine_npc_behavior(npc, Grandmasterlevel, Grandmasterbehavior);
       break;
   }
   if(st > -1 && Objects[st].uniqueness == UNIQUE_MADE)

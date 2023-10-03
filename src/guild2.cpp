@@ -415,6 +415,10 @@ void l_college()
         {
           print2("Sorcery and our Magic are rather incompatable, no?");
         }
+        else if(Player.rank[MONKS] > 0)
+        {
+          queue_message("Meditation will not leave you enough time for studies.");
+        }
         else
         {
           if(Player.iq > 17)
@@ -576,6 +580,326 @@ void l_college()
   xredraw();
 }
 
+void l_monastery()
+{
+  bool enrolled = false;
+  queue_message("Tholian Monastery of Rampart. Founded 12031, AOF.");
+  queue_message("Welcome to our humble hovel.");
+  if(nighttime())
+  {
+    queue_message("The monastery doors are sealed until dawn.");
+  }
+  else
+  {
+    bool done=false;
+    while(!done)
+    {
+      menuclear();
+      menuprint("Find your True Course:\n\n");
+      menuprint("a: Discover the Way.\n");
+      menuprint("b: Meditate on the Path.\n");
+      menuprint("c: Meditate on Knowledge.\n");
+      menuprint("d: Take an extended Meditation.\n");
+      menuprint("ESCAPE: Re-enter the World.\n");
+      showmenu();
+      char action = mgetc();
+      if(action == ESCAPE)
+      {
+        done = true;
+        calc_melee();
+      }
+      else if(action == 'a')
+      {
+        if(Player.rank[MONKS] > 0)
+        {
+          queue_message("You are already initiated, Brother.");
+        }
+        else if(Player.con < 13)
+        {
+          queue_message("Your body is too fragile to walk the Path, child.");
+        }
+        else if(Player.pow < 13)
+        {
+          queue_message("Your mind is too fragile to follow the Path, child.");
+        }
+        else if(Player.rank[COLLEGE] > 0)
+        {
+          queue_message("The Collegium has corruputed your spirit, child.");
+        }
+        else if(Player.rank[CIRCLE] > 0)
+        {
+          queue_message("The Circle has corruputed your spirit, child.");
+        }
+        else
+        {
+          if(Player.pow > 17)
+          {
+            queue_message("Your spirit is strong. You may study the Path with us.");
+            enrolled=true;
+          }
+          else
+          {
+            queue_message("A substantial cash sacrifice will cleanse your spirit.. ");
+            queue_message("Donate your worldly goods? [yn] ");
+            if(ynq1() =='y')
+            {
+              if (Player.cash < 1000)
+              {
+                // WDT HACK! I'd rather the monks have some other criteria for joining
+                queue_message("You have not much to give.");
+              }
+              else
+              {
+                Player.cash = 0;
+                enrolled = true;
+                dataprint();
+              }
+            }
+          }
+          if(enrolled)
+          {
+            queue_message(std::format("Grandmaster {} welcomes you to the Brotherhood.", Grandmaster));
+            queue_message("You are now a Tholian Monk trainee!");
+            queue_message("You may study the Way with us.");
+            Studiesleft = 1;
+            Player.rank[MONKS] = MONK_TRAINEE;
+            Player.guildxp[MONKS] = 1;
+            Player.maxpow += 1;
+            Player.pow += 1;
+          }
+        }
+      }
+      else if(action == 'b')
+      {
+        if(Player.rank[MONKS] == 0)
+        {
+          queue_message("You are not yet initiated, child.");
+        }
+        else if(Player.rank[MONKS]==MONK_GRANDMASTER)
+        {
+          queue_message("Your advancement lies within, Grandmaster.");
+        }
+        else if(Player.rank[MONKS]==MONK_MASTER_TEARS)
+        {
+          if(Player.level <= Grandmasterlevel)
+          {
+            queue_message("Seek more experience, Master.");
+          }
+          else if(Player.rank[MONKS]==MONK_MASTER_TEARS && Player.level > Grandmasterlevel && find_and_remove_item(CORPSEID,EATER))
+          {
+            queue_message("You brought back the heart of the Eater of Magic!");
+            queue_message("The Heart is sent to the placed in the kitchen cauldron.");
+            queue_message("The Grandmaster steps down. You are the new Grandmaster.");
+            Grandmaster = Player.name;
+            Grandmasterlevel = Player.level;
+            Player.rank[MONKS] = MONK_GRANDMASTER;
+            Player.maxhp += (Player.maxpow * 3);
+            Player.maxiq += 5;
+            Player.iq+= 5;
+            Player.maxpow += 3;
+            Player.pow += 3;
+            Player.maxstr += 3;
+            Player.str += 3;
+            Grandmasterbehavior = fixnpc(4);
+            save_hiscore_npc(16);
+          }
+          else
+          {
+            queue_message("You must return with the heart of the Eater of Magic!");
+          }
+
+        }
+        else if(Player.rank[MONKS]==MONK_MASTER_PAINS)
+        {
+          if(Player.guildxp[MONKS] < 40000)
+          {
+            queue_message("Seek more experience, Master.");
+          }
+          else
+          {
+            queue_message("You have travelled far, Master.");
+            queue_message("You are now Master of Tears.");
+            Studiesleft += 6;
+            queue_message("To become Grandmaster, you must return with the");
+            queue_message("heart of the Eater of Magic");
+            queue_message("The Eater may be found on a desert isle somewhere.");
+            spell::Spells[spell::REGENERATE].known = true;
+            Player.rank[MONKS] = MONK_MASTER_TEARS;
+            Player.maxhp += (Player.maxpow * 2);
+            Player.maxpow += 2;
+            Player.pow += 2;
+            Player.maxstr += 2;
+            Player.str += 2;
+            Player.maxagi += 2;
+            Player.agi += 2;
+          }
+        }
+        else if(Player.rank[MONKS]==MONK_MASTER_SIGHS)
+        {
+          if(Player.guildxp[MONKS] < 15000)
+          {
+            queue_message("Seek more experience, Master.");
+          }
+          else
+          {
+            queue_message("The Path is long, Master.");
+            queue_message("You are now Master of Pain.");
+            queue_message("You feel enlightened.");
+            Studiesleft +=4;
+            spell::Spells[spell::RITUAL_MAGIC].known = true;
+            spell::Spells[spell::RESTORATION].known = true;
+            Player.status[ILLUMINATION] = 1500;  // enlightened
+            Player.rank[MONKS] = MONK_MASTER_PAINS;
+            Player.maxhp += Player.maxpow;
+            Player.maxcon += 1;
+            Player.con += 1;
+            Player.maxdex += 2;
+            Player.dex += 2;
+          }
+        }
+        else if (Player.rank[MONKS]==MONK_MASTER)
+        {
+          if(Player.guildxp[MONKS] < 9000)
+          {
+            queue_message("Seek more experience, Master.");
+          }
+          else {
+            queue_message("Drink, weary Master.");
+            queue_message("You are now Master of Sighs.");
+            Studiesleft +=2;
+            spell::Spells[spell::HASTE].known = true;
+            Player.rank[MONKS] = MONK_MASTER_SIGHS;
+            Player.maxhp += Player.maxpow;
+            Player.maxcon += 1;
+            Player.con += 1;
+            Player.maxiq += 2;
+            Player.iq += 2;
+          }
+        }
+        else if(Player.rank[MONKS]==MONK_MONK)
+        {
+          if(Player.guildxp[MONKS] < 3000)
+          {
+            queue_message("Seek more experience, Brother.");
+          }
+          else
+          {
+            queue_message("A thousand steps on the path, Brother.");
+            queue_message("You are now a Master.");
+            Studiesleft +=2;
+            spell::Spells[spell::HEALING].known = true;
+            Player.rank[MONKS] = MONK_MASTER;
+            Player.maxhp += Player.maxpow;
+            Player.maxcon += 1;
+            Player.con += 1;
+            Player.maxpow += 2;
+            Player.pow += 5;
+          }
+        }
+        else if(Player.rank[MONKS]==MONK_TRAINEE)
+        {
+          if(Player.guildxp[MONKS] < 1500)
+          {
+            queue_message("Seek more experience, Brother.");
+          }
+          else
+          {
+            queue_message("You have sought wisdom, Brother.");
+            queue_message("You are now a Tholian Monk.");
+            Studiesleft +=2;
+            spell::Spells[spell::CURING].known = true;
+            Player.rank[MONKS] = MONK_MONK;
+            Player.maxhp += Player.maxpow;
+            Player.maxcon += 1;
+            Player.con += 1;
+            Player.maxpow += 1;
+            Player.pow += 1;
+          }
+        }
+      }
+      else if(action == 'c')
+      {
+        if(Studiesleft > 0)
+        {
+          queue_message(std::format("Studies permitted: {} Studies.", Studiesleft));
+        }
+        if(Studiesleft < 1)
+        {
+          queue_message("Sacrifice clears a cluttered heart. ");
+          queue_message("Donate your worldly cash? [yn] ");
+          if(ynq1()=='y')
+          {
+            if(Player.cash < 2000)
+            {
+              if(Player.rank[MONKS] >= MONK_GRANDMASTER)
+                queue_message("You have not much to give, Grandmaster.");
+              else if(Player.rank[MONKS] >= MONK_MASTER)
+              {
+                queue_message("You have not much to give, Master.");
+              }
+              else
+              {
+                queue_message("You have not much to give, Brother.");
+              }
+            }
+            else
+            {
+              Player.cash = 0;
+              dataprint();
+              Studiesleft = 1;
+            }
+          }
+        }
+        if(Studiesleft > 0)
+        {
+          learnspell(0);
+          --Studiesleft;
+        }
+      }
+      else if(action == 'd')
+      {
+        if (Player.rank[MONKS] < MONK_MASTER)
+        {
+          queue_message("Only Masters can achieve extended meditation, child.");
+        }
+        else
+        {
+          queue_message("Seeking inner truth...");
+          toggle_item_use(true);
+          Player.cash = 0;
+          Player.hp = Player.maxhp;
+          Player.str = Player.maxstr;
+          Player.agi = Player.maxagi;
+          Player.con = Player.maxcon;
+          Player.dex = Player.maxdex;
+          Player.iq = Player.maxiq;
+          Player.pow = Player.maxpow;
+          for(int i=0; i < NUMSTATI; ++i)
+          {
+            if(Player.status[i] < 1000)
+            {
+              Player.status[i]=0;
+            }
+          }
+          toggle_item_use(false);
+          Player.food = 43;
+          queue_message("Your body and mind are whole.");
+          if(random_range(2))
+          {
+            queue_message("Extra whole!");
+            Player.maxhp += 1;
+          }
+        }
+        Time += 60*24*7;
+        Date += 7;
+        moon_check();
+        timeprint();
+      }
+    }
+  }
+  xredraw();
+}
+
 void l_sorcerors()
 {
   char action;
@@ -633,6 +957,10 @@ void l_sorcerors()
         else if(Player.rank[COLLEGE] != 0)
         {
           print2("Foolish Mage!  You don't have the right attitude to Power!");
+        }
+        else if(Player.rank[MONKS] > 0)
+        {
+          queue_message("Stupid monk. Go meditate on this!");
         }
         else
         {

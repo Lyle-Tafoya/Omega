@@ -197,6 +197,8 @@ extern std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer;
 extern long Gymcredit;
 /* credit at rampart gym */
 
+extern int Studiesleft;
+
 extern int Spellsleft;
 /* research allowance at college */
 
@@ -236,13 +238,13 @@ extern pol Condoitems;
 /* high score names, levels, behavior */
 
 extern int  Shadowlordbehavior, Archmagebehavior, Primebehavior, Justiciarbehavior;
-extern int  Commandantbehavior, Chaoslordbehavior, Lawlordbehavior;
+extern int  Commandantbehavior, Chaoslordbehavior, Lawlordbehavior, Grandmasterbehavior;
 extern int  Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
 extern std::string Shadowlord, Archmage, Prime, Commandant, Duke;
 extern std::string Champion, Priest[7], Hiscorer, Hidescrip;
-extern std::string Chaoslord, Lawlord, Justiciar;
+extern std::string Chaoslord, Lawlord, Justiciar, Grandmaster;
 extern int  Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel, Dukelevel;
-extern int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel;
+extern int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel, Grandmasterlevel;
 extern long Hiscore;
 extern int  Chaoslordlevel, Lawlordlevel, Chaos, Law;
 

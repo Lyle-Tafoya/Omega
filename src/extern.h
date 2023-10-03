@@ -356,6 +356,7 @@ void l_merc_guild(void);
 /* guild2.cpp functions */
 
 void l_college(void);
+void l_monastery();
 void l_order(void);
 void l_sorcerors(void);
 void l_thieves_guild(void);

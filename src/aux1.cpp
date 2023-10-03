@@ -418,6 +418,14 @@ void calc_melee()
     Player.hit += 10;
     Player.dmg += 10;
   }
+  else if(Player.rank[MONKS] > 0)
+  {
+    // monks are faster when not in armor or on horseback
+    if(!Player.possessions[O_ARMOR])
+    {
+      Player.speed += std::min(0, Player.rank[MONKS]-1);
+    }
+  }
 
   /* weapon */
   /* have to check for used since it could be a 2h weapon just carried
@@ -430,6 +438,21 @@ void calc_melee()
     {
       Player.hit += Player.possessions[O_WEAPON_HAND]->hit + Player.possessions[O_WEAPON_HAND]->plus;
       Player.dmg += Player.possessions[O_WEAPON_HAND]->dmg + Player.possessions[O_WEAPON_HAND]->plus;
+    }
+  }
+
+  if(Player.rank[MONKS] > 0)
+  {
+    if(!Player.possessions[O_WEAPON_HAND])
+    {
+      Player.hit += Player.rank[MONKS] * Player.level;
+      Player.dmg += Player.rank[MONKS] * Player.level;
+      Player.defense += Player.rank[MONKS] * Player.level;
+
+      if(Player.rank[MONKS] == MONK_GRANDMASTER)
+      {
+        Player.dmg *= 3;
+      }
     }
   }
 
