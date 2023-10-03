@@ -33,4 +33,6 @@ void file_read(std::ifstream &file, T &data)
   file.read(reinterpret_cast<char *>(&data), sizeof(data));
 }
 
+extern void read_scores();
+
 #endif

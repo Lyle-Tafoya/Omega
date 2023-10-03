@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* also some in file.c */
 
 #include "defs.h"
+#include "file.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
 #include "scrolling_buffer.hpp"
@@ -2359,4 +2360,54 @@ void clear_screen()
   clear();
   touchwin(stdscr);
   refresh();
+}
+
+void showscores()
+{
+  read_scores();
+  clear();
+  addstr(std::format(
+      "High Score: {}, by {} ({})\n"
+      "{}\n"
+      "\n"
+      "Lord of Chaos: {} ({})\n"
+      "Lord of Law: {} ({})\n"
+      "\n"
+      "Duke of Rampart:              {} ({})\n"
+      "Justiciar:                    {} ({})\n"
+      "Commanadnt:                   {} ({})\n"
+      "Champion:                     {} ({})\n"
+      "Archmage:                     {} ({})\n"
+      "Prime Sorceror:               {} ({})\n"
+      "Shadowlord:                   {} ({})\n"
+      "\n"
+      "High Preists:\n"
+      " of Odin:                     {} ({})\n"
+      " of Set:                      {} ({})\n"
+      " of Athena:                   {} ({})\n"
+      " of Hecate:                   {} ({})\n"
+      " of the Lords of Destiny      {} ({})\n"
+      "The ArchDruid:                {} ({})\n"
+      "\n"
+      "Hit any key to continue.",
+      Hiscore, Hiscorer, levelname(Hilevel),
+      Hidescrip,
+      Chaoslord, levelname(Chaoslordlevel),
+      Lawlord, levelname(Lawlordlevel),
+      Duke, levelname(Dukelevel),
+      Justiciar, levelname(Justiciarlevel),
+      Commandant, levelname(Commandantlevel),
+      Champion, levelname(Championlevel),
+      Archmage, levelname(Archmagelevel),
+      Prime, levelname(Primelevel),
+      Shadowlord, levelname(Shadowlordlevel),
+      Priest[ODIN], levelname(Priestlevel[ODIN]),
+      Priest[SET], levelname(Priestlevel[SET]),
+      Priest[ATHENA], levelname(Priestlevel[ATHENA]),
+      Priest[HECATE], levelname(Priestlevel[HECATE]),
+      Priest[DESTINY], levelname(Priestlevel[DESTINY]),
+      Priest[DRUID], levelname(Priestlevel[DRUID])
+  ).c_str());
+  wgetch(stdscr);
+  clear_screen();
 }

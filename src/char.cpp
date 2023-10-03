@@ -153,6 +153,7 @@ void initplayer(bool play_yourself = false)
 // items initialized in game_restore if game is being restored
 void init_game(bool play_yourself = false)
 {
+  read_scores();
   inititem(true);
   Date = random_range(360);
   Phase = random_range(24);

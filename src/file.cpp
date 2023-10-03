@@ -276,9 +276,10 @@ void unlock_score_file()
   std::filesystem::remove(std::format("{}omega.hi.lock", Omegalib));
 }
 
-void showscores()
+void read_scores()
 {
   lock_score_file();
+
   std::string high_scores_file_path = std::format("{}omega.hi", Omegalib);
   std::fstream high_score_file = check_fstream_open(high_scores_file_path, std::ios::in);
 
@@ -312,51 +313,6 @@ void showscores()
   high_score_file.close();
 
   unlock_score_file();
-  clear();
-  addstr(std::format(
-      "High Score: {}, by {} ({})\n"
-      "{}\n"
-      "\n"
-      "Lord of Chaos: {} ({})\n"
-      "Lord of Law: {} ({})\n"
-      "\n"
-      "Duke of Rampart:              {} ({})\n"
-      "Justiciar:                    {} ({})\n"
-      "Commanadnt:                   {} ({})\n"
-      "Champion:                     {} ({})\n"
-      "Archmage:                     {} ({})\n"
-      "Prime Sorceror:               {} ({})\n"
-      "Shadowlord:                   {} ({})\n"
-      "\n"
-      "High Preists:\n"
-      " of Odin:                     {} ({})\n"
-      " of Set:                      {} ({})\n"
-      " of Athena:                   {} ({})\n"
-      " of Hecate:                   {} ({})\n"
-      " of the Lords of Destiny      {} ({})\n"
-      "The ArchDruid:                {} ({})\n"
-      "\n"
-      "Hit any key to continue.",
-      Hiscore, Hiscorer, levelname(Hilevel),
-      Hidescrip,
-      Chaoslord, levelname(Chaoslordlevel),
-      Lawlord, levelname(Lawlordlevel),
-      Duke, levelname(Dukelevel),
-      Justiciar, levelname(Justiciarlevel),
-      Commandant, levelname(Commandantlevel),
-      Champion, levelname(Championlevel),
-      Archmage, levelname(Archmagelevel),
-      Prime, levelname(Primelevel),
-      Shadowlord, levelname(Shadowlordlevel),
-      Priest[ODIN], levelname(Priestlevel[ODIN]),
-      Priest[SET], levelname(Priestlevel[SET]),
-      Priest[ATHENA], levelname(Priestlevel[ATHENA]),
-      Priest[HECATE], levelname(Priestlevel[HECATE]),
-      Priest[DESTINY], levelname(Priestlevel[DESTINY]),
-      Priest[DRUID], levelname(Priestlevel[DRUID])
-  ).c_str());
-  wgetch(stdscr);
-  clear_screen();
 }
 
 /* Writes a new high-score file, with the nominated npc as whatever it is */
