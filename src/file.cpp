@@ -34,6 +34,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern std::string get_home_path();
 extern void queue_message(const std::string &message);
+extern std::string version_string(int version);
 
 void save_omegarc()
 {
@@ -45,6 +46,8 @@ void save_omegarc()
   }
   else
   {
+    file_write(omegarc_file, CONFIG_FILE_VERSION);
+    file_write(omegarc_file, GAME_VERSION);
     file_write(omegarc_file, Player.maxstr);
     file_write(omegarc_file, Player.maxcon);
     file_write(omegarc_file, Player.maxdex);
@@ -54,8 +57,26 @@ void save_omegarc()
   }
 }
 
-void read_omegarc(std::ifstream &omegarc_file)
+bool read_omegarc()
 {
+  std::filesystem::path omegarc_path{std::format("{}/.omegarc", get_home_path())};
+  std::ifstream omegarc_file{omegarc_path, std::ios::binary};
+  if(!omegarc_file.is_open())
+  {
+    queue_message("Found omegarc, but could not open it!");
+    return false;
+  }
+  int config_file_version;
+  file_read(omegarc_file, config_file_version);
+  int game_version;
+  file_read(omegarc_file, game_version);
+  if(config_file_version != CONFIG_FILE_VERSION)
+  {
+    omegarc_file.close();
+    queue_message("Sorry, I can't load an outdated omegarc file!");
+    queue_message("omegarc is from version " + version_string(game_version));
+    return false;
+  }
   file_read(omegarc_file, Player.maxstr);
   file_read(omegarc_file, Player.maxcon);
   file_read(omegarc_file, Player.maxdex);
@@ -68,6 +89,16 @@ void read_omegarc(std::ifstream &omegarc_file)
   Player.agi = Player.maxagi;
   Player.iq = Player.maxiq;
   Player.pow = Player.maxpow;
+  omegarc_file.close();
+  if(omegarc_file.fail())
+  {
+    queue_message("Error reading omegarc file!");
+    return false;
+  }
+  else
+  {
+    return true;
+  }
 }
 
 std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode)
@@ -199,6 +230,7 @@ void showmotd()
 
 void lock_score_file()
 {
+#ifdef MULTI_USER_SYSTEM
   int   attempts = 0;
   int64_t timestamp, last_timestamp = -1;
 
@@ -236,6 +268,7 @@ void lock_score_file()
     }
   } while(!lock.is_open());
   lock.close();
+#endif
 }
 
 void unlock_score_file()

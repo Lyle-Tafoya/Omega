@@ -114,7 +114,6 @@ void   terrain_check(int);
 long  calcmana(void);
 int   competence_check(int);
 int   fixnpc(int);
-void  initplayer(void);
 void  omegan_character_stats(void);
 void  save_omegarc(void);
 void  user_character_stats(void);

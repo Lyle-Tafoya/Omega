@@ -43,6 +43,9 @@ extern void msdos_init();
 
 extern std::mt19937 generator;
 extern std::string get_username();
+extern bool title_menu();
+extern void init_game(bool play_yourself = false);
+extern void queue_message(const std::string &message);
 
 /* most globals originate in omega.c */
 
@@ -273,30 +276,26 @@ int main()
 
   omega_title();
 
+  Player.name = get_username();
+  Player.name.front() = std::toupper(Player.name.front());
+  optionset(SHOW_COLOUR, Player);
   bool continuing = false;
 
 #ifdef MULTI_USER_SYSTEM
-  std::string player_name = get_username();
-  player_name.front() = std::toupper(player_name.front());
-  continuing = game_restore(std::format("{}saves/{}/{}.sav", Omegalib, get_username(), player_name));
-#endif
+  continuing = game_restore(std::format("{}saves/{}/{}.sav", Omegalib, get_username(), Player.name));
 
-  // monsters initialized in game_restore if game is being restored
-  // items initialized in game_restore if game is being restored
+  showscores();
   if(!continuing)
   {
-    inititem(true);
-    Date  = random_range(360);
-    Phase = random_range(24);
-    initplayer();
-    init_world();
-    xredraw();
-    mprint("'?' for help or commandlist, 'Q' to quit.");
+    init_game(false);
   }
-  else
+#else
+  continuing = title_menu();
+#endif
+
+  if(continuing)
   {
-    showscores();
-    mprint("Your adventure continues....");
+    queue_message("Your adventure continues....");
   }
 
   timeprint();
@@ -320,6 +319,7 @@ int main()
   }
 
   screencheck(Player.x, Player.y);
+  xredraw();
 
   // game cycle
   if(!continuing)

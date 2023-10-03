@@ -35,7 +35,7 @@ extern void enable_attr(WINDOW *, attr_t);
 extern void queue_message(const std::string &message);
 extern void expand_message_window();
 extern void shrink_message_window();
-extern void read_omegarc(std::ifstream &omegarc_file);
+extern bool read_omegarc();
 extern void save_omegarc();
 extern void restore_player(std::ifstream &save_file, player &p);
 bool game_restore(const std::filesystem::path &save_file_path);
@@ -93,7 +93,76 @@ std::string version_string(int version)
   return std::format("{}.{}.{}", major_version, minor_version, bugfix_version);
 }
 
-void title_menu()
+// set player to begin with
+void initplayer(bool play_yourself = false)
+{
+  Player.itemweight = 0;
+  Player.food       = 36;
+  Player.packptr    = 0;
+  Behavior          = -1;
+  Player.options    = 0;
+  for(int i = 0; i < MAXITEMS; ++i)
+  {
+    Player.possessions[i] = nullptr;
+  }
+  for(int i = 0; i < MAXPACK; ++i)
+  {
+    Player.pack[i] = nullptr;
+  }
+  for(int i = 0; i < NUMIMMUNITIES; ++i)
+  {
+    Player.immunity[i] = 0;
+  }
+  for(int i = 0; i < NUMSTATI; ++i)
+  {
+    Player.status[i] = 0;
+  }
+  for(int i = 0; i < NUMRANKS; ++i)
+  {
+    Player.rank[i]    = 0;
+    Player.guildxp[i] = 0;
+  }
+  Player.patron    = 0;
+  Player.alignment = 0;
+  Player.cash      = 250;
+
+  optionset(RUNSTOP, Player);
+  optionset(CONFIRM, Player);
+  optionset(SHOW_COLOUR, Player);
+
+  if(play_yourself)
+  {
+    expand_message_window();
+    user_character_stats();
+    shrink_message_window();
+  }
+  else
+  {
+    omegan_character_stats();
+  }
+  Searchnum = std::max(1, std::min(9, Searchnum));
+  Player.hp = Player.maxhp = Player.maxcon;
+  Player.mana = Player.maxmana = calcmana();
+  Player.click                 = 1;
+  Player.meleestr = "ACBC";
+  calc_melee();
+  ScreenOffset = -1000; /* to force a redraw */
+}
+
+// monsters initialized in game_restore if game is being restored
+// items initialized in game_restore if game is being restored
+void init_game(bool play_yourself = false)
+{
+  inititem(true);
+  Date = random_range(360);
+  Phase = random_range(24);
+  initplayer(play_yourself);
+  init_world();
+  xredraw();
+  queue_message("'?' for help or commandlist, 'Q' to quit.");
+}
+
+bool title_menu()
 {
   const std::string default_name = Player.name;
   std::filesystem::path save_directory = std::format("{}saves/{}", Omegalib, get_username());
@@ -112,13 +181,15 @@ void title_menu()
         std::ifstream save_file{file_path, std::ios::binary};
         if(save_file)
         {
-          int version;
-          file_read(save_file, version);
+          int save_file_version;
+          file_read(save_file, save_file_version);
+          int game_version;
+          file_read(save_file, game_version);
           restore_player(save_file, p);
           if(!save_file.fail())
           {
 
-            std::string line{std::format("{}, Level {}, v{}", p.name, p.level, version_string(version))};
+            std::string line{std::format("{}, Level {}, v{}", p.name, p.level, version_string(game_version))};
             if(line.length() > longest_line_length)
             {
               longest_line_length = line.length();
@@ -149,9 +220,9 @@ void title_menu()
   int player_input;
   while(true)
   {
-    clear();
+    erase();
     attron(CLR(BLUE) | A_BOLD);
-    mvaddstr(0, 0, std::format("Welcome to Omega Rebirth v{}!", version_string(VERSION)).c_str());
+    mvaddstr(0, 0, std::format("Welcome to Omega Rebirth v{}!", version_string(GAME_VERSION)).c_str());
     attroff(CLR(BLUE) | A_BOLD);
     attron(CLR(GREY) | A_BOLD);
     mvaddstr(1, 0, "(c) Copyright 1987-1989 Lawrence R. Brothers, 2019,2021-2023 Lyle Tafoya");
@@ -222,20 +293,13 @@ void title_menu()
             Player.name = name.empty() ? default_name : name;
             erase();
             refresh();
-            omegan_character_stats();
-            return;
+            init_game(false);
+            return false;
           case PLAY_YOURSELF:
             Player.name = name.empty() ? default_name : name;
-            expand_message_window();
-            user_character_stats();
-            queue_message("Do you want to save this set-up to .omegarc in your home directory? [yn] ");
-            if(ynq1() == 'y')
-            {
-              save_omegarc();
-            }
-            shrink_message_window();
+            init_game(true);
             user_intro();
-            return;
+            return false;
           case SHOW_SCORES:
             showscores();
             break;
@@ -246,8 +310,10 @@ void title_menu()
             break;
           default:
             erase();
-            game_restore(save_file_paths[selected_option-menu_lines.size()]);
-            return;
+            if(game_restore(save_file_paths[selected_option-menu_lines.size()]))
+            {
+              return true;
+            }
         }
         break;
       case KEY_UP:
@@ -277,58 +343,6 @@ void title_menu()
         break;
     }
   }
-}
-
-// set player to begin with
-void initplayer()
-{
-  Player.name = get_username();
-  Player.name.front() = std::toupper(Player.name.front());
-  Player.itemweight = 0;
-  Player.food       = 36;
-  Player.packptr    = 0;
-  Behavior          = -1;
-  Player.options    = 0;
-  for(int i = 0; i < MAXITEMS; ++i)
-  {
-    Player.possessions[i] = nullptr;
-  }
-  for(int i = 0; i < MAXPACK; ++i)
-  {
-    Player.pack[i] = nullptr;
-  }
-  for(int i = 0; i < NUMIMMUNITIES; ++i)
-  {
-    Player.immunity[i] = 0;
-  }
-  for(int i = 0; i < NUMSTATI; ++i)
-  {
-    Player.status[i] = 0;
-  }
-  for(int i = 0; i < NUMRANKS; ++i)
-  {
-    Player.rank[i]    = 0;
-    Player.guildxp[i] = 0;
-  }
-  Player.patron    = 0;
-  Player.alignment = 0;
-  Player.cash      = 250;
-  optionset(RUNSTOP, Player);
-  optionset(CONFIRM, Player);
-  optionset(SHOW_COLOUR, Player);
-#ifdef MULTI_USER_SYSTEM
-  showscores();
-  omegan_character_stats();
-#else
-  title_menu();
-#endif
-  Searchnum = std::max(1, std::min(9, Searchnum));
-  Player.hp = Player.maxhp = Player.maxcon;
-  Player.mana = Player.maxmana = calcmana();
-  Player.click                 = 1;
-  Player.meleestr = "ACBC";
-  calc_melee();
-  ScreenOffset = -1000; /* to force a redraw */
 }
 
 long calcmana()
@@ -462,6 +476,18 @@ int competence_check(int attack)
 
 void user_character_stats()
 {
+  std::filesystem::path omegarc_path{std::format("{}/.omegarc", get_home_path())};
+  if(std::filesystem::exists(omegarc_path))
+  {
+    queue_message("Would you like to load saved responses from your .omegarc? ");
+    if(ynq() == 'y')
+    {
+      if(read_omegarc())
+      {
+        return;
+      }
+    }
+  }
   int iqpts = 0, numints = 0, ok, agipts = 0, dexpts = 0, powpts = 0, conpts = 0;
   message_buffer.receive("OK, now try to answer the following questions honestly:");
   message_buffer.receive("How many pounds can you bench press? ");
@@ -792,6 +818,12 @@ void user_character_stats()
     message_buffer.receive("Is that blarney or what?", true);
   }
   Player.pow = Player.maxpow = 3 + powpts / 2;
+
+  queue_message("Do you want to save this set-up to .omegarc in your home directory? [yn] ");
+  if(ynq1() == 'y')
+  {
+    save_omegarc();
+  }
 }
 
 void omegan_character_stats()
@@ -895,5 +927,4 @@ void omegan_character_stats()
         break;
     }
   }
-  wclear(menu_window);
 }
