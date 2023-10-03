@@ -1068,147 +1068,147 @@ enum options_bits
 #define ELEM_MASTER             (ML10 + 9)
 
 // location functions
-#define L_NO_OP                 0
+enum location_id
+{
+  // random sites
+  L_NO_OP,
+  L_LIFT,
+  L_BALANCESTONE,
+  L_FIRE,
+  L_WHIRLWIND,
+  L_VOIDSTONE,
+  L_WARNING,
+  L_ARENA_EXIT,
+  L_HOUSE_EXIT,
+  L_SAFE,
 
-// random sites
-#define L_LIFT                  1
-#define L_BALANCESTONE          2
-#define L_FIRE                  3
-#define L_WHIRLWIND             4
-#define L_VOIDSTONE             5
-#define L_WARNING               6
-#define L_ARENA_EXIT            7
-#define L_HOUSE_EXIT            8
-#define L_SAFE                  9
+  // city sites
+  L_CHARITY,
+  L_ARMORER,
+  L_CLUB,
+  L_GYM,
+  L_THIEVES_GUILD,
+  L_COLLEGE,
+  L_HEALER,
+  L_CASINO,
+  L_TAVERN,
+  L_MERC_GUILD,
+  L_ALCHEMIST,
+  L_SORCERORS,
+  L_CASTLE,
+  L_ARENA,
+  L_DPW,
+  L_LIBRARY,
+  L_PAWN_SHOP,
+  L_BANK,
+  L_CONDO,
+  L_ORACLE,
+  L_ORDER,
+  L_DINER,
+  L_COMMANDANT,
+  L_CRAP,
+  L_TEMPLE,
+  L_COUNTRYSIDE,
+  L_BROTHEL,
+  // end of city sites
 
-// city level shop and guild functions
-// following are those in CitySiteList
-#define NUMCITYSITES            27
-#define CITYSITEBASE            10
-#define L_CHARITY               10
-#define L_ARMORER               11
-#define L_CLUB                  12
-#define L_GYM                   13
-#define L_THIEVES_GUILD         14
-#define L_COLLEGE               15
-#define L_HEALER                16
-#define L_CASINO                17
-#define L_TAVERN                18
-#define L_MERC_GUILD            19
-#define L_ALCHEMIST             20
-#define L_SORCERORS             21
-#define L_CASTLE                22
-#define L_ARENA                 23
-#define L_DPW                   24
-#define L_LIBRARY               25
-#define L_PAWN_SHOP             26
-#define L_BANK                  27
-#define L_CONDO                 28
-#define L_ORACLE                29
-#define L_ORDER                 30
-#define L_DINER                 31
-#define L_COMMANDANT            32
-#define L_CRAP                  33
-#define L_TEMPLE                34
-#define L_COUNTRYSIDE           35
-#define L_BROTHEL               36
-// end of city sites
+  L_JAIL,
+  L_TEMPLE_WARNING,
+  L_LAWSTONE,
+  L_CHAOSTONE,
 
-// random sites
-#define L_JAIL                  37
-#define L_TEMPLE_WARNING        38
-#define L_LAWSTONE              39
-#define L_CHAOSTONE             40
+  // final abyss sites ignore levitation
+  L_EARTH_STATION,
+  L_FIRE_STATION,
+  L_WATER_STATION,
+  L_AIR_STATION,
+  L_VOID_STATION,
+  L_VOID,
+  L_VOICE1,
+  L_VOICE2,
+  L_VOICE3,
+  // end of abyss sites
 
-// final abyss sites ignore levitation
-#define L_EARTH_STATION         41
-#define L_FIRE_STATION          42
-#define L_WATER_STATION         43
-#define L_AIR_STATION           44
-#define L_VOID_STATION          45
-#define L_VOID                  46
-#define L_VOICE1                47
-#define L_VOICE2                48
-#define L_VOICE3                49
+  // circle hq sites
+  L_TOME1,
+  L_TOME2,
+  L_ENTER_CIRCLE,
+  L_CIRCLE_LIBRARY,
+  L_SACRIFICESTONE,
 
-#define L_SACRIFICESTONE        50
+  // other site functions
+  L_DRUID,
+  L_ALTAR,
 
-// circle hq sites
-#define L_TOME1                 51
-#define L_TOME2                 52
-#define L_ENTER_CIRCLE          53
-#define L_CIRCLE_LIBRARY        54
+  L_GARDEN,
+  L_ADEPT,
+  L_SEWER,
 
-// other site functions
-#define L_DRUID                 55
-#define L_ALTAR                 56
+  L_OMEGA,
+  L_CARTOGRAPHER,
+  L_STABLES,
+  L_COMMONS,
+  L_GRANARY,
+  L_MAZE,
+  L_HOVEL,
+  L_HOUSE,
+  L_MANSION,
+  L_OCCUPIED_HOUSE,
+  L_TACTICAL_EXIT,
+  L_VAULT,
+  L_CEMETARY,
+  L_THRONE,
+  L_ESCALATOR,
+  L_ENTER_COURT,
 
-#define L_GARDEN                57
-#define L_ADEPT                 58
-#define L_SEWER                 59
+  L_TRIFID,
+  L_FINAL_ABYSS,
+  L_RAISE_PORTCULLIS,
 
-#define L_OMEGA                 60
-#define L_CARTOGRAPHER          61
-#define L_STABLES               62
-#define L_COMMONS               63
-#define L_GRANARY               64
-#define L_MAZE                  65
-#define L_HOVEL                 66
-#define L_HOUSE                 67
-#define L_MANSION               68
-#define L_OCCUPIED_HOUSE        69
-#define L_TACTICAL_EXIT         70
-#define L_VAULT                 71
-#define L_CEMETARY              72
-#define L_THRONE                73
-#define L_ESCALATOR             74
-#define L_ENTER_COURT           75
+  L_MINDSTONE,
 
-#define L_TRIFID                76
-#define L_FINAL_ABYSS           77
-#define L_RAISE_PORTCULLIS      78
+  // above LEVITATION_AVOIDANCE, no effect if player is levitating
+  LEVITATION_AVOIDANCE,
 
-#define L_MINDSTONE             79
+  // random sites
+  L_CHAOS,
+  L_WATER,
+  L_LAVA,
+  L_MAGIC_POOL,
+  L_PORTCULLIS_TRAP,
+  L_DROP_EVERY_PORTCULLIS,
+  L_PORTCULLIS,
 
-// above LEVITATION_AVOIDANCE, no effect if player is levitating
-#define LEVITATION_AVOIDANCE    80
+  // traps
+  NUMTRAPS,
+  TRAP_BASE,
 
-// random sites
-#define L_CHAOS                 81
-#define L_WATER                 82
-#define L_LAVA                  83
-#define L_MAGIC_POOL            84
-#define L_PORTCULLIS_TRAP       85
-#define L_DROP_EVERY_PORTCULLIS 87
-#define L_PORTCULLIS            88
+  // traps
+  L_TRAP_DART,
+  L_TRAP_PIT,
+  L_TRAP_DOOR,
+  L_TRAP_SNARE,
+  L_TRAP_BLADE,
+  L_TRAP_FIRE,
+  L_TRAP_TELEPORT,
+  L_TRAP_DISINTEGRATE,
+  L_TRAP_SLEEP_GAS,
+  L_TRAP_ACID,
+  L_TRAP_MANADRAIN,
+  L_TRAP_ABYSS,
+  L_TRAP_SIREN,
 
-// traps
-#define NUMTRAPS                13
-#define TRAP_BASE               89
+  // more random sites
+  L_STATUE_WAKE,
+  L_STATUE_RANDOM,
 
-// traps
-#define L_TRAP_DART             89
-#define L_TRAP_PIT              90
-#define L_TRAP_DOOR             91
-#define L_TRAP_SNARE            92
-#define L_TRAP_BLADE            93
-#define L_TRAP_FIRE             94
-#define L_TRAP_TELEPORT         95
-#define L_TRAP_DISINTEGRATE     96
-#define L_TRAP_SLEEP_GAS        97
-#define L_TRAP_ACID             98
-#define L_TRAP_MANADRAIN        99
-#define L_TRAP_ABYSS            100
-#define L_TRAP_SIREN            101
+  L_HEDGE,
+  L_RUBBLE,
 
-// more random sites
-#define L_STATUE_WAKE           102
-#define L_STATUE_RANDOM         103
-
-#define L_HEDGE                 104
-#define L_RUBBLE                105
-
-#define L_ABYSS                 106
+  L_ABYSS
+};
+constexpr int CITYSITEBASE = L_CHARITY;
+constexpr int NUMCITYSITES = L_BROTHEL - CITYSITEBASE + 1;
 
 // player possession slots
 enum inventory_slots
