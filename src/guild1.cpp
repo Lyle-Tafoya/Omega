@@ -24,14 +24,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* at some site or other. */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>
 #include <format>
 #include <string>
-
-extern void queue_message(const std::string &message);
-extern void append_message(const std::string &message, bool force_break = false);
 
 void l_merc_guild()
 {

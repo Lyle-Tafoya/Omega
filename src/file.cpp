@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "file.h"
+#include "scr.h"
 
 #include <array>
 #include <chrono>
@@ -33,7 +34,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <thread>
 
 extern std::string get_home_path();
-extern void queue_message(const std::string &message);
 extern std::string version_string(int version);
 
 void save_omegarc()

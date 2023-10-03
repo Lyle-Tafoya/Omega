@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* this file deals with the passage of time in omega */
 
 #include "glob.h"
+#include "scr.h"
 
 /* This function coordinates monsters and player actions, as well as
 random events. Each tick is a second. There are therefore 60 ticks to

@@ -19,6 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* effect1.c */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>
@@ -27,9 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
-
-extern int get_message_input();
-extern void queue_message(const std::string &message);
 
 /* enchant */
 void enchant(int delta)

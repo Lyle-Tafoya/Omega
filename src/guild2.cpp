@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* at some site or other. */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>

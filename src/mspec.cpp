@@ -20,11 +20,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* monster special functions */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <format>
-
-extern void queue_message(const std::string &message);
 
 void icebolt(int fx, int fy, int tx, int ty, int hit, int dmg);
 

@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>
@@ -37,8 +38,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern void item_use(object *);
 extern interactive_menu *menu;
-extern void queue_message(const std::string &);
-extern void append_message(const std::string &, bool);
 extern std::string get_username();
 
 /* no op a turn.... */

@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* auxiliary functions for those in com.c, also see aux2.c and aux3.c */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <format>
@@ -28,11 +29,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifdef SAVE_LEVELS
 extern void kill_all_levels();
 #endif
-
-extern void print_combat_stats();
-extern void queue_message(const std::string &message);
-extern int get_level_input();
-extern void room_name_print(const std::string &room_name);
 
 /* check to see if too much tunneling has been done in this level */
 void tunnelcheck()

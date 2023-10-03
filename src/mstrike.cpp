@@ -20,10 +20,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* monster strike functions */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <format>
-
-extern void queue_message(const std::string &message);
 
 void m_firebolt(struct monster *m)
 {

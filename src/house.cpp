@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* some functions to make the house levels */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <format>
 

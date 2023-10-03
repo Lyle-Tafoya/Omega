@@ -20,12 +20,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* monster talk functions */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <format>
 
 extern bool received_directions;
-extern void queue_message(const std::string &message);
 
 /* The druid's altar is in the northern forest */
 void m_talk_druid(struct monster *m)

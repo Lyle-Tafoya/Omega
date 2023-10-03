@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 
 #include <algorithm>
 #include <format>

@@ -21,14 +21,13 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 
 #include <algorithm>
 #include <format>
 #include <string>
 #include <vector>
 
-extern void append_message(const std::string &message, bool force_break = false);
-extern void queue_message(const std::string &message);
 extern interactive_menu *menu;
 
 void l_condo()

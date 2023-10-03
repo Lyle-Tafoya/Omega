@@ -19,6 +19,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* this file includes main() and some top-level functions */
 /* omega.c */
 
+#include "glob.h"
+#include "scr.h"
+
 #include <array>
 #include <csignal>
 #include <cstdlib>
@@ -35,8 +38,6 @@ extern "C" {
 /* Note: in order to avoid a memory bug I've been told about, I'm
    explicitly initializing every global to something. */
 
-#include "glob.h"
-
 #ifdef SAVE_LEVELS
 extern void msdos_init();
 #endif
@@ -45,7 +46,6 @@ extern std::mt19937 generator;
 extern std::string get_username();
 extern bool title_menu();
 extern void init_game(bool play_yourself = false);
-extern void queue_message(const std::string &message);
 
 /* most globals originate in omega.c */
 

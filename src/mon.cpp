@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* various functions to do with monsters */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <string>
@@ -28,7 +29,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <sstream>
 
 extern bool merge_item_with_list(objectlist *l, object *o, int n);
-extern void queue_message(const std::string &message);
 extern std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode);
 
 /*               Revised function                   */

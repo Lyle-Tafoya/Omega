@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* Random utility functions called from all over */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <chrono>

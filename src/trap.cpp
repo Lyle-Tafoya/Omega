@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* trap movement functions */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 /* various traps */

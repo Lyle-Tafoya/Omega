@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "file.h"
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <filesystem>
@@ -31,7 +32,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
-extern void queue_message(const std::string &message);
 extern std::string version_string(int version);
 
 // Various functions for doing game saves and restores

@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* general functions for player moving */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>

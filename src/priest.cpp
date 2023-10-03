@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* functions for clerics. */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>
@@ -27,7 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
-extern void queue_message(const std::string &message);
 
 /* prayer occurs at altars, hence name of function */
 void l_altar()

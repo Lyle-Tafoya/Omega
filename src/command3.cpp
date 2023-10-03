@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "date.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 
 #include <algorithm>
 #include <cctype>
@@ -35,8 +36,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern void kill_all_levels();
 #endif
 
-extern void queue_message(const std::string &message);
-extern void append_message(const std::string &message, bool force_break = false);
 extern std::string get_username();
 extern void item_unequip(object *);
 

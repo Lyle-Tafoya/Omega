@@ -20,11 +20,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* monster move functions */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <format>
-
-extern void queue_message(const std::string &message);
 
 /* like m_normal_move, but can open doors */
 void m_smart_move(struct monster *m)

@@ -23,11 +23,7 @@ which works everywhere but the countryside, and p_couyntry_process,
 which works.... */
 
 #include "glob.h"
-
-extern void print_messages();
-extern int get_level_input();
-extern int get_message_input();
-extern void print_inventory_menu(Symbol item_type = NULL_ITEM);
+#include "scr.h"
 
 /* deal with a new player command in dungeon or city mode*/
 void p_process()

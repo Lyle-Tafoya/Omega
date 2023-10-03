@@ -20,11 +20,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* level generator functions */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <ctime>
-
-extern void calculate_offsets(int x, int y);
 
 #ifdef SAVE_LEVELS
 extern struct level TheLevel;

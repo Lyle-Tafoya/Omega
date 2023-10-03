@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 
 #include <array>
 #include <cassert>
@@ -30,9 +31,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
-extern void queue_message(const std::string &message);
-extern void append_message(const std::string &message, bool force_break = false);
-extern void print_inventory_menu(Symbol item_type = NULL_ITEM);
 extern interactive_menu *menu;
 
 /* drops money, heh heh */

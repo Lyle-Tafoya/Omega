@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* some load_* routines for special environments */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <format>
 

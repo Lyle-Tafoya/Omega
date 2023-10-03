@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "extern.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 #include "scrolling_buffer.hpp"
 #include "spell.h"
 
@@ -32,8 +33,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-extern void append_message(const std::string &message, bool force_break = false);
-extern void queue_message(const std::string &message);
 extern scrolling_buffer message_buffer;
 extern interactive_menu *menu;
 

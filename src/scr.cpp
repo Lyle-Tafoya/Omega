@@ -25,6 +25,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "file.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
@@ -456,7 +457,7 @@ void queue_message(const std::string &message)
     message_buffer.receive(message);
   }
 }
-void append_message(const std::string &message, bool force_break = false)
+void append_message(const std::string &message, bool force_break)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
@@ -2181,7 +2182,7 @@ constexpr std::array SLOT_NAMES
   "Finger        ",
 };
 
-void print_inventory_menu(Symbol item_type = NULL_ITEM)
+void print_inventory_menu(Symbol item_type)
 {
   std::vector<std::string> lines;
   std::string line;

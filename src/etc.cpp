@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* grab bag of random functions used in random places */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <array>

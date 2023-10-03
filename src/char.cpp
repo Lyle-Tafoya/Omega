@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "file.h"
 #include "glob.h"
+#include "scr.h"
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
@@ -31,16 +32,11 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 
 extern scrolling_buffer message_buffer;
-extern void enable_attr(WINDOW *, attr_t);
-extern void queue_message(const std::string &message);
-extern void expand_message_window();
-extern void shrink_message_window();
 extern bool read_omegarc();
 extern void save_omegarc();
 extern void restore_player(std::ifstream &save_file, player &p);
 bool game_restore(const std::filesystem::path &save_file_path);
 extern WINDOW *menu_window;
-extern void enable_attr(WINDOW *window, attr_t attrs);
 
 std::string get_username()
 {

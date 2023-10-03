@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* accessible from the country and don't have their own files */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <format>
 

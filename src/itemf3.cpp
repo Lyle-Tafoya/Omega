@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* mostly artifact and stick functions */
 
 #include "glob.h"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>

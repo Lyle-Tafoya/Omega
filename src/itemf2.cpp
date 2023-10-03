@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* mostly ring, armor, and weapon functions */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 

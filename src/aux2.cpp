@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 
 #include <algorithm>
 #include <format>
@@ -33,7 +34,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern void item_equip(object *);
 extern void item_unequip(object *);
 extern interactive_menu *menu;
-extern void queue_message(const std::string &message);
 
 #ifdef SAVE_LEVELS
 plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
@@ -45,8 +45,6 @@ int statmod(int stat)
 {
   return ((stat - 10) / 2);
 }
-
-extern void calculate_offsets(int x, int y);
 
 /* effects of hitting */
 void p_hit(struct monster *m, int dmg, int dtype)

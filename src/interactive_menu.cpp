@@ -16,9 +16,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "defs.h"
+#include "scr.h"
 #include "interactive_menu.hpp"
 
-extern int get_message_input();
 extern bool IsMenu;
 
 interactive_menu::interactive_menu(WINDOW *menu_window, uint16_t width, uint16_t height)

@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "scr.h"
 #include "spell.h"
 
 #include <algorithm>
@@ -29,8 +30,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern void item_equip(object *);
 extern void item_unequip(object *);
-extern void queue_message(const std::string &message);
-extern void append_message(const std::string &message, bool force_break = false);
 extern interactive_menu *menu;
 
 int list_monsters()

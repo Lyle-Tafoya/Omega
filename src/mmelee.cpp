@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* various functions to do with monster melee */
 
 #include "glob.h"
+#include "scr.h"
 
 #include <algorithm>
 #include <string>

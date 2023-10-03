@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* the movefunctions switch functions, for player and monster*/
 
 #include "glob.h"
+#include "scr.h"
 
 void p_movefunction(int movef)
 {
