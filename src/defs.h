@@ -196,7 +196,7 @@ enum building_status
 // cannot use M command on site with this aux value
 constexpr int NOCITYMOVE = 666;
 
-/* bow and crossbow object aux fields */
+// bow and crossbow object aux fields
 enum bow_status
 {
   UNLOADED,
@@ -439,8 +439,6 @@ constexpr int NUMROOMNAMES = 30;
 
 #include <curses.h>
 
-#define COL_FG_BLINK A_BLINK
-
 #ifdef COLOR_PAIR
 
 #  ifdef OMEGA_CLRGEN
@@ -537,7 +535,7 @@ constexpr int NUMTFOPTIONS    = 9;
 constexpr int VERBOSITY_LEVEL = 10;
 constexpr int SEARCH_DURATION = 11;
 
-/* Player.options bits */
+// Player.options bits
 enum options_bits
 {
   BELLICOSE        = (1 << 0),
@@ -549,7 +547,7 @@ enum options_bits
   SHOW_COLOUR      = (1 << 8)
 };
 
-/* This has to be changed whenever an item is added */
+// This has to be changed whenever an item is added
 #define NUMSCROLLS              24
 #define NUMPOTIONS              18
 #define NUMFOODS                16
@@ -563,7 +561,7 @@ enum options_bits
 #define NUMSTICKS               17
 #define NUMARTIFACTS            24
 
-/* running sum of itemtypes, for indexing into Objects array */
+// running sum of itemtypes, for indexing into Objects array
 #define THINGID                 0
 #define FOODID                  NUMTHINGS
 #define SCROLLID                (FOODID + NUMFOODS)
@@ -577,24 +575,24 @@ enum options_bits
 #define STICKID                 (RINGID + NUMRINGS)
 #define ARTIFACTID              (STICKID + NUMSTICKS)
 #define CASHID                  (ARTIFACTID + NUMARTIFACTS)
-/* Corpse's aux field is monster id */
+// Corpse's aux field is monster id
 #define CORPSEID                (CASHID + 1)
 
 #define TOTALITEMS              (CORPSEID + 1)
 
-/* describing unique items and monsters */
+// describing unique items and monsters
 #define COMMON                  0
 #define UNIQUE_UNMADE           1
 #define UNIQUE_MADE             2
 #define UNIQUE_TAKEN            3
 
-/* general item function id's */
+// general item function id's
 #define I_NO_OP                 0
 #define I_NOTHING               1
 
-/* note some of these functions are for other types of items too */
+// note some of these functions are for other types of items too
 
-/* scroll functions */
+// scroll functions
 #define I_BLESS                 101
 #define I_ACQUIRE               102
 #define I_ENCHANT               103
@@ -618,7 +616,7 @@ enum options_bits
 #define I_ILLUMINATE            121
 #define I_DEFLECT               122
 
-/* potion functions */
+// potion functions
 #define I_HEAL                  201
 #define I_OBJDET                202
 #define I_MONDET                203
@@ -637,7 +635,7 @@ enum options_bits
 #define I_LEVITATION            217
 #define I_CURE                  218
 
-/* stick functions */
+// stick functions
 #define I_FIREBOLT              301
 #define I_LBOLT                 302
 #define I_MISSILE               303
@@ -654,7 +652,7 @@ enum options_bits
 #define I_POLYMORPH             314
 #define I_FEAR                  315
 
-/* food functions */
+// food functions
 #define I_FOOD                  401
 #define I_LEMBAS                402
 #define I_STIM                  403
@@ -666,7 +664,7 @@ enum options_bits
 #define I_CANNIBAL              409
 #define I_INEDIBLE              410
 
-/* boots functions */
+// boots functions
 #define I_PERM_SPEED            501
 #define I_PERM_HERO             502
 #define I_PERM_LEVITATE         503
@@ -674,7 +672,7 @@ enum options_bits
 #define I_BOOTS_JUMPING         505
 #define I_BOOTS_7LEAGUE         506
 
-/* cloak functions */
+// cloak functions
 #define I_PERM_DISPLACE         601
 #define I_PERM_NEGIMMUNE        602
 #define I_PERM_INVISIBLE        603
@@ -682,7 +680,7 @@ enum options_bits
 #define I_PERM_PROTECTION       605
 #define I_PERM_TRUESIGHT        606
 
-/* ring functions */
+// ring functions
 #define I_PERM_VISION           701
 #define I_PERM_BURDEN           702
 #define I_PERM_STRENGTH         703
@@ -692,13 +690,13 @@ enum options_bits
 #define I_PERM_REGENERATE       707
 #define I_PERM_KNOWLEDGE        708
 
-/* armor functions */
+// armor functions
 #define I_PERM_ENERGY_RESIST    801
 #define I_PERM_BREATHING        802
 #define I_PERM_FEAR_RESIST      803
 #define I_NORMAL_ARMOR          804
 
-/* artifact functions */
+// artifact functions
 #define I_ORBFIRE               901
 #define I_ORBWATER              902
 #define I_ORBEARTH              903
@@ -718,7 +716,7 @@ enum options_bits
 #define I_SCEPTRE               917
 #define I_PLANES                918
 
-/* weapons functions */
+// weapons functions
 #define I_NORMAL_WEAPON         1001
 #define I_LIGHTSABRE            1002
 #define I_DEMONBLADE            1003
@@ -735,29 +733,29 @@ enum options_bits
 #define I_SCYTHE                1014
 #define I_ACIDWHIP              1015
 
-/* thing functions */
+// thing functions
 #define I_PICK                  1101
 #define I_KEY                   1102
-#define I_SHOVEL                1103 /* unused */
-#define I_EXCAVATOR             1104 /* unused */
+#define I_SHOVEL                1103 // unused
+#define I_EXCAVATOR             1104 // unused
 #define I_PERM_ILLUMINATE       1105
 #define I_TRAP                  1106
 #define I_RAISE_PORTCULLIS      1107
 #define I_TORCH_USE             1108
 #define I_TORCH_UNEQUIP         1109
 
-/* shield functions */
+// shield functions
 #define I_PERM_DEFLECT          1201
 #define I_NORMAL_SHIELD         1202
 
-/* monster function ids */
-/* Its conceivable for a function of one type to be called when another
-would usually occur. A monster's special function may be an extra move,
-for example. */
+// monster function ids
+// Its conceivable for a function of one type to be called when another
+//would usually occur. A monster's special function may be an extra move,
+//for example.
 
 #define M_NO_OP                 -1
 
-/* talk functions */
+// talk functions
 #define M_TALK_STUPID           101
 #define M_TALK_SILENT           102
 #define M_TALK_HUNGRY           103
@@ -795,7 +793,7 @@ for example. */
 #define M_TALK_ARCHMAGE         135
 #define M_TALK_PRIME            136
 
-/* ability functions */
+// ability functions
 #define M_SP_SURPRISE           201
 #define M_SP_MP                 202
 #define M_SP_THIEF              203
@@ -838,7 +836,7 @@ for example. */
 #define M_SP_LAIR               241
 #define M_SP_PRIME              242
 
-/* rangestrike functions */
+// rangestrike functions
 #define M_STRIKE_MISSILE        301
 #define M_STRIKE_FBOLT          302
 #define M_STRIKE_LBALL          303
@@ -848,7 +846,7 @@ for example. */
 #define M_STRIKE_MASTER         307
 #define M_STRIKE_SONIC          308
 
-/* combat functions */
+// combat functions
 #define M_MELEE_NORMAL          401
 #define M_MELEE_FIRE            402
 #define M_MELEE_DRAGON          403
@@ -865,7 +863,7 @@ for example. */
 #define M_MELEE_GRAPPLE         414
 #define M_MELEE_DEATH           415
 
-/* movement functions */
+// movement functions
 #define M_MOVE_NORMAL           501
 #define M_MOVE_FLUTTER          502
 #define M_MOVE_TELEPORT         503
@@ -878,41 +876,41 @@ for example. */
 #define M_MOVE_ANIMAL           510
 #define M_MOVE_LEASH            230
 
-/* MLx -> index to Monsters starting for level x */
-/* MLx -> number of monsters of level x or less */
-/* NML_x -> number of monsters of level x */
-/* NML-X must be changed whenever a monster is added */
-/* This whole thing MUST be repaired.  Monster levels must
- * be represented elsewhere. */
+// MLx -> index to Monsters starting for level x
+// MLx -> number of monsters of level x or less
+// NML_x -> number of monsters of level x
+// NML-X must be changed whenever a monster is added
+// This whole thing MUST be repaired.  Monster levels must
+// be represented elsewhere.
 #define ML0                     0
 #define NML_0                   9
-#define ML1                     (ML0 + NML_0) /* 9 */
+#define ML1                     (ML0 + NML_0) // 9
 #define NML_1                   22
-#define ML2                     (ML1 + NML_1) /* 31 */
+#define ML2                     (ML1 + NML_1) // 31
 #define NML_2                   14
-#define ML3                     (ML2 + NML_2) /* 45 */
+#define ML3                     (ML2 + NML_2) // 45
 #define NML_3                   15
-#define ML4                     (ML3 + NML_3) /* 60 */
+#define ML4                     (ML3 + NML_3) // 60
 #define NML_4                   18
-#define ML5                     (ML4 + NML_4) /* 78 */
+#define ML5                     (ML4 + NML_4) // 78
 #define NML_5                   14
-#define ML6                     (ML5 + NML_5) /* 92 */
+#define ML6                     (ML5 + NML_5) // 92
 #define NML_6                   13
-#define ML7                     (ML6 + NML_6) /* 105 */
+#define ML7                     (ML6 + NML_6) // 105
 #define NML_7                   15
-#define ML8                     (ML7 + NML_7) /* 120 */
+#define ML8                     (ML7 + NML_7) // 120
 #define NML_8                   12
-#define ML9                     (ML8 + NML_8) /* 132 */
+#define ML9                     (ML8 + NML_8) // 132
 #define NML_9                   8
-#define ML10                    (ML9 + NML_9) /* 140 */
+#define ML10                    (ML9 + NML_9) // 140
 #define NML_10                  10
 
-#define NUMMONSTERS             (ML10 + NML_10) /* 150 */
+#define NUMMONSTERS             (ML10 + NML_10) // 150
 
-/* Some monster ID's : (Those that are explicitly named in code) */
-/* Actually, there are still many magic constants floating around. */
-/* Eventually I'll get around to making each monster's id a constant.... */
-/* done, thanks to David Given. */
+// Some monster ID's : (Those that are explicitly named in code)
+// Actually, there are still many magic constants floating around.
+// Eventually I'll get around to making each monster's id a constant....
+// done, thanks to David Given.
 #define RANDOM                  -1
 #define HORNET                  (ML0 + 0)
 #define MEND_PRIEST             (ML0 + 1)
@@ -952,7 +950,7 @@ for example. */
 #define TOVE                    (ML2 + 4)
 #define NASTY                   (ML2 + 5)
 #define GHOST                   (ML2 + 6)
-#define ENCHANTOR               (ML2 + 7) /* use 'OR' to avoid conflict with circle rank */
+#define ENCHANTOR               (ML2 + 7) // use 'OR' to avoid conflict with circle rank
 #define MURK                    (ML2 + 8)
 #define GOBLIN_CHIEF            (ML2 + 9)
 #define WOLF                    (ML2 + 10)
@@ -1065,10 +1063,10 @@ for example. */
 #define LORD_FIRE               (ML10 + 8)
 #define ELEM_MASTER             (ML10 + 9)
 
-/* location functions */
+// location functions
 #define L_NO_OP                 0
 
-/* random sites */
+// random sites
 #define L_LIFT                  1
 #define L_BALANCESTONE          2
 #define L_FIRE                  3
@@ -1079,8 +1077,8 @@ for example. */
 #define L_HOUSE_EXIT            8
 #define L_SAFE                  9
 
-/* city level shop and guild functions */
-/* following are those in CitySiteList */
+// city level shop and guild functions
+// following are those in CitySiteList
 #define NUMCITYSITES            27
 #define CITYSITEBASE            10
 #define L_CHARITY               10
@@ -1110,15 +1108,15 @@ for example. */
 #define L_TEMPLE                34
 #define L_COUNTRYSIDE           35
 #define L_BROTHEL               36
-/* end of city sites */
+// end of city sites
 
-/* random sites */
+// random sites
 #define L_JAIL                  37
 #define L_TEMPLE_WARNING        38
 #define L_LAWSTONE              39
 #define L_CHAOSTONE             40
 
-/* final abyss sites ignore levitation*/
+// final abyss sites ignore levitation
 #define L_EARTH_STATION         41
 #define L_FIRE_STATION          42
 #define L_WATER_STATION         43
@@ -1131,13 +1129,13 @@ for example. */
 
 #define L_SACRIFICESTONE        50
 
-/* circle hq sites */
+// circle hq sites
 #define L_TOME1                 51
 #define L_TOME2                 52
 #define L_ENTER_CIRCLE          53
 #define L_CIRCLE_LIBRARY        54
 
-/* other site functions */
+// other site functions
 #define L_DRUID                 55
 #define L_ALTAR                 56
 
@@ -1168,10 +1166,10 @@ for example. */
 
 #define L_MINDSTONE             79
 
-/* above LEVITATION_AVOIDANCE, no effect if player is levitating */
+// above LEVITATION_AVOIDANCE, no effect if player is levitating
 #define LEVITATION_AVOIDANCE    80
 
-/* random sites */
+// random sites
 #define L_CHAOS                 81
 #define L_WATER                 82
 #define L_LAVA                  83
@@ -1180,11 +1178,11 @@ for example. */
 #define L_DROP_EVERY_PORTCULLIS 87
 #define L_PORTCULLIS            88
 
-/* traps */
+// traps
 #define NUMTRAPS                13
 #define TRAP_BASE               89
 
-/* traps */
+// traps
 #define L_TRAP_DART             89
 #define L_TRAP_PIT              90
 #define L_TRAP_DOOR             91
@@ -1199,7 +1197,7 @@ for example. */
 #define L_TRAP_ABYSS            100
 #define L_TRAP_SIREN            101
 
-/* more random sites */
+// more random sites
 #define L_STATUE_WAKE           102
 #define L_STATUE_RANDOM         103
 
@@ -1229,17 +1227,17 @@ enum inventory_slots
   O_RING4
 };
 
-/* typedefs needed by structs */
+// typedefs needed by structs
 
 typedef chtype Symbol;
 
-/* structure definitions */
+// structure definitions
 
 struct room
 {
   int lighted;
   int left, right, top, bottom;
-  int rsi; /* index into roomname switch */
+  int rsi; // index into roomname switch
 };
 
 struct monster
@@ -1364,7 +1362,7 @@ struct level
   int                 last_visited; // time player was last on this level
 };
 
-/* random typedef's */
+// random typedef's
 
 typedef monsterlist mltype;
 typedef mltype            *pml;
@@ -1384,14 +1382,14 @@ typedef objtype      *pob;
 typedef struct objectlist oltype;
 typedef oltype           *pol;
 
-/* random  function declarations from system libraries */
+// random  function declarations from system libraries
 
 #undef sign
-/* These must be made to work for both longs and ints */
+// These must be made to work for both longs and ints
 #define sign(n) (((n) < 0) ? -1 : (((n) > 0) ? 1 : 0))
 
-/* WDT: This should be harmless under ANSI C, and will stop
- * some errors under bizarre platforms. */
+// WDT: This should be harmless under ANSI C, and will stop
+// some errors under bizarre platforms.
 constexpr long pow2(int n)
 {
   return 1L << n;
