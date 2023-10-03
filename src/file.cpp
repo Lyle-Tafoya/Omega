@@ -25,10 +25,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <array>
 #include <chrono>
+#include <iostream>
 #include <filesystem>
 #include <format>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <thread>
 
@@ -279,34 +279,38 @@ void unlock_score_file()
 void showscores()
 {
   lock_score_file();
-  FILE *fd = checkfopen(std::format("{}omega.hi", Omegalib), "rb");
-  filescanstring(fd, Hiscorer);
-  filescanstring(fd, Hidescrip);
-  fscanf(fd, "%ld %d %d\n", &Hiscore, &Hilevel, &Hibehavior);
-  for(int i = 1; i < 7; i++)
+  std::string high_scores_file_path = std::format("{}omega.hi", Omegalib);
+  std::fstream high_score_file = check_fstream_open(high_scores_file_path, std::ios::in);
+
+  std::getline(high_score_file, Hiscorer);
+  std::getline(high_score_file, Hidescrip);
+  high_score_file >> Hiscore >> Hilevel >> Hibehavior >> std::ws;
+  for(int i = 1; i < 7; ++i)
   {
-    filescanstring(fd, Priest[i]);
-    fscanf(fd, "%d %d\n", &(Priestlevel[i]), &(Priestbehavior[i]));
+    std::getline(high_score_file, Priest[i]);
+    high_score_file >> Priestlevel[i] >> Priestbehavior[i] >> std::ws;
   }
-  filescanstring(fd, Shadowlord);
-  fscanf(fd, "%d %d\n", &Shadowlordlevel, &Shadowlordbehavior);
-  filescanstring(fd, Commandant);
-  fscanf(fd, "%d %d\n", &Commandantlevel, &Commandantbehavior);
-  filescanstring(fd, Archmage);
-  fscanf(fd, "%d %d\n", &Archmagelevel, &Archmagebehavior);
-  filescanstring(fd, Prime);
-  fscanf(fd, "%d %d\n", &Primelevel, &Primebehavior);
-  filescanstring(fd, Champion);
-  fscanf(fd, "%d %d\n", &Championlevel, &Championbehavior);
-  filescanstring(fd, Duke);
-  fscanf(fd, "%d %d\n", &Dukelevel, &Dukebehavior);
-  filescanstring(fd, Chaoslord);
-  fscanf(fd, "%d %d %d\n", &Chaoslordlevel, &Chaos, &Chaoslordbehavior);
-  filescanstring(fd, Lawlord);
-  fscanf(fd, "%d %d %d\n", &Lawlordlevel, &Law, &Lawlordbehavior);
-  filescanstring(fd, Justiciar);
-  fscanf(fd, "%d %d\n", &Justiciarlevel, &Justiciarbehavior);
-  fclose(fd);
+  std::getline(high_score_file, Shadowlord);
+  high_score_file >> Shadowlordlevel >> Shadowlordbehavior >> std::ws;
+  std::getline(high_score_file, Commandant);
+  high_score_file >> Commandantlevel >> Commandantbehavior >> std::ws;
+  std::getline(high_score_file, Archmage);
+  high_score_file >> Archmagelevel >> Archmagebehavior >> std::ws;
+  std::getline(high_score_file, Prime);
+  high_score_file >> Primelevel >> Primebehavior >> std::ws;
+  std::getline(high_score_file, Champion);
+  high_score_file >> Championlevel >> Championbehavior >> std::ws;
+  std::getline(high_score_file, Duke);
+  high_score_file >> Dukelevel >> Dukebehavior >> std::ws;
+  std::getline(high_score_file, Chaoslord);
+  high_score_file >> Chaoslordlevel >> Chaos >> Chaoslordbehavior >> std::ws;
+  std::getline(high_score_file, Lawlord);
+  high_score_file >> Lawlordlevel >> Law >> Lawlordbehavior >> std::ws;
+  std::getline(high_score_file, Justiciar);
+  high_score_file >> Justiciarlevel >> Justiciarbehavior >> std::ws;
+
+  high_score_file.close();
+
   unlock_score_file();
   clear();
   addstr(std::format(
