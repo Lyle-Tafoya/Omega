@@ -240,7 +240,7 @@ void save_country(std::ofstream &save_file)
 
   // since we don't mark the 'seen' bits as CHANGED, need to save a bitmask
   unsigned long int mask = 0;
-  size_t run = 8 * sizeof(mask);
+  int run = 8 * sizeof(mask);
   for(x = 0; x < MAXWIDTH; x++)
   {
     for(y = 0; y < MAXLENGTH; y++)
@@ -259,7 +259,7 @@ void save_country(std::ofstream &save_file)
       --run;
     }
   }
-  if(run < 8 * sizeof(mask))
+  if(run < static_cast<int>(8 * sizeof(mask)))
   {
     file_write(save_file, mask);
   }
@@ -343,7 +343,7 @@ void save_level(std::ofstream &save_file, plv level)
   file_write(save_file, y);
   // since we don't mark the 'seen' bits as CHANGED, need to save a bitmask
   unsigned long int mask = 0;
-  size_t run  = 8 * sizeof(mask);
+  int run  = 8 * sizeof(mask);
   for(y = 0; y < MAXLENGTH; ++y)
   {
     for(x = 0; x < MAXWIDTH; ++x)
@@ -362,7 +362,7 @@ void save_level(std::ofstream &save_file, plv level)
       --run;
     }
   }
-  if(run < 8 * sizeof(mask))
+  if(run < static_cast<int>(8 * sizeof(mask)))
   {
     file_write(save_file, mask);
   }
@@ -941,11 +941,11 @@ void restore_level(std::ifstream &save_file)
   int x, y;
   file_read(save_file, x);
   file_read(save_file, y);
-  size_t run;
+  int run;
   while(y < MAXLENGTH && x < MAXWIDTH)
   {
     file_read(save_file, run);
-    for(; x < static_cast<int>(run); ++x)
+    for(; x < run; ++x)
     {
       file_read(save_file, Level->site[x][y]);
       Level->site[x][y].creature = nullptr;
@@ -997,7 +997,7 @@ void restore_country(std::ifstream &save_file)
     file_read(save_file, x);
     file_read(save_file, y);
   }
-  size_t run = 0;
+  int run = 0;
   unsigned long int mask;
   for(x = 0; x < MAXWIDTH; ++x)
   {
