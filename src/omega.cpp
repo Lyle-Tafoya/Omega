@@ -191,7 +191,7 @@ void initrand(int environment, int level)
 
 bool game_restore(const std::filesystem::path &save_file_path)
 {
-  if(std::filesystem::exists(save_file_path) && restore_game(save_file_path))
+  if(std::filesystem::exists(save_file_path) && restore_game(save_file_path.string()))
   {
     std::filesystem::remove(save_file_path);
     return true;
@@ -204,7 +204,7 @@ bool game_restore(const std::filesystem::path &save_file_path)
 
 void omega_title();
 
-int main()
+int main(int, char *[])
 {
 #ifdef PDC_GL_BUILD
   putenv("PDC_COLS=106");
