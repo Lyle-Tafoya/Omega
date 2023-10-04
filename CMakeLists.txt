@@ -36,7 +36,7 @@ if(WIN32)
     PDCursesMod
     PREFIX ${CMAKE_BINARY_DIR}/_deps
     GIT_REPOSITORY https://github.com/Bill-Gray/PDCursesMod
-    GIT_TAG master
+    GIT_TAG v4.3.7
     INSTALL_DIR ${CMAKE_BINARY_DIR}/installed
     CMAKE_ARGS
       -DPDC_BUILD_SHARED=OFF
