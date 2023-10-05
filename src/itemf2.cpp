@@ -81,12 +81,12 @@ void i_perm_burden(pob o)
   if(o->used)
   {
     o->weight = 1000;
-    mprint("You feel heavier.");
+    queue_message("You feel heavier.");
   }
   else
   {
     o->weight = 1;
-    mprint("Phew. What a relief.");
+    queue_message("Phew. What a relief.");
   }
   Player.itemweight = 0;
   for(i = 0; i < MAXITEMS; i++)
@@ -136,7 +136,7 @@ void i_perm_poison_resist(pob o)
       Player.immunity[POISON]++;
       if(Player.status[POISONED] > 0)
       {
-        mprint("You feel much better now.");
+        queue_message("You feel much better now.");
         Player.status[POISONED] = 0;
       }
     }
@@ -160,7 +160,7 @@ void i_perm_regenerate(pob o)
   }
   if(o->used)
   {
-    mprint("You seem abnormally healthy.");
+    queue_message("You seem abnormally healthy.");
     Player.status[REGENERATING] += 1500;
   }
   else
@@ -168,7 +168,7 @@ void i_perm_regenerate(pob o)
     Player.status[REGENERATING] -= 1500;
     if(Player.status[REGENERATING] < 1)
     {
-      mprint("Your vitality is back to normal");
+      queue_message("Your vitality is back to normal");
       Player.status[REGENERATING] = 0;
     }
   }
@@ -180,7 +180,7 @@ void i_normal_armor(pob o)
 {
   if(o->used)
   {
-    mprint("You put on your suit of armor.");
+    queue_message("You put on your suit of armor.");
   }
 }
 
@@ -208,7 +208,7 @@ void i_perm_fear_resist(pob o)
     if(o->blessing < 0)
     {
       Player.status[BERSERK] += 1500;
-      mprint("You feel blood-simple!");
+      queue_message("You feel blood-simple!");
     }
   }
   else
@@ -219,7 +219,7 @@ void i_perm_fear_resist(pob o)
       Player.status[BERSERK] -= 1500;
       if(Player.status[BERSERK] < 1)
       {
-        mprint("You feel less rabid now.");
+        queue_message("You feel less rabid now.");
         Player.status[BERSERK] = 0;
       }
     }
@@ -241,7 +241,7 @@ void i_perm_breathing(pob o)
   {
     if(o->used)
     {
-      mprint("Your breath is energized!");
+      queue_message("Your breath is energized!");
       Player.status[BREATHING] += 1500;
     }
     else
@@ -249,7 +249,7 @@ void i_perm_breathing(pob o)
       Player.status[BREATHING] -= 1500;
       if(Player.status[BREATHING] < 1)
       {
-        mprint("Your breathing is back to normal.");
+        queue_message("Your breathing is back to normal.");
         Player.status[BREATHING] = 0;
       }
     }
@@ -258,7 +258,7 @@ void i_perm_breathing(pob o)
   {
     Player.status[BREATHING] = 0;
     p_drown();
-    print1("Water pours from the broken suit.");
+    queue_message("Water pours from the broken suit.");
   }
 }
 
@@ -288,7 +288,7 @@ void weapon_acidwhip(int dmgmod, pob o, struct monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
-    mprint("You entangle the monster!");
+    queue_message("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
   weapon_hit(o, m, dmgmod, ACID);
@@ -296,12 +296,12 @@ void weapon_acidwhip(int dmgmod, pob o, struct monster *m)
 
 void weapon_scythe(int, pob, struct monster *m)
 {
-  mprint("Slice!");
+  queue_message("Slice!");
   m_death(m);
   if(!Player.rank[ADEPT])
   {
-    mprint("Ooops!");
-    mprint("You accidentally touch yourself on the backswing....");
+    queue_message("Ooops!");
+    queue_message("You accidentally touch yourself on the backswing....");
     p_death("the Scythe of Death");
   }
 }
@@ -310,14 +310,14 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
 {
   if(o->blessing > -1)
   {
-    mprint("Demonblade disintegrates with a soft sigh.");
-    mprint("You stop foaming at the mouth.");
+    queue_message("Demonblade disintegrates with a soft sigh.");
+    queue_message("You stop foaming at the mouth.");
     Player.status[BERSERK] = 0;
     conform_lost_object(o);
   }
   else if(m->specialf == M_SP_DEMON)
   {
-    mprint("The demon flees in terror before your weapon!");
+    queue_message("The demon flees in terror before your weapon!");
     m_vanish(m);
   }
   else if(m->meleef != M_MELEE_SPIRIT)
@@ -334,7 +334,7 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
         Player.pow = std::min(Player.maxpow, Player.pow + m->level);
       }
       m_death(m);
-      mprint("You feel a surge of raw power from Demonblade!");
+      queue_message("You feel a surge of raw power from Demonblade!");
     }
     else
     {
@@ -343,16 +343,16 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
   }
   else
   {
-    mprint("Demonblade howls as it strikes the spirit!");
+    queue_message("Demonblade howls as it strikes the spirit!");
     if(random_range(10) == 1)
     {
-      mprint("... and shatters into a thousand lost fragments!");
+      queue_message("... and shatters into a thousand lost fragments!");
       p_damage(50, UNSTOPPABLE, "Demonblade exploding");
       conform_lost_object(o);
     }
     else
     {
-      mprint("You feel your lifeforce draining....");
+      queue_message("You feel your lifeforce draining....");
       p_damage(25, UNSTOPPABLE, "a backlash of negative energies");
       Player.str -= 3;
       Player.con -= 3;
@@ -368,7 +368,7 @@ void weapon_lightsabre(int, pob o, struct monster *m)
 {
   if(!o->known)
   {
-    mprint("Fumbling with the cylinder, you press the wrong stud....");
+    queue_message("Fumbling with the cylinder, you press the wrong stud....");
     p_damage(100, UNSTOPPABLE, "fumbling with a lightsabre");
     o->known = 1;
   }
@@ -377,12 +377,12 @@ void weapon_lightsabre(int, pob o, struct monster *m)
     /* test prevents confusing immunity messages.... */
     if(!m_immunityp(*m, NORMAL_DAMAGE))
     {
-      mprint("Vzzzzmmm!");
+      queue_message("Vzzzzmmm!");
       m_damage(m, 20, NORMAL_DAMAGE);
     }
     if((m->hp > 0) && (!m_immunityp(*m, FLAME)))
     {
-      mprint("Zzzzap!");
+      queue_message("Zzzzap!");
       m_damage(m, 20, FLAME);
     }
   }
@@ -392,7 +392,7 @@ void weapon_tangle(int dmgmod, pob o, struct monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
-    mprint("You entangle the monster!");
+    queue_message("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
   weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
@@ -432,7 +432,7 @@ void weapon_mace_disrupt(int dmgmod, pob o, struct monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
-    mprint("The monster crumbles away to dust!");
+    queue_message("The monster crumbles away to dust!");
     m_death(m);
   }
   else
@@ -457,15 +457,15 @@ void i_demonblade(pob o)
   if(o->used)
   {
     o->known = 2;
-    mprint("Demonblade's fangs open and bury themselves in your wrist!");
-    mprint("You hear evil laughter in the distance....");
-    mprint("You begin to foam at the mouth!");
+    queue_message("Demonblade's fangs open and bury themselves in your wrist!");
+    queue_message("You hear evil laughter in the distance....");
+    queue_message("You begin to foam at the mouth!");
     Player.status[BERSERK] = 1500;
   }
   else
   {
-    mprint("You hear a sound like a demon cursing.");
-    mprint("You feel less like biting your shield.");
+    queue_message("You hear a sound like a demon cursing.");
+    queue_message("You feel less like biting your shield.");
     Player.status[BERSERK] = 0;
   }
 }
@@ -474,7 +474,7 @@ void i_normal_weapon(pob o)
 {
   if(o->used)
   {
-    mprint("You ready your weapon for battle.");
+    queue_message("You ready your weapon for battle.");
   }
 }
 
@@ -482,17 +482,17 @@ void i_lightsabre(pob o)
 {
   if(o->used)
   {
-    mprint("You feel one with the Force.");
+    queue_message("You feel one with the Force.");
   }
   else
   {
-    mprint("You feel out of touch with the Force.");
+    queue_message("You feel out of touch with the Force.");
   }
 }
 
 void i_mace_disrupt(pob)
 {
-  mprint("That's a damned heavy mace!");
+  queue_message("That's a damned heavy mace!");
 }
 
 void weapon_vorpal(int dmgmod, pob o, struct monster *m)
@@ -502,11 +502,11 @@ void weapon_vorpal(int dmgmod, pob o, struct monster *m)
     o->known = 2;
     if(random_range(2) == 1)
     {
-      mprint("One Two! One Two! And through and through!");
+      queue_message("One Two! One Two! And through and through!");
     }
     else
     {
-      mprint("Your vorpal blade goes snicker-snack!");
+      queue_message("Your vorpal blade goes snicker-snack!");
     }
     m_death(m);
   }
@@ -521,23 +521,23 @@ void weapon_desecrate(int dmgmod, pob o, struct monster *m)
   o->known = 2;
   if(Player.alignment < 0)
   {
-    mprint("Your opponent screams in agony!");
+    queue_message("Your opponent screams in agony!");
     weapon_hit(o, m, dmgmod, UNSTOPPABLE);
     Player.alignment--;
     if(Player.hp < Player.maxhp)
     {
-      mprint("You feel a thrill of power surging up your blade!");
+      queue_message("You feel a thrill of power surging up your blade!");
       Player.hp = std::min(Player.maxhp, Player.hp + Player.dmg + dmgmod);
     }
   }
   else
   {
-    mprint("Your blade turns in your hands and hits you!");
-    mprint("You hear evil laughter....");
+    queue_message("Your blade turns in your hands and hits you!");
+    queue_message("You hear evil laughter....");
     level_drain(Player.dmg, "the sword Desecrator");
     Player.alignment -= 10;
-    mprint("A strange force spreads from the wound throughout your body...");
-    mprint("You feel much more chaotic now.");
+    queue_message("A strange force spreads from the wound throughout your body...");
+    queue_message("You feel much more chaotic now.");
   }
 }
 
@@ -558,10 +558,10 @@ void weapon_defend(int dmgmod, pob o, struct monster *m)
 {
   if((Player.alignment < 0) && (o->blessing > 0))
   {
-    mprint("The Holy Defender screams in your hands....");
-    mprint("You stagger before the sound of its rage....");
+    queue_message("The Holy Defender screams in your hands....");
+    queue_message("You stagger before the sound of its rage....");
     p_damage(50, UNSTOPPABLE, "a pissed-off Holy Defender");
-    mprint("The weapon finally quiets. It seems less holy now.");
+    queue_message("The weapon finally quiets. It seems less holy now.");
     o->truename = o->cursestr;
     Player.status[PROTECTION] -= (o->hit);
     o->plus     = 0 - abs(o->plus);
@@ -569,7 +569,7 @@ void weapon_defend(int dmgmod, pob o, struct monster *m)
   }
   if((o->blessing > 0) && ((m->specialf == M_SP_DEMON) || (m->meleef == M_MELEE_SPIRIT)))
   {
-    mprint("Your opponent shies back before your holy weapon!");
+    queue_message("Your opponent shies back before your holy weapon!");
     m->hit = 0;
     m->speed *= 2;
   }
@@ -580,7 +580,7 @@ void weapon_victrix(int dmgmod, pob o, struct monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
-    mprint("Your opponent dissipates in a harmless cloud of vapors...");
+    queue_message("Your opponent dissipates in a harmless cloud of vapors...");
     m_death(m);
   }
   else
@@ -594,7 +594,7 @@ void i_defend(pob o)
   o->known = 2;
   if(o->used)
   {
-    mprint("You feel under an aegis!");
+    queue_message("You feel under an aegis!");
     Player.status[PROTECTION] += o->hit;
   }
   else
@@ -629,8 +629,8 @@ void i_desecrate(pob o)
   }
   if(o->blessing > 0)
   {
-    mprint("How weird, a blessed desecrator... ");
-    mprint("The structure of reality cannot permit such a thing....");
+    queue_message("How weird, a blessed desecrator... ");
+    queue_message("The structure of reality cannot permit such a thing....");
     dispose_lost_objects(1, o);
   }
   else if(Level->site[Player.x][Player.y].locchar == ALTAR)
@@ -644,7 +644,7 @@ void i_normal_shield(pob o)
 {
   if(o->used)
   {
-    mprint("You sling your shield across a forearm.");
+    queue_message("You sling your shield across a forearm.");
   }
 }
 
@@ -658,7 +658,7 @@ void i_perm_deflect(pob o)
   {
     if(o->used)
     {
-      mprint("You feel buffered.");
+      queue_message("You feel buffered.");
       Player.status[DEFLECTION] += 1500;
     }
     else
@@ -666,7 +666,7 @@ void i_perm_deflect(pob o)
       Player.status[DEFLECTION] -= 1500;
       if(Player.status[DEFLECTION] < 1)
       {
-        mprint("You feel less defended");
+        queue_message("You feel less defended");
         Player.status[DEFLECTION] = 0;
       }
     }
@@ -675,7 +675,7 @@ void i_perm_deflect(pob o)
   {
     if(o->used)
     {
-      mprint("You feel naked.");
+      queue_message("You feel naked.");
       Player.status[VULNERABLE] += 1500;
       Player.status[DEFLECTION] = 0;
     }
@@ -684,7 +684,7 @@ void i_perm_deflect(pob o)
       Player.status[VULNERABLE] -= 1500;
       if(Player.status[VULNERABLE] < 1)
       {
-        mprint("You feel less vulnerable");
+        queue_message("You feel less vulnerable");
         Player.status[VULNERABLE] = 0;
       }
     }

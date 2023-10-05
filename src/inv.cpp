@@ -44,8 +44,8 @@ void drop_money()
   {
     if(Current_Environment == E_CITY)
     {
-      print1("As soon as the money leaves your hand,");
-      print2("a horde of scrofulous beggars snatch it up and are gone!");
+      queue_message("As soon as the money leaves your hand,");
+      queue_message("a horde of scrofulous beggars snatch it up and are gone!");
     }
     else
     {
@@ -79,11 +79,11 @@ pob detach_money()
 long get_money(long limit)
 {
   long c;
-  print1("How much? ");
+  queue_message("How much? ");
   c = parsenum();
   if(c > limit)
   {
-    print3("Forget it, buddy.");
+    queue_message("Forget it, buddy.");
     return (ABORT);
   }
   else
@@ -475,17 +475,17 @@ void givemonster(struct monster *m, struct object *o)
   /* special case -- give gem to LawBringer */
   if((m->id == LAWBRINGER) && (o->id == ARTIFACTID + 21))
   {
-    print1("The LawBringer accepts the gem reverently.");
-    print2("He raises it above his head, where it bursts into lambent flame!");
-    print1("You are bathed in a shimmering golden light.");
-    print2("You feel embedded in an infinite matrix of ordered energy.");
+    queue_message("The LawBringer accepts the gem reverently.");
+    queue_message("He raises it above his head, where it bursts into lambent flame!");
+    queue_message("You are bathed in a shimmering golden light.");
+    queue_message("You feel embedded in an infinite matrix of ordered energy.");
     if(Imprisonment > 0)
     {
       Imprisonment = 0;
     }
     if(Player.rank[ORDER] == -1)
     {
-      print2("You have been forgiven. You feel like a Paladin....");
+      queue_message("You have been forgiven. You feel like a Paladin....");
       Player.rank[ORDER] = 1;
     }
     Player.alignment += 200;
@@ -684,14 +684,14 @@ int getitem(Symbol itype)
   }
   if(!found)
   {
-    print3("Nothing appropriate.");
+    queue_message("Nothing appropriate.");
     return (ABORT);
   }
   else
   {
-    print2("Select an item [");
-    nprint2(invstr);
-    nprint2(",?] ");
+    queue_message("Select an item [");
+    queue_message(invstr);
+    queue_message(",?] ");
     while(!ok)
     {
       key = (char)mcigetc();
@@ -712,13 +712,13 @@ int getitem(Symbol itype)
         }
         else
         {
-          print3("You cannot select cash now.");
+          queue_message("You cannot select cash now.");
           ok = false;
         }
       }
       else if(!strmem(key, invstr) || key_to_index(key) == (signed char)-1)
       {
-        print3("Nope! Try again [? for inventory, ESCAPE to quit]:");
+        queue_message("Nope! Try again [? for inventory, ESCAPE to quit]:");
       }
       else
       {
@@ -802,13 +802,13 @@ void add_to_pack(pob o)
   }
   if(Player.packptr >= MAXPACK)
   {
-    print3("Your pack is full. The item drops to the ground.");
+    queue_message("Your pack is full. The item drops to the ground.");
     drop_at(Player.x, Player.y, o);
   }
   else
   {
     push_pack(o);
-    print3("Putting item in pack.");
+    queue_message("Putting item in pack.");
   }
 }
 
@@ -820,13 +820,13 @@ int get_to_pack(pob o)
   }
   if(Player.packptr >= MAXPACK)
   {
-    print3("Your pack is full.");
+    queue_message("Your pack is full.");
     return false;
   }
   else
   {
     push_pack(o);
-    print3("Putting item in pack.");
+    queue_message("Putting item in pack.");
     return true;
   }
 }
@@ -839,7 +839,7 @@ void gain_item(object *o)
   }
   if(o->objchar == CASH)
   {
-    print2("You gained some cash.");
+    queue_message("You gained some cash.");
     Player.cash += o->basevalue;
     delete o;
     dataprint();
@@ -881,13 +881,13 @@ void use_pack_item(int response, int slot)
   i = pack_item_cost(response);
   if(i > 10)
   {
-    print1("You begin to rummage through your pack.");
+    queue_message("You begin to rummage through your pack.");
   }
   if(i > 5)
   {
-    print1("You search your pack for the item.");
+    queue_message("You search your pack for the item.");
   }
-  print1("You take the item from your pack.");
+  queue_message("You take the item from your pack.");
   Command_Duration += i;
   item = Player.possessions[slot] = Player.pack[response];
   for(i = response; i < Player.packptr - 1; i++)
@@ -980,7 +980,7 @@ void take_from_pack(int slot)
   int response;
   if(Player.packptr < 1)
   {
-    print3("Pack is empty!");
+    queue_message("Pack is empty!");
   }
   else
   {
@@ -991,25 +991,25 @@ void take_from_pack(int slot)
       last_item = aux_display_pack(pack_item, slot);
       if(last_item == Player.packptr && pack_item == 0)
       {
-        print1("Enter pack slot letter or ESCAPE to quit.");
+        queue_message("Enter pack slot letter or ESCAPE to quit.");
       }
       else if(last_item == Player.packptr)
       {
-        print1("Enter pack slot letter, - to go back, or ESCAPE to quit.");
+        queue_message("Enter pack slot letter, - to go back, or ESCAPE to quit.");
       }
       else if(pack_item == 0)
       {
-        print1("Enter pack slot letter, + to see more, or ESCAPE to quit.");
+        queue_message("Enter pack slot letter, + to see more, or ESCAPE to quit.");
       }
       else
       {
-        print1("Enter pack slot letter, + or - to see more, or ESCAPE to quit.");
+        queue_message("Enter pack slot letter, + or - to see more, or ESCAPE to quit.");
       }
       response = mcigetc();
       if(response == '?')
       {
         /* WDT HACK -- display some help instead. */
-        print1("Help not implemented (sorry).");
+        queue_message("Help not implemented (sorry).");
         ok = false;
       }
       else if(response == ESCAPE)
@@ -1054,11 +1054,11 @@ void put_to_pack(int slot)
   object *oslot = Player.possessions[slot];
   if(!oslot)
   {
-    print3("Slot is empty!");
+    queue_message("Slot is empty!");
   }
   else if(oslot->blessing < 0 && oslot->used)
   {
-    print3("Item is cursed!");
+    queue_message("Item is cursed!");
   }
   else
   {
@@ -1136,11 +1136,11 @@ int get_item_number(pob o)
   }
   do
   {
-    print1(std::format("How many? -- max {}:", o->number));
+    queue_message(std::format("How many? -- max {}:", o->number));
     n = (int)parsenum();
     if(n > o->number)
     {
-      print3("Too many!");
+      queue_message("Too many!");
     }
     else if(n < 1)
     {
@@ -1160,7 +1160,7 @@ void drop_from_slot(int slot)
   {
     if(cursed(Player.possessions[slot]) && Player.possessions[slot]->used)
     {
-      print3("It sticks to your fingers!");
+      queue_message("It sticks to your fingers!");
     }
     else
     {
@@ -1172,13 +1172,13 @@ void drop_from_slot(int slot)
       }
       else
       {
-        print3("Didn't drop anything.");
+        queue_message("Didn't drop anything.");
       }
     }
   }
   else
   {
-    print3("Didn't drop anything.");
+    queue_message("Didn't drop anything.");
   }
 }
 
@@ -1232,7 +1232,7 @@ int slottable(pob o, int slot)
   {
     if(o->objchar != ARMOR)
     {
-      print3("Only armor can go in the armor slot!");
+      queue_message("Only armor can go in the armor slot!");
       ok = false;
     }
   }
@@ -1240,7 +1240,7 @@ int slottable(pob o, int slot)
   {
     if(o->objchar != SHIELD)
     {
-      print3("Only a shield can go in the shield slot!");
+      queue_message("Only a shield can go in the shield slot!");
       ok = false;
     }
   }
@@ -1248,7 +1248,7 @@ int slottable(pob o, int slot)
   {
     if(o->objchar != BOOTS)
     {
-      print3("Only boots can go in the boots slot!");
+      queue_message("Only boots can go in the boots slot!");
       ok = false;
     }
   }
@@ -1256,7 +1256,7 @@ int slottable(pob o, int slot)
   {
     if(o->objchar != CLOAK)
     {
-      print3("Only a cloak can go in the cloak slot!");
+      queue_message("Only a cloak can go in the cloak slot!");
       ok = false;
     }
   }
@@ -1264,7 +1264,7 @@ int slottable(pob o, int slot)
   {
     if(o->objchar != RING)
     {
-      print3("Only a ring can go in a ring slot!");
+      queue_message("Only a ring can go in a ring slot!");
       ok = false;
     }
   }
@@ -1284,13 +1284,13 @@ bool item_useable(pob o, int slot)
     {
       if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
       {
-        print1("You heft the weapon and find you must use both hands.");
+        queue_message("You heft the weapon and find you must use both hands.");
         return true;
       }
       else
       {
-        print1("This weapon is two-handed, so at the moment, ");
-        print2("you are just lugging it around....");
+        queue_message("This weapon is two-handed, so at the moment, ");
+        queue_message("you are just lugging it around....");
         return false;
       }
     }
@@ -1404,7 +1404,7 @@ int find_and_remove_item(int id, int chargeval)
 void lose_all_items()
 {
   int i;
-  print1("You notice that you are completely devoid of all possessions.");
+  queue_message("You notice that you are completely devoid of all possessions.");
   for(i = 0; i < MAXITEMS; i++)
   {
     if(Player.possessions[i])
@@ -1435,12 +1435,12 @@ void pack_extra_items(pob item)
   item->number  = 1;
   if(Player.packptr < MAXPACK)
   {
-    print3("Putting extra items back in pack.");
+    queue_message("Putting extra items back in pack.");
     push_pack(extra);
   }
   else
   {
-    print3("No room for extra copies of item -- dropping them.");
+    queue_message("No room for extra copies of item -- dropping them.");
     drop_at(Player.x, Player.y, extra);
   }
   calc_melee();

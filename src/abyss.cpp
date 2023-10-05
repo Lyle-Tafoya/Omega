@@ -78,7 +78,7 @@ plv msdos_changelevel(plv oldlevel, int newenv, int newdepth)
       fclose(fp);
     }
     else
-      mprint("Cannot save level!!!");
+      queue_message("Cannot save level!!!");
     /* Free up monsters and items */
     free_level(oldlevel);
   }

@@ -135,13 +135,13 @@ int m_unblocked(struct monster *m, int x, int y)
     {
       if(los_p(x, y, Player.x, Player.y))
       {
-        mprint("You see a secret door swing open!");
+        queue_message("You see a secret door swing open!");
         lreset(x, y, SECRET, *Level);
         lset(x, y, CHANGED, *Level);
       }
       else
       {
-        mprint("You hear a door creak open, and then close again.");
+        queue_message("You hear a door creak open, and then close again.");
       }
       /* smart monsters would close secret doors behind them if the */
       /* player didn't see them using it */
@@ -170,14 +170,14 @@ int m_unblocked(struct monster *m, int x, int y)
   {
     if(m->movef == M_MOVE_SMART)
     {
-      mprint("You hear a door creak open.");
+      queue_message("You hear a door creak open.");
       Level->site[x][y].locchar = OPEN_DOOR;
       lset(x, y, CHANGED, *Level);
       return (true);
     }
     else if(random_range(m->dmg) > random_range(100) && Level->site[x][y].p_locf != L_ORACLE)
     {
-      mprint("You hear a door shattering.");
+      queue_message("You hear a door shattering.");
       Level->site[x][y].locchar = RUBBLE;
       lset(x, y, CHANGED, *Level);
       return (true);
@@ -880,26 +880,26 @@ int confirmation()
   switch(random_range(4))
   {
     case 0:
-      mprint("Are you sure?");
+      queue_message("Are you sure?");
       break;
     case 1:
-      mprint("Certain about that?");
+      queue_message("Certain about that?");
       break;
     case 2:
-      mprint("Do you really mean it?");
+      queue_message("Do you really mean it?");
       break;
     case 3:
-      mprint("Confirm that, would you?");
+      queue_message("Confirm that, would you?");
       break;
   }
   if(optionp(PARANOID_CONFIRM, Player))
   {
-    mprint("[yes] [no]");
+    queue_message("[yes] [no]");
     return msgscanstring() == "yes";
   }
   else
   {
-    mprint("[yn] (n)");
+    queue_message("[yn] (n)");
     return ynq() == 'y';
   }
 }

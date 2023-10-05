@@ -56,7 +56,7 @@ void l_merc_guild()
       case 0:
         append_message("and see the Recruiting Centurion.");
         append_message("Do you wish to join the Legion? [yn] ", true);
-        if(ynq2() == 'y')
+        if(ynq() == 'y')
         {
           if(Player.rank[ARENA] > 0)
           {
@@ -103,95 +103,95 @@ void l_merc_guild()
         }
         break;
       case COMMANDANT:
-        print1("You find the disposition of your forces satisfactory.");
+        queue_message("You find the disposition of your forces satisfactory.");
         break;
       case COLONEL:
         if((Player.level > Commandantlevel) && find_and_remove_item(CORPSEID, DEMON_EMP))
         {
-          print1("You liberated the Demon Emperor's Regalia!");
-          print1("The Legion is assembled in salute to you!");
-          print2("The Regalia is held high for all to see and admire.");
-          print1("Commandant ");
-          nprint1(Commandant);
-          nprint1(" promotes you to replace him,");
-          print2("and announces his own overdue retirement.");
-          print1("You are the new Commandant of the Legion!");
-          print2("The Emperor's Regalia is sold for a ridiculous sum.");
+          queue_message("You liberated the Demon Emperor's Regalia!");
+          queue_message("The Legion is assembled in salute to you!");
+          queue_message("The Regalia is held high for all to see and admire.");
+          queue_message("Commandant ");
+          queue_message(Commandant);
+          queue_message(" promotes you to replace him,");
+          queue_message("and announces his own overdue retirement.");
+          queue_message("You are the new Commandant of the Legion!");
+          queue_message("The Emperor's Regalia is sold for a ridiculous sum.");
           Commandant = Player.name;
           Commandantlevel    = Player.level;
           Commandantbehavior = fixnpc(4);
           save_hiscore_npc(8);
-          print1("You now know the Spell of Regeneration.");
+          queue_message("You now know the Spell of Regeneration.");
           spell::Spells[spell::REGENERATE].known = true;
           Player.rank[LEGION]        = COMMANDANT;
           Player.maxstr += 2;
           Player.str += 2;
           Player.maxcon += 2;
           Player.con += 2;
-          print2("Your training is complete. You get top salary.");
+          queue_message("Your training is complete. You get top salary.");
           Player.cash += 20000;
         }
         else if(Player.level <= Commandantlevel)
         {
-          print1("Your CO expresses satisfaction with your progress.");
-          print2("But your service record does not yet permit promotion.");
+          queue_message("Your CO expresses satisfaction with your progress.");
+          queue_message("But your service record does not yet permit promotion.");
         }
         else
         {
-          print1("Why do you come empty handed?");
-          print2("You must return with the Regalia of the Demon Emperor!");
+          queue_message("Why do you come empty handed?");
+          queue_message("You must return with the Regalia of the Demon Emperor!");
         }
         break;
       case FORCE_LEADER:
-        print1("Your CO expresses satisfaction with your progress.");
+        queue_message("Your CO expresses satisfaction with your progress.");
         if(Player.guildxp[LEGION] < 4000)
         {
-          print2("But your service record does not yet permit promotion.");
+          queue_message("But your service record does not yet permit promotion.");
         }
         else
         {
-          print2("You have been promoted to Legion Colonel!");
-          print1("Your next promotion is contingent on the return of");
-          print2("the Regalia of the Demon Emperor.");
-          print1("The Demon Emperor holds court at the base of a volcano");
-          print2("to the far south, in the heart of a swamp.");
-          print1("You have been taught the spell of heroism!");
+          queue_message("You have been promoted to Legion Colonel!");
+          queue_message("Your next promotion is contingent on the return of");
+          queue_message("the Regalia of the Demon Emperor.");
+          queue_message("The Demon Emperor holds court at the base of a volcano");
+          queue_message("to the far south, in the heart of a swamp.");
+          queue_message("You have been taught the spell of heroism!");
           spell::Spells[spell::HEROISM].known = true;
           Player.rank[LEGION]  = COLONEL;
           Player.maxstr++;
           Player.str++;
           Player.maxcon++;
           Player.con++;
-          print2("You are given advanced training, and a raise.");
+          queue_message("You are given advanced training, and a raise.");
           Player.cash += 10000;
         }
         break;
       case CENTURION:
-        print1("Your CO expresses satisfaction with your progress.");
+        queue_message("Your CO expresses satisfaction with your progress.");
         if(Player.guildxp[LEGION] < 1500)
         {
-          print2("But your service record does not yet permit promotion.");
+          queue_message("But your service record does not yet permit promotion.");
         }
         else
         {
-          print2("You are now a Legion Force-Leader!");
+          queue_message("You are now a Legion Force-Leader!");
           Player.rank[LEGION] = FORCE_LEADER;
           Player.maxstr++;
           Player.str++;
-          print1("You receive more training, and bonus pay.");
+          queue_message("You receive more training, and bonus pay.");
           Player.cash += 5000;
         }
         break;
       case LEGIONAIRE:
-        print1("Your CO expresses satisfaction with your progress.");
+        queue_message("Your CO expresses satisfaction with your progress.");
         if(Player.guildxp[LEGION] < 400)
         {
-          print2("But your service record does not yet permit promotion.");
+          queue_message("But your service record does not yet permit promotion.");
         }
         else
         {
-          print2("You are promoted to Legion Centurion!");
-          print1("You get advanced training, and a higher salary.");
+          queue_message("You are promoted to Legion Centurion!");
+          queue_message("You get advanced training, and a higher salary.");
           Player.rank[LEGION] = CENTURION;
           Player.maxcon++;
           Player.con++;
@@ -209,29 +209,29 @@ void l_castle()
 
   if(Player.level < 3)
   {
-    print1("You can't possibly enter the castle, you nobody!");
-    print2("Come back when you are famous.");
+    queue_message("You can't possibly enter the castle, you nobody!");
+    queue_message("Come back when you are famous.");
   }
   else
   {
-    print1("You are ushered into the castle.");
+    queue_message("You are ushered into the castle.");
     if(Player.rank[NOBILITY] < DUKE)
     {
-      print2("His Grace, ");
-      nprint2(Duke);
-      nprint2("-- Duke of Rampart! <fanfare>");
+      queue_message("His Grace, ");
+      queue_message(Duke);
+      queue_message("-- Duke of Rampart! <fanfare>");
     }
     if(Player.rank[NOBILITY] == 0)
     {
-      print1("Well, sirrah, wouldst embark on a quest? [yn] ");
-      if(ynq1() == 'y')
+      queue_message("Well, sirrah, wouldst embark on a quest? [yn] ");
+      if(ynq() == 'y')
       {
-        print2("Splendid. Bring me the head of the Goblin King.");
+        queue_message("Splendid. Bring me the head of the Goblin King.");
         Player.rank[NOBILITY] = COMMONER;
       }
       else
       {
-        print1("You scoundrel! Guards! Take this blackguard away!");
+        queue_message("You scoundrel! Guards! Take this blackguard away!");
         p_damage(25, UNSTOPPABLE, "castle guards for lese majeste");
         send_to_jail();
       }
@@ -240,61 +240,61 @@ void l_castle()
     {
       if(find_and_remove_item(CORPSEID, GOBLIN_KING))
       {
-        print1("Good job, sirrah! I promote you to the rank of esquire.");
+        queue_message("Good job, sirrah! I promote you to the rank of esquire.");
         Player.rank[NOBILITY] = ESQUIRE;
         gain_experience(100);
-        print2("Now that you have proved yourself true, another quest!");
-        print1("Bring to me a Holy Defender!");
-        print2("One is said to be in the possession of the Great Wyrm");
-        print1("in the depths of the sewers below the city.");
+        queue_message("Now that you have proved yourself true, another quest!");
+        queue_message("Bring to me a Holy Defender!");
+        queue_message("One is said to be in the possession of the Great Wyrm");
+        queue_message("in the depths of the sewers below the city.");
       }
       else
       {
-        print2("Do not return until you achieve the quest, caitiff!");
+        queue_message("Do not return until you achieve the quest, caitiff!");
       }
     }
     else if(Player.rank[NOBILITY] == ESQUIRE)
     {
       if(find_and_remove_item(WEAPONID + 34, -1))
       {
-        print1("My thanks, squire. In return, I dub thee knight!");
+        queue_message("My thanks, squire. In return, I dub thee knight!");
         Player.rank[NOBILITY] = KNIGHT;
         gain_experience(1000);
-        print2("If thou wouldst please me further...");
-        print1("Bring me a suit of dragonscale armor.");
-        print2("You might have to kill a dragon to get one....");
+        queue_message("If thou wouldst please me further...");
+        queue_message("Bring me a suit of dragonscale armor.");
+        queue_message("You might have to kill a dragon to get one....");
       }
       else
       {
-        print2("Greetings, squire. My sword? What, you don't have it?");
+        queue_message("Greetings, squire. My sword? What, you don't have it?");
       }
     }
     else if(Player.rank[NOBILITY] == KNIGHT)
     {
       if(find_and_remove_item(ARMORID + 12, -1))
       {
-        print1("Thanks, good sir knight.");
-        print2("Here are letters patent to a peerage!");
+        queue_message("Thanks, good sir knight.");
+        queue_message("Here are letters patent to a peerage!");
         Player.rank[NOBILITY] = LORD;
         gain_experience(10000);
-        print1("If you would do me a final service...");
-        print2("I require the Orb of Mastery. If you would be so kind...");
-        print1("By the way, you might find the Orb in the possession");
-        print2("Of the Elemental Master on the Astral Plane");
+        queue_message("If you would do me a final service...");
+        queue_message("I require the Orb of Mastery. If you would be so kind...");
+        queue_message("By the way, you might find the Orb in the possession");
+        queue_message("Of the Elemental Master on the Astral Plane");
       }
       else
       {
-        print2("Your quest is not yet complete, sir knight.");
+        queue_message("Your quest is not yet complete, sir knight.");
       }
     }
     else if(Player.rank[NOBILITY] == LORD)
     {
       if(find_item(&o, ARTIFACTID + 0, -1))
       {
-        print1("My sincerest thanks, my lord.");
-        print2("You have proved yourself a true paragon of chivalry");
-        print1("I abdicate the Duchy in your favor....");
-        print2("Oh, you can keep the Orb, by the way....");
+        queue_message("My sincerest thanks, my lord.");
+        queue_message("You have proved yourself a true paragon of chivalry");
+        queue_message("I abdicate the Duchy in your favor....");
+        queue_message("Oh, you can keep the Orb, by the way....");
         Player.rank[NOBILITY] = DUKE;
         gain_experience(10000);
         Duke = Player.name;
@@ -324,7 +324,7 @@ void l_castle()
       }
       else
       {
-        print2("I didn't really think you were up to the task....");
+        queue_message("I didn't really think you were up to the task....");
       }
     }
   }
@@ -336,10 +336,10 @@ void l_arena()
   pob   newitem;
   int   i, prize, monsterlevel;
 
-  print1("Rampart Coliseum");
+  queue_message("Rampart Coliseum");
   if(Player.rank[ARENA] == 0)
   {
-    print2("Enter the games, or Register as a Gladiator? [e,r,ESCAPE] ");
+    queue_message("Enter the games, or Register as a Gladiator? [e,r,ESCAPE] ");
     do
     {
       response = (char)mcigetc();
@@ -347,8 +347,8 @@ void l_arena()
   }
   else
   {
-    print2("Enter the games? [yn] ");
-    response = ynq2();
+    queue_message("Enter the games? [yn] ");
+    response = ynq();
     if(response == 'y')
     {
       response = 'e';
@@ -362,28 +362,28 @@ void l_arena()
   {
     if(Player.rank[ARENA] > 0)
     {
-      print2("You're already a gladiator....");
+      queue_message("You're already a gladiator....");
     }
     else if(Player.rank[ORDER] > 0)
     {
-      print2("We don't let Paladins into our Guild.");
+      queue_message("We don't let Paladins into our Guild.");
     }
     else if(Player.rank[LEGION] > 0)
     {
-      print2("We don't train no stinkin' mercs!");
+      queue_message("We don't train no stinkin' mercs!");
     }
     else if(Player.str < 13)
     {
-      print2("Yer too weak to train!");
+      queue_message("Yer too weak to train!");
     }
     else if(Player.agi < 12)
     {
-      print2("Too clumsy to be a gladiator!");
+      queue_message("Too clumsy to be a gladiator!");
     }
     else
     {
-      print1("Ok, yer now an Arena Trainee.");
-      print2("Here's a wooden sword, and a shield");
+      queue_message("Ok, yer now an Arena Trainee.");
+      queue_message("Here's a wooden sword, and a shield");
       newitem  = new object;
       *newitem = Objects[WEAPONID + 17]; /* club */
       gain_item(newitem);
@@ -392,13 +392,13 @@ void l_arena()
       gain_item(newitem);
       Player.rank[ARENA] = TRAINEE;
       Arena_Opponent     = 3;
-      print1("You've got 5000Au credit at the Gym.");
+      queue_message("You've got 5000Au credit at the Gym.");
       Gymcredit += 5000;
     }
   }
   else if(response == 'e')
   {
-    print1("OK, we're arranging a match....");
+    queue_message("OK, we're arranging a match....");
     Arena_Monster = new monster;
     Arena_Victory = false;
     switch(Arena_Opponent)
@@ -495,12 +495,12 @@ void l_arena()
       Arena_Monster->corpsestr = std::format("The corpse of {}", name);
     }
     Arena_Monster->uniqueness = UNIQUE_MADE;
-    print1("You have a challenger: ");
-    print2(Arena_Monster->monstring);
+    queue_message("You have a challenger: ");
+    queue_message(Arena_Monster->monstring);
     Arena_Monster->attacked = true;
     m_status_set(*Arena_Monster, HOSTILE);
     change_environment(E_ARENA);
-    print1("Let the battle begin....");
+    queue_message("Let the battle begin....");
 
     time_clock(true);
     while(Current_Environment == E_ARENA)
@@ -527,13 +527,13 @@ void l_arena()
 
     if(!Arena_Victory)
     {
-      print1("The crowd boos your craven behavior!!!");
+      queue_message("The crowd boos your craven behavior!!!");
       if(Player.rank[ARENA] > 0)
       {
-        print2("You are thrown out of the Gladiator's Guild!");
+        queue_message("You are thrown out of the Gladiator's Guild!");
         if(Gymcredit > 0)
         {
-          print1("Your credit at the gym is cut off!");
+          queue_message("Your credit at the gym is cut off!");
         }
         Gymcredit          = 0;
         Player.rank[ARENA] = -1;
@@ -544,24 +544,24 @@ void l_arena()
       Arena_Opponent++;
       if(monsterlevel == 20)
       {
-        print1("The crowd roars its approval!");
+        queue_message("The crowd roars its approval!");
         if(Player.rank[ARENA])
         {
-          print2("You are the new Arena Champion!");
+          queue_message("You are the new Arena Champion!");
           Championlevel = Player.level;
           Champion = Player.name;
           Player.rank[ARENA] = 5;
           Championbehavior   = fixnpc(4);
           save_hiscore_npc(11);
-          print1("You are awarded the Champion's Spear: Victrix!");
+          queue_message("You are awarded the Champion's Spear: Victrix!");
           newitem  = new object;
           *newitem = Objects[WEAPONID + 35];
           gain_item(newitem);
         }
         else
         {
-          print1("As you are not an official gladiator,");
-          nprint1("you are not made Champion.");
+          queue_message("As you are not an official gladiator,");
+          queue_message("you are not made Champion.");
         }
       }
       prize = std::max(25, monsterlevel * 50);
@@ -569,15 +569,15 @@ void l_arena()
       {
         prize *= 2;
       }
-      print1(std::format("Good fight! Your prize is: {}Au.", prize));
+      queue_message(std::format("Good fight! Your prize is: {}Au.", prize));
       Player.cash += prize;
       if((Player.rank[ARENA] < 4) && (Arena_Opponent > 5) && (Arena_Opponent % 3 == 0))
       {
         if(Player.rank[ARENA] > 0)
         {
           Player.rank[ARENA]++;
-          print1("You've been promoted to a stronger class!");
-          print2("You are also entitled to additional training.");
+          queue_message("You've been promoted to a stronger class!");
+          queue_message("You are also entitled to additional training.");
           Gymcredit += Arena_Opponent * 1000;
         }
       }

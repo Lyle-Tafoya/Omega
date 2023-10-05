@@ -42,17 +42,17 @@ void enchant(int delta)
        Player.possessions[i]->on_use == I_NORMAL_SHIELD || Player.possessions[i]->objchar == FOOD ||
        Player.possessions[i]->objchar == MISSILEWEAPON)
     {
-      print1("You feel fortunate.");
+      queue_message("You feel fortunate.");
     }
     else if(Player.possessions[i]->blessing < 0 ||
             (Player.possessions[i]->objchar == ARTIFACT && random_range(3)))
     {
       if(Player.possessions[i]->uniqueness == COMMON)
       {
-        print1("Your ");
+        queue_message("Your ");
       }
-      nprint1(itemid(Player.possessions[i]));
-      nprint1(" glows, but the glow flickers out...");
+      queue_message(itemid(Player.possessions[i]));
+      queue_message(" glows, but the glow flickers out...");
     }
     else
     {
@@ -63,10 +63,10 @@ void enchant(int delta)
       }
       if(Player.possessions[i]->uniqueness == COMMON)
       {
-        print1("Your ");
+        queue_message("Your ");
       }
-      nprint1(itemid(Player.possessions[i]));
-      nprint1(" radiates an aura of mundanity!");
+      queue_message(itemid(Player.possessions[i]));
+      queue_message(" radiates an aura of mundanity!");
       Player.possessions[i]->plus       = 0;
       Player.possessions[i]->charge     = -1;
       Player.possessions[i]->on_use     = I_NOTHING;
@@ -83,19 +83,19 @@ void enchant(int delta)
     int i = getitem(CASH);
     if(i == ABORT)
     {
-      print1("You feel unlucky.");
+      queue_message("You feel unlucky.");
     }
     else if(i == CASHVALUE)
     {
-      print1("You enchant your money.... What a concept!");
+      queue_message("You enchant your money.... What a concept!");
       long change_cash = Player.cash * (random_range(7) - 3) / 6;
       if(change_cash > 0)
       {
-        print2("Seems to have been a good idea!");
+        queue_message("Seems to have been a good idea!");
       }
       else
       {
-        print2("Maybe it wasn't such a good idea....");
+        queue_message("Maybe it wasn't such a good idea....");
       }
       Player.cash += change_cash;
     }
@@ -103,14 +103,14 @@ void enchant(int delta)
     {
       if(Player.possessions[i]->on_use != Objects[Player.possessions[i]->id].on_use)
       {
-        print1("It re-acquires its magical aura!");
+        queue_message("It re-acquires its magical aura!");
         Player.possessions[i]->on_use = Objects[Player.possessions[i]->id].on_use;
       }
       else
       {
-        print1("The enchantment spell enfolds the ");
-        nprint1(itemid(Player.possessions[i]));
-        print2("and the potent enchantment of the Artifact causes a backlash!");
+        queue_message("The enchantment spell enfolds the ");
+        queue_message(itemid(Player.possessions[i]));
+        queue_message("and the potent enchantment of the Artifact causes a backlash!");
         manastorm(Player.x, Player.y, Player.possessions[i]->level * 5);
       }
     }
@@ -118,8 +118,8 @@ void enchant(int delta)
     {
       if(Player.possessions[i]->plus > random_range(20) + 1)
       {
-        print1("Uh-oh, the force of the enchantment was too much!");
-        print2("There is a loud explosion!");
+        queue_message("Uh-oh, the force of the enchantment was too much!");
+        queue_message("There is a loud explosion!");
         manastorm(Player.x, Player.y, Player.possessions[i]->plus * 5);
         dispose_lost_objects(1, Player.possessions[i]);
       }
@@ -132,7 +132,7 @@ void enchant(int delta)
           item_unequip(Player.possessions[i]);
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }
-        print1("The item shines!");
+        queue_message("The item shines!");
         Player.possessions[i]->plus += delta + 1;
         if(Player.possessions[i]->charge > -1 && Player.possessions[i]->objchar == STICK)
         {
@@ -158,16 +158,16 @@ void bless(int blessing)
     int index = random_item();
     if(index == ABORT)
     {
-      print1("You feel fortunate.");
+      queue_message("You feel fortunate.");
     }
     else
     {
-      print1("A foul odor arises from ");
+      queue_message("A foul odor arises from ");
       if(Player.possessions[index]->uniqueness == COMMON)
       {
-        nprint1("your ");
+        queue_message("your ");
       }
-      nprint1(itemid(Player.possessions[index]));
+      queue_message(itemid(Player.possessions[index]));
       if(Player.possessions[index]->used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -192,7 +192,7 @@ void bless(int blessing)
     int index = getitem(NULL_ITEM);
     if(index == CASHVALUE)
     {
-      print1("Blessing your money has no effect.");
+      queue_message("Blessing your money has no effect.");
     }
     else if(index != ABORT)
     {
@@ -203,26 +203,26 @@ void bless(int blessing)
         item_unequip(Player.possessions[index]);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
-      print1("A pure white light surrounds the item... ");
+      queue_message("A pure white light surrounds the item... ");
       if(Player.possessions[index]->blessing < 0 - (blessing + 1))
       {
-        print2("which is evil enough to resist the effect of the blessing!");
+        queue_message("which is evil enough to resist the effect of the blessing!");
       }
       else if(Player.possessions[index]->blessing < -1)
       {
-        print2("which disintegrates under the influence of the holy aura!");
+        queue_message("which disintegrates under the influence of the holy aura!");
         Player.itemweight -= Player.possessions[index]->weight;
         dispose_lost_objects(1, Player.possessions[index]);
       }
       else if(Player.possessions[index]->blessing < blessing + 1)
       {
-        print2("which now seems affected by afflatus!");
+        queue_message("which now seems affected by afflatus!");
         Player.possessions[index]->blessing++;
         Player.possessions[index]->plus = abs(Player.possessions[index]->plus) + 1;
       }
       else
       {
-        print2("The hierolux fades without any appreciable effect....");
+        queue_message("The hierolux fades without any appreciable effect....");
       }
       if(used && Player.possessions[index])
       {
@@ -239,7 +239,7 @@ void heal(int amount)
 {
   if(amount > -1)
   {
-    mprint("You feel better.");
+    queue_message("You feel better.");
     if(Player.hp < Player.maxhp + amount)
     {
       Player.hp += random_range(10 * amount) + 1;
@@ -252,7 +252,7 @@ void heal(int amount)
   }
   else
   {
-    mprint("You feel unwell.");
+    queue_message("You feel unwell.");
     Player.hp -= random_range(10 * abs(amount) + 1);
     if(Player.hp < 0)
     {
@@ -316,26 +316,26 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
   {
     if(Player.status[DEFLECTION] > 0)
     {
-      mprint("The bolt just missed you!");
+      queue_message("The bolt just missed you!");
     }
     else
     {
       switch(dtype)
       {
         case FLAME:
-          mprint("You were blasted by a firebolt!");
+          queue_message("You were blasted by a firebolt!");
           p_damage(random_range(dmg), dtype, "a firebolt");
           break;
         case ELECTRICITY:
-          mprint("You were zapped by lightning!");
+          queue_message("You were zapped by lightning!");
           p_damage(random_range(dmg), dtype, "a bolt of lightning");
           break;
         case NORMAL_DAMAGE:
-          mprint("You were hit by a missile!");
+          queue_message("You were hit by a missile!");
           p_damage(random_range(dmg), dtype, "a missile");
           break;
         case COLD:
-          mprint("You were hit by an icicle!");
+          queue_message("You were hit by an icicle!");
           p_damage(random_range(dmg), dtype, "an icicle");
           break;
       }
@@ -410,7 +410,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
     {
       if((dtype == FLAME) || (dtype == ELECTRICITY))
       {
-        mprint("The hedge is blasted away!");
+        queue_message("The hedge is blasted away!");
         Level->site[xx][yy].p_locf  = L_NO_OP;
         Level->site[xx][yy].locchar = FLOOR;
         plotspot(xx, yy, true);
@@ -418,19 +418,19 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
       }
       else
       {
-        mprint("The hedge is unaffected.");
+        queue_message("The hedge is unaffected.");
       }
     }
     else
     {
-      mprint("The trifid absorbs the energy and laughs!");
+      queue_message("The trifid absorbs the energy and laughs!");
     }
   }
   else if(Level->site[xx][yy].locchar == WATER)
   {
     if(dtype == FLAME)
     {
-      mprint("The water is vaporised!");
+      queue_message("The water is vaporised!");
       Level->site[xx][yy].p_locf  = L_NO_OP;
       Level->site[xx][yy].locchar = FLOOR;
       lset(xx, yy, CHANGED, *Level);
@@ -493,19 +493,19 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
       switch(dtype)
       {
         case FLAME:
-          mprint("You were blasted by a fireball!");
+          queue_message("You were blasted by a fireball!");
           p_damage(random_range(dmg), FLAME, "a fireball");
           break;
         case COLD:
-          mprint("You were blasted by a snowball!");
+          queue_message("You were blasted by a snowball!");
           p_damage(random_range(dmg), COLD, "a snowball");
           break;
         case ELECTRICITY:
-          mprint("You were blasted by ball lightning!");
+          queue_message("You were blasted by ball lightning!");
           p_damage(random_range(dmg), ELECTRICITY, "ball lightning");
           break;
         case UNSTOPPABLE:
-          mprint("Oh No! Manastorm!");
+          queue_message("Oh No! Manastorm!");
           p_damage(random_range(dmg), UNSTOPPABLE, "a manastorm!");
           break;
       }
@@ -549,7 +549,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
       {
         if((dtype == FLAME) || (dtype == ELECTRICITY))
         {
-          mprint("The hedge is blasted away!");
+          queue_message("The hedge is blasted away!");
           Level->site[ex][ey].p_locf  = L_NO_OP;
           Level->site[ex][ey].locchar = FLOOR;
           plotspot(ex, ey, true);
@@ -557,19 +557,19 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
         }
         else
         {
-          mprint("The hedge is unaffected.");
+          queue_message("The hedge is unaffected.");
         }
       }
       else
       {
-        mprint("The trifid absorbs the energy and laughs!");
+        queue_message("The trifid absorbs the energy and laughs!");
       }
     }
     else if(Level->site[ex][ey].locchar == WATER)
     {
       if(dtype == FLAME)
       {
-        mprint("The water is vaporised!");
+        queue_message("The water is vaporised!");
         Level->site[ex][ey].p_locf  = L_NO_OP;
         Level->site[ex][ey].locchar = FLOOR;
         plotspot(ex, ey, true);
@@ -631,11 +631,11 @@ void identify(int blessing)
 
   if(blessing == 0)
   {
-    print1("Identify:");
+    queue_message("Identify:");
     index = getitem(NULL_ITEM);
     if(index == CASHVALUE)
     {
-      print3("Your money is really money.");
+      queue_message("Your money is really money.");
     }
     else if(index == ABORT)
     {
@@ -652,13 +652,13 @@ void identify(int blessing)
         Player.possessions[index]->known             = 2;
         Objects[Player.possessions[index]->id].known = 1;
       }
-      print1("Identified: ");
-      mprint(itemid(Player.possessions[index]));
+      queue_message("Identified: ");
+      queue_message(itemid(Player.possessions[index]));
     }
   }
   else if(blessing < 0)
   {
-    print2("You feel forgetful.");
+    queue_message("You feel forgetful.");
     for(index = 0; index < MAXITEMS; index++)
     {
       if(Player.possessions[index])
@@ -670,7 +670,7 @@ void identify(int blessing)
   }
   else
   {
-    print2("You feel encyclopaedic.");
+    queue_message("You feel encyclopaedic.");
     for(index = 0; index < MAXITEMS; index++)
     {
       if(Player.possessions[index])
@@ -729,7 +729,7 @@ int random_item()
 void wish(int blessing)
 {
   std::string wishstr;
-  print1("What do you wish for? ");
+  queue_message("What do you wish for? ");
   if(blessing < 0)
   {
     deathprint();
@@ -740,17 +740,17 @@ void wish(int blessing)
   }
   if(blessing < 0 ||  wishstr == "Death")
   {
-    print2("As you wish, so shall it be.");
+    queue_message("As you wish, so shall it be.");
     p_death("a deathwish");
   }
   if(wishstr == "Power")
   {
-    print2("You feel a sudden surge of energy");
+    queue_message("You feel a sudden surge of energy");
     Player.mana = calcmana() * 10;
   }
   else if(wishstr == "Skill")
   {
-    print2("You feel more competent.");
+    queue_message("You feel more competent.");
     if(gamestatusp(CHEATED, GameStatus))
     {
       gain_experience(10000);
@@ -762,22 +762,22 @@ void wish(int blessing)
   }
   else if(wishstr == "Wealth")
   {
-    print2("You are submerged in shower of gold pieces!");
+    queue_message("You are submerged in shower of gold pieces!");
     Player.cash += 10000;
   }
   else if(wishstr == "Balance")
   {
-    print2("You feel neutral.");
+    queue_message("You feel neutral.");
     Player.alignment = 0;
   }
   else if(wishstr == "Chaos")
   {
-    print2("You feel chaotic.");
+    queue_message("You feel chaotic.");
     Player.alignment -= 25;
   }
   else if(wishstr == "Law")
   {
-    print2("You feel lawful.");
+    queue_message("You feel lawful.");
     Player.alignment += 25;
   }
   else if(wishstr == "Location")
@@ -786,7 +786,7 @@ void wish(int blessing)
   }
   else if(wishstr == "Knowledge")
   {
-    print2("You feel more knowledgeable.");
+    queue_message("You feel more knowledgeable.");
     int i = random_range(spell::NUM_SPELLS);
     if(spell::Spells[i].known)
     {
@@ -799,7 +799,7 @@ void wish(int blessing)
   }
   else if(wishstr == "Health")
   {
-    print2("You feel vigorous");
+    queue_message("You feel vigorous");
     Player.hp               = std::max(Player.hp, Player.maxhp);
     Player.status[DISEASED] = 0;
     Player.status[POISONED] = 0;
@@ -824,7 +824,7 @@ void wish(int blessing)
   }
   else
   {
-    print2("You feel stupid.");
+    queue_message("You feel stupid.");
   }
   dataprint();
   showflags();
@@ -838,13 +838,13 @@ void acquire(int blessing)
     int index = random_item();
     if(index == ABORT)
     {
-      mprint("You feel fortunate.");
+      queue_message("You feel fortunate.");
     }
     else
     {
-      print1("Smoke drifts out of your pack.... ");
-      print2("Destroyed: ");
-      nprint2(itemid(Player.possessions[index]));
+      queue_message("Smoke drifts out of your pack.... ");
+      queue_message("Destroyed: ");
+      queue_message(itemid(Player.possessions[index]));
       dispose_lost_objects(1, Player.possessions[index]);
     }
   }
@@ -854,11 +854,11 @@ void acquire(int blessing)
     newthing->id = -1;
     if(gamestatusp(CHEATED, GameStatus))
     {
-      print1("Acquire which kind of item: !?][}{)/=%%\\& ");
+      queue_message("Acquire which kind of item: !?][}{)/=%%\\& ");
     }
     else
     {
-      print1("Acquire which kind of item: !?][}{)/=%%\\ ");
+      queue_message("Acquire which kind of item: !?][}{)/=%%\\ ");
     }
     int id = ABORT;
     char otype = mgetc();
@@ -875,7 +875,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -893,7 +893,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -911,7 +911,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -929,7 +929,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -947,7 +947,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -965,7 +965,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -983,7 +983,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -1001,7 +1001,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -1019,7 +1019,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -1037,7 +1037,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -1055,7 +1055,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -1073,7 +1073,7 @@ void acquire(int blessing)
         }
         if(id < 0)
         {
-          print2("You feel stupid.");
+          queue_message("You feel stupid.");
         }
         else
         {
@@ -1081,7 +1081,7 @@ void acquire(int blessing)
         }
         break;
       default:
-        print2("You feel stupid.");
+        queue_message("You feel stupid.");
     }
     xredraw();
     if(id != ABORT)

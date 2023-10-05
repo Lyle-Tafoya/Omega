@@ -347,12 +347,12 @@ void m_move_leash(struct monster *m)
     }
     else if(los_p(Player.x, Player.y, m->x, m->y))
     {
-      mprint("You see the dog jerked back by its chain!");
+      queue_message("You see the dog jerked back by its chain!");
       plotspot(m->x, m->y, false);
     }
     else
     {
-      mprint("You hear a strangled sort of yelp!");
+      queue_message("You hear a strangled sort of yelp!");
     }
     Level->site[m->x][m->y].creature = nullptr;
     m->x                             = m->aux1;

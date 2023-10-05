@@ -207,40 +207,40 @@ void m_death(struct monster *m)
   m_dropstuff(m);
   if(m->id == DEATH)
   { /* Death */
-    mprint("Death lies sprawled out on the ground......");
-    mprint("Death laughs ironically and gets back to its feet.");
-    mprint("It gestures and another scythe appears in its hands.");
+    queue_message("Death lies sprawled out on the ground......");
+    queue_message("Death laughs ironically and gets back to its feet.");
+    queue_message("It gestures and another scythe appears in its hands.");
     switch(random_range(10))
     {
       case 0:
-        mprint("Death performs a little bow and goes back on guard.");
+        queue_message("Death performs a little bow and goes back on guard.");
         break;
       case 1:
-        mprint("'A hit! A palpable hit!' Death goes back on the attack.");
+        queue_message("'A hit! A palpable hit!' Death goes back on the attack.");
         break;
       case 2:
-        mprint("'Ah, if only it could be so simple!' snickers Death.");
+        queue_message("'Ah, if only it could be so simple!' snickers Death.");
         break;
       case 3:
-        mprint("'You think Death can be slain?  What a jest!' says Death.");
+        queue_message("'You think Death can be slain?  What a jest!' says Death.");
         break;
       case 4:
-        mprint("'Your point is well taken.' says Death, attacking again.");
+        queue_message("'Your point is well taken.' says Death, attacking again.");
         break;
       case 5:
-        mprint("'Oh, come now, stop delaying the inevitable.' says Death.");
+        queue_message("'Oh, come now, stop delaying the inevitable.' says Death.");
         break;
       case 6:
-        mprint("'Your destiny ends here with me.' says Death, scythe raised.");
+        queue_message("'Your destiny ends here with me.' says Death, scythe raised.");
         break;
       case 7:
-        mprint("'I almost felt that.' says Death, smiling.");
+        queue_message("'I almost felt that.' says Death, smiling.");
         break;
       case 8:
-        mprint("'Timeo Mortis?' asks Death quizzically, 'Not me!'");
+        queue_message("'Timeo Mortis?' asks Death quizzically, 'Not me!'");
         break;
       case 9:
-        mprint("Death sighs theatrically. 'They never learn.'");
+        queue_message("Death sighs theatrically. 'They never learn.'");
         break;
     }
     strengthen_death(m);
@@ -265,7 +265,7 @@ void m_death(struct monster *m)
         switch(m->aux2)
         {
           case 0:
-            mprint("You hear a faroff dirge. You feel a sense of triumph.");
+            queue_message("You hear a faroff dirge. You feel a sense of triumph.");
             break;
           case 1:
           case 2:
@@ -273,52 +273,52 @@ void m_death(struct monster *m)
           case 4:
           case 5:
           case 6:
-            mprint("You hear a faroff sound like angels crying....");
+            queue_message("You hear a faroff sound like angels crying....");
             Priest[m->aux2] = nameprint();
             Priestbehavior[m->aux2] = 2933;
             break;
           case 7:
-            mprint("A furtive figure dashes out of the shadows, takes a look at");
-            mprint("the corpse, and runs away!");
+            queue_message("A furtive figure dashes out of the shadows, takes a look at");
+            queue_message("the corpse, and runs away!");
             Shadowlord = nameprint();
             Shadowlordbehavior = 2912;
             break;
           case 8:
-            mprint("An aide-de-camp approaches, removes the corpse's insignia,");
-            mprint("and departs.");
+            queue_message("An aide-de-camp approaches, removes the corpse's insignia,");
+            queue_message("and departs.");
             Commandant = nameprint();
             Commandantbehavior = 2912;
             break;
           case 9:
-            mprint("An odd glow surrounds the corpse, and slowly fades.");
+            queue_message("An odd glow surrounds the corpse, and slowly fades.");
             Archmage = nameprint();
             Archmagebehavior = 2933;
             break;
           case 10:
-            mprint("A demon materializes, takes a quick look at the corpse,");
-            mprint("and teleports away with a faint popping noise.");
+            queue_message("A demon materializes, takes a quick look at the corpse,");
+            queue_message("and teleports away with a faint popping noise.");
             Prime = nameprint();
             Primebehavior = 2932;
             break;
           case 11:
-            mprint("A sports columnist rushes forward and takes a quick photo");
-            mprint("of the corpse and rushes off muttering about a deadline.");
+            queue_message("A sports columnist rushes forward and takes a quick photo");
+            queue_message("of the corpse and rushes off muttering about a deadline.");
             Champion = nameprint();
             Championbehavior = 2913;
             break;
           case 12:
-            mprint("You hear a fanfare in the distance, and feel dismayed.");
+            queue_message("You hear a fanfare in the distance, and feel dismayed.");
             Duke = nameprint();
             Dukebehavior = 2911;
             break;
           case 13:
             if(Player.alignment > 10)
             {
-              mprint("You feel smug.");
+              queue_message("You feel smug.");
             }
             else if(Player.alignment < 10)
             {
-              mprint("You feel ashamed.");
+              queue_message("You feel ashamed.");
             }
             Chaoslord = nameprint();
             Chaoslordbehavior = 2912;
@@ -326,11 +326,11 @@ void m_death(struct monster *m)
           case 14:
             if(Player.alignment < 10)
             {
-              mprint("You feel smug.");
+              queue_message("You feel smug.");
             }
             else if(Player.alignment > 10)
             {
-              mprint("You feel ashamed.");
+              queue_message("You feel ashamed.");
             }
             Lawlord = nameprint();
             Lawlordbehavior = 2911;
@@ -349,7 +349,7 @@ void m_death(struct monster *m)
               }
               Justiciar = nameprint();
               Justiciarbehavior = 2911;
-              mprint("In the distance you hear a trumpet. A Servant of Law");
+              queue_message("In the distance you hear a trumpet. A Servant of Law");
               /* promote one of the city guards to be justiciar */
               ml = City->mlist;
               while(!found && ml)
@@ -364,7 +364,7 @@ void m_death(struct monster *m)
               {
                 if(curr)
                 {
-                  mprint("materializes, sheds a tear, picks up the badge, and "
+                  queue_message("materializes, sheds a tear, picks up the badge, and "
                          "leaves.");
                   m_pickup(ml->m, curr->thing);
                   if(prev)
@@ -379,9 +379,9 @@ void m_death(struct monster *m)
                 }
                 else
                 {
-                  mprint("materializes, sheds a tear, and leaves.");
+                  queue_message("materializes, sheds a tear, and leaves.");
                 }
-                mprint("A new justiciar has been promoted!");
+                queue_message("A new justiciar has been promoted!");
                 x = ml->m->x;
                 y = ml->m->y;
                 make_hiscore_npc(ml->m, 15);
@@ -393,15 +393,15 @@ void m_death(struct monster *m)
               }
               else
               {
-                mprint("materializes, sheds a tear, and leaves.");
+                queue_message("materializes, sheds a tear, and leaves.");
               }
               alert_guards();
               /* will cause order to be destroyed if no guards or justiciar*/
             }
             else
             {
-              mprint("A Servant of Chaos materializes, grabs the corpse,");
-              mprint("snickers a bit, and vanishes.");
+              queue_message("A Servant of Chaos materializes, grabs the corpse,");
+              queue_message("snickers a bit, and vanishes.");
             }
             break;
           case 16:
@@ -422,16 +422,16 @@ void m_death(struct monster *m)
       case GOBLIN_KING:
         if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
         {
-          mprint("You seem to hear a woman's voice from far off:");
-          mprint("'Well done! Come to me now....'");
+          queue_message("You seem to hear a woman's voice from far off:");
+          queue_message("'Well done! Come to me now....'");
         }
         setgamestatus(COMPLETED_CAVES, GameStatus);
         break; /* gob king */
       case GREAT_WYRM:
         if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
         {
-          mprint("A female voice sounds from just behind your ear:");
-          mprint("'Well fought! I have some new advice for you....'");
+          queue_message("A female voice sounds from just behind your ear:");
+          queue_message("'Well fought! I have some new advice for you....'");
         }
         setgamestatus(COMPLETED_SEWERS, GameStatus);
         break; /*grt worm */
@@ -448,17 +448,17 @@ void m_death(struct monster *m)
         setgamestatus(COMPLETED_VOLCANO, GameStatus);
         if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
         {
-          mprint("You feel a soft touch on your shoulder...");
-          mprint("You turn around but there is no one there!");
-          mprint("You turn back and see a note: 'See me soon.'");
-          mprint("The note vanishes in a burst of blue fire!");
+          queue_message("You feel a soft touch on your shoulder...");
+          queue_message("You turn around but there is no one there!");
+          queue_message("You turn back and see a note: 'See me soon.'");
+          queue_message("The note vanishes in a burst of blue fire!");
         }
         break;
       case ELEM_MASTER:
         if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
         {
-          mprint("Words appear before you, traced in blue flame!");
-          mprint("'Return to the Prime Plane via the Circle of Sorcerors....'");
+          queue_message("Words appear before you, traced in blue flame!");
+          queue_message("'Return to the Prime Plane via the Circle of Sorcerors....'");
         }
         break; /* elem mast */
     }
@@ -481,7 +481,7 @@ void monster_strike(struct monster *m)
 {
   if(player_on_sanctuary())
   {
-    print1("The aegis of your deity protects you!");
+    queue_message("The aegis of your deity protects you!");
   }
   else
   {
@@ -985,7 +985,7 @@ void determine_npc_behavior(pmt npc, int level, int behavior)
         npc->talkf = M_TALK_SILENT;
         break;
       default:
-        mprint("Say Whutt? (npc talk weirdness)");
+        queue_message("Say Whutt? (npc talk weirdness)");
         break;
     }
   }
@@ -1395,23 +1395,23 @@ void m_altar(struct monster *m)
     case -1:
       if(visible)
       {
-        mprint("Your deity is angry!");
-        mprint("A bolt of godsfire strikes the monster....");
+        queue_message("Your deity is angry!");
+        queue_message("A bolt of godsfire strikes the monster....");
       }
       disrupt(m->x, m->y, Player.rank[PRIESTHOOD] * 50);
       break;
     case 1:
       if(visible)
       {
-        mprint("The deity of the altar smiles on the monster....");
-        mprint("A shaft of light zaps the altar...");
+        queue_message("The deity of the altar smiles on the monster....");
+        queue_message("A shaft of light zaps the altar...");
       }
       m->hp = Monsters[m->id].hp * 2;
       break;
     default:
       if(visible)
       {
-        mprint("but nothing much seems to happen");
+        queue_message("but nothing much seems to happen");
       }
       break;
   }

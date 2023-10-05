@@ -54,36 +54,36 @@ void i_jane_t(pob o)
   char v;
 
   Objects[o->id].known = 1;
-  print1("Jane's Guide to the World's Treasures: ");
+  queue_message("Jane's Guide to the World's Treasures: ");
   switch(volume)
   {
     case 0:
-      nprint1("SCROLLS");
+      queue_message("SCROLLS");
       j = SCROLLID;
       k = POTIONID;
       break;
     case 1:
-      nprint1("POTIONS");
+      queue_message("POTIONS");
       j = POTIONID;
       k = WEAPONID;
       break;
     case 2:
-      nprint1("CLOAKS");
+      queue_message("CLOAKS");
       j = CLOAKID;
       k = BOOTID;
       break;
     case 3:
-      nprint1("BOOTS");
+      queue_message("BOOTS");
       j = BOOTID;
       k = RINGID;
       break;
     case 4:
-      nprint1("RINGS");
+      queue_message("RINGS");
       j = RINGID;
       k = STICKID;
       break;
     default:
-      nprint1("STICKS");
+      queue_message("STICKS");
       j = STICKID;
       k = ARTIFACTID;
   }
@@ -175,7 +175,7 @@ void i_spells(pob o)
   {
     Objects[o->id].known = 1;
   }
-  mprint("A scroll of spells.");
+  queue_message("A scroll of spells.");
   learnspell(o->blessing);
 }
 
@@ -269,7 +269,7 @@ void i_neutralize_poison(pob o)
   if(o->blessing > -1)
   {
     Objects[o->id].known = 1;
-    mprint("You feel vital!");
+    queue_message("You feel vital!");
     Player.status[POISONED] = 0;
   }
   else
@@ -318,27 +318,27 @@ void i_azoth(pob o)
 {
   if(o->plus < 0)
   {
-    mprint("The mercury was poisonous!");
+    queue_message("The mercury was poisonous!");
     p_poison(25);
   }
   else if(o->plus == 0)
   {
-    mprint("The partially enchanted azoth makes you sick!");
+    queue_message("The partially enchanted azoth makes you sick!");
     Player.con = ((int)(Player.con / 2));
     calc_melee();
   }
   else if(o->blessing < 1)
   {
-    mprint("The unblessed azoth warps your soul!");
+    queue_message("The unblessed azoth warps your soul!");
     Player.pow = Player.maxpow = ((int)(Player.maxpow / 2));
     level_drain(random_range(10), "cursed azoth");
   }
   else
   {
-    mprint("The azoth fills you with cosmic power!");
+    queue_message("The azoth fills you with cosmic power!");
     if(Player.str > Player.maxstr * 2)
     {
-      mprint("The power rages out of control!");
+      queue_message("The power rages out of control!");
       p_death("overdose of azoth");
     }
     else
@@ -371,7 +371,7 @@ void i_perm_speed(pob o)
       {
         Player.status[SLOWED] = 0;
       }
-      mprint("The world slows down!");
+      queue_message("The world slows down!");
       Player.status[HASTED] += 1500;
     }
     else
@@ -379,7 +379,7 @@ void i_perm_speed(pob o)
       Player.status[HASTED] -= 1500;
       if(Player.status[HASTED] < 1)
       {
-        mprint("The world speeds up again.");
+        queue_message("The world speeds up again.");
       }
     }
   }
@@ -391,7 +391,7 @@ void i_perm_speed(pob o)
       {
         Player.status[HASTED] = 0;
       }
-      mprint("You feel slower.");
+      queue_message("You feel slower.");
       Player.status[SLOWED] += 1500;
     }
     else
@@ -399,7 +399,7 @@ void i_perm_speed(pob o)
       Player.status[SLOWED] -= 1500;
       if(Player.status[SLOWED] < 1)
       {
-        mprint("You feel quicker again.");
+        queue_message("You feel quicker again.");
       }
     }
   }
@@ -412,7 +412,7 @@ void i_perm_displace(pob o)
   {
     if(o->used)
     {
-      mprint("You feel dislocated.");
+      queue_message("You feel dislocated.");
       Player.status[DISPLACED] += 1500;
     }
     else
@@ -420,7 +420,7 @@ void i_perm_displace(pob o)
       Player.status[DISPLACED] -= 1500;
       if(Player.status[DISPLACED] < 1)
       {
-        mprint("You feel a sense of position.");
+        queue_message("You feel a sense of position.");
         Player.status[DISPLACED] = 0;
       }
     }
@@ -429,7 +429,7 @@ void i_perm_displace(pob o)
   {
     if(o->used)
     {
-      mprint("You have a forboding of bodily harm!");
+      queue_message("You have a forboding of bodily harm!");
       Player.status[VULNERABLE] += 1500;
     }
     else
@@ -437,7 +437,7 @@ void i_perm_displace(pob o)
       Player.status[VULNERABLE] -= 1500;
       if(Player.status[VULNERABLE] < 1)
       {
-        mprint("You feel less endangered.");
+        queue_message("You feel less endangered.");
         Player.status[VULNERABLE] = 0;
       }
     }
@@ -470,26 +470,26 @@ void i_food(pob)
   switch(random_range(5))
   {
     case 0:
-      mprint("That tasted horrible!");
+      queue_message("That tasted horrible!");
       break;
     case 1:
-      mprint("Yum!");
+      queue_message("Yum!");
       break;
     case 2:
-      mprint("How nauseous!");
+      queue_message("How nauseous!");
       break;
     case 3:
-      mprint("Can I have some more? Please?");
+      queue_message("Can I have some more? Please?");
       break;
     case 4:
-      mprint("Your mouth feels like it is growing hair!");
+      queue_message("Your mouth feels like it is growing hair!");
       break;
   }
 }
 
 void i_stim(pob o)
 {
-  mprint("You feel Hyper!");
+  queue_message("You feel Hyper!");
   i_speed(o);
   Player.str += 3;
   Player.con -= 1;
@@ -498,27 +498,27 @@ void i_stim(pob o)
 
 void i_pow(pob)
 {
-  mprint("You feel a surge of mystic power!");
+  queue_message("You feel a surge of mystic power!");
   Player.mana = 2 * calcmana();
 }
 
 void i_poison_food(pob)
 {
-  mprint("This food was contaminated with cyanide!");
+  queue_message("This food was contaminated with cyanide!");
   p_poison(random_range(20) + 5);
 }
 
 void i_pepper_food(pob)
 {
-  mprint("You innocently start to chew the szechuan pepper.....");
-  mprint("hot.");
-  mprint("Hot.");
-  mprint("Hot!");
-  mprint("HOT!!!!!!");
+  queue_message("You innocently start to chew the szechuan pepper.....");
+  queue_message("hot.");
+  queue_message("Hot.");
+  queue_message("Hot!");
+  queue_message("HOT!!!!!!");
   p_damage(1, UNSTOPPABLE, "a szechuan pepper");
-  mprint("Your sinuses melt and run out your ears.");
-  mprint("Your mouth and throat seem to be permanently on fire.");
-  mprint("You feel much more awake now....");
+  queue_message("Your sinuses melt and run out your ears.");
+  queue_message("Your mouth and throat seem to be permanently on fire.");
+  queue_message("You feel much more awake now....");
   Player.immunity[SLEEP]++;
 }
 
@@ -538,7 +538,7 @@ void i_immune(pob o)
 {
   if(o->blessing > 0)
   {
-    mprint("You feel a sense of innoculation");
+    queue_message("You feel a sense of innoculation");
     Player.immunity[INFECTION]++;
     cure(o->blessing);
   }
@@ -572,12 +572,12 @@ void i_perm_invisible(pob o)
   {
     if(o->blessing > -1)
     {
-      mprint("You feel transparent!");
+      queue_message("You feel transparent!");
       Player.status[INVISIBLE] += 1500;
     }
     else
     {
-      mprint("You feel a forboding of bodily harm!");
+      queue_message("You feel a forboding of bodily harm!");
       Player.status[VULNERABLE] += 1500;
     }
   }
@@ -588,7 +588,7 @@ void i_perm_invisible(pob o)
       Player.status[INVISIBLE] -= 1500;
       if(Player.status[INVISIBLE] < 1)
       {
-        mprint("You feel opaque again.");
+        queue_message("You feel opaque again.");
         Player.status[INVISIBLE] = 0;
       }
     }
@@ -597,7 +597,7 @@ void i_perm_invisible(pob o)
       Player.status[VULNERABLE] -= 1500;
       if(Player.status[VULNERABLE] < 1)
       {
-        mprint("You feel less endangered now.");
+        queue_message("You feel less endangered now.");
         Player.status[VULNERABLE] = 0;
       }
     }
@@ -629,19 +629,19 @@ void i_charge(pob o)
   {
     Objects[o->id].known = 1;
   }
-  mprint("A scroll of charging.");
-  mprint("Charge: ");
+  queue_message("A scroll of charging.");
+  queue_message("Charge: ");
   i = getitem(STICK);
   if(i != ABORT)
   {
     if(o->blessing < 0)
     {
-      mprint("The stick glows black!");
+      queue_message("The stick glows black!");
       Player.possessions[i]->charge = 0;
     }
     else
     {
-      mprint("The stick glows blue!");
+      queue_message("The stick glows blue!");
       Player.possessions[i]->charge += (random_range(10) + 1) * (o->blessing + 1);
       if(Player.possessions[i]->charge > 99)
       {
@@ -658,13 +658,13 @@ void i_fear_resist(pob o)
     Objects[o->id].known = 1;
     if(Player.status[AFRAID] > 0)
     {
-      mprint("You feel stauncher now.");
+      queue_message("You feel stauncher now.");
       Player.status[AFRAID] = 0;
     }
   }
   else if(!p_immune(FEAR))
   {
-    mprint("You panic!");
+    queue_message("You panic!");
     Player.status[AFRAID] += random_range(100);
   }
 }
@@ -677,7 +677,7 @@ void i_pick(pob o)
   o->used = false;
   if((!o->known) && (!Player.rank[THIEVES]))
   {
-    mprint("You have no idea what do with a piece of twisted metal.");
+    queue_message("You have no idea what do with a piece of twisted metal.");
   }
   else
   {
@@ -686,7 +686,7 @@ void i_pick(pob o)
       o->known = 1;
     }
     Objects[o->id].known = 1;
-    mprint("Pick lock:");
+    queue_message("Pick lock:");
     dir = getdir();
     if(dir == ABORT)
     {
@@ -698,31 +698,31 @@ void i_pick(pob o)
       oy = Player.y + Dirs[1][dir];
       if((Level->site[ox][oy].locchar != CLOSED_DOOR) || loc_statusp(ox, oy, SECRET, *Level))
       {
-        mprint("You can't unlock that!");
+        queue_message("You can't unlock that!");
         resetgamestatus(SKIP_MONSTERS, GameStatus);
       }
       else if(Level->site[ox][oy].aux == LOCKED)
       {
         if(Level->depth == MaxDungeonLevels - 1)
         {
-          mprint("The lock is too complicated for you!!!");
+          queue_message("The lock is too complicated for you!!!");
         }
         else if(Level->depth * 2 + random_range(50) <
                 Player.dex + Player.level + Player.rank[THIEVES] * 10)
         {
-          mprint("You picked the lock!");
+          queue_message("You picked the lock!");
           Level->site[ox][oy].aux = UNLOCKED;
           lset(ox, oy, CHANGED, *Level);
           gain_experience(std::max(3, static_cast<int>(Level->depth)));
         }
         else
         {
-          mprint("You failed to pick the lock.");
+          queue_message("You failed to pick the lock.");
         }
       }
       else
       {
-        mprint("That door is already unlocked!");
+        queue_message("That door is already unlocked!");
       }
     }
   }
@@ -734,7 +734,7 @@ void i_key(pob o)
   int dir;
   int ox, oy;
   o->used = false;
-  mprint("Unlock door: ");
+  queue_message("Unlock door: ");
   dir = getdir();
   if(dir == ABORT)
   {
@@ -746,28 +746,28 @@ void i_key(pob o)
     oy = Player.y + Dirs[1][dir];
     if((Level->site[ox][oy].locchar != CLOSED_DOOR) || loc_statusp(ox, oy, SECRET, *Level))
     {
-      mprint("You can't unlock that!");
+      queue_message("You can't unlock that!");
       resetgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else if(Level->site[ox][oy].aux == LOCKED)
     {
-      mprint("The lock clicks open!");
+      queue_message("The lock clicks open!");
       Level->site[ox][oy].aux = UNLOCKED;
       lset(ox, oy, CHANGED, *Level);
       o->blessing--;
       if((o->blessing < 0) || (Level->depth == MaxDungeonLevels - 1))
       {
-        mprint("The key disintegrates!");
+        queue_message("The key disintegrates!");
         conform_lost_objects(1, o);
       }
       else
       {
-        mprint("Your key glows faintly.");
+        queue_message("Your key glows faintly.");
       }
     }
     else
     {
-      mprint("That door is already unlocked!");
+      queue_message("That door is already unlocked!");
     }
   }
 }
@@ -793,7 +793,7 @@ void i_corpse(pob o)
     case MAST_THIEF:
     case CHUNIN:
     case JONIN: /* cannibalism */
-      mprint("Yechh! How could you! You didn't even cook him, first!");
+      queue_message("Yechh! How could you! You didn't even cook him, first!");
       if(Player.alignment > 0)
       {
         Player.food = 25;
@@ -803,26 +803,26 @@ void i_corpse(pob o)
       foodcheck();
       break;
     case FNORD: /* fnord */
-      mprint("You feel illuminated!");
+      queue_message("You feel illuminated!");
       Player.iq++;
       break;
     case DENEBIAN: /* denebian slime devil */
-      mprint("I don't believe this. You ate Denebian Slime?");
-      mprint("You deserve a horrible wasting death, uncurable by any means!");
+      queue_message("I don't believe this. You ate Denebian Slime?");
+      queue_message("You deserve a horrible wasting death, uncurable by any means!");
       break;
     case DRAGONETTE: /* can't get here... i_usef changed to I_FOOD */
-      mprint("Those dragon-steaks were fantastic!");
+      queue_message("Those dragon-steaks were fantastic!");
       Player.food = 24;
       foodcheck();
       break;
     case BEHEMOTH:
-      mprint("You feel infinitely more virile now.");
+      queue_message("You feel infinitely more virile now.");
       Player.str  = std::max(Player.str, Player.maxstr + 10);
       Player.food = 24;
       foodcheck();
       break;
     case INVIS_SLAY:
-      mprint("Guess what? You're invisible.");
+      queue_message("Guess what? You're invisible.");
       if(Player.status[INVISIBLE] < 1000)
       {
         Player.status[INVISIBLE] = 666;
@@ -831,7 +831,7 @@ void i_corpse(pob o)
       foodcheck();
       break;
     case UNICORN:
-      mprint("You ATE a unicorn's horn?!?!?");
+      queue_message("You ATE a unicorn's horn?!?!?");
       Player.immunity[POISON] = 1000;
       break;
     case HORNET: /* can't get here... i_usef changed to I_POISON_FOOD */
@@ -846,7 +846,7 @@ void i_corpse(pob o)
     case TASMANIAN:
     case JUBJUB: /* can't get here... i_usef changed to I_FOOD */
     case CATEAGLE:
-      mprint("Well, you forced it down. Not much nutrition, though.");
+      queue_message("Well, you forced it down. Not much nutrition, though.");
       Player.food++;
       foodcheck();
       break;
@@ -859,12 +859,12 @@ void i_corpse(pob o)
     case ROUS:
     case DEATHSTAR: /* can't get here... i_usef changed to I_POISON_FOOD */
     case EATER:
-      mprint("Oh, yuck. The 'food' seems to be tainted.");
-      mprint("You feel very sick. You throw up.");
+      queue_message("Oh, yuck. The 'food' seems to be tainted.");
+      queue_message("You feel very sick. You throw up.");
       Player.food = std::min(Player.food, 4);
       [[fallthrough]];
     default:
-      mprint("It proved completely inedible, but you tried anyhow.");
+      queue_message("It proved completely inedible, but you tried anyhow.");
   }
 }
 
@@ -888,7 +888,7 @@ void i_perm_accuracy(pob o)
   if((o->used) && (o->blessing > -1))
   {
     Player.status[ACCURATE] += 1500;
-    mprint("You feel skillful and see bulls' eyes everywhere.");
+    queue_message("You feel skillful and see bulls' eyes everywhere.");
   }
   else
   {
@@ -897,7 +897,7 @@ void i_perm_accuracy(pob o)
     {
       Player.status[ACCURATE] = 0;
       calc_melee();
-      mprint("Your vision blurs....");
+      queue_message("Your vision blurs....");
     }
   }
 }
@@ -925,7 +925,7 @@ void i_perm_hero(pob o)
     {
       Player.status[HERO] += 1500;
       calc_melee();
-      mprint("You feel super!");
+      queue_message("You feel super!");
     }
     else
     {
@@ -934,7 +934,7 @@ void i_perm_hero(pob o)
       if(!Player.immunity[FEAR])
       {
         Player.status[AFRAID] += 1500;
-        mprint("You feel cowardly....");
+        queue_message("You feel cowardly....");
       }
     }
   }
@@ -946,7 +946,7 @@ void i_perm_hero(pob o)
       if(Player.status[HERO] < 1)
       {
         calc_melee();
-        mprint("You feel less super now.");
+        queue_message("You feel less super now.");
         Player.status[HERO] = 0;
       }
     }
@@ -955,7 +955,7 @@ void i_perm_hero(pob o)
       Player.status[AFRAID] -= 1500;
       if(Player.status[AFRAID] < 1)
       {
-        mprint("You finally conquer your fear.");
+        queue_message("You finally conquer your fear.");
         Player.status[AFRAID] = 0;
       }
     }
@@ -984,8 +984,8 @@ void i_perm_levitate(pob o)
     if(o->used)
     {
       Player.status[LEVITATING] += 1400;
-      mprint("You start to float a few inches above the floor");
-      mprint("You find you can easily control your altitude");
+      queue_message("You start to float a few inches above the floor");
+      queue_message("You find you can easily control your altitude");
     }
     else
     {
@@ -993,7 +993,7 @@ void i_perm_levitate(pob o)
       if(Player.status[LEVITATING] < 1)
       {
         Player.status[LEVITATING] = 0;
-        mprint("You sink to the floor.");
+        queue_message("You sink to the floor.");
       }
     }
   }
@@ -1081,12 +1081,12 @@ void i_perm_truesight(pob o)
     if(o->blessing > -1)
     {
       Player.status[TRUESIGHT] += 1500;
-      mprint("You feel sharp!");
+      queue_message("You feel sharp!");
     }
     else
     {
       Player.status[BLINDED] += 1500;
-      mprint("You've been blinded!");
+      queue_message("You've been blinded!");
     }
   }
   else
@@ -1096,7 +1096,7 @@ void i_perm_truesight(pob o)
       Player.status[TRUESIGHT] -= 1500;
       if(Player.status[TRUESIGHT] < 1)
       {
-        mprint("You feel less keen now.");
+        queue_message("You feel less keen now.");
         Player.status[TRUESIGHT] = 0;
       }
     }
@@ -1105,7 +1105,7 @@ void i_perm_truesight(pob o)
       Player.status[BLINDED] -= 1500;
       if(Player.status[BLINDED] < 1)
       {
-        mprint("You can see again!");
+        queue_message("You can see again!");
         Player.status[BLINDED] = 0;
       }
     }
@@ -1177,16 +1177,16 @@ void i_trap(pob o)
   if((Level->site[Player.x][Player.y].locchar != FLOOR) ||
      (Level->site[Player.x][Player.y].p_locf != L_NO_OP))
   {
-    mprint("Your attempt fails.");
+    queue_message("Your attempt fails.");
   }
   else if(!o->known)
   {
-    mprint("Fiddling with the thing, you have a small accident....");
+    queue_message("Fiddling with the thing, you have a small accident....");
     p_movefunction(o->aux);
   }
   else
   {
-    mprint("You successfully set a trap at your location.");
+    queue_message("You successfully set a trap at your location.");
     Level->site[Player.x][Player.y].p_locf = o->aux;
     lset(Player.x, Player.y, CHANGED, *Level);
   }
@@ -1196,6 +1196,6 @@ void i_trap(pob o)
 void i_raise_portcullis(pob o)
 {
   l_raise_portcullis();
-  mprint("The box beeps once and explodes in your hands!");
+  queue_message("The box beeps once and explodes in your hands!");
   conform_lost_objects(1, o);
 }

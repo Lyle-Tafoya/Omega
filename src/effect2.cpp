@@ -33,11 +33,11 @@ void knowledge(int blessing)
 {
   if(blessing < 0)
   {
-    mprint("You feel ignorant.");
+    queue_message("You feel ignorant.");
   }
   else
   {
-    mprint("You feel knowledgeable!");
+    queue_message("You feel knowledgeable!");
     std::vector<std::string> lines;
     lines.emplace_back("Current Point Total: " + std::to_string(calc_points()));
     if(Player.alignment == 0)
@@ -486,25 +486,25 @@ void knowledge(int blessing)
 /* Recreates the current level */
 void flux(int)
 {
-  mprint("The universe warps around you!");
+  queue_message("The universe warps around you!");
   if(Current_Environment == E_CITY)
   {
-    mprint("Sensing dangerous high order magic, the Collegium Magii");
-    mprint("and the Circle of Sorcerors join forces to negate the spell.");
-    mprint("You are zapped by an antimagic ray!!!");
+    queue_message("Sensing dangerous high order magic, the Collegium Magii");
+    queue_message("and the Circle of Sorcerors join forces to negate the spell.");
+    queue_message("You are zapped by an antimagic ray!!!");
     dispel(-1);
-    mprint("The universe unwarps itself....");
+    queue_message("The universe unwarps itself....");
   }
   else if(Current_Environment != Current_Dungeon)
   {
-    mprint("Odd.... No effect!");
+    queue_message("Odd.... No effect!");
   }
   else
   {
-    mprint("You stagger as the very nature of reality warps!");
+    queue_message("You stagger as the very nature of reality warps!");
     erase_level();
     Level->generated = false;
-    mprint("The fabric of spacetime reknits....");
+    queue_message("The fabric of spacetime reknits....");
     change_level(Level->depth - 1, Level->depth, true);
   }
 }
@@ -514,12 +514,12 @@ void displace(int blessing)
 {
   if(blessing > -1)
   {
-    mprint("You feel a sense of dislocation.");
+    queue_message("You feel a sense of dislocation.");
     Player.status[DISPLACED] = blessing + random_range(6);
   }
   else
   {
-    mprint("You feel vulnerable");
+    queue_message("You feel vulnerable");
     Player.status[VULNERABLE] += random_range(6) - blessing;
   }
 }
@@ -528,12 +528,12 @@ void invisible(int blessing)
 {
   if(blessing > -1)
   {
-    mprint("You feel transparent!");
+    queue_message("You feel transparent!");
     Player.status[INVISIBLE] += 2 + 5 * blessing;
   }
   else
   {
-    mprint("You feel dangerous!");
+    queue_message("You feel dangerous!");
     Player.status[VULNERABLE] += random_range(10) + 1;
   }
 }
@@ -543,18 +543,18 @@ void warp(int blessing)
   int newlevel;
   if(Current_Environment != Current_Dungeon)
   {
-    mprint("How strange! No effect....");
+    queue_message("How strange! No effect....");
   }
   else
   {
-    mprint("Warp to which level? ");
+    queue_message("Warp to which level? ");
     newlevel = (int)parsenum();
     if(newlevel >= MaxDungeonLevels || blessing < 0 || newlevel < 1)
     {
-      mprint("You have been deflected!");
+      queue_message("You have been deflected!");
       newlevel = random_range(MaxDungeonLevels - 1) + 1;
     }
-    mprint("You dematerialize...");
+    queue_message("You dematerialize...");
     change_level(Level->depth, newlevel, false);
   }
   roomcheck();
@@ -564,7 +564,7 @@ void alert(int blessing)
 {
   if(blessing > -1)
   {
-    mprint("You feel on-the-ball.");
+    queue_message("You feel on-the-ball.");
     Player.status[ALERT] += 4 + (5 * blessing);
   }
   else
@@ -581,7 +581,7 @@ void regenerate(int blessing)
   }
   else
   {
-    mprint("You feel abnormally healthy.");
+    queue_message("You feel abnormally healthy.");
     Player.status[REGENERATING] += (blessing + 1) * 50;
   }
 }
@@ -592,11 +592,11 @@ void haste(int blessing)
   {
     if(!Player.status[HASTED])
     {
-      mprint("The world slows down!");
+      queue_message("The world slows down!");
     }
     else
     {
-      mprint("Nothing much happens.");
+      queue_message("Nothing much happens.");
     }
     if(Player.status[SLOWED])
     {
@@ -606,10 +606,10 @@ void haste(int blessing)
   }
   else
   {
-    mprint("You feel slower.");
+    queue_message("You feel slower.");
     if(Player.status[HASTED] > 0)
     {
-      mprint("...but the feeling quickly fades.");
+      queue_message("...but the feeling quickly fades.");
     }
     else
     {
@@ -622,7 +622,7 @@ void recover_stat(int blessing)
 {
   if(blessing < 0)
   {
-    mprint("You feel a cold surge!");
+    queue_message("You feel a cold surge!");
     switch(random_range(6))
     {
       case 0:
@@ -647,7 +647,7 @@ void recover_stat(int blessing)
   }
   else
   {
-    mprint("You feel a warm tingle!");
+    queue_message("You feel a warm tingle!");
     Player.str = std::max(Player.str, Player.maxstr);
     Player.con = std::max(Player.con, Player.maxcon);
     Player.dex = std::max(Player.dex, Player.maxdex);
@@ -662,7 +662,7 @@ void augment(int blessing)
 {
   if(blessing < 0)
   {
-    mprint("You feel a cold surge!");
+    queue_message("You feel a cold surge!");
     switch(random_range(6))
     {
       case 0:
@@ -687,7 +687,7 @@ void augment(int blessing)
   }
   else if(blessing == 0)
   {
-    mprint("You feel a warm tingle!");
+    queue_message("You feel a warm tingle!");
     switch(random_range(6))
     {
       case 0:
@@ -712,7 +712,7 @@ void augment(int blessing)
   }
   else
   {
-    mprint("You feel a hot flash!");
+    queue_message("You feel a hot flash!");
     Player.str = std::max(Player.str + 1, Player.maxstr + 1);
     Player.con = std::max(Player.con + 1, Player.maxcon + 1);
     Player.dex = std::max(Player.dex + 1, Player.maxdex + 1);
@@ -727,12 +727,12 @@ void breathe(int blessing)
 {
   if(blessing > -1)
   {
-    mprint("Your breath is energized!");
+    queue_message("Your breath is energized!");
     Player.status[BREATHING] += 6 + blessing;
   }
   else
   {
-    mprint("You choke as your lungs fill with water!");
+    queue_message("You choke as your lungs fill with water!");
     p_damage(50, UNSTOPPABLE, "drowning");
   }
 }
@@ -742,12 +742,12 @@ void i_chaos(pob)
   if(Player.alignment < 0)
   {
     Player.alignment -= random_range(20);
-    mprint("You feel deliciously chaotic!");
+    queue_message("You feel deliciously chaotic!");
     gain_experience(abs(Player.alignment) * 10);
   }
   else
   {
-    mprint("You feel a sense of inner turmoil!");
+    queue_message("You feel a sense of inner turmoil!");
     Player.alignment -= random_range(20);
   }
 }
@@ -757,12 +757,12 @@ void i_law(pob)
   if(Player.alignment > 0)
   {
     Player.alignment += random_range(20);
-    mprint("You feel wonderfully lawful!");
+    queue_message("You feel wonderfully lawful!");
     gain_experience(Player.alignment * 10);
   }
   else
   {
-    mprint("You feel a sense of inner constraint!");
+    queue_message("You feel a sense of inner constraint!");
     Player.alignment += random_range(20);
   }
 }
@@ -773,15 +773,15 @@ void sanctify(int blessing)
   {
     if(Level->environment == E_TEMPLE)
     {
-      mprint("Odd, the spell has no effect. I wonder why.");
+      queue_message("Odd, the spell has no effect. I wonder why.");
     }
     else if(Level->site[Player.x][Player.y].locchar == ALTAR)
     {
-      mprint("This site can't get any holier!");
+      queue_message("This site can't get any holier!");
     }
     else if(Player.patron == 0)
     {
-      mprint("The gods are angered!");
+      queue_message("The gods are angered!");
       Level->site[Player.x][Player.y].locchar = LAVA;
       Level->site[Player.x][Player.y].p_locf  = L_LAVA;
       lset(Player.x, Player.y, CHANGED, *Level);
@@ -793,20 +793,20 @@ void sanctify(int blessing)
       Level->site[Player.x][Player.y].aux     = Player.patron;
       Level->site[Player.x][Player.y].p_locf  = L_ALTAR;
       lset(Player.x, Player.y, CHANGED, *Level);
-      mprint("You are standing on sacred ground!");
+      queue_message("You are standing on sacred ground!");
     }
   }
   else
   {
     if(Level->site[Player.x][Player.y].locchar == ALTAR)
     {
-      mprint("The altar crumbles before your unholy blast....");
+      queue_message("The altar crumbles before your unholy blast....");
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
       lset(Player.x, Player.y, CHANGED, *Level);
       if(Level->site[Player.x][Player.y].aux == Player.patron)
       {
-        mprint("Your deity is not amused....");
+        queue_message("Your deity is not amused....");
         p_damage(Player.hp - 1, UNSTOPPABLE, "Divine Wrath");
       }
       else if((Player.patron == ATHENA) || (Player.patron == ODIN))
@@ -814,12 +814,12 @@ void sanctify(int blessing)
         if((Level->site[Player.x][Player.y].aux == SET) ||
            (Level->site[Player.x][Player.y].aux == HECATE))
         {
-          mprint("Your deity applauds the eradication of Chaos' taint");
+          queue_message("Your deity applauds the eradication of Chaos' taint");
           gain_experience(1000);
         }
         else
         {
-          mprint("Your deity approves of your action.");
+          queue_message("Your deity approves of your action.");
           gain_experience(100);
         }
       }
@@ -828,28 +828,28 @@ void sanctify(int blessing)
         if((Level->site[Player.x][Player.y].aux == ODIN) ||
            (Level->site[Player.x][Player.y].aux == ATHENA))
         {
-          mprint("Your deity applauds the obliteration of Law");
+          queue_message("Your deity applauds the obliteration of Law");
           gain_experience(1000);
         }
         else
         {
-          mprint("Your deity approves of your action.");
+          queue_message("Your deity approves of your action.");
           gain_experience(100);
         }
       }
       else if(Player.patron == DRUID)
       {
-        mprint("Your attempt to maintain the Balance is applauded....");
+        queue_message("Your attempt to maintain the Balance is applauded....");
         gain_experience(250);
       }
       else
       {
-        mprint("Nothing much happens");
+        queue_message("Nothing much happens");
       }
     }
     else
     {
-      mprint("You feel an aura of unholiness arising from this spot....");
+      queue_message("You feel an aura of unholiness arising from this spot....");
     }
   }
 }
@@ -858,7 +858,7 @@ void accuracy(int blessing)
 {
   if(blessing > -1)
   {
-    mprint("Everything seems covered in bullseyes!");
+    queue_message("Everything seems covered in bullseyes!");
     Player.status[ACCURACY] += random_range(5) + 1 + blessing * 5;
     calc_melee();
   }
@@ -866,6 +866,6 @@ void accuracy(int blessing)
   {
     Player.status[ACCURACY] = 0;
     calc_melee();
-    mprint("Your vision blurs...");
+    queue_message("Your vision blurs...");
   }
 }

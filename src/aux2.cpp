@@ -151,30 +151,30 @@ void player_miss(monster *m, int dtype)
       monster_name += m->monstring;
       if(random_range(10))
       {
-        mprint("You miss " + monster_name + ".");
+        queue_message("You miss " + monster_name + ".");
       }
       else
       {
         switch(random_range(4))
         {
           case 0:
-            mprint("You flail lamely at " + monster_name + ".");
+            queue_message("You flail lamely at " + monster_name + ".");
             break;
           case 1:
-            mprint("You only amuse " + monster_name + ".");
+            queue_message("You only amuse " + monster_name + ".");
             break;
           case 2:
-            mprint("You fail to even come close to " + monster_name + ".");
+            queue_message("You fail to even come close to " + monster_name + ".");
             break;
           case 3:
-            mprint("You totally avoid contact with " + monster_name + ".");
+            queue_message("You totally avoid contact with " + monster_name + ".");
             break;
         }
       }
     }
     else
     {
-      mprint("You missed it.");
+      queue_message("You missed it.");
     }
   }
 }
@@ -182,7 +182,7 @@ void player_miss(monster *m, int dtype)
 /* oh nooooo, a fumble.... */
 void p_fumble(int dtype)
 {
-  mprint("Ooops! You fumbled....");
+  queue_message("Ooops! You fumbled....");
   switch(random_range(10))
   {
     case 0:
@@ -199,7 +199,7 @@ void p_fumble(int dtype)
       break_weapon();
       break;
     case 9:
-      mprint("Oh No! You hit yourself!");
+      queue_message("Oh No! You hit yourself!");
       p_damage(Player.dmg, dtype, "stupidity");
       break;
   }
@@ -225,7 +225,7 @@ void break_weapon()
 {
   if(Player.possessions[O_WEAPON_HAND])
   {
-    mprint("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
+    queue_message("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
     (void)damage_item(Player.possessions[O_WEAPON_HAND]);
   }
 }
@@ -233,7 +233,7 @@ void break_weapon()
 /* hooray */
 void p_win()
 {
-  print1("You won!");
+  queue_message("You won!");
   display_win();
   endgraf();
   exit(0);
@@ -272,7 +272,7 @@ void minute_status_check()
       Player.status[HASTED]--;
       if(Player.status[HASTED] == 0)
       {
-        mprint("The world speeds up.");
+        queue_message("The world speeds up.");
         calc_melee();
       }
     }
@@ -285,7 +285,7 @@ void minute_status_check()
     if(Player.status[POISONED] == 0)
     {
       showflags();
-      mprint("You feel better now.");
+      queue_message("You feel better now.");
     }
   }
 
@@ -297,7 +297,7 @@ void minute_status_check()
     }
     if(Player.immunity[UNSTOPPABLE] == 1)
     {
-      mprint("You feel vincible again.");
+      queue_message("You feel vincible again.");
     }
   }
 
@@ -306,7 +306,7 @@ void minute_status_check()
     Player.status[IMMOBILE]--;
     if(Player.status[IMMOBILE] == 0)
     {
-      mprint("You can move again.");
+      queue_message("You can move again.");
     }
   }
 
@@ -315,7 +315,7 @@ void minute_status_check()
     Player.status[SLEPT]--;
     if(Player.status[SLEPT] == 0)
     {
-      mprint("You woke up.");
+      queue_message("You woke up.");
     }
   }
 
@@ -332,7 +332,7 @@ void minute_status_check()
       Player.status[REGENERATING]--;
       if(Player.status[REGENERATING] == 0)
       {
-        mprint("You feel less homeostatic.");
+        queue_message("You feel less homeostatic.");
       }
     }
   }
@@ -344,7 +344,7 @@ void minute_status_check()
       Player.status[SLOWED]--;
       if(Player.status[SLOWED] == 0)
       {
-        mprint("You feel quicker now.");
+        queue_message("You feel quicker now.");
         calc_melee();
       }
     }
@@ -355,19 +355,19 @@ void minute_status_check()
     Player.status[RETURNING]--;
     if(Player.status[RETURNING] == 10)
     {
-      mprint("Your return spell slowly hums towards activation...");
+      queue_message("Your return spell slowly hums towards activation...");
     }
     else if(Player.status[RETURNING] == 8)
     {
-      mprint("There is an electric tension in the air!");
+      queue_message("There is an electric tension in the air!");
     }
     else if(Player.status[RETURNING] == 5)
     {
-      mprint("A vortex of mana begins to form around you!");
+      queue_message("A vortex of mana begins to form around you!");
     }
     else if(Player.status[RETURNING] == 1)
     {
-      mprint("Your surroundings start to warp and fade!");
+      queue_message("Your surroundings start to warp and fade!");
     }
     if(Player.status[RETURNING] == 0)
     {
@@ -382,7 +382,7 @@ void minute_status_check()
       Player.status[AFRAID]--;
       if(Player.status[AFRAID] == 0)
       {
-        mprint("You feel bolder now.");
+        queue_message("You feel bolder now.");
       }
     }
   }
@@ -397,14 +397,14 @@ void moon_check()
   if(((Player.patron == DRUID) && ((Phase / 2 == 3) || (Phase / 2 == 9))) ||
      ((Player.alignment > 10) && (Phase / 2 == 6)) || ((Player.alignment < -10) && (Phase / 2 == 0)))
   {
-    mprint("As the moon rises you feel unusually vital!");
+    queue_message("As the moon rises you feel unusually vital!");
     Lunarity = 1;
   }
   else if(((Player.patron == DRUID) && ((Phase / 2 == 0) || (Phase / 2 == 6))) ||
           ((Player.alignment > 10) && (Phase / 2 == 0)) ||
           ((Player.alignment < -10) && (Phase / 2 == 6)))
   {
-    mprint("The rise of the moon tokens a strange enervation!");
+    queue_message("The rise of the moon tokens a strange enervation!");
     Lunarity = -1;
   }
 }
@@ -421,7 +421,7 @@ void torch_check()
         --Player.possessions[i]->charge;
         if(!Player.possessions[i]->charge)
         {
-          mprint("Your torch goes out!!!");
+          queue_message("Your torch goes out!!!");
           conform_unused_object(Player.possessions[i]);
           Player.possessions[i]->on_use     = I_NO_OP;
           Player.possessions[i]->on_unequip = I_NO_OP;
@@ -446,7 +446,7 @@ void tenminute_status_check()
       Player.immunity[ACID]--;
       Player.immunity[THEFT]--;
       Player.immunity[INFECTION]--;
-      mprint("You feel less shadowy now.");
+      queue_message("You feel less shadowy now.");
     }
   }
 
@@ -455,7 +455,7 @@ void tenminute_status_check()
     Player.status[ILLUMINATION]--;
     if(Player.status[ILLUMINATION] == 0)
     {
-      mprint("Your light goes out!");
+      queue_message("Your light goes out!");
     }
   }
 
@@ -464,7 +464,7 @@ void tenminute_status_check()
     Player.status[VULNERABLE]--;
     if(Player.status[VULNERABLE] == 0)
     {
-      mprint("You feel less endangered.");
+      queue_message("You feel less endangered.");
     }
   }
 
@@ -473,7 +473,7 @@ void tenminute_status_check()
     Player.status[DEFLECTION]--;
     if(Player.status[DEFLECTION] == 0)
     {
-      mprint("You feel less well defended.");
+      queue_message("You feel less well defended.");
     }
   }
 
@@ -483,7 +483,7 @@ void tenminute_status_check()
     if(Player.status[ACCURATE] == 0)
     {
       calc_melee();
-      mprint("The bulls' eyes go away.");
+      queue_message("The bulls' eyes go away.");
     }
   }
   if((Player.status[HERO] > 0) && (Player.status[HERO] < 1000))
@@ -492,7 +492,7 @@ void tenminute_status_check()
     if(Player.status[HERO] == 0)
     {
       calc_melee();
-      mprint("You feel less than super.");
+      queue_message("You feel less than super.");
     }
   }
 
@@ -501,7 +501,7 @@ void tenminute_status_check()
     Player.status[LEVITATING]--;
     if(Player.status[LEVITATING] == 0)
     {
-      mprint("You're no longer walking on air.");
+      queue_message("You're no longer walking on air.");
     }
   }
 
@@ -511,7 +511,7 @@ void tenminute_status_check()
     if(Player.status[DISEASED] == 0)
     {
       showflags();
-      mprint("You feel better now.");
+      queue_message("You feel better now.");
     }
   }
 
@@ -520,7 +520,7 @@ void tenminute_status_check()
     Player.status[INVISIBLE]--;
     if(Player.status[INVISIBLE] == 0)
     {
-      mprint("You feel more opaque now.");
+      queue_message("You feel more opaque now.");
     }
   }
 
@@ -529,7 +529,7 @@ void tenminute_status_check()
     Player.status[BLINDED]--;
     if(Player.status[BLINDED] == 0)
     {
-      mprint("You can see again.");
+      queue_message("You can see again.");
     }
   }
 
@@ -538,7 +538,7 @@ void tenminute_status_check()
     Player.status[TRUESIGHT]--;
     if(Player.status[TRUESIGHT] == 0)
     {
-      mprint("You feel less keen now.");
+      queue_message("You feel less keen now.");
     }
   }
 
@@ -547,7 +547,7 @@ void tenminute_status_check()
     Player.status[BERSERK]--;
     if(Player.status[BERSERK] == 0)
     {
-      mprint("You stop foaming at the mouth.");
+      queue_message("You stop foaming at the mouth.");
     }
   }
 
@@ -556,7 +556,7 @@ void tenminute_status_check()
     Player.status[ALERT]--;
     if(Player.status[ALERT] == 0)
     {
-      mprint("You feel less alert now.");
+      queue_message("You feel less alert now.");
     }
   }
 
@@ -565,7 +565,7 @@ void tenminute_status_check()
     Player.status[BREATHING]--;
     if(Player.status[BREATHING] == 0)
     {
-      mprint("You feel somewhat congested.");
+      queue_message("You feel somewhat congested.");
     }
   }
 
@@ -574,7 +574,7 @@ void tenminute_status_check()
     Player.status[DISPLACED]--;
     if(Player.status[DISPLACED] == 0)
     {
-      mprint("You feel a sense of position.");
+      queue_message("You feel a sense of position.");
     }
   }
   timeprint();
@@ -715,7 +715,7 @@ void p_drown()
 
   if(Player.status[BREATHING] > 0)
   {
-    mprint("Your breathing is unaffected!");
+    queue_message("Your breathing is unaffected!");
   }
   else
   {
@@ -724,13 +724,13 @@ void p_drown()
       switch(attempts--)
       {
         case 3:
-          print3("You try to hold your breath...");
+          queue_message("You try to hold your breath...");
           break;
         case 2:
-          print3("You try to hold your breath... You choke...");
+          queue_message("You try to hold your breath... You choke...");
           break;
         case 1:
-          print3("You try to hold your breath... You choke... Your lungs fill...");
+          queue_message("You try to hold your breath... You choke... Your lungs fill...");
           break;
         case 0:
           p_death("drowning");
@@ -749,7 +749,7 @@ void p_drown()
           drop_equipped_item();
           if(Level->site[Player.x][Player.y].p_locf == L_WATER && Level->site[Player.x][Player.y].things)
           {
-            mprint("It sinks without a trace.");
+            queue_message("It sinks without a trace.");
             free_objlist(Level->site[Player.x][Player.y].things);
             Level->site[Player.x][Player.y].things = nullptr;
           }
@@ -773,7 +773,7 @@ void p_drown()
           }
           if(Level->site[Player.x][Player.y].p_locf == L_WATER)
           {
-            mprint("It sinks without a trace.");
+            queue_message("It sinks without a trace.");
           }
           Player.packptr = 0;
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -874,7 +874,7 @@ void tacplayer(monster *m)
         {
           if(Verbosity == VERBOSE)
           {
-            mprint("You lunge " + actionlocstr(Player.meleestr[i + 1]));
+            queue_message("You lunge " + actionlocstr(Player.meleestr[i + 1]));
           }
           if(player_hit(Player.level + Player.dex, Player.meleestr[i + 1], m))
           {
@@ -895,19 +895,19 @@ void tacplayer(monster *m)
             std::string combat_message;
             if(!Player.possessions[O_WEAPON_HAND])
             {
-              mprint("You punch " + actionlocstr(Player.meleestr[i + 1]));
+              queue_message("You punch " + actionlocstr(Player.meleestr[i + 1]));
             }
             else if(Player.possessions[O_WEAPON_HAND]->type == CUTTING)
             {
-              mprint("You cut " + actionlocstr(Player.meleestr[i + 1]));
+              queue_message("You cut " + actionlocstr(Player.meleestr[i + 1]));
             }
             else if(Player.possessions[O_WEAPON_HAND]->type == STRIKING)
             {
-              mprint("You strike " + actionlocstr(Player.meleestr[i + 1]));
+              queue_message("You strike " + actionlocstr(Player.meleestr[i + 1]));
             }
             else
             {
-              mprint("You attack " + actionlocstr(Player.meleestr[i + 1]));
+              queue_message("You attack " + actionlocstr(Player.meleestr[i + 1]));
             }
           }
           if(player_hit(0, Player.meleestr[i + 1], m))
@@ -923,7 +923,7 @@ void tacplayer(monster *m)
         {
           if(Verbosity == VERBOSE)
           {
-            mprint("You thrust " + actionlocstr(Player.meleestr[i + 1]));
+            queue_message("You thrust " + actionlocstr(Player.meleestr[i + 1]));
           }
           if(player_hit(2 * statmod(Player.dex), Player.meleestr[i + 1], m))
           {
@@ -944,7 +944,7 @@ int player_hit(int hitmod, char hitloc, monster *m)
 {
   if(m->hp < 1)
   {
-    mprint("Unfortunately, your opponent is already dead!");
+    queue_message("Unfortunately, your opponent is already dead!");
     return false;
   }
   else
@@ -1068,7 +1068,7 @@ void enter_site(Symbol site)
       change_environment(E_MAGIC_ISLE);
       break;
     default:
-      print3("There's nothing to enter here!");
+      queue_message("There's nothing to enter here!");
       break;
   }
 }
@@ -1141,29 +1141,29 @@ void change_environment(char new_environment)
       load_circle(true);
       if(Objects[ARTIFACTID + 21].uniqueness == UNIQUE_TAKEN)
       {
-        print1("A bemused voice says:");
-        print2("'Why are you here? You already have the Star Gem!'");
+        queue_message("A bemused voice says:");
+        queue_message("'Why are you here? You already have the Star Gem!'");
       }
       else if(Player.rank[CIRCLE] > 0)
       {
-        print1("You hear the voice of the Prime Sorceror:");
-        print2("'Congratulations on your attainment of the Circle's Demesne.'");
-        print1("For the honor of the Circle, you may take the Star Gem");
-        print2("and destroy it on the acme of Star Peak.");
-        print1("Beware the foul LawBringer who resides there...");
-        print2("By the way, some of the members of the Circle seem to");
-        print1("have become a bit jealous of your success --");
-        print2("I'd watch out for them too if I were you.");
+        queue_message("You hear the voice of the Prime Sorceror:");
+        queue_message("'Congratulations on your attainment of the Circle's Demesne.'");
+        queue_message("For the honor of the Circle, you may take the Star Gem");
+        queue_message("and destroy it on the acme of Star Peak.");
+        queue_message("Beware the foul LawBringer who resides there...");
+        queue_message("By the way, some of the members of the Circle seem to");
+        queue_message("have become a bit jealous of your success --");
+        queue_message("I'd watch out for them too if I were you.");
       }
       else if(Player.alignment > 0)
       {
-        print1("A mysterious ghostly image materializes in front of you.");
-        print2("It speaks: 'Greetings, fellow abider in Law. I am called");
-        print1("The LawBringer. If you wish to advance our cause, obtain");
-        print2("the mystic Star Gem and return it to me on Star Peak.");
-        print1("Beware the power of the evil Circle of Sorcerors and the");
-        print2("forces of Chaos which guard the gem.'");
-        print1("The strange form fades slowly.");
+        queue_message("A mysterious ghostly image materializes in front of you.");
+        queue_message("It speaks: 'Greetings, fellow abider in Law. I am called");
+        queue_message("The LawBringer. If you wish to advance our cause, obtain");
+        queue_message("the mystic Star Gem and return it to me on Star Peak.");
+        queue_message("Beware the power of the evil Circle of Sorcerors and the");
+        queue_message("forces of Chaos which guard the gem.'");
+        queue_message("The strange form fades slowly.");
       }
       ScreenOffset     = 0;
       HorizontalOffset = 0;
@@ -1256,12 +1256,12 @@ void change_environment(char new_environment)
       LENGTH = 64;
       if(emerging)
       {
-        print1("You emerge onto the street.");
+        queue_message("You emerge onto the street.");
         emerging = false;
       }
       else
       {
-        print1("You pass through the massive gates of Rampart, the city.");
+        queue_message("You pass through the massive gates of Rampart, the city.");
         Player.x = 62;
         Player.y = 21;
       }
@@ -1291,7 +1291,7 @@ void change_environment(char new_environment)
             Villagenum = 1;
             break;
           default:
-            print3("Very strange, a nonexistent village.");
+            queue_message("Very strange, a nonexistent village.");
             [[fallthrough]];
           case 2:
             Player.x   = 39;
@@ -1337,12 +1337,12 @@ void change_environment(char new_environment)
       }
       if(emerging)
       {
-        print1("You emerge onto the street.");
+        queue_message("You emerge onto the street.");
         emerging = false;
       }
       else
       {
-        print1("You enter a small rural village.");
+        queue_message("You enter a small rural village.");
       }
       ScreenOffset     = 0;
       HorizontalOffset = 0;
@@ -1351,12 +1351,12 @@ void change_environment(char new_environment)
     case E_CAVES:
       WIDTH  = 64;
       LENGTH = 64;
-      print1("You enter a dark cleft in a hillside;");
-      print2("You note signs of recent passage in the dirt nearby.");
+      queue_message("You enter a dark cleft in a hillside;");
+      queue_message("You note signs of recent passage in the dirt nearby.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        print1("Seeing as you might not be coming back, you feel compelled");
-        print2("to let your horse go, rather than keep him hobbled outside.");
+        queue_message("Seeing as you might not be coming back, you feel compelled");
+        queue_message("to let your horse go, rather than keep him hobbled outside.");
         resetgamestatus(MOUNTED, GameStatus);
         calc_melee();
       }
@@ -1376,11 +1376,11 @@ void change_environment(char new_environment)
     case E_VOLCANO:
       WIDTH  = 64;
       LENGTH = 64;
-      print1("You pass down through the glowing crater.");
+      queue_message("You pass down through the glowing crater.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        print1("Seeing as you might not be coming back, you feel compelled");
-        print2("to let your horse go, rather than keep him hobbled outside.");
+        queue_message("Seeing as you might not be coming back, you feel compelled");
+        queue_message("to let your horse go, rather than keep him hobbled outside.");
         resetgamestatus(MOUNTED, GameStatus);
         calc_melee();
       }
@@ -1400,10 +1400,10 @@ void change_environment(char new_environment)
     case E_ASTRAL:
       WIDTH  = 64;
       LENGTH = 64;
-      print1("You are in a weird flickery maze.");
+      queue_message("You are in a weird flickery maze.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        print2("Your horse doesn't seem to have made it....");
+        queue_message("Your horse doesn't seem to have made it....");
         resetgamestatus(MOUNTED, GameStatus);
         calc_melee();
       }
@@ -1423,11 +1423,11 @@ void change_environment(char new_environment)
     case E_CASTLE:
       WIDTH  = 64;
       LENGTH = 64;
-      print1("You cross the drawbridge. Strange forms move beneath the water.");
+      queue_message("You cross the drawbridge. Strange forms move beneath the water.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        print1("Seeing as you might not be coming back, you feel compelled");
-        print2("to let your horse go, rather than keep him hobbled outside.");
+        queue_message("Seeing as you might not be coming back, you feel compelled");
+        queue_message("to let your horse go, rather than keep him hobbled outside.");
         resetgamestatus(MOUNTED, GameStatus);
       }
       MaxDungeonLevels = CASTLELEVELS;
@@ -1446,10 +1446,10 @@ void change_environment(char new_environment)
     case E_SEWERS:
       WIDTH  = 64;
       LENGTH = 64;
-      print1("You pry open a manhole and descend into the sewers below.");
+      queue_message("You pry open a manhole and descend into the sewers below.");
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        print2("You horse waits patiently outside the sewer entrance....");
+        queue_message("You horse waits patiently outside the sewer entrance....");
         dismount_steed();
       }
       MaxDungeonLevels = SEWERLEVELS;
@@ -1468,7 +1468,7 @@ void change_environment(char new_environment)
     case E_COUNTRYSIDE:
       WIDTH  = 64;
       LENGTH = 64;
-      print1("You return to the fresh air of the open countryside.");
+      queue_message("You return to the fresh air of the open countryside.");
       if(Last_Environment == E_CITY)
       {
         Player.x = 27;
@@ -1489,7 +1489,7 @@ void change_environment(char new_environment)
     case E_TACTICAL_MAP:
       WIDTH  = 64;
       LENGTH = 16;
-      print1("You are now on the tactical screen; exit off any side to leave");
+      queue_message("You are now on the tactical screen; exit off any side to leave");
       make_country_screen(Country[Player.x][Player.y].current_terrain_type);
       make_country_monsters(Country[Player.x][Player.y].current_terrain_type);
       Player.x = WIDTH / 2;
@@ -1517,8 +1517,8 @@ void change_environment(char new_environment)
       break;
     case E_NEVER_NEVER_LAND:
     default:
-      print1("There must be some mistake. You don't look like Peter Pan.");
-      print2("(But here you are in Never-Never Land)");
+      queue_message("There must be some mistake. You don't look like Peter Pan.");
+      queue_message("(But here you are in Never-Never Land)");
       calculate_offsets(Player.x, Player.y);
       show_screen();
       break;

@@ -35,7 +35,7 @@ void m_hit(monster *m, int dtype)
   monster_name += m->monstring;
   if((Player.status[DISPLACED] > 0) && (random_range(2) == 1))
   {
-    mprint("The attack was displaced!");
+    queue_message("The attack was displaced!");
   }
   else
   {
@@ -60,7 +60,7 @@ void tacmonster(monster *m)
     {
       if(Verbosity == VERBOSE)
       {
-        mprint(monster_name + " attacks " + actionlocstr(m->meleestr[i + 1]));
+        queue_message(monster_name + " attacks " + actionlocstr(m->meleestr[i + 1]));
       }
       monster_melee(m, m->meleestr[i + 1], 0);
     }
@@ -68,7 +68,7 @@ void tacmonster(monster *m)
     {
       if(Verbosity == VERBOSE)
       {
-        mprint(monster_name + " lunges " + actionlocstr(m->meleestr[i + 1]));
+        queue_message(monster_name + " lunges " + actionlocstr(m->meleestr[i + 1]));
       }
       monster_melee(m, m->meleestr[i + 1], m->level);
     }
@@ -80,7 +80,7 @@ void monster_melee(struct monster *m, char hitloc, int bonus)
 {
   if(player_on_sanctuary())
   {
-    print1("The aegis of your deity protects you!");
+    queue_message("The aegis of your deity protects you!");
   }
   else
   {
@@ -101,14 +101,14 @@ void monster_melee(struct monster *m, char hitloc, int bonus)
       switch(m->meleef)
       {
         case M_NO_OP:
-          mprint(monster_name + " touches you.");
+          queue_message(monster_name + " touches you.");
           break;
         case M_MELEE_NORMAL:
-          mprint(monster_name + " hits you.");
+          queue_message(monster_name + " hits you.");
           m_hit(m, NORMAL_DAMAGE);
           break;
         case M_MELEE_NG:
-          mprint(monster_name + " hits you.");
+          queue_message(monster_name + " hits you.");
           m_hit(m, NORMAL_DAMAGE);
           if(random_range(5) == 3)
           {
@@ -116,56 +116,56 @@ void monster_melee(struct monster *m, char hitloc, int bonus)
           }
           break;
         case M_MELEE_FIRE:
-          mprint(monster_name + " blasts you with fire.");
+          queue_message(monster_name + " blasts you with fire.");
           m_hit(m, FLAME);
           break;
         case M_MELEE_DRAGON:
-          mprint(monster_name + " hits you and blasts you with fire.");
+          queue_message(monster_name + " hits you and blasts you with fire.");
           m_hit(m, NORMAL_DAMAGE);
           m_hit(m, FLAME);
           break;
         case M_MELEE_ELEC:
-          mprint(monster_name + " lashes you with electricity.");
+          queue_message(monster_name + " lashes you with electricity.");
           m_hit(m, ELECTRICITY);
           break;
         case M_MELEE_COLD:
-          mprint(monster_name + " freezes you with cold.");
+          queue_message(monster_name + " freezes you with cold.");
           m_hit(m, ELECTRICITY);
           break;
         case M_MELEE_POISON:
-          mprint(monster_name + " hits you.");
+          queue_message(monster_name + " hits you.");
           m_hit(m, NORMAL_DAMAGE);
           if(random_range(10) < m->level)
           {
-            mprint("You've been poisoned!");
+            queue_message("You've been poisoned!");
             p_poison(m->dmg);
           }
           break;
         case M_MELEE_GRAPPLE:
-          mprint(monster_name + " grabs you.");
+          queue_message(monster_name + " grabs you.");
           m_hit(m, NORMAL_DAMAGE);
           ++Player.status[IMMOBILE];
           break;
         case M_MELEE_SPIRIT:
-          mprint(monster_name + " touches you.");
+          queue_message(monster_name + " touches you.");
           m_hit(m, NORMAL_DAMAGE);
           drain_life(m->level);
           break;
         case M_MELEE_DISEASE:
-          mprint(monster_name + " hits you.");
+          queue_message(monster_name + " hits you.");
           m_hit(m, NORMAL_DAMAGE);
           if(random_range(10) < m->level)
           {
-            mprint("You've been infected!");
+            queue_message("You've been infected!");
             disease(m->level);
           }
           break;
         case M_MELEE_SLEEP:
-          mprint(monster_name + " hit you.");
+          queue_message(monster_name + " hit you.");
           m_hit(m, NORMAL_DAMAGE);
           if(random_range(10) < m->level)
           {
-            mprint("You feel drowsy");
+            queue_message("You feel drowsy");
             sleep_player(m->level);
           }
           break;
@@ -175,7 +175,7 @@ void monster_melee(struct monster *m, char hitloc, int bonus)
     {
       if(random_range(10))
       {
-        mprint(monster_name + " missed you.");
+        queue_message(monster_name + " missed you.");
       }
       else
       {
@@ -184,19 +184,19 @@ void monster_melee(struct monster *m, char hitloc, int bonus)
           switch(random_range(10))
           {
             case 0:
-              mprint(monster_name + " blundered severely.");
+              queue_message(monster_name + " blundered severely.");
               m_damage(m, m->dmg, UNSTOPPABLE);
               break;
             case 1:
-              mprint(monster_name + " tripped while attacking.");
+              queue_message(monster_name + " tripped while attacking.");
               m_dropstuff(m);
               break;
             case 2:
-              mprint(monster_name + " seems seriously confused.");
+              queue_message(monster_name + " seems seriously confused.");
               m->speed = std::min(30, m->speed * 2);
               break;
             default:
-              mprint(monster_name + " missed you.");
+              queue_message(monster_name + " missed you.");
           }
         }
         else
@@ -204,37 +204,37 @@ void monster_melee(struct monster *m, char hitloc, int bonus)
           switch(random_range(10))
           {
             case 0:
-              mprint(monster_name + " flailed stupidly at you.");
+              queue_message(monster_name + " flailed stupidly at you.");
               break;
             case 1:
-              mprint(monster_name + " made you laugh.");
+              queue_message(monster_name + " made you laugh.");
               break;
             case 2:
-              mprint(monster_name + " blundered severely.");
+              queue_message(monster_name + " blundered severely.");
               m_damage(m, m->dmg, UNSTOPPABLE);
               break;
             case 3:
-              mprint(monster_name + " tripped while attacking.");
+              queue_message(monster_name + " tripped while attacking.");
               m_dropstuff(m);
               break;
             case 4:
-              mprint(monster_name + " seems seriously confused.");
+              queue_message(monster_name + " seems seriously confused.");
               m->speed = std::min(30, m->speed * 2);
               break;
             case 5:
-              mprint(monster_name + " is seriously ashamed.");
+              queue_message(monster_name + " is seriously ashamed.");
               break;
             case 6:
-              mprint(monster_name + " made a boo-boo.");
+              queue_message(monster_name + " made a boo-boo.");
               break;
             case 7:
-              mprint(monster_name + " blundered.");
+              queue_message(monster_name + " blundered.");
               break;
             case 8:
-              mprint(monster_name + " cries out in anger and frustration.");
+              queue_message(monster_name + " cries out in anger and frustration.");
               break;
             case 9:
-              mprint(monster_name + " curses your ancestry.");
+              queue_message(monster_name + " curses your ancestry.");
               break;
           }
         }
@@ -274,22 +274,22 @@ bool monster_hit(monster *m, char hitloc, int bonus)
   {
     if(Verbosity == VERBOSE)
     {
-      mprint("You blocked it!");
+      queue_message("You blocked it!");
     }
     if(riposte)
     {
       if(Verbosity != TERSE)
       {
-        mprint("You got a riposte!");
+        queue_message("You got a riposte!");
       }
       if(hitp(Player.hit, m->ac))
       {
-        mprint("You hit!");
+        queue_message("You hit!");
         weapon_use(0, Player.possessions[O_WEAPON_HAND], m);
       }
       else
       {
-        mprint("You missed.");
+        queue_message("You missed.");
       }
     }
   }

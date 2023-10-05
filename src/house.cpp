@@ -240,11 +240,11 @@ void make_house_npc(int i, int j)
   make_log_npc(ml->m);
   if(ml->m->id == NPC)
   {
-    mprint("You detect signs of life in this house.");
+    queue_message("You detect signs of life in this house.");
   }
   else
   {
-    mprint("An eerie shiver runs down your spine as you enter....");
+    queue_message("An eerie shiver runs down your spine as you enter....");
   }
   /* if not == NPC, then we got a ghost off the npc list */
   ml->m->x                   = i;
@@ -277,7 +277,7 @@ void make_mansion_npc(int i, int j)
   ml->m    = new monster;
   *(ml->m) = Monsters[NPC];
   make_hiscore_npc(ml->m, random_range(14) + 1);
-  mprint("You detect signs of life in this house.");
+  queue_message("You detect signs of life in this house.");
   ml->m->x                   = i;
   ml->m->y                   = j;
   Level->site[i][j].creature = ml->m;

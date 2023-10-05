@@ -295,7 +295,7 @@ void p_process()
         Cmd = get_message_input();
         while((Cmd != ESCAPE) && ((Cmd < '1') || (Cmd > '9') || (Cmd == '5')))
         {
-          print3("Run in keypad direction [ESCAPE to abort]: ");
+          queue_message("Run in keypad direction [ESCAPE to abort]: ");
           Cmd = get_message_input();
         }
         if(Cmd != ESCAPE)

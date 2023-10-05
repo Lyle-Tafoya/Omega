@@ -117,7 +117,7 @@ void make_country_screen(Symbol terrain)
   }
   if(nighttime())
   {
-    print3("Night's gloom shrouds your sight.");
+    queue_message("Night's gloom shrouds your sight.");
     for(i = 0; i < WIDTH; i++)
     {
       for(j = 0; j < LENGTH; j++)

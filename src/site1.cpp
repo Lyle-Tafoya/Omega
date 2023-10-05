@@ -135,8 +135,8 @@ void l_bank()
             menu->print();
             std::this_thread::sleep_for(std::chrono::seconds(2));
             xredraw();
-            print1("The cash machine begins to spew gold pieces!");
-            print2("You pick up your entire balance and then some!");
+            queue_message("The cash machine begins to spew gold pieces!");
+            queue_message("You pick up your entire balance and then some!");
             Player.cash += Balance + 1000 + random_range(3000);
             Balance = 0;
             setgamestatus(BANK_BROKEN, GameStatus);
@@ -274,7 +274,7 @@ void buyfromstock(int base, int numitems)
     newitem->known = 2;
     long price     = 2 * true_item_value(newitem);
     append_message(std::format("I can let you have it for {} Au. Buy it? [yn] ", price), true);
-    if(ynq1() == 'y')
+    if(ynq() == 'y')
     {
       if(Player.cash < price)
       {
@@ -310,7 +310,7 @@ void l_club()
     else
     {
       append_message("Dues are 100Au. Pay it? [yn] ", true);
-      if(ynq2() == 'y')
+      if(ynq() == 'y')
       {
         if(Player.cash < 100)
         {
@@ -465,17 +465,17 @@ void statue_random(int x, int y)
       l_statue_wake();
       break;
     case 0:
-      print1("The statue crumbles with a clatter of gravel.");
+      queue_message("The statue crumbles with a clatter of gravel.");
       Level->site[x][y].locchar = RUBBLE;
       Level->site[x][y].p_locf  = L_RUBBLE;
       plotspot(x, y, true);
       lset(x, y, CHANGED, *Level);
       break;
     case 1:
-      print1("The statue stoutly resists your attack.");
+      queue_message("The statue stoutly resists your attack.");
       break;
     case 2:
-      print1("The statue crumbles with a clatter of gravel.");
+      queue_message("The statue crumbles with a clatter of gravel.");
       Level->site[x][y].locchar = RUBBLE;
       Level->site[x][y].p_locf  = L_RUBBLE;
       plotspot(x, y, true);
@@ -483,18 +483,18 @@ void statue_random(int x, int y)
       make_site_treasure(x, y, difficulty());
       break;
     case 3:
-      print1("The statue hits you back!");
+      queue_message("The statue hits you back!");
       p_damage(random_range(difficulty() * 5), UNSTOPPABLE, "a statue");
       break;
     case 4:
-      print1("The statue looks slightly pained. It speaks:");
+      queue_message("The statue looks slightly pained. It speaks:");
       hint();
       break;
     case 5:
       if((Current_Environment == Current_Dungeon) || (Current_Environment == E_CITY))
       {
-        print1("You hear the whirr of some mechanism.");
-        print2("The statue glides smoothly into the floor!");
+        queue_message("You hear the whirr of some mechanism.");
+        queue_message("The statue glides smoothly into the floor!");
         /* WDT HACK: I shouldn't be making this choice on a level
        * where no stairs can be (or perhaps I should, and I should
        * implement a bonus level!). */
@@ -504,18 +504,18 @@ void statue_random(int x, int y)
       }
       break;
     case 6:
-      print1("The statue was covered with contact cement!");
-      print2("You can't move....");
+      queue_message("The statue was covered with contact cement!");
+      queue_message("You can't move....");
       Player.status[IMMOBILE] += random_range(6) + 2;
       break;
     case 7:
-      print1("A strange radiation emanates from the statue!");
+      queue_message("A strange radiation emanates from the statue!");
       dispel(-1);
       break;
     case 8: /* I think this is particularly evil. Heh heh. */
       if(Player.possessions[O_WEAPON_HAND])
       {
-        print1("Your weapon sinks deeply into the statue and is sucked away!");
+        queue_message("Your weapon sinks deeply into the statue and is sucked away!");
         item = Player.possessions[O_WEAPON_HAND];
         conform_lost_object(Player.possessions[O_WEAPON_HAND]);
         item->blessing = -1 - abs(item->blessing);
@@ -523,7 +523,7 @@ void statue_random(int x, int y)
       }
       break;
     case 9:
-      print1("The statue extends an arm. Beams of light illuminate the level!");
+      queue_message("The statue extends an arm. Beams of light illuminate the level!");
       for(i = 0; i < WIDTH; i++)
       {
         for(j = 0; j < LENGTH; j++)
@@ -559,11 +559,11 @@ void wake_statue(int x, int y, int first)
   {
     if(!first)
     {
-      mprint("Another statue awakens!");
+      queue_message("Another statue awakens!");
     }
     else
     {
-      mprint("A statue springs to life!");
+      queue_message("A statue springs to life!");
     }
     Level->site[x][y].locchar = FLOOR;
     lset(x, y, CHANGED, *Level);
@@ -785,17 +785,17 @@ void l_commandant()
   pob food;
   queue_message("Commandant Sonder's Rampart-fried Lyzzard partes. Open 24 hrs.");
   append_message("Buy a bucket! Only 5 Au. Make a purchase? [yn] ", true);
-  if(ynq2() == 'y')
+  if(ynq() == 'y')
   {
     append_message("How many? ", true);
     num = (int)parsenum();
     if(num < 1)
     {
-      print3("Cute. Real cute.");
+      queue_message("Cute. Real cute.");
     }
     else if(num * 5 > Player.cash)
     {
-      print3("No handouts here, mac!");
+      queue_message("No handouts here, mac!");
     }
     else
     {
@@ -822,13 +822,13 @@ void l_commandant()
 
 void l_diner()
 {
-  print1("The Rampart Diner. All you can eat, 25Au.");
-  print2("Place an order? [yn] ");
-  if(ynq2() == 'y')
+  queue_message("The Rampart Diner. All you can eat, 25Au.");
+  queue_message("Place an order? [yn] ");
+  if(ynq() == 'y')
   {
     if(Player.cash < 25)
     {
-      mprint("TANSTAAFL! Now git!");
+      queue_message("TANSTAAFL! Now git!");
     }
     else
     {
@@ -842,23 +842,23 @@ void l_diner()
 
 void l_crap()
 {
-  print1("Les Crapeuleaux. (****) ");
+  queue_message("Les Crapeuleaux. (****) ");
   if((hour() < 17) || (hour() > 23))
   {
-    print2("So sorry, we are closed 'til the morrow...");
+    queue_message("So sorry, we are closed 'til the morrow...");
   }
   else
   {
-    print2("May I take your order? [yn] ");
-    if(ynq2() == 'y')
+    queue_message("May I take your order? [yn] ");
+    if(ynq() == 'y')
     {
       if(Player.cash < 1000)
       {
-        print2("So sorry, you have not the funds for dinner.");
+        queue_message("So sorry, you have not the funds for dinner.");
       }
       else
       {
-        print2("Hope you enjoyed your tres expensive meal, m'sieur...");
+        queue_message("Hope you enjoyed your tres expensive meal, m'sieur...");
         Player.cash -= 1000;
         dataprint();
         Player.food += 8;
@@ -872,7 +872,7 @@ void l_tavern()
 {
 #define hinthour tavern_hinthour
   char response;
-  print1("The Centaur and Nymph -- J. Riley, prop.");
+  queue_message("The Centaur and Nymph -- J. Riley, prop.");
   if(nighttime())
   {
     std::vector<std::string> lines =
@@ -897,7 +897,7 @@ void l_tavern()
       case 'a':
         if(Player.cash < 1)
         {
-          print2("Aw hell, have one on me.");
+          queue_message("Aw hell, have one on me.");
         }
         else
         {
@@ -907,33 +907,33 @@ void l_tavern()
           {
             if(random_range(3))
             {
-              print1("You overhear a rumor...");
+              queue_message("You overhear a rumor...");
               hint();
             }
             else
             {
-              print1("You don't hear much of interest.");
+              queue_message("You don't hear much of interest.");
             }
             hinthour = hour();
           }
           else
           {
-            print1("You just hear the same conversations again.");
+            queue_message("You just hear the same conversations again.");
           }
         }
         break;
       case 'b':
         if(Player.cash < 10)
         {
-          print2("I don't serve the Dew on no tab, buddy!");
+          queue_message("I don't serve the Dew on no tab, buddy!");
         }
         else
         {
           Player.cash -= 10;
-          print1("Ahhhhh....");
+          queue_message("Ahhhhh....");
           if(Player.status[POISONED] || Player.status[DISEASED])
           {
-            print2("Phew! That's, er, smooth stuff!");
+            queue_message("Phew! That's, er, smooth stuff!");
           }
           Player.status[POISONED] = 0;
           Player.status[DISEASED] = 0;
@@ -943,17 +943,17 @@ void l_tavern()
       case 'c':
         if(Player.cash < 100)
         {
-          print1("Whatta feeb!");
-          print2("Outta my establishment.... Now!");
+          queue_message("Whatta feeb!");
+          queue_message("Outta my establishment.... Now!");
           p_damage(random_range(20), UNSTOPPABLE, "Riley's right cross");
         }
         else
         {
           Player.cash -= 100;
           dataprint();
-          print1("'What a guy!'");
-          print2("'Hey, thanks, fella.'");
-          print3("'Make mine a double...'");
+          queue_message("'What a guy!'");
+          queue_message("'Hey, thanks, fella.'");
+          queue_message("'Make mine a double...'");
           switch(random_range(4))
           {
             case 0:
@@ -965,12 +965,12 @@ void l_tavern()
               }
               else
               {
-                print1("'You're a real pal. Say, have you heard.... ");
+                queue_message("'You're a real pal. Say, have you heard.... ");
                 hint();
               }
               break;
             case 1:
-              print1("A wandering priest of Dionysus blesses you...");
+              queue_message("A wandering priest of Dionysus blesses you...");
               if((Player.patron == ODIN) || (Player.patron == ATHENA))
               {
                 Player.alignment++;
@@ -989,24 +989,24 @@ void l_tavern()
               }
               break;
             case 2:
-              print1("A thirsty bard promises to put your name in a song!");
+              queue_message("A thirsty bard promises to put your name in a song!");
               gain_experience(20);
               break;
             case 3:
-              print1("Riley draws you a shot of his 'special reserve'");
-              print2("Drink it [yn]?");
-              if(ynq2() == 'y')
+              queue_message("Riley draws you a shot of his 'special reserve'");
+              queue_message("Drink it [yn]?");
+              if(ynq() == 'y')
               {
                 if(Player.con < random_range(20))
                 {
-                  print1("<cough> Quite a kick!");
-                  print2("You feel a fiery warmth in your tummy....");
+                  queue_message("<cough> Quite a kick!");
+                  queue_message("You feel a fiery warmth in your tummy....");
                   Player.con++;
                   Player.maxcon++;
                 }
                 else
                 {
-                  print2("You toss it back nonchalantly.");
+                  queue_message("You toss it back nonchalantly.");
                 }
               }
           }
@@ -1015,12 +1015,12 @@ void l_tavern()
       case 'd':
         if(Player.cash < 25)
         {
-          print2("Pay in advance, mac!");
+          queue_message("Pay in advance, mac!");
         }
         else
         {
           Player.cash -= 25;
-          print2("How about a shot o' the dew for a nightcap?");
+          queue_message("How about a shot o' the dew for a nightcap?");
           Time += (6 + random_range(4)) * 60;
           Player.status[POISONED] = 0;
           Player.status[DISEASED] = 0;
@@ -1037,21 +1037,21 @@ void l_tavern()
           timeprint();
           dataprint();
           showflags();
-          print1("The next day.....");
+          queue_message("The next day.....");
           if(hour() > 10)
           {
-            print2("Oh my! You overslept!");
+            queue_message("Oh my! You overslept!");
           }
         }
         break;
       default:
-        print2("So? Just looking? Go on!");
+        queue_message("So? Just looking? Go on!");
         break;
     }
   }
   else
   {
-    print2("The pub don't open til dark, fella.");
+    queue_message("The pub don't open til dark, fella.");
   }
   xredraw();
 }
@@ -1095,7 +1095,7 @@ void l_alchemist()
             {
               long sell_price = obj->basevalue / 3;
               queue_message(std::format("I'll give you {}Au each. Take it? [yn]", sell_price));
-              if(ynq1() == 'y')
+              if(ynq() == 'y')
               {
                 int n = getnumber(obj->number);
                 Player.cash += sell_price * n;
@@ -1131,7 +1131,7 @@ void l_alchemist()
               int mlevel = Monsters[obj->charge].level;
               long transform_price = std::max(10l, obj->basevalue * 2 * obj->number);
               queue_message(std::format("It'll cost you {} Au for the transformation. Pay it? [yn] ", transform_price));
-              if(ynq1() == 'y')
+              if(ynq() == 'y')
               {
                 if(Player.cash < transform_price)
                 {
@@ -1189,7 +1189,7 @@ void l_dpw()
   else if(Player.cash < 100)
   {
     append_message("Do you want to go on the dole? [yn] ", true);
-    if(ynq2() == 'y')
+    if(ynq() == 'y')
     {
       append_message("Well, ok, but spend it wisely.", true);
       append_message("Please enter your name for our records:");
@@ -1218,7 +1218,7 @@ void l_dpw()
   }
   else
   {
-    print2("You're too well off for us to help you!");
+    queue_message("You're too well off for us to help you!");
   }
 }
 
@@ -1230,7 +1230,7 @@ void l_library()
   queue_message("Rampart Public Library.");
   if(nighttime())
   {
-    print2("CLOSED");
+    queue_message("CLOSED");
   }
   else
   {
@@ -1244,7 +1244,7 @@ void l_library()
     while(!done)
     {
       append_message("Pay the fee? [yn] ", true);
-      if(ynq1() == 'y')
+      if(ynq() == 'y')
       {
         if(Player.cash < fee)
         {
@@ -1431,7 +1431,7 @@ void l_pawn_shop()
           {
             long price = Pawnitems[i]->number * true_item_value(Pawnitems[i]);
             append_message(std::format("The low, low, cost is: {}Au. Buy it? [ynq] ", price), true);
-            if(ynq1() == 'y')
+            if(ynq() == 'y')
             {
               if(Player.cash < price)
               {
@@ -1451,23 +1451,23 @@ void l_pawn_shop()
       else if(player_input == 's')
       {
         menuclear();
-        print2("Sell which item: ");
+        queue_message("Sell which item: ");
         i = getitem(NULL_ITEM);
         if(i != ABORT && Player.possessions[i])
         {
           if(cursed(Player.possessions[i]))
           {
-            print1("No loans on cursed items! I been burned before....");
+            queue_message("No loans on cursed items! I been burned before....");
           }
           else if(true_item_value(Player.possessions[i]) <= 0)
           {
-            print1("That looks like a worthless piece of junk to me.");
+            queue_message("That looks like a worthless piece of junk to me.");
           }
           else
           {
             long price = item_value(Player.possessions[i]) / 2;
-            print1(std::format("You can get {} Au each. Sell? [yn] ", price));
-            if(ynq1() == 'y')
+            queue_message(std::format("You can get {} Au each. Sell? [yn] ", price));
+            if(ynq() == 'y')
             {
               number = getnumber(Player.possessions[i]->number);
               if((number >= Player.possessions[i]->number) && Player.possessions[i]->used)
@@ -1497,8 +1497,8 @@ void l_pawn_shop()
           if(Player.pack[i]->blessing > -1 && true_item_value(Player.pack[i]) > 0)
           {
             long price = item_value(Player.pack[i]) / 2;
-            print1(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price));
-            player_input = ynq1();
+            queue_message(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price));
+            player_input = ynq();
             if(player_input == 'y')
             {
               number = getnumber(Player.pack[i]->number);

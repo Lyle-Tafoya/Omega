@@ -120,12 +120,12 @@ void fix_phantom(struct monster *m)
 {
   if(!Level->site[m->x][m->y].creature)
   {
-    mprint("You hear a sound like a sigh of relief....");
+    queue_message("You hear a sound like a sigh of relief....");
     Level->site[m->x][m->y].creature = m;
   }
   else
   {
-    mprint("You hear a puff of displaced air....");
+    queue_message("You hear a puff of displaced air....");
     findspace(&(m->x), &(m->y), -1);
     Level->site[m->x][m->y].creature = m;
     m_death(m);

@@ -343,9 +343,9 @@ int main(int, char *[])
 void signalexit(int)
 {
   int reply;
-  mprint("Yikes!");
-  mprint("Sorry, caught a core-dump signal.");
-  mprint("Want to try and save the game?");
+  queue_message("Yikes!");
+  queue_message("Sorry, caught a core-dump signal.");
+  queue_message("Want to try and save the game?");
   reply = ynq();
   if(reply == 'y')
   {
@@ -355,7 +355,7 @@ void signalexit(int)
   {
     signalsave();
   }
-  mprint("Bye!");
+  queue_message("Bye!");
   endgraf();
   exit(0);
 }
@@ -382,7 +382,7 @@ void init_world()
   Player.y            = 21;
   Level               = City;
   Current_Environment = E_CITY;
-  print1("You pass through the massive gates of Rampart, the city.");
+  queue_message("You pass through the massive gates of Rampart, the city.");
 }
 
 /* set variable item names */

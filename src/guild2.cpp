@@ -38,25 +38,25 @@ void l_thieves_guild()
   int  fee, count, i, number, done = false, dues = 1000;
   char c, action;
   pob  lockpick;
-  print1("You have penetrated to the Lair of the Thieves' Guild.");
+  queue_message("You have penetrated to the Lair of the Thieves' Guild.");
   if(!nighttime())
   {
-    print2("There aren't any thieves around in the daytime.");
+    queue_message("There aren't any thieves around in the daytime.");
   }
   else
   {
     if((Player.rank[THIEVES] == TMASTER) && (Player.level > Shadowlordlevel) &&
        find_and_remove_item(THINGID + 16, -1))
     {
-      print2("You nicked the Justiciar's Badge!");
-      print1("The Badge is put in a place of honor in the Guild Hall.");
-      print2("You are now the Shadowlord of the Thieves' Guild!");
-      print1("Who says there's no honor among thieves?");
+      queue_message("You nicked the Justiciar's Badge!");
+      queue_message("The Badge is put in a place of honor in the Guild Hall.");
+      queue_message("You are now the Shadowlord of the Thieves' Guild!");
+      queue_message("Who says there's no honor among thieves?");
       Shadowlord = Player.name;
       Shadowlordlevel    = Player.level;
       Shadowlordbehavior = fixnpc(4);
       save_hiscore_npc(7);
-      print1("You learn the Spell of Shadowform.");
+      queue_message("You learn the Spell of Shadowform.");
       spell::Spells[spell::SHADOWFORM].known = true;
       Player.rank[THIEVES]       = SHADOWLORD;
       Player.maxagi += 2;
@@ -92,31 +92,31 @@ void l_thieves_guild()
         done = true;
         if(Player.rank[THIEVES] > 0)
         {
-          print2("You are already a member!");
+          queue_message("You are already a member!");
         }
         else if(Player.alignment > 10)
         {
-          print2("You are too lawful to be a thief!");
+          queue_message("You are too lawful to be a thief!");
         }
         else
         {
           dues += dues * (12 - Player.dex) / 9;
           dues += Player.alignment * 5;
           dues = std::max(100, dues);
-          mprint(std::format("Dues are {}Au. Pay it? [yn] ", dues));
-          if(ynq1() == 'y')
+          queue_message(std::format("Dues are {}Au. Pay it? [yn] ", dues));
+          if(ynq() == 'y')
           {
             if(Player.cash < dues)
             {
-              print1("You can't cheat the Thieves' Guild!");
-              print2("... but the Thieves' Guild can cheat you....");
+              queue_message("You can't cheat the Thieves' Guild!");
+              queue_message("... but the Thieves' Guild can cheat you....");
               Player.cash = 0;
             }
             else
             {
-              print1(std::format("Shadowlord {} enters your name into the roll of the guild.", Shadowlord));
-              print1("As a special bonus, you get a free lockpick.");
-              print2("You are taught the spell of Object Detection.");
+              queue_message(std::format("Shadowlord {} enters your name into the roll of the guild.", Shadowlord));
+              queue_message("As a special bonus, you get a free lockpick.");
+              queue_message("You are taught the spell of Object Detection.");
               spell::Spells[spell::OBJECT_DETECTION].known = true;
               lockpick                = new object;
               *lockpick               = Objects[THINGID + 2]; /* lock pick */
@@ -137,36 +137,36 @@ void l_thieves_guild()
       {
         if(Player.rank[THIEVES] == 0)
         {
-          print2("You are not even a member!");
+          queue_message("You are not even a member!");
         }
         else if(Player.rank[THIEVES] == SHADOWLORD)
         {
-          print2("You can't get any higher than this!");
+          queue_message("You can't get any higher than this!");
         }
         else if(Player.rank[THIEVES] == TMASTER)
         {
           if(Player.level <= Shadowlordlevel)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print2("You must bring back the Justiciar's Badge!");
+            queue_message("You must bring back the Justiciar's Badge!");
           }
         }
         else if(Player.rank[THIEVES] == THIEF)
         {
           if(Player.guildxp[THIEVES] < 4000)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a Master Thief of the Guild!");
-            print2("You are taught the Spell of Apportation.");
-            print1("To advance to the next level you must return with");
-            print2("the badge of the Justiciar (cursed be his name).");
-            print1("The Justiciar's office is just south of the gaol.");
+            queue_message("You are now a Master Thief of the Guild!");
+            queue_message("You are taught the Spell of Apportation.");
+            queue_message("To advance to the next level you must return with");
+            queue_message("the badge of the Justiciar (cursed be his name).");
+            queue_message("The Justiciar's office is just south of the gaol.");
             spell::Spells[spell::APPORTATION].known = true;
             Player.rank[THIEVES]   = TMASTER;
             Player.maxagi++;
@@ -179,12 +179,12 @@ void l_thieves_guild()
         {
           if(Player.guildxp[THIEVES] < 1500)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a ranking Thief of the Guild!");
-            print2("You learn the Spell of Invisibility.");
+            queue_message("You are now a ranking Thief of the Guild!");
+            queue_message("You learn the Spell of Invisibility.");
             spell::Spells[spell::INVISIBILITY].known = true;
             Player.rank[THIEVES]      = THIEF;
             Player.agi++;
@@ -195,12 +195,12 @@ void l_thieves_guild()
         {
           if(Player.guildxp[THIEVES] < 400)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now an Apprentice Thief!");
-            print2("You are taught the Spell of Levitation.");
+            queue_message("You are now an Apprentice Thief!");
+            queue_message("You are taught the Spell of Levitation.");
             spell::Spells[spell::LEVITATE].known = true;
             Player.rank[THIEVES]     = ATHIEF;
             Player.dex++;
@@ -212,20 +212,20 @@ void l_thieves_guild()
       {
         if(Player.rank[THIEVES] == 0)
         {
-          print1("RTG, Inc, Appraisers. Identification Fee: 50Au/item.");
+          queue_message("RTG, Inc, Appraisers. Identification Fee: 50Au/item.");
           fee = 50;
         }
         else
         {
           fee = 5;
-          print1("The fee is 5Au per item.");
+          queue_message("The fee is 5Au per item.");
         }
-        print2("Identify one item, or all possessions? [ip] ");
+        queue_message("Identify one item, or all possessions? [ip] ");
         if((char)mcigetc() == 'i')
         {
           if(Player.cash < fee)
           {
-            print2("Try again when you have the cash.");
+            queue_message("Try again when you have the cash.");
           }
           else
           {
@@ -257,12 +257,12 @@ void l_thieves_guild()
               }
             }
           }
-          print1(std::format("The fee will be: {}Au. Pay it? [yn] ", std::max(count * fee, fee)));
-          if(ynq1() == 'y')
+          queue_message(std::format("The fee will be: {}Au. Pay it? [yn] ", std::max(count * fee, fee)));
+          if(ynq() == 'y')
           {
             if(Player.cash < std::max(count * fee, fee))
             {
-              print2("Try again when you have the cash.");
+              queue_message("Try again when you have the cash.");
             }
             else
             {
@@ -277,27 +277,27 @@ void l_thieves_guild()
       {
         if(Player.rank[THIEVES] == 0)
         {
-          print2("Fence? Who said anything about a fence?");
+          queue_message("Fence? Who said anything about a fence?");
         }
         else
         {
-          print1("Fence one item or go through pack? [ip] ");
+          queue_message("Fence one item or go through pack? [ip] ");
           if((char)mcigetc() == 'i')
           {
             i = getitem(NULL_ITEM);
             if(i == ABORT || !Player.possessions[i])
             {
-              print2("Huh, Is this some kind of set-up?");
+              queue_message("Huh, Is this some kind of set-up?");
             }
             else if(Player.possessions[i]->blessing < 0)
             {
-              print2("I don't want to buy a cursed item!");
+              queue_message("I don't want to buy a cursed item!");
             }
             else
             {
               long price = 2 * item_value(Player.possessions[i]) / 3;
-              print1(std::format("I'll give you {} Au each. OK? [yn] ", price));
-              if(ynq1() == 'y')
+              queue_message(std::format("I'll give you {} Au each. OK? [yn] ", price));
+              if(ynq() == 'y')
               {
                 number = getnumber(Player.possessions[i]->number);
                 if((number >= Player.possessions[i]->number) && Player.possessions[i]->used)
@@ -315,7 +315,7 @@ void l_thieves_guild()
               }
               else
               {
-                print2("Hey, gimme a break, it was a fair price!");
+                queue_message("Hey, gimme a break, it was a fair price!");
               }
             }
           }
@@ -326,8 +326,8 @@ void l_thieves_guild()
               if(Player.pack[i]->blessing > -1)
               {
                 long price = 2 * item_value(Player.pack[i]) / 3;
-                print1(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price));
-                if((c = ynq1()) == 'y')
+                queue_message(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price));
+                if((c = ynq()) == 'y')
                 {
                   number = getnumber(Player.pack[i]->number);
                   Player.cash += number * price;
@@ -364,10 +364,10 @@ void l_college()
 {
   char action;
   int  done = false, enrolled = false;
-  print1("The Collegium Magii. Founded 16937, AOF.");
+  queue_message("The Collegium Magii. Founded 16937, AOF.");
   if(nighttime())
   {
-    print2("The Registration desk is closed at night....");
+    queue_message("The Registration desk is closed at night....");
   }
   else
   {
@@ -376,9 +376,9 @@ void l_college()
       if((Player.rank[COLLEGE] == MAGE) && (Player.level > Archmagelevel) &&
          find_and_remove_item(CORPSEID, EATER))
       {
-        print1("You brought back the heart of the Eater of Magic!");
-        print1("The Heart is sent to the labs for analysis.");
-        print2("The Board of Trustees appoints you Archmage!");
+        queue_message("You brought back the heart of the Eater of Magic!");
+        queue_message("The Heart is sent to the labs for analysis.");
+        queue_message("The Board of Trustees appoints you Archmage!");
         Archmage = Player.name;
         Archmagelevel        = Player.level;
         Player.rank[COLLEGE] = ARCHMAGE;
@@ -405,15 +405,15 @@ void l_college()
       {
         if(Player.rank[COLLEGE] > 0)
         {
-          print2("You are already enrolled!");
+          queue_message("You are already enrolled!");
         }
         else if(Player.iq < 13)
         {
-          print2("Your low IQ renders you incapable of being educated.");
+          queue_message("Your low IQ renders you incapable of being educated.");
         }
         else if(Player.rank[CIRCLE] > 0)
         {
-          print2("Sorcery and our Magic are rather incompatable, no?");
+          queue_message("Sorcery and our Magic are rather incompatable, no?");
         }
         else if(Player.rank[MONKS] > 0)
         {
@@ -423,18 +423,18 @@ void l_college()
         {
           if(Player.iq > 17)
           {
-            print2("You are given a scholarship!");
+            queue_message("You are given a scholarship!");
             enrolled = true;
           }
           else
           {
-            print1("Tuition is 1000Au. ");
-            nprint1("Pay it? [yn] ");
-            if(ynq1() == 'y')
+            queue_message("Tuition is 1000Au. ");
+            queue_message("Pay it? [yn] ");
+            if(ynq() == 'y')
             {
               if(Player.cash < 1000)
               {
-                print2("You don't have the funds!");
+                queue_message("You don't have the funds!");
               }
               else
               {
@@ -446,12 +446,12 @@ void l_college()
           }
           if(enrolled)
           {
-            print1("Archmage ");
-            nprint1(Archmage);
-            nprint1(" greets you and congratulates you on your acceptance.");
-            print2("You are now enrolled in the Collegium Magii!");
-            print1("You are now a Novice.");
-            print2("You may research 1 spell, for your intro class.");
+            queue_message("Archmage ");
+            queue_message(Archmage);
+            queue_message(" greets you and congratulates you on your acceptance.");
+            queue_message("You are now enrolled in the Collegium Magii!");
+            queue_message("You are now a Novice.");
+            queue_message("You may research 1 spell, for your intro class.");
             Spellsleft              = 1;
             Player.rank[COLLEGE]    = INITIATE;
             Player.guildxp[COLLEGE] = 1;
@@ -466,37 +466,37 @@ void l_college()
       {
         if(Player.rank[COLLEGE] == 0)
         {
-          print2("You have not even been initiated, yet!");
+          queue_message("You have not even been initiated, yet!");
         }
         else if(Player.rank[COLLEGE] == ARCHMAGE)
         {
-          print2("You are at the pinnacle of mastery in the Collegium.");
+          queue_message("You are at the pinnacle of mastery in the Collegium.");
         }
         else if(Player.rank[COLLEGE] == MAGE)
         {
           if(Player.level <= Archmagelevel)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print2("You must return with the heart of the Eater of Magic!");
+            queue_message("You must return with the heart of the Eater of Magic!");
           }
         }
         else if(Player.rank[COLLEGE] == PRECEPTOR)
         {
           if(Player.guildxp[COLLEGE] < 4000)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a Mage of the Collegium Magii!");
-            print2("You may research 6 spells for postdoctoral research.");
+            queue_message("You are now a Mage of the Collegium Magii!");
+            queue_message("You may research 6 spells for postdoctoral research.");
             Spellsleft += 6;
-            print1("To become Archmage, you must return with the");
-            print2("heart of the Eater of Magic");
-            print1("The Eater may be found on a desert isle somewhere.");
+            queue_message("To become Archmage, you must return with the");
+            queue_message("heart of the Eater of Magic");
+            queue_message("The Eater may be found on a desert isle somewhere.");
             Player.rank[COLLEGE] = MAGE;
             Player.maxiq += 2;
             Player.iq += 2;
@@ -508,13 +508,13 @@ void l_college()
         {
           if(Player.guildxp[COLLEGE] < 1500)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a Preceptor of the Collegium Magii!");
-            print2("You are taught the basics of ritual magic.");
-            print1("Your position allows you to research 4 spells.");
+            queue_message("You are now a Preceptor of the Collegium Magii!");
+            queue_message("You are taught the basics of ritual magic.");
+            queue_message("Your position allows you to research 4 spells.");
             Spellsleft += 4;
             spell::Spells[spell::RITUAL_MAGIC].known = true;
             Player.rank[COLLEGE]   = PRECEPTOR;
@@ -528,13 +528,13 @@ void l_college()
         {
           if(Player.guildxp[COLLEGE] < 400)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a Student at the Collegium Magii!");
-            print2("You are taught the spell of identification.");
-            print1("Thesis research credit is 2 spells.");
+            queue_message("You are now a Student at the Collegium Magii!");
+            queue_message("You are taught the spell of identification.");
+            queue_message("Thesis research credit is 2 spells.");
             Spellsleft += 2;
             spell::Spells[spell::IDENTIFICATION].known = true;
             Player.rank[COLLEGE]     = STUDENT;
@@ -549,17 +549,17 @@ void l_college()
       {
         if(Spellsleft > 0)
         {
-          print1(std::format("Research permitted: {} Spells.", Spellsleft));
+          queue_message(std::format("Research permitted: {} Spells.", Spellsleft));
         }
         if(Spellsleft < 1)
         {
-          print1("Extracurricular Lab fee: 2000 Au. ");
-          nprint1("Pay it? [yn] ");
-          if(ynq1() == 'y')
+          queue_message("Extracurricular Lab fee: 2000 Au. ");
+          queue_message("Pay it? [yn] ");
+          if(ynq() == 'y')
           {
             if(Player.cash < 2000)
             {
-              print1("Try again when you have the cash.");
+              queue_message("Try again when you have the cash.");
             }
             else
             {
@@ -641,7 +641,7 @@ void l_monastery()
           {
             queue_message("A substantial cash sacrifice will cleanse your spirit.. ");
             queue_message("Donate your worldly goods? [yn] ");
-            if(ynq1() =='y')
+            if(ynq() =='y')
             {
               if (Player.cash < 1000)
               {
@@ -827,7 +827,7 @@ void l_monastery()
         {
           queue_message("Sacrifice clears a cluttered heart. ");
           queue_message("Donate your worldly cash? [yn] ");
-          if(ynq1()=='y')
+          if(ynq()=='y')
           {
             if(Player.cash < 2000)
             {
@@ -905,10 +905,10 @@ void l_sorcerors()
   char action;
   int  done = false, fee = 3000;
   long total;
-  print1("The Circle of Sorcerors.");
+  queue_message("The Circle of Sorcerors.");
   if(Player.rank[CIRCLE] == -1)
   {
-    print2("Fool! Didn't we tell you to go away?");
+    queue_message("Fool! Didn't we tell you to go away?");
     Player.mana = 0;
     dataprint();
   }
@@ -919,14 +919,14 @@ void l_sorcerors()
       if((Player.rank[CIRCLE] == HIGHSORCEROR) && (Player.level > Primelevel) &&
          find_and_remove_item(CORPSEID, LAWBRINGER))
       {
-        print2("You obtained the Crown of the Lawgiver!");
-        print1("The Crown is ritually sacrificed to the Lords of Chaos.");
-        print2("You are now the Prime Sorceror of the Inner Circle!");
+        queue_message("You obtained the Crown of the Lawgiver!");
+        queue_message("The Crown is ritually sacrificed to the Lords of Chaos.");
+        queue_message("You are now the Prime Sorceror of the Inner Circle!");
         Prime = Player.name;
         Primelevel    = Player.level;
         Primebehavior = fixnpc(4);
         save_hiscore_npc(10);
-        print1("You learn the Spell of Disintegration!");
+        queue_message("You learn the Spell of Disintegration!");
         spell::Spells[spell::DISINTEGRATE].known = true;
         Player.rank[CIRCLE]          = PRIME;
         Player.maxpow += 10;
@@ -948,15 +948,15 @@ void l_sorcerors()
       {
         if(Player.rank[CIRCLE] > 0)
         {
-          print2("You are already an initiate!");
+          queue_message("You are already an initiate!");
         }
         else if(Player.alignment > 0)
         {
-          print2("You may not join -- you reek of Law!");
+          queue_message("You may not join -- you reek of Law!");
         }
         else if(Player.rank[COLLEGE] != 0)
         {
-          print2("Foolish Mage!  You don't have the right attitude to Power!");
+          queue_message("Foolish Mage!  You don't have the right attitude to Power!");
         }
         else if(Player.rank[MONKS] > 0)
         {
@@ -967,18 +967,18 @@ void l_sorcerors()
           fee += Player.alignment * 100;
           fee += fee * (12 - Player.pow) / 9;
           fee = std::max(100, fee);
-          mprint(std::format("For you, there is an initiation fee of {} Au.", fee));
-          print2("Pay it? [yn] ");
-          if(ynq2() == 'y')
+          queue_message(std::format("For you, there is an initiation fee of {} Au.", fee));
+          queue_message("Pay it? [yn] ");
+          if(ynq() == 'y')
           {
             if(Player.cash < fee)
             {
-              print3("Try again when you have the cash!");
+              queue_message("Try again when you have the cash!");
             }
             else
             {
-              print1(std::format("Prime Sorceror {} conducts your initiation into the circle of novices.", Prime));
-              print1("You learn the Spell of Magic Missiles.");
+              queue_message(std::format("Prime Sorceror {} conducts your initiation into the circle of novices.", Prime));
+              queue_message("You learn the Spell of Magic Missiles.");
               spell::Spells[spell::MAGIC_MISSILE].known = true;
               Player.cash -= fee;
               dataprint();
@@ -994,53 +994,53 @@ void l_sorcerors()
       {
         if(Player.rank[CIRCLE] == 0)
         {
-          print2("You have not even been initiated, yet!");
+          queue_message("You have not even been initiated, yet!");
         }
         else if(Player.alignment > -1)
         {
-          print1("Ahh! You have grown too lawful!!!");
-          print2("You are hereby blackballed from the Circle!");
+          queue_message("Ahh! You have grown too lawful!!!");
+          queue_message("You are hereby blackballed from the Circle!");
           Player.rank[CIRCLE] = -1;
-          print1("A pox upon thee!");
+          queue_message("A pox upon thee!");
           if(!Player.immunity[INFECTION])
           {
             Player.status[DISEASED] += 100;
           }
-          print2("And a curse on your possessions!");
+          queue_message("And a curse on your possessions!");
           acquire(-1);
           enchant(-1);
           bless(-1);
-          print3("Die, false sorceror!");
+          queue_message("Die, false sorceror!");
           p_damage(25, UNSTOPPABLE, "a sorceror's curse");
           done = true;
         }
         else if(Player.rank[CIRCLE] == PRIME)
         {
-          print2("You are at the pinnacle of mastery in the Circle.");
+          queue_message("You are at the pinnacle of mastery in the Circle.");
         }
         else if(Player.rank[CIRCLE] == HIGHSORCEROR)
         {
           if(Player.level <= Primelevel)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print2("You must return with the Crown of the LawBringer!");
+            queue_message("You must return with the Crown of the LawBringer!");
           }
         }
         else if(Player.rank[CIRCLE] == SORCEROR)
         {
           if(Player.guildxp[CIRCLE] < 4000)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a High Sorceror of the Inner Circle!");
-            print2("You learn the Spell of Disruption!");
-            print1("To advance you must return with the LawBringer's Crown!");
-            print2("The LawBringer resides on Star Peak.");
+            queue_message("You are now a High Sorceror of the Inner Circle!");
+            queue_message("You learn the Spell of Disruption!");
+            queue_message("To advance you must return with the LawBringer's Crown!");
+            queue_message("The LawBringer resides on Star Peak.");
             spell::Spells[spell::DISRUPT].known = true;
             Player.rank[CIRCLE]     = HIGHSORCEROR;
             Player.maxpow += 5;
@@ -1051,12 +1051,12 @@ void l_sorcerors()
         {
           if(Player.guildxp[CIRCLE] < 1500)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a member of the Circle of Sorcerors!");
-            print2("You learn the Spell of Ball Lightning!");
+            queue_message("You are now a member of the Circle of Sorcerors!");
+            queue_message("You learn the Spell of Ball Lightning!");
             spell::Spells[spell::BALL_LIGHTNING].known = true;
             Player.rank[CIRCLE]   = SORCEROR;
             Player.maxpow += 2;
@@ -1067,12 +1067,12 @@ void l_sorcerors()
         {
           if(Player.guildxp[CIRCLE] < 400)
           {
-            print2("You are not experienced enough to advance.");
+            queue_message("You are not experienced enough to advance.");
           }
           else
           {
-            print1("You are now a member of the Circle of Enchanters!");
-            print2("You learn the Spell of Firebolts.");
+            queue_message("You are now a member of the Circle of Enchanters!");
+            queue_message("You learn the Spell of Firebolts.");
             spell::Spells[spell::FIREBOLT].known = true;
             Player.rank[CIRCLE]      = ENCHANTER;
             Player.maxpow += 2;
@@ -1088,12 +1088,12 @@ void l_sorcerors()
         {
           fee = fee / 2;
         }
-        print1(std::format("That will be: {} Au. Pay it? [yn] ", fee));
-        if(ynq1() == 'y')
+        queue_message(std::format("That will be: {} Au. Pay it? [yn] ", fee));
+        if(ynq() == 'y')
         {
           if(Player.cash < fee)
           {
-            print2("Begone, deadbeat, or face the wrath of the Circle!");
+            queue_message("Begone, deadbeat, or face the wrath of the Circle!");
           }
           else
           {
@@ -1104,12 +1104,12 @@ void l_sorcerors()
               Player.mana++;
               dataprint();
             }
-            print2("Have a sorcerous day, now!");
+            queue_message("Have a sorcerous day, now!");
           }
         }
         else
         {
-          print2("Be seeing you!");
+          queue_message("Be seeing you!");
         }
       }
     }
@@ -1121,13 +1121,13 @@ void l_order()
 {
   pob newitem;
   pml ml;
-  print1("The Headquarters of the Order of Paladins.");
+  queue_message("The Headquarters of the Order of Paladins.");
   if((Player.rank[ORDER] == PALADIN) && (Player.level > Justiciarlevel) &&
      gamestatusp(GAVE_STARGEM, GameStatus) && Player.alignment > 300)
   {
-    print1("You have succeeded in your quest!");
-    print1("The previous Justiciar steps down in your favor.");
-    print2("You are now the Justiciar of Rampart and the Order!");
+    queue_message("You have succeeded in your quest!");
+    queue_message("The previous Justiciar steps down in your favor.");
+    queue_message("You are now the Justiciar of Rampart and the Order!");
     Justiciar = Player.name;
     for(ml = Level->mlist; ml && (ml->m->id != HISCORE_NPC || ml->m->aux2 != 15); ml = ml->next)
     {
@@ -1142,7 +1142,7 @@ void l_order()
     Justiciarlevel    = Player.level;
     Justiciarbehavior = fixnpc(4);
     save_hiscore_npc(15);
-    print1("You are awarded a blessed shield of deflection!");
+    queue_message("You are awarded a blessed shield of deflection!");
     newitem           = new object;
     *newitem          = Objects[SHIELDID + 7]; /* shield of deflection */
     newitem->blessing = 9;
@@ -1157,41 +1157,41 @@ void l_order()
   {
     if(Player.rank[ORDER] > 0)
     {
-      print1("You have been tainted by chaos!");
-      print2("You are stripped of your rank in the Order!");
+      queue_message("You have been tainted by chaos!");
+      queue_message("You are stripped of your rank in the Order!");
       Player.rank[ORDER] = -1;
       send_to_jail();
     }
     else
     {
-      print1("Get thee hence, minion of chaos!");
+      queue_message("Get thee hence, minion of chaos!");
     }
   }
   else if(Player.rank[ORDER] == -1)
   {
-    print1("Thee again?  Get thee hence, minion of chaos!");
+    queue_message("Thee again?  Get thee hence, minion of chaos!");
   }
   else if(Player.rank[ORDER] == 0)
   {
     if(Player.rank[ARENA] != 0)
     {
-      print1("We do not accept bloodstained gladiators into our Order.");
+      queue_message("We do not accept bloodstained gladiators into our Order.");
     }
     else if(Player.rank[LEGION] != 0)
     {
-      print1("Go back to your barracks, mercenary!");
+      queue_message("Go back to your barracks, mercenary!");
     }
     else
     {
-      print1("Dost thou wish to join our Order? [yn] ");
-      if(ynq1() == 'y')
+      queue_message("Dost thou wish to join our Order? [yn] ");
+      if(ynq() == 'y')
       {
-        print1("Justiciar ");
-        nprint1(Justiciar);
-        nprint1(" welcomes you to the Order.");
-        print2("'Mayest thou always follow the sublime path of Law.'");
-        print1("You are now a Gallant in the Order.");
-        print2("You are given a horse and a blessed spear.");
+        queue_message("Justiciar ");
+        queue_message(Justiciar);
+        queue_message(" welcomes you to the Order.");
+        queue_message("'Mayest thou always follow the sublime path of Law.'");
+        queue_message("You are now a Gallant in the Order.");
+        queue_message("You are given a horse and a blessed spear.");
         Player.rank[ORDER]    = GALLANT;
         Player.guildxp[ORDER] = 1;
         setgamestatus(MOUNTED, GameStatus);
@@ -1206,60 +1206,60 @@ void l_order()
   }
   else
   {
-    print1("'Welcome back, Paladin.'");
+    queue_message("'Welcome back, Paladin.'");
     if(!gamestatusp(MOUNTED, GameStatus))
     {
-      print2("You are given a new steed.");
+      queue_message("You are given a new steed.");
       setgamestatus(MOUNTED, GameStatus);
     }
     if((Player.hp < Player.maxhp) || (Player.status[DISEASED]) || (Player.status[POISONED]))
     {
-      print1("Your wounds are treated by a medic.");
+      queue_message("Your wounds are treated by a medic.");
     }
     cleanse(0);
     Player.hp   = Player.maxhp;
     Player.food = 40;
-    print2("You get a hot meal from the refectory.");
+    queue_message("You get a hot meal from the refectory.");
     if(Player.rank[ORDER] == PALADIN)
     {
       if(Player.level <= Justiciarlevel)
       {
-        print2("You are not experienced enough to advance.");
+        queue_message("You are not experienced enough to advance.");
       }
       else if(Player.alignment < 300)
       {
-        print2("You are not sufficiently Lawful as yet to advance.");
+        queue_message("You are not sufficiently Lawful as yet to advance.");
       }
       else
       {
-        print2("You must give the Star Gem to the LawBringer.");
+        queue_message("You must give the Star Gem to the LawBringer.");
       }
     }
     else if(Player.rank[ORDER] == CHEVALIER)
     {
       if(Player.guildxp[ORDER] < 4000)
       {
-        print2("You are not experienced enough to advance.");
+        queue_message("You are not experienced enough to advance.");
       }
       else if(Player.alignment < 200)
       {
-        print2("You are not sufficiently Lawful as yet to advance.");
+        queue_message("You are not sufficiently Lawful as yet to advance.");
       }
       else
       {
-        print1("You are made a Paladin of the Order!");
-        print2("You learn the Spell of Heroism and get Mithril Plate!");
+        queue_message("You are made a Paladin of the Order!");
+        queue_message("You learn the Spell of Heroism and get Mithril Plate!");
         newitem           = new object;
         *newitem          = Objects[ARMORID + 11]; /* mithril plate armor */
         newitem->blessing = 9;
         newitem->known    = 2;
         gain_item(newitem);
-        print1("To advance you must rescue the Star Gem and return it");
-        print2("to its owner, the LawBringer, who resides on Star Peak.");
-        print1("The Star Gem was stolen by the cursed Prime Sorceror,");
-        print2("whose headquarters may be found beyond the Astral Plane.");
-        print1("The Oracle will send you to the Astral Plane if you");
-        print2("prove yourself worthy to her.");
+        queue_message("To advance you must rescue the Star Gem and return it");
+        queue_message("to its owner, the LawBringer, who resides on Star Peak.");
+        queue_message("The Star Gem was stolen by the cursed Prime Sorceror,");
+        queue_message("whose headquarters may be found beyond the Astral Plane.");
+        queue_message("The Oracle will send you to the Astral Plane if you");
+        queue_message("prove yourself worthy to her.");
         spell::Spells[spell::HEROISM].known = true;
         Player.rank[ORDER]   = PALADIN;
       }
@@ -1268,17 +1268,17 @@ void l_order()
     {
       if(Player.guildxp[ORDER] < 1500)
       {
-        print2("You are not experienced enough to advance.");
+        queue_message("You are not experienced enough to advance.");
       }
       else if(Player.alignment < 125)
       {
-        print2("You are not yet sufficiently Lawful to advance.");
+        queue_message("You are not yet sufficiently Lawful to advance.");
       }
       else
       {
         Player.rank[ORDER] = CHEVALIER;
-        print1("You are made a Chevalier of the Order!");
-        print2("You are given a Mace of Disruption!");
+        queue_message("You are made a Chevalier of the Order!");
+        queue_message("You are given a Mace of Disruption!");
         newitem        = new object;
         *newitem       = Objects[WEAPONID + 25]; /* mace of disruption */
         newitem->known = 2;
@@ -1289,18 +1289,18 @@ void l_order()
     {
       if(Player.guildxp[ORDER] < 400)
       {
-        print2("You are not experienced enough to advance.");
+        queue_message("You are not experienced enough to advance.");
       }
       else if(Player.alignment < 50)
       {
-        print2("You are not Lawful enough to advance.");
+        queue_message("You are not Lawful enough to advance.");
       }
       else
       {
-        print1("You are made a Guardian of the Order of Paladins!");
-        print2("You are given a Holy Hand Grenade (of Antioch).");
-        print1("You hear a nasal monotone in the distance....");
-        print2("'...and the number of thy counting shall be 3...'");
+        queue_message("You are made a Guardian of the Order of Paladins!");
+        queue_message("You are given a Holy Hand Grenade (of Antioch).");
+        queue_message("You hear a nasal monotone in the distance....");
+        queue_message("'...and the number of thy counting shall be 3...'");
         Player.rank[ORDER] = GUARDIAN;
         newitem            = new object;
         *newitem           = Objects[ARTIFACTID + 7]; /* holy hand grenade. */

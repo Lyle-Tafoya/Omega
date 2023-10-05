@@ -379,77 +379,6 @@ int ynq()
   return p;
 }
 
-int ynq1()
-{
-  int cursor_visibility = curs_set(1);
-  print_messages();
-  char p = '*';
-  while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
-  {
-    doupdate();
-    p = wgetch(message_window);
-  }
-  switch(p)
-  {
-    case 'y':
-      message_buffer.append("yes.", false);
-      break;
-    case ' ':
-      p = 'n';
-      [[fallthrough]];
-    case 'n':
-      message_buffer.append("no.", false);
-      break;
-
-    case ESCAPE:
-      p = 'q';
-      [[fallthrough]];
-    case 'q':
-      message_buffer.append("quit.", false);
-      break;
-    default:
-      assert(p == EOF);
-  }
-  curs_set(cursor_visibility);
-  print_messages();
-  return p;
-}
-
-int ynq2()
-{
-  int cursor_visibility = curs_set(1);
-  print_messages();
-  char p = '*';
-  while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
-  {
-    doupdate();
-    p = wgetch(message_window);
-  }
-  switch(p)
-  {
-    case 'y':
-      message_buffer.append("yes. ", false);
-      break;
-    case ' ':
-      p = 'n';
-      [[fallthrough]];
-    case 'n':
-      message_buffer.append("no. ", false);
-      break;
-    case ESCAPE:
-      p = 'q';
-      [[fallthrough]];
-    case 'q':
-      message_buffer.append("quit. ", false);
-      break;
-    default:
-      assert(p == EOF);
-  }
-  curs_set(cursor_visibility);
-  print_messages();
-  return p;
-}
-
 void erase_level()
 {
   werase(level_window);
@@ -468,67 +397,6 @@ void append_message(const std::string &message, bool force_break)
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
     message_buffer.append(message, true, force_break);
-  }
-}
-
-void print1(const std::string &s)
-{
-  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    message_buffer.receive(s);
-  }
-}
-
-/* for run on-messages -- print1 clears first.... */
-void nprint1(const std::string &s)
-{
-  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    message_buffer.receive(s);
-  }
-}
-
-void print2(const std::string &s)
-{
-  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    message_buffer.receive(s);
-  }
-}
-
-/* for run on-messages -- print2 clears first.... */
-void nprint2(const std::string &s)
-{
-  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    message_buffer.receive(s);
-  }
-}
-
-void print3(const std::string &s)
-{
-  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    message_buffer.receive(s);
-  }
-}
-
-/* for run on-messages -- print3 clears first.... */
-void nprint3(const std::string &s)
-{
-  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    message_buffer.receive(s);
-  }
-}
-
-/* prints wherever cursor is in window, but checks to see if
-it should morewait and clear window */
-void mprint(const std::string &s)
-{
-  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
-  {
-    message_buffer.receive(s);
   }
 }
 
@@ -552,7 +420,7 @@ void calculate_screen_size()
 {
   if(LINES < 24 || COLS < 80)
   {
-    mprint("Minimum Screen Size: 24 Lines by 80 Columns.");
+    queue_message("Minimum Screen Size: 24 Lines by 80 Columns.");
     terminal_size_too_small = true;
   }
   else

@@ -101,19 +101,19 @@ void indoors_random_event()
   switch(random_range(1000))
   {
     case 0:
-      print3("You feel an unexplainable elation.");
+      queue_message("You feel an unexplainable elation.");
       break;
     case 1:
-      print3("You hear a distant rumbling.");
+      queue_message("You hear a distant rumbling.");
       break;
     case 2:
-      print3("You realize your fly is open.");
+      queue_message("You realize your fly is open.");
       break;
     case 3:
-      print3("You have a sudden craving for a pecan twirl.");
+      queue_message("You have a sudden craving for a pecan twirl.");
       break;
     case 4:
-      print3("A mysterious healing flux settles over the level.");
+      queue_message("A mysterious healing flux settles over the level.");
       for(ml = Level->mlist; ml; ml = ml->next)
       {
         if(ml->m->hp > 0)
@@ -124,27 +124,27 @@ void indoors_random_event()
       Player.hp = std::max(Player.hp, Player.maxhp);
       break;
     case 5:
-      print3("You discover an itch just where you can't scratch it.");
+      queue_message("You discover an itch just where you can't scratch it.");
       break;
     case 6:
-      print3("A cosmic ray strikes!");
+      queue_message("A cosmic ray strikes!");
       p_damage(10, UNSTOPPABLE, "a cosmic ray");
       break;
     case 7:
-      print3("You catch your second wind....");
+      queue_message("You catch your second wind....");
       Player.maxhp++;
       Player.hp   = std::max(Player.hp, Player.maxhp);
       Player.mana = std::max(Player.mana, calcmana());
       break;
     case 8:
-      print3("You find some spare change in a hidden pocket.");
+      queue_message("You find some spare change in a hidden pocket.");
       Player.cash += Player.level * Player.level + 1;
       break;
     case 9:
-      print3("You feel strangely lucky.");
+      queue_message("You feel strangely lucky.");
       break;
     case 10:
-      print3("You trip over something hidden in a shadow...");
+      queue_message("You trip over something hidden in a shadow...");
       ol        = new objectlist;
       ol->thing = create_object(difficulty()); /* FIXED!  12/30/98 */
       assert(ol->thing);                       /* WDT I want to make sure... */
@@ -153,29 +153,29 @@ void indoors_random_event()
       pickup();
       break;
     case 11:
-      print3("A mysterious voice echoes all around you....");
+      queue_message("A mysterious voice echoes all around you....");
       hint();
       break;
     case 12:
       if(Balance > 0)
       {
-        print3("You get word of the failure of your bank!");
+        queue_message("You get word of the failure of your bank!");
         Balance = 0;
       }
       else
       {
-        print3("You feel lucky.");
+        queue_message("You feel lucky.");
       }
       break;
     case 13:
       if(Balance > 0)
       {
-        print3("You get word of a bank error in your favor!");
+        queue_message("You get word of a bank error in your favor!");
         Balance += 5000;
       }
       else
       {
-        print3("You feel unlucky.");
+        queue_message("You feel unlucky.");
       }
       break;
   }
@@ -194,36 +194,36 @@ void outdoors_random_event()
       switch(Country[Player.x][Player.y].current_terrain_type)
       {
         case TUNDRA:
-          mprint("It begins to snow. Heavily.");
+          queue_message("It begins to snow. Heavily.");
           break;
         case DESERT:
-          mprint("A sandstorm swirls around you.");
+          queue_message("A sandstorm swirls around you.");
           break;
         default:
           if((Date > 75) && (Date < 330))
           {
-            mprint("You are drenched by a sudden downpour!");
+            queue_message("You are drenched by a sudden downpour!");
           }
           else
           {
-            mprint("It begins to snow. Heavily.");
+            queue_message("It begins to snow. Heavily.");
           }
       }
-      mprint("Due to the inclement weather conditions, you have become lost.");
+      queue_message("Due to the inclement weather conditions, you have become lost.");
       Precipitation += random_range(12) + 1;
       setgamestatus(LOST, GameStatus);
       break;
     case 1:
-      mprint("You enter a field of brightly colored flowers...");
-      mprint("Wow, man! These are some pretty poppies...");
-      mprint("poppies...");
-      mprint("poppies...");
-      print3("You become somewhat disoriented...");
+      queue_message("You enter a field of brightly colored flowers...");
+      queue_message("Wow, man! These are some pretty poppies...");
+      queue_message("poppies...");
+      queue_message("poppies...");
+      queue_message("You become somewhat disoriented...");
       setgamestatus(LOST, GameStatus);
       break;
     case 2:
-      mprint("You discover a sprig of athelas growing lonely in the wild.");
-      mprint("Using your herbalist lore you cook a cake of lembas....");
+      queue_message("You discover a sprig of athelas growing lonely in the wild.");
+      queue_message("Using your herbalist lore you cook a cake of lembas....");
       ob  = new object;
       *ob = Objects[FOODID + 1];
       gain_item(ob);
@@ -231,32 +231,32 @@ void outdoors_random_event()
     case 3:
       if(Precipitation > 0)
       {
-        mprint("You are struck by a bolt of lightning!");
+        queue_message("You are struck by a bolt of lightning!");
         p_damage(random_range(25), ELECTRICITY, "a lightning strike");
       }
       else
       {
-        mprint("You feel static cling");
+        queue_message("You feel static cling");
       }
       break;
     case 4:
-      mprint("You find a fast-food establishment.");
+      queue_message("You find a fast-food establishment.");
       l_commandant();
       break;
     case 5:
-      mprint("A weird howling tornado hits from out of the West!");
-      mprint("You've been caught in a chaos storm!");
+      queue_message("A weird howling tornado hits from out of the West!");
+      queue_message("You've been caught in a chaos storm!");
       num = random_range(300);
       if(num < 10)
       {
-        mprint("Your cell-structure was disrupted!");
+        queue_message("Your cell-structure was disrupted!");
         p_damage(random_range(100), UNSTOPPABLE, "a chaos storm");
       }
       else if(num < 20)
       {
-        mprint("The chaos storm warps your frame!");
-        mprint("Your statistical entropy has been maximized.");
-        mprint("You feel average...");
+        queue_message("The chaos storm warps your frame!");
+        queue_message("Your statistical entropy has been maximized.");
+        queue_message("You feel average...");
         toggle_item_use(true); /* FIXED! 12/30/98 */
         Player.str = Player.maxstr = Player.con = Player.maxcon = Player.dex = Player.maxdex =
           Player.agi = Player.maxagi = Player.iq = Player.maxiq = Player.pow = Player.maxpow =
@@ -267,7 +267,7 @@ void outdoors_random_event()
       }
       else if(num < 30)
       {
-        mprint("Your entire body glows with an eerie flickering light.");
+        queue_message("Your entire body glows with an eerie flickering light.");
         toggle_item_use(true); /* FIXED! 12/30/98 */
         for(int i = 1; i < MAXITEMS; ++i)
         {
@@ -283,11 +283,11 @@ void outdoors_random_event()
         }
         toggle_item_use(false); /* FIXED! 12/30/98 */
         cleanse(1);
-        mprint("You feel filled with energy!");
+        queue_message("You feel filled with energy!");
         Player.maxpow += 5;
         Player.pow += 5;
         Player.mana = Player.maxmana = calcmana() * 5;
-        mprint("You also feel weaker. Paradoxical, no?");
+        queue_message("You also feel weaker. Paradoxical, no?");
         Player.con -= 5;
         Player.maxcon -= 5;
         if(Player.con < 3)
@@ -297,7 +297,7 @@ void outdoors_random_event()
       }
       else if(num < 40)
       {
-        mprint("Your entire body glows black.");
+        queue_message("Your entire body glows black.");
         dispel(-1);
         dispel(-1);
         Player.pow -= 10;
@@ -305,7 +305,7 @@ void outdoors_random_event()
       }
       else if(num < 60)
       {
-        mprint("The storm deposits you in a strange place....");
+        queue_message("The storm deposits you in a strange place....");
         do
         {
           Player.x = random_range(WIDTH);
@@ -315,7 +315,7 @@ void outdoors_random_event()
       }
       else if(num < 70)
       {
-        mprint("A tendril of the storm condenses and falls into your hands.");
+        queue_message("A tendril of the storm condenses and falls into your hands.");
         ob = new object;
         make_artifact(ob, -1);
         gain_item(ob);
@@ -324,29 +324,29 @@ void outdoors_random_event()
       {
         if(gamestatusp(MOUNTED, GameStatus))
         {
-          mprint("Your horse screams as he is transformed into an");
-          mprint("imaginary unseen dead tortoise.");
-          mprint("You are now on foot.");
+          queue_message("Your horse screams as he is transformed into an");
+          queue_message("imaginary unseen dead tortoise.");
+          queue_message("You are now on foot.");
           resetgamestatus(MOUNTED, GameStatus);
         }
         else
         {
-          mprint("You notice you are riding a horse. Odd. Very odd....");
-          mprint("Now that's a horse of a different color!");
+          queue_message("You notice you are riding a horse. Odd. Very odd....");
+          queue_message("Now that's a horse of a different color!");
           setgamestatus(MOUNTED, GameStatus);
         }
       }
       else if(num < 90)
       {
-        mprint("You feel imbued with godlike power....");
+        queue_message("You feel imbued with godlike power....");
         wish(1);
       }
       else if(num < 100)
       {
-        mprint("The chaos storm has wiped your memory!");
-        mprint("You feel extraordinarily naive....");
+        queue_message("The chaos storm has wiped your memory!");
+        queue_message("You feel extraordinarily naive....");
 #ifndef MULTI_USER_SYSTEM
-        mprint("You can't remember a thing! Not even your name.");
+        queue_message("You can't remember a thing! Not even your name.");
 #endif
         Player.xp    = 0;
         Player.level = 0;
@@ -364,8 +364,8 @@ void outdoors_random_event()
       }
       else
       {
-        mprint("You survive the chaos storm relatively unscathed.");
-        mprint("It was a learning experience.");
+        queue_message("You survive the chaos storm relatively unscathed.");
+        queue_message("It was a learning experience.");
         gain_experience(1000);
       }
       break;
@@ -374,15 +374,15 @@ void outdoors_random_event()
     case 8:
     case 9:
     case 10:
-      mprint("An encounter!");
+      queue_message("An encounter!");
       change_environment(E_TACTICAL_MAP);
       break;
     case 11:
-      mprint("You find a Traveller's Aid station with maps of the local area.");
+      queue_message("You find a Traveller's Aid station with maps of the local area.");
       if(gamestatusp(LOST, GameStatus))
       {
         resetgamestatus(LOST, GameStatus);
-        mprint("You know where you are now.");
+        queue_message("You know where you are now.");
       }
       for(int i = Player.x - 5; i < Player.x + 6; ++i)
       {
@@ -404,22 +404,22 @@ void outdoors_random_event()
     case 12:
       if(!gamestatusp(MOUNTED, GameStatus))
       {
-        mprint("You develop blisters....");
+        queue_message("You develop blisters....");
         p_damage(1, UNSTOPPABLE, "blisters");
       }
       break;
     case 13:
-      mprint("You discover an itch just where you can't scratch it.");
+      queue_message("You discover an itch just where you can't scratch it.");
       break;
     case 14:
-      mprint("A cosmic ray strikes!");
+      queue_message("A cosmic ray strikes!");
       p_damage(10, UNSTOPPABLE, "a cosmic ray");
       break;
     case 15:
-      mprint("You feel strangely lucky.");
+      queue_message("You feel strangely lucky.");
       break;
     case 16:
-      mprint("The west wind carries with it a weird echoing voice....");
+      queue_message("The west wind carries with it a weird echoing voice....");
       hint();
       break;
   }
@@ -464,7 +464,7 @@ int magic_resist(int hostile_magic)
   {
     if(Player.mana > hostile_magic * hostile_magic)
     {
-      mprint("Thinking fast, you defend youself with a counterspell!");
+      queue_message("Thinking fast, you defend youself with a counterspell!");
       Player.mana -= hostile_magic * hostile_magic;
       dataprint();
       return (true);
@@ -472,7 +472,7 @@ int magic_resist(int hostile_magic)
   }
   if(Player.level / 4 + Player.status[PROTECTION] + random_range(20) > hostile_magic + random_range(30))
   {
-    mprint("You resist the spell!");
+    queue_message("You resist the spell!");
     return (true);
   }
   else
@@ -491,10 +491,10 @@ void terrain_check(int takestime)
     switch(random_range(32))
     {
       case 0:
-        print2("Along the many paths of nature...");
+        queue_message("Along the many paths of nature...");
         break;
       case 1:
-        print2("You move swiftly through the wilderness.");
+        queue_message("You move swiftly through the wilderness.");
         break;
     }
   }
@@ -505,13 +505,13 @@ void terrain_check(int takestime)
     {
       case 0:
       case 1:
-        print2("Clippity Clop.");
+        queue_message("Clippity Clop.");
         break;
       case 2:
-        print2("....my spurs go jingle jangle jingle....");
+        queue_message("....my spurs go jingle jangle jingle....");
         break;
       case 3:
-        print2("....as I go riding merrily along....");
+        queue_message("....as I go riding merrily along....");
         break;
     }
   }
@@ -521,16 +521,16 @@ void terrain_check(int takestime)
     switch(random_range(32))
     {
       case 0:
-        print2("Boingg!");
+        queue_message("Boingg!");
         break;
       case 1:
-        print2("Whooosh!");
+        queue_message("Whooosh!");
         break;
       case 2:
-        print2("Over hill, over dale....");
+        queue_message("Over hill, over dale....");
         break;
       case 3:
-        print2("...able to leap over 7 leagues in a single bound....");
+        queue_message("...able to leap over 7 leagues in a single bound....");
         break;
     }
   }
@@ -540,10 +540,10 @@ void terrain_check(int takestime)
     switch(random_range(32))
     {
       case 0:
-        print2("As swift as a shadow.");
+        queue_message("As swift as a shadow.");
         break;
       case 1:
-        print2("\"I walk through the trees...\"");
+        queue_message("\"I walk through the trees...\"");
         break;
     }
   }
@@ -552,10 +552,10 @@ void terrain_check(int takestime)
     switch(random_range(32))
     {
       case 0:
-        print2("Trudge. Trudge.");
+        queue_message("Trudge. Trudge.");
         break;
       case 1:
-        print2("The road goes ever onward....");
+        queue_message("The road goes ever onward....");
         break;
     }
   }
@@ -747,7 +747,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("You have entered the sea of chaos...");
+      queue_message("You have entered the sea of chaos...");
       l_chaos();
       break;
     case SWAMP:
@@ -779,7 +779,7 @@ void terrain_check(int takestime)
       if(gamestatusp(LOST, GameStatus))
       {
         resetgamestatus(LOST, GameStatus);
-        mprint("Well, I guess you know where you are now....");
+        queue_message("Well, I guess you know where you are now....");
       }
       locprint("Outside Rampart, the city.");
       break;
@@ -787,7 +787,7 @@ void terrain_check(int takestime)
       if(gamestatusp(LOST, GameStatus))
       {
         resetgamestatus(LOST, GameStatus);
-        mprint("The village guards let you know where you are....");
+        queue_message("The village guards let you know where you are....");
       }
       locprint("Outside a small village.");
       break;
@@ -798,7 +798,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("You notice a concealed entrance into the hill.");
+      queue_message("You notice a concealed entrance into the hill.");
       break;
     case CASTLE:
       locprint("Near a fortified castle.");
@@ -807,7 +807,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("The castle is hewn from solid granite. The drawbridge is down.");
+      queue_message("The castle is hewn from solid granite. The drawbridge is down.");
       break;
     case TEMPLE:
       switch(Country[Player.x][Player.y].aux)
@@ -836,7 +836,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("You notice an entrance conveniently at hand.");
+      queue_message("You notice an entrance conveniently at hand.");
       break;
     case MAGIC_ISLE:
       locprint("A strange island in the midst of the Sea of Chaos.");
@@ -845,7 +845,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("There is a narrow causeway to the island from here.");
+      queue_message("There is a narrow causeway to the island from here.");
       break;
     case STARPEAK:
       locprint("Star Peak.");
@@ -854,7 +854,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("The top of the mountain seems to glow with a allochroous aura.");
+      queue_message("The top of the mountain seems to glow with a allochroous aura.");
       break;
     case DRAGONLAIR:
       locprint("A rocky chasm.");
@@ -863,7 +863,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("You are at a cave entrance from which you see the glint of gold.");
+      queue_message("You are at a cave entrance from which you see the glint of gold.");
       break;
     case VOLCANO:
       locprint("HellWell Volcano.");
@@ -872,7 +872,7 @@ void terrain_check(int takestime)
         Time += 60;
         hourly_check();
       }
-      mprint("A shimmer of heat lightning plays about the crater rim.");
+      queue_message("A shimmer of heat lightning plays about the crater rim.");
       break;
     default:
       locprint("I haven't any idea where you are!!!");
@@ -894,11 +894,11 @@ void countrysearch()
       {
         if(Country[x][y].current_terrain_type != Country[x][y].base_terrain_type)
         {
-          mprint("Your search was fruitful!");
+          queue_message("Your search was fruitful!");
           Country[x][y].current_terrain_type = Country[x][y].base_terrain_type;
           c_set(x, y, CHANGED, Country);
-          mprint("You discovered:");
-          mprint(countryid(Country[x][y].base_terrain_type));
+          queue_message("You discovered:");
+          queue_message(countryid(Country[x][y].base_terrain_type));
         }
       }
     }
@@ -1220,14 +1220,14 @@ int stonecheck(int alignment)
     case 36:
     case 38:
     case 40:
-      print1("The stone glows grey.");
-      print2("Not much seems to happen this time.");
+      queue_message("The stone glows grey.");
+      queue_message("Not much seems to happen this time.");
       (*stone)--;
       break;
     case 1:
-      print1("The stone glows black");
-      print2("A burden has been removed from your shoulders.....");
-      print3("Your pack has disintegrated!");
+      queue_message("The stone glows black");
+      queue_message("A burden has been removed from your shoulders.....");
+      queue_message("Your pack has disintegrated!");
       for(int i = 0; i < MAXPACK; ++i)
       {
         if(Player.pack[i])
@@ -1239,76 +1239,76 @@ int stonecheck(int alignment)
       Player.packptr = 0;
       break;
     case 3:
-      print1("The stone glows microwave");
-      print2("A vortex of antimana spins about you!");
+      queue_message("The stone glows microwave");
+      queue_message("A vortex of antimana spins about you!");
       dispel(-1);
       break;
     case 5:
-      print1("The stone glows infrared");
-      print2("A portal opens nearby and an obviously confused monster appears!");
+      queue_message("The stone glows infrared");
+      queue_message("A portal opens nearby and an obviously confused monster appears!");
       summon(-1, -1);
       break;
     case 7:
-      print1("The stone glows brick red");
-      print2("A gold piece falls from the heavens into your money pouch!");
+      queue_message("The stone glows brick red");
+      queue_message("A gold piece falls from the heavens into your money pouch!");
       Player.cash++;
       break;
     case 9:
-      print1("The stone glows cherry red");
-      print2("A flush of warmth spreads through your body.");
+      queue_message("The stone glows cherry red");
+      queue_message("A flush of warmth spreads through your body.");
       augment(1);
       break;
     case 11:
-      print1("The stone glows orange");
-      print2("A flux of energy blasts you!");
+      queue_message("The stone glows orange");
+      queue_message("A flux of energy blasts you!");
       manastorm(Player.x, Player.y, random_range(Player.maxhp) + 1);
       break;
     case 13:
-      print1("The stone glows lemon yellow");
-      print2("You're surrounded by enemies! You begin to foam at the mouth.");
+      queue_message("The stone glows lemon yellow");
+      queue_message("You're surrounded by enemies! You begin to foam at the mouth.");
       Player.status[BERSERK] += 10;
       break;
     case 15:
-      print1("The stone glows yellow");
-      print2("Oh no! The DREADED AQUAE MORTIS!");
-      print2("No, wait, it's just your imagination.");
+      queue_message("The stone glows yellow");
+      queue_message("Oh no! The DREADED AQUAE MORTIS!");
+      queue_message("No, wait, it's just your imagination.");
       break;
     case 17:
-      print1("The stone glows chartreuse");
-      print2("Your joints stiffen up.");
+      queue_message("The stone glows chartreuse");
+      queue_message("Your joints stiffen up.");
       Player.agi -= 3;
       break;
     case 19:
-      print1("The stone glows green");
-      print2("You come down with an acute case of Advanced Leprosy.");
+      queue_message("The stone glows green");
+      queue_message("You come down with an acute case of Advanced Leprosy.");
       Player.status[DISEASED] = 1100;
       Player.hp               = 1;
       Player.dex -= 5;
       break;
     case 21:
-      print1("The stone glows forest green");
-      print2("You feel wonderful!");
+      queue_message("The stone glows forest green");
+      queue_message("You feel wonderful!");
       Player.status[HERO] += 10;
       break;
     case 23:
-      print1("The stone glows cyan");
-      print2("You feel a strange twisting sensation....");
+      queue_message("The stone glows cyan");
+      queue_message("You feel a strange twisting sensation....");
       strategic_teleport(-1);
       break;
     case 25:
-      print1("The stone glows blue");
-      print1("You feel a tingle of an unearthly intuition:");
+      queue_message("The stone glows blue");
+      queue_message("You feel a tingle of an unearthly intuition:");
       hint();
       break;
     case 27:
-      print1("The stone glows navy blue");
-      print2("A sudden shock of knowledge overcomes you.");
+      queue_message("The stone glows navy blue");
+      queue_message("A sudden shock of knowledge overcomes you.");
       identify(1);
       knowledge(1);
       break;
     case 29:
-      print1("The stone glows blue-violet");
-      print2("You feel forgetful.");
+      queue_message("The stone glows blue-violet");
+      queue_message("You feel forgetful.");
       for(int i = 0; i < spell::NUM_SPELLS; ++i)
       {
         if(spell::Spells[i].known)
@@ -1319,30 +1319,30 @@ int stonecheck(int alignment)
       }
       break;
     case 31:
-      print1("The stone glows violet");
+      queue_message("The stone glows violet");
       acquire(0);
       break;
     case 33:
-      print1("The stone glows deep purple");
-      print2("You vanish.");
+      queue_message("The stone glows deep purple");
+      queue_message("You vanish.");
       Player.status[INVISIBLE] += 10;
       break;
     case 35:
-      print1("The stone glows ultraviolet");
-      print2("All your hair rises up on end.... A bolt of lightning hits you!");
+      queue_message("The stone glows ultraviolet");
+      queue_message("All your hair rises up on end.... A bolt of lightning hits you!");
       p_damage(random_range(Player.maxhp), ELECTRICITY, "mystic lightning");
       break;
     case 37:
-      print1("The stone glows roentgen");
-      print2("You feel more experienced.");
+      queue_message("The stone glows roentgen");
+      queue_message("You feel more experienced.");
       gain_experience((Player.level + 1) * 250);
       break;
     case 39:
-      print1("The stone glows gamma");
-      print2("Your left hand shines silvery, and your right emits a golden aura.");
+      queue_message("The stone glows gamma");
+      queue_message("Your left hand shines silvery, and your right emits a golden aura.");
       enchant(1);
       bless(1);
-      print3("Your hands stop glowing.");
+      queue_message("Your hands stop glowing.");
       break;
     case 41:
     case 42:
@@ -1353,14 +1353,14 @@ int stonecheck(int alignment)
     case 47:
     case 48:
     case 49:
-      print1("The stone glows cosmic!");
-      print2("The stone's energy field quiets for a moment...");
+      queue_message("The stone glows cosmic!");
+      queue_message("The stone's energy field quiets for a moment...");
       *stone = 50;
       cycle  = true;
       break;
     default:
-      print1("The stone glows polka-dot (?!?!?!?)");
-      print2("You feel a strange twisting sensation....");
+      queue_message("The stone glows polka-dot (?!?!?!?)");
+      queue_message("You feel a strange twisting sensation....");
       *stone = 0;
       strategic_teleport(-1);
       break;
@@ -1386,7 +1386,7 @@ void alert_guards()
   }
   if(foundguard)
   {
-    mprint("You hear a whistle and the sound of running feet!");
+    queue_message("You hear a whistle and the sound of running feet!");
     if(Current_Environment == E_CITY)
     {
       Level->site[40][60].p_locf = L_NO_OP; /* pacify_guards restores this */
@@ -1396,31 +1396,31 @@ void alert_guards()
   {
     suppress = gamestatusp(SUPPRESS_PRINTING, GameStatus);
     resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-    print2("The last member of the Order of Paladins dies....");
+    queue_message("The last member of the Order of Paladins dies....");
     gain_experience(1000);
     Player.alignment -= 250;
     if(!gamestatusp(KILLED_LAWBRINGER, GameStatus))
     {
-      print1("A chime sounds from far away.... The sound grows stronger....");
-      print2("Suddenly the great shadowy form of the LawBringer appears over");
-      print3("the city. He points his finger at you....");
-      print1("\"Cursed art thou, minion of chaos! May thy strength fail thee");
-      print2("in thy hour of need!\" You feel an unearthly shiver as the");
-      print3("LawBringer waves his palm across the city skies....");
+      queue_message("A chime sounds from far away.... The sound grows stronger....");
+      queue_message("Suddenly the great shadowy form of the LawBringer appears over");
+      queue_message("the city. He points his finger at you....");
+      queue_message("\"Cursed art thou, minion of chaos! May thy strength fail thee");
+      queue_message("in thy hour of need!\" You feel an unearthly shiver as the");
+      queue_message("LawBringer waves his palm across the city skies....");
       Player.str /= 2;
       dataprint();
-      print1("You hear a bell tolling, and eerie moans all around you....");
-      print2("Suddenly, the image of the LawBringer is gone.");
-      print3("You hear a guardsman's whistle in the distance!");
+      queue_message("You hear a bell tolling, and eerie moans all around you....");
+      queue_message("Suddenly, the image of the LawBringer is gone.");
+      queue_message("You hear a guardsman's whistle in the distance!");
       resurrect_guards();
     }
     else
     {
-      print1("The Order's magical defenses have dropped, and the");
-      print2("Legions of Chaos strike....");
-      print1("The city shakes! An earthquake has struck!");
-      print2("Cracks open in the street, and a chasm engulfs the Order HQ!");
-      print3("Flames lick across the sky and you hear wild laughter....");
+      queue_message("The Order's magical defenses have dropped, and the");
+      queue_message("Legions of Chaos strike....");
+      queue_message("The city shakes! An earthquake has struck!");
+      queue_message("Cracks open in the street, and a chasm engulfs the Order HQ!");
+      queue_message("Flames lick across the sky and you hear wild laughter....");
       gain_experience(5000);
       destroy_order();
     }
@@ -1437,7 +1437,7 @@ void destroy_order()
   setgamestatus(DESTROYED_ORDER, GameStatus);
   if(Level != City)
   {
-    print1("Zounds! A Serious Mistake!");
+    queue_message("Zounds! A Serious Mistake!");
   }
   else
   {

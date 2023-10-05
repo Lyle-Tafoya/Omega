@@ -31,14 +31,14 @@ void m_sp_mp(struct monster *m)
 {
   if(m->attacked && (random_range(3) == 1))
   {
-    mprint("You feel cursed!");
+    queue_message("You feel cursed!");
     p_damage(10, UNSTOPPABLE, "a mendicant priest's curse");
     m_vanish(m);
   }
   else if(!m_statusp(*m, NEEDY))
   {
-    mprint("The mendicant priest makes a mystical gesture....");
-    mprint("You feel impressed...");
+    queue_message("The mendicant priest makes a mystical gesture....");
+    queue_message("You feel impressed...");
     Player.alignment += 5;
     if(Player.alignment > 20)
     {
@@ -54,10 +54,10 @@ void m_sp_ng(struct monster *m)
   {
     if((random_range(5) == 1) || (Player.status[VULNERABLE] > 0))
     {
-      mprint("The night gaunt grabs you and carries you off!");
-      mprint("Its leathery wings flap and flap, and it giggles insanely.");
-      mprint("It tickles you cunningly to render you incapable of escape.");
-      mprint("Finally, it deposits you in a strange place.");
+      queue_message("The night gaunt grabs you and carries you off!");
+      queue_message("Its leathery wings flap and flap, and it giggles insanely.");
+      queue_message("It tickles you cunningly to render you incapable of escape.");
+      queue_message("Finally, it deposits you in a strange place.");
       p_teleport(0);
     }
   }
@@ -67,10 +67,10 @@ void m_sp_poison_cloud(struct monster *m)
 {
   if(distance(m->x, m->y, Player.x, Player.y) < 3)
   {
-    mprint("A cloud of poison gas surrounds you!");
+    queue_message("A cloud of poison gas surrounds you!");
     if(Player.status[BREATHING] > 0)
     {
-      mprint("You can breathe freely, however.");
+      queue_message("You can breathe freely, however.");
     }
     else
     {
@@ -97,14 +97,14 @@ void m_sp_demon(struct monster *m)
        los_p(m->x, m->y, Player.x, Player.y) && (random_range(30) > Player.level + 10) &&
        (Player.status[AFRAID] == 0))
     {
-      mprint("You are stricken with fear!");
+      queue_message("You are stricken with fear!");
       if(!p_immune(FEAR))
       {
         Player.status[AFRAID] += m->level;
       }
       else
       {
-        mprint("You master your reptile brain and stand fast.");
+        queue_message("You master your reptile brain and stand fast.");
       }
     }
     else
@@ -114,7 +114,7 @@ void m_sp_demon(struct monster *m)
   }
   if((m->hp < (m->level * 5)) && (m->hp > 1))
   {
-    mprint("The demon uses its waning lifeforce to summon help!");
+    queue_message("The demon uses its waning lifeforce to summon help!");
     m->hp = 1;
     switch(m->level)
     {
@@ -163,16 +163,16 @@ void m_sp_ghost(struct monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
-    mprint("The ghost moans horribly....");
+    queue_message("The ghost moans horribly....");
     p_damage(1, FEAR, "a ghost-inspired heart attack");
-    mprint("You've been terrorized!");
+    queue_message("You've been terrorized!");
     if(!p_immune(FEAR))
     {
       Player.status[AFRAID] += m->level;
     }
     else
     {
-      mprint("You master your reptile brain and stand fast.");
+      queue_message("You master your reptile brain and stand fast.");
     }
   }
 }
@@ -198,7 +198,7 @@ void m_sp_spell(struct monster *m)
           nbolt(m->x, m->y, Player.x, Player.y, m->hit, 10);
           break;
         case 1:
-          mprint("It seems stronger...");
+          queue_message("It seems stronger...");
           m->hp += random_range(m->level * m->level);
           break;
         case 2:
@@ -287,16 +287,16 @@ void m_sp_surprise(struct monster *m)
         switch(random_range(4))
         {
           case 0:
-            mprint("You are surprised by a sudden treacherous attack!");
+            queue_message("You are surprised by a sudden treacherous attack!");
             break;
           case 1:
-            mprint("You are shocked out of your reverie by the scream of battle!");
+            queue_message("You are shocked out of your reverie by the scream of battle!");
             break;
           case 2:
-            mprint("Suddenly, from out of the shadows, a surprise attack!");
+            queue_message("Suddenly, from out of the shadows, a surprise attack!");
             break;
           case 3:
-            mprint("A shriek of hatred causes you to momentarily freeze up!");
+            queue_message("A shriek of hatred causes you to momentarily freeze up!");
             break;
         }
         setgamestatus(SKIP_PLAYER, GameStatus);
@@ -304,7 +304,7 @@ void m_sp_surprise(struct monster *m)
       }
       else
       {
-        mprint("You alertly sense the presence of an attacker!");
+        queue_message("You alertly sense the presence of an attacker!");
         m_status_reset(*m, M_INVISIBLE);
       }
     }
@@ -361,7 +361,7 @@ void m_sp_eater(struct monster *m)
   {
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
-      mprint("A strange numbing sensation comes over you...");
+      queue_message("A strange numbing sensation comes over you...");
       Player.mana = Player.mana / 2;
       if(random_range(4))
       {
@@ -380,7 +380,7 @@ void m_sp_eater(struct monster *m)
   }
   if(m->hp < 10)
   {
-    mprint("The Eater explodes in a burst of mana!");
+    queue_message("The Eater explodes in a burst of mana!");
     manastorm(m->x, m->y, 1000);
   }
 }
@@ -393,27 +393,27 @@ void m_sp_dragonlord(struct monster *m)
     {
       if(!Player.status[IMMOBILE])
       {
-        mprint("A gust of wind from the Dragonlord's wings knocks you down!");
+        queue_message("A gust of wind from the Dragonlord's wings knocks you down!");
         p_damage(25, NORMAL_DAMAGE, "a gust of wind");
         setgamestatus(SKIP_PLAYER, GameStatus);
         Player.status[IMMOBILE] += 2;
       }
       else if(!Constriction)
       {
-        mprint("The Dragonlord grabs you with his tail!");
+        queue_message("The Dragonlord grabs you with his tail!");
         Constriction = 25;
         Player.status[IMMOBILE] += 1;
       }
       else if(random_range(2))
       {
-        mprint("The coils squeeze tighter and tighter...");
+        queue_message("The coils squeeze tighter and tighter...");
         p_damage(Constriction, NORMAL_DAMAGE, "the Dragonlord");
         Player.status[IMMOBILE] += 1;
         Constriction *= 2;
       }
       else
       {
-        mprint("The Dragonlord hurls you to the ground!");
+        queue_message("The Dragonlord hurls you to the ground!");
         p_damage(2 * Constriction, NORMAL_DAMAGE, "the Dragonlord");
         Constriction = 0;
       }
@@ -426,7 +426,7 @@ void m_sp_dragonlord(struct monster *m)
       {
         if((!Player.immunity[FEAR]) && (!Player.status[AFRAID]))
         {
-          mprint("You are awestruck at the sight of the Dragonlord.");
+          queue_message("You are awestruck at the sight of the Dragonlord.");
           Player.status[AFRAID] += 5;
         }
         if(random_range(3))
@@ -439,7 +439,7 @@ void m_sp_dragonlord(struct monster *m)
   }
   else if(distance(m->x, m->y, Player.x, Player.y) < 2)
   {
-    mprint("You are extremely impressed at the sight of the Dragonlord.");
+    queue_message("You are extremely impressed at the sight of the Dragonlord.");
   }
 }
 
@@ -447,10 +447,10 @@ void m_sp_blackout(struct monster *m)
 {
   if((distance(m->x, m->y, Player.x, Player.y) < 4) && (Player.status[BLINDED] == 0))
   {
-    mprint("The fungus emits a burst of black spores. You've been blinded!");
+    queue_message("The fungus emits a burst of black spores. You've been blinded!");
     if(Player.status[TRUESIGHT] > 0)
     {
-      mprint("The blindness quickly passes.");
+      queue_message("The blindness quickly passes.");
     }
     else
     {
@@ -459,8 +459,8 @@ void m_sp_blackout(struct monster *m)
   }
   if(loc_statusp(m->x, m->y, LIT, *Level))
   {
-    mprint("The fungus chirps.... ");
-    mprint("The area is plunged into darkness.");
+    queue_message("The fungus chirps.... ");
+    queue_message("The area is plunged into darkness.");
     torch_check();
     torch_check();
     torch_check();
@@ -478,10 +478,10 @@ void m_sp_bogthing(struct monster *m)
   {
     if(!Player.status[AFRAID])
     {
-      mprint("As the bogthing touches you, you feel a frisson of terror....");
+      queue_message("As the bogthing touches you, you feel a frisson of terror....");
       if(Player.immunity[FEAR])
       {
-        mprint("which you shake off.");
+        queue_message("which you shake off.");
       }
       else
       {
@@ -490,9 +490,9 @@ void m_sp_bogthing(struct monster *m)
     }
     else
     {
-      mprint("The bogthing's touch causes you scream in agony!");
+      queue_message("The bogthing's touch causes you scream in agony!");
       p_damage(50, UNSTOPPABLE, "fright");
-      mprint("Your struggles grow steadily weaker....");
+      queue_message("Your struggles grow steadily weaker....");
       Player.con--;
       Player.str--;
       if((Player.con < 3) || (Player.str < 3))
@@ -534,11 +534,11 @@ void m_sp_were(struct monster *m)
     m->immunity += pow2(NORMAL_DAMAGE);
     if(los_p(m->x, m->y, Player.x, Player.y))
     {
-      mprint("You witness a hideous transformation!");
+      queue_message("You witness a hideous transformation!");
     }
     else
     {
-      mprint("You hear a distant howl.");
+      queue_message("You hear a distant howl.");
     }
   }
 }
@@ -559,7 +559,7 @@ void m_sp_av(struct monster *m)
 {
   if(Player.mana > 0)
   {
-    mprint("You feel a sudden loss of mana!");
+    queue_message("You feel a sudden loss of mana!");
     Player.mana -= (std::max(0, 10 - distance(m->x, m->y, Player.x, Player.y)));
     dataprint();
   }
@@ -607,7 +607,7 @@ void m_sp_angel(struct monster *m)
   }
   if(m_statusp(*m, HOSTILE))
   {
-    mprint("The angel summons a heavenly host!");
+    queue_message("The angel summons a heavenly host!");
     switch(m->level)
     {
       case 9:
@@ -636,11 +636,11 @@ void m_sp_swarm(struct monster *m)
   {
     if(view_los_p(m->x, m->y, Player.x, Player.y))
     {
-      mprint("The swarm expands!");
+      queue_message("The swarm expands!");
     }
     else
     {
-      mprint("You hear an aggravating humming noise.");
+      queue_message("You hear an aggravating humming noise.");
     }
     summon(-1, SWARM);
   }
@@ -661,7 +661,7 @@ void m_sp_raise(struct monster *m)
         {
           if(Level->site[x][y].things->thing->id == CORPSEID)
           {
-            mprint("The Zombie Overlord makes a mystical gesture...");
+            queue_message("The Zombie Overlord makes a mystical gesture...");
             summon(-1, Level->site[x][y].things->thing->charge);
             t                        = Level->site[x][y].things;
             Level->site[x][y].things = Level->site[x][y].things->next;
@@ -677,12 +677,12 @@ void m_sp_mb(struct monster *m)
 {
   if(distance(m->x, m->y, Player.x, Player.y) == 1)
   {
-    mprint("The manaburst explodes!");
+    queue_message("The manaburst explodes!");
     if(m_statusp(*m, HOSTILE))
     {
-      mprint("You get blasted!");
+      queue_message("You get blasted!");
       p_damage(random_range(100), UNSTOPPABLE, "a manaburst");
-      mprint("You feel cold all over!");
+      queue_message("You feel cold all over!");
       Player.pow -= 3;
       Player.iq--;
       Player.con--;
@@ -693,7 +693,7 @@ void m_sp_mb(struct monster *m)
     }
     else
     {
-      mprint("You feel toasty warm inside!");
+      queue_message("You feel toasty warm inside!");
       Player.pow++;
       Player.mana = std::max(Player.mana, calcmana());
       Player.hp   = std::max(Player.hp, ++Player.maxhp);
@@ -710,7 +710,7 @@ void m_sp_mirror(struct monster *m)
     if(random_range(20) + 6 < m->level)
     {
       summon(-1, m->id);
-      mprint("You hear the sound of a mirror shattering!");
+      queue_message("You hear the sound of a mirror shattering!");
     }
     else
     {
@@ -751,7 +751,7 @@ void m_huge_sounds(struct monster *m)
 {
   if(m_statusp(*m, AWAKE) && (!los_p(m->x, m->y, Player.x, Player.y)) && (random_range(10) == 1))
   {
-    mprint("The dungeon shakes!");
+    queue_message("The dungeon shakes!");
   }
 }
 
@@ -764,21 +764,21 @@ void m_thief_f(struct monster *m)
     {
       if(p_immune(THEFT) || (Player.level > (m->level * 2) + random_range(20)))
       {
-        mprint("You feel secure.");
+        queue_message("You feel secure.");
       }
       else
       {
         if(i == ABORT)
         {
-          mprint("You feel fortunate.");
+          queue_message("You feel fortunate.");
         }
         else if((Player.possessions[i]->used) || (Player.dex < m->level * random_range(10)))
         {
-          mprint("You feel a sharp tug.... You hold on!");
+          queue_message("You feel a sharp tug.... You hold on!");
         }
         else
         {
-          mprint("You feel uneasy for a moment.");
+          queue_message("You feel uneasy for a moment.");
           if(m->uniqueness == COMMON)
           {
             queue_message(std::format("The {} suddenly runs away for some reason.", m->monstring));
@@ -832,8 +832,8 @@ void m_sp_merchant(struct monster *m)
   {
     if(Current_Environment == E_VILLAGE)
     {
-      mprint("The merchant screams: 'Help! Murder! Guards! Help!'");
-      mprint("You hear the sound of police whistles and running feet.");
+      queue_message("The merchant screams: 'Help! Murder! Guards! Help!'");
+      queue_message("You hear the sound of police whistles and running feet.");
       for(ml = Level->mlist; ml; ml = ml->next)
       {
         m_status_set(*ml->m, AWAKE);
@@ -851,7 +851,7 @@ void m_sp_court(struct monster *m)
   pml ml;
   if(m_statusp(*m, HOSTILE))
   {
-    mprint("A storm of spells hits you!");
+    queue_message("A storm of spells hits you!");
     for(ml = Level->mlist; ml; ml = ml->next)
     {
       m_status_set(*ml->m, HOSTILE);
@@ -870,8 +870,8 @@ void m_sp_lair(struct monster *m)
   pml ml;
   if(m_statusp(*m, HOSTILE))
   {
-    mprint("You notice a number of dragons waking up....");
-    mprint("You are struck by a quantity of firebolts.");
+    queue_message("You notice a number of dragons waking up....");
+    queue_message("You are struck by a quantity of firebolts.");
     for(ml = Level->mlist; ml; ml = ml->next)
     {
       if(ml->m->hp > 0 && ml->m->specialf == M_SP_LAIR)
@@ -895,8 +895,8 @@ void m_sp_prime(struct monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
-    mprint("The prime sorceror gestures and a pentacular gate opens!");
-    mprint("You are surrounded by demons!");
+    queue_message("The prime sorceror gestures and a pentacular gate opens!");
+    queue_message("You are surrounded by demons!");
     summon(-1, DEMON_PRINCE);
     summon(-1, DEMON_PRINCE);
     summon(-1, DEMON_PRINCE);

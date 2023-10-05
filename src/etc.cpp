@@ -32,292 +32,292 @@ void hint()
   switch(random_range(96))
   {
     case 0:
-      mprint("There is an entrance to the sewers in the Garden.");
+      queue_message("There is an entrance to the sewers in the Garden.");
       break;
     case 1:
-      mprint("Statues can be dangerous.");
+      queue_message("Statues can be dangerous.");
       break;
     case 2:
-      mprint("Unidentified Artifacts can be dangerous.");
+      queue_message("Unidentified Artifacts can be dangerous.");
       break;
     case 3:
-      mprint("The higher form of mercury is desirable.");
+      queue_message("The higher form of mercury is desirable.");
       break;
     case 4:
-      mprint("A sense of unease is a good thing to have.");
+      queue_message("A sense of unease is a good thing to have.");
       break;
     case 5:
-      mprint("If you dig too much, you might cause a cave-in!");
+      queue_message("If you dig too much, you might cause a cave-in!");
       break;
     case 6:
-      mprint("Be Lawful: Live and Let Live.");
+      queue_message("Be Lawful: Live and Let Live.");
       break;
     case 7:
-      mprint("Be Chaotic: Live and Let Die.");
+      queue_message("Be Chaotic: Live and Let Die.");
       break;
     case 8:
-      mprint("The world doesn't slow down; you speed up.");
+      queue_message("The world doesn't slow down; you speed up.");
       break;
     case 9:
-      mprint("Security is a sense of dislocation.");
+      queue_message("Security is a sense of dislocation.");
       break;
     case 10:
-      mprint("Tullimore Dew is a panacea.");
+      queue_message("Tullimore Dew is a panacea.");
       break;
     case 11:
-      mprint("Thieves hide behind closed doors.");
+      queue_message("Thieves hide behind closed doors.");
       break;
     case 12:
-      mprint("`No jail is escapeproof' -- John Dillinger.");
+      queue_message("`No jail is escapeproof' -- John Dillinger.");
       break;
     case 13:
-      mprint("Oh, to have an apartment of your own!");
+      queue_message("Oh, to have an apartment of your own!");
       break;
     case 14:
-      mprint("Some homes have money and treasure.");
+      queue_message("Some homes have money and treasure.");
       break;
     case 15:
-      mprint("Some homes are defended.");
+      queue_message("Some homes are defended.");
       break;
     case 16:
-      mprint("Sometimes you could just wish for Death.");
+      queue_message("Sometimes you could just wish for Death.");
       break;
     case 17:
-      mprint("A cursed wish can be fatal.");
+      queue_message("A cursed wish can be fatal.");
       break;
     case 18:
-      mprint("The way you play, you should wish for Skill.");
+      queue_message("The way you play, you should wish for Skill.");
       break;
     case 19:
-      mprint("A druid might wish for Balance.");
+      queue_message("A druid might wish for Balance.");
       break;
     case 20:
-      mprint("Mages always wish for Knowledge.");
+      queue_message("Mages always wish for Knowledge.");
       break;
     case 21:
-      mprint("Some fairies are good.");
+      queue_message("Some fairies are good.");
       break;
     case 22:
-      mprint("An affair with a demon can be heartbreaking.");
+      queue_message("An affair with a demon can be heartbreaking.");
       break;
     case 23:
-      mprint("The Explorer's Club knows a useful spell.");
+      queue_message("The Explorer's Club knows a useful spell.");
       break;
     case 24:
-      mprint("They say some famous people live in mansions.");
+      queue_message("They say some famous people live in mansions.");
       break;
     case 25:
-      mprint("Magic pools are totally random.");
+      queue_message("Magic pools are totally random.");
       break;
     case 26:
-      mprint("There are five elements, including Void.");
+      queue_message("There are five elements, including Void.");
       break;
     case 27:
-      mprint("Humans can be good or evil, lawful or chaotic.");
+      queue_message("Humans can be good or evil, lawful or chaotic.");
       break;
     case 28:
-      mprint("There are many kinds of wishes. Case counts, you know.");
+      queue_message("There are many kinds of wishes. Case counts, you know.");
       break;
     case 29:
-      mprint("There are caves due south of Rampart");
+      queue_message("There are caves due south of Rampart");
       break;
     case 30:
-      mprint("Donaldson's Giants can withstand lava.");
+      queue_message("Donaldson's Giants can withstand lava.");
       break;
     case 31:
-      mprint("Ritual magic can have many different effects.");
+      queue_message("Ritual magic can have many different effects.");
       break;
     case 32:
-      mprint("The Mercenaries are the best equipped fighters.");
+      queue_message("The Mercenaries are the best equipped fighters.");
       break;
     case 33:
-      mprint("The Gladiators are the most skilled fighters.");
+      queue_message("The Gladiators are the most skilled fighters.");
       break;
     case 34:
-      mprint("Rent a flat and lose any bad stati you may have.");
+      queue_message("Rent a flat and lose any bad stati you may have.");
       break;
     case 35:
-      mprint("Some junk may be worth a fortune if identified.");
+      queue_message("Some junk may be worth a fortune if identified.");
       break;
     case 36:
-      mprint("Identify humans by talking to them.");
+      queue_message("Identify humans by talking to them.");
       break;
     case 37:
-      mprint("They say the Duke has a treasure trove.");
+      queue_message("They say the Duke has a treasure trove.");
       break;
     case 38:
-      mprint("If you yield, your opponent will gain experience.");
+      queue_message("If you yield, your opponent will gain experience.");
       break;
     case 39:
-      mprint("The Dragon Lord lives in the Waste of Time.");
+      queue_message("The Dragon Lord lives in the Waste of Time.");
       break;
     case 40:
-      mprint("A full moon bodes well for the followers of Law.");
+      queue_message("A full moon bodes well for the followers of Law.");
       break;
     case 41:
-      mprint("A new moon omens evil for the Law-abiding.");
+      queue_message("A new moon omens evil for the Law-abiding.");
       break;
     case 42:
-      mprint("Druids revere the half-moon.");
+      queue_message("Druids revere the half-moon.");
       break;
     case 43:
-      mprint("Most grot is useless.");
+      queue_message("Most grot is useless.");
       break;
     case 44:
-      mprint("Cash can sometimes be found in the walls.");
+      queue_message("Cash can sometimes be found in the walls.");
       break;
     case 45:
-      mprint("Pointy weapons break often but dig better.");
+      queue_message("Pointy weapons break often but dig better.");
       break;
     case 46:
-      mprint("The DREADED AQUAE MORTIS is invulnerable.");
+      queue_message("The DREADED AQUAE MORTIS is invulnerable.");
       break;
     case 47:
-      mprint("There must be *some* reason to worship Destiny!");
+      queue_message("There must be *some* reason to worship Destiny!");
       break;
     case 48:
-      mprint("Kill a trifid? A puzzle! Try a saline solution!");
+      queue_message("Kill a trifid? A puzzle! Try a saline solution!");
       break;
     case 49:
-      mprint("Beware! The Eater of Souls inhabits the abyss!");
+      queue_message("Beware! The Eater of Souls inhabits the abyss!");
       break;
     case 50:
-      mprint("They say there's a red-light district in town.");
+      queue_message("They say there's a red-light district in town.");
       break;
     case 51:
-      mprint("The House of the Eclipse is behind a closed door.");
+      queue_message("The House of the Eclipse is behind a closed door.");
       break;
     case 52:
-      mprint("The Orbs may be encountered on the Astral Plane.");
+      queue_message("The Orbs may be encountered on the Astral Plane.");
       break;
     case 53:
-      mprint("The Champion should never refuse a challenge.");
+      queue_message("The Champion should never refuse a challenge.");
       break;
     case 54:
-      mprint("They say that the autoteller program is buggy.");
+      queue_message("They say that the autoteller program is buggy.");
       break;
     case 55:
-      mprint("It's better not to sleep on the ground.");
+      queue_message("It's better not to sleep on the ground.");
       break;
     case 56:
-      mprint("Try ritual magic in different kinds of rooms.");
+      queue_message("Try ritual magic in different kinds of rooms.");
       break;
     case 57:
-      mprint("Breaking down a wall by bashing it is a bad idea!");
+      queue_message("Breaking down a wall by bashing it is a bad idea!");
       break;
     case 58:
-      mprint("Follow the Oracle's advice; she is all-wise.");
+      queue_message("Follow the Oracle's advice; she is all-wise.");
       break;
     case 59:
-      mprint("The ArchDruid lives in the northern forest.");
+      queue_message("The ArchDruid lives in the northern forest.");
       break;
     case 60:
-      mprint("A search of the mountains may reveal a secret pass.");
+      queue_message("A search of the mountains may reveal a secret pass.");
       break;
     case 61:
-      mprint("Star Peak is to the far North-East.");
+      queue_message("Star Peak is to the far North-East.");
       break;
     case 62:
-      mprint("The Archmage lives in the far North-West beyond a pass.");
+      queue_message("The Archmage lives in the far North-West beyond a pass.");
       break;
     case 63:
-      mprint("There is a volcano in the southern marshes.");
+      queue_message("There is a volcano in the southern marshes.");
       break;
     case 64:
-      mprint("The Demon Emperor resides in the Volcano.");
+      queue_message("The Demon Emperor resides in the Volcano.");
       break;
     case 65:
-      mprint("The Lawgiver can be found at Star Peak.");
+      queue_message("The Lawgiver can be found at Star Peak.");
       break;
     case 66:
-      mprint("The Temple of Athena is to the North-East.");
+      queue_message("The Temple of Athena is to the North-East.");
       break;
     case 67:
-      mprint("The Temple of Set can be found in a desert.");
+      queue_message("The Temple of Set can be found in a desert.");
       break;
     case 68:
-      mprint("The Temple of Hecate is in the swamp.");
+      queue_message("The Temple of Hecate is in the swamp.");
       break;
     case 69:
-      mprint("The Temple of Odin is to the South in some mountains.");
+      queue_message("The Temple of Odin is to the South in some mountains.");
       break;
     case 70:
-      mprint("There is a curious island off a promontory of the swamp.");
+      queue_message("There is a curious island off a promontory of the swamp.");
       break;
     case 71:
-      mprint("The Eater of Magic can be found on an island.");
+      queue_message("The Eater of Magic can be found on an island.");
       break;
     case 72:
-      mprint("The Temple of Destiny is practically inaccessible.");
+      queue_message("The Temple of Destiny is practically inaccessible.");
       break;
     case 73:
-      mprint("Each sect has its own main temple outside the city.");
+      queue_message("Each sect has its own main temple outside the city.");
       break;
     case 74:
-      mprint("The aligned temples are dangerous to unbelievers.");
+      queue_message("The aligned temples are dangerous to unbelievers.");
       break;
     case 75:
-      mprint("If you are poor, maybe you should wish for Wealth.");
+      queue_message("If you are poor, maybe you should wish for Wealth.");
       break;
     case 76:
-      mprint("Need mana? Wish for Power.");
+      queue_message("Need mana? Wish for Power.");
       break;
     case 77:
-      mprint("Wishing for Law, Balance, or Chaos alters alignment.");
+      queue_message("Wishing for Law, Balance, or Chaos alters alignment.");
       break;
     case 78:
-      mprint("Feeling out of sorts? Wish for Health.");
+      queue_message("Feeling out of sorts? Wish for Health.");
       break;
     case 79:
-      mprint("Challenge the abyss at the Temple of Destiny.");
+      queue_message("Challenge the abyss at the Temple of Destiny.");
       break;
     case 80:
-      mprint("The Circle of Sorcerors has an Astral HQ");
+      queue_message("The Circle of Sorcerors has an Astral HQ");
       break;
     case 81:
-      mprint("The Star Gem is the only way back from the Astral Plane.");
+      queue_message("The Star Gem is the only way back from the Astral Plane.");
       break;
     case 82:
-      mprint("The Star Gem is guarded by the Circle of Sorcerors.");
+      queue_message("The Star Gem is guarded by the Circle of Sorcerors.");
       break;
     case 83:
-      mprint("The Star Gem is rightfully the property of the LawBringer.");
+      queue_message("The Star Gem is rightfully the property of the LawBringer.");
       break;
     case 84:
-      mprint("They say the Demon Emperor owns the Amulet of the Planes.");
+      queue_message("They say the Demon Emperor owns the Amulet of the Planes.");
       break;
     case 85:
-      mprint("An Amulet might get you to the Temple of Destiny.");
+      queue_message("An Amulet might get you to the Temple of Destiny.");
       break;
     case 86:
-      mprint("A wish for Location might help you become Adept.");
+      queue_message("A wish for Location might help you become Adept.");
       break;
     case 87:
-      mprint("Some Artifacts may be used only once per day.");
+      queue_message("Some Artifacts may be used only once per day.");
       break;
     case 88:
-      mprint("Overusing Artifacts can be a bad move.");
+      queue_message("Overusing Artifacts can be a bad move.");
       break;
     case 89:
-      mprint("You might starve in the Swamp or the Mountains!");
+      queue_message("You might starve in the Swamp or the Mountains!");
       break;
     case 90:
-      mprint("You would have to be very chaotic to attack a guard!");
+      queue_message("You would have to be very chaotic to attack a guard!");
       break;
     case 91:
-      mprint("You would have to be very foolhardy to attack a guard!");
+      queue_message("You would have to be very foolhardy to attack a guard!");
       break;
     case 92:
-      mprint("Only a master of chaos would kill all the city guards!");
+      queue_message("Only a master of chaos would kill all the city guards!");
       break;
     case 93:
-      mprint("The Order depends on the force of the LawGiver.");
+      queue_message("The Order depends on the force of the LawGiver.");
       break;
     case 94:
-      mprint("City Guards are employees of the Order.");
+      queue_message("City Guards are employees of the Order.");
       break;
     case 95:
-      mprint("Disenchanted Artifacts can be restored.");
+      queue_message("Disenchanted Artifacts can be restored.");
       break;
   }
 }
@@ -325,7 +325,7 @@ void hint()
 /* for when a deity teaches spells to a devotee */
 void learnclericalspells(int deity, int level)
 {
-  mprint("With your new clerical rank comes knowledge of magic...");
+  queue_message("With your new clerical rank comes knowledge of magic...");
   Player.pow += level;
   Player.maxpow += level;
   switch(level)
@@ -381,7 +381,7 @@ void learnclericalspells(int deity, int level)
       }
       else if(deity == DESTINY)
       {
-        mprint("An acolyte of the Lords of Destiny. Gee whiz.");
+        queue_message("An acolyte of the Lords of Destiny. Gee whiz.");
       }
       break;
     case PRIEST:
@@ -414,7 +414,7 @@ void learnclericalspells(int deity, int level)
       }
       else if(deity == DESTINY)
       {
-        mprint("How useless, a new priest of the Lords of Destiny.");
+        queue_message("How useless, a new priest of the Lords of Destiny.");
       }
       break;
     case SPRIEST:
@@ -442,7 +442,7 @@ void learnclericalspells(int deity, int level)
       }
       else if(deity == DESTINY)
       {
-        mprint("Wow, a new senior priest of the Lords of Destiny.");
+        queue_message("Wow, a new senior priest of the Lords of Destiny.");
       }
       break;
     case HIGHPRIEST:
@@ -469,8 +469,8 @@ void learnclericalspells(int deity, int level)
       }
       else if(deity == DESTINY)
       {
-        mprint("So you're now the high priest of the Lords of Destiny.");
-        mprint("You didn't think you were going to get anything, did you?");
+        queue_message("So you're now the high priest of the Lords of Destiny.");
+        queue_message("You didn't think you were going to get anything, did you?");
       }
   }
 }

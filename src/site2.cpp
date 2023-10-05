@@ -44,7 +44,7 @@ void l_condo()
     if(response == 'p')
     {
       queue_message("Only 50,000Au. Buy it? [yn] ");
-      if(ynq2() == 'y')
+      if(ynq() == 'y')
       {
         if(Player.cash < 50000)
         {
@@ -63,7 +63,7 @@ void l_condo()
     else if(response == 'r')
     {
       queue_message("Weekly Rental, 1000Au. Pay for it? [yn] ");
-      if(ynq2() == 'y')
+      if(ynq() == 'y')
       {
         if(Player.cash < 1000)
         {
@@ -124,9 +124,9 @@ void l_condo()
         ol = Condoitems;
         while(ol && !over)
         {
-          print1("Retrieve ");
-          nprint1(itemid(ol->thing));
-          nprint1(" [ynq] ");
+          queue_message("Retrieve ");
+          queue_message(itemid(ol->thing));
+          queue_message(" [ynq] ");
           response = (char)mcigetc();
           if(response == 'y')
           {
@@ -156,7 +156,7 @@ void l_condo()
       else if(response == 'd')
       {
         queue_message("You sure you want to retire, now? [yn] ");
-        if(ynq1() == 'y')
+        if(ynq() == 'y')
         {
           p_win();
         }
@@ -237,7 +237,7 @@ void healforpay()
 {
   if(Player.cash < 50)
   {
-    print2("You can't afford to be healed!");
+    queue_message("You can't afford to be healed!");
   }
   else
   {
@@ -247,7 +247,7 @@ void healforpay()
     {
       Player.hp = Player.maxhp;
     }
-    print2("Another medical marvel....");
+    queue_message("Another medical marvel....");
   }
   calc_melee();
 }
@@ -256,13 +256,13 @@ void cureforpay()
 {
   if(Player.cash < 250)
   {
-    print2("You can't afford to be cured!");
+    queue_message("You can't afford to be cured!");
   }
   else
   {
     Player.cash -= 250;
     Player.status[DISEASED] = 0;
-    print2("Quarantine lifted....");
+    queue_message("Quarantine lifted....");
     showflags();
   }
 }
@@ -310,19 +310,19 @@ void send_to_jail()
 {
   if(Player.rank[ORDER] > 0)
   {
-    print1("A member of the Order of Paladins sent to jail!");
-    print2("It cannot be!");
-    print1("You are immediately expelled permanently from the Order!");
-    print2("Your name is expunged from the records....");
+    queue_message("A member of the Order of Paladins sent to jail!");
+    queue_message("It cannot be!");
+    queue_message("You are immediately expelled permanently from the Order!");
+    queue_message("Your name is expunged from the records....");
     Player.rank[ORDER] = -1;
   }
   else if(gamestatusp(DESTROYED_ORDER, GameStatus))
   {
-    print1("The destruction of the Order of Paladins has negated the law!");
+    queue_message("The destruction of the Order of Paladins has negated the law!");
   }
   else if((Current_Environment != E_CITY) && (Last_Environment != E_CITY))
   {
-    print1("Fortunately, there is no jail around here, so you are freed!");
+    queue_message("Fortunately, there is no jail around here, so you are freed!");
   }
   else
   {
@@ -339,17 +339,17 @@ void send_to_jail()
     {
       if(gamestatusp(UNDEAD_GUARDS, GameStatus))
       {
-        print1("You are taken to a weirdly deserted chamber where an undead");
-        print2("Magistrate presides over a court of ghosts and haunts.");
-        print1("'Mr. Foreman, what is the verdict?'");
-        print2("'Guilty as charged, your lordship.'");
-        print1("'Guilty...");
-        nprint1("Guilty...");
-        nprint1("Guilty...");
-        nprint1("Guilty...'");
-        print1("The members of the court close in around, fingers pointing.");
-        print2("You feel insubstantial hands closing around your throat....");
-        print3("You feel your life draining away!");
+        queue_message("You are taken to a weirdly deserted chamber where an undead");
+        queue_message("Magistrate presides over a court of ghosts and haunts.");
+        queue_message("'Mr. Foreman, what is the verdict?'");
+        queue_message("'Guilty as charged, your lordship.'");
+        queue_message("'Guilty...");
+        queue_message("Guilty...");
+        queue_message("Guilty...");
+        queue_message("Guilty...'");
+        queue_message("The members of the court close in around, fingers pointing.");
+        queue_message("You feel insubstantial hands closing around your throat....");
+        queue_message("You feel your life draining away!");
         while(Player.level > 0)
         {
           Player.level--;
@@ -358,15 +358,15 @@ void send_to_jail()
           dataprint();
         }
         Player.maxhp = Player.maxcon;
-        print1("You are finally released, a husk of your former self....");
+        queue_message("You are finally released, a husk of your former self....");
         Player.x = 58;
         Player.y = 40;
         screencheck(Player.x, Player.y);
       }
       else if(Player.alignment + random_range(200) < 0)
       {
-        print1("Luckily for you, a smooth-tongued advocate from the");
-        print2("Rampart Chaotic Liberties Union gets you off!");
+        queue_message("Luckily for you, a smooth-tongued advocate from the");
+        queue_message("Rampart Chaotic Liberties Union gets you off!");
         Player.x = 58;
         Player.y = 40;
         screencheck(Player.x, Player.y);
@@ -376,15 +376,15 @@ void send_to_jail()
         switch(Imprisonment++)
         {
           case 0:
-            print1("The Magistrate sternly reprimands you.");
-            print2("As a first-time offender, you are given probation.");
+            queue_message("The Magistrate sternly reprimands you.");
+            queue_message("As a first-time offender, you are given probation.");
             Player.y = 58;
             Player.x = 40;
             screencheck(Player.x, Player.y);
             break;
           case 1:
-            print1("The Magistrate expresses shame for your conduct.");
-            print2("You are thrown in jail!");
+            queue_message("The Magistrate expresses shame for your conduct.");
+            queue_message("You are thrown in jail!");
             repair_jail();
             Player.y = 54;
             Player.x = 37 + (2 * random_range(4));
@@ -392,10 +392,10 @@ void send_to_jail()
             l_portcullis_trap();
             break;
           default:
-            print1("The Magistrate renders summary judgement.");
-            print2("You are sentenced to prison!");
-            print1("The guards recognize you as a 'three-time-loser'");
-            print2("...and beat you up a little to teach you a lesson.");
+            queue_message("The Magistrate renders summary judgement.");
+            queue_message("You are sentenced to prison!");
+            queue_message("The guards recognize you as a 'three-time-loser'");
+            queue_message("...and beat you up a little to teach you a lesson.");
             p_damage(random_range(Imprisonment * 10), UNSTOPPABLE, "police brutality");
             repair_jail();
             Player.y = 54;
@@ -410,48 +410,48 @@ void send_to_jail()
 
 void l_adept()
 {
-  print1("You see a giant shimmering gate in the form of an omega.");
+  queue_message("You see a giant shimmering gate in the form of an omega.");
   if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
   {
     if(Player.str + Player.con + Player.iq + Player.pow < 100)
     {
-      print2("A familiar female voice says: I would not advise this now....");
+      queue_message("A familiar female voice says: I would not advise this now....");
     }
     else
     {
-      print2("A familiar female voice says: Go for it!");
+      queue_message("A familiar female voice says: Go for it!");
     }
   }
-  print2("Enter the mystic portal? [yn] ");
-  if(ynq2() != 'y')
+  queue_message("Enter the mystic portal? [yn] ");
+  if(ynq() != 'y')
   {
     if(Player.level > 100)
     {
-      print1("The Lords of Destiny spurn your cowardice....");
+      queue_message("The Lords of Destiny spurn your cowardice....");
       Player.xp    = 0;
       Player.level = 0;
       Player.hp = Player.maxhp = Player.con;
       Player.mana              = calcmana();
-      print2("You suddenly feel very inexperienced.");
+      queue_message("You suddenly feel very inexperienced.");
       dataprint();
     }
   }
   else
   {
-    print1("You pass through the portal.");
+    queue_message("You pass through the portal.");
     drawomega();
-    print1("Like wow man! Colors! ");
+    queue_message("Like wow man! Colors! ");
     if(Player.patron != DESTINY)
     {
-      print2("Strange forces try to tear you apart!");
+      queue_message("Strange forces try to tear you apart!");
       p_damage(random_range(200), UNSTOPPABLE, "a vortex of chaos");
     }
     else
     {
-      print2("Some strange force shields you from a chaos vortex!");
+      queue_message("Some strange force shields you from a chaos vortex!");
     }
-    print1("Your head spins for a moment....");
-    print2("and clears....");
+    queue_message("Your head spins for a moment....");
+    queue_message("and clears....");
     Player.hp   = Player.maxhp;
     Player.mana = calcmana();
     change_environment(E_ABYSS);
@@ -461,16 +461,16 @@ void l_adept()
 void l_trifid()
 {
   int damage = 0, stuck = true;
-  print1("The hedge comes alive with a surge of alien growth!");
+  queue_message("The hedge comes alive with a surge of alien growth!");
   while(stuck)
   {
     dataprint();
     damage += Level->depth / 2 + 1;
-    print2("Razor-edged vines covered in suckers attach themselves to you.");
+    queue_message("Razor-edged vines covered in suckers attach themselves to you.");
     if(find_and_remove_item(THINGID + 6, -1))
     {
-      print1("Thinking fast, you toss salt water on the trifid...");
-      print2("The trifid disintegrates with a frustrated sigh.");
+      queue_message("Thinking fast, you toss salt water on the trifid...");
+      queue_message("The trifid disintegrates with a frustrated sigh.");
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
       lset(Player.x, Player.y, CHANGED, *Level);
@@ -480,7 +480,7 @@ void l_trifid()
     else
     {
       p_damage(damage, UNSTOPPABLE, "a trifid");
-      print1("You are entangled in tendrils...");
+      queue_message("You are entangled in tendrils...");
       std::vector<std::string> lines =
       {
         {"a: Try to break free."},
@@ -497,38 +497,38 @@ void l_trifid()
         case 'a':
           if(Player.str > random_range(200))
           {
-            print1("Amazing! You're now free.");
-            print2("The trifid writhes hungrily at you.");
+            queue_message("Amazing! You're now free.");
+            queue_message("The trifid writhes hungrily at you.");
             stuck = false;
           }
           else
           {
-            print1("Well, THAT didn't work.");
+            queue_message("Well, THAT didn't work.");
           }
           break;
         case 'b':
-          print1("Well, at least you're facing your fate with dignity.");
+          queue_message("Well, at least you're facing your fate with dignity.");
           break;
         case 'c':
           if((Player.patron == DRUID) && (Player.rank[PRIESTHOOD] > random_range(5)))
           {
-            print1("A shaft of golden light bathes the alien plant");
-            print2("which grudginly lets you go....");
+            queue_message("A shaft of golden light bathes the alien plant");
+            queue_message("which grudginly lets you go....");
             stuck = false;
           }
           else
           {
-            print1("You receive no divine aid as yet.");
+            queue_message("You receive no divine aid as yet.");
           }
           break;
         case 'd':
-          print1("The hedge doesn't answer your entreaties.");
+          queue_message("The hedge doesn't answer your entreaties.");
           break;
         case 'e':
-          print1("You forgot your ruby slippers, stupid.");
+          queue_message("You forgot your ruby slippers, stupid.");
           break;
         default:
-          print1("The hedge enjoys your camp play-acting....");
+          queue_message("The hedge enjoys your camp play-acting....");
           break;
       }
     }
@@ -538,31 +538,31 @@ void l_trifid()
 
 void l_vault()
 {
-  print1("You come to a thick vault door with a complex time lock.");
+  queue_message("You come to a thick vault door with a complex time lock.");
   if((hour() == 23))
   {
-    print2("The door is open.");
+    queue_message("The door is open.");
     Level->site[12][56].locchar = FLOOR;
   }
   else
   {
-    print2("The door is closed.");
+    queue_message("The door is closed.");
     Level->site[12][56].locchar = WALL;
-    print1("Try to crack it? [yn] ");
-    if(ynq1() == 'y')
+    queue_message("Try to crack it? [yn] ");
+    if(ynq() == 'y')
     {
       if(random_range(100) < Player.rank[THIEVES] * Player.rank[THIEVES])
       {
-        print2("The lock clicks open!!!");
+        queue_message("The lock clicks open!!!");
         gain_experience(5000);
         Level->site[12][56].locchar = FLOOR;
       }
       else
       {
-        print2("Uh, oh, set off the alarm.... The castle guard arrives....");
+        queue_message("Uh, oh, set off the alarm.... The castle guard arrives....");
         if(Player.rank[NOBILITY] == DUKE)
         {
-          print1("\"Ah, just testing us, your Grace?  I hope we're up to "
+          queue_message("\"Ah, just testing us, your Grace?  I hope we're up to "
                  "scratch.\"");
         }
         else
@@ -573,7 +573,7 @@ void l_vault()
     }
     else
     {
-      print2("Good move.");
+      queue_message("Good move.");
     }
   }
 }
@@ -584,7 +584,7 @@ void l_brothel()
   queue_message("You come to a heavily reinforced inner door.");
   queue_message("A sign reads `The House of the Eclipse'");
   queue_message("Try to enter? [yn] ");
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     std::vector<std::string> lines =
     {
@@ -610,7 +610,7 @@ void l_brothel()
       {
         queue_message("A window opens in the door.");
         queue_message("`500Au, buddy. For the night.' pay it? [yn] ");
-        if(ynq2() == 'y')
+        if(ynq() == 'y')
         {
           if(Player.cash < 500)
           {
@@ -781,171 +781,171 @@ void sign_print(int x, int y, int signp)
   switch(Level->site[x][y].p_locf)
   {
     case L_CHARITY:
-      print1("You notice a sign: The Rampart Orphanage And Hospice For The Needy.");
+      queue_message("You notice a sign: The Rampart Orphanage And Hospice For The Needy.");
       break;
     case L_MANSION:
-      print1("You notice a sign:");
-      print2("This edifice protected by DeathWatch Devices, Ltd.");
+      queue_message("You notice a sign:");
+      queue_message("This edifice protected by DeathWatch Devices, Ltd.");
       break;
     case L_GRANARY:
-      print1("You notice a sign:");
-      print2("Public Granary: Entrance Strictly Forbidden.");
+      queue_message("You notice a sign:");
+      queue_message("Public Granary: Entrance Strictly Forbidden.");
       break;
     case L_PORTCULLIS:
       if(Level->site[x][y].locchar == FLOOR)
       {
-        print1("You see a groove in the floor and slots above you.");
+        queue_message("You see a groove in the floor and slots above you.");
       }
       break;
     case L_STABLES:
-      print1("You notice a sign:");
-      print2("Village Stables");
+      queue_message("You notice a sign:");
+      queue_message("Village Stables");
       break;
     case L_COMMONS:
-      print1("You notice a sign:");
-      print2("Village Commons: No wolves allowed.");
+      queue_message("You notice a sign:");
+      queue_message("Village Commons: No wolves allowed.");
       break;
     case L_MAZE:
-      print1("You notice a sign:");
-      print2("Hedge maze closed for trifid extermination.");
+      queue_message("You notice a sign:");
+      queue_message("Hedge maze closed for trifid extermination.");
       break;
     case L_BANK:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("First Bank of Omega: Autoteller Carrel.");
+        queue_message("You notice a sign:");
+        queue_message("First Bank of Omega: Autoteller Carrel.");
       }
       break;
     case L_TEMPLE:
-      print1("You see the ornate portico of the Rampart Pantheon");
+      queue_message("You see the ornate portico of the Rampart Pantheon");
       break;
     case L_ARMORER:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Julie's Armor of Proof and Weapons of Quality");
+        queue_message("You notice a sign:");
+        queue_message("Julie's Armor of Proof and Weapons of Quality");
       }
       break;
     case L_CLUB:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Rampart Explorers' Club.");
+        queue_message("You notice a sign:");
+        queue_message("Rampart Explorers' Club.");
       }
       break;
     case L_GYM:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("The Rampart Gymnasium, (affil. Rampart Coliseum).");
+        queue_message("You notice a sign:");
+        queue_message("The Rampart Gymnasium, (affil. Rampart Coliseum).");
       }
       break;
     case L_HEALER:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Rampart Healers. Member RMA.");
+        queue_message("You notice a sign:");
+        queue_message("Rampart Healers. Member RMA.");
       }
       break;
     case L_CASINO:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Rampart Mithril Nugget Casino.");
+        queue_message("You notice a sign:");
+        queue_message("Rampart Mithril Nugget Casino.");
       }
       break;
     case L_SEWER:
-      print1("A sewer entrance. You don't want to go down THERE, do you?");
+      queue_message("A sewer entrance. You don't want to go down THERE, do you?");
       break;
     case L_COMMANDANT:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Commandant Sonder's Rampart-fried Lyzzard partes. Open 24 hrs.");
+        queue_message("You notice a sign:");
+        queue_message("Commandant Sonder's Rampart-fried Lyzzard partes. Open 24 hrs.");
       }
       break;
     case L_DINER:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("The Rampart Diner. All you can eat, 25Au.");
+        queue_message("You notice a sign:");
+        queue_message("The Rampart Diner. All you can eat, 25Au.");
       }
       break;
     case L_CRAP:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Les Crapeuleaux. (****)");
+        queue_message("You notice a sign:");
+        queue_message("Les Crapeuleaux. (****)");
       }
       break;
     case L_TAVERN:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("The Centaur and Nymph -- J. Riley, prop.");
+        queue_message("You notice a sign:");
+        queue_message("The Centaur and Nymph -- J. Riley, prop.");
       }
       break;
     case L_ALCHEMIST:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Ambrosias' Potions et cie.");
+        queue_message("You notice a sign:");
+        queue_message("Ambrosias' Potions et cie.");
       }
       break;
     case L_DPW:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Rampart Department of Public Works.");
+        queue_message("You notice a sign:");
+        queue_message("Rampart Department of Public Works.");
       }
       break;
     case L_LIBRARY:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Rampart Public Library.");
+        queue_message("You notice a sign:");
+        queue_message("Rampart Public Library.");
       }
       break;
     case L_CONDO:
       if(signp)
       {
-        print1("You notice a sign:");
+        queue_message("You notice a sign:");
         if(gamestatusp(SOLD_CONDO, GameStatus))
         {
-          print2("Home Sweet Home");
+          queue_message("Home Sweet Home");
         }
         else
         {
-          print2("Luxury Condominium For Sale; Inquire Within");
+          queue_message("Luxury Condominium For Sale; Inquire Within");
         }
       }
       break;
     case L_PAWN_SHOP:
       if(signp)
       {
-        print1("You notice a sign:");
-        print2("Knight's Pawn Shop.");
+        queue_message("You notice a sign:");
+        queue_message("Knight's Pawn Shop.");
       }
       break;
     case L_CEMETARY:
-      print1("You notice a sign:");
-      print2("Rampart City Cemetary. Closed -- Full.");
+      queue_message("You notice a sign:");
+      queue_message("Rampart City Cemetary. Closed -- Full.");
       break;
     case L_GARDEN:
-      print1("You notice a sign:");
-      print2("Rampart Botanical Gardens---Do not deface statues.");
+      queue_message("You notice a sign:");
+      queue_message("Rampart Botanical Gardens---Do not deface statues.");
       break;
     case L_JAIL:
-      print1("You notice a sign:");
-      print2("Rampart City Gaol -- always room for more.");
+      queue_message("You notice a sign:");
+      queue_message("Rampart City Gaol -- always room for more.");
       break;
     case L_MONASTERY:
       queue_message("You notice a sign:");
       queue_message("Tholian Monastery. Truthseekers welcome.");
       break;
     case L_ORACLE:
-      print1("You notice a sign:");
-      print2("The Oracle of the Cyan Flames");
+      queue_message("You notice a sign:");
+      queue_message("The Oracle of the Cyan Flames");
       break;
   }
 }
@@ -954,8 +954,8 @@ void l_countryside()
 {
   if(optionp(CONFIRM, Player))
   {
-    print1("Do you really want to return to the countryside? ");
-    if(ynq1() != 'y')
+    queue_message("Do you really want to return to the countryside? ");
+    if(ynq() != 'y')
     {
       return;
     }
@@ -968,109 +968,109 @@ void l_oracle()
   char response;
   if(gamestatusp(ATTACKED_ORACLE, GameStatus) && (!gamestatusp(COMPLETED_ASTRAL, GameStatus)))
   {
-    print1("You come before a blue crystal dais. You see a broken mirror.");
-    print2("Look in the mirror? [yn] ");
-    if(ynq2() == 'y')
+    queue_message("You come before a blue crystal dais. You see a broken mirror.");
+    queue_message("Look in the mirror? [yn] ");
+    if(ynq() == 'y')
     {
-      print1("A strange force rips you from your place....");
+      queue_message("A strange force rips you from your place....");
       Player.hp = 1;
-      print2("You feel drained....");
+      queue_message("You feel drained....");
       dataprint();
-      print3("You find yourself in a weird flickery maze.");
+      queue_message("You find yourself in a weird flickery maze.");
       change_environment(E_ASTRAL);
     }
   }
   else
   {
-    print1("You come before a blue crystal dais. There is a bell and a mirror.");
-    print2("Ring the bell [b], look in the mirror [m], or leave [ESCAPE] ");
+    queue_message("You come before a blue crystal dais. There is a bell and a mirror.");
+    queue_message("Ring the bell [b], look in the mirror [m], or leave [ESCAPE] ");
     do
     {
       response = (char)mcigetc();
     } while((response != 'b') && (response != 'm') && (response != ESCAPE));
     if(response == 'b')
     {
-      print1("The ringing note seems to last forever.");
-      print2("You notice a robed figure in front of you....");
-      print1("The oracle doffs her cowl. Her eyes glitter with blue fire!");
-      print2("Attack her? [yn] ");
-      if(ynq2() == 'y')
+      queue_message("The ringing note seems to last forever.");
+      queue_message("You notice a robed figure in front of you....");
+      queue_message("The oracle doffs her cowl. Her eyes glitter with blue fire!");
+      queue_message("Attack her? [yn] ");
+      if(ynq() == 'y')
       {
         setgamestatus(ATTACKED_ORACLE, GameStatus);
-        print1("The oracle deftly avoids your attack.");
-        print2("She sneers at you and vanishes.");
+        queue_message("The oracle deftly avoids your attack.");
+        queue_message("She sneers at you and vanishes.");
       }
       else
       {
-        print2("She stares at you...and speaks:");
+        queue_message("She stares at you...and speaks:");
         if(!gamestatusp(SPOKE_TO_DRUID, GameStatus))
         {
-          print3("'The ArchDruid speaks wisdom in his forest shrine.'");
+          queue_message("'The ArchDruid speaks wisdom in his forest shrine.'");
         }
         else if(!gamestatusp(COMPLETED_CAVES, GameStatus))
         {
-          print3("'Thou mayest find aught of interest in the caves to the "
+          queue_message("'Thou mayest find aught of interest in the caves to the "
                  "South.'");
         }
         else if(!gamestatusp(COMPLETED_SEWERS, GameStatus))
         {
-          print3("'Turn thy attention to the abyssal depths of the city.'");
+          queue_message("'Turn thy attention to the abyssal depths of the city.'");
         }
         else if(!gamestatusp(COMPLETED_CASTLE, GameStatus))
         {
-          print3("'Explorest thou the depths of the Castle of the ArchMage.'");
+          queue_message("'Explorest thou the depths of the Castle of the ArchMage.'");
         }
         else if(!gamestatusp(COMPLETED_ASTRAL, GameStatus))
         {
-          print1("'Journey to the Astral Plane and meet the Gods' servants.'");
-          print2("The oracle holds out her hand. Do you take it? [yn] ");
-          if(ynq2() == 'y')
+          queue_message("'Journey to the Astral Plane and meet the Gods' servants.'");
+          queue_message("The oracle holds out her hand. Do you take it? [yn] ");
+          if(ynq() == 'y')
           {
-            print1("'Beware: Only the Star Gem can escape the Astral Plane.'");
-            print2("A magic portal opens behind the oracle. She leads you");
-            print1("through a sequence of special effects that would have");
-            print2("IL&M technicians cursing in awe and deposits you in an");
-            print1("odd looking room whose walls seem strangely insubstantial.");
+            queue_message("'Beware: Only the Star Gem can escape the Astral Plane.'");
+            queue_message("A magic portal opens behind the oracle. She leads you");
+            queue_message("through a sequence of special effects that would have");
+            queue_message("IL&M technicians cursing in awe and deposits you in an");
+            queue_message("odd looking room whose walls seem strangely insubstantial.");
             gain_experience(5000);
             change_environment(E_ASTRAL);
           }
           else
           {
-            print3("You detect the hint of a sneer from the oracle.");
+            queue_message("You detect the hint of a sneer from the oracle.");
           }
         }
         else if(!gamestatusp(COMPLETED_VOLCANO, GameStatus))
         {
-          print3("'The infernal maw may yield its secrets to thee now.'");
+          queue_message("'The infernal maw may yield its secrets to thee now.'");
         }
         else if(!gamestatusp(COMPLETED_CHALLENGE, GameStatus))
         {
-          print3("'The challenge of adepthood yet awaits thee.'");
+          queue_message("'The challenge of adepthood yet awaits thee.'");
         }
         else
         {
-          print1("'My lord: Thou hast surpassed my tutelage forever.");
-          print2("Fare thee well.'");
-          print3("The oracle replaces her hood and seems to fade away....");
+          queue_message("'My lord: Thou hast surpassed my tutelage forever.");
+          queue_message("Fare thee well.'");
+          queue_message("The oracle replaces her hood and seems to fade away....");
         }
       }
     }
     else if(response == 'm')
     {
-      print1("You seem to see yourself. Odd....");
+      queue_message("You seem to see yourself. Odd....");
       knowledge(1);
     }
     else
     {
-      print2("You leave this immanent place.");
+      queue_message("You leave this immanent place.");
     }
   }
 }
 
 void l_mansion()
 {
-  print1("Enter the mansion? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("Enter the mansion? [yn] ");
+  if(ynq() == 'y')
   {
     change_environment(E_MANSION);
   }
@@ -1078,8 +1078,8 @@ void l_mansion()
 
 void l_house()
 {
-  print1("Enter the house? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("Enter the house? [yn] ");
+  if(ynq() == 'y')
   {
     change_environment(E_HOUSE);
   }
@@ -1087,8 +1087,8 @@ void l_house()
 
 void l_hovel()
 {
-  print1("Enter the hovel? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("Enter the hovel? [yn] ");
+  if(ynq() == 'y')
   {
     change_environment(E_HOVEL);
   }
@@ -1099,8 +1099,8 @@ void l_safe()
   char response;
   pob  newitem;
   int  attempt = 0;
-  print1("You have discovered a safe!");
-  print2("Pick the lock [p], Force the door [f], or ignore [ESCAPE]");
+  queue_message("You have discovered a safe!");
+  queue_message("Pick the lock [p], Force the door [f], or ignore [ESCAPE]");
   do
   {
     response = (char)mcigetc();
@@ -1117,64 +1117,64 @@ void l_safe()
   {
     Player.alignment -= 4;
     gain_experience(50);
-    print2("The door springs open!");
+    queue_message("The door springs open!");
     Level->site[Player.x][Player.y].locchar = FLOOR;
     Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
     lset(Player.x, Player.y, CHANGED, *Level);
     if(random_range(2) == 1)
     {
-      print1("You find:");
+      queue_message("You find:");
       do
       {
         newitem = create_object(difficulty());
-        print2(itemid(newitem));
+        queue_message(itemid(newitem));
         gain_item(newitem);
       } while(random_range(3) == 1);
     }
     else
     {
-      print2("The safe was empty (awwwww....)");
+      queue_message("The safe was empty (awwwww....)");
     }
   }
   else
   {
-    print3("Your attempt at burglary failed!");
+    queue_message("Your attempt at burglary failed!");
     if(attempt == -1)
     {
-      print1("A siren goes off! You see flashing red lights everywhere!");
+      queue_message("A siren goes off! You see flashing red lights everywhere!");
       if(Last_Environment == E_CITY)
       {
-        print2("The city guard shows up! They collar you in no time flat!");
+        queue_message("The city guard shows up! They collar you in no time flat!");
         change_environment(E_CITY);
         send_to_jail();
       }
     }
     else if(attempt == -2)
     {
-      print1("There is a sudden flash!");
+      queue_message("There is a sudden flash!");
       p_damage(random_range(25), FLAME, "a safe");
-      print2("The safe has self-destructed.");
+      queue_message("The safe has self-destructed.");
       Level->site[Player.x][Player.y].locchar = RUBBLE;
       Level->site[Player.x][Player.y].p_locf  = L_RUBBLE;
       lset(Player.x, Player.y, CHANGED, *Level);
     }
     else if(attempt == -3)
     {
-      print1("The safe jolts you with electricity!");
+      queue_message("The safe jolts you with electricity!");
       lball(Player.x, Player.y, Player.x, Player.y, 30);
     }
     else if(attempt < -3)
     {
-      print1("You are hit by an acid spray!");
+      queue_message("You are hit by an acid spray!");
       if(Player.possessions[O_CLOAK])
       {
-        print2("Your cloak is destroyed!");
+        queue_message("Your cloak is destroyed!");
         conform_lost_object(Player.possessions[O_CLOAK]);
         p_damage(10, ACID, "a safe");
       }
       else if(Player.possessions[O_ARMOR])
       {
-        print2("Your armor corrodes!");
+        queue_message("Your armor corrodes!");
         Player.possessions[O_ARMOR]->dmg -= 3;
         Player.possessions[O_ARMOR]->hit -= 3;
         Player.possessions[O_ARMOR]->aux -= 3;
@@ -1182,7 +1182,7 @@ void l_safe()
       }
       else
       {
-        print2("The acid hits your bare flesh!");
+        queue_message("The acid hits your bare flesh!");
         p_damage(random_range(100), ACID, "a safe");
       }
     }
@@ -1192,17 +1192,17 @@ void l_safe()
 void l_cartographer()
 {
   int i, j, x, y;
-  print1("Ye Olde Mappe Shoppe.");
-  print2("Map of the local area: 500Au. Buy it? [yn] ");
-  if(ynq2() == 'y')
+  queue_message("Ye Olde Mappe Shoppe.");
+  queue_message("Map of the local area: 500Au. Buy it? [yn] ");
+  if(ynq() == 'y')
   {
     if(Player.cash < 500)
     {
-      print3("Cursed be cheapskates! May you never find an aid station....");
+      queue_message("Cursed be cheapskates! May you never find an aid station....");
     }
     else
     {
-      print3("You now have the local area mapped.");
+      queue_message("You now have the local area mapped.");
       Player.cash -= 500;
       dataprint();
       switch(Villagenum)
@@ -1252,14 +1252,14 @@ void l_cartographer()
   }
   else
   {
-    print3("Don't blame me if you get lost....");
+    queue_message("Don't blame me if you get lost....");
   }
 }
 
 void l_charity()
 {
   queue_message("'Greetings, friend. Do you wish to make a donation?' [yn] ");
-  if(ynq2() != 'y')
+  if(ynq() != 'y')
   {
     append_message("'Pinchpurse!'", true);
   }

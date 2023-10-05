@@ -135,9 +135,8 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
   FILE *fd = fopen(filestring.c_str(), optionstring.c_str());
   while(!fd)
   {
-    print3("Warning! Error opening file:");
-    nprint3(filestring);
-    print1(" Abort or Retry? [ar] ");
+    queue_message("Warning! Error opening file: " + filestring);
+    queue_message(" Abort or Retry? [ar] ");
     do
     {
       response = static_cast<char>(mcigetc());
@@ -148,7 +147,7 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
     }
     else
     {
-      print2("Sorry 'bout that.... Saving character, then quitting.");
+      queue_message("Sorry 'bout that.... Saving character, then quitting.");
       save(true);
       endgraf();
       exit(0);
@@ -427,7 +426,7 @@ void checkhigh(const std::string &descrip, int behavior)
       Hilevel    = Player.level;
       Hibehavior = behavior;
       save_hiscore_npc(0);
-      mprint("Yow! A new high score!");
+      queue_message("Yow! A new high score!");
     }
     if(Player.alignment < Chaos)
     {
@@ -436,7 +435,7 @@ void checkhigh(const std::string &descrip, int behavior)
       Chaos             = Player.alignment;
       Chaoslordbehavior = behavior;
       save_hiscore_npc(13);
-      mprint("Criminy! A new Lord of Chaos!");
+      queue_message("Criminy! A new Lord of Chaos!");
     }
     if(Player.alignment > Law)
     {
@@ -445,7 +444,7 @@ void checkhigh(const std::string &descrip, int behavior)
       Law             = Player.alignment;
       Lawlordbehavior = behavior;
       save_hiscore_npc(14);
-      mprint("Gosh! A new Lord of Law!");
+      queue_message("Gosh! A new Lord of Law!");
     }
   }
 }

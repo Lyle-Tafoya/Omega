@@ -73,7 +73,7 @@ std::ifstream omegarc_check()
   if(omegarc_file.is_open())
   {
     queue_message("Use .omegarc in home directory? [yn] ");
-    if(ynq2() != 'y')
+    if(ynq() != 'y')
     {
       omegarc_file.close();
     }
@@ -508,7 +508,7 @@ void user_character_stats()
   }
 
   message_buffer.receive("Took an official IQ test? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     message_buffer.receive("So, whadja get? ", true);
     num = static_cast<int>(parsenum() / 10);
@@ -522,7 +522,7 @@ void user_character_stats()
   }
 
   message_buffer.receive("Took Undergraduate entrance exams? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     do
     {
@@ -538,7 +538,7 @@ void user_character_stats()
     numints++;
   }
   message_buffer.receive("Took Graduate entrance exams? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     do
     {
@@ -557,7 +557,7 @@ void user_character_stats()
   if(numints == 0)
   {
     message_buffer.receive("Pretty dumb, aren't you? [yn] ", true);
-    if(ynq1() == 'y')
+    if(ynq() == 'y')
     {
       Player.iq = random_range(3) + 3;
       message_buffer.receive("I thought so....", true);
@@ -575,88 +575,88 @@ void user_character_stats()
   Player.maxiq = Player.iq;
   agipts       = 0;
   message_buffer.receive("Can you dance? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     agipts++;
     message_buffer.receive("Well? [yn] ", true);
-    if(ynq1() == 'y')
+    if(ynq() == 'y')
     {
       agipts += 2;
     }
   }
   message_buffer.receive("Do you have training in a martial art or gymnastics? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     agipts += 2;
     message_buffer.receive("Do you have dan rank or equivalent? [yn] ", true);
-    if(ynq2() == 'y')
+    if(ynq() == 'y')
     {
       agipts += 4;
     }
   }
   message_buffer.receive("Do you play some field sport? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     agipts++;
     message_buffer.receive("Are you good? [yn] ", true);
-    if(ynq1() == 'y')
+    if(ynq() == 'y')
     {
       agipts++;
     }
   }
   message_buffer.receive("Do you cave, mountaineer, etc.? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     agipts += 3;
   }
   message_buffer.receive("Do you skate or ski? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     agipts += 2;
     message_buffer.receive("Well? [yn] ", true);
-    if(ynq1() == 'y')
+    if(ynq() == 'y')
     {
       agipts += 2;
     }
   }
   message_buffer.receive("Are you physically handicapped? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     agipts -= 4;
   }
   message_buffer.receive("Are you accident prone? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     agipts -= 4;
   }
   message_buffer.receive("Can you use a bicycle? [yn] ", true);
-  if(ynq1() != 'y')
+  if(ynq() != 'y')
   {
     agipts -= 4;
   }
   Player.agi = Player.maxagi = 9 + agipts / 2;
   message_buffer.receive("Do you play video games? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     dexpts += 2;
     message_buffer.receive("Do you get high scores? [yn] ", true);
-    if(ynq2() == 'y')
+    if(ynq() == 'y')
     {
       dexpts += 4;
     }
   }
   message_buffer.receive("Are you an archer, fencer, or marksman? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     dexpts += 2;
     message_buffer.receive("A good one? [yn] ", true);
-    if(ynq2() == 'y')
+    if(ynq() == 'y')
     {
       dexpts += 4;
     }
   }
   message_buffer.receive("Have you ever picked a lock? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     dexpts += 2;
     message_buffer.receive("Really. Well, the police are being notified.", true);
@@ -670,41 +670,41 @@ void user_character_stats()
   }
   dexpts += num / 25;
   message_buffer.receive("Hold your arm out. Tense your fist. Hand shaking? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     dexpts -= 3;
   }
   message_buffer.receive("Ambidextrous, are you? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     dexpts += 4;
   }
   message_buffer.receive("Can you cut a deck of cards with one hand? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     dexpts += 2;
   }
   message_buffer.receive("Can you tie your shoes blindfolded? [yn] ", true);
-  if(ynq1() != 'y')
+  if(ynq() != 'y')
   {
     dexpts -= 3;
   }
   Player.dex = Player.maxdex = 6 + dexpts / 2;
   message_buffer.receive("Do you ever get colds? [yn] ", true);
-  if(ynq1() != 'y')
+  if(ynq() != 'y')
   {
     conpts += 4;
   }
   else
   {
     message_buffer.receive("Frequently? [yn] ", true);
-    if(ynq1() == 'y')
+    if(ynq() == 'y')
     {
       conpts -= 4;
     }
   }
   message_buffer.receive("Had any serious accident or illness this year? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     conpts -= 4;
   }
@@ -713,27 +713,27 @@ void user_character_stats()
     conpts += 4;
   }
   message_buffer.receive("Have a chronic disease? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     conpts -= 4;
   }
   message_buffer.receive("Overweight or underweight by more than 20 percent? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     conpts -= 2;
   }
   message_buffer.receive("High Blood Pressure? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     conpts -= 2;
   }
   message_buffer.receive("Smoke? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     conpts -= 3;
   }
   message_buffer.receive("Take aerobics classes? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     conpts += 2;
   }
@@ -762,54 +762,54 @@ void user_character_stats()
   }
   Player.con = Player.maxcon = 12 + conpts / 3;
   message_buffer.receive("Do animals react oddly to your presence? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     message_buffer.receive("How curious that must be.", true);
     powpts += 2;
   }
   message_buffer.receive("Can you see auras? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     message_buffer.receive("How strange.", true);
     powpts += 3;
   }
   message_buffer.receive("Ever have an out-of-body experience? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     message_buffer.receive("Wow, man. Fly the friendly skies....", true);
     powpts += 3;
   }
   message_buffer.receive("Did you ever cast a spell? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     powpts += 3;
     message_buffer.receive("Did it work? [yn] ", true);
-    if(ynq1() == 'y')
+    if(ynq() == 'y')
     {
       powpts += 7;
       message_buffer.receive("Sure it did.", true);
     }
   }
   message_buffer.receive("Do you have ESP? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     powpts += 3;
     message_buffer.receive("Somehow, I knew you were going to say that.", true);
   }
   message_buffer.receive("Do you have PK? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     powpts += 6;
     message_buffer.receive("I can't tell you how much that moves me.", true);
   }
   message_buffer.receive("Do you believe in ghosts? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     powpts += 2;
     message_buffer.receive("I do! I do! I do believe in ghosts!", true);
   }
   message_buffer.receive("Are you Irish? [yn] ", true);
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     powpts += 2;
     message_buffer.receive("Is that blarney or what?", true);
@@ -817,7 +817,7 @@ void user_character_stats()
   Player.pow = Player.maxpow = 3 + powpts / 2;
 
   queue_message("Do you want to save this set-up to .omegarc in your home directory? [yn] ");
-  if(ynq1() == 'y')
+  if(ynq() == 'y')
   {
     save_omegarc();
   }

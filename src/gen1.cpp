@@ -161,7 +161,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
         }
         break;
       default:
-        print3("This dungeon not implemented!");
+        queue_message("This dungeon not implemented!");
         break;
     }
     install_traps();

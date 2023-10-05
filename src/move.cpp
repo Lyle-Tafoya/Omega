@@ -36,31 +36,31 @@ void l_water()
   {
     if(Player.possessions[O_ARMOR])
     {
-      print1("Your heavy armor drags you under the water!");
+      queue_message("Your heavy armor drags you under the water!");
       p_drown();
-      print2("You reach the surface again.");
+      queue_message("You reach the surface again.");
     }
     else if(Player.itemweight > ((int)(Player.maxweight / 2)))
     {
-      print1("The weight of your burden drags you under water!");
+      queue_message("The weight of your burden drags you under water!");
       p_drown();
-      print2("You reach the surface again.");
+      queue_message("You reach the surface again.");
     }
     else
     {
       switch(random_range(32))
       {
         case 0:
-          print1("Splish. Splash!");
+          queue_message("Splish. Splash!");
           break;
         case 1:
-          print1("I want my ducky!");
+          queue_message("I want my ducky!");
           break;
         case 2:
-          print1("So finally you take a bath!");
+          queue_message("So finally you take a bath!");
           break;
         case 3:
-          print1("You must be very thirsty!");
+          queue_message("You must be very thirsty!");
           break;
       }
     }
@@ -70,16 +70,16 @@ void l_water()
     switch(random_range(32))
     {
       case 0:
-        print1("Your horse frolics playfully in the water.");
+        queue_message("Your horse frolics playfully in the water.");
         break;
       case 1:
-        print1("Your horse quenches its thirst.");
+        queue_message("Your horse quenches its thirst.");
         break;
       case 2:
-        print1("Your steed begins to swim....");
+        queue_message("Your steed begins to swim....");
         break;
       case 3:
-        print1("Your mount thrashes about in the water.");
+        queue_message("Your mount thrashes about in the water.");
         break;
     }
   }
@@ -89,40 +89,40 @@ void l_chaos()
 {
   if(gamestatusp(MOUNTED, GameStatus))
   {
-    print1("Your steed tries to swim in the raw Chaos, but seems to");
-    print2("be having some difficulties...");
-    print1("probably because it's just turned into a chaffinch.");
+    queue_message("Your steed tries to swim in the raw Chaos, but seems to");
+    queue_message("be having some difficulties...");
+    queue_message("probably because it's just turned into a chaffinch.");
     resetgamestatus(MOUNTED, GameStatus);
   }
   if(!onewithchaos)
   {
-    print1("You are immersed in raw Chaos....");
+    queue_message("You are immersed in raw Chaos....");
   }
   if(Player.rank[ADEPT])
   {
     if(!onewithchaos)
     {
       onewithchaos = 1;
-      print2("You achieve oneness of Chaos....");
+      queue_message("You achieve oneness of Chaos....");
     }
     Player.mana = std::max(Player.mana, calcmana());
     Player.hp   = std::max(Player.hp, Player.maxhp);
   }
   else if(Player.rank[PRIESTHOOD] && (!saved))
   {
-    print2("A mysterious force protects you from the Chaos!");
-    print3("Wow.... You feel a bit smug.");
+    queue_message("A mysterious force protects you from the Chaos!");
+    queue_message("Wow.... You feel a bit smug.");
     gain_experience(500);
     saved = true;
   }
   else
   {
-    print2("Uh oh....");
+    queue_message("Uh oh....");
     if(saved)
     {
-      nprint2("Nothing mysterious happens this time....");
+      queue_message("Nothing mysterious happens this time....");
     }
-    print1("Congratulations! You've achieved maximal entropy!");
+    queue_message("Congratulations! You've achieved maximal entropy!");
     Player.alignment -= 50;
     gain_experience(1000);
     p_death("immersion in raw Chaos");
@@ -133,40 +133,40 @@ void l_hedge()
 {
   if(Player.patron == DRUID)
   {
-    print1("You move through the hedges freely.");
+    queue_message("You move through the hedges freely.");
   }
   else
   {
-    print1("You struggle in the brambly hedge... ");
+    queue_message("You struggle in the brambly hedge... ");
     switch(random_range(6))
     {
       case 0:
-        print2("You are stabbed by thorns!");
+        queue_message("You are stabbed by thorns!");
         p_damage(random_range(6), NORMAL_DAMAGE, "a hedge");
-        print3("The thorns were poisonous!");
+        queue_message("The thorns were poisonous!");
         p_poison(random_range(12));
         break;
       case 1:
-        print2("You are stabbed by thorns!");
+        queue_message("You are stabbed by thorns!");
         p_damage(random_range(12), NORMAL_DAMAGE, "a hedge");
         break;
       case 2:
-        print2("You seem to have gotten stuck in the hedge.");
+        queue_message("You seem to have gotten stuck in the hedge.");
         Player.status[IMMOBILE] += random_range(5) + 1;
         break;
       case 3:
         if(Player.possessions[O_CLOAK])
         {
-          print2("Your cloak was torn on the brambles!");
+          queue_message("Your cloak was torn on the brambles!");
           dispose_lost_objects(1, Player.possessions[O_CLOAK]);
         }
         else
         {
-          print2("Ouch! These thorns are scratchy!");
+          queue_message("Ouch! These thorns are scratchy!");
         }
         break;
       default:
-        print2("You make your way through unscathed.");
+        queue_message("You make your way through unscathed.");
         break;
     }
   }
@@ -174,15 +174,15 @@ void l_hedge()
 
 void l_lava()
 {
-  print1("Very clever -- walking into a pool of lava...");
+  queue_message("Very clever -- walking into a pool of lava...");
   if(gamestatusp(MOUNTED, GameStatus))
   {
-    print2("Your horse is incinerated... You fall in too!");
+    queue_message("Your horse is incinerated... You fall in too!");
     resetgamestatus(MOUNTED, GameStatus);
   }
   if(Player.name == "Saltheart Foamfollower")
   {
-    print1("Strangely enough, you don't seem terribly affected.");
+    queue_message("Strangely enough, you don't seem terribly affected.");
     p_damage(1, UNSTOPPABLE, "slow death in a pool of lava");
   }
   else
@@ -198,10 +198,10 @@ void l_lava()
 
 void l_fire()
 {
-  print1("You boldly stride through the curtain of fire...");
+  queue_message("You boldly stride through the curtain of fire...");
   if(gamestatusp(MOUNTED, GameStatus))
   {
-    print2("Your horse is fried and so are you...");
+    queue_message("Your horse is fried and so are you...");
     resetgamestatus(MOUNTED, GameStatus);
   }
   p_damage(random_range(100), FLAME, "self-immolation");
@@ -212,25 +212,25 @@ void l_abyss()
   int i;
   if(Current_Environment != Current_Dungeon)
   {
-    print1("You fall through a dimensional portal!");
+    queue_message("You fall through a dimensional portal!");
     strategic_teleport(-1);
   }
   else
   {
-    print1("You enter the infinite abyss!");
+    queue_message("You enter the infinite abyss!");
     if(random_range(100) == 13)
     {
-      print1("As you fall you see before you what seems like");
-      print2("an infinite congerie of iridescent bubbles.");
-      print3("You have met Yog Sothoth!!!");
+      queue_message("As you fall you see before you what seems like");
+      queue_message("an infinite congerie of iridescent bubbles.");
+      queue_message("You have met Yog Sothoth!!!");
       if(Player.alignment > -10)
       {
         p_death("the Eater of Souls");
       }
       else
       {
-        print1("The All-In-One must have taken pity on you.");
-        print2("A transdimensional portal appears...");
+        queue_message("The All-In-One must have taken pity on you.");
+        queue_message("A transdimensional portal appears...");
         change_level(Level->depth, Level->depth + 1, false);
         gain_experience(2000);
         Player.alignment -= 50;
@@ -239,25 +239,25 @@ void l_abyss()
     else
     {
       i = 0;
-      print1("You fall...");
+      queue_message("You fall...");
       while(random_range(3) != 2)
       {
         if(i % 6 == 0)
         {
-          print2("and fall... ");
+          queue_message("and fall... ");
         }
         else
         {
-          nprint2("and fall... ");
+          queue_message("and fall... ");
         }
         i++;
       }
       i++;
-      print1("Finally,you emerge through an interdimensional interstice...");
+      queue_message("Finally,you emerge through an interdimensional interstice...");
       if(Level->depth + i > MaxDungeonLevels)
       {
-        print2("You emerge high above the ground!!!!");
-        print3("Yaaaaaaaah........");
+        queue_message("You emerge high above the ground!!!!");
+        queue_message("Yaaaaaaaah........");
         change_environment(E_COUNTRYSIDE);
         do
         {
@@ -268,7 +268,7 @@ void l_abyss()
       }
       else
       {
-        print2("You built up some velocity during your fall, though....");
+        queue_message("You built up some velocity during your fall, though....");
         p_damage(i * 5, NORMAL_DAMAGE, "a fall through the abyss");
         change_level(Level->depth, Level->depth + i, false);
         gain_experience(i * i * 50);
@@ -287,17 +287,17 @@ void l_lift()
   Level->site[Player.x][Player.y].locchar = FLOOR;
   Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
   lset(Player.x, Player.y, CHANGED, *Level);
-  print1("You walk onto a shimmering disk....");
-  print2("The disk vanishes, and a glow surrounds you.");
-  print3("You feel weightless.... You feel ghostly....");
-  print1("Go up, down, or neither [u,d,ESCAPE] ");
+  queue_message("You walk onto a shimmering disk....");
+  queue_message("The disk vanishes, and a glow surrounds you.");
+  queue_message("You feel weightless.... You feel ghostly....");
+  queue_message("Go up, down, or neither [u,d,ESCAPE] ");
   do
   {
     response = (char)mcigetc();
   } while((response != 'u') && (response != 'd') && (response != ESCAPE));
   if(response != ESCAPE)
   {
-    print1("How many levels?");
+    queue_message("How many levels?");
     levelnum = (int)parsenum();
     if(levelnum > 6)
     {
@@ -310,10 +310,10 @@ void l_lift()
       change_environment(E_COUNTRYSIDE); /* "you return to the countryside." */
       if(distance > 0)
       {
-        nprint1("..");
-        print2("...and keep going up!  You hang in mid air...");
-        print3("\"What goes up...\"");
-        print3("Yaaaaaaaah........");
+        queue_message("..");
+        queue_message("...and keep going up!  You hang in mid air...");
+        queue_message("\"What goes up...\"");
+        queue_message("Yaaaaaaaah........");
         p_damage(distance * 10, NORMAL_DAMAGE, "a fall from a great height");
       }
       return;
@@ -325,17 +325,17 @@ void l_lift()
     }
     if(levelnum == 0)
     {
-      print1("Nothing happens.");
+      queue_message("Nothing happens.");
       return;
     }
     if(too_far)
     {
-      print1("The lift gives out partway...");
-      print2("You rematerialize.....");
+      queue_message("The lift gives out partway...");
+      queue_message("You rematerialize.....");
     }
     else
     {
-      print1("You rematerialize.....");
+      queue_message("You rematerialize.....");
     }
     change_level(Level->depth, (response == 'd' ? Level->depth + levelnum : Level->depth - levelnum),
                  false);
@@ -346,26 +346,26 @@ void l_lift()
 void l_magic_pool()
 {
   int possibilities = random_range(100);
-  print1("This pool seems to be enchanted....");
+  queue_message("This pool seems to be enchanted....");
   if(gamestatusp(MOUNTED, GameStatus))
   {
     if(random_range(2))
     {
-      print2("Your horse is polymorphed into a fig newton.");
+      queue_message("Your horse is polymorphed into a fig newton.");
       resetgamestatus(MOUNTED, GameStatus);
     }
     else
     {
-      print2("Whatever it was, your horse enjoyed it....");
+      queue_message("Whatever it was, your horse enjoyed it....");
     }
   }
   else if(possibilities == 0)
   {
-    print1("Oh no! You encounter the DREADED AQUAE MORTIS...");
+    queue_message("Oh no! You encounter the DREADED AQUAE MORTIS...");
     if(random_range(1000) < Player.level * Player.level * Player.level)
     {
-      print2("The DREADED AQUAE MORTIS throttles you within inches....");
-      print3("but for some reason chooses to let you escape.");
+      queue_message("The DREADED AQUAE MORTIS throttles you within inches....");
+      queue_message("but for some reason chooses to let you escape.");
       gain_experience(500);
       Player.hp = 1;
     }
@@ -394,46 +394,46 @@ void l_magic_pool()
   {
     if(Player.possessions[O_WEAPON_HAND])
     {
-      print1("You drop your weapon in the pool! It's gone forever!");
+      queue_message("You drop your weapon in the pool! It's gone forever!");
       dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
     }
     else
     {
-      print1("You feel fortunate.");
+      queue_message("You feel fortunate.");
     }
   }
   else if(possibilities < 90)
   {
     if(Player.possessions[O_WEAPON_HAND])
     {
-      print1("Your weapon leaves the pool with a new edge....");
+      queue_message("Your weapon leaves the pool with a new edge....");
       Player.possessions[O_WEAPON_HAND]->plus += random_range(10) + 1;
       calc_melee();
     }
     else
     {
-      print1("You feel unfortunate.");
+      queue_message("You feel unfortunate.");
     }
   }
   else if(possibilities < 95)
   {
     Player.hp += 10;
-    print1("You feel healthier after the dip...");
+    queue_message("You feel healthier after the dip...");
   }
   else if(possibilities < 99)
   {
-    print1("Oooh, a tainted pool...");
+    queue_message("Oooh, a tainted pool...");
     p_poison(10);
   }
   else if(possibilities == 99)
   {
-    print1("Wow! A pool of azoth!");
+    queue_message("Wow! A pool of azoth!");
     heal(10);
     cleanse(1);
     Player.mana = calcmana() * 3;
     Player.str  = (Player.maxstr++) * 3;
   }
-  print2("The pool seems to have dried up.");
+  queue_message("The pool seems to have dried up.");
   Level->site[Player.x][Player.y].locchar = TRAP;
   Level->site[Player.x][Player.y].p_locf  = L_TRAP_PIT;
   lset(Player.x, Player.y, CHANGED, *Level);
@@ -445,8 +445,8 @@ void l_tactical_exit()
 {
   if(optionp(CONFIRM, Player))
   {
-    print1("Do you really want to leave this place? ");
-    if(ynq1() != 'y')
+    queue_message("Do you really want to leave this place? ");
+    if(ynq() != 'y')
     {
       return;
     }
@@ -467,15 +467,15 @@ void l_tactical_exit()
 void l_rubble()
 {
   int screwup = random_range(100) - (Player.agi + Player.level);
-  print1("You climb over the unstable pile of rubble....");
+  queue_message("You climb over the unstable pile of rubble....");
   if(screwup < 0)
   {
-    print2("No problem!");
+    queue_message("No problem!");
   }
   else
   {
-    print2("You tumble and fall in a small avalanche of debris!");
-    print3("You're trapped in the pile!");
+    queue_message("You tumble and fall in a small avalanche of debris!");
+    queue_message("You're trapped in the pile!");
     Player.status[IMMOBILE] += 2;
     p_damage(screwup / 5, UNSTOPPABLE, "rubble and debris");
   }
@@ -486,7 +486,7 @@ void l_portcullis_trap()
 {
   int i, j, slam = false;
 
-  print3("Click.");
+  queue_message("Click.");
   for(i = std::max(Player.x - 5, 0); i < std::min(Player.x + 6, WIDTH); i++)
   {
     for(j = std::max(Player.y - 5, 0); j < std::min(Player.y + 6, LENGTH); j++)
@@ -498,7 +498,7 @@ void l_portcullis_trap()
         putspot(i, j, PORTCULLIS);
         if((i == Player.x) && (j == Player.y))
         {
-          print3("Smash! You've been hit by a falling portcullis!");
+          queue_message("Smash! You've been hit by a falling portcullis!");
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
         }
         slam = true;
@@ -507,7 +507,7 @@ void l_portcullis_trap()
   }
   if(slam)
   {
-    print3("You hear heavy walls slamming down!");
+    queue_message("You hear heavy walls slamming down!");
   }
 }
 
@@ -516,7 +516,7 @@ void l_drop_every_portcullis()
 {
   int i, j, slam = false;
 
-  print3("Click.");
+  queue_message("Click.");
   for(i = 0; i < WIDTH; i++)
   {
     for(j = 0; j < LENGTH; j++)
@@ -533,7 +533,7 @@ void l_drop_every_portcullis()
         putspot(i, j, PORTCULLIS);
         if((i == Player.x) && (j == Player.y))
         {
-          print3("Smash! You've been hit by a falling portcullis!");
+          queue_message("Smash! You've been hit by a falling portcullis!");
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
         }
         slam = true;
@@ -542,7 +542,7 @@ void l_drop_every_portcullis()
   }
   if(slam)
   {
-    print3("You hear heavy walls slamming down!");
+    queue_message("You hear heavy walls slamming down!");
   }
 }
 
@@ -564,7 +564,7 @@ void l_raise_portcullis()
   }
   if(open)
   {
-    print1("You hear the sound of steel on stone!");
+    queue_message("You hear the sound of steel on stone!");
   }
 }
 
@@ -580,8 +580,8 @@ void l_house_exit()
 {
   if(optionp(CONFIRM, Player))
   {
-    print1("Do you really want to leave this abode? ");
-    if(ynq1() != 'y')
+    queue_message("Do you really want to leave this abode? ");
+    if(ynq() != 'y')
     {
       return;
     }
@@ -593,12 +593,12 @@ void l_house_exit()
 
 void l_void()
 {
-  print1("Geronimo!");
-  print1("You leap into the void.");
+  queue_message("Geronimo!");
+  queue_message("You leap into the void.");
   if(Level->mlist)
   {
-    print2("Death peers over the edge and gazes quizzically at you....");
-    print3("'Bye-bye,' he says... 'We'll meet again.'");
+    queue_message("Death peers over the edge and gazes quizzically at you....");
+    queue_message("'Bye-bye,' he says... 'We'll meet again.'");
   }
   while(Player.hp > 0)
   {
@@ -610,13 +610,13 @@ void l_void()
 
 void l_fire_station()
 {
-  print1("The flames leap up, and the heat is incredible.");
+  queue_message("The flames leap up, and the heat is incredible.");
   if(Player.immunity[FLAME])
   {
-    print2("You feel the terrible heat despite your immunity to fire!");
+    queue_message("You feel the terrible heat despite your immunity to fire!");
   }
-  print2("Enter the flames? [yn] ");
-  if(ynq2() == 'y')
+  queue_message("Enter the flames? [yn] ");
+  if(ynq() == 'y')
   {
     if(Player.hp == 1)
     {
@@ -627,49 +627,49 @@ void l_fire_station()
       Player.hp = 1;
     }
     dataprint();
-    print1("You feel like you are being incinerated! Jump back? [yn] ");
-    if(ynq1() == 'y')
+    queue_message("You feel like you are being incinerated! Jump back? [yn] ");
+    if(ynq() == 'y')
     {
-      print2("Phew! That was close!");
+      queue_message("Phew! That was close!");
     }
     else
     {
       Player.pow -= (15 + random_range(15));
       if(Player.pow > 0)
       {
-        print2("That's odd, the flame seems to have cooled down now....");
-        print3("A flicker of fire seems to dance above the void nearby.");
+        queue_message("That's odd, the flame seems to have cooled down now....");
+        queue_message("A flicker of fire seems to dance above the void nearby.");
         Level->site[Player.x][Player.y].locchar = FLOOR;
         Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
         stationcheck();
       }
       else
       {
-        print2("The flames seem to have leached away all your mana!");
+        queue_message("The flames seem to have leached away all your mana!");
         p_death("the Essence of Fire");
       }
     }
   }
   else
   {
-    print2("You flinch away from the all-consuming fire.");
+    queue_message("You flinch away from the all-consuming fire.");
   }
 }
 
 void l_water_station()
 {
-  print1("The fluid seems murky and unknowably deep.");
-  print2("It bubbles and hisses threateningly.");
+  queue_message("The fluid seems murky and unknowably deep.");
+  queue_message("It bubbles and hisses threateningly.");
   if(Player.status[BREATHING])
   {
-    print1("You don't feel sanguine about trying to breathe that stuff!");
+    queue_message("You don't feel sanguine about trying to breathe that stuff!");
   }
   if(Player.immunity[ACID])
   {
-    print2("The vapor burns despite your immunity to acid!");
+    queue_message("The vapor burns despite your immunity to acid!");
   }
-  print1("Enter the fluid? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("Enter the fluid? [yn] ");
+  if(ynq() == 'y')
   {
     if(Player.hp == 1)
     {
@@ -680,46 +680,46 @@ void l_water_station()
       Player.hp = 1;
     }
     dataprint();
-    print2("You choke....");
-    nprint2("Your lungs burn....");
-    print2("Your body begins to disintegrate.... Leave the pool? [yn] ");
-    if(ynq2() == 'y')
+    queue_message("You choke....");
+    queue_message("Your lungs burn....");
+    queue_message("Your body begins to disintegrate.... Leave the pool? [yn] ");
+    if(ynq() == 'y')
     {
-      print2("Phew! That was close!");
+      queue_message("Phew! That was close!");
     }
     else
     {
       Player.con -= (15 + random_range(15));
       if(Player.con > 0)
       {
-        print1("That's odd, the fluid seems to have been neutralized....");
-        print2("A moist miasma wafts above the void nearby.");
+        queue_message("That's odd, the fluid seems to have been neutralized....");
+        queue_message("A moist miasma wafts above the void nearby.");
         Level->site[Player.x][Player.y].locchar = FLOOR;
         Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
         stationcheck();
       }
       else
       {
-        print2("The bubbling fluid has destroyed your constitution!");
+        queue_message("The bubbling fluid has destroyed your constitution!");
         p_death("the Essence of Water");
       }
     }
   }
   else
   {
-    print2("You step back from the pool of acid.");
+    queue_message("You step back from the pool of acid.");
   }
 }
 
 void l_air_station()
 {
-  print1("The whirlwind spins wildly and crackles with lightning.");
+  queue_message("The whirlwind spins wildly and crackles with lightning.");
   if(Player.immunity[ELECTRICITY])
   {
-    print2("You feel static cling despite your immunity to electricity!");
+    queue_message("You feel static cling despite your immunity to electricity!");
   }
-  print1("Enter the storm? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("Enter the storm? [yn] ");
+  if(ynq() == 'y')
   {
     if(Player.hp == 1)
     {
@@ -730,46 +730,46 @@ void l_air_station()
       Player.hp = 1;
     }
     dataprint();
-    print1("You are buffeted and burnt by the storm....");
-    print2("You begin to lose consciousness.... Leave the storm? [yn] ");
-    if(ynq1() == 'y')
+    queue_message("You are buffeted and burnt by the storm....");
+    queue_message("You begin to lose consciousness.... Leave the storm? [yn] ");
+    if(ynq() == 'y')
     {
-      print2("Phew! That was close!");
+      queue_message("Phew! That was close!");
     }
     else
     {
       Player.iq -= (random_range(15) + 15);
       if(Player.iq > 0)
       {
-        print1("That's odd, the storm subsides....");
-        print2("A gust of wind brushes past the void nearby.");
+        queue_message("That's odd, the storm subsides....");
+        queue_message("A gust of wind brushes past the void nearby.");
         Level->site[Player.x][Player.y].locchar = FLOOR;
         Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
         stationcheck();
       }
       else
       {
-        print2("The swirling storm has destroyed your intelligence!");
+        queue_message("The swirling storm has destroyed your intelligence!");
         p_death("the Essence of Air");
       }
     }
   }
   else
   {
-    print2("You step back from the ominous whirlwind.");
+    queue_message("You step back from the ominous whirlwind.");
   }
 }
 
 void l_earth_station()
 {
   pob o;
-  print1("The tendrilled mass reaches out for you from the muddy ooze.");
+  queue_message("The tendrilled mass reaches out for you from the muddy ooze.");
   if(find_item(&o, THINGID + 6, -1))
   {
-    print2("A splash of salt water does nothing to dissuade the vines.");
+    queue_message("A splash of salt water does nothing to dissuade the vines.");
   }
-  print1("Enter the overgrown mire? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("Enter the overgrown mire? [yn] ");
+  if(ynq() == 'y')
   {
     if(Player.hp == 1)
     {
@@ -780,33 +780,33 @@ void l_earth_station()
       Player.hp = 1;
     }
     dataprint();
-    print1("You are being dragged into the muck. Suckers bite you....");
-    print2("You're about to be entangled.... Leave the mud? [yn] ");
-    if(ynq2() == 'y')
+    queue_message("You are being dragged into the muck. Suckers bite you....");
+    queue_message("You're about to be entangled.... Leave the mud? [yn] ");
+    if(ynq() == 'y')
     {
-      print2("Phew! That was close!");
+      queue_message("Phew! That was close!");
     }
     else
     {
       Player.str -= (15 + random_range(15));
       if(Player.str > 0)
       {
-        print1("That's odd, the vine withdraws....");
-        print2("A spatter of dirt sprays into the void nearby.");
+        queue_message("That's odd, the vine withdraws....");
+        queue_message("A spatter of dirt sprays into the void nearby.");
         Level->site[Player.x][Player.y].locchar = FLOOR;
         Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
         stationcheck();
       }
       else
       {
-        print2("The tendril has destroyed your strength!");
+        queue_message("The tendril has destroyed your strength!");
         p_death("the Essence of Earth");
       }
     }
   }
   else
   {
-    print2("You step back from the ominous vegetation.");
+    queue_message("You step back from the ominous vegetation.");
   }
 }
 
@@ -814,7 +814,7 @@ void stationcheck()
 {
   int stationsleft = false;
   int i, j;
-  print1("You feel regenerated.");
+  queue_message("You feel regenerated.");
   Player.hp = Player.maxhp;
   dataprint();
   for(i = 0; i < WIDTH; i++)
@@ -830,12 +830,12 @@ void stationcheck()
   }
   if(!stationsleft)
   {
-    print1("There is a noise like a wild horse's neigh.");
-    print2("You spin around, and don't see anyone around at all");
-    print3("except for a spurred black cloaked figure carrying a scythe.");
-    print1("Death coughs apologetically. He seems a little embarrassed.");
-    print2("A voice peals out:");
-    print3("'An Adept must be able to conquer Death himself....");
+    queue_message("There is a noise like a wild horse's neigh.");
+    queue_message("You spin around, and don't see anyone around at all");
+    queue_message("except for a spurred black cloaked figure carrying a scythe.");
+    queue_message("Death coughs apologetically. He seems a little embarrassed.");
+    queue_message("A voice peals out:");
+    queue_message("'An Adept must be able to conquer Death himself....");
     make_site_monster(32, 4, DEATH);
   }
 }
@@ -848,12 +848,12 @@ void stationcheck()
 void l_void_station()
 {
   int i, something = false;
-  print1("You are at the brink of an endless void. Enter it? [yn] ");
+  queue_message("You are at the brink of an endless void. Enter it? [yn] ");
   if(ynq() == 'y')
   {
     if(!Level->mlist)
     {
-      print2("You fall forever. Eventually you die of starvation.");
+      queue_message("You fall forever. Eventually you die of starvation.");
       while(Player.hp > 0)
       {
         Time += 60;
@@ -863,8 +863,8 @@ void l_void_station()
     }
     else
     {
-      print1("You enter the void.");
-      print2("You feel a sudden surge of power from five directions.");
+      queue_message("You enter the void.");
+      queue_message("You feel a sudden surge of power from five directions.");
       something = (Player.packptr > 0);
       if(!something)
       {
@@ -878,77 +878,77 @@ void l_void_station()
       }
       if(something)
       {
-        print1("The flow of power is disrupted by something!");
-        print2("The power is unbalanced! You lose control!");
-        print1("Each of your cells explodes with a little scream of pain.");
-        print2("Your disrupted essence merges with the megaflow.");
+        queue_message("The flow of power is disrupted by something!");
+        queue_message("The power is unbalanced! You lose control!");
+        queue_message("Each of your cells explodes with a little scream of pain.");
+        queue_message("Your disrupted essence merges with the megaflow.");
         p_death("the Power of the Void");
       }
       else if(!gamestatusp(PREPARED_VOID, GameStatus))
       {
-        print1("The hungry void swallows you whole!");
-        print2("Your being dissipates with a pathetic little sigh....");
+        queue_message("The hungry void swallows you whole!");
+        queue_message("Your being dissipates with a pathetic little sigh....");
         p_death("the Emptyness of the Void");
       }
       else
       {
-        print1("The flow of power rages through your body,");
-        print2("but you manage to master the surge!");
-        print3("You feel adept....");
-        print1("With a thought, you soar up through the void to the");
-        print2("place from whence you came.");
-        print3("As the platform of the Challenge dwindles beneath you");
-        print1("You see Death raise his scythe to you in a salute.");
+        queue_message("The flow of power rages through your body,");
+        queue_message("but you manage to master the surge!");
+        queue_message("You feel adept....");
+        queue_message("With a thought, you soar up through the void to the");
+        queue_message("place from whence you came.");
+        queue_message("As the platform of the Challenge dwindles beneath you");
+        queue_message("You see Death raise his scythe to you in a salute.");
         Player.rank[ADEPT] = 1;
         setgamestatus(COMPLETED_CHALLENGE, GameStatus);
         FixedPoints = calc_points();
         /* set so change_environment puts player in correct temple! */
         Player.x = 49;
         Player.y = 59;
-        print2("You find yourself back in the Temple of Destiny.");
+        queue_message("You find yourself back in the Temple of Destiny.");
         change_environment(E_TEMPLE);
       }
     }
   }
   else
   {
-    print2("You back away from the edge....");
+    queue_message("You back away from the edge....");
   }
 }
 
 void l_voice1()
 {
-  print1("A mysterious voice says: The Hunger of the Void must be satiated.");
+  queue_message("A mysterious voice says: The Hunger of the Void must be satiated.");
   Level->site[Player.x][Player.y].p_locf = L_NO_OP;
 }
 
 void l_voice2()
 {
-  print1("A strange voice recites: Enter the Void as you entered the World.");
+  queue_message("A strange voice recites: Enter the Void as you entered the World.");
   Level->site[Player.x][Player.y].p_locf = L_NO_OP;
 }
 
 void l_voice3()
 {
-  print1("An eerie voice resounds: The Void is the fifth Elemental Station.");
+  queue_message("An eerie voice resounds: The Void is the fifth Elemental Station.");
   Level->site[Player.x][Player.y].p_locf = L_NO_OP;
 }
 
 void l_whirlwind()
 {
-  print1("Buffeting winds swirl you up!");
+  queue_message("Buffeting winds swirl you up!");
   p_damage(random_range(difficulty() * 10), NORMAL_DAMAGE, "a magic whirlwind");
   if(random_range(2))
   {
-    print2("You are jolted by lightning!");
+    queue_message("You are jolted by lightning!");
     p_damage(random_range(difficulty() * 10), ELECTRICITY, "a magic whirlwind");
   }
   if(random_range(2))
   {
-    print1("The whirlwind carries you off....");
+    queue_message("The whirlwind carries you off....");
     if(random_range(20) == 17)
     {
-      print2("'I don't think we're in Kansas anymore, toto.'");
+      queue_message("'I don't think we're in Kansas anymore, toto.'");
     }
     p_teleport(0);
   }
@@ -956,8 +956,8 @@ void l_whirlwind()
 
 void l_enter_circle()
 {
-  print1("You see a translucent stairway before you, leading down.");
-  print2("Take it? [yn] ");
+  queue_message("You see a translucent stairway before you, leading down.");
+  queue_message("Take it? [yn] ");
   if(ynq() == 'y')
   {
     change_environment(E_CIRCLE);
@@ -966,7 +966,7 @@ void l_enter_circle()
 
 void l_circle_library()
 {
-  print1("You see before you the arcane library of the Circle of Sorcerors.");
+  queue_message("You see before you the arcane library of the Circle of Sorcerors.");
 }
 
 void l_tome1()
@@ -1000,23 +1000,23 @@ void l_tome2()
 
 void l_temple_warning()
 {
-  print1("A stern voice thunders in the air around you:");
-  print2("'No unbelievers may enter these sacred precincts;");
-  print3("those who defile this shrine will be destroyed!");
+  queue_message("A stern voice thunders in the air around you:");
+  queue_message("'No unbelievers may enter these sacred precincts;");
+  queue_message("those who defile this shrine will be destroyed!");
 }
 
 void l_throne()
 {
   pob o;
-  print1("You have come upon a huge ornately appointed throne!");
-  print2("Sit in it? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("You have come upon a huge ornately appointed throne!");
+  queue_message("Sit in it? [yn] ");
+  if(ynq() == 'y')
   {
     if(!find_item(&o, ARTIFACTID + 22, -1))
     {
-      print1("The throne emits an eerie violet-black radiance.");
-      print2("You find, to your horror, that you cannot get up!");
-      print3("You feel an abstract sucking sensation...");
+      queue_message("The throne emits an eerie violet-black radiance.");
+      queue_message("You find, to your horror, that you cannot get up!");
+      queue_message("You feel an abstract sucking sensation...");
       for(int i = 0; i < spell::NUM_SPELLS; ++i)
       {
         spell::Spells[i].known = false;
@@ -1025,78 +1025,78 @@ void l_throne()
       Player.mana = 0;
       Player.hp   = 1;
       dispel(-1);
-      print1("The radiance finally ceases. You can get up now.");
+      queue_message("The radiance finally ceases. You can get up now.");
     }
     else
     {
       if(HiMagicUse == Date)
       {
-        print3("You hear the sound of a magic kazoo played by an asthmatic.");
+        queue_message("You hear the sound of a magic kazoo played by an asthmatic.");
       }
       else
       {
         HiMagicUse = Date;
-        print1("Following some strange impulse, you raise the Sceptre....");
-        print2("You hear a magical fanfare, repeated three times.");
+        queue_message("Following some strange impulse, you raise the Sceptre....");
+        queue_message("You hear a magical fanfare, repeated three times.");
         switch(HiMagic++)
         {
           case 0:
-            print3("Strength.");
+            queue_message("Strength.");
             Player.str += 5;
             Player.maxstr += 5;
             break;
           case 1:
-            print3("Constitution.");
+            queue_message("Constitution.");
             Player.con += 5;
             Player.maxcon += 5;
             break;
           case 2:
-            print3("Dexterity.");
+            queue_message("Dexterity.");
             Player.dex += 5;
             Player.maxdex += 5;
             break;
           case 3:
-            print3("Agility.");
+            queue_message("Agility.");
             Player.agi += 5;
             Player.maxagi += 5;
             break;
           case 4:
-            print3("Intelligence.");
+            queue_message("Intelligence.");
             Player.iq += 5;
             Player.maxiq += 5;
             break;
           case 5:
-            print3("Power.");
+            queue_message("Power.");
             Player.pow += 5;
             Player.maxpow += 5;
             break;
           default:
             if(spell::Spells[spell::WISH].known)
             {
-              print1("A mysterious voice mutters peevishly....");
-              print2("So what do you want now? A medal?");
+              queue_message("A mysterious voice mutters peevishly....");
+              queue_message("So what do you want now? A medal?");
             }
             else
             {
-              print1("Mystic runes appear in the air before you:");
-              print2("They appear to describe some high-powered spell.");
-              print1("You hear a distant voice....");
-              print2("'You may now tread the path of High Magic.'");
+              queue_message("Mystic runes appear in the air before you:");
+              queue_message("They appear to describe some high-powered spell.");
+              queue_message("You hear a distant voice....");
+              queue_message("'You may now tread the path of High Magic.'");
               spell::Spells[spell::WISH].known = true;
             }
             break;
           case 17:
-            print1("Weird flickering lights play over the throne.");
-            print2("You hear a strange droning sound, as of a magical");
-            print1("artifact stressed by excessive use....");
-            print2("With an odd tinkling sound the throne shatters!");
+            queue_message("Weird flickering lights play over the throne.");
+            queue_message("You hear a strange droning sound, as of a magical");
+            queue_message("artifact stressed by excessive use....");
+            queue_message("With an odd tinkling sound the throne shatters!");
             Level->site[Player.x][Player.y].locchar = RUBBLE;
             Level->site[Player.x][Player.y].p_locf  = L_RUBBLE;
             lset(Player.x, Player.y, CHANGED, *Level);
             if(find_and_remove_item(ARTIFACTID + 22, -1))
             {
-              print1("Your sceptre reverberates with the noise, and");
-              print2("it too explodes in a spray of shards.");
+              queue_message("Your sceptre reverberates with the noise, and");
+              queue_message("it too explodes in a spray of shards.");
             }
             break;
         }
@@ -1109,27 +1109,27 @@ void l_throne()
 
 void l_escalator()
 {
-  print1("You have found an extremely long stairway going straight up.");
-  print2("The stairs are grilled steel and the bannister is rubber.");
-  print1("Take the stairway? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("You have found an extremely long stairway going straight up.");
+  queue_message("The stairs are grilled steel and the bannister is rubber.");
+  queue_message("Take the stairway? [yn] ");
+  if(ynq() == 'y')
   {
-    print1("The stairs suddenly start moving with a grind of gears!");
-    print2("You are wafted to the surface....");
+    queue_message("The stairs suddenly start moving with a grind of gears!");
+    queue_message("You are wafted to the surface....");
     change_environment(E_COUNTRYSIDE);
   }
 }
 
 void l_enter_court()
 {
-  print1("You have found a magical portal! Enter it? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("You have found a magical portal! Enter it? [yn] ");
+  if(ynq() == 'y')
   {
     if(!gamestatusp(COMPLETED_CASTLE, GameStatus))
     {
       if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
       {
-        print2("A dulcet voice says: 'Jolly good show!'");
+        queue_message("A dulcet voice says: 'Jolly good show!'");
       }
       setgamestatus(COMPLETED_CASTLE, GameStatus);
     }
@@ -1139,45 +1139,45 @@ void l_enter_court()
 
 void l_chaostone()
 {
-  print1("This is a menhir carved of black marble with veins of gold.");
-  print2("It emanates an aura of raw chaos, which is not terribly");
-  print1("surprising, considering its location.");
+  queue_message("This is a menhir carved of black marble with veins of gold.");
+  queue_message("It emanates an aura of raw chaos, which is not terribly");
+  queue_message("surprising, considering its location.");
   if(Player.alignment < 0)
   {
-    print2("You feel an almost unbearable attraction to the stone.");
+    queue_message("You feel an almost unbearable attraction to the stone.");
   }
   else
   {
-    print2("You find it extremely difficult to approach the stone.");
+    queue_message("You find it extremely difficult to approach the stone.");
   }
-  print1("Touch it? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("Touch it? [yn] ");
+  if(ynq() == 'y')
   {
-    print1("A sudden flux of energy surrounds you!");
+    queue_message("A sudden flux of energy surrounds you!");
     if(stonecheck(-1))
     {
-      print2("You feel stronger!");
+      queue_message("You feel stronger!");
       Player.maxstr = std::min(Player.maxstr + 10, std::max(30, Player.maxstr));
       dataprint();
     }
   }
   else
   {
-    print1("You step back from the ominous dolmech.");
+    queue_message("You step back from the ominous dolmech.");
   }
 }
 
 void l_balancestone()
 {
-  print1("This is a massive granite slab teetering dangerously on a corner.");
-  print2("You feel a sense of balance as you regard it.");
-  print1("Touch it? [yn] ");
-  if(ynq1() == 'y')
+  queue_message("This is a massive granite slab teetering dangerously on a corner.");
+  queue_message("You feel a sense of balance as you regard it.");
+  queue_message("Touch it? [yn] ");
+  if(ynq() == 'y')
   {
-    print1("A vortex of mana spins about you!");
+    queue_message("A vortex of mana spins about you!");
     if(abs(Player.alignment) > random_range(50))
     {
-      print2("The cyclone whirls you off to a strange place!");
+      queue_message("The cyclone whirls you off to a strange place!");
       change_environment(E_COUNTRYSIDE);
       do
       {
@@ -1189,16 +1189,16 @@ void l_balancestone()
     }
     else
     {
-      print2("You are being drained of experience! Step back? [yn] ");
-      if(ynq2() == 'y')
+      queue_message("You are being drained of experience! Step back? [yn] ");
+      if(ynq() == 'y')
       {
-        print1("The vortex calms down, dimishes, and then disappears.");
+        queue_message("The vortex calms down, dimishes, and then disappears.");
       }
       else
       {
         Player.xp -= Player.xp / 4;
         dataprint();
-        print2("The vortex vanishes. Suddenly, there is a clap of thunder!");
+        queue_message("The vortex vanishes. Suddenly, there is a clap of thunder!");
         Player.alignment = 0;
         strategic_teleport(1);
       }
@@ -1206,48 +1206,48 @@ void l_balancestone()
   }
   else
   {
-    print1("You step back from the unlikely boulder.");
+    queue_message("You step back from the unlikely boulder.");
   }
 }
 
 void l_lawstone()
 {
-  print1("This is a stele carved of blueish-green feldspar.");
-  print2("You feel an aura of serenity rising from it, and your gaze");
-  print1("is attracted to the bulk of Star Peak to the North-East.");
+  queue_message("This is a stele carved of blueish-green feldspar.");
+  queue_message("You feel an aura of serenity rising from it, and your gaze");
+  queue_message("is attracted to the bulk of Star Peak to the North-East.");
   if(Player.alignment > 0)
   {
-    print2("You feel a subtle attraction to the stone.");
+    queue_message("You feel a subtle attraction to the stone.");
   }
   else
   {
-    print2("You find the stone extremely distasteful to contemplate.");
+    queue_message("You find the stone extremely distasteful to contemplate.");
   }
-  print1("Touch it? [yn] ");
+  queue_message("Touch it? [yn] ");
   if(ynq() == 'y')
   {
-    print1("A matrix of power flows about you!");
+    queue_message("A matrix of power flows about you!");
     if(stonecheck(1))
     {
-      print2("You feel more vigorous!");
+      queue_message("You feel more vigorous!");
       Player.maxcon = std::min(Player.maxcon + 10, std::max(Player.maxcon, 30));
       dataprint();
     }
   }
   else
   {
-    print1("You step back from the strange obelisk.");
+    queue_message("You step back from the strange obelisk.");
   }
 }
 
 void l_voidstone()
 {
-  print1("This is a grey and uninteresting stone.");
-  print2("A feeling of nihility emanates from it.");
-  print1("Touch it? [yn] ");
+  queue_message("This is a grey and uninteresting stone.");
+  queue_message("A feeling of nihility emanates from it.");
+  queue_message("Touch it? [yn] ");
   if(ynq() == 'y')
   {
-    print1("You feel negated.");
+    queue_message("You feel negated.");
     Player.mana = 0;
     toggle_item_use(true);
     for(int i = 0; i < NUMSTATI; ++i)
@@ -1270,7 +1270,7 @@ void l_voidstone()
   }
   else
   {
-    print1("You back away from the strange rock.");
+    queue_message("You back away from the strange rock.");
   }
 }
 
@@ -1278,34 +1278,34 @@ void l_sacrificestone()
 {
   int sacrifice = 1;
   int oldmaxhp  = Player.maxhp;
-  print1("You have come on a weathered basaltic block.");
-  print2("On the top surface is an indentation in human shape.");
-  print1("You see old rust colored stains in the grain of the stone.");
-  print2("You sense something awakening. Touch the block? [yn] ");
-  if(ynq2() == 'y')
+  queue_message("You have come on a weathered basaltic block.");
+  queue_message("On the top surface is an indentation in human shape.");
+  queue_message("You see old rust colored stains in the grain of the stone.");
+  queue_message("You sense something awakening. Touch the block? [yn] ");
+  if(ynq() == 'y')
   {
-    print1("You sense great pain emanating from the ancient altar.");
-    print2("Climb on to the block? [yn] ");
-    if(ynq2() == 'y')
+    queue_message("You sense great pain emanating from the ancient altar.");
+    queue_message("Climb on to the block? [yn] ");
+    if(ynq() == 'y')
     {
-      print1("You are stuck fast to the block!");
-      print2("You feel your life-force being sucked away!");
-      print1("Hit ESCAPE to try and get up at any moment, SPACE to remain.");
+      queue_message("You are stuck fast to the block!");
+      queue_message("You feel your life-force being sucked away!");
+      queue_message("Hit ESCAPE to try and get up at any moment, SPACE to remain.");
       do
       {
         switch(random_range(4))
         {
           case 0:
-            print2("You feel weaker.");
+            queue_message("You feel weaker.");
             break;
           case 1:
-            print2("You feel your life fading.");
+            queue_message("You feel your life fading.");
             break;
           case 2:
-            print2("Your energy is vanishing.");
+            queue_message("Your energy is vanishing.");
             break;
           case 3:
-            print2("You are being drained.");
+            queue_message("You are being drained.");
             break;
         }
         Player.hp -= sacrifice;
@@ -1317,56 +1317,56 @@ void l_sacrificestone()
           p_death("self-sacrifice");
         }
       } while(stillonblock());
-      print1("You manage to wrench yourself off the ancient altar!");
-      print2("You leave some skin behind, though....");
+      queue_message("You manage to wrench yourself off the ancient altar!");
+      queue_message("You leave some skin behind, though....");
       if((oldmaxhp > 10) && (Player.maxhp < 3 * oldmaxhp / 4))
       {
-        print1("A strange red glow arises from the altar.");
-        print2("The glow surrounds you.... You sense gratitude.");
+        queue_message("A strange red glow arises from the altar.");
+        queue_message("The glow surrounds you.... You sense gratitude.");
         Player.pow += sacrifice;
         Player.maxpow += sacrifice / 10;
         dataprint();
       }
       else
       {
-        print1("You a have a sense of rejection.");
-        print2("A roil of fetid vapor smokes up from the altar.");
+        queue_message("You a have a sense of rejection.");
+        queue_message("A roil of fetid vapor smokes up from the altar.");
         gain_experience(sacrifice);
       }
     }
     else
     {
-      print1("You sense an emotion of pique all around you.");
-      print2("You retreat from the strange stone.");
+      queue_message("You sense an emotion of pique all around you.");
+      queue_message("You retreat from the strange stone.");
     }
   }
   else
   {
-    print1("You decide discretion to be the better part of valour.");
-    print2("The stone seems to subside sleepily.");
+    queue_message("You decide discretion to be the better part of valour.");
+    queue_message("The stone seems to subside sleepily.");
   }
 }
 
 void l_mindstone()
 {
-  print1("You approach a giant crystal of some opaline material.");
-  print2("Flashes of irridescent light glint from the object.");
-  print1("You feel your attention being drawn by the intricate crystal.");
-  print2("Look away from the interesting phenomenon? [yn] ");
-  if(ynq2() == 'n')
+  queue_message("You approach a giant crystal of some opaline material.");
+  queue_message("Flashes of irridescent light glint from the object.");
+  queue_message("You feel your attention being drawn by the intricate crystal.");
+  queue_message("Look away from the interesting phenomenon? [yn] ");
+  if(ynq() == 'n')
   {
-    print1("Your gaze focuses deeply on the gem....");
-    print2("The crystal seems to open up and surround you!");
+    queue_message("Your gaze focuses deeply on the gem....");
+    queue_message("The crystal seems to open up and surround you!");
     if(stonecheck(0))
     {
-      print1("Your mind has been enhanced by the experience!");
+      queue_message("Your mind has been enhanced by the experience!");
       Player.maxiq = std::min(Player.maxiq + 10, std::max(Player.maxiq, 30));
       dataprint();
     }
   }
   else
   {
-    print1("You manage to wrench your gaze from the odd jewel.");
-    print2("The light flashes from the crystal diminish in frequency.");
+    queue_message("You manage to wrench your gaze from the odd jewel.");
+    queue_message("The light flashes from the crystal diminish in frequency.");
   }
 }

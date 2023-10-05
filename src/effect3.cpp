@@ -35,12 +35,12 @@ extern interactive_menu *menu;
 int list_monsters()
 {
   int i, itemno;
-  print2("Show ID list? ");
-  if(ynq2() == 'y')
+  queue_message("Show ID list? ");
+  if(ynq() == 'y')
   {
     do
     {
-      print1("Summon monster: ");
+      queue_message("Summon monster: ");
       std::vector<std::string> lines;
       for(i = 0; i < NUMMONSTERS; i++)
       {
@@ -53,7 +53,7 @@ int list_monsters()
       itemno = (int)parsenum() - 1;
       if((itemno < 0) || (itemno > NUMMONSTERS - 1))
       {
-        print3("How about trying a real monster?");
+        queue_message("How about trying a real monster?");
       }
     } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
   }
@@ -61,7 +61,7 @@ int list_monsters()
   {
     do
     {
-      print1("Summon monster: ");
+      queue_message("Summon monster: ");
       itemno = (int)parsenum() - 1;
     } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
   }
@@ -126,7 +126,7 @@ int itemlist(int itemindex, int num)
 {
   append_message("Show ID list? ", true);
 
-  int player_input = ynq2();
+  int player_input = ynq();
   append_message("Item ID? ", true);
   if(player_input == 'y')
   {
@@ -179,13 +179,13 @@ void cleanse(int blessing)
       Player.status[DISEASED] = 0;
     }
     showflags();
-    mprint("You feel radiant!");
+    queue_message("You feel radiant!");
   }
   else
   {
     Player.status[POISONED] += 10;
     Player.status[DISEASED] += 10;
-    mprint("You feel besmirched!");
+    queue_message("You feel besmirched!");
     showflags();
   }
 }
@@ -197,7 +197,7 @@ void annihilate(int blessing)
 
   if(blessing == 0)
   {
-    mprint("Lightning strikes flash all around you!!!");
+    queue_message("Lightning strikes flash all around you!!!");
     for(i = 0; i < 9; i++)
     {
       if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature)
@@ -210,15 +210,15 @@ void annihilate(int blessing)
   {
     if(Current_Environment == E_COUNTRYSIDE)
     {
-      print1("Bolts of lightning flash down for as far as you can see!!!");
-      print1("There is a rain of small birds and insects from the sky, and you");
-      print2("notice that you can't hear any animal noises around here any "
+      queue_message("Bolts of lightning flash down for as far as you can see!!!");
+      queue_message("There is a rain of small birds and insects from the sky, and you");
+      queue_message("notice that you can't hear any animal noises around here any "
              "more...");
       Player.alignment -= 3;
     }
     else
     {
-      mprint("Thousands of bolts of lightning flash throughout the level!!!");
+      queue_message("Thousands of bolts of lightning flash throughout the level!!!");
       for(ml = Level->mlist; ml; ml = ml->next)
       {
         if(ml->m && ml->m->hp > 0)
@@ -230,7 +230,7 @@ void annihilate(int blessing)
   }
   else
   {
-    mprint("You are hit by a bolt of mystic lightning!");
+    queue_message("You are hit by a bolt of mystic lightning!");
     p_death("self-annihilation");
   }
 }
@@ -294,14 +294,14 @@ void sleep_player(int amount)
 {
   if(Player.status[SLEPT] == 0)
   { /* prevent player from sleeping forever */
-    mprint("You feel sleepy...");
+    queue_message("You feel sleepy...");
     if(!p_immune(SLEEP))
     {
       Player.status[SLEPT] += random_range(amount * 2) + 2;
     }
     else
     {
-      mprint("but you shrug off the momentary lassitude.");
+      queue_message("but you shrug off the momentary lassitude.");
     }
   }
 }
@@ -313,7 +313,7 @@ void hide(int x, int y)
     lset(x, y, SECRET, *Level);
     lset(x, y, CHANGED, *Level);
     putspot(x, y, WALL);
-    mprint("You feel sneaky.");
+    queue_message("You feel sneaky.");
   }
 }
 
@@ -321,7 +321,7 @@ void clairvoyance(int vision)
 {
   int i, j;
   int x = Player.x, y = Player.y;
-  mprint("Clairvoyance... ");
+  queue_message("Clairvoyance... ");
   setspot(&x, &y);
   for(i = x - vision; i < x + vision + 1; i++)
   {
@@ -361,40 +361,40 @@ void learnspell(int blessing)
       {
         done                        = true;
         Objects[SCROLLID + 1].known = true;
-        mprint("You feel forgetful.");
+        queue_message("You feel forgetful.");
         spell::Spells[i].known = false;
       }
     }
     if(i == ABORT)
     {
-      mprint("You feel fortunate.");
+      queue_message("You feel fortunate.");
     }
   }
   else
   {
     Objects[SCROLLID + 1].known = true;
     spell::spell_id id = static_cast<spell::spell_id>(random_range(spell::NUM_SPELLS));
-    print1("Spell Research");
+    queue_message("Spell Research");
     if((random_range(4 * spell::Spells[id].powerdrain) + spell::Spells[id].powerdrain) <
        (4 * Player.iq + 8 * Player.level))
     {
-      nprint1(" -- Research successful: ");
-      nprint1(spell::spell_names[id]);
+      queue_message(" -- Research successful: ");
+      queue_message(spell::spell_names[id]);
       if(spell::Spells[id].known)
       {
-        print2("...is now easier to cast.");
+        queue_message("...is now easier to cast.");
         spell::Spells[id].powerdrain = (spell::Spells[id].powerdrain + 1) / 2;
       }
       else
       {
-        print2("...is added to your repertoire");
+        queue_message("...is added to your repertoire");
         spell::Spells[id].known = true;
         gain_experience(spell::Spells[id].powerdrain * 10);
       }
     }
     else
     {
-      nprint1(" -- Research unsuccessful.");
+      queue_message(" -- Research unsuccessful.");
     }
   }
 }
@@ -472,24 +472,24 @@ void disintegrate(int x, int y)
   struct monster *target;
   if(!inbounds(x, y))
   {
-    mprint("You feel a sense of wastage.");
+    queue_message("You feel a sense of wastage.");
   }
   else if((x == Player.x) && (y == Player.y))
   {
     if(Player.possessions[O_CLOAK])
     {
-      mprint("Your cloak disintegrates!");
+      queue_message("Your cloak disintegrates!");
       dispose_lost_objects(1, Player.possessions[O_CLOAK]);
     }
     else if(Player.possessions[O_ARMOR])
     {
-      mprint("Your armor disintegrates!");
+      queue_message("Your armor disintegrates!");
       dispose_lost_objects(1, Player.possessions[O_ARMOR]);
     }
     else
     {
-      mprint("Uh, oh....");
-      mprint("Zzzap! You've been disintegrated!");
+      queue_message("Uh, oh....");
+      queue_message("Zzzap! You've been disintegrated!");
       p_damage(250, UNSTOPPABLE, "disintegration");
     }
   }
@@ -525,7 +525,7 @@ void disintegrate(int x, int y)
     {
       if(Current_Environment == Current_Dungeon)
       {
-        mprint("A hole is blasted in the base of the pit!");
+        queue_message("A hole is blasted in the base of the pit!");
         Level->site[x][y].locchar = TRAP;
         Level->site[x][y].p_locf  = L_TRAP_DOOR;
         Level->site[x][y].aux     = spell::DISINTEGRATE;
@@ -533,12 +533,12 @@ void disintegrate(int x, int y)
       }
       else
       {
-        mprint("The hole just gets deeper....");
+        queue_message("The hole just gets deeper....");
       }
     }
     else if(Level->site[x][y].locchar == FLOOR)
     {
-      mprint("You zap a hole in the floor!");
+      queue_message("You zap a hole in the floor!");
       Level->site[x][y].locchar = TRAP;
       Level->site[x][y].p_locf  = L_TRAP_PIT;
       lset(x, y, CHANGED, *Level);
@@ -547,7 +547,7 @@ void disintegrate(int x, int y)
             (Level->site[x][y].locchar == CLOSED_DOOR) || (Level->site[x][y].locchar == PORTCULLIS) ||
             (Level->site[x][y].locchar == STATUE))
     {
-      mprint("The site is reduced to rubble!");
+      queue_message("The site is reduced to rubble!");
       if(Level->site[x][y].locchar == WALL)
       {
         tunnelcheck();
@@ -559,7 +559,7 @@ void disintegrate(int x, int y)
     }
     else if((Level->site[x][y].locchar == RUBBLE) || (Level->site[x][y].locchar == TRAP))
     {
-      mprint("The site is blasted clear!");
+      queue_message("The site is blasted clear!");
       Level->site[x][y].p_locf  = L_NO_OP;
       Level->site[x][y].locchar = FLOOR;
       lreset(x, y, SECRET, *Level);
@@ -569,7 +569,7 @@ void disintegrate(int x, int y)
     {
       if(Level->site[x][y].p_locf == L_TRIFID)
       {
-        mprint("The trifid screams as it disintgrates!");
+        queue_message("The trifid screams as it disintgrates!");
         gain_experience(50);
         Level->site[x][y].p_locf  = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;
@@ -578,7 +578,7 @@ void disintegrate(int x, int y)
       }
       else
       {
-        mprint("The hedge is blasted away!");
+        queue_message("The hedge is blasted away!");
         Level->site[x][y].p_locf  = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;
         lreset(x, y, SECRET, *Level);
@@ -587,7 +587,7 @@ void disintegrate(int x, int y)
     }
     else
     {
-      mprint("The blast has no effect.");
+      queue_message("The blast has no effect.");
     }
     if(!view_los_p(Player.x, Player.y, x, y))
     {
@@ -602,27 +602,27 @@ void disintegrate(int x, int y)
 
 void acid_cloud()
 {
-  mprint("You are caught in an acid cloud!  ");
+  queue_message("You are caught in an acid cloud!  ");
   if(Player.possessions[O_CLOAK])
   {
     (void)damage_item(Player.possessions[O_CLOAK]);
-    mprint("You are burned by acid.");
+    queue_message("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
   }
   else if(Player.possessions[O_ARMOR])
   {
-    mprint("You are burned by acid.");
+    queue_message("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
     (void)damage_item(Player.possessions[O_ARMOR]);
   }
   else if(p_immune(ACID))
   {
-    mprint("You resist the effects!");
+    queue_message("You resist the effects!");
     return;
   }
   else
   {
-    mprint("The acid eats away at your bare skin!");
+    queue_message("The acid eats away at your bare skin!");
     p_damage(25, ACID, "an acid cloud");
   }
 }
@@ -638,8 +638,8 @@ void p_teleport(int type)
     y = random_range(LENGTH);
     if((Level->site[x][y].locchar != FLOOR) && (Level->site[x][y].locchar != OPEN_DOOR))
     {
-      mprint("You teleported into a solid object....");
-      mprint("You are dead!");
+      queue_message("You teleported into a solid object....");
+      queue_message("You are dead!");
       p_death("teleportation into a solid object");
     }
     else
@@ -658,7 +658,7 @@ void p_teleport(int type)
     if(Level->site[Player.x][Player.y].locchar != FLOOR ||
        Level->site[Player.x][Player.y].creature)
     {
-      mprint("You feel deflected.");
+      queue_message("You feel deflected.");
       p_teleport(0);
     }
   }
@@ -668,14 +668,14 @@ void p_teleport(int type)
 
 void p_poison(int toxicity)
 {
-  mprint("You feel sick.");
+  queue_message("You feel sick.");
   if(!p_immune(POISON))
   {
     Player.status[POISONED] += toxicity;
   }
   else
   {
-    mprint("The sickness fades!");
+    queue_message("The sickness fades!");
   }
   showflags();
 }
@@ -685,7 +685,7 @@ void apport(int blessing)
   int i, index, x = Player.x, y = Player.y;
   if(blessing > -1)
   {
-    mprint("Apport from:");
+    queue_message("Apport from:");
     setspot(&x, &y);
     if(Level->site[x][y].things)
     {
@@ -694,12 +694,12 @@ void apport(int blessing)
     }
     else
     {
-      mprint("There's nothing there to apport!");
+      queue_message("There's nothing there to apport!");
     }
   }
   else
   {
-    mprint("You have a sense of loss.");
+    queue_message("You have a sense of loss.");
     for(i = 0; i < abs(blessing); i++)
     {
       index = random_item();
@@ -724,13 +724,13 @@ void strategic_teleport(int blessing)
   if((Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL) &&
      !gamestatusp(CHEATED, GameStatus))
   {
-    mprint("Some property of this eerie place interferes with the magic!\n");
+    queue_message("Some property of this eerie place interferes with the magic!\n");
     return;
   }
-  mprint("Magic portals open up all around you!");
+  queue_message("Magic portals open up all around you!");
   if(blessing < 0)
   {
-    mprint("You are dragged into one!");
+    queue_message("You are dragged into one!");
     change_environment(E_COUNTRYSIDE);
     do
     {
@@ -740,7 +740,7 @@ void strategic_teleport(int blessing)
   }
   else
   {
-    mprint("Below each portal is a caption. Enter which one:");
+    queue_message("Below each portal is a caption. Enter which one:");
     menuclear();
     menuprint("a: Rampart\n");
     menuprint("b: Village of Star View\n");
@@ -837,7 +837,7 @@ void strategic_teleport(int blessing)
       default:
         if(gamestatusp(CHEATED, GameStatus))
         {
-          mprint("Enter environment number: ");
+          queue_message("Enter environment number: ");
           new_env = (int)parsenum();
           change_environment(new_env);
         }
@@ -845,7 +845,7 @@ void strategic_teleport(int blessing)
     xredraw();
     if(gamestatusp(LOST, GameStatus))
     {
-      print1("You know where you are now.");
+      queue_message("You know where you are now.");
       resetgamestatus(LOST, GameStatus);
       Precipitation = 0;
     }
@@ -863,7 +863,7 @@ void hero(int blessing)
 {
   if(blessing > -1)
   {
-    mprint("You feel super!");
+    queue_message("You feel super!");
     Player.status[HERO] += random_range(5) + 1 + blessing;
     calc_melee();
   }
@@ -871,7 +871,7 @@ void hero(int blessing)
   {
     Player.status[HERO] = 0;
     calc_melee();
-    mprint("You feel cowardly.");
+    queue_message("You feel cowardly.");
     level_drain(abs(blessing), "a potion of cowardice");
   }
 }
@@ -882,19 +882,19 @@ void levitate(int blessing)
   {
     if(gamestatusp(MOUNTED, GameStatus))
     {
-      mprint("You have a strange feeling of lightness in your saddle.");
+      queue_message("You have a strange feeling of lightness in your saddle.");
     }
     else
     {
-      mprint("You start to float a few inches above the floor.");
-      mprint("You discover you can easily control your altitude...");
-      mprint("(Note use of '@' command may be useful while levitating)");
+      queue_message("You start to float a few inches above the floor.");
+      queue_message("You discover you can easily control your altitude...");
+      queue_message("(Note use of '@' command may be useful while levitating)");
       Player.status[LEVITATING] += random_range(5) + 1 + blessing;
     }
   }
   else
   {
-    mprint("Nothing much happens.");
+    queue_message("Nothing much happens.");
   }
 }
 
@@ -903,7 +903,7 @@ void level_return()
 {
   if(Current_Environment == Current_Dungeon)
   {
-    mprint("The vortex of mana carries you off!");
+    queue_message("The vortex of mana carries you off!");
     if(Level->depth > 1)
     {
       change_level(Level->depth, 1, false);
@@ -915,7 +915,7 @@ void level_return()
   }
   else if(Current_Environment == E_COUNTRYSIDE)
   {
-    mprint("A mysterious force wafts you back home!");
+    queue_message("A mysterious force wafts you back home!");
     Player.x = 27;
     Player.y = 19;
     screencheck(Player.x, Player.y);
@@ -924,7 +924,7 @@ void level_return()
   }
   else
   {
-    mprint("A feeble vortex of magic swirls by and has no further effect.");
+    queue_message("A feeble vortex of magic swirls by and has no further effect.");
   }
 }
 
@@ -936,7 +936,7 @@ void cure(int blessing)
     if(Player.status[DISEASED])
     {
       Player.status[DISEASED] = 0;
-      mprint("You feel hygienic!");
+      queue_message("You feel hygienic!");
       happened = true;
     }
     if(Player.status[POISONED])
@@ -944,12 +944,12 @@ void cure(int blessing)
       Player.status[POISONED] -= 5 + blessing * 10;
       if(Player.status[POISONED] > 0)
       {
-        mprint("The effect of the poison has been reduced.");
+        queue_message("The effect of the poison has been reduced.");
       }
       else
       {
         Player.status[POISONED] = 0;
-        mprint("The poison has been purged from your system.");
+        queue_message("The poison has been purged from your system.");
       }
       happened = true;
     }
@@ -957,11 +957,11 @@ void cure(int blessing)
     {
       Player.status[BLINDED] = 0;
       happened               = true;
-      mprint("Cobwebs clear from before your eyes.");
+      queue_message("Cobwebs clear from before your eyes.");
     }
     if(!happened)
     {
-      mprint("Nothing much happens.");
+      queue_message("Nothing much happens.");
     }
   }
   else
@@ -973,15 +973,15 @@ void cure(int blessing)
 
 void disease(int amount)
 {
-  mprint("You feel ill.");
+  queue_message("You feel ill.");
   if(!Player.immunity[INFECTION])
   {
-    mprint("You begin to shiver with ague.");
+    queue_message("You begin to shiver with ague.");
     Player.status[DISEASED] += random_range(amount * 2) + 1;
   }
   else
   {
-    mprint("The illness fades.");
+    queue_message("The illness fades.");
   }
 }
 
@@ -990,12 +990,12 @@ void truesight(int blessing)
   if(blessing > -1)
   {
     Player.status[TRUESIGHT] += random_range(10) + 1;
-    mprint("You feel sharp.");
+    queue_message("You feel sharp.");
   }
   else
   {
     Player.status[BLINDED] += random_range(10) + 1;
-    mprint("You've been blinded!");
+    queue_message("You've been blinded!");
   }
 }
 
@@ -1020,8 +1020,8 @@ void dispel(int blessing)
               setgamestatus(SUPPRESS_PRINTING, GameStatus);
               item_unequip(o);
               resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-              mprint("You hear a sighing sound from");
-              mprint(itemid(o));
+              queue_message("You hear a sighing sound from");
+              queue_message(itemid(o));
               o->blessing = 0;
               setgamestatus(SUPPRESS_PRINTING, GameStatus);
               item_equip(o);
@@ -1029,8 +1029,8 @@ void dispel(int blessing)
             }
             else
             {
-              mprint("You hear dark laughter from");
-              mprint(itemid(o));
+              queue_message("You hear dark laughter from");
+              queue_message(itemid(o));
             }
           }
         }
@@ -1052,7 +1052,7 @@ void dispel(int blessing)
       }
       else
       {
-        mprint("The monster ignores the effect!");
+        queue_message("The monster ignores the effect!");
       }
     }
     else if((Level->site[x][y].p_locf == L_TRAP_FIRE) || (Level->site[x][y].p_locf == L_STATUE_WAKE) ||
@@ -1072,12 +1072,12 @@ void dispel(int blessing)
     }
     else
     {
-      mprint("Nothing much seems to happen.");
+      queue_message("Nothing much seems to happen.");
     }
   }
   else
   {
-    mprint("A smell of ozone and positive ions fills the air..");
+    queue_message("A smell of ozone and positive ions fills the air..");
     if(Player.status[ACCURACY] && (Player.status[ACCURACY] < 1000))
     {
       Player.status[ACCURACY] = 1;
@@ -1136,14 +1136,14 @@ void polymorph(int blessing)
     /* WDT HACK: shouldn't this use one of the 'getarticle' functions
      * to prevent things like "a elder grue" (should be "an elder grue")?
      */
-    mprint("You enjoy your new life as a");
-    mprint(Monsters[random_range(NUMMONSTERS)].monstring);
-    mprint("But your game is over....");
+    queue_message("You enjoy your new life as a");
+    queue_message(Monsters[random_range(NUMMONSTERS)].monstring);
+    queue_message("But your game is over....");
     p_death("polymorphing oneself");
   }
   else if(!(m = Level->site[x][y].creature))
   {
-    mprint("Nothing happens.");
+    queue_message("Nothing happens.");
   }
   else
   {
@@ -1209,21 +1209,21 @@ void hellfire(int x, int y, int blessing)
   struct monster *m;
   if((x == Player.x) && (y == Player.y))
   {
-    mprint("You have been completely annihilated. Congratulations.");
+    queue_message("You have been completely annihilated. Congratulations.");
     p_death("hellfire");
   }
   else if(!(m = Level->site[x][y].creature))
   {
-    mprint("The gods are angry over your waste of power...");
+    queue_message("The gods are angry over your waste of power...");
     level_drain(5, "indiscriminate use of hellfire");
   }
   else
   {
-    mprint("The monster writhes in the flames...");
+    queue_message("The monster writhes in the flames...");
     if(blessing < 0)
     {
-      mprint("...and appears stronger.");
-      mprint("Much stronger.");
+      queue_message("...and appears stronger.");
+      queue_message("Much stronger.");
       m->hp += 1000;
       m->hit += 20;
       m->dmg += 100;
@@ -1233,7 +1233,7 @@ void hellfire(int x, int y, int blessing)
     {
       if(m->uniqueness == COMMON)
       {
-        mprint("and is utterly annihilated. Only a greasy spot remains...");
+        queue_message("and is utterly annihilated. Only a greasy spot remains...");
         m->corpsestr = "a greasy spot";
         m->id        = 0;
         free_objlist(m->possessions);
@@ -1241,7 +1241,7 @@ void hellfire(int x, int y, int blessing)
       }
       else
       {
-        mprint("and dies, cursing your name and the uncaring gods....");
+        queue_message("and dies, cursing your name and the uncaring gods....");
       }
       m_death(m);
     }
@@ -1253,82 +1253,82 @@ void drain(int blessing)
   int             x = Player.x, y = Player.y;
   struct monster *m;
   setspot(&x, &y);
-  mprint("You begin to drain energy...");
+  queue_message("You begin to drain energy...");
   if((x == Player.x) && (y == Player.y))
   {
-    mprint("You drain your own energy....");
-    mprint("Uh, oh, positive feedback....");
+    queue_message("You drain your own energy....");
+    queue_message("Uh, oh, positive feedback....");
     level_drain(Player.level, "self-vampirism");
   }
   else if((m = Level->site[x][y].creature))
   {
     if((blessing > -1) && (!m_immunityp(*m, NEGENERGY)))
     {
-      mprint("The monster seems weaker...");
+      queue_message("The monster seems weaker...");
       m_damage(m, m->level * m->level, NEGENERGY);
       m->hit   = std::max(m->hit - m->level, 1);
       m->dmg   = std::max(m->dmg - m->level * m->level, 1);
       m->ac    = std::max(m->ac - m->level, 1);
       m->level = std::max(1, m->level - 1);
-      mprint("You feel stronger...");
+      queue_message("You feel stronger...");
       gain_experience(m->level * 5);
       Player.hp += (m->level * m->level / 2);
     }
     else
     {
-      mprint("The effect reverses itself!");
-      mprint("The monster seems stronger...");
+      queue_message("The effect reverses itself!");
+      queue_message("The monster seems stronger...");
       m->hp += Player.level * Player.level;
       m->hit += Player.level;
       m->dmg += Player.level * Player.level;
       m->ac += Player.level;
       m->level++;
-      mprint("You feel weaker...");
+      queue_message("You feel weaker...");
       Player.mana = std::min(0, Player.level * Player.level);
       level_drain(m->level, "negative energy conflict");
     }
   }
   else if(blessing < 0)
   {
-    mprint("You seem to lose energy, instead of gaining it!");
+    queue_message("You seem to lose energy, instead of gaining it!");
     level_drain(3, "reversed energy drain");
   }
   else if(Level->site[x][y].locchar == ALTAR)
   {
-    mprint("The altar collapses in on itself....");
+    queue_message("The altar collapses in on itself....");
     Level->site[x][y].locchar = ABYSS;
     Level->site[x][y].p_locf  = L_ABYSS;
     lset(x, y, CHANGED, *Level);
     if(!Player.patron)
     {
-      mprint("You drain some theurgic energy from the altar....");
+      queue_message("You drain some theurgic energy from the altar....");
       gain_experience(40);
       Player.hp += 20;
       Player.pow += 2;
     }
     if(Level->site[x][y].aux == Player.patron)
     {
-      mprint("Your deity is enraged.");
-      mprint("You are struck by godsfire.");
+      queue_message("Your deity is enraged.");
+      queue_message("You are struck by godsfire.");
       p_damage(Player.hp - 1, UNSTOPPABLE, "godsfire");
-      mprint("You feel atheistic.");
+      queue_message("You feel atheistic.");
       Player.patron           = -1;
       Player.rank[PRIESTHOOD] = 0;
     }
     else
     {
-      mprint("You feel the wrath of a god....");
+      queue_message("You feel the wrath of a god....");
       p_damage(random_range(Player.level * 10), UNSTOPPABLE, "divine wrath");
       if(Player.patron != 0)
       {
-        mprint("Your deity doesn't seem to mind your action, though.");
+        queue_message("Your deity doesn't seem to mind your action, though.");
         gain_experience(100);
       }
     }
   }
   else
   {
-    mprint("You drain some energy from the ambient megaflow.");
+    queue_message("You drain some energy from the ambient megaflow.");
     Player.hp++;
   }
 }
@@ -1337,11 +1337,11 @@ void sanctuary()
 {
   if(Level->environment == E_TEMPLE)
   {
-    mprint("Odd, the spell has no effect. I wonder why.");
+    queue_message("Odd, the spell has no effect. I wonder why.");
   }
   else
   {
-    mprint("You're standing on sacred ground!");
+    queue_message("You're standing on sacred ground!");
     Player.sx = Player.x;
     Player.sy = Player.y;
   }
@@ -1354,7 +1354,7 @@ void shadowform()
    * situation, though... */
   if(!Player.status[SHADOWFORM])
   {
-    mprint("You feel like a shadow.");
+    queue_message("You feel like a shadow.");
     Player.immunity[NORMAL_DAMAGE]++;
     Player.immunity[ACID]++;
     Player.immunity[THEFT]++;
@@ -1363,7 +1363,7 @@ void shadowform()
   }
   else
   {
-    mprint("You feel even more shadowy.");
+    queue_message("You feel even more shadowy.");
     Player.status[SHADOWFORM] += Player.level;
   }
 }
@@ -1377,18 +1377,18 @@ void illuminate(int blessing)
     {
       if(loc_statusp(Player.x, Player.y, LIT, *Level))
       {
-        mprint("A glow surrounds you.");
+        queue_message("A glow surrounds you.");
       }
       else
       {
-        mprint("The room lights up!");
+        queue_message("The room lights up!");
         Player.status[ILLUMINATION] += blessing + 3;
         spreadroomlight(Player.x, Player.y, Level->site[Player.x][Player.y].roomnumber);
       }
     }
     else
     {
-      mprint("You see a faint glimmer of light which quickly fades.");
+      queue_message("You see a faint glimmer of light which quickly fades.");
     }
   }
   else
@@ -1397,17 +1397,17 @@ void illuminate(int blessing)
     {
       if(!loc_statusp(Player.x, Player.y, LIT, *Level))
       {
-        mprint("Nothing much happens.");
+        queue_message("Nothing much happens.");
       }
       else
       {
-        mprint("The room darkens!");
+        queue_message("The room darkens!");
         spreadroomdark(Player.x, Player.y, Level->site[Player.x][Player.y].roomnumber);
       }
     }
     else
     {
-      mprint("The gloom thickens for a moment.");
+      queue_message("The gloom thickens for a moment.");
     }
   }
 }
@@ -1415,28 +1415,28 @@ void illuminate(int blessing)
 void drain_life(int amount)
 {
   amount = abs(amount);
-  mprint("You feel cold!");
+  queue_message("You feel cold!");
   if(p_immune(NEGENERGY))
   {
-    mprint("... but the feeling quickly fades.");
+    queue_message("... but the feeling quickly fades.");
   }
   else
   {
     if(random_range(2))
     {
-      mprint("The coldness spreads throughout your body...");
+      queue_message("The coldness spreads throughout your body...");
       Player.str -= amount;
       Player.con -= amount;
       if((Player.str < 3) || (Player.con < 3))
       {
-        mprint("You suffer a fatal heart attack!!!");
+        queue_message("You suffer a fatal heart attack!!!");
         Player.hp = 0;
         p_death("a coronary");
       }
     }
     else
     {
-      mprint("The coldness saps your very soul...");
+      queue_message("The coldness saps your very soul...");
       level_drain(amount, "soul destruction");
     }
   }
@@ -1447,14 +1447,14 @@ void inflict_fear(int x, int y)
   struct monster *m;
   if((Player.x == x) && (Player.y == y))
   {
-    mprint("You shudder with otherworldly dread.");
+    queue_message("You shudder with otherworldly dread.");
     if(Player.immunity[FEAR] > 0)
     {
-      mprint("You brace up and face your fear like a hero!");
+      queue_message("You brace up and face your fear like a hero!");
     }
     else
     {
-      mprint("You panic!");
+      queue_message("You panic!");
       Player.status[AFRAID] += 10;
     }
   }
@@ -1486,7 +1486,7 @@ void inflict_fear(int x, int y)
   }
   else
   {
-    mprint("A thrill of fear tickles your spine ... and passes.");
+    queue_message("A thrill of fear tickles your spine ... and passes.");
   }
 }
 
@@ -1495,12 +1495,12 @@ void deflection(int blessing)
 {
   if(blessing > -1)
   {
-    mprint("You feel buffered.");
+    queue_message("You feel buffered.");
     Player.status[DEFLECTION] = blessing + random_range(6);
   }
   else
   {
-    mprint("You feel vulnerable");
+    queue_message("You feel vulnerable");
     Player.status[VULNERABLE] += random_range(6) - blessing;
   }
 }

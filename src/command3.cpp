@@ -55,11 +55,11 @@ void examine()
    */
   if(Player.status[BLINDED] > 0)
   {
-    mprint("You're blind - you can't examine things.");
+    queue_message("You're blind - you can't examine things.");
     return;
   }
   setgamestatus(SKIP_MONSTERS, GameStatus);
-  mprint("Examine --");
+  queue_message("Examine --");
   setspot(&x, &y);
   if(inbounds(x, y))
   {
@@ -67,23 +67,23 @@ void examine()
     {
       if(!c_statusp(x, y, SEEN, Country))
       {
-        print3("How should I know what that is?");
+        queue_message("How should I know what that is?");
       }
       else
       {
-        mprint("That terrain is:");
-        mprint(countryid(Country[x][y].current_terrain_type));
+        queue_message("That terrain is:");
+        queue_message(countryid(Country[x][y].current_terrain_type));
       }
     }
     else if(!view_los_p(Player.x, Player.y, x, y))
     {
-      print3("I refuse to examine something I can't see.");
+      queue_message("I refuse to examine something I can't see.");
     }
     else
     {
       if(Level->site[x][y].creature)
       {
-        mprint(mstatus_string(Level->site[x][y].creature));
+        queue_message(mstatus_string(Level->site[x][y].creature) + ".");
       }
       else if((Player.x == x) && (Player.y == y))
       {
@@ -91,144 +91,144 @@ void examine()
       }
       if(loc_statusp(x, y, SECRET, *Level))
       {
-        print2("An age-worn stone wall.");
+        queue_message("An age-worn stone wall.");
       }
       else
       {
         switch(Level->site[x][y].locchar)
         {
           case SPACE:
-            print2("An infinite void.");
+            queue_message("An infinite void.");
             break;
           case PORTCULLIS:
-            print2("A heavy steel portcullis");
+            queue_message("A heavy steel portcullis.");
             break;
           case ABYSS:
-            print2("An entrance to the infinite abyss");
+            queue_message("An entrance to the infinite abyss.");
             break;
           case FLOOR:
             if(Current_Dungeon == Current_Environment)
             {
-              print2("A dirty stone floor.");
+              queue_message("A dirty stone floor.");
             }
             else
             {
-              print2("The ground.");
+              queue_message("The ground.");
             }
             break;
           case WALL:
             if(Level->site[x][y].aux == 0)
             {
-              print2("A totally impervious wall.");
+              queue_message("A totally impervious wall.");
             }
             else if(Level->site[x][y].aux < 10)
             {
-              print2("A pitted concrete wall.");
+              queue_message("A pitted concrete wall.");
             }
             else if(Level->site[x][y].aux < 30)
             {
-              print2("An age-worn sandstone wall.");
+              queue_message("An age-worn sandstone wall.");
             }
             else if(Level->site[x][y].aux < 50)
             {
-              print2("A smooth basalt wall.");
+              queue_message("A smooth basalt wall.");
             }
             else if(Level->site[x][y].aux < 70)
             {
-              print2("A solid granite wall.");
+              queue_message("A solid granite wall.");
             }
             else if(Level->site[x][y].aux < 90)
             {
-              print2("A wall of steel.");
+              queue_message("A wall of steel.");
             }
             else if(Level->site[x][y].aux < 210)
             {
               if(Current_Environment == E_CITY)
               {
-                print2("A thick wall of Rampart bluestone");
+                queue_message("A thick wall of Rampart bluestone.");
               }
               else
               {
-                print2("A magically reinforced wall.");
+                queue_message("A magically reinforced wall.");
               }
             }
             else
             {
-              print2("An almost totally impervious wall.");
+              queue_message("An almost totally impervious wall.");
             }
             break;
           case RUBBLE:
-            print2("A dangerous-looking pile of rubble.");
+            queue_message("A dangerous-looking pile of rubble.");
             break;
           case SAFE:
-            print2("A steel safe inset into the floor.");
+            queue_message("A steel safe inset into the floor.");
             break;
           case CLOSED_DOOR:
-            print2("A solid oaken door, now closed.");
+            queue_message("A solid oaken door, now closed.");
             break;
           case OPEN_DOOR:
-            print2("A solid oaken door, now open.");
+            queue_message("A solid oaken door, now open.");
             break;
           case STATUE:
-            print2("A strange-looking statue.");
+            queue_message("A strange-looking statue.");
             break;
           case STAIRS_UP:
-            print2("A stairway leading up.");
+            queue_message("A stairway leading up.");
             break;
           case STAIRS_DOWN:
-            print2("A stairway leading down....");
+            queue_message("A stairway leading down....");
             break;
           case TRAP:
-            print2(trapid(Level->site[x][y].p_locf));
+            queue_message(trapid(Level->site[x][y].p_locf) + ".");
             break;
           case HEDGE:
             if(Level->site[x][y].p_locf == L_EARTH_STATION)
             {
-              print2("A weird fibrillation of oozing tendrils.");
+              queue_message("A weird fibrillation of oozing tendrils.");
             }
             else
             {
-              print2("A brambly, thorny hedge.");
+              queue_message("A brambly, thorny hedge.");
             }
             break;
           case LAVA:
-            print2("A bubbling pool of lava.");
+            queue_message("A bubbling pool of lava.");
             break;
           case LIFT:
-            print2("A strange glowing disk.");
+            queue_message("A strange glowing disk.");
             break;
           case ALTAR:
-            print2("An (un?)holy altar.");
+            queue_message("An (un?)holy altar.");
             break;
           case CHAIR:
-            print2("A chair.");
+            queue_message("A chair.");
             break;
           case WHIRLWIND:
-            print2("A strange cyclonic electrical storm.");
+            queue_message("A strange cyclonic electrical storm.");
             break;
           case WATER:
             if(Level->site[x][y].p_locf == L_WATER)
             {
-              print2("A deep pool of water.");
+              queue_message("A deep pool of water.");
             }
             else if(Level->site[x][y].p_locf == L_CHAOS)
             {
-              print2("A pool of primal chaos.");
+              queue_message("A pool of primal chaos.");
             }
             else if(Level->site[x][y].p_locf == L_WATER_STATION)
             {
-              print2("A bubbling pool of acid.");
+              queue_message("A bubbling pool of acid.");
             }
             else
             {
-              print2("An eerie pool of water.");
+              queue_message("An eerie pool of water.");
             }
             break;
           case FIRE:
-            print2("A curtain of fire.");
+            queue_message("A curtain of fire.");
             break;
           default:
-            print2("Wow, I haven't the faintest idea!");
+            queue_message("Wow, I haven't the faintest idea!");
             break;
         }
       }
@@ -236,7 +236,7 @@ void examine()
       {
         if(!ol->next)
         {
-          print3(itemid(ol->thing));
+          queue_message(itemid(ol->thing));
         }
         else
         {
@@ -298,10 +298,10 @@ void help()
 void version()
 {
   setgamestatus(SKIP_MONSTERS, GameStatus);
-  print3(VERSIONSTRING);
-  nprint3(":");
-  nprint3(" Last Edited: ");
-  nprint3(LAST_OMEGA_EDIT_DATE);
+  queue_message(VERSIONSTRING);
+  queue_message(":");
+  queue_message(" Last Edited: ");
+  queue_message(LAST_OMEGA_EDIT_DATE);
 }
 
 void fire()
@@ -310,7 +310,7 @@ void fire()
   pob             obj;
   struct monster *m;
 
-  print1("Fire/Throw --");
+  queue_message("Fire/Throw --");
   index = getitem(NULL_ITEM);
   if(index == ABORT)
   {
@@ -318,11 +318,11 @@ void fire()
   }
   else if(index == CASHVALUE)
   {
-    print3("Can't fire money at something!");
+    queue_message("Can't fire money at something!");
   }
   else if(cursed(Player.possessions[index]) && Player.possessions[index]->used)
   {
-    print3("You can't seem to get rid of it!");
+    queue_message("You can't seem to get rid of it!");
     /* load a crossbow */
   }
   else if(Player.possessions[O_WEAPON_HAND] &&
@@ -330,7 +330,7 @@ void fire()
           (Player.possessions[O_WEAPON_HAND]->aux != LOADED) &&
           (Player.possessions[index]->id == WEAPONID + 29))
   {
-    mprint("You crank back the crossbow and load a bolt.");
+    queue_message("You crank back the crossbow and load a bolt.");
     Player.possessions[O_WEAPON_HAND]->aux = LOADED;
   }
   else
@@ -342,12 +342,12 @@ void fire()
     if(x2 == ABORT || y2 == ABORT)
     {
       setgamestatus(SKIP_MONSTERS, GameStatus);
-      print2("Aborted.");
+      queue_message("Aborted.");
       return;
     }
     if((x2 == Player.x) && (y2 == Player.y))
     {
-      mprint("You practice juggling for a moment or two.");
+      queue_message("You practice juggling for a moment or two.");
     }
     else
     {
@@ -375,13 +375,13 @@ void fire()
         {
           if(m->treasure > 0)
           { /* the monster can have treasure/objects */
-            mprint("Your gift is caught!");
+            queue_message("Your gift is caught!");
             givemonster(m, split_item(1, obj));
             conform_lost_objects(1, obj);
           }
           else
           {
-            mprint("Your thrown offering is ignored.");
+            queue_message("Your thrown offering is ignored.");
             setgamestatus(SUPPRESS_PRINTING, GameStatus);
             p_drop_at(x1, y1, 1, obj);
             resetgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -390,7 +390,7 @@ void fire()
         }
         else if(obj->aux == I_SCYTHE)
         {
-          mprint("It isn't very aerodynamic... you miss.");
+          queue_message("It isn't very aerodynamic... you miss.");
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           p_drop_at(x1, y1, 1, obj);
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -413,7 +413,7 @@ void fire()
         }
         else
         {
-          mprint("You miss it.");
+          queue_message("You miss it.");
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           p_drop_at(x1, y1, 1, obj);
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -434,7 +434,7 @@ void fire()
 
 void quit(int)
 {
-  mprint("Quit: Are you sure? [yn] ");
+  queue_message("Quit: Are you sure? [yn] ");
   if(ynq() == 'y')
   {
     if(Player.rank[ADEPT] == 0)
@@ -466,18 +466,18 @@ void nap()
   {
     if(naptime-- < 1)
     {
-      mprint("Yawn. You wake up.");
+      queue_message("Yawn. You wake up.");
       resetgamestatus(FAST_MOVE, GameStatus);
       drawvision(Player.x, Player.y);
     }
   }
   else
   {
-    mprint("Rest for how long? (in minutes) ");
+    queue_message("Rest for how long? (in minutes) ");
     naptime = (int)parsenum();
     if(naptime > 600)
     {
-      print3("You can only sleep up to 10 hours (600 minutes)");
+      queue_message("You can only sleep up to 10 hours (600 minutes).");
       naptime = 3600;
     }
     else
@@ -487,7 +487,7 @@ void nap()
     if(naptime > 1)
     {
       setgamestatus(FAST_MOVE, GameStatus);
-      mprint("Resting.... ");
+      queue_message("Resting.... ");
     }
   }
 }
@@ -496,7 +496,7 @@ void charid()
 {
   int  countryside = false;
 
-  mprint("Character to identify: ");
+  queue_message("Character to identify: ");
   char id = mgetc();
   if(Current_Environment == E_COUNTRYSIDE)
   {
@@ -508,132 +508,132 @@ void charid()
     }
     else
     {
-      queue_message(country_description);
+      append_message(country_description);
     }
   }
   if(!countryside)
   {
-    if((id >= 'a' && id <= 'z') || (id >= 'A' && id <= 'Z') || id == '@')
+    if(std::isalpha(id) || id == '@')
     {
-      mprint("A monster or NPC -- examine (x) to find out exactly.");
+      append_message("A monster or NPC -- examine (x) to find out exactly.");
     }
     else
     {
       switch(id)
       {
         case(SPACE & 0xff):
-          mprint(" : An airless void (if seen) or unknown region (if unseen)");
+          append_message("An airless void (if seen) or unknown region (if unseen).");
           break;
         case(WALL & 0xff):
-          mprint(" : An (impenetrable?) wall");
+          append_message("An (impenetrable?) wall.");
           break;
         case(OPEN_DOOR & 0xff):
-          mprint(" : An open door");
+          append_message("An open door.");
           break;
         case(CLOSED_DOOR & 0xff):
-          mprint(" : A closed (possibly locked) door");
+          append_message("A closed (possibly locked) door.");
           break;
         case(LAVA & 0xff):
-          mprint(" : A pool of lava");
+          append_message("A pool of lava.");
           break;
         case(HEDGE & 0xff):
-          mprint(" : A dense hedge");
+          append_message("A dense hedge.");
           break;
         case(WATER & 0xff):
-          mprint(" : A deep body of water");
+          append_message("A deep body of water.");
           break;
         case(FIRE & 0xff):
-          mprint(" : A curtain of fire");
+          append_message("A curtain of fire.");
           break;
         case(TRAP & 0xff):
-          mprint(" : An uncovered trap");
+          append_message("An uncovered trap.");
           break;
         case(STAIRS_UP & 0xff):
-          mprint(" : A stairway leading up");
+          append_message("A stairway leading up.");
           break;
         case(STAIRS_DOWN & 0xff):
-          mprint(" : A stairway leading down");
+          append_message("A stairway leading down.");
           break;
         case(FLOOR & 0xff):
-          mprint(" : The dungeon floor");
+          append_message("The dungeon floor.");
           break;
         case(PORTCULLIS & 0xff):
-          mprint(" : A heavy steel portcullis");
+          append_message("A heavy steel portcullis.");
           break;
         case(ABYSS & 0xff):
-          mprint(" : An entrance to the infinite abyss");
+          append_message("An entrance to the infinite abyss.");
           break;
         case(PLAYER & 0xff):
-          mprint(" : You, the player");
+          append_message("You, the player.");
           break;
         case(CORPSE & 0xff):
-          mprint(" : The remains of some creature");
+          append_message("The remains of some creature.");
           break;
         case(THING & 0xff):
-          mprint(" : Some random miscellaneous object");
+          append_message("Some random miscellaneous object.");
           break;
         case(SAFE & 0xff):
-          mprint(" : A steel safe inset into the floor");
+          append_message("A steel safe inset into the floor.");
           break;
         case(RUBBLE & 0xff):
-          mprint(" : A dangerous-looking pile of rubble");
+          append_message("A dangerous-looking pile of rubble.");
           break;
         case(STATUE & 0xff):
-          mprint(" : A statue");
+          append_message("A statue.");
           break;
         case(ALTAR & 0xff):
-          mprint(" : A (un?)holy altar");
+          append_message("A (un?)holy altar.");
           break;
         case(CASH & 0xff):
-          mprint(" : Bills, specie, gems: cash");
+          append_message("Bills, specie, gems: cash.");
           break;
         case(PILE & 0xff):
-          mprint(" : A pile of objects");
+          append_message("A pile of objects.");
           break;
         case(FOOD & 0xff):
-          mprint(" : Something edible");
+          append_message("Something edible.");
           break;
         case(WEAPON & 0xff):
-          mprint(" : Some kind of weapon");
+          append_message("Some kind of weapon.");
           break;
         case(MISSILEWEAPON & 0xff):
-          mprint(" : Some kind of missile weapon");
+          append_message("Some kind of missile weapon.");
           break;
         case(SCROLL & 0xff):
-          mprint(" : Something readable");
+          append_message("Something readable.");
           break;
         case(POTION & 0xff):
-          mprint(" : Something drinkable");
+          append_message("Something drinkable.");
           break;
         case(ARMOR & 0xff):
-          mprint(" : A suit of armor");
+          append_message("A suit of armor.");
           break;
         case(SHIELD & 0xff):
-          mprint(" : A shield");
+          append_message("A shield.");
           break;
         case(CLOAK & 0xff):
-          mprint(" : A cloak");
+          append_message("A cloak.");
           break;
         case(BOOTS & 0xff):
-          mprint(" : A pair of boots");
+          append_message("A pair of boots.");
           break;
         case(STICK & 0xff):
-          mprint(" : A stick");
+          append_message("A stick.");
           break;
         case(RING & 0xff):
-          mprint(" : A ring");
+          append_message("A ring.");
           break;
         case(ARTIFACT & 0xff):
-          mprint(" : An artifact");
+          append_message("An artifact.");
           break;
         case(CHAIR & 0xff):
-          mprint(" : A chair");
+          append_message("A chair.");
           break;
         case(WHIRLWIND & 0xff):
-          mprint(" : A whirlwind");
+          append_message("A whirlwind.");
           break;
         default:
-          mprint("That character is unused.");
+          append_message("That character is unused.");
           break;
       }
     }
@@ -692,32 +692,32 @@ void vault()
   if(Player.status[IMMOBILE] > 0)
   {
     resetgamestatus(FAST_MOVE, GameStatus);
-    print3("You are unable to move");
+    queue_message("You are unable to move.");
   }
   else
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
-    mprint("Jump where?");
+    queue_message("Jump where?");
     setspot(&x, &y);
     if(!los_p(Player.x, Player.y, x, y))
     {
-      print3("The way is obstructed.");
+      queue_message("The way is obstructed.");
     }
     else if(Player.itemweight > Player.maxweight)
     {
-      print3("You are too burdened to jump anywhere.");
+      queue_message("You are too burdened to jump anywhere.");
     }
     else if(distance(x, y, Player.x, Player.y) > std::max(2, statmod(Player.agi) + 2) + jumper)
     {
-      print3("The jump is too far for you.");
+      queue_message("The jump is too far for you.");
     }
     else if(Level->site[x][y].creature)
     {
-      print3("You can't jump on another creature.");
+      queue_message("You can't jump on another creature.");
     }
     else if(!p_moveable(x, y))
     {
-      print3("You can't jump there.");
+      queue_message("You can't jump there.");
     }
     else
     {
@@ -726,7 +726,7 @@ void vault()
       Player.y = y;
       if((!jumper) && (random_range(30) > Player.agi))
       {
-        mprint("Oops -- took a tumble.");
+        queue_message("Oops -- took a tumble.");
         setgamestatus(SKIP_PLAYER, GameStatus);
         p_damage((Player.itemweight / 250), UNSTOPPABLE, "clumsiness");
       }
@@ -798,7 +798,7 @@ void tacoptions()
       showmenu();
       draw_again = false;
     }
-    mprint("Maneuvers Left: " + std::to_string(actionsleft));
+    queue_message("Maneuvers Left: " + std::to_string(actionsleft));
     switch(mgetc())
     {
       case '?':
@@ -809,7 +809,7 @@ void tacoptions()
       case 'A':
         if(actionsleft < 1)
         {
-          print3("No more maneuvers!");
+          queue_message("No more maneuvers!");
         }
         else
         {
@@ -823,7 +823,7 @@ void tacoptions()
       case 'B':
         if(actionsleft < 1)
         {
-          print3("No more maneuvers!");
+          queue_message("No more maneuvers!");
         }
         else
         {
@@ -837,7 +837,7 @@ void tacoptions()
       case 'L':
         if(actionsleft < 2)
         {
-          print3("Not enough maneuvers to lunge!");
+          queue_message("Not enough maneuvers to lunge!");
         }
         else
         {
@@ -852,12 +852,12 @@ void tacoptions()
             }
             else
             {
-              print3("Can't lunge with a missile weapon!");
+              queue_message("Can't lunge with a missile weapon!");
             }
           }
           else
           {
-            print3("Can't lunge without a weapon!");
+            queue_message("Can't lunge without a weapon!");
           }
         }
         break;
@@ -865,7 +865,7 @@ void tacoptions()
       case 'R':
         if(actionsleft < 2)
         {
-          print3("Not enough maneuvers to riposte!");
+          queue_message("Not enough maneuvers to riposte!");
         }
         else
         {
@@ -880,12 +880,12 @@ void tacoptions()
             }
             else
             {
-              print3("Can't riposte without a thrusting weapon!");
+              queue_message("Can't riposte without a thrusting weapon!");
             }
           }
           else
           {
-            print3("Can't riposte without a thrusting weapon!");
+            queue_message("Can't riposte without a thrusting weapon!");
           }
         }
         break;
@@ -940,7 +940,7 @@ void pickpocket()
   int             dx, dy;
   struct monster *m;
 
-  mprint("Pickpocketing --");
+  queue_message("Pickpocketing --");
 
   int index = getdir();
 
@@ -955,7 +955,7 @@ void pickpocket()
 
     if(!inbounds(Player.x + dx, Player.y + dy) || !Level->site[Player.x + dx][Player.y + dy].creature)
     {
-      print3("There's nothing there to steal from!!!");
+      queue_message("There's nothing there to steal from!!!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
@@ -963,17 +963,17 @@ void pickpocket()
       m = Level->site[Player.x + dx][Player.y + dy].creature;
       if(m->id == GUARD)
       {
-        mprint("Trying to steal from a guardsman, eh?");
-        mprint("Not a clever idea.");
+        queue_message("Trying to steal from a guardsman, eh?");
+        queue_message("Not a clever idea.");
         if(Player.cash > 0)
         {
-          mprint("As a punitive fine, the guard takes all your money.");
+          queue_message("As a punitive fine, the guard takes all your money.");
           Player.cash = 0;
           dataprint();
         }
         else
         {
-          mprint("The guardsman places you under arrest.");
+          queue_message("The guardsman places you under arrest.");
           send_to_jail();
         }
       }
@@ -986,7 +986,7 @@ void pickpocket()
         }
         else if(success)
         {
-          queue_message(std::format("You stole: {}", itemid(m->possessions->thing)));
+          queue_message(std::format("You stole: {}.", itemid(m->possessions->thing)));
           Player.alignment--;
           gain_experience(m->level * m->level);
           gain_item(m->possessions->thing);
@@ -1026,12 +1026,12 @@ void abortshadowform()
   setgamestatus(SKIP_MONSTERS, GameStatus);
   if(Player.status[SHADOWFORM] && (Player.status[SHADOWFORM] < 1000))
   {
-    mprint("You abort your spell of Shadow Form.");
+    queue_message("You abort your spell of Shadow Form.");
     Player.immunity[NORMAL_DAMAGE]--;
     Player.immunity[ACID]--;
     Player.immunity[THEFT]--;
     Player.immunity[INFECTION]--;
-    mprint("You feel less shadowy now.");
+    queue_message("You feel less shadowy now.");
     Player.status[SHADOWFORM] = 0;
   }
 }
@@ -1040,7 +1040,7 @@ void tunnel()
 {
   int dir, ox, oy, aux;
 
-  mprint("Tunnel -- ");
+  queue_message("Tunnel -- ");
   dir = getdir();
   if(dir == ABORT)
   {
@@ -1052,11 +1052,11 @@ void tunnel()
     oy = Player.y + Dirs[1][dir];
     if(loc_statusp(ox, oy, SECRET, *Level))
     {
-      mprint("You have no success as yet.");
+      queue_message("You have no success as yet.");
     }
     else if(Level->site[ox][oy].locchar != WALL)
     {
-      print3("You can't tunnel through that!");
+      queue_message("You can't tunnel through that!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
@@ -1066,26 +1066,26 @@ void tunnel()
       {
         if(!Player.possessions[O_WEAPON_HAND])
         {
-          mprint("Ouch! broke a fingernail...");
+          queue_message("Ouch! broke a fingernail...");
           p_damage(Player.str / 6, UNSTOPPABLE, "a broken fingernail");
         }
         else if((Player.possessions[O_WEAPON_HAND]->type == THRUSTING) ||
                 ((Player.possessions[O_WEAPON_HAND]->type != STRIKING) &&
                  (Player.possessions[O_WEAPON_HAND]->fragility < random_range(20))))
         {
-          mprint("Clang! Uh oh...");
+          queue_message("Clang! Uh oh...");
           (void)damage_item(Player.possessions[O_WEAPON_HAND]);
         }
         else
         {
-          mprint("Your digging implement shows no sign of breaking.");
+          queue_message("Your digging implement shows no sign of breaking.");
         }
       }
       if(!Player.possessions[O_WEAPON_HAND])
       {
         if((aux > 0) && ((Player.str / 3) + random_range(100) > aux))
         {
-          mprint("You carve a tunnel through the stone!");
+          queue_message("You carve a tunnel through the stone!");
           tunnelcheck();
           Level->site[ox][oy].locchar = RUBBLE;
           Level->site[ox][oy].p_locf  = L_RUBBLE;
@@ -1093,14 +1093,14 @@ void tunnel()
         }
         else
         {
-          mprint("No joy.");
+          queue_message("No joy.");
         }
       }
       else if(Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
       {
         if((aux > 0) && (Player.possessions[O_WEAPON_HAND]->dmg * 2 + random_range(100) > aux))
         {
-          mprint("You carve a tunnel through the stone!");
+          queue_message("You carve a tunnel through the stone!");
           tunnelcheck();
           Level->site[ox][oy].locchar = RUBBLE;
           Level->site[ox][oy].p_locf  = L_RUBBLE;
@@ -1108,12 +1108,12 @@ void tunnel()
         }
         else
         {
-          mprint("No luck.");
+          queue_message("No luck.");
         }
       }
       else if((aux > 0) && (Player.possessions[O_WEAPON_HAND]->dmg + random_range(100) > aux))
       {
-        mprint("You carve a tunnel through the stone!");
+        queue_message("You carve a tunnel through the stone!");
         tunnelcheck();
         Level->site[ox][oy].locchar = RUBBLE;
         Level->site[ox][oy].p_locf  = L_RUBBLE;
@@ -1121,7 +1121,7 @@ void tunnel()
       }
       else
       {
-        mprint("You have no success as yet.");
+        queue_message("You have no success as yet.");
       }
     }
   }
@@ -1133,7 +1133,7 @@ void hunt(Symbol terrain)
   switch(terrain)
   {
     case SWAMP:
-      mprint("You hesitate to hunt for food in the marshy wasteland.");
+      queue_message("You hesitate to hunt for food in the marshy wasteland.");
       break;
     case VOLCANO:
     case CASTLE:
@@ -1142,57 +1142,57 @@ void hunt(Symbol terrain)
     case STARPEAK:
     case MAGIC_ISLE:
     case DRAGONLAIR:
-      mprint("There is nothing alive here (or so it seems)");
+      queue_message("There is nothing alive here (or so it seems).");
       break;
     case VILLAGE:
     case CITY:
-      mprint("You can find no food here; perhaps if you went inside....");
+      queue_message("You can find no food here; perhaps if you went inside....");
       break;
     case ROAD:
-      mprint("You feel it would be a better idea to hunt off the road.");
+      queue_message("You feel it would be a better idea to hunt off the road.");
       break;
     case CHAOS_SEA:
-      mprint("Food in the Sea of Chaos? Go on!");
+      queue_message("Food in the Sea of Chaos? Go on!");
       break;
     case DESERT:
-      mprint("You wander off into the trackless desert in search of food...");
+      queue_message("You wander off into the trackless desert in search of food...");
       Time += 100;
       hourly_check();
       fertility = 10;
       break;
     case JUNGLE:
-      mprint("You search the lush and verdant jungle for game....");
+      queue_message("You search the lush and verdant jungle for game....");
       Time += 100;
       hourly_check();
       fertility = 80;
       break;
     case PLAINS:
-      mprint("You set off through the tall grass; the game is afoot.");
+      queue_message("You set off through the tall grass; the game is afoot.");
       Time += 100;
       hourly_check();
       fertility = 50;
       break;
     case TUNDRA:
-      mprint("You blaze a trail through the frozen wasteland....");
+      queue_message("You blaze a trail through the frozen wasteland....");
       Time += 100;
       hourly_check();
       fertility = 30;
       break;
     case FOREST:
-      mprint("You try to follow the many tracks through the forest loam....");
+      queue_message("You try to follow the many tracks through the forest loam....");
       Time += 100;
       hourly_check();
       fertility = 70;
       break;
     case MOUNTAINS:
     case PASS:
-      mprint("You search the cliff walls looking for something to eat....");
+      queue_message("You search the cliff walls looking for something to eat....");
       Time += 100;
       hourly_check();
       fertility = 30;
       break;
     case RIVER:
-      mprint("The halcyon river is your hopeful food source...");
+      queue_message("The halcyon river is your hopeful food source...");
       Time += 100;
       hourly_check();
       fertility = 80;
@@ -1200,17 +1200,17 @@ void hunt(Symbol terrain)
   }
   if(((Date % 360 < 60) || (Date % 360 > 300)) && (terrain != DESERT) && (terrain != JUNGLE))
   {
-    mprint("The cold weather impedes your hunt....");
+    queue_message("The cold weather impedes your hunt....");
     fertility = fertility / 2;
   }
   if(fertility > random_range(100))
   {
-    mprint("You have an encounter...");
+    queue_message("You have an encounter...");
     change_environment(E_TACTICAL_MAP);
   }
   else
   {
-    mprint("Your hunt is fruitless.");
+    queue_message("Your hunt is fruitless.");
   }
 }
 
@@ -1219,12 +1219,12 @@ void dismount_steed()
   pml ml;
   if(!gamestatusp(MOUNTED, GameStatus))
   {
-    print3("You're on foot already!");
+    queue_message("You're on foot already!");
   }
   else if(Current_Environment == E_COUNTRYSIDE)
   {
-    mprint("If you leave your steed here he will wander away!");
-    mprint("Do it anyway? [yn] ");
+    queue_message("If you leave your steed here he will wander away!");
+    queue_message("Do it anyway? [yn] ");
     if(ynq() == 'y')
     {
       resetgamestatus(MOUNTED, GameStatus);
@@ -1252,29 +1252,29 @@ void city_move()
   int site, x = Player.x, y = Player.y, toggle = false;
   if(Current_Environment != E_CITY)
   {
-    print3("This command only works in the city!");
+    queue_message("This command only works in the city!");
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else if(Player.status[IMMOBILE] > 0)
   {
-    print3("You can't even move!");
+    queue_message("You can't even move!");
   }
   else if(hostilemonstersnear())
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
-    print3("You can't move this way with hostile monsters around!");
+    queue_message("You can't move this way with hostile monsters around!");
   }
   else if(Level->site[Player.x][Player.y].aux == NOCITYMOVE)
   {
-    print3("You can't use the 'M' command from this location.");
+    queue_message("You can't use the 'M' command from this location.");
   }
   else
   {
-    print1("Move to which establishment [? for help, ESCAPE to quit]");
+    queue_message("Move to which establishment [? for help, ESCAPE to quit]");
     site = parsecitysite();
     if(site != ABORT)
     {
-      mprint("You're on your way...");
+      queue_message("You're on your way...");
       while((x != CitySiteList[site][1]) || (y != CitySiteList[site][2]))
       {
         toggle = !toggle;
@@ -1298,7 +1298,7 @@ void city_move()
       Player.x = x;
       Player.y = y;
       screencheck(Player.x, Player.y);
-      mprint("Made it!");
+      queue_message("Made it!");
       drawvision(Player.x, Player.y);
       p_movefunction(Level->site[x][y].p_locf);
     }
@@ -1309,21 +1309,21 @@ void frobgamestatus()
 {
   char response;
   long num;
-  mprint("Set or Reset or Forget it [s,r,ESCAPE]:");
+  queue_message("Set or Reset or Forget it [s,r,ESCAPE]:");
   do
   {
     response = (char)mcigetc();
   } while((response != 'r') && (response != 's') && (response != ESCAPE));
   if(response != ESCAPE)
   {
-    mprint("Enter log2 of flag:");
+    queue_message("Enter log2 of flag:");
     num = (int)parsenum();
     if(num > -1)
     {
       num = pow2(num);
       if(num == CHEATED)
       {
-        mprint("Can't alter Wizard flag.");
+        queue_message("Can't alter Wizard flag.");
         return;
       }
       if(response == 's')
@@ -1334,7 +1334,7 @@ void frobgamestatus()
       {
         resetgamestatus(num, GameStatus);
       }
-      mprint("Done....");
+      queue_message("Done....");
     }
   }
 }

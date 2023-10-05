@@ -35,17 +35,17 @@ void m_talk_druid(struct monster *m)
 
   if(!m_statusp(*m, HOSTILE))
   {
-    print1("The Archdruid raises a hand in greeting.");
+    queue_message("The Archdruid raises a hand in greeting.");
     if(!gamestatusp(SPOKE_TO_DRUID, GameStatus))
     {
       setgamestatus(SPOKE_TO_DRUID, GameStatus);
-      print1("The Archdruid congratulates you on reaching his sanctum.");
-      print2("You feel competent.");
+      queue_message("The Archdruid congratulates you on reaching his sanctum.");
+      queue_message("You feel competent.");
       gain_experience(300);
       if(Player.patron == DRUID)
       {
-        print1("The Archdruid conveys to you the wisdom of nature....");
-        print2("You feel like a sage.");
+        queue_message("The Archdruid conveys to you the wisdom of nature....");
+        queue_message("You feel like a sage.");
         for(i = 0; i < NUMRANKS; i++)
         {
           if(Player.guildxp[i] > 0)
@@ -55,24 +55,24 @@ void m_talk_druid(struct monster *m)
         }
       }
     }
-    mprint("Do you request a ritual of neutralization? [yn] ");
+    queue_message("Do you request a ritual of neutralization? [yn] ");
     if(ynq() == 'y')
     {
       if(Phase / 2 == 6 || Phase / 2 == 0)
       { /* full or new moon */
-        mprint("\"Unfortunately, I cannot perform a ritual of balance on");
+        queue_message("\"Unfortunately, I cannot perform a ritual of balance on");
         if(Phase / 2 == 6)
         {
-          mprint("this lawful day.\"");
+          queue_message("this lawful day.\"");
         }
         else
         {
-          mprint("this chaotic day.\"");
+          queue_message("this chaotic day.\"");
         }
       }
       else if(Phase / 2 == 3 || Phase / 2 == 9)
       { /* half moon */
-        mprint("You take part in today's holy celebration of balance...");
+        queue_message("You take part in today's holy celebration of balance...");
         Player.alignment = 0;
         Player.mana      = calcmana();
         if(Player.patron == DRUID)
@@ -94,7 +94,7 @@ void m_talk_druid(struct monster *m)
       }
       else
       {
-        mprint("The ArchDruid conducts a sacred rite of balance...");
+        queue_message("The ArchDruid conducts a sacred rite of balance...");
         if(Player.patron == DRUID)
         {
           Player.alignment = 0;
@@ -113,13 +113,13 @@ void m_talk_druid(struct monster *m)
   }
   else
   {
-    mprint("The ArchDruid looks at you and cries: 'Unclean! Unclean!'");
+    queue_message("The ArchDruid looks at you and cries: 'Unclean! Unclean!'");
     disrupt(Player.x, Player.y, 100);
-    mprint("This seems to have satiated his desire for vengeance.");
-    mprint("'Have you learned your lesson?' The ArchDruid asks. [yn] ");
+    queue_message("This seems to have satiated his desire for vengeance.");
+    queue_message("'Have you learned your lesson?' The ArchDruid asks. [yn] ");
     if(ynq())
     {
-      mprint("'I certainly hope so!' says the ArchDruid.");
+      queue_message("'I certainly hope so!' says the ArchDruid.");
       for(curr = Level->mlist; curr; curr = curr->next)
       {
         m_status_reset(*curr->m, HOSTILE);
@@ -128,7 +128,7 @@ void m_talk_druid(struct monster *m)
     }
     else
     {
-      mprint("'Idiot.' mutters the ArchDruid.");
+      queue_message("'Idiot.' mutters the ArchDruid.");
       p_damage(500, UNSTOPPABLE, "the ArchDruid's Vengeance");
     }
   }
@@ -250,35 +250,35 @@ void m_talk_guard(struct monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
-    print1("'Surrender in the name of the Law!'");
-    print2("Do it? [yn] ");
-    if(ynq2() == 'y')
+    queue_message("'Surrender in the name of the Law!'");
+    queue_message("Do it? [yn] ");
+    if(ynq() == 'y')
     {
       Player.alignment++;
       if(Current_Environment == E_CITY)
       {
-        print1("Go directly to jail. Do not pass go, do not collect 200Au.");
-        print2("You are taken to the city gaol.");
+        queue_message("Go directly to jail. Do not pass go, do not collect 200Au.");
+        queue_message("You are taken to the city gaol.");
         send_to_jail();
         drawvision(Player.x, Player.y);
       }
       else
       {
-        print1("Mollified, the guard disarms you and sends you away.");
+        queue_message("Mollified, the guard disarms you and sends you away.");
         dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
         pacify_guards();
       }
     }
     else
     {
-      print1("All right, you criminal scum, you asked for it!");
+      queue_message("All right, you criminal scum, you asked for it!");
     }
   }
   else if(!received_directions && Current_Environment == E_CITY)
   {
-    print1("The guard offers to show you a map of Rampart.");
-    print2("Look at the map? [yn]  ");
-    if(ynq2() == 'y')
+    queue_message("The guard offers to show you a map of Rampart.");
+    queue_message("Look at the map? [yn]  ");
+    if(ynq() == 'y')
     {
       for(int i = 0; i < NUMCITYSITES; ++i)
       {
@@ -288,27 +288,27 @@ void m_talk_guard(struct monster *m)
           CitySiteList[i][0] = true;
         }
       }
-      print1("You feel more knowledgeable!");
+      queue_message("You feel more knowledgeable!");
     }
     else
     {
-      print1("Next time you need help, you can ask someone else!");
+      queue_message("Next time you need help, you can ask someone else!");
     }
     received_directions = true;
   }
   else if(Player.rank[ORDER] > 0)
   {
-    print1("'Greetings comrade! May you always tread the paths of Law.'");
+    queue_message("'Greetings comrade! May you always tread the paths of Law.'");
   }
   else
   {
-    print1("Move it right along, stranger!");
+    queue_message("Move it right along, stranger!");
   }
 }
 
 void m_talk_mp(struct monster *)
 {
-  mprint("The mendicant priest asks you to spare some treasure for the needy");
+  queue_message("The mendicant priest asks you to spare some treasure for the needy");
 }
 
 void m_talk_titter(struct monster *m)
@@ -325,8 +325,8 @@ void m_talk_titter(struct monster *m)
 
 void m_talk_ninja(struct monster *)
 {
-  mprint("The black-garbed figure says apologetically:");
-  mprint("'Situree simasita, wakarimasen.'");
+  queue_message("The black-garbed figure says apologetically:");
+  queue_message("'Situree simasita, wakarimasen.'");
 }
 
 void m_talk_thief(struct monster *m)
@@ -341,9 +341,9 @@ void m_talk_thief(struct monster *m)
     {
       m->monstring = "master thief";
     }
-    print1("The cloaked figure makes a gesture which you recognize...");
-    print2("...the thieves' guild recognition signal!");
-    print3("'Sorry, mate, thought you were a mark....'");
+    queue_message("The cloaked figure makes a gesture which you recognize...");
+    queue_message("...the thieves' guild recognition signal!");
+    queue_message("'Sorry, mate, thought you were a mark....'");
     m_vanish(m);
   }
   else
@@ -355,8 +355,8 @@ void m_talk_thief(struct monster *m)
 void m_talk_assassin(struct monster *m)
 {
   m->monstring = "master assassin";
-  print1("The ominous figure does not reply, but hands you an embossed card:");
-  print2("'Guild of Assassins Ops are forbidden to converse with targets.'");
+  queue_message("The ominous figure does not reply, but hands you an embossed card:");
+  queue_message("'Guild of Assassins Ops are forbidden to converse with targets.'");
 }
 
 void m_talk_im(struct monster *m)
@@ -367,32 +367,32 @@ void m_talk_im(struct monster *m)
   }
   if(!m->possessions)
   {
-    mprint("The merchant says: Alas! I have nothing to sell!");
+    queue_message("The merchant says: Alas! I have nothing to sell!");
   }
   else
   {
     m->possessions->thing->known = 2;
     long price                   = std::max(10l, 4 * true_item_value(m->possessions->thing));
-    mprint(std::format("I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions->thing), price));
+    queue_message(std::format("I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions->thing), price));
     if(ynq() == 'y')
     {
       if(Player.cash < price)
       {
         if(Player.alignment > 10)
         {
-          mprint("Well, I'll let you have it for what you've got.");
+          queue_message("Well, I'll let you have it for what you've got.");
           Player.cash = 0;
           gain_item(m->possessions->thing);
           m->possessions = nullptr;
         }
         else
         {
-          mprint("Beat it, you deadbeat!");
+          queue_message("Beat it, you deadbeat!");
         }
       }
       else
       {
-        mprint("Here you are. Have a good day.");
+        queue_message("Here you are. Have a good day.");
         Player.cash -= price;
         gain_item(m->possessions->thing);
         m->possessions = nullptr;
@@ -400,7 +400,7 @@ void m_talk_im(struct monster *m)
     }
     else
     {
-      mprint("Well then, I must be off. Good day.");
+      queue_message("Well then, I must be off. Good day.");
     }
     m_vanish(m);
   }
@@ -525,12 +525,12 @@ void m_talk_robot(struct monster *m)
 
 void m_talk_slithy(struct monster *)
 {
-  mprint("It can't talk -- it's too slithy!");
+  queue_message("It can't talk -- it's too slithy!");
 }
 
 void m_talk_mimsy(struct monster *)
 {
-  mprint("It can't talk -- it's too mimsy!");
+  queue_message("It can't talk -- it's too mimsy!");
 }
 
 void m_talk_burble(struct monster *m)
@@ -582,22 +582,22 @@ void m_talk_hint(struct monster *m)
 
 void m_talk_gf(struct monster *m)
 {
-  mprint("The good fairy glints: Would you like a wish?");
+  queue_message("The good fairy glints: Would you like a wish?");
   if(ynq() == 'y')
   {
-    mprint("The good fairy glows: Are you sure?");
+    queue_message("The good fairy glows: Are you sure?");
     if(ynq() == 'y')
     {
-      mprint("The good fairy radiates: Really really sure?");
+      queue_message("The good fairy radiates: Really really sure?");
       if(ynq() == 'y')
       {
-        mprint("The good fairy beams: I mean, like, sure as sure can be?");
+        queue_message("The good fairy beams: I mean, like, sure as sure can be?");
         if(ynq() == 'y')
         {
-          mprint("The good fairy dazzles: You don't want a wish, right?");
+          queue_message("The good fairy dazzles: You don't want a wish, right?");
           if(ynq() == 'y')
           {
-            mprint("The good fairy laughs: I thought not.");
+            queue_message("The good fairy laughs: I thought not.");
           }
           else
           {
@@ -607,17 +607,17 @@ void m_talk_gf(struct monster *m)
       }
     }
   }
-  mprint("In a flash of sweet-smelling light, the fairy vanishes....");
+  queue_message("In a flash of sweet-smelling light, the fairy vanishes....");
   Player.hp   = std::max(Player.hp, Player.maxhp);
   Player.mana = std::max(Player.mana, calcmana());
-  mprint("You feel mellow.");
+  queue_message("You feel mellow.");
   m_vanish(m);
 }
 
 void m_talk_ef(struct monster *m)
 {
-  mprint("The evil fairy roils: Eat my pixie dust!");
-  mprint("She waves her black-glowing wand, which screams thinly....");
+  queue_message("The evil fairy roils: Eat my pixie dust!");
+  queue_message("She waves her black-glowing wand, which screams thinly....");
   m->movef    = M_MOVE_SMART;
   m->meleef   = M_MELEE_POISON;
   m->specialf = M_SP_THIEF;
@@ -701,23 +701,23 @@ void m_talk_horse(struct monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
-    mprint("The horse neighs angrily at you.");
+    queue_message("The horse neighs angrily at you.");
   }
   else if(m_statusp(*m, HUNGRY))
   {
-    mprint("The horse noses curiously at your pack.");
+    queue_message("The horse noses curiously at your pack.");
   }
   else if(gamestatusp(MOUNTED, GameStatus))
   {
-    mprint("The horse and your steed don't seem to get along.");
+    queue_message("The horse and your steed don't seem to get along.");
   }
   else if(Current_Environment == Current_Dungeon)
   {
-    mprint("The horse shies; maybe he doesn't like the dungeon air....");
+    queue_message("The horse shies; maybe he doesn't like the dungeon air....");
   }
   else
   {
-    mprint("The horse lets you pat his nose. Want to ride him? [yn] ");
+    queue_message("The horse lets you pat his nose. Want to ride him? [yn] ");
     if(ynq() == 'y')
     {
       m->hp                            = -1;
@@ -725,19 +725,19 @@ void m_talk_horse(struct monster *m)
       putspot(m->x, m->y, getspot(m->x, m->y, false));
       setgamestatus(MOUNTED, GameStatus);
       calc_melee();
-      mprint("You are now equitating!");
+      queue_message("You are now equitating!");
     }
   }
 }
 
 void m_talk_hyena(struct monster *)
 {
-  mprint("The hyena only laughs at you...");
+  queue_message("The hyena only laughs at you...");
 }
 
 void m_talk_parrot(struct monster *)
 {
-  mprint("Polly wanna cracker?");
+  queue_message("Polly wanna cracker?");
 }
 
 void m_talk_servant(struct monster *m)
@@ -746,18 +746,18 @@ void m_talk_servant(struct monster *m)
   if(m->id == SERV_LAW)
   {
     target = SERV_CHAOS;
-    mprint("The Servant of Law pauses in thought for a moment.");
-    mprint("You are asked: Are there any Servants of Chaos hereabouts? [yn] ");
+    queue_message("The Servant of Law pauses in thought for a moment.");
+    queue_message("You are asked: Are there any Servants of Chaos hereabouts? [yn] ");
   }
   else
   {
     target = SERV_LAW;
-    mprint("The Servant of Chaos grins mischievously at you.");
-    mprint("You are asked: Are there any Servants of Law hereabouts? [yn] ");
+    queue_message("The Servant of Chaos grins mischievously at you.");
+    queue_message("You are asked: Are there any Servants of Law hereabouts? [yn] ");
   }
   if(ynq() == 'y')
   {
-    print1("Show me.");
+    queue_message("Show me.");
     show_screen();
     drawmonsters(true);
     setspot(&x, &y);
@@ -765,8 +765,8 @@ void m_talk_servant(struct monster *m)
     {
       if(Level->site[x][y].creature->id == target)
       {
-        mprint("The Servant launches itself towards its enemy.");
-        mprint("In a blaze of combat, the Servants annihilate each other!");
+        queue_message("The Servant launches itself towards its enemy.");
+        queue_message("In a blaze of combat, the Servants annihilate each other!");
         gain_experience(m->xpv);
         m_death(Level->site[x][y].creature);
         Level->site[m->x][m->y].creature = nullptr;
@@ -777,17 +777,17 @@ void m_talk_servant(struct monster *m)
       }
       else
       {
-        mprint("Right. Tell me about it. Idiot!");
+        queue_message("Right. Tell me about it. Idiot!");
       }
     }
     else
     {
-      mprint("Right. Tell me about it. Idiot!");
+      queue_message("Right. Tell me about it. Idiot!");
     }
   }
   else
   {
-    mprint("The servant shrugs and turns away.");
+    queue_message("The servant shrugs and turns away.");
   }
 }
 
@@ -801,17 +801,17 @@ void m_talk_animal(struct monster *m)
   {
     queue_message(std::format("{}", m->monstring));
   }
-  mprint("shows you a scholarly paper by Dolittle, D. Vet.");
-  mprint("which demonstrates that animals don't have speech centers");
-  mprint("complex enough to communicate in higher languages.");
-  mprint("It giggles softly to itself and takes back the paper.");
+  queue_message("shows you a scholarly paper by Dolittle, D. Vet.");
+  queue_message("which demonstrates that animals don't have speech centers");
+  queue_message("complex enough to communicate in higher languages.");
+  queue_message("It giggles softly to itself and takes back the paper.");
 }
 
 void m_talk_scream(struct monster *m)
 {
-  mprint("A thinly echoing scream reaches your ears....");
-  mprint("You feel doomed....");
-  mprint("A bird appears and flies three times widdershins around your head.");
+  queue_message("A thinly echoing scream reaches your ears....");
+  queue_message("You feel doomed....");
+  queue_message("A bird appears and flies three times widdershins around your head.");
   summon(-1, QUAIL);
   m->talkf = M_TALK_EVIL;
 }
@@ -820,27 +820,27 @@ void m_talk_archmage(struct monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
-    mprint("The Archmage ignores your attempt at conversation");
-    mprint("and concentrates on his spellcasting....");
+    queue_message("The Archmage ignores your attempt at conversation");
+    queue_message("and concentrates on his spellcasting....");
   }
   else if(Current_Environment == E_COURT)
   {
-    mprint("The Archmage congratulates you on getting this far.");
-    mprint("He invites you to attempt the Throne of High Magic");
-    mprint("but warns you that it is important to wield the Sceptre");
-    mprint("before sitting on the throne.");
+    queue_message("The Archmage congratulates you on getting this far.");
+    queue_message("He invites you to attempt the Throne of High Magic");
+    queue_message("but warns you that it is important to wield the Sceptre");
+    queue_message("before sitting on the throne.");
     if(Level->site[m->x][m->y].p_locf == L_THRONE)
     {
-      mprint("The Archmage smiles and makes an arcane gesture....");
+      queue_message("The Archmage smiles and makes an arcane gesture....");
       m_vanish(m);
     }
   }
   else
   {
-    mprint("The Archmage tells you to find him again in his");
-    mprint("Magical Court at the base of his castle in the mountains");
-    mprint("of the far North-East; if you do he will give you some");
-    mprint("important information.");
+    queue_message("The Archmage tells you to find him again in his");
+    queue_message("Magical Court at the base of his castle in the mountains");
+    queue_message("of the far North-East; if you do he will give you some");
+    queue_message("important information.");
   }
 }
 
@@ -850,40 +850,40 @@ void m_talk_merchant(struct monster *m)
   {
     if(Current_Environment == E_VILLAGE)
     {
-      mprint("The merchant asks you if you want to buy a horse for 250GP.");
-      mprint("Pay the merchant? [yn] ");
+      queue_message("The merchant asks you if you want to buy a horse for 250GP.");
+      queue_message("Pay the merchant? [yn] ");
       if(ynq() == 'y')
       {
         if(Player.cash < 250)
         {
-          mprint("The merchant says: 'Come back when you've got the cash!'");
+          queue_message("The merchant says: 'Come back when you've got the cash!'");
         }
         else
         {
           Player.cash -= 250;
-          mprint("The merchant takes your money and tells you to select");
-          mprint("any horse you want in the stables.");
-          mprint("He says: 'You'll want to get to know him before trying to");
-          mprint("ride him. By the way, food for the horse is not included.'");
-          mprint("The merchant runs off toward the bank, cackling gleefully.");
+          queue_message("The merchant takes your money and tells you to select");
+          queue_message("any horse you want in the stables.");
+          queue_message("He says: 'You'll want to get to know him before trying to");
+          queue_message("ride him. By the way, food for the horse is not included.'");
+          queue_message("The merchant runs off toward the bank, cackling gleefully.");
           m_vanish(m);
         }
       }
       else
       {
-        mprint("The merchant tells you to stop wasting his time.");
+        queue_message("The merchant tells you to stop wasting his time.");
       }
     }
     else
     {
-      mprint("The merchant tells you to visit his stables at his village");
-      mprint("for a great deal on a horse.");
+      queue_message("The merchant tells you to visit his stables at his village");
+      queue_message("for a great deal on a horse.");
     }
   }
   else
   {
-    mprint("The merchant ignores you and screams:");
-    mprint("'Help! Help! I'm being oppressed!'");
+    queue_message("The merchant ignores you and screams:");
+    queue_message("'Help! Help! I'm being oppressed!'");
   }
 }
 
@@ -893,19 +893,19 @@ void m_talk_prime(struct monster *m)
   {
     if(Current_Environment == E_CIRCLE)
     {
-      print1("The Prime nods brusquely at you, removes a gem from his");
-      print2("sleeve, places it on the floor, and vanishes wordlessly.");
+      queue_message("The Prime nods brusquely at you, removes a gem from his");
+      queue_message("sleeve, places it on the floor, and vanishes wordlessly.");
       m_dropstuff(m);
       m_vanish(m);
     }
     else
     {
-      print1("The Prime makes an intricate gesture, which leaves behind");
-      print2("glowing blue sparks... He winks mischievously at you....");
+      queue_message("The Prime makes an intricate gesture, which leaves behind");
+      queue_message("glowing blue sparks... He winks mischievously at you....");
       if(Player.rank[CIRCLE] > 0)
       {
-        print1("The blue sparks strike you! You feel enhanced!");
-        print2("You feel more experienced....");
+        queue_message("The blue sparks strike you! You feel enhanced!");
+        queue_message("You feel more experienced....");
         Player.pow += Player.rank[CIRCLE];
         Player.mana += calcmana();
         gain_experience(1000);

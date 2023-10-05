@@ -136,7 +136,7 @@ void load_dlair(int empty, int populate)
 {
   if(empty)
   {
-    mprint("The Lair is now devoid of inhabitants and treasure.");
+    queue_message("The Lair is now devoid of inhabitants and treasure.");
   }
 
   if(!populate)
@@ -281,7 +281,7 @@ void load_speak(int empty, int populate)
 
   if(empty)
   {
-    mprint("The peak is now devoid of inhabitants and treasure.");
+    queue_message("The peak is now devoid of inhabitants and treasure.");
   }
 
   if(!populate)
@@ -422,7 +422,7 @@ void load_misle(int empty, int populate)
 {
   if(empty)
   {
-    mprint("The isle is now devoid of inhabitants and treasure.");
+    queue_message("The isle is now devoid of inhabitants and treasure.");
   }
 
   if(!populate)

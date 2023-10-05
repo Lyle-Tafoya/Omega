@@ -34,11 +34,11 @@ void i_planes(pob)
 {
   if(Player.mana < 1)
   {
-    print1("The amulet spits some multicolored sparks.");
+    queue_message("The amulet spits some multicolored sparks.");
   }
   else
   {
-    print1("You focus mana into the amulet....");
+    queue_message("You focus mana into the amulet....");
     Player.mana = std::max(0l, Player.mana - 100);
     dataprint();
     strategic_teleport(1);
@@ -50,26 +50,26 @@ void i_sceptre(pob)
 {
   if(HiMagicUse == Date)
   {
-    print1("The Sceptre makes a sort of dull 'thut' noise.");
+    queue_message("The Sceptre makes a sort of dull 'thut' noise.");
   }
   else if(Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL)
   {
     HiMagicUse = Date; /* WDT: this looks like it's a good place to use
                         * the batteries. */
-    print1("The Sceptre warps strangely for a second, and then subsides.");
-    print2("You smell ozone."); /* WDT: explain the battery use. */
+    queue_message("The Sceptre warps strangely for a second, and then subsides.");
+    queue_message("You smell ozone."); /* WDT: explain the battery use. */
   }
   else
   {
     HiMagicUse = Date;
-    print1("With a shriek of tearing aether, a magic portal appears!");
-    print2("Step through? [yn] ");
+    queue_message("With a shriek of tearing aether, a magic portal appears!");
+    queue_message("Step through? [yn] ");
     if(ynq() == 'y')
     {
       change_environment(E_COURT);
     }
-    print1("The sceptre seems to subside. You hear a high whine, as of");
-    print2("capacitors beginning to recharge.");
+    queue_message("The sceptre seems to subside. You hear a high whine, as of");
+    queue_message("capacitors beginning to recharge.");
   }
 }
 
@@ -78,9 +78,9 @@ void i_stargem(pob o)
 {
   if(StarGemUse == Date)
   {
-    print1("The Star Gem glints weakly as if to say:");
-    print2("'You have used me overmuch.'");
-    print3("and it vanishes a puff of regret.");
+    queue_message("The Star Gem glints weakly as if to say:");
+    queue_message("'You have used me overmuch.'");
+    queue_message("and it vanishes a puff of regret.");
     Objects[o->id].uniqueness = UNIQUE_UNMADE;
     /* it's now out there, somewhere */
     dispose_lost_objects(1, o);
@@ -90,18 +90,18 @@ void i_stargem(pob o)
     StarGemUse = Date;
     if(o->blessing < 1)
     {
-      print1("The Star Gem shines brightly and emits a musical tone.");
-      print2("You see a dark cloud roil away from it.");
+      queue_message("The Star Gem shines brightly and emits a musical tone.");
+      queue_message("You see a dark cloud roil away from it.");
       o->blessing = 10;
     }
-    print1("The star gem flares with golden light!");
+    queue_message("The star gem flares with golden light!");
     if(Player.status[ILLUMINATION] < 1000)
     {
-      print1("Interesting, you seem to be permanently accompanied");
-      print2("by a friendly lambent glow....");
+      queue_message("Interesting, you seem to be permanently accompanied");
+      queue_message("by a friendly lambent glow....");
       Player.status[ILLUMINATION] = 1500;
     }
-    print1("You suddenly find yourself whisked away by some unknown force!");
+    queue_message("You suddenly find yourself whisked away by some unknown force!");
     setgamestatus(COMPLETED_ASTRAL, GameStatus);
     change_environment(E_COUNTRYSIDE);
     Player.x = 61;
@@ -111,7 +111,7 @@ void i_stargem(pob o)
     locprint("Star Peak");
     Country[Player.x][Player.y].current_terrain_type = Country[Player.x][Player.y].base_terrain_type;
     c_set(Player.x, Player.y, CHANGED, Country);
-    print2("The Star Gem's brilliance seems to fade.");
+    queue_message("The Star Gem's brilliance seems to fade.");
   }
 }
 
@@ -136,10 +136,10 @@ void i_juggernaut(pob o)
   int seen = 1, not_seen = 0;
   int tunneled = 0;
 
-  print1("You activate the Juggernaut of Karnak!");
+  queue_message("You activate the Juggernaut of Karnak!");
   if(!o->known)
   {
-    print2("Uh, oh, it's coming this way!");
+    queue_message("Uh, oh, it's coming this way!");
     p_death("the Juggernaut of Karnak");
   }
   else
@@ -147,11 +147,11 @@ void i_juggernaut(pob o)
     d = getdir();
     if(d == ABORT)
     {
-      print2("You deactivate the Juggernaut before it escapes.");
+      queue_message("You deactivate the Juggernaut before it escapes.");
     }
     else
     {
-      print1("Vroom! ");
+      queue_message("Vroom! ");
       int cursor_visibility = curs_set(1);
       while(inbounds(x + Dirs[0][d], y + Dirs[1][d]))
       {
@@ -178,7 +178,7 @@ void i_juggernaut(pob o)
         {
           if(seen)
           {
-            nprint1("Splat! ");
+            queue_message("Splat! ");
           }
           else
           {
@@ -194,19 +194,19 @@ void i_juggernaut(pob o)
       curs_set(cursor_visibility);
       if(not_seen > 6)
       {
-        print2("You hear many distant screams...");
+        queue_message("You hear many distant screams...");
       }
       else if(not_seen > 3)
       {
-        print2("You hear several distant screams...");
+        queue_message("You hear several distant screams...");
       }
       else if(not_seen > 1)
       {
-        print2("You hear a couple of distant screams...");
+        queue_message("You hear a couple of distant screams...");
       }
       else if(not_seen == 1)
       {
-        print2("You hear a distant scream...");
+        queue_message("You hear a distant scream...");
       }
       gain_experience(1000);
       dispose_lost_objects(1, o);
@@ -221,14 +221,14 @@ void i_symbol(pob o)
   int i;
   if(!o->known)
   {
-    print1("Nothing seems to happen.");
+    queue_message("Nothing seems to happen.");
     /* if o->charge != 17, then symbol was stolen from own high priest! */
   }
   else if((o->aux != Player.patron) || (o->charge != 17))
   {
-    print1("You invoke the deity...");
-    print2("...who for some reason seems rather annoyed at you...");
-    print3("You are enveloped in Godsfire!");
+    queue_message("You invoke the deity...");
+    queue_message("...who for some reason seems rather annoyed at you...");
+    queue_message("You are enveloped in Godsfire!");
     for(; Player.hp > 1; Player.hp--)
     {
       dataprint();
@@ -244,15 +244,15 @@ void i_symbol(pob o)
   }
   else if(SymbolUseDay == day() && SymbolUseHour == hour())
   {
-    print1("Your deity frowns upon this profligate use of power...");
-    print2("Shazam! A bolt of Godsfire! Your symbol shatters!");
+    queue_message("Your deity frowns upon this profligate use of power...");
+    queue_message("Shazam! A bolt of Godsfire! Your symbol shatters!");
     dispose_lost_objects(1, o);
     Player.hp = 1;
     dataprint();
   }
   else
   {
-    print1("A mystic flow of theurgic energy courses through your body!");
+    queue_message("A mystic flow of theurgic energy courses through your body!");
     SymbolUseDay = day();
     SymbolUseHour = hour();
     cleanse(1);
@@ -265,31 +265,31 @@ void i_crystal(pob o)
 {
   if(!o->known)
   {
-    print1("You can't figure out how to activate this orb.");
+    queue_message("You can't figure out how to activate this orb.");
   }
   else
   {
-    print1("You gaze into your crystal ball.");
+    queue_message("You gaze into your crystal ball.");
     if(ViewDay == day() && ViewHour == hour())
     {
-      print2("All you get is Gilligan's Island reruns.");
+      queue_message("All you get is Gilligan's Island reruns.");
     }
     else if((o->blessing < 0) || (Player.iq + Player.level < random_range(30)))
     {
       ViewDay = day();
       ViewHour = hour();
-      print2("Weird interference patterns from the crystal fog your mind....");
+      queue_message("Weird interference patterns from the crystal fog your mind....");
       amnesia();
     }
     else
     {
       ViewDay = day();
       ViewHour = hour();
-      print2("You sense the presence of life...");
+      queue_message("You sense the presence of life...");
       mondet(1);
-      print2("You sense the presence of objects...");
+      queue_message("You sense the presence of objects...");
       objdet(1);
-      print2("You begin to see visions of things beyond your ken....");
+      queue_message("You begin to see visions of things beyond your ken....");
       hint();
     }
   }
@@ -301,35 +301,35 @@ void i_antioch(pob o)
   int count;
   if(!o->known)
   {
-    print1("Ka-Boom!");
-    print2("You seem to have annihilated yourself.");
+    queue_message("Ka-Boom!");
+    queue_message("You seem to have annihilated yourself.");
     p_death("the Holy Hand-Grenade of Antioch");
   }
   else
   {
-    print1("Bring out the Holy Hand-Grenade of Antioch!");
+    queue_message("Bring out the Holy Hand-Grenade of Antioch!");
     setspot(&x, &y);
-    print2("Ok, you pull the pin.....");
-    print1("What do you count up to? ");
+    queue_message("Ok, you pull the pin.....");
+    queue_message("What do you count up to? ");
     count = (int)parsenum();
     if(count < 3 && Level->site[x][y].creature)
     {
-      print1("`Three shall be the number of thy counting....");
-      print2("And the number of thy counting shall be three.'");
-      print3("Your target picks up the grenade and throws it back!");
-      print1("Ka-Boom!");
+      queue_message("`Three shall be the number of thy counting....");
+      queue_message("And the number of thy counting shall be three.'");
+      queue_message("Your target picks up the grenade and throws it back!");
+      queue_message("Ka-Boom!");
       p_death("the Holy Hand-Grenade of Antioch");
     }
     else if(count > 3)
     {
-      print1("`Three shall be the number of thy counting.");
-      print2("And the number of thy counting shall be three.'");
-      print1("Ka-Boom!");
+      queue_message("`Three shall be the number of thy counting.");
+      queue_message("And the number of thy counting shall be three.'");
+      queue_message("Ka-Boom!");
       p_death("the Holy Hand-Grenade of Antioch");
     }
     else
     {
-      print1("Ka-Boom!");
+      queue_message("Ka-Boom!");
       gain_experience(1000);
       Level->site[x][y].locchar = TRAP;
       Level->site[x][y].p_locf  = L_TRAP_DOOR;
@@ -337,7 +337,7 @@ void i_antioch(pob o)
       if(Level->site[x][y].creature)
       {
         m_death(Level->site[x][y].creature);
-        print2("You are covered with gore.");
+        queue_message("You are covered with gore.");
       }
       Level->site[x][y].things = nullptr;
     }
@@ -350,13 +350,13 @@ void i_kolwynia(pob o)
   int i;
   if(!o->known)
   {
-    print1("You destroy youself with a mana storm. How sad.");
+    queue_message("You destroy youself with a mana storm. How sad.");
     p_death("Kolwynia, The Key That Was Lost");
   }
   else
   {
     gain_experience(5000);
-    print1("You seem to have gained complete mastery of magic.");
+    queue_message("You seem to have gained complete mastery of magic.");
     Player.pow = Player.maxpow = 2 * Player.maxpow;
     for(i = 0; i < spell::NUM_SPELLS; i++)
     {
@@ -371,25 +371,25 @@ void i_enchantment(pob o)
   char response;
   if(ZapDay == day() && ZapHour == hour())
   {
-    print1("The staff doesn't seem to have recharged yet.");
+    queue_message("The staff doesn't seem to have recharged yet.");
   }
   else if(!o->known)
   {
     ZapDay = day();
     ZapHour = hour();
-    print1("You blast the staff backwards....");
+    queue_message("You blast the staff backwards....");
     dispel(-1);
   }
   else
   {
     ZapDay = day();
     ZapHour = hour();
-    print1("Zap with white or black end [wb] ");
+    queue_message("Zap with white or black end [wb] ");
     do
     {
       response = (char)mcigetc();
     } while((response != 'w') && (response != 'b'));
-    print2("The staff discharges!");
+    queue_message("The staff discharges!");
     if(response == 'w')
     {
       enchant(o->blessing * 2 + 1);
@@ -405,33 +405,33 @@ void i_helm(pob o)
 {
   if(HelmDay == day() && HelmHour == hour())
   {
-    print1("The helm doesn't seem to have recharged yet.");
+    queue_message("The helm doesn't seem to have recharged yet.");
   }
   else if(!o->known)
   {
     HelmDay = day();
     HelmHour = hour();
-    print1("You put the helm on backwards....");
+    queue_message("You put the helm on backwards....");
     p_teleport(-1);
   }
   else
   {
     HelmDay = day();
     HelmHour = hour();
-    print1("Your environment fades.... and rematerializes.");
+    queue_message("Your environment fades.... and rematerializes.");
     p_teleport(o->blessing);
   }
 }
 
 void i_death(pob)
 {
-  print1("Bad move...");
+  queue_message("Bad move...");
   p_death("the Potion of Death");
 }
 
 void i_life(pob o)
 {
-  print1("Good move.");
+  queue_message("Good move.");
   Player.hp = Player.maxhp = 2 * Player.maxhp;
   dispose_lost_objects(1, o);
 }
@@ -440,16 +440,16 @@ void i_life(pob o)
 int orbcheck(char element)
 {
   char response;
-  print1("The orb begins to glow with increasing intensity!");
-  print2("You have the feeling you need to do something more....");
-  print1("Burn it in fire [f] ");
-  print2("Douse it with water [w] ");
-  print1("Smash it against the earth [e] ");
-  print2("Toss is through the air [a] ");
-  print1("Mix the above actions, doing them in sequence [m] ");
+  queue_message("The orb begins to glow with increasing intensity!");
+  queue_message("You have the feeling you need to do something more....");
+  queue_message("Burn it in fire [f] ");
+  queue_message("Douse it with water [w] ");
+  queue_message("Smash it against the earth [e] ");
+  queue_message("Toss is through the air [a] ");
+  queue_message("Mix the above actions, doing them in sequence [m] ");
   do
   {
-    print2("Which one [f,w,e,a,m] ");
+    queue_message("Which one [f,w,e,a,m] ");
     response = (char)mcigetc();
   } while((response != 'f') && (response != 'w') && (response != 'e') && (response != 'a') &&
           (response != 'm'));
@@ -461,8 +461,8 @@ void i_orbfire(pob o)
 {
   if(!orbcheck('f'))
   {
-    print1("Bad choice!");
-    print2("The Orb of Fire blasts you!");
+    queue_message("Bad choice!");
+    queue_message("The Orb of Fire blasts you!");
     fball(Player.x, Player.y, Player.x, Player.y, 250);
     if(!o->known)
     {
@@ -471,11 +471,11 @@ void i_orbfire(pob o)
   }
   else
   {
-    print1("The Orb of Fire flares a brilliant red!");
+    queue_message("The Orb of Fire flares a brilliant red!");
     spell::Spells[spell::FIREBOLT].known = true;
     gain_experience(10000);
     Player.immunity[FLAME] += 100;
-    print2("You feel fiery!");
+    queue_message("You feel fiery!");
     o->plus     = 100;
     o->blessing = 100;
     i_firebolt(o);
@@ -487,8 +487,8 @@ void i_orbwater(pob o)
 {
   if(!orbcheck('w'))
   {
-    print1("A serious mistake!");
-    print2("The Orb of Water blasts you!");
+    queue_message("A serious mistake!");
+    queue_message("The Orb of Water blasts you!");
     heal(-250);
     if(!o->known)
     {
@@ -497,11 +497,11 @@ void i_orbwater(pob o)
   }
   else
   {
-    print1("The Orb of Water pulses a deep green!");
+    queue_message("The Orb of Water pulses a deep green!");
     spell::Spells[spell::DISRUPT].known = true;
     Player.immunity[POISON] += 100;
     gain_experience(10000);
-    print2("You feel wet!");
+    queue_message("You feel wet!");
     o->plus     = 100;
     o->blessing = 100;
     i_disrupt(o);
@@ -514,8 +514,8 @@ void i_orbearth(pob o)
   int i;
   if(!orbcheck('e'))
   {
-    print1("What a maroon!");
-    print2("The Orb of Earth blasts you!");
+    queue_message("What a maroon!");
+    queue_message("The Orb of Earth blasts you!");
     Player.con -= 10;
     if(Player.con < 3)
     {
@@ -523,7 +523,7 @@ void i_orbearth(pob o)
     }
     else
     {
-      print3("Your possessions disintegrate!");
+      queue_message("Your possessions disintegrate!");
       for(i = 0; i < MAXITEMS; i++)
       {
         if(Player.possessions[i])
@@ -548,11 +548,11 @@ void i_orbearth(pob o)
   }
   else
   {
-    print1("The Orb of Earth emanates a brownish aura!");
+    queue_message("The Orb of Earth emanates a brownish aura!");
     spell::Spells[spell::DISINTEGRATE].known = true;
     gain_experience(10000);
     Player.immunity[NEGENERGY] += 100;
-    print2("You feel earthy!");
+    queue_message("You feel earthy!");
     o->plus     = 100;
     o->blessing = 100;
     i_disintegrate(o);
@@ -564,8 +564,8 @@ void i_orbair(pob o)
 {
   if(!orbcheck('a'))
   {
-    print1("You lose!");
-    print2("The Orb of Air blasts you!");
+    queue_message("You lose!");
+    queue_message("The Orb of Air blasts you!");
     lball(Player.x, Player.y, Player.x, Player.y, 100);
     if(!o->known)
     {
@@ -574,10 +574,10 @@ void i_orbair(pob o)
   }
   else
   {
-    print1("The Orb of Air flashes blue!");
+    queue_message("The Orb of Air flashes blue!");
     spell::Spells[spell::BALL_LIGHTNING].known = true; /* lball */
     gain_experience(10000);
-    print2("You feel airy!");
+    queue_message("You feel airy!");
     Player.immunity[ELECTRICITY] += 100;
     o->plus     = 100;
     o->blessing = 100;
@@ -591,8 +591,8 @@ void i_orbmastery(pob o)
 {
   if(!orbcheck('m'))
   {
-    print1("A fatal error!");
-    print2("The Orb of Mastery blasts you to cinders!");
+    queue_message("A fatal error!");
+    queue_message("The Orb of Mastery blasts you to cinders!");
     p_death("playing with the Orb of Mastery");
     if(!o->known)
     {
@@ -602,8 +602,8 @@ void i_orbmastery(pob o)
   else if((find_and_remove_item(ARTIFACTID + 1, -1)) && (find_and_remove_item(ARTIFACTID + 2, -1)) &&
           (find_and_remove_item(ARTIFACTID + 3, -1)) && (find_and_remove_item(ARTIFACTID + 4, -1)))
   {
-    print1("The Orb of Mastery radiates rainbow colors!");
-    print2("You feel godlike.");
+    queue_message("The Orb of Mastery radiates rainbow colors!");
+    queue_message("You feel godlike.");
     Player.iq = Player.maxiq = 2 * Player.maxiq;
     Player.pow = Player.maxpow = 2 * Player.maxpow;
     Player.str = Player.maxstr = 2 * Player.maxstr;
@@ -611,28 +611,28 @@ void i_orbmastery(pob o)
     Player.con = Player.maxcon = 2 * Player.maxcon;
     Player.agi = Player.maxagi = 2 * Player.maxagi;
     dataprint();
-    print1("You have been imbued with a cosmic power....");
+    queue_message("You have been imbued with a cosmic power....");
     wish(1);
-    print2("You feel much more experienced.");
+    queue_message("You feel much more experienced.");
     gain_experience(20000);
     *o = Objects[ARTIFACTID + 5];
   }
   else
   {
-    print1("The Orb of Mastery's power is unbalanced!");
-    print2("The Orb of Mastery blasts you to cinders!");
+    queue_message("The Orb of Mastery's power is unbalanced!");
+    queue_message("The Orb of Mastery blasts you to cinders!");
     p_death("playing with the Orb of Mastery");
   }
 }
 
 void i_orbdead(pob)
 {
-  print1("The burnt-out orb drains all your energy!");
+  queue_message("The burnt-out orb drains all your energy!");
   for(int i = 0; i < spell::NUM_SPELLS; ++i)
   {
     spell::Spells[i].known = false;
   }
-  print2("You feel not at all like a mage.");
+  queue_message("You feel not at all like a mage.");
   for(int i = 0; i < MAXITEMS; ++i)
   {
     if(Player.possessions[i])
@@ -656,7 +656,7 @@ void i_orbdead(pob)
       }
     }
   }
-  print3("A storm of mundanity surounds you!");
+  queue_message("A storm of mundanity surounds you!");
   level_drain(Player.level - 1, "a Burnt-out Orb");
   Player.mana = 0;
   Player.pow -= 10;

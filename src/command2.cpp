@@ -48,34 +48,34 @@ void rest()
     switch(random_range(10))
     {
       case 0:
-        print3(" Time passes slowly.... ");
+        queue_message(" Time passes slowly.... ");
         break;
       case 1:
-        print3(" Tick. Tock. Tick. Tock. ");
+        queue_message(" Tick. Tock. Tick. Tock. ");
         break;
       case 2:
-        print3(" Ho Hum. ");
+        queue_message(" Ho Hum. ");
         break;
       case 3:
-        print3(" Beauty Sleep. Well, in your case, Ugly Sleep. ");
+        queue_message(" Beauty Sleep. Well, in your case, Ugly Sleep. ");
         break;
       case 4:
-        print3(" And with Strange Aeons, even Death may die. ");
+        queue_message(" And with Strange Aeons, even Death may die. ");
         break;
       case 5:
-        print3(" La Di Da. ");
+        queue_message(" La Di Da. ");
         break;
       case 6:
-        print3(" Time keeps on tickin' tickin' -- into the future.... ");
+        queue_message(" Time keeps on tickin' tickin' -- into the future.... ");
         break;
       case 7:
-        print3(" Boooring! ");
+        queue_message(" Boooring! ");
         break;
       case 8:
-        print3(" You think I like watching you sleep? ");
+        queue_message(" You think I like watching you sleep? ");
         break;
       case 9:
-        print3(" You sure have an early bedtime! ");
+        queue_message(" You sure have an early bedtime! ");
         break;
     }
   }
@@ -89,15 +89,15 @@ void peruse()
 
   if(Player.status[BLINDED] > 0)
   {
-    print3("You're blind -- you can't read!!!");
+    queue_message("You're blind -- you can't read!!!");
   }
   else if(Player.status[AFRAID] > 0)
   {
-    print3("You are too afraid to stop to read a scroll!");
+    queue_message("You are too afraid to stop to read a scroll!");
   }
   else
   {
-    print1("Read -- ");
+    queue_message("Read -- ");
     index = getitem(SCROLL);
     if(index == ABORT)
     {
@@ -108,12 +108,12 @@ void peruse()
       obj = Player.possessions[index];
       if(obj->objchar != SCROLL)
       {
-        print3("There's nothing written on ");
-        nprint3(itemid(obj));
+        queue_message("There's nothing written on ");
+        queue_message(itemid(obj));
       }
       else
       {
-        nprint1("You carefully unfurl the scroll....");
+        queue_message("You carefully unfurl the scroll....");
         item_use(obj);
         dispose_lost_objects(1, obj);
       }
@@ -125,7 +125,7 @@ void quaff()
 {
   int            index;
   struct object *obj;
-  print1("Quaff --");
+  queue_message("Quaff --");
   index = getitem(POTION);
   if(index == ABORT)
   {
@@ -136,12 +136,12 @@ void quaff()
     obj = Player.possessions[index];
     if(obj->objchar != POTION)
     {
-      print3("You can't drink ");
-      nprint3(itemid(obj));
+      queue_message("You can't drink ");
+      queue_message(itemid(obj));
     }
     else
     {
-      print1("You drink it down.... ");
+      queue_message("You drink it down.... ");
       item_use(obj);
       dispose_lost_objects(1, obj);
     }
@@ -153,7 +153,7 @@ void activate()
   int  index;
   char response;
 
-  print1("Activate -- item [i] or artifact [a] or quit [ESCAPE]?");
+  queue_message("Activate -- item [i] or artifact [a] or quit [ESCAPE]?");
   do
   {
     response = (char)mcigetc();
@@ -170,7 +170,7 @@ void activate()
     }
     if(index != ABORT)
     {
-      print1("You activate it.... ");
+      queue_message("You activate it.... ");
       item_use(Player.possessions[index]);
     }
     else
@@ -189,7 +189,7 @@ void eat()
   int            index;
   struct object *obj;
 
-  print1("Eat --");
+  queue_message("Eat --");
   index = getitem(FOOD);
   if(index == ABORT)
   {
@@ -200,8 +200,8 @@ void eat()
     obj = Player.possessions[index];
     if((obj->objchar != FOOD) && (obj->objchar != CORPSE))
     {
-      print3("You can't eat ");
-      nprint3(itemid(obj));
+      queue_message("You can't eat ");
+      queue_message(itemid(obj));
     }
     else
     {
@@ -227,7 +227,7 @@ void search(int *searchval)
   int i;
   if(Player.status[AFRAID] > 0)
   {
-    print3("You are too terror-stricken to stop to search for anything.");
+    queue_message("You are too terror-stricken to stop to search for anything.");
   }
   else
   {
@@ -249,11 +249,11 @@ void pickup()
 {
   if(!Level->site[Player.x][Player.y].things)
   {
-    print3("There's nothing there!");
+    queue_message("There's nothing there!");
   }
   else if(Player.status[SHADOWFORM])
   {
-    print3("You can't really interact with the real world in your shadowy state.");
+    queue_message("You can't really interact with the real world in your shadowy state.");
   }
   else
   {
@@ -271,7 +271,7 @@ void floor_inv()
   {
     if(!ol->thing)
     {
-      print3("***Error; null thing on things list***");
+      queue_message("***Error; null thing on things list***");
     }
     else
     {
@@ -398,7 +398,7 @@ void drop_pack_item()
 
 void drop_equipped_item()
 {
-  print1("Drop --");
+  queue_message("Drop --");
   int index = getitem(CASH);
   if(index == ABORT)
   {
@@ -426,8 +426,8 @@ void drop_equipped_item()
     }
     else
     {
-      print3("You can't seem to get rid of: ");
-      nprint3(itemid(Player.possessions[index]));
+      queue_message("You can't seem to get rid of: ");
+      queue_message(itemid(Player.possessions[index]));
     }
   }
   calc_melee();
@@ -440,7 +440,7 @@ void talk()
   char            response;
   struct monster *m;
 
-  print1("Talk --");
+  queue_message("Talk --");
   index = getdir();
 
   if(index == ABORT)
@@ -455,7 +455,7 @@ void talk()
     if(!inbounds(Player.x + dx, Player.y + dy) ||
        !Level->site[Player.x + dx][Player.y + dy].creature)
     {
-      print3("There's nothing there to talk to!!!");
+      queue_message("There's nothing there to talk to!!!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
@@ -498,7 +498,7 @@ void disarm()
   int x, y, index = 0;
   pob o;
 
-  print1("Disarm -- ");
+  queue_message("Disarm -- ");
 
   index = getdir();
 
@@ -513,18 +513,18 @@ void disarm()
 
     if(!inbounds(x, y))
     {
-      print3("Whoa, off the map...");
+      queue_message("Whoa, off the map...");
     }
     else if(Level->site[x][y].locchar != TRAP)
     {
-      print3("You can't see a trap there!");
+      queue_message("You can't see a trap there!");
     }
     else
     {
       if(random_range(50 + difficulty() * 5) <
          Player.dex * 2 + Player.level * 3 + Player.rank[THIEVES] * 10)
       {
-        print1("You disarmed the trap!");
+        queue_message("You disarmed the trap!");
         if(random_range(100) < Player.dex + Player.rank[THIEVES] * 10)
         {
           o = new object;
@@ -564,7 +564,7 @@ void disarm()
           }
           if(o)
           {
-            print2("You manage to retrieve the trap components!");
+            queue_message("You manage to retrieve the trap components!");
             Objects[o->id].known = 1;
             o->known             = 1;
             gain_item(o);
@@ -578,14 +578,14 @@ void disarm()
       }
       else if(random_range(10 + difficulty() * 2) > Player.dex)
       {
-        print1("You accidentally set off the trap!");
+        queue_message("You accidentally set off the trap!");
         Player.x = x;
         Player.y = y;
         p_movefunction(Level->site[x][y].p_locf);
       }
       else
       {
-        print1("You failed to disarm the trap.");
+        queue_message("You failed to disarm the trap.");
       }
     }
   }
@@ -599,7 +599,7 @@ void give()
   struct monster *m;
   pob             obj;
 
-  print1("Give to monster --");
+  queue_message("Give to monster --");
   dindex = getdir();
   if(dindex == ABORT)
   {
@@ -611,17 +611,17 @@ void give()
     dy = Dirs[1][dindex];
     if(!inbounds(Player.x + dx, Player.y + dy))
     {
-      print3("Whoa, off the map...");
+      queue_message("Whoa, off the map...");
     }
     else if(!Level->site[Player.x + dx][Player.y + dy].creature)
     {
-      print3("There's nothing there to give something to!!!");
+      queue_message("There's nothing there to give something to!!!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
     {
       m = Level->site[Player.x + dx][Player.y + dy].creature;
-      print1("Give what? ");
+      queue_message("Give what? ");
       index = getitem(CASH);
       if(index == ABORT)
       {
@@ -644,8 +644,8 @@ void give()
       }
       else
       {
-        print3("You can't even give away: ");
-        nprint3(itemid(Player.possessions[index]));
+        queue_message("You can't even give away: ");
+        queue_message(itemid(Player.possessions[index]));
       }
     }
   }
@@ -659,11 +659,11 @@ void zapwand()
 
   if(Player.status[AFRAID] > 0)
   {
-    print3("You are so terror-stricken you can't hold a wand straight!");
+    queue_message("You are so terror-stricken you can't hold a wand straight!");
   }
   else
   {
-    print1("Zap --");
+    queue_message("Zap --");
     index = getitem(STICK);
     if(index == ABORT)
     {
@@ -674,12 +674,12 @@ void zapwand()
       obj = Player.possessions[index];
       if(obj->objchar != STICK)
       {
-        print3("You can't zap: ");
-        nprint3(itemid(obj));
+        queue_message("You can't zap: ");
+        queue_message(itemid(obj));
       }
       else if(obj->charge < 1)
       {
-        print3("Fizz.... Pflpt. Out of charges. ");
+        queue_message("Fizz.... Pflpt. Out of charges. ");
       }
       else
       {
@@ -696,7 +696,7 @@ void magic()
   int drain;
   if(Player.status[AFRAID] > 0)
   {
-    print3("You are too afraid to concentrate on a spell!");
+    queue_message("You are too afraid to concentrate on a spell!");
   }
   else
   {
@@ -721,11 +721,11 @@ void magic()
       {
         if(Lunarity == -1 && Player.mana >= drain / 2)
         {
-          print3("The contrary moon has made that spell too draining! ");
+          queue_message("The contrary moon has made that spell too draining! ");
         }
         else
         {
-          print3("You lack the power for that spell! ");
+          queue_message("You lack the power for that spell! ");
         }
       }
       else
@@ -743,7 +743,7 @@ void upstairs()
 {
   if(Level->site[Player.x][Player.y].locchar != STAIRS_UP)
   {
-    print3("Not here!");
+    queue_message("Not here!");
   }
   else if(Level->site[Player.x][Player.y].p_locf == L_ESCALATOR)
   {
@@ -753,9 +753,9 @@ void upstairs()
   {
     if(gamestatusp(MOUNTED, GameStatus))
     {
-      print2("You manage to get your horse upstairs.");
+      queue_message("You manage to get your horse upstairs.");
     }
-    print1("You ascend a level.");
+    queue_message("You ascend a level.");
     if(Level->depth <= 1)
     {
       if(Level->environment == E_SEWERS)
@@ -781,7 +781,7 @@ void downstairs()
 {
   if(Level->site[Player.x][Player.y].locchar != STAIRS_DOWN)
   {
-    print3("Not here!");
+    queue_message("Not here!");
   }
   else if(Level->site[Player.x][Player.y].p_locf == L_ENTER_CIRCLE ||
           Level->site[Player.x][Player.y].p_locf == L_ENTER_COURT)
@@ -792,11 +792,11 @@ void downstairs()
   {
     if(gamestatusp(MOUNTED, GameStatus))
     {
-      print2("You manage to get your horse downstairs.");
+      queue_message("You manage to get your horse downstairs.");
     }
     if(Current_Environment == Current_Dungeon)
     {
-      print1("You descend a level.");
+      queue_message("You descend a level.");
       change_level(Level->depth, Level->depth + 1, false);
       roomcheck();
     }
@@ -806,7 +806,7 @@ void downstairs()
     }
     else if(Current_Environment != Current_Dungeon)
     {
-      print3("This stairway is deviant. You can't use it.");
+      queue_message("This stairway is deviant. You can't use it.");
     }
   }
   setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -824,8 +824,8 @@ void setoptions()
   display_options();
 
   move_slot(1, 1, NUMOPTIONS);
-  print1("Currently selected option is preceded by highlit >>");
-  print2("Move selected option with '>' and '<', ESCAPE to quit.");
+  queue_message("Currently selected option is preceded by highlit >>");
+  queue_message("Move selected option with '>' and '<', ESCAPE to quit.");
   do
   {
     response = mcigetc();
@@ -871,7 +871,7 @@ void setoptions()
         }
         else
         {
-          print3("'T' is meaningless for this option.");
+          queue_message("'T' is meaningless for this option.");
         }
         break;
       case 'f':
@@ -881,7 +881,7 @@ void setoptions()
         }
         else
         {
-          print3("'F' is meaningless for this option.");
+          queue_message("'F' is meaningless for this option.");
         }
         break;
       case 'm':
@@ -891,7 +891,7 @@ void setoptions()
         }
         else
         {
-          print3("'M' is meaningless for this option.");
+          queue_message("'M' is meaningless for this option.");
         }
         break;
       case 'v':
@@ -901,7 +901,7 @@ void setoptions()
         }
         else
         {
-          print3("'V' is meaningless for this option.");
+          queue_message("'V' is meaningless for this option.");
         }
         break;
       case '1':
@@ -919,14 +919,14 @@ void setoptions()
         }
         else
         {
-          print3("A number is meaningless for this option.");
+          queue_message("A number is meaningless for this option.");
         }
         break;
       case ESCAPE:
         done = true;
         break;
       default:
-        print3("That response is meaningless for this option.");
+        queue_message("That response is meaningless for this option.");
         break;
     }
     display_option_slot(slot);
@@ -950,25 +950,25 @@ void callitem()
   pob obj;
 
   setgamestatus(SKIP_MONSTERS, GameStatus);
-  print1("Call --");
+  queue_message("Call --");
   index = getitem(NULL_ITEM);
   if(index == CASHVALUE)
   {
-    print3("Can't rename cash!");
+    queue_message("Can't rename cash!");
   }
   else if(index != ABORT)
   {
     obj = Player.possessions[index];
     if(obj->known)
     {
-      print3("That item is already identified!");
+      queue_message("That item is already identified!");
     }
     else
     {
-      print1("Call it:");
+      queue_message("Call it:");
       obj->objstr = msgscanstring();
-      print2("Also call all similar items by that name? [yn] ");
-      if(ynq2() == 'y')
+      queue_message("Also call all similar items by that name? [yn] ");
+      if(ynq() == 'y')
       {
         Objects[obj->id].objstr = obj->objstr;
       }
@@ -982,7 +982,7 @@ void opendoor()
   int dir;
   int ox, oy;
 
-  print1("Open --");
+  queue_message("Open --");
   dir = getdir();
   if(dir == ABORT)
   {
@@ -994,32 +994,32 @@ void opendoor()
     oy = Player.y + Dirs[1][dir];
     if(Level->site[ox][oy].locchar == OPEN_DOOR)
     {
-      print3("That door is already open!");
+      queue_message("That door is already open!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else if(Level->site[ox][oy].locchar == PORTCULLIS)
     {
-      print1("You try to lift the massive steel portcullis....");
+      queue_message("You try to lift the massive steel portcullis....");
       if(random_range(100) < Player.str)
       {
-        print2("Incredible. You bust a gut and lift the portcullis.");
+        queue_message("Incredible. You bust a gut and lift the portcullis.");
         Level->site[ox][oy].locchar = FLOOR;
         lset(ox, oy, CHANGED, *Level);
       }
       else
       {
-        print2("Argh. You ruptured yourself.");
+        queue_message("Argh. You ruptured yourself.");
         p_damage(Player.str, UNSTOPPABLE, "a portcullis");
       }
     }
     else if((Level->site[ox][oy].locchar != CLOSED_DOOR) || loc_statusp(ox, oy, SECRET, *Level))
     {
-      print3("You can't open that!");
+      queue_message("You can't open that!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else if(Level->site[ox][oy].aux == LOCKED)
     {
-      print3("That door seems to be locked.");
+      queue_message("That door seems to be locked.");
     }
     else
     {
@@ -1035,7 +1035,7 @@ void bash_location()
   int dir;
   int ox, oy;
 
-  print1("Bashing --");
+  queue_message("Bashing --");
   dir = getdir();
   if(dir == ABORT)
   {
@@ -1047,30 +1047,30 @@ void bash_location()
     oy = Player.y + Dirs[1][dir];
     if((Current_Environment == E_CITY) && (ox == 0) && (oy == 0))
     {
-      print1("Back Door WIZARD Mode!");
-      print2("You will invalidate your score if you proceed.");
-      print1("Enable WIZARD Mode? [yn] ");
-      if(ynq1() == 'y')
+      queue_message("Back Door WIZARD Mode!");
+      queue_message("You will invalidate your score if you proceed.");
+      queue_message("Enable WIZARD Mode? [yn] ");
+      if(ynq() == 'y')
       {
-        print2("You feel like a cheater.");
+        queue_message("You feel like a cheater.");
         setgamestatus(CHEATED, GameStatus);
       }
       else
       {
-        print2("A sudden tension goes out of the air....");
+        queue_message("A sudden tension goes out of the air....");
       }
     }
     else
     {
       if(Level->site[ox][oy].locchar == WALL)
       {
-        print1("You hurl yourself at the wall!");
+        queue_message("You hurl yourself at the wall!");
         p_damage(Player.str, NORMAL_DAMAGE, "a suicidal urge");
       }
       else if(Level->site[ox][oy].locchar == OPEN_DOOR)
       {
-        print1("You hurl yourself through the open door!");
-        print2("Yaaaaah! ... thud.");
+        queue_message("You hurl yourself through the open door!");
+        queue_message("Yaaaaah! ... thud.");
         Player.x = ox;
         Player.y = oy;
         p_damage(3, UNSTOPPABLE, "silliness");
@@ -1081,7 +1081,7 @@ void bash_location()
       {
         if(loc_statusp(ox, oy, SECRET, *Level))
         {
-          print1("You found a secret door!");
+          queue_message("You found a secret door!");
           lreset(ox, oy, SECRET, *Level);
           lset(ox, oy, CHANGED, *Level);
         }
@@ -1091,7 +1091,7 @@ void bash_location()
           {
             Player.x = ox;
             Player.y = oy;
-            print2("You blast the door off its hinges!");
+            queue_message("You blast the door off its hinges!");
             Level->site[ox][oy].locchar = FLOOR;
             lset(ox, oy, CHANGED, *Level);
             p_movefunction(Level->site[Player.x][Player.y].p_locf);
@@ -1099,7 +1099,7 @@ void bash_location()
           }
           else
           {
-            print1("Crash! The door holds.");
+            queue_message("Crash! The door holds.");
             if(random_range(30) > Player.str)
             {
               p_damage(std::max(1, statmod(Player.str)), UNSTOPPABLE, "a door");
@@ -1110,7 +1110,7 @@ void bash_location()
         {
           Player.x = ox;
           Player.y = oy;
-          print2("You bash open the door!");
+          queue_message("You bash open the door!");
           if(random_range(30) > Player.str)
           {
             p_damage(1, UNSTOPPABLE, "a door");
@@ -1127,11 +1127,11 @@ void bash_location()
       }
       else if(Level->site[ox][oy].locchar == PORTCULLIS)
       {
-        print1("Really, you don't have a prayer.");
+        queue_message("Really, you don't have a prayer.");
         if(random_range(1000) < Player.str)
         {
-          print2("The portcullis flies backwards into a thousand fragments.");
-          print3("Wow. What a stud.");
+          queue_message("The portcullis flies backwards into a thousand fragments.");
+          queue_message("Wow. What a stud.");
           gain_experience(100);
           Level->site[ox][oy].locchar = FLOOR;
           Level->site[ox][oy].p_locf  = L_NO_OP;
@@ -1139,7 +1139,7 @@ void bash_location()
         }
         else
         {
-          print2("You only hurt yourself on the 3'' thick steel bars.");
+          queue_message("You only hurt yourself on the 3'' thick steel bars.");
           p_damage(Player.str, UNSTOPPABLE, "a portcullis");
         }
       }
@@ -1147,16 +1147,16 @@ void bash_location()
       {
         if((Player.patron > 0) && (Level->site[ox][oy].aux == Player.patron))
         {
-          print1("You have a vision! An awesome angel hovers over the altar.");
-          print2("The angel says: 'You twit, don't bash your own altar!'");
-          print3("The angel slaps you upside the head for your presumption.");
+          queue_message("You have a vision! An awesome angel hovers over the altar.");
+          queue_message("The angel says: 'You twit, don't bash your own altar!'");
+          queue_message("The angel slaps you upside the head for your presumption.");
           p_damage(Player.hp - 1, UNSTOPPABLE, "an annoyed angel");
         }
         else if(Level->site[ox][oy].aux == 0)
         {
-          print1("The feeble powers of the minor godling are not enough to");
-          print2("protect his altar! The altar crumbles away to dust.");
-          print3("You feel almost unbearably smug.");
+          queue_message("The feeble powers of the minor godling are not enough to");
+          queue_message("protect his altar! The altar crumbles away to dust.");
+          queue_message("You feel almost unbearably smug.");
           Level->site[ox][oy].locchar = RUBBLE;
           Level->site[ox][oy].p_locf  = L_RUBBLE;
           lset(ox, oy, CHANGED, *Level);
@@ -1164,24 +1164,24 @@ void bash_location()
         }
         else
         {
-          print1("You have successfully annoyed a major deity. Good job.");
-          print2("Zzzzap! A bolt of godsfire strikes!");
+          queue_message("You have successfully annoyed a major deity. Good job.");
+          queue_message("Zzzzap! A bolt of godsfire strikes!");
           if(Player.rank[PRIESTHOOD] > 0)
           {
-            print3("Your own deity's aegis defends you from the bolt!");
+            queue_message("Your own deity's aegis defends you from the bolt!");
           }
           p_damage(std::max(0, random_range(100) - Player.rank[PRIESTHOOD] * 20), UNSTOPPABLE,
                    "a bolt of godsfire");
           if(Player.rank[PRIESTHOOD] * 20 + Player.pow + Player.level > random_range(200))
           {
-            print1("The altar crumbles...");
+            queue_message("The altar crumbles...");
             Level->site[ox][oy].locchar = RUBBLE;
             Level->site[ox][oy].p_locf  = L_RUBBLE;
             lset(ox, oy, CHANGED, *Level);
             if(Player.rank[PRIESTHOOD])
             {
-              print2("You sense your deity's pleasure with you.");
-              print3("You are surrounded by a golden glow.");
+              queue_message("You sense your deity's pleasure with you.");
+              queue_message("You are surrounded by a golden glow.");
               cleanse(1);
               heal(10);
             }
@@ -1191,7 +1191,7 @@ void bash_location()
       }
       else
       {
-        print3("You restrain yourself from total silliness.");
+        queue_message("You restrain yourself from total silliness.");
         setgamestatus(SKIP_MONSTERS, GameStatus);
       }
     }
@@ -1204,11 +1204,11 @@ void bash_item()
   int item;
   pob obj;
 
-  print1("Destroy an item --");
+  queue_message("Destroy an item --");
   item = getitem(NULL_ITEM);
   if(item == CASHVALUE)
   {
-    print3("Can't destroy cash!");
+    queue_message("Can't destroy cash!");
   }
   else if(item != ABORT)
   {
@@ -1218,7 +1218,7 @@ void bash_item()
       int item_level = obj->level;
       if(damage_item(obj) && Player.alignment < 0)
       {
-        print2("That was fun....");
+        queue_message("That was fun....");
         gain_experience(item_level * item_level * 5);
       }
     }
@@ -1226,17 +1226,17 @@ void bash_item()
     {
       if(obj->objchar == WEAPON)
       {
-        print2("The weapon turned in your hand -- you hit yourself!");
+        queue_message("The weapon turned in your hand -- you hit yourself!");
         p_damage(random_range(obj->dmg + abs(obj->plus)), NORMAL_DAMAGE, "a failure at vandalism");
       }
       else if(obj->objchar == ARTIFACT)
       {
-        print2("Uh Oh -- Now you've gotten it angry....");
+        queue_message("Uh Oh -- Now you've gotten it angry....");
         p_damage(obj->level * 10, UNSTOPPABLE, "an enraged artifact");
       }
       else
       {
-        print2("Ouch! Damn thing refuses to break...");
+        queue_message("Ouch! Damn thing refuses to break...");
         p_damage(1, UNSTOPPABLE, "a failure at vandalism");
       }
     }
@@ -1258,7 +1258,7 @@ void save(int force)
     }
     else
     {
-      print3("Can't save the game in the arena!");
+      queue_message("Can't save the game in the arena!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
       ok = false;
     }
@@ -1271,7 +1271,7 @@ void save(int force)
     }
     else
     {
-      print3("Can't save the game in the Adept's Challenge!");
+      queue_message("Can't save the game in the Adept's Challenge!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
       ok = false;
     }
@@ -1284,15 +1284,15 @@ void save(int force)
     }
     else
     {
-      print3("Can't save the game in the tactical map!");
+      queue_message("Can't save the game in the tactical map!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
       ok = false;
     }
   }
   if(!force && ok)
   {
-    print1("Confirm Save? [yn] ");
-    ok = (ynq1() == 'y');
+    queue_message("Confirm Save? [yn] ");
+    ok = (ynq() == 'y');
   }
   std::string save_file_directory{std::format("{}saves/{}", Omegalib, get_username())};
   if(ok)
@@ -1317,14 +1317,14 @@ void save(int force)
     }
     else
     {
-      print1("Save Aborted.");
+      queue_message("Save Aborted.");
     }
   }
   if(force)
   {
-    print1("The game is quitting - you will lose your character.");
-    print2("Try to save again? ");
-    if(ynq2() == 'y')
+    queue_message("The game is quitting - you will lose your character.");
+    queue_message("Try to save again? ");
+    if(ynq() == 'y')
     {
       save(force);
     }
@@ -1338,7 +1338,7 @@ void closedoor()
   int dir;
   int ox, oy;
 
-  print1("Close --");
+  queue_message("Close --");
   dir = getdir();
   if(dir == ABORT)
   {
@@ -1350,12 +1350,12 @@ void closedoor()
     oy = Player.y + Dirs[1][dir];
     if(Level->site[ox][oy].locchar == CLOSED_DOOR)
     {
-      print3("That door is already closed!");
+      queue_message("That door is already closed!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else if(Level->site[ox][oy].locchar != OPEN_DOOR)
     {
-      print3("You can't close that!");
+      queue_message("You can't close that!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
@@ -1374,14 +1374,14 @@ void moveplayer(int dx, int dy)
     if(Player.status[IMMOBILE] > 0)
     {
       resetgamestatus(FAST_MOVE, GameStatus);
-      print3("You are unable to move");
+      queue_message("You are unable to move");
     }
     else if((Player.maxweight < Player.itemweight) && random_range(2) && (!Player.status[LEVITATING]))
     {
       if(gamestatusp(MOUNTED, GameStatus))
       {
-        print1("Your horse refuses to carry you and your pack another step!");
-        print2("Your steed bucks wildly and throws you off!");
+        queue_message("Your horse refuses to carry you and your pack another step!");
+        queue_message("Your steed bucks wildly and throws you off!");
         p_damage(10, UNSTOPPABLE, "a cruelly abused horse");
         resetgamestatus(MOUNTED, GameStatus);
         summon(-1, HORSE);
@@ -1389,7 +1389,7 @@ void moveplayer(int dx, int dy)
       else
       {
         p_damage(1, UNSTOPPABLE, "a rupture");
-        print3("The weight of your pack drags you down. You can't move.");
+        queue_message("The weight of your pack drags you down. You can't move.");
       }
     }
     else
@@ -1481,16 +1481,16 @@ void movepincountry(int dx, int dy)
   {
     if(gamestatusp(MOUNTED, GameStatus))
     {
-      print1("Your horse refuses to carry you and your pack another step!");
-      print2("Your steed bucks wildly and throws you off!");
+      queue_message("Your horse refuses to carry you and your pack another step!");
+      queue_message("Your steed bucks wildly and throws you off!");
       p_damage(10, UNSTOPPABLE, "a cruelly abused horse");
       resetgamestatus(MOUNTED, GameStatus);
-      print1("With a shrill neigh of defiance, your former steed gallops");
-      print2("off into the middle distance....");
+      queue_message("With a shrill neigh of defiance, your former steed gallops");
+      queue_message("off into the middle distance....");
       if(Player.packptr != 0)
       {
-        print1("You remember (too late) that the contents of your pack");
-        print2("were kept in your steed's saddlebags!");
+        queue_message("You remember (too late) that the contents of your pack");
+        queue_message("were kept in your steed's saddlebags!");
         for(i = 0; i < MAXPACK; i++)
         {
           if(Player.pack[i])
@@ -1506,14 +1506,14 @@ void movepincountry(int dx, int dy)
     else
     {
       p_damage(1, UNSTOPPABLE, "a rupture");
-      print3("The weight of your pack drags you down. You can't move.");
+      queue_message("The weight of your pack drags you down. You can't move.");
     }
   }
   else
   {
     if(gamestatusp(LOST, GameStatus))
     {
-      print3("Being lost, you strike out randomly....");
+      queue_message("Being lost, you strike out randomly....");
       dx = random_range(3) - 1;
       dy = random_range(3) - 1;
     }
@@ -1521,7 +1521,7 @@ void movepincountry(int dx, int dy)
     {
       if(Player.status[IMMOBILE] > 0)
       {
-        print3("You are unable to move");
+        queue_message("You are unable to move");
       }
       else
       {
@@ -1534,16 +1534,16 @@ void movepincountry(int dx, int dy)
             takestime = false;
             if(Player.possessions[O_BOOTS]->blessing < 0)
             {
-              print1("Whooah! -- Your boots launch you into the sky....");
-              print2("You come down in a strange location....");
+              queue_message("Whooah! -- Your boots launch you into the sky....");
+              queue_message("You come down in a strange location....");
               Player.x = random_range(WIDTH);
               Player.y = random_range(LENGTH);
-              print1("Your boots disintegrate with a malicious giggle...");
+              queue_message("Your boots disintegrate with a malicious giggle...");
               dispose_lost_objects(1, Player.possessions[O_BOOTS]);
             }
             else if(Player.possessions[O_BOOTS]->known != 2)
             {
-              print1("Wow! Your boots take you 7 leagues in a single stride!");
+              queue_message("Wow! Your boots take you 7 leagues in a single stride!");
               Player.possessions[O_BOOTS]->known = 2;
             }
           }
@@ -1551,12 +1551,12 @@ void movepincountry(int dx, int dy)
         if(gamestatusp(LOST, GameStatus) && (Precipitation < 1) &&
            c_statusp(Player.x, Player.y, SEEN, Country))
         {
-          print3("Ah! Now you know where you are!");
+          queue_message("Ah! Now you know where you are!");
           resetgamestatus(LOST, GameStatus);
         }
         else if(gamestatusp(LOST, GameStatus))
         {
-          print3("You're still lost.");
+          queue_message("You're still lost.");
         }
         if(Precipitation > 0)
         {
