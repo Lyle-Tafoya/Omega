@@ -202,7 +202,7 @@ void print_shown_entities()
       break;
     }
   }
-  wrefresh(shown_entities_window);
+  wnoutrefresh(shown_entities_window);
 }
 
 void print_messages()
@@ -220,7 +220,7 @@ void print_messages()
   {
     wmove(message_window, size - 1, message_history.back().size());
   }
-  wrefresh(message_window);
+  wnoutrefresh(message_window);
 }
 
 void expand_message_window()
@@ -307,7 +307,7 @@ void show_screen()
       }
     }
   }
-  wrefresh(level_window);
+  wnoutrefresh(level_window);
   print_shown_entities();
 }
 
@@ -315,6 +315,7 @@ int mgetc()
 {
   int cursor_visibility = curs_set(1);
   print_messages();
+  doupdate();
   int player_input = wgetch(message_window);
   curs_set(cursor_visibility);
   return player_input;
@@ -324,6 +325,7 @@ int mgetc()
 int mcigetc()
 {
   print_messages();
+  doupdate();
   int c = wgetch(message_window);
   if(c >= static_cast<int>('A') && c <= static_cast<int>('Z'))
   {
@@ -338,6 +340,7 @@ int mcigetc()
 char menugetc()
 {
   print_messages();
+  doupdate();
   return wgetch(menu_window);
 }
 
@@ -345,11 +348,12 @@ int ynq()
 {
   int cursor_visibility = curs_set(1);
   print_messages();
-  char p = '*';
-  while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != EOF) && (p != ' '))
+  int p;
+  do
   {
+    doupdate();
     p = wgetch(message_window);
-  }
+  } while(p != 'n' && p != 'y' && p != 'q' && p != ESCAPE && p != EOF && p != ' ');
   switch(p)
   {
     case 'y':
@@ -382,6 +386,7 @@ int ynq1()
   char p = '*';
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
   {
+    doupdate();
     p = wgetch(message_window);
   }
   switch(p)
@@ -417,6 +422,7 @@ int ynq2()
   char p = '*';
   while((p != 'n') && (p != 'y') && (p != 'q') && (p != ESCAPE) && (p != ' ') && (p != EOF))
   {
+    doupdate();
     p = wgetch(message_window);
   }
   switch(p)
@@ -447,7 +453,7 @@ int ynq2()
 void erase_level()
 {
   werase(level_window);
-  wrefresh(level_window);
+  wnoutrefresh(level_window);
 }
 
 void queue_message(const std::string &message)
@@ -531,7 +537,7 @@ void omega_title()
   showmotd();
   clear();
   touchwin(stdscr);
-  refresh();
+  wnoutrefresh(stdscr);
 }
 
 /* blanks out ith line of menu_window or level_window */
@@ -539,7 +545,7 @@ void hide_line(int i)
 {
   werase(Showline[i]);
   touchwin(Showline[i]);
-  wrefresh(Showline[i]);
+  wnoutrefresh(Showline[i]);
 }
 
 void calculate_screen_size()
@@ -693,6 +699,7 @@ int get_player_input(WINDOW *window)
   {
     int x, y;
     getyx(window, y, x);
+    doupdate();
     int player_input = mvwgetch(window, y, x);
     if(player_input == KEY_RESIZE)
     {
@@ -841,7 +848,7 @@ void drawvision(int x, int y)
     }
     if((!gamestatusp(FAST_MOVE, GameStatus)) || (!optionp(JUMPMOVE, Player)))
     {
-      wrefresh(level_window);
+      wnoutrefresh(level_window);
     }
     oldx = x;
     oldy = y;
@@ -865,7 +872,7 @@ void drawvision(int x, int y)
       }
     }
     drawplayer();
-    wrefresh(level_window);
+    wnoutrefresh(level_window);
   }
 }
 
@@ -874,13 +881,13 @@ void omshowcursor(int x, int y)
   if(!offscreen(x, y))
   {
     wmove(level_window, screenmod(y), screenmod_horizontal(x));
-    wrefresh(level_window);
+    wnoutrefresh(level_window);
   }
 }
 
 void levelrefresh()
 {
-  wrefresh(level_window);
+  wnoutrefresh(level_window);
 }
 
 /* draws a particular spot under if in line-of-sight */
@@ -1144,7 +1151,7 @@ void timeprint()
     waddch(time_window, '0');
   }
   wprintw(time_window, hour() > 11 ? " PM" : " AM");
-  wrefresh(time_window);
+  wnoutrefresh(time_window);
 }
 
 void print_name()
@@ -1206,8 +1213,6 @@ void print_combat_stats()
   enable_attr(speed_window, A_BOLD);
   wprintw(speed_window, "%d.%d", 5 / Player.speed, 500 / Player.speed % 100);
   wnoutrefresh(speed_window);
-
-  doupdate();
 }
 
 void print_health()
@@ -1433,14 +1438,6 @@ void dataprint()
   print_gold();
   print_level();
   print_weight();
-  doupdate();
-}
-
-/* redraw everything currently displayed */
-void redraw()
-{
-  touchwin(curscr);
-  wrefresh(curscr);
 }
 
 /* redraw each permanent window */
@@ -1537,14 +1534,12 @@ void xredraw()
   wnoutrefresh(experience_window);
   wnoutrefresh(location_window);
   wnoutrefresh(shown_entities_window);
-
-  doupdate();
 }
 
 void menuaddch(char c)
 {
   waddch(menu_window, c);
-  wrefresh(menu_window);
+  wnoutrefresh(menu_window);
 }
 
 int stillonblock()
@@ -1563,11 +1558,11 @@ int stillonblock()
       wprintw(message_window, ">>>STAY?<<<");
     }
     display = !display;
-    wrefresh(message_window);
+    doupdate();
     c = wgetch(message_window);
   } while((c != ' ') && (c != ESCAPE) && (c != EOF));
   werase(message_window);
-  wrefresh(message_window);
+  wnoutrefresh(message_window);
   return (c == ' ');
 }
 
@@ -1575,14 +1570,14 @@ void menuclear()
 {
   werase(menu_window);
   touchwin(menu_window);
-  wrefresh(menu_window);
+  wnoutrefresh(menu_window);
 }
 
 void menuprint(const std::string &s)
 {
   if(getcury(menu_window) >= ScreenLength - 2)
   {
-    wrefresh(menu_window);
+    wnoutrefresh(menu_window);
     werase(menu_window);
     touchwin(menu_window);
   }
@@ -1591,7 +1586,7 @@ void menuprint(const std::string &s)
 
 void showmenu()
 {
-  wrefresh(menu_window);
+  wnoutrefresh(menu_window);
 }
 
 void endgraf()
@@ -1607,7 +1602,7 @@ void plotchar(Symbol pyx, int x, int y)
   if(!offscreen(x, y))
   {
     color_mvwaddch(level_window, screenmod(y), screenmod_horizontal(x), pyx);
-    wrefresh(level_window);
+    wnoutrefresh(level_window);
   }
 }
 
@@ -1632,7 +1627,7 @@ void draw_explosion(Symbol pyx, int x, int y)
   {
     plotspot(x + Dirs[0][i], y + Dirs[1][i], true);
   }
-  wrefresh(level_window);
+  wnoutrefresh(level_window);
 }
 
 std::string msgscanstring()
@@ -1667,7 +1662,7 @@ void locprint(const std::string &s)
   werase(location_window);
   enable_attr(location_window, A_BOLD);
   waddstr(location_window, s.c_str());
-  wrefresh(location_window);
+  wnoutrefresh(location_window);
 }
 
 void room_name_print(const std::string &room_name)
@@ -1675,7 +1670,7 @@ void room_name_print(const std::string &room_name)
   werase(room_name_window);
   enable_attr(room_name_window, A_BOLD);
   waddstr(room_name_window, room_name.c_str());
-  wrefresh(room_name_window);
+  wnoutrefresh(room_name_window);
 }
 
 // draw everything whether visible or not
@@ -1799,7 +1794,7 @@ long parsenum()
 void maddch(char c)
 {
   waddch(message_window, c);
-  wrefresh(message_window);
+  wnoutrefresh(message_window);
 }
 
 void display_death(const std::string &source)
@@ -1811,7 +1806,6 @@ void display_death(const std::string &source)
   std::string killed_by{std::format("Killed by {}", source)};
   addstr(killed_by.c_str());
   addstr(".\n\n\n\n\nHit 'c' to continue.");
-  refresh();
   while(wgetch(stdscr) != 'c')
   {
     ;
@@ -1841,8 +1835,7 @@ void display_win()
           Player.name, calc_points()).c_str());
   }
   addstr("\n\n\n\n\nHit 'c' to continue.");
-  refresh();
-  while(wgetch(stdscr) != 'c')
+  while(getch() != 'c')
   {
     ;
   }
@@ -1867,8 +1860,7 @@ void display_quit()
   addstr(std::format("\n\n\n\n{} wimped out with {} points!\n\n\n\n\n",
         Player.name, calc_points()).c_str());
   addstr("Hit 'c' to continue.");
-  refresh();
-  while(wgetch(stdscr) != 'c')
+  while(getch() != 'c')
   {
     ;
   }
@@ -1886,8 +1878,7 @@ void display_bigwin()
   addstr(std::format("\n\n\n\n{} {} with {} points!\n\n\n\n\n",
         Player.name, win_message, FixedPoints).c_str());
   addstr("Hit 'c' to continue.");
-  refresh();
-  while(wgetch(stdscr) != 'c')
+  while(getch() != 'c')
   {
     ;
   }
@@ -2212,11 +2203,11 @@ int move_slot(int oldslot, int newslot, int maxslot)
   if((newslot >= 0) && (newslot < maxslot))
   {
     mvwaddstr(Showline[oldslot], 0, 0, "--");
-    wrefresh(Showline[oldslot]);
+    wnoutrefresh(Showline[oldslot]);
     wstandout(Showline[newslot]);
     mvwaddstr(Showline[newslot], 0, 0, ">>");
     wstandend(Showline[newslot]);
-    wrefresh(Showline[newslot]);
+    wnoutrefresh(Showline[newslot]);
     return (newslot);
   }
   else
@@ -2285,7 +2276,7 @@ void display_option_slot(int slot)
       wprintw(Showline[slot], "-- Option SEARCHNUM [0>x>10]: (now %d)", Searchnum);
       break;
   }
-  wrefresh(Showline[slot]);
+  wnoutrefresh(Showline[slot]);
 }
 
 void display_options()
@@ -2303,19 +2294,14 @@ void deathprint()
 {
   mgetc();
   waddch(message_window, 'D');
-  wrefresh(message_window);
   mgetc();
   waddch(message_window, 'e');
-  wrefresh(message_window);
   mgetc();
   waddch(message_window, 'a');
-  wrefresh(message_window);
   mgetc();
   waddch(message_window, 't');
-  wrefresh(message_window);
   mgetc();
   waddch(message_window, 'h');
-  wrefresh(message_window);
   mgetc();
 }
 
@@ -2325,7 +2311,6 @@ void bufferprint()
 {
   int i = bufferpos - 1, c, finished = 0;
   wprintw(message_window, "^p for previous message, ^n for next, anything else to quit.");
-  wrefresh(message_window);
   do
   {
     if(i >= STRING_BUFFER_SIZE)
@@ -2338,7 +2323,6 @@ void bufferprint()
     }
     werase(message_window);
     waddstr(message_window, Stringbuffer[i].c_str());
-    wrefresh(message_window);
     c = mgetc();
     if(c == 16)
     { /* ^p */
@@ -2360,7 +2344,7 @@ void clear_screen()
 {
   clear();
   touchwin(stdscr);
-  refresh();
+  wnoutrefresh(stdscr);
 }
 
 void showscores()
@@ -2411,6 +2395,6 @@ void showscores()
       Priest[DRUID], levelname(Priestlevel[DRUID]),
       Grandmaster, levelname(Grandmasterlevel)
   ).c_str());
-  wgetch(stdscr);
+  getch();
   clear_screen();
 }

@@ -87,7 +87,7 @@ void p_process()
         setgamestatus(SKIP_MONSTERS, GameStatus);
         break; /* ^p */
       case 18:
-        redraw();
+        xredraw();
         setgamestatus(SKIP_MONSTERS, GameStatus);
         break; /* ^r */
       case 23:
@@ -395,7 +395,7 @@ void p_country_process()
         no_op = true;
         break; /* ^p */
       case 18:
-        redraw();
+        xredraw();
         no_op = true;
         break; /* ^r */
       case 23:

@@ -79,7 +79,7 @@ void interactive_menu::print()
       mvwaddstr(menu_window, i+header.size(), 0, lines[i + position].c_str());
     }
   }
-  wrefresh(menu_window);
+  wnoutrefresh(menu_window);
 }
 
 int interactive_menu::get_player_input()
