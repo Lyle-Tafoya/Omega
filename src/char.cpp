@@ -332,6 +332,7 @@ bool title_menu()
         selected_option = static_cast<menu_option>(std::min(static_cast<int>(bottom_option+save_file_paths.size()), selected_option + 1));
         break;
       case KEY_BACKSPACE:
+      case '\b':
         if(!name.empty())
         {
           name.pop_back();
