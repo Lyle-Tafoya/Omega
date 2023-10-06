@@ -25,7 +25,7 @@ which works.... */
 #include "glob.h"
 #include "scr.h"
 
-/* deal with a new player command in dungeon or city mode*/
+// deal with a new player command in dungeon or city mode
 void p_process()
 {
   static int searchval = 0;
@@ -61,17 +61,17 @@ void p_process()
       case ' ':
       case 13:
         setgamestatus(SKIP_MONSTERS, GameStatus);
-        break; /*no op on space or return*/
+        break; // no op on space or return
       case 6:
         abortshadowform();
-        break; /* ^f */
+        break; // ^f
       case 7:
         wizard();
-        break; /* ^g */
+        break; // ^g
       case 9:
         display_pack();
         xredraw();
-        break; /* ^i */
+        break; // ^i
       case 11:
         if(gamestatusp(CHEATED, GameStatus))
         {
@@ -81,22 +81,22 @@ void p_process()
       case 12:
         xredraw();
         setgamestatus(SKIP_MONSTERS, GameStatus);
-        break; /* ^l */
+        break; // ^l
       case 16:
         bufferprint();
         setgamestatus(SKIP_MONSTERS, GameStatus);
-        break; /* ^p */
+        break; // ^p
       case 18:
         xredraw();
         setgamestatus(SKIP_MONSTERS, GameStatus);
-        break; /* ^r */
+        break; // ^r
       case 23:
         if(gamestatusp(CHEATED, GameStatus))
         {
           drawscreen();
         }
-        break; /* ^w */
-      case 24: /* ^x */
+        break; // ^w
+      case 24: // ^x
         if(gamestatusp(CHEATED, GameStatus) || Player.rank[ADEPT])
         {
           wish(1);
@@ -113,7 +113,7 @@ void p_process()
         break;
       case 'd':
         drop_pack_item();
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case 'e':
         eat();
@@ -121,11 +121,11 @@ void p_process()
         break;
       case 'f':
         fire();
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case 'g':
         pickup();
-        Command_Duration = Player.speed * 10 / 5;
+        Command_Duration = Player.speed * 2;
         break;
       case 'i':
         do_inventory_control();
@@ -136,11 +136,11 @@ void p_process()
         break;
       case 'o':
         opendoor();
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case 'p':
         pickpocket();
-        Command_Duration = Player.speed * 20 / 5;
+        Command_Duration = Player.speed * 4;
         break;
       case 'q':
         quaff();
@@ -160,7 +160,7 @@ void p_process()
         break;
       case 'v':
         vault();
-        Command_Duration = Player.speed * 10 / 5;
+        Command_Duration = Player.speed * 2;
         break;
       case 'x':
         examine();
@@ -168,7 +168,7 @@ void p_process()
         break;
       case 'z':
         bash_location();
-        Command_Duration = Player.speed * 10 / 5;
+        Command_Duration = Player.speed * 2;
         break;
       case 'A':
         activate();
@@ -183,7 +183,7 @@ void p_process()
         break;
       case 'E':
         dismount_steed();
-        Command_Duration = Player.speed * 10 / 5;
+        Command_Duration = Player.speed * 2;
         break;
       case 'F':
         tacoptions();
@@ -201,7 +201,7 @@ void p_process()
         break;
       case 'P':
         show_license();
-        break; /* actually show_license is in file.c */
+        break; // actually show_license is in file.c
       case 'Q':
         quit();
         break;
@@ -215,14 +215,14 @@ void p_process()
         break;
       case 'T':
         tunnel();
-        Command_Duration = Player.speed * 30 / 5;
+        Command_Duration = Player.speed * 6;
         break;
       case 'V':
         version();
         break;
       case 'Z':
         bash_item();
-        Command_Duration = Player.speed * 10 / 5;
+        Command_Duration = Player.speed * 2;
         break;
       case '.':
         rest();
@@ -253,45 +253,45 @@ void p_process()
       case '4':
       case 'h':
         moveplayer(-1, 0);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '2':
       case 'j':
         moveplayer(0, 1);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '8':
       case 'k':
         moveplayer(0, -1);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '6':
       case 'l':
         moveplayer(1, 0);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '1':
       case 'b':
         moveplayer(-1, 1);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '3':
       case 'n':
         moveplayer(1, 1);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '7':
       case 'y':
         moveplayer(-1, -1);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '9':
       case 'u':
         moveplayer(1, -1);
-        Command_Duration = Player.speed * 5 / 5;
+        Command_Duration = Player.speed;
         break;
       case '5':
-        setgamestatus(SKIP_MONSTERS, GameStatus); /* don't do anything; a dummy turn */
+        setgamestatus(SKIP_MONSTERS, GameStatus); // don't do anything; a dummy turn
         Cmd = get_message_input();
         while((Cmd != ESCAPE) && ((Cmd < '1') || (Cmd > '9') || (Cmd == '5')))
         {
