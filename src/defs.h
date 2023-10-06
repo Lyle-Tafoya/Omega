@@ -1193,10 +1193,6 @@ enum location_id
   L_PORTCULLIS,
 
   // traps
-  NUMTRAPS,
-  TRAP_BASE,
-
-  // traps
   L_TRAP_DART,
   L_TRAP_PIT,
   L_TRAP_DOOR,
@@ -1220,6 +1216,8 @@ enum location_id
 
   L_ABYSS
 };
+constexpr int TRAP_BASE = L_TRAP_DART;
+constexpr int NUMTRAPS = L_TRAP_SIREN - TRAP_BASE + 1;
 constexpr int CITYSITEBASE = L_CHARITY;
 constexpr int NUMCITYSITES = L_MONASTERY - CITYSITEBASE + 1;
 
