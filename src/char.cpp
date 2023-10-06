@@ -182,7 +182,19 @@ bool title_menu()
           file_read(save_file, save_file_version);
           int game_version;
           file_read(save_file, game_version);
-          restore_player(save_file, p);
+
+          p.name.~basic_string();
+          p.meleestr.~basic_string();
+          file_read(save_file, p);
+          new (&p.name) std::string;
+          new (&p.meleestr) std::string;
+          size_t size;
+          file_read(save_file, size);
+          save_file.seekg(size, std::ios::cur);
+          file_read(save_file, size);
+          p.name.resize(size);
+          save_file.read(&p.name[0], size);
+
           if(!save_file.fail())
           {
 
