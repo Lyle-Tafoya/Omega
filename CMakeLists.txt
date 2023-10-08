@@ -36,7 +36,7 @@ if(WIN32)
   ExternalProject_Add(
     PDCursesMod
     PREFIX ${CMAKE_BINARY_DIR}/_deps
-    GIT_REPOSITORY https://github.com/Bill-Gray/PDCursesMod
+    GIT_REPOSITORY https://github.com/Lyle-Tafoya/PDCursesMod.git
     GIT_TAG v4.3.7
     INSTALL_DIR ${CMAKE_BINARY_DIR}/installed
     CMAKE_ARGS
