@@ -252,21 +252,25 @@ void p_process()
         break;
       case '4':
       case 'h':
+      case KEY_LEFT:
         moveplayer(-1, 0);
         Command_Duration = Player.speed;
         break;
       case '2':
       case 'j':
+      case KEY_DOWN:
         moveplayer(0, 1);
         Command_Duration = Player.speed;
         break;
       case '8':
       case 'k':
+      case KEY_UP:
         moveplayer(0, -1);
         Command_Duration = Player.speed;
         break;
       case '6':
       case 'l':
+      case KEY_RIGHT:
         moveplayer(1, 0);
         Command_Duration = Player.speed;
         break;
@@ -464,18 +468,22 @@ void p_country_process()
         break;
       case '4':
       case 'h':
+      case KEY_LEFT:
         movepincountry(-1, 0);
         break;
       case '2':
       case 'j':
+      case KEY_DOWN:
         movepincountry(0, 1);
         break;
       case '8':
       case 'k':
+      case KEY_UP:
         movepincountry(0, -1);
         break;
       case '6':
       case 'l':
+      case KEY_RIGHT:
         movepincountry(1, 0);
         break;
       case '1':
