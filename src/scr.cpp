@@ -432,6 +432,27 @@ void calculate_screen_size()
   }
 }
 
+void initialize_colors()
+{
+  if(!can_change_color()) { return; }
+  init_color(COLOR_BLACK, 0, 0, 0);
+  init_color(COLOR_RED, 698, 94, 94);
+  init_color(COLOR_GREEN, 94, 698, 94);
+  init_color(COLOR_YELLOW, 698, 408, 94);
+  init_color(COLOR_BLUE, 94, 94, 698);
+  init_color(COLOR_MAGENTA, 698, 94, 698);
+  init_color(COLOR_CYAN, 94, 698, 698);
+  init_color(COLOR_WHITE, 698, 698, 698);
+  init_color(COLOR_BLACK+8, 408, 408, 408);
+  init_color(COLOR_RED+8, 1000, 329, 329);
+  init_color(COLOR_GREEN+8, 329, 1000, 329);
+  init_color(COLOR_YELLOW+8, 1000, 1000, 329);
+  init_color(COLOR_BLUE+8, 329, 329, 1000);
+  init_color(COLOR_MAGENTA+8, 1000, 329, 1000);
+  init_color(COLOR_CYAN+8, 329, 1000, 1000);
+  init_color(COLOR_WHITE+8, 1000, 1000, 1000);
+}
+
 void initialize_windows()
 {
   calculate_screen_size();
@@ -608,6 +629,7 @@ void initgraf()
   crmode();
   start_color();
   clrgen_init();
+  initialize_colors();
   initialize_windows();
   curs_set(0);
 #ifndef PDCURSES
