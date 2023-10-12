@@ -263,6 +263,9 @@ int main(int, char *[])
 
   // all kinds of initialization
   initgraf();
+#ifdef PDC_GL_BUILD
+  PDC_set_title("Omega Rebirth");
+#endif
   initdirs();
   initrand(E_RANDOM, 0);
 
