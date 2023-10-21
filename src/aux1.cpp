@@ -660,7 +660,8 @@ void p_damage(int dmg, int dtype, const std::string &fromstring)
 /* game over, you lose! */
 void p_death(const std::string &fromstring)
 {
-  Player.hp = -1;
+  Player.hp = 0;
+  dataprint();
   queue_message("You died!", true);
   more_wait();
   display_death(fromstring);

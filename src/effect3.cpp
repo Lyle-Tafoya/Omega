@@ -1430,7 +1430,6 @@ void drain_life(int amount)
       if((Player.str < 3) || (Player.con < 3))
       {
         queue_message("You suffer a fatal heart attack!!!");
-        Player.hp = 0;
         p_death("a coronary");
       }
     }
