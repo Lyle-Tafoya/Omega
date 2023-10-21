@@ -36,19 +36,17 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #  define WIZARD              "wtanksle"
 #endif
 
-// If CATCH_SIGNALS is set to 1, will not dump core, nicer for players.
-// dbx still intercepts the signals first, so it's ok for debugging
-#ifndef CATCH_SIGNALS
-#  define CATCH_SIGNALS       1
-#endif
-
 // Uncomment this if you want to run a public Omega server (ie. dgamelaunch)
 // It disables the title menu and 'R'ename command
 //#define MULTI_USER_SYSTEM
 
-// Uncomment the following line out if you want users to be able to override
+// Uncomment the following line if you want users to be able to override
 // the OMEGALIB define, above, by setting the environment variable OMEGALIB
 //#define USER_DEFINED_OMEGALIB
+
+// Uncomment this if you don't want to catch signals
+// Better for players if not defined, so it will attempt to save on error
+//#define NO_SIGNAL_CATCH
 
 //---------------------------SYSTEM DEFINITIONS---------------------------
 

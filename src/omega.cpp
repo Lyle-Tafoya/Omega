@@ -220,33 +220,32 @@ int main(int, char *[])
   signal(SIGHUP, signalsave);
 #endif
 
-  if(CATCH_SIGNALS)
-  {
-#ifdef SIGQUIT
-    signal(SIGQUIT, signalexit);
+#ifndef NO_SIGNAL_CATCH
+#  ifdef SIGQUIT
+     signal(SIGQUIT, signalexit);
+#  endif
+     signal(SIGILL, signalexit);
+#  ifdef SIGTRAP
+     signal(SIGTRAP, signalexit);
+#  endif
+     signal(SIGFPE, signalexit);
+     signal(SIGSEGV, signalexit);
+#  ifdef SIGIOT
+     signal(SIGIOT, signalexit);
+#  endif
+#  ifdef SIGABRT
+     signal(SIGABRT, signalexit);
+#  endif
+#  ifdef SIGEMT
+     signal(SIGEMT, signalexit);
+#  endif
+#  ifdef SIGBUS
+     signal(SIGBUS, signalexit);
+#  endif
+#  ifdef SIGSYS
+     signal(SIGSYS, signalexit);
+#  endif
 #endif
-    signal(SIGILL, signalexit);
-#ifdef SIGTRAP
-    signal(SIGTRAP, signalexit);
-#endif
-    signal(SIGFPE, signalexit);
-    signal(SIGSEGV, signalexit);
-#ifdef SIGIOT
-    signal(SIGIOT, signalexit);
-#endif
-#ifdef SIGABRT
-    signal(SIGABRT, signalexit);
-#endif
-#ifdef SIGEMT
-    signal(SIGEMT, signalexit);
-#endif
-#ifdef SIGBUS
-    signal(SIGBUS, signalexit);
-#endif
-#ifdef SIGSYS
-    signal(SIGSYS, signalexit);
-#endif
-  }
 
 #ifdef USER_DEFINED_OMEGALIB
   if(!(Omegalib = getenv("OMEGALIB")))
