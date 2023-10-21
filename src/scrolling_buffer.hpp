@@ -35,6 +35,7 @@ public:
   void receive(const std::string &message, bool force_break = false);
   void append(const std::string &message, bool pad = true, bool force_break = false);
   void replace_last(const std::string &message);
+  void pop_back();
   void resize(uint16_t width, uint16_t length);
   void clear();
   const std::deque<std::string> &get_message_history(bool update = true);

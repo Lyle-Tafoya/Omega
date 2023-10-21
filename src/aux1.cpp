@@ -661,7 +661,8 @@ void p_damage(int dmg, int dtype, const std::string &fromstring)
 void p_death(const std::string &fromstring)
 {
   Player.hp = -1;
-  queue_message("You died!");
+  queue_message("You died!", true);
+  more_wait();
   display_death(fromstring);
 #ifdef SAVE_LEVELS
   kill_all_levels();

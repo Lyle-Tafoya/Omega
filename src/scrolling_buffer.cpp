@@ -56,6 +56,11 @@ void scrolling_buffer::replace_last(const std::string &message)
   message_history.emplace_back(message);
 }
 
+void scrolling_buffer::pop_back()
+{
+  message_history.pop_back();
+}
+
 void scrolling_buffer::process_queue()
 {
   std::string message;

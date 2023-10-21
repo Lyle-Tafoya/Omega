@@ -385,11 +385,11 @@ void erase_level()
   wnoutrefresh(level_window);
 }
 
-void queue_message(const std::string &message)
+void queue_message(const std::string &message, bool force_break)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
   {
-    message_buffer.receive(message);
+    message_buffer.receive(message, force_break);
   }
 }
 void append_message(const std::string &message, bool force_break)
@@ -618,6 +618,21 @@ int get_message_input()
 int get_level_input()
 {
   return get_player_input(level_window);
+}
+
+void more_wait()
+{
+  if(gamestatusp(SUPPRESS_PRINTING, GameStatus))
+  {
+    return;
+  }
+  append_message("--MORE--", true);
+  int player_input;
+  do
+  {
+    player_input = get_message_input();
+  } while(player_input != KEY_ENTER && player_input != '\n' && player_input != ' ');
+  message_buffer.pop_back();
 }
 
 

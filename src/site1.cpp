@@ -1238,21 +1238,21 @@ void l_library()
   }
   else
   {
-    append_message("Library Research Fee: 1000Au.", true);
+    queue_message("Library Research Fee: 1000Au.", true);
     if(Player.maxiq < 18)
     {
-      append_message("The Rampart student aid system has arranged a grant!", true);
+      queue_message("The Rampart student aid system has arranged a grant!", true);
       fee = std::max(50, 1000 - (18 - Player.maxiq) * 125);
-      append_message(std::format("Your revised fee is: {}Au.", fee), true);
+      queue_message(std::format("Your revised fee is: {}Au.", fee), true);
     }
     while(!done)
     {
-      append_message("Pay the fee? [yn] ", true);
+      queue_message("Pay the fee? [yn] ", true);
       if(ynq() == 'y')
       {
         if(Player.cash < fee)
         {
-          append_message("No payee, No studee.", true);
+          queue_message("No payee, No studee.", true);
           done = true;
         }
         else
@@ -1277,49 +1277,53 @@ void l_library()
             response = (char)mcigetc();
             if(response == 'a')
             {
-              append_message("You unfurl an ancient, yellowing scroll...", true);
+              queue_message("You unfurl an ancient, yellowing scroll...", true);
+              more_wait();
               theologyfile();
             }
             else if(response == 'b')
             {
-              append_message("You unroll a slick four-color document...", true);
+              queue_message("You unroll a slick four-color document...", true);
+              more_wait();
               cityguidefile();
             }
             else if(response == 'c')
             {
-              append_message("This scroll is written in a strange magical script...", true);
+              queue_message("This scroll is written in a strange magical script...", true);
+              more_wait();
               wishfile();
             }
             else if(response == 'd')
             {
-              append_message("You find a strange document, obviously misfiled", true);
-              append_message("under the heading 'acrylic fungus painting technique'");
+              queue_message("You find a strange document, obviously misfiled", true);
+              queue_message("under the heading 'acrylic fungus painting technique'");
+              more_wait();
               adeptfile();
             }
             else if(response == 'e')
             {
               if(random_range(30) > Player.iq)
               {
-                append_message("You feel more knowledgeable!", true);
+                queue_message("You feel more knowledgeable!", true);
                 Player.iq++;
                 Player.maxiq++;
                 dataprint();
                 if(Player.maxiq < 19 && fee != std::max(50, 1000 - (18 - Player.maxiq) * 125))
                 {
                   fee = std::max(50, 1000 - (18 - Player.maxiq) * 125);
-                  append_message(std::format("Your revised fee is: {}Au.", fee), true);
+                  queue_message(std::format("Your revised fee is: {}Au.", fee), true);
                 }
               }
               else
               {
-                append_message("You find advice in an ancient tome: ", true);
+                queue_message("You find advice in an ancient tome: ", true);
                 hint();
               }
             }
             else if(response == ESCAPE)
             {
               done = true;
-              append_message("That was an expensive browse...", true);
+              queue_message("That was an expensive browse...", true);
             }
             else
             {
@@ -1334,11 +1338,11 @@ void l_library()
         done = true;
         if(studied)
         {
-          append_message("Come back anytime we're open, 7am to 8pm.", true);
+          queue_message("Come back anytime we're open, 7am to 8pm.", true);
         }
         else
         {
-          append_message("You philistine!", true);
+          queue_message("You philistine!", true);
         }
       }
     }
