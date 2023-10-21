@@ -173,6 +173,7 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, ZapDay);
   file_write(save_file, ZapHour);
   file_write(save_file, RitualRoom);
+  file_write(save_file, MazeNum);
 
   // stuff which used to be statics
   file_write(save_file, twiddle);
@@ -643,6 +644,7 @@ void restore_player(std::ifstream &save_file, player &p)
   file_read(save_file, ZapDay);
   file_read(save_file, ZapHour);
   file_read(save_file, RitualRoom);
+  file_read(save_file, MazeNum);
 
   // stuff which used to be statics
   file_read(save_file, twiddle);

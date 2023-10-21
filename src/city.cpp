@@ -577,7 +577,7 @@ void mazesite(int i, int j, int populate)
   static char  site;
   if(!fd)
   {
-    fd   = checkfopen(std::format("{}maze{}.dat", Omegalib, 1+random_range(4)), "rb");
+    fd   = checkfopen(std::format("{}maze{}.dat", Omegalib, MazeNum), "rb");
     site = cryptkey("mazes");
   }
   site = getc(fd) ^ site;

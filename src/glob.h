@@ -232,6 +232,8 @@ extern int LastTownLocY;
 extern std::string Password;
 /* autoteller password */
 
+extern int MazeNum;
+
 extern pol Condoitems;
 /* items in condo */
 

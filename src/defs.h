@@ -55,7 +55,7 @@ constexpr int GAME_VERSION        = 506;
 const std::string VERSIONSTRING   = "omega rebirth version 0.5.6";
 
 // Just increment these by one whenever an incompatibility is introduced
-constexpr int SAVE_FILE_VERSION   = 0;
+constexpr int SAVE_FILE_VERSION   = 1;
 constexpr int CONFIG_FILE_VERSION = 0;
 
 constexpr int VACANT    = 0;

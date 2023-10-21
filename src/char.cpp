@@ -153,6 +153,7 @@ void init_game(bool play_yourself = false)
   inititem(true);
   Date = random_range(360);
   Phase = random_range(24);
+  MazeNum = random_range(4) + 1;
   initplayer(play_yourself);
   init_world();
   xredraw();
