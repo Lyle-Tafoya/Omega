@@ -452,24 +452,9 @@ constexpr int NUMROOMNAMES = 30;
 #define ROOMBASE            39 // normal room name indices start after the RS_ constants
 
 #include <curses.h>
-
-#ifdef COLOR_PAIR
-
-#  ifdef OMEGA_CLRGEN
-#    define CLR(fg)      OMEGA_CLRGEN1 fg
-#    define CLRS(fg, bg) OMEGA_CLRGEN2 fg bg
-#  else
-#    include "clrgen.h"
-#    define CLR(fg)      CLR_##fg##_BLACK
-#    define CLRS(fg, bg) CLR_##fg##_##bg
-#  endif
-
-#else
-
-#  define CLR(fg)      0
-#  define CLRS(fg, bg) 0
-
-#endif
+#include "clrgen.h"
+#define CLR(fg)      CLR_##fg##_BLACK
+#define CLRS(fg, bg) CLR_##fg##_##bg
 
 // objects, locations, and terrain; characters to draw
 #define NULL_ITEM               '\0'
