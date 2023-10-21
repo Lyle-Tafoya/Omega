@@ -1007,10 +1007,9 @@ void free_level(plv level)
 char cryptkey(const std::string &fname)
 {
   int key = 0;
-
-  for(int pos = 0; fname[pos]; pos++)
+  for(char ch : fname)
   {
-    key += 3 * (fname[pos] - ' ');
+    key += 3 * (ch - ' ');
   }
-  return (key & 0xff);
+  return key & 0xff;
 }
