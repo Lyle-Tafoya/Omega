@@ -604,6 +604,8 @@ void l_void()
   {
     Time += 60;
     hourly_check();
+    print_messages();
+    doupdate();
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
   }
 }
@@ -858,6 +860,8 @@ void l_void_station()
       {
         Time += 60;
         hourly_check();
+        print_messages();
+        doupdate();
         std::this_thread::sleep_for(std::chrono::milliseconds(250));
       }
     }

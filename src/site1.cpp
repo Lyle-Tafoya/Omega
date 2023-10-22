@@ -108,6 +108,7 @@ void l_bank()
             lines.clear();
             menu->load(lines);
             menu->print();
+            doupdate();
             std::this_thread::sleep_for(std::chrono::seconds(2));
             lines.emplace_back("^@^@^@^@^@00AD1203BC0F0000FFFFFFFFFFFF");
             lines.emplace_back("Interrupt in _get_space. Illegal Character.");
@@ -620,6 +621,7 @@ void l_casino()
             int a, b, c;
             for(int i = 0; i < 20; ++i)
             {
+              doupdate();
               if(i == 19)
               {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -710,6 +712,7 @@ void l_casino()
             int a, b;
             for(int i = 0; i < 20; ++i)
             {
+              doupdate();
               if(i == 19)
               {
                 std::this_thread::sleep_for(std::chrono::seconds(1));

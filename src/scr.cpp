@@ -1521,11 +1521,13 @@ void draw_explosion(Symbol pyx, int x, int y)
     {
       plotchar(pyx, x + Dirs[0][i], y + Dirs[1][i]);
     }
+    doupdate();
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
     for(i = 0; i < 9; i++)
     {
       plotchar(SPACE, x + Dirs[0][i], y + Dirs[1][i]);
     }
+    doupdate();
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
   }
   for(i = 0; i < 9; i++)
