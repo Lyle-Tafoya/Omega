@@ -241,15 +241,15 @@ void p_win()
 
 /* handle a h,j,k,l, etc., to change x and y by dx and dy */
 /* for targeting in dungeon */
-void movecursor(int *x, int *y, int dx, int dy)
+void movecursor(int &x, int &y, int dx, int dy)
 {
-  if(inbounds(*x + dx, *y + dy))
+  if(inbounds(x + dx, y + dy))
   {
-    *x += dx;
-    *y += dy;
-    screencheck(*x, *y);
+    x += dx;
+    y += dy;
+    screencheck(x, y);
   }
-  omshowcursor(*x, *y);
+  omshowcursor(x, y);
 }
 
 /* is Player immune to damage type dtype */

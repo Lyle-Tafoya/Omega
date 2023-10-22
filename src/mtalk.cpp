@@ -760,7 +760,7 @@ void m_talk_servant(struct monster *m)
     queue_message("Show me.");
     show_screen();
     drawmonsters(true);
-    setspot(&x, &y);
+    setspot(x, y);
     if(Level->site[x][y].creature)
     {
       if(Level->site[x][y].creature->id == target)

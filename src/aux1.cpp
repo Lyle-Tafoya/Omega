@@ -673,11 +673,11 @@ void p_death(const std::string &fromstring)
 }
 
 /* move the cursor around, like for firing a wand, sets x and y to target */
-void setspot(int *x, int *y)
+void setspot(int &x, int &y)
 {
   queue_message("Targeting.... '?' for help.");
   int cursor_visibility = curs_set(1);
-  omshowcursor(*x, *y);
+  omshowcursor(x, y);
   int player_input;
   do
   {
@@ -725,7 +725,7 @@ void setspot(int *x, int *y)
   curs_set(cursor_visibility);
   if(player_input == ESCAPE)
   {
-    *x = *y = ABORT;
+    x = y = ABORT;
   }
   screencheck(Player.x, Player.y);
 }

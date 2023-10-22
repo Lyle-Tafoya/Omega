@@ -242,7 +242,7 @@ void sleep_monster(int blessing)
 
   if(blessing == 0)
   {
-    setspot(&x, &y);
+    setspot(x, y);
   }
 
   if(blessing < 0)
@@ -322,7 +322,7 @@ void clairvoyance(int vision)
   int i, j;
   int x = Player.x, y = Player.y;
   queue_message("Clairvoyance... ");
-  setspot(&x, &y);
+  setspot(x, y);
   for(i = x - vision; i < x + vision + 1; i++)
   {
     for(j = y - vision; j < y + vision + 1; j++)
@@ -654,7 +654,7 @@ void p_teleport(int type)
   }
   else
   {
-    setspot(&Player.x, &Player.y);
+    setspot(Player.x, Player.y);
     if(Level->site[Player.x][Player.y].locchar != FLOOR ||
        Level->site[Player.x][Player.y].creature)
     {
@@ -686,7 +686,7 @@ void apport(int blessing)
   if(blessing > -1)
   {
     queue_message("Apport from:");
-    setspot(&x, &y);
+    setspot(x, y);
     if(Level->site[x][y].things)
     {
       pickup_at(x, y);
@@ -1005,7 +1005,7 @@ void dispel(int blessing)
   pob o;
   if(blessing > -1)
   {
-    setspot(&x, &y);
+    setspot(x, y);
     if((x == Player.x) && (y == Player.y))
     {
       for(i = 0; i < MAXITEMS; i++)
@@ -1130,7 +1130,7 @@ void polymorph(int blessing)
 {
   int             x = Player.x, y = Player.y, newmonster;
   struct monster *m;
-  setspot(&x, &y);
+  setspot(x, y);
   if((x == Player.x) && (y == Player.y))
   {
     /* WDT HACK: shouldn't this use one of the 'getarticle' functions
@@ -1252,7 +1252,7 @@ void drain(int blessing)
 {
   int             x = Player.x, y = Player.y;
   struct monster *m;
-  setspot(&x, &y);
+  setspot(x, y);
   queue_message("You begin to drain energy...");
   if((x == Player.x) && (y == Player.y))
   {

@@ -64,14 +64,14 @@ void s_wish()
 void s_firebolt()
 {
   int x = Player.x, y = Player.y;
-  setspot(&x, &y);
+  setspot(x, y);
   fbolt(Player.x, Player.y, x, y, Player.dex * 2 + Player.level, Player.level * 10 + 10);
 }
 
 void s_missile()
 {
   int x = Player.x, y = Player.y;
-  setspot(&x, &y);
+  setspot(x, y);
   nbolt(Player.x, Player.y, x, y, Player.dex * 2 + Player.level, Player.level * 3 + 3);
 }
 
@@ -83,14 +83,14 @@ void s_teleport()
 void s_disrupt()
 {
   int x = Player.x, y = Player.y;
-  setspot(&x, &y);
+  setspot(x, y);
   disrupt(x, y, Player.level * 10 + 25);
 }
 
 void s_disintegrate()
 {
   int x = Player.x, y = Player.y;
-  setspot(&x, &y);
+  setspot(x, y);
   disintegrate(x, y);
 }
 
@@ -152,7 +152,7 @@ void s_truesight()
 void s_hellfire()
 {
   int x = Player.x, y = Player.y;
-  setspot(&x, &y);
+  setspot(x, y);
   hellfire(x, y, 0);
 }
 
@@ -206,7 +206,7 @@ void s_accuracy()
 void s_fear()
 {
   int x = Player.x, y = Player.y;
-  setspot(&x, &y);
+  setspot(x, y);
   inflict_fear(x, y);
 }
 
@@ -470,7 +470,7 @@ void s_polymorph()
 void s_lball()
 {
   int x = Player.x, y = Player.y;
-  setspot(&x, &y);
+  setspot(x, y);
   lball(Player.x, Player.y, x, y, Player.level * 10 + 10);
 }
 

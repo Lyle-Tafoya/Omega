@@ -60,7 +60,7 @@ void examine()
   }
   setgamestatus(SKIP_MONSTERS, GameStatus);
   queue_message("Examine --");
-  setspot(&x, &y);
+  setspot(x, y);
   if(inbounds(x, y))
   {
     if(Current_Environment == E_COUNTRYSIDE)
@@ -338,7 +338,7 @@ void fire()
     obj = Player.possessions[index];
     x1 = x2 = Player.x;
     y1 = y2 = Player.y;
-    setspot(&x2, &y2);
+    setspot(x2, y2);
     if(x2 == ABORT || y2 == ABORT)
     {
       setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -698,7 +698,7 @@ void vault()
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
     queue_message("Jump where?");
-    setspot(&x, &y);
+    setspot(x, y);
     if(!los_p(Player.x, Player.y, x, y))
     {
       queue_message("The way is obstructed.");

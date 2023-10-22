@@ -121,7 +121,7 @@ void i_fear(pob o)
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -308,7 +308,7 @@ void i_antioch(pob o)
   else
   {
     queue_message("Bring out the Holy Hand-Grenade of Antioch!");
-    setspot(&x, &y);
+    setspot(x, y);
     queue_message("Ok, you pull the pin.....");
     queue_message("What do you count up to? ");
     count = (int)parsenum();
@@ -683,7 +683,7 @@ void i_firebolt(pob o)
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -697,7 +697,7 @@ void i_disintegrate(pob o)
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -711,7 +711,7 @@ void i_disrupt(pob o)
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -726,7 +726,7 @@ void i_lbolt(pob o)
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -741,7 +741,7 @@ void i_missile(pob o)
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -756,7 +756,7 @@ void i_fireball(pob o)
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -771,7 +771,7 @@ void i_snowball(pob o)
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -786,7 +786,7 @@ void i_lball(pob o)
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
-  setspot(&x, &y);
+  setspot(x, y);
   if(o->blessing < 0)
   {
     x = Player.x;
@@ -817,7 +817,7 @@ void i_hide(pob o)
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
-  setspot(&x, &y);
+  setspot(x, y);
   hide(x, y);
 }
 
