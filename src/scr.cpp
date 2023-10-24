@@ -399,6 +399,13 @@ void append_message(const std::string &message, bool force_break)
     message_buffer.append(message, true, force_break);
   }
 }
+void replace_last_message(const std::string &message)
+{
+  if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
+  {
+    message_buffer.replace_last(message);
+  }
+}
 
 void omega_title()
 {

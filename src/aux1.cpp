@@ -686,18 +686,22 @@ void setspot(int &x, int &y)
     {
       case 'h':
       case '4':
+      case KEY_LEFT:
         movecursor(x, y, -1, 0);
         break;
       case 'j':
       case '2':
+      case KEY_DOWN:
         movecursor(x, y, 0, 1);
         break;
       case 'k':
       case '8':
+      case KEY_UP:
         movecursor(x, y, 0, -1);
         break;
       case 'l':
       case '6':
+      case KEY_RIGHT:
         movecursor(x, y, 1, 0);
         break;
       case 'b':
@@ -830,7 +834,7 @@ std::string mstatus_string(struct monster *m)
 }
 
 /* for the examine function */
-void describe_player()
+std::string describe_player()
 {
   std::string description;
   if(Player.hp < (Player.maxhp / 5))
@@ -867,7 +871,7 @@ void describe_player()
   {
     description += ".";
   }
-  queue_message(description);
+  return description;
 }
 
 /* access to player experience... */

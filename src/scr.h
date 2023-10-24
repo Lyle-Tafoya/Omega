@@ -86,6 +86,7 @@ void   print_inventory_menu(Symbol = NULL_ITEM);
 void   print_messages();
 void   putspot(int, int, Symbol);
 void   queue_message(const std::string &message, bool force_break = false);
+void   replace_last_message(const std::string &message);
 void   room_name_print(const std::string &);
 void   redraw(void);
 void   screencheck(int, int);

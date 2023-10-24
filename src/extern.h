@@ -49,7 +49,7 @@ int         p_moveable(int, int);
 int         player_on_sanctuary(void);
 void        calc_melee(void);
 int         damage_item(pob);
-void        describe_player(void);
+std::string describe_player(void);
 void        fight_monster(struct monster *);
 void        foodcheck(void);
 void        gain_experience(int);

@@ -41,223 +41,264 @@ extern void item_unequip(object *);
 
 extern interactive_menu *menu;
 
-/* look at some spot */
+// look at some spot
 void examine()
 {
-  pol ol;
-  int x = Player.x, y = Player.y, drewmenu = false;
-
-  /* WDT HACK: I'm not sure I buy that one shouldn't be able to examine
-   * when one is blind.  However, the 'right' way to do it is certainly
-   * too difficult (I would expect to be able to examine only the items
-   * I actually recall).  So, for now I'll use David Given's compromise.
-   * 12/30/98
-   */
+  setgamestatus(SKIP_MONSTERS, GameStatus);
   if(Player.status[BLINDED] > 0)
   {
     queue_message("You're blind - you can't examine things.");
     return;
   }
-  setgamestatus(SKIP_MONSTERS, GameStatus);
   queue_message("Examine --");
-  setspot(x, y);
-  if(inbounds(x, y))
+  queue_message("Targeting....");
+  append_message("", true);
+  int x = Player.x, y = Player.y;
+  int cursor_visibility = curs_set(1);
+  omshowcursor(x, y);
+  int player_input;
+  do
   {
-    if(Current_Environment == E_COUNTRYSIDE)
+    if(inbounds(x, y))
     {
-      if(!c_statusp(x, y, SEEN, Country))
+      if(Current_Environment == E_COUNTRYSIDE)
       {
-        queue_message("How should I know what that is?");
-      }
-      else
-      {
-        queue_message("That terrain is:");
-        queue_message(countryid(Country[x][y].current_terrain_type));
-      }
-    }
-    else if(!view_los_p(Player.x, Player.y, x, y))
-    {
-      queue_message("I refuse to examine something I can't see.");
-    }
-    else
-    {
-      if(Level->site[x][y].creature)
-      {
-        queue_message(mstatus_string(Level->site[x][y].creature) + ".");
-      }
-      else if((Player.x == x) && (Player.y == y))
-      {
-        describe_player();
-      }
-      if(loc_statusp(x, y, SECRET, *Level))
-      {
-        queue_message("An age-worn stone wall.");
-      }
-      else
-      {
-        switch(Level->site[x][y].locchar)
+        if(!c_statusp(x, y, SEEN, Country))
         {
-          case SPACE:
-            queue_message("An infinite void.");
-            break;
-          case PORTCULLIS:
-            queue_message("A heavy steel portcullis.");
-            break;
-          case ABYSS:
-            queue_message("An entrance to the infinite abyss.");
-            break;
-          case FLOOR:
-            if(Current_Dungeon == Current_Environment)
-            {
-              queue_message("A dirty stone floor.");
-            }
-            else
-            {
-              queue_message("The ground.");
-            }
-            break;
-          case WALL:
-            if(Level->site[x][y].aux == 0)
-            {
-              queue_message("A totally impervious wall.");
-            }
-            else if(Level->site[x][y].aux < 10)
-            {
-              queue_message("A pitted concrete wall.");
-            }
-            else if(Level->site[x][y].aux < 30)
-            {
-              queue_message("An age-worn sandstone wall.");
-            }
-            else if(Level->site[x][y].aux < 50)
-            {
-              queue_message("A smooth basalt wall.");
-            }
-            else if(Level->site[x][y].aux < 70)
-            {
-              queue_message("A solid granite wall.");
-            }
-            else if(Level->site[x][y].aux < 90)
-            {
-              queue_message("A wall of steel.");
-            }
-            else if(Level->site[x][y].aux < 210)
-            {
-              if(Current_Environment == E_CITY)
-              {
-                queue_message("A thick wall of Rampart bluestone.");
-              }
-              else
-              {
-                queue_message("A magically reinforced wall.");
-              }
-            }
-            else
-            {
-              queue_message("An almost totally impervious wall.");
-            }
-            break;
-          case RUBBLE:
-            queue_message("A dangerous-looking pile of rubble.");
-            break;
-          case SAFE:
-            queue_message("A steel safe inset into the floor.");
-            break;
-          case CLOSED_DOOR:
-            queue_message("A solid oaken door, now closed.");
-            break;
-          case OPEN_DOOR:
-            queue_message("A solid oaken door, now open.");
-            break;
-          case STATUE:
-            queue_message("A strange-looking statue.");
-            break;
-          case STAIRS_UP:
-            queue_message("A stairway leading up.");
-            break;
-          case STAIRS_DOWN:
-            queue_message("A stairway leading down....");
-            break;
-          case TRAP:
-            queue_message(trapid(Level->site[x][y].p_locf) + ".");
-            break;
-          case HEDGE:
-            if(Level->site[x][y].p_locf == L_EARTH_STATION)
-            {
-              queue_message("A weird fibrillation of oozing tendrils.");
-            }
-            else
-            {
-              queue_message("A brambly, thorny hedge.");
-            }
-            break;
-          case LAVA:
-            queue_message("A bubbling pool of lava.");
-            break;
-          case LIFT:
-            queue_message("A strange glowing disk.");
-            break;
-          case ALTAR:
-            queue_message("An (un?)holy altar.");
-            break;
-          case CHAIR:
-            queue_message("A chair.");
-            break;
-          case WHIRLWIND:
-            queue_message("A strange cyclonic electrical storm.");
-            break;
-          case WATER:
-            if(Level->site[x][y].p_locf == L_WATER)
-            {
-              queue_message("A deep pool of water.");
-            }
-            else if(Level->site[x][y].p_locf == L_CHAOS)
-            {
-              queue_message("A pool of primal chaos.");
-            }
-            else if(Level->site[x][y].p_locf == L_WATER_STATION)
-            {
-              queue_message("A bubbling pool of acid.");
-            }
-            else
-            {
-              queue_message("An eerie pool of water.");
-            }
-            break;
-          case FIRE:
-            queue_message("A curtain of fire.");
-            break;
-          default:
-            queue_message("Wow, I haven't the faintest idea!");
-            break;
-        }
-      }
-      if((ol = Level->site[x][y].things) && !loc_statusp(x, y, SECRET, *Level))
-      {
-        if(!ol->next)
-        {
-          queue_message(itemid(ol->thing));
+          replace_last_message("How should I know what that is?");
         }
         else
         {
-          drewmenu = true;
-          std::vector<std::string> lines;
-          while(ol)
-          {
-            lines.emplace_back(std::format("  {}", itemid(ol->thing)));
-            ol = ol->next;
-          }
-          menu->load(lines, {{"Things on floor:"}});
-          menu->get_player_input();
+          replace_last_message("That terrain is:" + countryid(Country[x][y].current_terrain_type));
         }
       }
-      sign_print(x, y, true);
+      else if(!view_los_p(Player.x, Player.y, x, y))
+      {
+        replace_last_message("I refuse to examine something I can't see.");
+      }
+      else
+      {
+        if(Level->site[x][y].creature)
+        {
+          replace_last_message(mstatus_string(Level->site[x][y].creature) + ".");
+        }
+        else if((Player.x == x) && (Player.y == y))
+        {
+          replace_last_message(describe_player());
+        }
+        else if(loc_statusp(x, y, SECRET, *Level))
+        {
+          replace_last_message("An age-worn stone wall.");
+        }
+        else
+        {
+          switch(Level->site[x][y].locchar)
+          {
+            case SPACE:
+              replace_last_message("An infinite void.");
+              break;
+            case PORTCULLIS:
+              replace_last_message("A heavy steel portcullis.");
+              break;
+            case ABYSS:
+              replace_last_message("An entrance to the infinite abyss.");
+              break;
+            case FLOOR:
+              if(Current_Dungeon == Current_Environment)
+              {
+                replace_last_message("A dirty stone floor.");
+              }
+              else
+              {
+                replace_last_message("The ground.");
+              }
+              break;
+            case WALL:
+              if(Level->site[x][y].aux == 0)
+              {
+                replace_last_message("A totally impervious wall.");
+              }
+              else if(Level->site[x][y].aux < 10)
+              {
+                replace_last_message("A pitted concrete wall.");
+              }
+              else if(Level->site[x][y].aux < 30)
+              {
+                replace_last_message("An age-worn sandstone wall.");
+              }
+              else if(Level->site[x][y].aux < 50)
+              {
+                replace_last_message("A smooth basalt wall.");
+              }
+              else if(Level->site[x][y].aux < 70)
+              {
+                replace_last_message("A solid granite wall.");
+              }
+              else if(Level->site[x][y].aux < 90)
+              {
+                replace_last_message("A wall of steel.");
+              }
+              else if(Level->site[x][y].aux < 210)
+              {
+                if(Current_Environment == E_CITY)
+                {
+                  replace_last_message("A thick wall of Rampart bluestone.");
+                }
+                else
+                {
+                  replace_last_message("A magically reinforced wall.");
+                }
+              }
+              else
+              {
+                replace_last_message("An almost totally impervious wall.");
+              }
+              break;
+            case RUBBLE:
+              replace_last_message("A dangerous-looking pile of rubble.");
+              break;
+            case SAFE:
+              replace_last_message("A steel safe inset into the floor.");
+              break;
+            case CLOSED_DOOR:
+              replace_last_message("A solid oaken door, now closed.");
+              break;
+            case OPEN_DOOR:
+              replace_last_message("A solid oaken door, now open.");
+              break;
+            case STATUE:
+              replace_last_message("A strange-looking statue.");
+              break;
+            case STAIRS_UP:
+              replace_last_message("A stairway leading up.");
+              break;
+            case STAIRS_DOWN:
+              replace_last_message("A stairway leading down....");
+              break;
+            case TRAP:
+              replace_last_message(trapid(Level->site[x][y].p_locf) + ".");
+              break;
+            case HEDGE:
+              if(Level->site[x][y].p_locf == L_EARTH_STATION)
+              {
+                replace_last_message("A weird fibrillation of oozing tendrils.");
+              }
+              else
+              {
+                replace_last_message("A brambly, thorny hedge.");
+              }
+              break;
+            case LAVA:
+              replace_last_message("A bubbling pool of lava.");
+              break;
+            case LIFT:
+              replace_last_message("A strange glowing disk.");
+              break;
+            case ALTAR:
+              replace_last_message("An (un?)holy altar.");
+              break;
+            case CHAIR:
+              replace_last_message("A chair.");
+              break;
+            case WHIRLWIND:
+              replace_last_message("A strange cyclonic electrical storm.");
+              break;
+            case WATER:
+              if(Level->site[x][y].p_locf == L_WATER)
+              {
+                replace_last_message("A deep pool of water.");
+              }
+              else if(Level->site[x][y].p_locf == L_CHAOS)
+              {
+                replace_last_message("A pool of primal chaos.");
+              }
+              else if(Level->site[x][y].p_locf == L_WATER_STATION)
+              {
+                replace_last_message("A bubbling pool of acid.");
+              }
+              else
+              {
+                replace_last_message("An eerie pool of water.");
+              }
+              break;
+            case FIRE:
+              replace_last_message("A curtain of fire.");
+              break;
+            default:
+              replace_last_message("Wow, I haven't the faintest idea!");
+              break;
+          }
+        }
+        objectlist *item_list;
+        if((item_list = Level->site[x][y].things) && !loc_statusp(x, y, SECRET, *Level))
+        {
+          if(!item_list->next)
+          {
+            replace_last_message(itemid(item_list->thing));
+          }
+          else
+          {
+            std::string items = "Things that are here : " + itemid(item_list->thing);
+            std::string item_characters(1, item_list->thing->objchar & A_CHARTEXT);
+            for(item_list = item_list->next; item_list; item_list = item_list->next)
+            {
+              items += ", " + itemid(item_list->thing);
+              item_characters += item_list->thing->objchar & A_CHARTEXT;
+            }
+            if(items.length() <= static_cast<size_t>(COLS))
+            {
+              replace_last_message(items);
+            }
+            else
+            {
+              replace_last_message("Items here: " + item_characters);
+            }
+          }
+        }
+      }
+      player_input = get_level_input();
+      switch(player_input)
+      {
+        case 'h':
+        case '4':
+        case KEY_LEFT:
+          movecursor(x, y, -1, 0);
+          break;
+        case 'j':
+        case '2':
+        case KEY_DOWN:
+          movecursor(x, y, 0, 1);
+          break;
+        case 'k':
+        case '8':
+        case KEY_UP:
+          movecursor(x, y, 0, -1);
+          break;
+        case 'l':
+        case '6':
+        case KEY_RIGHT:
+          movecursor(x, y, 1, 0);
+          break;
+        case 'b':
+        case '1':
+          movecursor(x, y, -1, 1);
+          break;
+        case 'n':
+        case '3':
+          movecursor(x, y, 1, 1);
+          break;
+        case 'y':
+        case '7':
+          movecursor(x, y, -1, -1);
+          break;
+        case 'u':
+        case '9':
+          movecursor(x, y, 1, -1);
+          break;
+      }
     }
-  }
-  if(drewmenu)
-  {
-    xredraw();
-  }
+  } while(player_input != ESCAPE && player_input != KEY_ENTER && player_input != '\n');
+  curs_set(cursor_visibility);
 }
 
 void help()
