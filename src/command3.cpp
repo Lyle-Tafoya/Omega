@@ -295,6 +295,19 @@ void examine()
         case '9':
           movecursor(x, y, 1, -1);
           break;
+        case KEY_MOUSE:
+        {
+          MEVENT event;
+          while(getmouse(&event) == OK)
+          {
+            if(event.bstate & BUTTON1_PRESSED)
+            {
+              x = event.x + HorizontalOffset;
+              y = event.y + ScreenOffset;
+              omshowcursor(x, y);
+            }
+          }
+        }
       }
     }
   } while(player_input != ESCAPE && player_input != KEY_ENTER && player_input != '\n');

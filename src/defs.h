@@ -55,7 +55,7 @@ constexpr int GAME_VERSION        = 506;
 const std::string VERSIONSTRING   = "omega rebirth version 0.5.6";
 
 // Just increment these by one whenever an incompatibility is introduced
-constexpr int SAVE_FILE_VERSION   = 1;
+constexpr int SAVE_FILE_VERSION   = 2;
 constexpr int CONFIG_FILE_VERSION = 0;
 
 constexpr int VACANT    = 0;
@@ -525,14 +525,14 @@ constexpr int NUMROOMNAMES = 30;
 #define BED                     ('9' | CLR(CYAN))
 
 // total number of player options
-constexpr int NUMOPTIONS      = 11;
+constexpr int NUMOPTIONS      = 10;
 
 // number of options with true/false values
-constexpr int NUMTFOPTIONS    = 9;
+constexpr int NUMTFOPTIONS    = 8;
 
 // The slot number of the two options not in Player.options
-constexpr int VERBOSITY_LEVEL = 10;
-constexpr int SEARCH_DURATION = 11;
+constexpr int VERBOSITY_LEVEL = NUMTFOPTIONS + 1;
+constexpr int SEARCH_DURATION = NUMTFOPTIONS + 2;
 
 // Player.options bits
 enum options_bits
@@ -542,8 +542,9 @@ enum options_bits
   RUNSTOP          = (1 << 2),
   PICKUP           = (1 << 3),
   CONFIRM          = (1 << 4),
-  PARANOID_CONFIRM = (1 << 7),
-  SHOW_COLOUR      = (1 << 8)
+  PARANOID_CONFIRM = (1 << 5),
+  SHOW_COLOUR      = (1 << 6),
+  MOUSE_ENABLED    = (1 << 7)
 };
 
 // This has to be changed whenever an item is added

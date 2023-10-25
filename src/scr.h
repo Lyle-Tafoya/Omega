@@ -76,6 +76,8 @@ void   menuaddch(char);
 void   menuclear(void);
 void   menuprint(const std::string &);
 void   more_wait();
+void   mouse_disable();
+void   mouse_enable();
 void   showmenu(void);
 void   phaseprint(void);
 void   plotchar(Symbol, int, int);

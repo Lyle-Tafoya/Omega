@@ -125,6 +125,7 @@ void initplayer(bool play_yourself = false)
   optionset(RUNSTOP, Player);
   optionset(CONFIRM, Player);
   optionset(SHOW_COLOUR, Player);
+  optionset(MOUSE_ENABLED, Player);
 
   if(play_yourself)
   {

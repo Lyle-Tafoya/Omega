@@ -642,6 +642,15 @@ void more_wait()
   message_buffer.pop_back();
 }
 
+void mouse_enable()
+{
+  mousemask(ALL_MOUSE_EVENTS, nullptr);
+}
+void mouse_disable()
+{
+  mousemask(0, nullptr);
+}
+
 
 // initialize, screen, windows
 void initgraf()
@@ -653,6 +662,7 @@ void initgraf()
   clrgen_init();
   initialize_colors();
   initialize_windows();
+  mouse_enable();
   curs_set(0);
 #ifndef PDCURSES
   set_escdelay(0);
@@ -2163,13 +2173,17 @@ void display_option_slot(int slot)
       wprintw(Showline[slot], "-- Option CONFIRM [TF]: ");
       wprintw(Showline[slot], optionp(CONFIRM, Player) ? "(now T) " : "(now F) ");
       break;
-    case 8:
+    case 6:
       wprintw(Showline[slot], "-- Option PARANOID_CONFIRM [TF]: ");
       wprintw(Showline[slot], optionp(PARANOID_CONFIRM, Player) ? "(now T) " : "(now F) ");
       break;
-    case 9:
+    case 7:
       wprintw(Showline[slot], "-- Option COLOUR [TF]: ");
       wprintw(Showline[slot], optionp(SHOW_COLOUR, Player) ? "(now T) " : "(now F) ");
+      break;
+    case 8:
+      wprintw(Showline[slot], "-- Option MOUSE_ENABLED [TF]: ");
+      wprintw(Showline[slot], optionp(MOUSE_ENABLED, Player) ? "(now T) " : "(now F} ");
       break;
     case VERBOSITY_LEVEL:
       wprintw(Showline[slot], "-- Option VERBOSITY [(T)erse,(M)edium,(V)erbose]: (now ");

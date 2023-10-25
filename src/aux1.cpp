@@ -720,6 +720,27 @@ void setspot(int &x, int &y)
       case '9':
         movecursor(x, y, 1, -1);
         break;
+      case KEY_MOUSE:
+      {
+        MEVENT event;
+        while(getmouse(&event) == OK)
+        {
+          if(event.bstate & BUTTON1_DOUBLE_CLICKED)
+          {
+            x = event.x + HorizontalOffset;
+            y = event.y + ScreenOffset;
+            omshowcursor(x, y);
+            player_input = '.';
+          }
+          else if(event.bstate & BUTTON1_PRESSED)
+          {
+            x = event.x + HorizontalOffset;
+            y = event.y + ScreenOffset;
+            omshowcursor(x, y);
+          }
+        }
+      }
+        break;
       case '?':
         queue_message("Use vi keys or numeric keypad to move cursor to target.");
         queue_message("Hit the '.' key when done, or ESCAPE to abort.");
