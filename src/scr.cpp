@@ -209,16 +209,15 @@ void print_messages()
 {
   werase(message_window);
   const std::deque<std::string> &message_history = message_buffer.get_message_history();
-  size_t                         size = std::min(message_history.size(), static_cast<size_t>(message_window_length));
-  size_t                         i    = 0;
-  for(auto message = message_history.rbegin(); message != message_history.rend() && i < size;
-      ++message, ++i)
+  size_t size = std::min(message_history.size(), static_cast<size_t>(message_window_length));
+  uint16_t i = 0;
+  for(auto message = message_history.rbegin(); message != message_history.rend() && i < size; ++message, ++i)
   {
-    mvwaddstr(message_window, size - 1 - i, 0, message->c_str());
+    mvwaddstr(message_window, static_cast<int>(size - 1 - i), 0, message->c_str());
   }
   if(size > 0)
   {
-    wmove(message_window, size - 1, message_history.back().size());
+    wmove(message_window, static_cast<int>(size - 1), static_cast<int>(message_history.back().size()));
   }
   wnoutrefresh(message_window);
 }
@@ -2138,10 +2137,10 @@ void display_pack()
   }
 }
 
-object *find_first_pack_obj(int slot)
+object *find_first_pack_obj(uint8_t slot)
 {
   setgamestatus(SUPPRESS_PRINTING, GameStatus);
-  for(int i = 0; i < MAXPACK; ++i)
+  for(uint8_t i = 0; i < MAXPACK; ++i)
   {
     if(slottable(Player.pack[i], slot))
     {
@@ -2177,13 +2176,12 @@ void print_inventory_menu(Symbol item_type)
 {
   std::vector<std::string> lines;
   std::string line;
-  for(size_t i = 1; i < SLOT_NAMES.size(); ++i)
+  for(uint8_t i = 1; i < SLOT_NAMES.size(); ++i)
   {
     object *item = Player.possessions[i];
 
     bool wildcard = (item_type == NULL_ITEM || item_type == CASH);
-    if((item && (item->objchar == item_type || wildcard)) ||
-        (!item && wildcard && find_first_pack_obj(i)))
+    if((item && (item->objchar == item_type || wildcard)) || (!item && wildcard && find_first_pack_obj(i)))
     {
       line = std::format("{} - ", index_to_key(i));
     }

@@ -131,7 +131,6 @@ void make_country_screen(Symbol terrain)
 
 void make_general_map(const std::string &terrain)
 {
-  size_t size = terrain.length();
   char curr;
 
   for(int i = 0; i < WIDTH; i++)
@@ -140,7 +139,7 @@ void make_general_map(const std::string &terrain)
     {
       if((i == 0 && j == 0) || !random_range(5))
       {
-        curr = terrain[random_range(size)];
+        curr = terrain[random_range(static_cast<int>(terrain.length()))];
       }
       else if(j == 0 || (random_range(2) && i > 0))
       {

@@ -69,13 +69,13 @@ constexpr int MAXLENGTH          = 64;
 constexpr int SMALLSCREENLENGTH  = 16;
 
 // number of slots in inventory. Cannot be changed without work
-constexpr int MAXITEMS           = 16;
+constexpr uint8_t MAXITEMS           = 16;
 
 // number of slots in pack. Should be <= 26
-constexpr int MAXPACK            = 26;
+constexpr uint8_t MAXPACK        = 26;
 
 // number of items in pawn shop. Should be <= 26
-constexpr int PAWNITEMS          = 20;
+constexpr uint8_t PAWNITEMS          = 20;
 
 // number of lines back strings are recalled
 constexpr int STRING_BUFFER_SIZE = 25;
