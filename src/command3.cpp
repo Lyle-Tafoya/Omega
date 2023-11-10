@@ -297,15 +297,17 @@ void examine()
           break;
         case KEY_MOUSE:
         {
-          MEVENT event;
-          while(getmouse(&event) == OK)
+          mouse_event event;
+          switch(get_mouse_event(event))
           {
-            if(event.bstate & BUTTON1_PRESSED)
-            {
+            case BUTTON1_CLICKED:
+            case BUTTON1_RELEASED:
               x = event.x + HorizontalOffset;
               y = event.y + ScreenOffset;
               omshowcursor(x, y);
-            }
+              break;
+            default:
+              break;
           }
         }
       }

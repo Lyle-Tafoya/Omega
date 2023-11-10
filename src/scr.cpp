@@ -645,12 +645,88 @@ void more_wait()
 void mouse_enable()
 {
   mousemask(ALL_MOUSE_EVENTS, nullptr);
+  mouseinterval(0);
 }
 void mouse_disable()
 {
   mousemask(0, nullptr);
 }
 
+bool pop_mouse_event(mouse_event &event, MEVENT &mevent)
+{
+  if(getmouse(&mevent) == OK)
+  {
+    for(int button_num = 0; button_num < num_mouse_buttons; ++button_num)
+    {
+      for(int event_type_num = 0; event_type_num < num_mouse_event_types; ++event_type_num)
+      {
+        if(mevent.bstate & mouse_button_events[button_num][event_type_num])
+        {
+          event.type = static_cast<mouse_event_t>(event_type_num);
+          event.button = button_num + 1;
+          event.x = mevent.x;
+          event.y = mevent.y;
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+int get_mouse_event(WINDOW *window, mouse_event &event)
+{
+  MEVENT mevent;
+  if(!pop_mouse_event(event, mevent))
+  {
+    return 0;
+  }
+  if(event.type == BUTTON_PRESSED)
+  {
+    wtimeout(window, 150);
+    int input;
+    while(event.type != BUTTON_TRIPLE_CLICKED && (input = wgetch(window)) != ERR)
+    {
+      if(input == KEY_MOUSE)
+      {
+        mouse_event rel;
+        pop_mouse_event(rel, mevent);
+        if(rel.type == BUTTON_RELEASED && rel.button == event.button)
+        {
+          if(event.type == BUTTON_PRESSED)
+          {
+            event.type = BUTTON_CLICKED;
+          }
+          else if(event.type == BUTTON_CLICKED)
+          {
+            event.type = BUTTON_DOUBLE_CLICKED;
+          }
+          else if(event.type == BUTTON_DOUBLE_CLICKED)
+          {
+            event.type = BUTTON_TRIPLE_CLICKED;
+          }
+        }
+        else if(rel.type != BUTTON_PRESSED || rel.button != event.button)
+        {
+          ungetmouse(&mevent);
+          break;
+        }
+      }
+      else
+      {
+        ungetch(input);
+        break;
+      }
+    }
+    wtimeout(window, -1);
+  }
+  return mouse_button_events[event.button - 1][event.type];
+}
+
+int get_mouse_event(mouse_event &event)
+{
+  return get_mouse_event(level_window, event);
+}
 
 // initialize, screen, windows
 void initgraf()

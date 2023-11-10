@@ -19,7 +19,38 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "defs.h"
 
+#include <array>
 #include <string>
+
+enum mouse_event_t
+{
+  BUTTON_PRESSED,
+  BUTTON_RELEASED,
+  BUTTON_CLICKED,
+  BUTTON_DOUBLE_CLICKED,
+  BUTTON_TRIPLE_CLICKED,
+  UNDEFINED
+};
+
+constexpr int num_mouse_event_types = BUTTON_TRIPLE_CLICKED + 1;
+constexpr int num_mouse_buttons = 5;
+
+struct mouse_event
+{
+  mouse_event_t type;
+  int button;
+  int x;
+  int y;
+};
+
+constexpr std::array<std::array<int, num_mouse_event_types>, num_mouse_buttons> mouse_button_events
+{{
+  { BUTTON1_PRESSED, BUTTON1_RELEASED, BUTTON1_CLICKED, BUTTON1_DOUBLE_CLICKED, BUTTON1_TRIPLE_CLICKED },
+  { BUTTON2_PRESSED, BUTTON2_RELEASED, BUTTON2_CLICKED, BUTTON2_DOUBLE_CLICKED, BUTTON2_TRIPLE_CLICKED },
+  { BUTTON3_PRESSED, BUTTON3_RELEASED, BUTTON3_CLICKED, BUTTON3_DOUBLE_CLICKED, BUTTON3_TRIPLE_CLICKED },
+  { BUTTON4_PRESSED, BUTTON4_RELEASED, BUTTON4_CLICKED, BUTTON4_DOUBLE_CLICKED, BUTTON4_TRIPLE_CLICKED },
+  { BUTTON5_PRESSED, BUTTON5_RELEASED, BUTTON5_CLICKED, BUTTON5_DOUBLE_CLICKED, BUTTON5_TRIPLE_CLICKED }
+}};
 
 void   append_message(const std::string &, bool = false);
 int    mcigetc(void);
@@ -65,6 +96,7 @@ void   erase_level(void);
 void   erase_monster(struct monster *);
 void   expand_message_window();
 int    get_message_input();
+int    get_mouse_event(mouse_event &event);
 int    get_level_input();
 void   hide_line(int);
 void   initgraf(void);
