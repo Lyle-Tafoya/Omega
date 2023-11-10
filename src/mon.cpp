@@ -159,7 +159,7 @@ void m_dropstuff(struct monster *m)
   Level->site[m->x][m->y].things = drop_pile;
 }
 
-void m_damage(struct monster *m, int dmg, int dtype)
+void m_damage(struct monster *m, int dmg, damage_type dtype)
 {
   m_status_set(*m, AWAKE);
   m_status_set(*m, HOSTILE);

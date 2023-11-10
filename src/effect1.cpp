@@ -284,7 +284,7 @@ void nbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
 }
 
 /* from f to t */
-void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
+void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
 {
   int             xx, yy;
   struct monster *target;
@@ -338,6 +338,8 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
           queue_message("You were hit by an icicle!");
           p_damage(random_range(dmg), dtype, "an icicle");
           break;
+        default:
+          break;
       }
     }
   }
@@ -370,6 +372,8 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
         case COLD:
           damage_message += " was hit by an icicle!";
           break;
+        default:
+          break;
       }
       queue_message(damage_message);
       m_status_set(*target, HOSTILE);
@@ -399,6 +403,8 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, int dtype)
           break;
         case COLD:
           miss_message += " was missed by a flying icicle!";
+          break;
+        default:
           break;
       }
       queue_message(miss_message);
@@ -459,7 +465,7 @@ void fball(int fx, int fy, int tx, int ty, int dmg)
 }
 
 /* from f to t */
-void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
+void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
 {
   int             xx, yy, ex, ey, i;
   struct monster *target;
@@ -478,6 +484,8 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
       break;
     case ELECTRICITY:
       expchar = ('^' | CLR(LIGHT_BLUE));
+      break;
+    default:
       break;
   }
 
@@ -508,6 +516,8 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
           queue_message("Oh No! Manastorm!");
           p_damage(random_range(dmg), UNSTOPPABLE, "a manastorm!");
           break;
+        default:
+          break;
       }
     }
     if((target = Level->site[ex][ey].creature))
@@ -536,6 +546,8 @@ void ball(int fx, int fy, int tx, int ty, int dmg, int dtype)
             break;
           case UNSTOPPABLE:
             hit_message += " was nuked by a manastorm!";
+            break;
+          default:
             break;
         }
         queue_message(hit_message);

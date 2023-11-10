@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #define OMEGA_DEFS_H_
 
 #include <string>
+#include <cstdint>
 
 //--------------------------USER DEFINITIONS--------------------------
 
@@ -325,7 +326,7 @@ enum priesthood_id
 };
 
 // MONSTER STATUS/ABILITY BITS
-enum monster_status_bits
+enum monster_status_bit : long
 {
   AWAKE       = (1 << 0),
   MOBILE      = (1 << 1),
@@ -377,7 +378,7 @@ constexpr int NUMSTATI = 25;
 // player immunity indices
 // also monster immunity bits (2^n)
 // also damage types
-enum immunity_id
+enum damage_type : long
 {
   EVERYTHING = -1,
   UNSTOPPABLE,
@@ -398,7 +399,7 @@ enum immunity_id
 constexpr int NUMIMMUNITIES = 14;
 
 // location lstatus bits
-enum lstatus_bits
+enum lstatus_bit : uint8_t
 {
   SEEN    = (1 << 0),
   LIT     = (1 << 1),
@@ -1395,41 +1396,41 @@ constexpr long pow2(int n)
   return 1L << n;
 }
 
-inline bool loc_statusp(int x, int y, int status, const level &lvl)
+inline bool loc_statusp(int x, int y, lstatus_bit status, const level &lvl)
 {
   return ((lvl.site[x][y].lstatus & (status)) ? true : false);
 }
-inline void lset(int x, int y, int status, level &lvl)
+inline void lset(int x, int y, lstatus_bit status, level &lvl)
 {
   lvl.site[x][y].lstatus |= (status);
 }
-inline void lreset(int x, int y, int status, level &lvl)
+inline void lreset(int x, int y, lstatus_bit status, level &lvl)
 {
   lvl.site[x][y].lstatus &= ~(status);
 }
 
-inline bool c_statusp(int x, int y, int status, const terrain (&country)[MAXWIDTH][MAXLENGTH])
+inline bool c_statusp(int x, int y, lstatus_bit status, const terrain (&country)[MAXWIDTH][MAXLENGTH])
 {
   return ((country[x][y].status & (status)) ? true : false);
 }
-inline void c_set(int x, int y, int status, terrain (&country)[MAXWIDTH][MAXLENGTH])
+inline void c_set(int x, int y, lstatus_bit status, terrain (&country)[MAXWIDTH][MAXLENGTH])
 {
   country[x][y].status |= (status);
 }
 
-inline bool m_statusp(const monster &m, int status)
+inline bool m_statusp(const monster &m, monster_status_bit status)
 {
   return ((m.status & status) ? true : false);
 }
-inline void m_status_set(monster &m, int status)
+inline void m_status_set(monster &m, monster_status_bit status)
 {
   m.status |= status;
 }
-inline void m_status_reset(monster &m, int status)
+inline void m_status_reset(monster &m, monster_status_bit status)
 {
   m.status &= ~(status);
 }
-inline bool m_immunityp(const monster &m, int status)
+inline bool m_immunityp(const monster &m, damage_type status)
 {
   return ((m.immunity & pow2(status)) ? true : false);
 }

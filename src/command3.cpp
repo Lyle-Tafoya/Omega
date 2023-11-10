@@ -239,11 +239,11 @@ void examine()
           else
           {
             std::string items = "Things that are here : " + itemid(item_list->thing);
-            std::string item_characters(1, item_list->thing->objchar & A_CHARTEXT);
+            std::string item_characters(1, static_cast<char>(item_list->thing->objchar & A_CHARTEXT));
             for(item_list = item_list->next; item_list; item_list = item_list->next)
             {
               items += ", " + itemid(item_list->thing);
-              item_characters += item_list->thing->objchar & A_CHARTEXT;
+              item_characters += static_cast<char>(item_list->thing->objchar & A_CHARTEXT);
             }
             if(items.length() <= static_cast<size_t>(COLS))
             {

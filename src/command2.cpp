@@ -1433,11 +1433,11 @@ void moveplayer(int dx, int dy)
           else
           {
             std::string items = itemid(item_list->thing);
-            std::string item_characters(1, item_list->thing->objchar & A_CHARTEXT);
+            std::string item_characters(1, static_cast<char>(item_list->thing->objchar & A_CHARTEXT));
             for(pol item = item_list->next; item; item = item->next)
             {
               items += ", " + itemid(item->thing);
-              item_characters += item->thing->objchar & A_CHARTEXT;
+              item_characters += static_cast<char>(item->thing->objchar & A_CHARTEXT);
             }
             if(items.length() > static_cast<unsigned int>(COLS))
             {

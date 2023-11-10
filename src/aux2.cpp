@@ -47,7 +47,7 @@ int statmod(int stat)
 }
 
 /* effects of hitting */
-void p_hit(struct monster *m, int dmg, int dtype)
+void p_hit(struct monster *m, int dmg, damage_type dtype)
 {
   int dmult;
 

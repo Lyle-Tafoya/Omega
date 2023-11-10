@@ -522,7 +522,7 @@ constexpr std::array names
 /* random names for various uses */
 std::string_view nameprint()
 {
-  return names[random_range(names.size())];
+  return names[random_range(static_cast<int>(names.size()))];
 }
 
 /* returns english string equivalent of number */

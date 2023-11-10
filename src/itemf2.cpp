@@ -264,7 +264,7 @@ void i_perm_breathing(pob o)
 
 /* weapons functions */
 
-void weapon_hit(pob weapon, monster *m, int damage_modifier, int damage_type)
+void weapon_hit(pob weapon, monster *m, int damage_modifier, damage_type damage_type)
 {
   if(weapon->used)
   {

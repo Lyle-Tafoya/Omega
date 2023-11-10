@@ -505,7 +505,7 @@ void statue_random(int x, int y)
        * implement a bonus level!). */
         Level->site[x][y].locchar = STAIRS_DOWN;
         Level->site[x][y].p_locf  = L_NO_OP;
-        lset(x, y, CHANGED | STOPS, *Level);
+        lset(x, y, static_cast<lstatus_bit>(CHANGED | STOPS), *Level);
       }
       break;
     case 6:

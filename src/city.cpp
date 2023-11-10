@@ -280,7 +280,7 @@ void load_city(int populate)
         case '^':
           Level->site[i][j].showchar = WALL;
           Level->site[i][j].locchar  = FLOOR;
-          Level->site[i][j].p_locf   = TRAP_BASE + random_range(NUMTRAPS);
+          Level->site[i][j].p_locf   = static_cast<char>(TRAP_BASE + random_range(NUMTRAPS));
           lset(i, j, SECRET, *Level);
           break;
         case '"':

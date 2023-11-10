@@ -215,7 +215,7 @@ bool title_menu()
   }
 
 
-  enum menu_option { PLAY_GAME, PLAY_YOURSELF, SHOW_SCORES, DISPLAY_HELP };
+  enum menu_option : uint8_t { PLAY_GAME, PLAY_YOURSELF, SHOW_SCORES, DISPLAY_HELP };
   const int top_option = PLAY_GAME;
   const int bottom_option = DISPLAY_HELP;
 
@@ -226,7 +226,7 @@ bool title_menu()
     "High Scores",
     "Help Menu"
   };
-  int selected_option = save_file_lines.empty() ? PLAY_GAME : bottom_option+1;
+  uint8_t selected_option = save_file_lines.empty() ? PLAY_GAME : bottom_option+1;
   std::string name;
   int player_input;
   while(true)
@@ -251,9 +251,9 @@ bool title_menu()
     attroff(CLR(BRIGHT_WHITE));
     mvaddstr(5, 0, "Choices:");
     attron(CLR(BRIGHT_WHITE));
-    for(size_t i = 0; i < menu_lines.size(); ++i)
+    for(uint16_t i = 0; i < menu_lines.size(); ++i)
     {
-      if(static_cast<int>(i) == selected_option)
+      if(i == selected_option)
       {
         attroff(CLR(BRIGHT_WHITE));
         attron(A_REVERSE);
@@ -271,9 +271,9 @@ bool title_menu()
       attroff(CLR(BRIGHT_WHITE));
       mvaddstr(10, 0, "Saved games:");
       attron(CLR(BRIGHT_WHITE));
-      for(size_t i = 0; i < save_file_paths.size(); ++i)
+      for(uint16_t i = 0; i < save_file_paths.size(); ++i)
       {
-        if(static_cast<int>(i+menu_lines.size()) == selected_option)
+        if(i + menu_lines.size() == selected_option)
         {
           attroff(CLR(BRIGHT_WHITE));
           attron(A_REVERSE);
@@ -331,7 +331,7 @@ bool title_menu()
         selected_option = static_cast<menu_option>(std::max(top_option, selected_option - 1));
         break;
       case KEY_DOWN:
-        selected_option = static_cast<menu_option>(std::min(static_cast<int>(bottom_option+save_file_paths.size()), selected_option + 1));
+        selected_option = static_cast<menu_option>(std::min(static_cast<uint16_t>(bottom_option+save_file_paths.size()), static_cast<uint16_t>(selected_option + 1u)));
         break;
       case KEY_BACKSPACE:
       case '\b':
