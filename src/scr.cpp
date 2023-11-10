@@ -681,32 +681,32 @@ int get_mouse_event(WINDOW *window, mouse_event &event)
   {
     return 0;
   }
-  if(event.type == BUTTON_PRESSED)
+  if(event.type == MOUSE_BUTTON_PRESSED)
   {
     wtimeout(window, 150);
     int input;
-    while(event.type != BUTTON_TRIPLE_CLICKED && (input = wgetch(window)) != ERR)
+    while(event.type != MOUSE_BUTTON_TRIPLE_CLICKED && (input = wgetch(window)) != ERR)
     {
       if(input == KEY_MOUSE)
       {
         mouse_event rel;
         pop_mouse_event(rel, mevent);
-        if(rel.type == BUTTON_RELEASED && rel.button == event.button)
+        if(rel.type == MOUSE_BUTTON_RELEASED && rel.button == event.button)
         {
-          if(event.type == BUTTON_PRESSED)
+          if(event.type == MOUSE_BUTTON_PRESSED)
           {
-            event.type = BUTTON_CLICKED;
+            event.type = MOUSE_BUTTON_CLICKED;
           }
-          else if(event.type == BUTTON_CLICKED)
+          else if(event.type == MOUSE_BUTTON_CLICKED)
           {
-            event.type = BUTTON_DOUBLE_CLICKED;
+            event.type = MOUSE_BUTTON_DOUBLE_CLICKED;
           }
-          else if(event.type == BUTTON_DOUBLE_CLICKED)
+          else if(event.type == MOUSE_BUTTON_DOUBLE_CLICKED)
           {
-            event.type = BUTTON_TRIPLE_CLICKED;
+            event.type = MOUSE_BUTTON_TRIPLE_CLICKED;
           }
         }
-        else if(rel.type != BUTTON_PRESSED || rel.button != event.button)
+        else if(rel.type != MOUSE_BUTTON_PRESSED || rel.button != event.button)
         {
           ungetmouse(&mevent);
           break;

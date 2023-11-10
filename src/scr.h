@@ -24,15 +24,14 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 enum mouse_event_t
 {
-  BUTTON_PRESSED,
-  BUTTON_RELEASED,
-  BUTTON_CLICKED,
-  BUTTON_DOUBLE_CLICKED,
-  BUTTON_TRIPLE_CLICKED,
-  UNDEFINED
+  MOUSE_BUTTON_PRESSED,
+  MOUSE_BUTTON_RELEASED,
+  MOUSE_BUTTON_CLICKED,
+  MOUSE_BUTTON_DOUBLE_CLICKED,
+  MOUSE_BUTTON_TRIPLE_CLICKED
 };
 
-constexpr int num_mouse_event_types = BUTTON_TRIPLE_CLICKED + 1;
+constexpr int num_mouse_event_types = MOUSE_BUTTON_TRIPLE_CLICKED + 1;
 constexpr int num_mouse_buttons = 5;
 
 struct mouse_event
