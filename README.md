@@ -7,15 +7,28 @@ My C++ fork of the 1987 roguelike "Omega", featuring numerous bug-fixes as well 
 
 ### Linux
 
+On distros with GCC versions >= 13, you can perform the following steps:
+
 ```
 git clone https://github.com/Lyle-Tafoya/Omega.git
 mkdir Omega/build
 cd Omega/build
 cmake ..
-make
+cmake --build .
 ```
 
-To build this project, you will need g++ version 13 or greater.
+#### Ubuntu
+
+```
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install g++-13
+git clone https://github.com/Lyle-Tafoya/Omega.git
+mkdir Omega/build
+cd Omega/build
+CXX=g++-13 cmake ..
+cmake --build .
+```
 
 ### Windows
 
