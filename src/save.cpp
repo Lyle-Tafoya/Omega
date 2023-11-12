@@ -335,7 +335,7 @@ void save_level(std::ofstream &save_file, plv level)
         file_write(save_file, run);
         for(; x < run; ++x)
         {
-          file_write(save_file, Level->site[x][y]);
+          file_write(save_file, level->site[x][y]);
         }
       }
     }
