@@ -833,7 +833,7 @@ void l_hovel(void);
 void l_mansion(void);
 void l_oracle(void);
 void l_safe(void);
-void l_trifid(void);
+void l_triffid(void);
 void l_vault(void);
 void pacify_guards(void);
 void send_to_jail(void);

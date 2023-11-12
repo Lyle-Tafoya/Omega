@@ -176,8 +176,8 @@ void p_movefunction(int movef)
       case L_ARENA_EXIT:
         l_arena_exit();
         break;
-      case L_TRIFID:
-        l_trifid();
+      case L_TRIFFID:
+        l_triffid();
         break;
       case L_ENTER_COURT:
         l_enter_court();

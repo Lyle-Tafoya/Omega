@@ -723,7 +723,7 @@ void install_specials()
         else if(i < 57)
         {
           Level->site[x][y].locchar = HEDGE;
-          Level->site[x][y].p_locf  = L_TRIFID;
+          Level->site[x][y].p_locf  = L_TRIFFID;
         }
         else if(i < 70)
         {

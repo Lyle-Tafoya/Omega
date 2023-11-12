@@ -278,7 +278,7 @@ void s_ritual()
             for(int i = 0; i < 8; ++i)
             {
               Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].locchar = HEDGE;
-              Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].p_locf  = L_TRIFID;
+              Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].p_locf  = L_TRIFFID;
               lset(Player.x + Dirs[0][i], Player.y + Dirs[1][i], CHANGED, *Level);
             }
             break;

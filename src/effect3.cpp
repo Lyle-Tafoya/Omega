@@ -567,9 +567,9 @@ void disintegrate(int x, int y)
     }
     else if(Level->site[x][y].locchar == HEDGE)
     {
-      if(Level->site[x][y].p_locf == L_TRIFID)
+      if(Level->site[x][y].p_locf == L_TRIFFID)
       {
-        queue_message("The trifid screams as it disintgrates!");
+        queue_message("The triffid screams as it disintgrates!");
         gain_experience(50);
         Level->site[x][y].p_locf  = L_NO_OP;
         Level->site[x][y].locchar = FLOOR;

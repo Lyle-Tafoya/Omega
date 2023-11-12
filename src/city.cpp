@@ -596,7 +596,7 @@ void mazesite(int i, int j, int populate)
       }
       else
       {
-        Level->site[i][j].p_locf = L_TRIFID;
+        Level->site[i][j].p_locf = L_TRIFFID;
       }
       break;
     case '-':

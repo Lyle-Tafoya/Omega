@@ -412,7 +412,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
   }
   else if(Level->site[xx][yy].locchar == HEDGE)
   {
-    if(Level->site[xx][yy].p_locf != L_TRIFID)
+    if(Level->site[xx][yy].p_locf != L_TRIFFID)
     {
       if((dtype == FLAME) || (dtype == ELECTRICITY))
       {
@@ -429,7 +429,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
     }
     else
     {
-      queue_message("The trifid absorbs the energy and laughs!");
+      queue_message("The triffid absorbs the energy and laughs!");
     }
   }
   else if(Level->site[xx][yy].locchar == WATER)
@@ -557,7 +557,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
     }
     if(Level->site[ex][ey].locchar == HEDGE)
     {
-      if(Level->site[ex][ey].p_locf != L_TRIFID)
+      if(Level->site[ex][ey].p_locf != L_TRIFFID)
       {
         if((dtype == FLAME) || (dtype == ELECTRICITY))
         {
@@ -574,7 +574,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
       }
       else
       {
-        queue_message("The trifid absorbs the energy and laughs!");
+        queue_message("The triffid absorbs the energy and laughs!");
       }
     }
     else if(Level->site[ex][ey].locchar == WATER)

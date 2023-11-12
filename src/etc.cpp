@@ -176,7 +176,7 @@ void hint()
       queue_message("There must be *some* reason to worship Destiny!");
       break;
     case 48:
-      queue_message("Kill a trifid? A puzzle! Try a saline solution!");
+      queue_message("Kill a triffid? A puzzle! Try a saline solution!");
       break;
     case 49:
       queue_message("Beware! The Eater of Souls inhabits the abyss!");

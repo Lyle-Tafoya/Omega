@@ -137,7 +137,7 @@ void load_village(int villagenum, int populate)
           break;
         case '\'':
           Level->site[i][j].locchar = HEDGE;
-          Level->site[i][j].p_locf  = L_TRIFID;
+          Level->site[i][j].p_locf  = L_TRIFFID;
           break;
         case '!':
           special_village_site(i, j, villagenum);

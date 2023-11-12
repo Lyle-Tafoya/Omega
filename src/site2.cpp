@@ -458,7 +458,7 @@ void l_adept()
   }
 }
 
-void l_trifid()
+void l_triffid()
 {
   int damage = 0, stuck = true;
   queue_message("The hedge comes alive with a surge of alien growth!");
@@ -469,8 +469,8 @@ void l_trifid()
     queue_message("Razor-edged vines covered in suckers attach themselves to you.");
     if(find_and_remove_item(THINGID + 6, -1))
     {
-      queue_message("Thinking fast, you toss salt water on the trifid...");
-      queue_message("The trifid disintegrates with a frustrated sigh.");
+      queue_message("Thinking fast, you toss salt water on the triffid...");
+      queue_message("The triffid disintegrates with a frustrated sigh.");
       Level->site[Player.x][Player.y].locchar = FLOOR;
       Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
       lset(Player.x, Player.y, CHANGED, *Level);
@@ -479,7 +479,7 @@ void l_trifid()
     }
     else
     {
-      p_damage(damage, UNSTOPPABLE, "a trifid");
+      p_damage(damage, UNSTOPPABLE, "a triffid");
       queue_message("You are entangled in tendrils...");
       std::vector<std::string> lines =
       {
@@ -498,7 +498,7 @@ void l_trifid()
           if(Player.str > random_range(200))
           {
             queue_message("Amazing! You're now free.");
-            queue_message("The trifid writhes hungrily at you.");
+            queue_message("The triffid writhes hungrily at you.");
             stuck = false;
           }
           else
@@ -807,7 +807,7 @@ void sign_print(int x, int y, int signp)
       break;
     case L_MAZE:
       queue_message("You notice a sign:");
-      queue_message("Hedge maze closed for trifid extermination.");
+      queue_message("Hedge maze closed for triffid extermination.");
       break;
     case L_BANK:
       if(signp)
