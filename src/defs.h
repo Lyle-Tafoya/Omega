@@ -52,8 +52,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 //---------------------------SYSTEM DEFINITIONS---------------------------
 
 // Don't change anything from here on (unless you know what you're doing)
-constexpr int GAME_VERSION        = 600;
-const std::string VERSIONSTRING   = "omega rebirth version 0.6.0";
+constexpr int GAME_VERSION        = 601;
+const std::string VERSIONSTRING   = "omega rebirth version 0.6.1";
 
 // Just increment these by one whenever an incompatibility is introduced
 constexpr int SAVE_FILE_VERSION   = 2;
