@@ -66,17 +66,17 @@ void interactive_menu::print()
   werase(menu_window);
   for(uint16_t i = 0; i < header.size(); ++i)
   {
-    mvwaddstr(menu_window, i, 0, header[i].c_str());
+    color_mvwaddstr(menu_window, i, 0, header[i].c_str());
   }
   for(uint16_t i = 0; i + position < lines.size() && i + header.size() < height; ++i)
   {
     if(static_cast<uint16_t>(header.size()) + i == height-1 && i + position + 1u < lines.size())
     {
-      mvwaddstr(menu_window, i+static_cast<uint16_t>(header.size()), 0, "** MORE **");
+      color_mvwaddstr(menu_window, i+static_cast<uint16_t>(header.size()), 0, "** MORE **");
     }
     else
     {
-      mvwaddstr(menu_window, i+static_cast<uint16_t>(header.size()), 0, lines[i + position].c_str());
+      color_mvwaddstr(menu_window, i+static_cast<uint16_t>(header.size()), 0, lines[i + position].c_str());
     }
   }
   wnoutrefresh(menu_window);

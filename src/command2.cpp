@@ -302,15 +302,15 @@ void drop_pack_item()
   std::list<std::pair<object *, char>> other;
   const std::array object_categories
   {
-    std::pair{"Food", &food},
-    std::pair{"Weapons", &weapons},
-    std::pair{"Scrolls", &scrolls},
-    std::pair{"Potions", &potions},
-    std::pair{"Armor", &armor},
-    std::pair{"Sticks", &sticks},
-    std::pair{"Jewelery", &jewelery},
-    std::pair{"Artifacts", &artifacts},
-    std::pair{"Miscellaneous", &other}
+    std::pair{"|YFood|w", &food},
+    std::pair{"|YWeapons|w", &weapons},
+    std::pair{"|YScrolls|w", &scrolls},
+    std::pair{"|YPotions|w", &potions},
+    std::pair{"|YArmor|w", &armor},
+    std::pair{"|YSticks|w", &sticks},
+    std::pair{"|YJewelery|w", &jewelery},
+    std::pair{"|YArtifacts|w", &artifacts},
+    std::pair{"|YMiscellaneous|w", &other}
   };
   for(int i = 0; i < Player.packptr; ++i)
   {
@@ -354,7 +354,7 @@ void drop_pack_item()
   std::vector<std::string> lines;
   if(Player.cash > 0)
   {
-    lines.emplace_back("Cash");
+    lines.emplace_back("|YCash|w");
     lines.emplace_back(std::format("   $ - {} gold pieces", Player.cash));
   }
   for(auto &object_category : object_categories)
@@ -368,7 +368,7 @@ void drop_pack_item()
       }
     }
   }
-  menu->load(lines, {"Drop Item:", ""});
+  menu->load(lines, {"|WDrop Item:|w", ""});
 
   int player_input;
   do

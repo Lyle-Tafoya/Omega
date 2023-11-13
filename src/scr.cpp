@@ -108,6 +108,98 @@ void color_mvwaddch(WINDOW *window, int y, int x, const chtype ch)
   }
 }
 
+void omega_wcolor_set(WINDOW *window, short pair)
+{
+  if(optionp(SHOW_COLOUR, Player))
+  {
+    wcolor_set(window, pair, nullptr);
+  }
+}
+
+void color_waddstr(WINDOW *window, const std::string &s)
+{
+  std::string::size_type length = s.length();
+  for(std::string::size_type i = 0; i < length; ++i)
+  {
+    if(s[i] == '|' && i < length-1)
+    {
+      switch(s[++i])
+      {
+        case 'l':
+          omega_wcolor_set(window, COLOR_BLACK);
+          break;
+        case 'L':
+          omega_wcolor_set(window, COLOR_BLACK+8);
+          break;
+        case 'r':
+          omega_wcolor_set(window, COLOR_RED);
+          break;
+        case 'R':
+          omega_wcolor_set(window, COLOR_RED+8);
+          break;
+        case 'g':
+          omega_wcolor_set(window, COLOR_GREEN);
+          break;
+        case 'G':
+          omega_wcolor_set(window, COLOR_GREEN+8);
+          break;
+        case 'y':
+          omega_wcolor_set(window, COLOR_YELLOW);
+          break;
+        case 'Y':
+          omega_wcolor_set(window, COLOR_YELLOW+8);
+          break;
+        case 'b':
+          omega_wcolor_set(window, COLOR_BLUE);
+          break;
+        case 'B':
+          omega_wcolor_set(window, COLOR_BLUE+8);
+          break;
+        case 'm':
+          omega_wcolor_set(window, COLOR_MAGENTA);
+          break;
+        case 'M':
+          omega_wcolor_set(window, COLOR_MAGENTA+8);
+          break;
+        case 'c':
+          omega_wcolor_set(window, COLOR_CYAN);
+          break;
+        case 'C':
+          omega_wcolor_set(window, COLOR_CYAN+8);
+          break;
+        case 'w':
+          omega_wcolor_set(window, COLOR_WHITE);
+          break;
+        case 'W':
+          omega_wcolor_set(window, COLOR_WHITE+8);
+          break;
+        case '!':
+          wattr_on(window, WA_REVERSE, nullptr);
+          break;
+        case '_':
+          wattr_on(window, WA_UNDERLINE, nullptr);
+          break;
+        case '0':
+          wattr_on(window, WA_NORMAL, nullptr);
+          break;
+        case '|':
+          waddch(window, '|');
+          break;
+      }
+    }
+    else
+    {
+      waddch(window, s[i]);
+    }
+  }
+}
+
+void color_mvwaddstr(WINDOW *window, int y, int x, const std::string &s)
+{
+  wmove(window, y, x);
+  color_waddstr(window, s);
+}
+
 struct entity_info
 {
   std::string name;
@@ -2181,15 +2273,32 @@ void print_inventory_menu(Symbol item_type)
     object *item = Player.possessions[i];
 
     bool wildcard = (item_type == NULL_ITEM || item_type == CASH);
+    bool selectable = false;
     if((item && (item->objchar == item_type || wildcard)) || (!item && wildcard && find_first_pack_obj(i)))
     {
-      line = std::format("{} - ", index_to_key(i));
+      selectable = true;
+      line = std::format("|Y{} |y-|w ", index_to_key(i));
     }
     else
     {
       line = "    ";
     }
-    line += std::format("{}: {}", SLOT_NAMES[i], (item ? itemid(item) : "-"));
+    if(selectable)
+    {
+      line += std::format("|y{}:", SLOT_NAMES[i]);
+    }
+    else
+    {
+      line += std::format("|L{}:", SLOT_NAMES[i]);
+    }
+    if(item)
+    {
+      line += std::format("|w {}", itemid(item));
+    }
+    else
+    {
+      line += std::format("{} -|w", selectable ? "|w" : "|L");
+    }
     lines.emplace_back(line);
   }
   menu->load(lines);
