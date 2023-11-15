@@ -41,7 +41,7 @@ extern interactive_menu *menu;
 void indoors_random_event()
 {
   monsterlist *ml;
-  pol ol;
+  objectlist *ol;
   switch(random_range(1000))
   {
     case 0:

@@ -32,7 +32,7 @@ extern interactive_menu *menu;
 
 void l_condo()
 {
-  pol ol, prev = nullptr;
+  objectlist *ol, *prev = nullptr;
   int i, done = false, over = false, weeksleep = false;
   char response;
 

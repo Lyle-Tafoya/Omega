@@ -357,7 +357,7 @@ void m_pulse(monster *m)
 {
   int range  = distance(m->x, m->y, Player.x, Player.y);
   int STRIKE = false;
-  pol prev;
+  objectlist *prev;
 
   if(Time % 10 == 0)
   {
@@ -449,7 +449,7 @@ void movemonster(monster *m, int newx, int newy)
 /* give object o to monster m */
 void m_pickup(monster *m, object *o)
 {
-  pol tmp        = new objectlist;
+  objectlist *tmp        = new objectlist;
   tmp->thing     = o;
   tmp->next      = m->possessions;
   m->possessions = tmp;
@@ -503,7 +503,7 @@ void m_damage(monster *m, int dmg, damage_type dtype)
 
 void strengthen_death(monster *m)
 {
-  pol ol     = new objectlist;
+  objectlist *ol     = new objectlist;
   pob scythe = new object;
   m->xpv += std::min(10000l, m->xpv + 1000);
   m->hit += std::min(1000, m->hit + 10);
@@ -523,7 +523,7 @@ void m_death(monster *m)
   pob corpse;
   monsterlist *ml;
   int x, y, found = false;
-  pol curr, prev = nullptr;
+  objectlist *curr, *prev = nullptr;
 
   m->hp = -1;
   if(los_p(Player.x, Player.y, m->x, m->y))

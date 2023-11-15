@@ -732,7 +732,7 @@ void stock_level()
 /* make a new object (of at most level itemlevel) at site i,j on level*/
 void make_site_treasure(int i, int j, int itemlevel)
 {
-  pol tmp                  = new objectlist;
+  objectlist *tmp                  = new objectlist;
   tmp->thing               = ((pob)create_object(itemlevel));
   tmp->next                = Level->site[i][j].things;
   Level->site[i][j].things = tmp;
@@ -741,7 +741,7 @@ void make_site_treasure(int i, int j, int itemlevel)
 /* make a specific new object at site i,j on level*/
 void make_specific_treasure(int i, int j, int itemid)
 {
-  pol tmp;
+  objectlist *tmp;
   if(Objects[itemid].uniqueness == UNIQUE_TAKEN)
   {
     return;

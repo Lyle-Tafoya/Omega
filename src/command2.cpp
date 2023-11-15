@@ -1400,7 +1400,7 @@ void moveplayer(int dx, int dy)
       {
         if(Level->site[Player.x][Player.y].things)
         {
-          pol item_list = Level->site[Player.x][Player.y].things;
+          objectlist *item_list = Level->site[Player.x][Player.y].things;
           if(!item_list->next)
           {
             queue_message("You see here a " + itemid(item_list->thing) + ".");
@@ -1409,7 +1409,7 @@ void moveplayer(int dx, int dy)
           {
             std::string items = itemid(item_list->thing);
             std::string item_characters(1, static_cast<char>(item_list->thing->objchar & A_CHARTEXT));
-            for(pol item = item_list->next; item; item = item->next)
+            for(objectlist *item = item_list->next; item; item = item->next)
             {
               items += ", " + itemid(item->thing);
               item_characters += static_cast<char>(item->thing->objchar & A_CHARTEXT);

@@ -134,7 +134,7 @@ int LastCountryLocY = 0;                                  /* previous position i
 std::string Password;                                     /* autoteller password */
 int MazeNum = 0;
 
-pol Condoitems = nullptr; /* Items in condo */
+objectlist *Condoitems = nullptr; /* Items in condo */
 
 /* high score names, levels, behavior */
 int Shadowlordbehavior, Archmagebehavior, Primebehavior, Commandantbehavior;

@@ -234,7 +234,7 @@ extern std::string Password;
 
 extern int MazeNum;
 
-extern pol Condoitems;
+extern objectlist *Condoitems;
 /* items in condo */
 
 /* high score names, levels, behavior */

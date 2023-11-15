@@ -108,7 +108,7 @@ void make_prime(int i, int j)
 {
   monsterlist *ml = new monsterlist;
   monster *m  = new monster;
-  pol ol;
+  objectlist *ol;
   pob o;
   make_hiscore_npc(m, 10); /* 10 is index for prime */
   m->x                       = i;

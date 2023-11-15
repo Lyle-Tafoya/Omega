@@ -99,7 +99,7 @@ void pickup_at(int x, int y)
 {
   resetgamestatus(FAST_MOVE, GameStatus);
 
-  pol object_list          = Level->site[x][y].things;
+  objectlist *object_list          = Level->site[x][y].things;
   Level->site[x][y].things = nullptr;
   if(object_list && !object_list->next)
   {
@@ -124,7 +124,7 @@ void pickup_at(int x, int y)
           drop_at(x, y, object_list->thing);
           break;
       }
-      pol tmp     = object_list;
+      objectlist *tmp     = object_list;
       object_list = object_list->next;
       delete tmp;
     }
@@ -223,7 +223,7 @@ bool merge_item_with_list(objectlist *l, object *o, int n)
 /* Not necessarily dropped by character; just dropped... */
 void drop_at(int x, int y, pob o)
 {
-  pol tmp;
+  objectlist *tmp;
   pob cpy;
 
   if(Current_Environment != E_COUNTRYSIDE)
@@ -261,7 +261,7 @@ void p_drop_at(int x, int y, int n, pob o)
       {
         return;
       }
-      pol tmp                  = new objectlist;
+      objectlist *tmp                  = new objectlist;
       tmp->thing               = new object;
       *(tmp->thing)            = *o;
       tmp->thing->used         = false;

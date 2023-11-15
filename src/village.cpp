@@ -100,7 +100,7 @@ void assign_village_function(int x, int y, int setup)
 
 void make_food_bin(int i, int j)
 {
-  pol tol;
+  objectlist *tol;
   int k;
 
   for(k = 0; k < 10; k++)

@@ -755,7 +755,7 @@ bool nighttime();
 bool offscreen(int, int);
 bool ok_to_free(level *);
 void free_level(level *);
-void free_objlist(pol);
+void free_objlist(objectlist *);
 int random_range(int);
 int screenmod(int);
 int screenmod_horizontal(int);

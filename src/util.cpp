@@ -907,9 +907,9 @@ bool ok_to_free(level *level)
   }
 }
 
-void free_objlist(pol pobjlist)
+void free_objlist(objectlist *pobjlist)
 {
-  pol tmp;
+  objectlist *tmp;
 
   while(pobjlist)
   {
