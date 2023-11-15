@@ -79,7 +79,7 @@ struct spell
   std::function<void()> cast;
   bool known = false;
 
-  constexpr static spell_id_type NUM_SPELLS = spell::WISH + 1;
+  static constexpr spell_id_type NUM_SPELLS = spell::WISH + 1;
   static std::array<spell, NUM_SPELLS> Spells;
   static const std::array<std::string, NUM_SPELLS> spell_names;
 };

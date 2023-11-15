@@ -148,8 +148,7 @@ void showroom(int i)
     location += "Level " + std::to_string(Level->depth);
     room_name = std::format("({})", roomname(i));
   }
-  else if(location.empty() || Current_Environment == E_MANSION || Current_Environment == E_HOUSE ||
-          Current_Environment == E_HOVEL)
+  else if(location.empty() || Current_Environment == E_MANSION || Current_Environment == E_HOUSE || Current_Environment == E_HOVEL)
   {
     location += roomname(i);
   }
@@ -304,7 +303,8 @@ int p_moveable(int x, int y)
     return false;
   }
   else if(optionp(CONFIRM, Player) &&
-          !(Player.status[LEVITATING] && Level->site[x][y].p_locf > LEVITATION_AVOIDANCE && Level->site[x][y].locchar != HEDGE))
+          !(Player.status[LEVITATING] && Level->site[x][y].p_locf > LEVITATION_AVOIDANCE &&
+            Level->site[x][y].locchar != HEDGE))
   {
     if((Level->site[x][y].locchar == HEDGE) || (Level->site[x][y].locchar == LAVA) ||
        (Level->site[x][y].locchar == FIRE) || (Level->site[x][y].locchar == WHIRLWIND) ||
@@ -358,8 +358,7 @@ int p_country_moveable(int x, int y)
   }
   else if(optionp(CONFIRM, Player))
   {
-    if((Country[x][y].current_terrain_type == CHAOS_SEA) ||
-       (Country[x][y].current_terrain_type == MOUNTAINS))
+    if((Country[x][y].current_terrain_type == CHAOS_SEA) || (Country[x][y].current_terrain_type == MOUNTAINS))
     {
       return (confirmation());
     }
@@ -484,7 +483,7 @@ void calc_melee()
     // monks are faster when not in armor or on horseback
     if(!Player.possessions[O_ARMOR])
     {
-      Player.speed += std::min(0, Player.rank[MONKS]-1);
+      Player.speed += std::min(0, Player.rank[MONKS] - 1);
     }
   }
 
@@ -739,10 +738,9 @@ void setspot(int &x, int &y)
             break;
           default:
             break;
-
         }
       }
-        break;
+      break;
       case '?':
         queue_message("Use vi keys or numeric keypad to move cursor to target.");
         queue_message("Hit the '.' key when done, or ESCAPE to abort.");
@@ -833,7 +831,7 @@ std::string mstatus_string(monster *m)
     }
     if(m->level > Monsters[m->id].level)
     {
-      monster_status += std::format(" (level {}) ", wordnum(m->level+1-Monsters[m->id].level));
+      monster_status += std::format(" (level {}) ", wordnum(m->level + 1 - Monsters[m->id].level));
     }
     monster_status += m->monstring;
   }
@@ -928,7 +926,7 @@ bool goberserk()
 {
   bool wentberserk = false;
   std::string meleestr;
-  meleestr = Player.meleestr;
+  meleestr        = Player.meleestr;
   Player.meleestr = "LLLCLH";
   for(uint8_t i = 0; i < 8; ++i)
   {
@@ -1025,14 +1023,11 @@ void roomcheck()
 {
   static int oldroomno = -1;
   static plv oldlevel  = nullptr;
-  int        roomno    = Level->site[Player.x][Player.y].roomnumber;
+  int roomno           = Level->site[Player.x][Player.y].roomnumber;
 
-  if((roomno == RS_CAVERN) || (roomno == RS_SEWER_DUCT) || (roomno == RS_KITCHEN) ||
-     (roomno == RS_BATHROOM) || (roomno == RS_BEDROOM) || (roomno == RS_DININGROOM) ||
-     (roomno == RS_CLOSET) || (roomno > ROOMBASE))
+  if((roomno == RS_CAVERN) || (roomno == RS_SEWER_DUCT) || (roomno == RS_KITCHEN) || (roomno == RS_BATHROOM) || (roomno == RS_BEDROOM) || (roomno == RS_DININGROOM) || (roomno == RS_CLOSET) || (roomno > ROOMBASE))
   {
-    if((!loc_statusp(Player.x, Player.y, LIT, *Level)) && (!Player.status[BLINDED]) &&
-       (Player.status[ILLUMINATION] || (difficulty() < 6)))
+    if((!loc_statusp(Player.x, Player.y, LIT, *Level)) && (!Player.status[BLINDED]) && (Player.status[ILLUMINATION] || (difficulty() < 6)))
     {
       showroom(Level->site[Player.x][Player.y].roomnumber);
       spreadroomlight(Player.x, Player.y, roomno);
@@ -1050,7 +1045,7 @@ void roomcheck()
 /* ask for mercy */
 void surrender(monster *m)
 {
-  int  i;
+  int i;
   long bestitem, bestvalue;
 
   switch(random_range(4))
@@ -1178,9 +1173,7 @@ void threaten(monster *m)
   {
     queue_message("It sneers contemptuously at you.");
   }
-  else if((m->talkf != M_TALK_GREEDY) && (m->talkf != M_TALK_HUNGRY) && (m->talkf != M_TALK_EVIL) &&
-          (m->talkf != M_TALK_MAN) && (m->talkf != M_TALK_BEG) && (m->talkf != M_TALK_THIEF) &&
-          (m->talkf != M_TALK_MERCHANT) && (m->talkf != M_TALK_IM))
+  else if((m->talkf != M_TALK_GREEDY) && (m->talkf != M_TALK_HUNGRY) && (m->talkf != M_TALK_EVIL) && (m->talkf != M_TALK_MAN) && (m->talkf != M_TALK_BEG) && (m->talkf != M_TALK_THIEF) && (m->talkf != M_TALK_MERCHANT) && (m->talkf != M_TALK_IM))
   {
     queue_message("Your demand is ignored");
   }

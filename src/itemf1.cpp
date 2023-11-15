@@ -49,8 +49,8 @@ void i_knowledge(pob o)
 
 void i_jane_t(pob o)
 {
-  int  volume = random_range(6);
-  int  i, j, k;
+  int volume = random_range(6);
+  int i, j, k;
   char v;
 
   Objects[o->id].known = 1;
@@ -707,8 +707,7 @@ void i_pick(pob o)
         {
           queue_message("The lock is too complicated for you!!!");
         }
-        else if(Level->depth * 2 + random_range(50) <
-                Player.dex + Player.level + Player.rank[THIEVES] * 10)
+        else if(Level->depth * 2 + random_range(50) < Player.dex + Player.level + Player.rank[THIEVES] * 10)
         {
           queue_message("You picked the lock!");
           Level->site[ox][oy].aux = UNLOCKED;
@@ -1174,8 +1173,7 @@ void i_trap(pob o)
 {
   Objects[o->id].known = 1;
 
-  if((Level->site[Player.x][Player.y].locchar != FLOOR) ||
-     (Level->site[Player.x][Player.y].p_locf != L_NO_OP))
+  if((Level->site[Player.x][Player.y].locchar != FLOOR) || (Level->site[Player.x][Player.y].p_locf != L_NO_OP))
   {
     queue_message("Your attempt fails.");
   }

@@ -38,8 +38,8 @@ extern interactive_menu *menu;
 pob detach_money()
 {
   long c;
-  pob  cash = nullptr;
-  c         = get_money(Player.cash);
+  pob cash = nullptr;
+  c        = get_money(Player.cash);
   if(c != ABORT)
   {
     Player.cash -= c;
@@ -99,7 +99,7 @@ void pickup_at(int x, int y)
 {
   resetgamestatus(FAST_MOVE, GameStatus);
 
-  pol object_list = Level->site[x][y].things;
+  pol object_list          = Level->site[x][y].things;
   Level->site[x][y].things = nullptr;
   if(object_list && !object_list->next)
   {
@@ -124,7 +124,7 @@ void pickup_at(int x, int y)
           drop_at(x, y, object_list->thing);
           break;
       }
-      pol tmp = object_list;
+      pol tmp     = object_list;
       object_list = object_list->next;
       delete tmp;
     }
@@ -188,10 +188,12 @@ int objequal(object *o, object *p)
   }
   else
   {
-    return (o->id == p->id && o->weight == p->weight && o->plus == p->plus && o->charge == p->charge &&
-            o->dmg == p->dmg && o->hit == p->hit && o->aux == p->aux && o->fragility == p->fragility &&
-            o->basevalue == p->basevalue && o->known == p->known && o->blessing == p->blessing &&
-            o->on_use == p->on_use && o->on_equip == p->on_equip && o->on_unequip == p->on_unequip);
+    return (
+      o->id == p->id && o->weight == p->weight && o->plus == p->plus && o->charge == p->charge &&
+      o->dmg == p->dmg && o->hit == p->hit && o->aux == p->aux && o->fragility == p->fragility &&
+      o->basevalue == p->basevalue && o->known == p->known && o->blessing == p->blessing &&
+      o->on_use == p->on_use && o->on_equip == p->on_equip && o->on_unequip == p->on_unequip
+    );
   }
 }
 
@@ -302,7 +304,6 @@ std::string getchargestr(pob obj)
   return chargestr;
 }
 
-
 /* return an object's number as a string */
 std::string getnumstr(pob obj)
 {
@@ -391,15 +392,15 @@ std::string itemid(pob obj)
       }
       if(obj->objchar == WEAPON)
       {
-        item_name += std::format(" ({},{})", obj->hit+obj->plus, obj->dmg+obj->plus);
+        item_name += std::format(" ({},{})", obj->hit + obj->plus, obj->dmg + obj->plus);
       }
       else if(obj->objchar == ARMOR)
       {
-        item_name += std::format(" [{},{}]", obj->plus-obj->aux, obj->dmg);
+        item_name += std::format(" [{},{}]", obj->plus - obj->aux, obj->dmg);
       }
       else if(obj->objchar == SHIELD)
       {
-        item_name += std::format(" [{},0]", obj->plus+obj->aux);
+        item_name += std::format(" [{},0]", obj->plus + obj->aux);
       }
     }
     return item_name;
@@ -637,7 +638,7 @@ void conform_unused_object(pob obj)
 char inventory_keymap[] = "-abcfghimnoqruvwyz";
 
 // WDT -- convert from a char (keypress) to an item index in player inventory
-int         key_to_index(signed char key)
+int key_to_index(signed char key)
 {
   assert(MAXITEMS > 0); /* must have room for an item, or this loop will
                          * die! */
@@ -676,7 +677,7 @@ int getitem(Symbol itype)
 {
   char invstr[64];
   char key;
-  int  i, k = 0, ok = false, drewmenu = false, found = false;
+  int i, k = 0, ok = false, drewmenu = false, found = false;
 
   found     = (itype == NULL_ITEM || (itype == CASH && Player.cash > 0));
   invstr[0] = 0;
@@ -996,7 +997,7 @@ void use_pack_item(int response, int slot)
  * right now it's only used in the function directly below. */
 int aux_display_pack(int start_item, int slot)
 {
-  int         i = start_item, items;
+  int i = start_item, items;
   const char *depth_string;
   if(Player.packptr < 1)
   {
@@ -1030,7 +1031,9 @@ int aux_display_pack(int start_item, int slot)
         {
           menuprint("Items in Pack:\n");
         }
-        menuprint(std::format("  {}: {} {}\n", static_cast<char>('a'+i), depth_string, itemid(Player.pack[i])));
+        menuprint(
+          std::format("  {}: {} {}\n", static_cast<char>('a' + i), depth_string, itemid(Player.pack[i]))
+        );
         ++items;
       }
     }
@@ -1051,7 +1054,7 @@ int aux_display_pack(int start_item, int slot)
 void take_from_pack(int slot)
 {
   char pack_item, last_item;
-  int  quit = false, ok = true;
+  int quit = false, ok = true;
   int response;
   if(Player.packptr < 1)
   {
@@ -1165,14 +1168,13 @@ void put_to_pack(int slot)
   }
   else
   {
-    int num = get_item_number(oslot);
+    int num        = get_item_number(oslot);
     bool twohanded = (slot == O_READY_HAND || slot == O_WEAPON_HAND) && twohandedp(oslot->id);
     if(num >= oslot->number)
     {
-      if(twohanded && oslot &&
-          Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
+      if(twohanded && oslot && Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
       {
-        Player.possessions[O_READY_HAND] = nullptr;
+        Player.possessions[O_READY_HAND]  = nullptr;
         Player.possessions[O_WEAPON_HAND] = nullptr;
       }
       else
@@ -1249,7 +1251,6 @@ pob split_item(int num, pob item)
   return (newitem);
 }
 
-
 /* criteria for being able to put some item in some slot */
 int slottable(pob o, int slot)
 {
@@ -1324,8 +1325,7 @@ int find_item(pob *o, int id, int chargeval)
   {
     if(Player.possessions[i])
     {
-      if((Player.possessions[i]->id == id) &&
-         ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
+      if((Player.possessions[i]->id == id) && ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
       {
         *o    = Player.possessions[i];
         found = true;
@@ -1361,8 +1361,7 @@ int find_and_remove_item(int id, int chargeval)
   {
     if(Player.possessions[i])
     {
-      if((Player.possessions[i]->id == id) &&
-         ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
+      if((Player.possessions[i]->id == id) && ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
       {
         o = Player.possessions[i];
         conform_lost_objects(1, o);

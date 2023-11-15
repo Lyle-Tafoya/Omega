@@ -34,8 +34,7 @@ void kill_levels(const std::string &str)
   /* Remove old level files laying around */
   for(auto &p : std::filesystem::directory_iterator(Omegalib))
   {
-    if(std::filesystem::is_regular_file(p) &&
-       std::regex_match(p.path().filename().string(), std::regex(str)))
+    if(std::filesystem::is_regular_file(p) && std::regex_match(p.path().filename().string(), std::regex(str)))
     {
       std::filesystem::remove(p.path());
     }
@@ -98,7 +97,7 @@ plv msdos_changelevel(plv oldlevel, int newenv, int newdepth)
 /* loads the abyss level into Level*/
 void load_abyss()
 {
-  int  i, j;
+  int i, j;
   char site;
 
   FILE *fd;
@@ -112,7 +111,7 @@ void load_abyss()
     TempLevel = nullptr;
   }
 #ifndef SAVE_LEVELS
-  Level = new level;;
+  Level = new level;
 #else
   msdos_changelevel(TempLevel, 0, -1);
   Level = &TheLevel;

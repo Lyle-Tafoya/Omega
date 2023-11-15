@@ -46,8 +46,8 @@ void m_hit(monster *m, int dtype)
 // checks to see if player hits with hitmod vs. monster m at location hitloc
 bool monster_hit(monster *m, char hitloc, int bonus)
 {
-  int    goodblocks = 0;
-  bool   blocks = false, riposte = false;
+  int goodblocks = 0;
+  bool blocks = false, riposte = false;
   size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);
   for(size_t i = 0; i < meleestr_length; i += 2)
   {
@@ -302,7 +302,7 @@ void tacmonster(monster *m)
 
 void transcribe_monster_actions(monster *m)
 {
-  char        attack_loc, block_loc;
+  char attack_loc, block_loc;
   static std::string mmstr;
 
   int p_blocks[3];

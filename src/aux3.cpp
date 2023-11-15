@@ -459,8 +459,7 @@ char getlocation()
 /* hostile_magic ranges in power from 0 (weak) to 10 (strong) */
 int magic_resist(int hostile_magic)
 {
-  if((Player.rank[COLLEGE] + Player.rank[CIRCLE] > 0) &&
-     (Player.level / 2 + random_range(20) > hostile_magic + random_range(20)))
+  if((Player.rank[COLLEGE] + Player.rank[CIRCLE] > 0) && (Player.level / 2 + random_range(20) > hostile_magic + random_range(20)))
   {
     if(Player.mana > hostile_magic * hostile_magic)
     {
@@ -954,8 +953,7 @@ std::string countryid(Symbol terrain)
   }
 }
 
-const std::string sitenames[]
-{
+const std::string sitenames[]{
   "alchemist",
   "arena",
   "armorer",
@@ -983,40 +981,13 @@ const std::string sitenames[]
   "sorcerors' guild ",
   "tavern",
   "temple",
-  "thieves' guild"
-};
+  "thieves' guild"};
 
 static int sitenums[] // the order matches sitenames[]
-{
-  L_ALCHEMIST,
-  L_ARENA,
-  L_ARMORER,
-  L_BANK,
-  L_BROTHEL,
-  L_CASINO,
-  L_CASTLE,
-  L_COUNTRYSIDE,
-  L_COLLEGE,
-  L_CONDO,
-  L_DPW,
-  L_DINER,
-  L_CLUB,
-  L_COMMANDANT,
-  L_GYM,
-  L_HEALER,
-  L_CHARITY,
-  L_CRAP,
-  L_LIBRARY,
-  L_MERC_GUILD,
-  L_MONASTERY,
-  L_ORACLE,
-  L_ORDER,
-  L_PAWN_SHOP,
-  L_SORCERORS,
-  L_TAVERN,
-  L_TEMPLE,
-  L_THIEVES_GUILD
-};
+  {L_ALCHEMIST,   L_ARENA,   L_ARMORER,   L_BANK,      L_BROTHEL, L_CASINO,     L_CASTLE,
+   L_COUNTRYSIDE, L_COLLEGE, L_CONDO,     L_DPW,       L_DINER,   L_CLUB,       L_COMMANDANT,
+   L_GYM,         L_HEALER,  L_CHARITY,   L_CRAP,      L_LIBRARY, L_MERC_GUILD, L_MONASTERY,
+   L_ORACLE,      L_ORDER,   L_PAWN_SHOP, L_SORCERORS, L_TAVERN,  L_TEMPLE,     L_THIEVES_GUILD};
 
 std::vector<std::string> known_sites(int first, int last)
 {
@@ -1040,11 +1011,11 @@ std::vector<std::string> known_sites(int first, int last)
 int parsecitysite()
 {
   std::string prefix;
-  bool   found          = false;
-  int    first          = 0;
-  int    last           = NUMCITYSITES - 1;
-  bool   menu_displayed = false;
-  int    player_input;
+  bool found          = false;
+  int first           = 0;
+  int last            = NUMCITYSITES - 1;
+  bool menu_displayed = false;
+  int player_input;
   append_message("", true);
   do
   {
@@ -1112,16 +1083,16 @@ int parsecitysite()
           continue;
         }
         int f = first;
-        while(f < NUMCITYSITES && (!CitySiteList[sitenums[f] - CITYSITEBASE][0] ||
-             sitenames[f].length() < prefix.length() ||
-             sitenames[f][prefix.length()] < player_input))
+        while(f < NUMCITYSITES &&
+              (!CitySiteList[sitenums[f] - CITYSITEBASE][0] || sitenames[f].length() < prefix.length() ||
+               sitenames[f][prefix.length()] < player_input))
         {
           ++f;
         }
         int l = last;
-        while(l >= 0 && (!CitySiteList[sitenums[l] - CITYSITEBASE][0] ||
-             sitenames[l].length() < prefix.length() ||
-             sitenames[l][prefix.length()] > player_input))
+        while(l >= 0 &&
+              (!CitySiteList[sitenums[l] - CITYSITEBASE][0] || sitenames[l].length() < prefix.length() ||
+               sitenames[l][prefix.length()] > player_input))
         {
           --l;
         }

@@ -29,7 +29,7 @@ level structure generation */
 /* monsters for tactical encounters */
 void make_country_monsters(Symbol terrain)
 {
-  pml        tml, ml = nullptr;
+  pml tml, ml = nullptr;
   static int plains[10] = {BUNNY, BUNNY, HORNET, QUAIL, HAWK, DEER, WOLF, LION, BRIGAND, RANDOM};
   /*    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};*/
   /* DG changed (WDT: I'd like to see a blacksnake). */
@@ -40,7 +40,7 @@ void make_country_monsters(Symbol terrain)
   static int desert[10]   = {HAWK, HAWK, CAMEL, CAMEL, HYENA, HYENA, LION, LION, RANDOM, RANDOM};
   static int tundra[10]   = {WOLF, WOLF, BEAR, BEAR, DEER, DEER, RANDOM, RANDOM, RANDOM, RANDOM};
   static int mountain[10] = {BUNNY, SHEEP, WOLF, WOLF, HAWK, HAWK, HAWK, RANDOM, RANDOM, RANDOM};
-  int       *monsters, i, nummonsters;
+  int *monsters, i, nummonsters;
 
   nummonsters = (random_range(5) + 1) * (random_range(3) + 1);
 

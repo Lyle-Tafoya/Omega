@@ -25,14 +25,15 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <array>
 #include <csignal>
 #include <cstdlib>
-#include <string>
 #include <ctime>
 #include <filesystem>
 #include <format>
 #include <random>
+#include <string>
 #ifdef PDC_GL_BUILD
-extern "C" {
-  #include <pdcgl.h>
+extern "C"
+{
+#  include <pdcgl.h>
 }
 #endif
 /* Note: in order to avoid a memory bug I've been told about, I'm
@@ -55,96 +56,97 @@ const char *Omegalib; /* contains the path to the library files */
 int CitySiteList[NUMCITYSITES][3];
 
 /* Currently defined in caps since it is now a variable, was a constant */
-int  LENGTH = MAXLENGTH;
-int  WIDTH  = MAXWIDTH;
+int LENGTH = MAXLENGTH;
+int WIDTH  = MAXWIDTH;
 bool terminal_size_too_small;
 
-bool           received_directions = false;
-bool           IsMenu              = false;
-long           GameStatus          = 0L; /* Game Status bit vector */
-int            ScreenLength        = 0;  /* How large is level window */
-int            ScreenWidth         = 0;
-player  Player;                       /* the player */
+bool received_directions = false;
+bool IsMenu              = false;
+long GameStatus          = 0L; /* Game Status bit vector */
+int ScreenLength         = 0;  /* How large is level window */
+int ScreenWidth          = 0;
+player Player;                        /* the player */
 terrain Country[MAXWIDTH][MAXLENGTH]; /* The countryside */
 #ifdef SAVE_LEVELS
 level TheLevel;
 #endif
-level   *City                = nullptr; /* The city of Rampart */
-level   *TempLevel           = nullptr; /* Place holder */
-level   *Level               = nullptr; /* Pointer to current Level */
-level   *Dungeon             = nullptr; /* Pointer to current Dungeon */
-int             Villagenum          = 0;    /* Current Village number */
-int             ScreenOffset        = 0;    /* Offset of displayed screen to level */
-int             HorizontalOffset    = 0;
-int             MaxDungeonLevels    = 0;             /* Deepest level allowed in dungeon */
-int             Current_Dungeon     = -1;            /* What is Dungeon now */
-int             Current_Environment = E_CITY;        /* Which environment are we in */
-int             Last_Environment    = E_COUNTRYSIDE; /* Which environment were we in */
-int             Dirs[2][9];                          /* 9 xy directions */
-int             Cmd                  = 's';          /* last player command */
-int             Command_Duration     = 0;            /* how long does current command take */
-monster *Arena_Monster        = nullptr;         /* Opponent in arena */
-int             Arena_Opponent       = 0;            /* case label of opponent in l_arena()*/
-int             Arena_Victory        = 0;            /* did player win in arena? */
-int             Imprisonment         = 0;            /* amount of time spent in jail */
-int             Precipitation        = 0;            /* Hours of rain, snow, etc */
-int             Lunarity             = 0;            /* Effect of the moon on character */
-int             Phase                = 0;            /* Phase of the moon */
-int             Date                 = 0;            /* Starting date */
-int             Pawndate             = -1;           /* Pawn Shop item generation date */
-pob             Pawnitems[PAWNITEMS] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+level *City             = nullptr; /* The city of Rampart */
+level *TempLevel        = nullptr; /* Place holder */
+level *Level            = nullptr; /* Pointer to current Level */
+level *Dungeon          = nullptr; /* Pointer to current Dungeon */
+int Villagenum          = 0;       /* Current Village number */
+int ScreenOffset        = 0;       /* Offset of displayed screen to level */
+int HorizontalOffset    = 0;
+int MaxDungeonLevels    = 0;             /* Deepest level allowed in dungeon */
+int Current_Dungeon     = -1;            /* What is Dungeon now */
+int Current_Environment = E_CITY;        /* Which environment are we in */
+int Last_Environment    = E_COUNTRYSIDE; /* Which environment were we in */
+int Dirs[2][9];                          /* 9 xy directions */
+int Cmd                  = 's';          /* last player command */
+int Command_Duration     = 0;            /* how long does current command take */
+monster *Arena_Monster   = nullptr;      /* Opponent in arena */
+int Arena_Opponent       = 0;            /* case label of opponent in l_arena()*/
+int Arena_Victory        = 0;            /* did player win in arena? */
+int Imprisonment         = 0;            /* amount of time spent in jail */
+int Precipitation        = 0;            /* Hours of rain, snow, etc */
+int Lunarity             = 0;            /* Effect of the moon on character */
+int Phase                = 0;            /* Phase of the moon */
+int Date                 = 0;            /* Starting date */
+int Pawndate             = -1;           /* Pawn Shop item generation date */
+pob Pawnitems[PAWNITEMS] = {nullptr, nullptr, nullptr, nullptr, nullptr,
+                            nullptr, nullptr, nullptr, nullptr, nullptr};
 /* items in pawn shop */
-int  SymbolUseDay  = -1;
-int  SymbolUseHour = -1;                   /* holy symbol use marker */
-int  ViewDay       = -1;
-int  ViewHour      = -1;                   /* crystal ball use marker */
-int  ZapDay        = -1;
-int  ZapHour       = -1;                   /* staff of enchantment use marker */
-int  HelmDay       = -1;
-int  HelmHour      = -1;                   /* helm of teleportation use marker*/
-int  Constriction  = 0;                    /* Dragonlord Attack State */
-int  Blessing      = false;                /* Altar Blessing State */
-int  LastDay       = -1;                   /* DPW date of dole */
-int  RitualDay     = -1;
-int  RitualHour    = -1;                   /* last use of ritual magic */
-int  RitualRoom    = -1;                   /* last room of ritual magic */
-int  Lawstone      = 0;                    /* magic stone counter */
-int  Chaostone     = 0;                    /* magic stone counter */
-int  Mindstone     = 0;                    /* magic stone counter */
-int  Searchnum     = 1;                    /* number of times to search on 's' */
-int  Behavior;                             /* Player NPC behavior */
-int  Verbosity = VERBOSE;                  /* verbosity level */
-long Time      = 0;                        /* turn number */
-int  Tick      = 0;                        /* 10 a turn; action coordinator */
+int SymbolUseDay  = -1;
+int SymbolUseHour = -1; /* holy symbol use marker */
+int ViewDay       = -1;
+int ViewHour      = -1; /* crystal ball use marker */
+int ZapDay        = -1;
+int ZapHour       = -1; /* staff of enchantment use marker */
+int HelmDay       = -1;
+int HelmHour      = -1;    /* helm of teleportation use marker*/
+int Constriction  = 0;     /* Dragonlord Attack State */
+int Blessing      = false; /* Altar Blessing State */
+int LastDay       = -1;    /* DPW date of dole */
+int RitualDay     = -1;
+int RitualHour    = -1;                                   /* last use of ritual magic */
+int RitualRoom    = -1;                                   /* last room of ritual magic */
+int Lawstone      = 0;                                    /* magic stone counter */
+int Chaostone     = 0;                                    /* magic stone counter */
+int Mindstone     = 0;                                    /* magic stone counter */
+int Searchnum     = 1;                                    /* number of times to search on 's' */
+int Behavior;                                             /* Player NPC behavior */
+int Verbosity = VERBOSE;                                  /* verbosity level */
+long Time     = 0;                                        /* turn number */
+int Tick      = 0;                                        /* 10 a turn; action coordinator */
 std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer; /* last strings printed */
-long Gymcredit       = 0;                  /* credit at rampart gym */
-int  Spellsleft      = 0;                  /* research allowance at college */
-int  Studiesleft     = 0;                  // Study allowance at monastery
-int  StarGemUse      = 0;                  /* last date of star gem use */
-int  HiMagicUse      = 0;                  /* last date of high magic use */
-int  HiMagic         = 0;                  /* current level for l_throne */
-long Balance         = 0;                  /* bank account */
-long FixedPoints     = 0;                  /* points are frozen after adepthood*/
-int  LastTownLocX    = 0;                  /* previous position in village or city */
-int  LastTownLocY    = 0;                  /* previous position in village or city */
-int  LastCountryLocX = 0;                  /* previous position in countryside */
-int  LastCountryLocY = 0;                  /* previous position in countryside */
-std::string Password;                      /* autoteller password */
-int  MazeNum         = 0;
+long Gymcredit      = 0;                                  /* credit at rampart gym */
+int Spellsleft      = 0;                                  /* research allowance at college */
+int Studiesleft     = 0;                                  // Study allowance at monastery
+int StarGemUse      = 0;                                  /* last date of star gem use */
+int HiMagicUse      = 0;                                  /* last date of high magic use */
+int HiMagic         = 0;                                  /* current level for l_throne */
+long Balance        = 0;                                  /* bank account */
+long FixedPoints    = 0;                                  /* points are frozen after adepthood*/
+int LastTownLocX    = 0;                                  /* previous position in village or city */
+int LastTownLocY    = 0;                                  /* previous position in village or city */
+int LastCountryLocX = 0;                                  /* previous position in countryside */
+int LastCountryLocY = 0;                                  /* previous position in countryside */
+std::string Password;                                     /* autoteller password */
+int MazeNum = 0;
 
 pol Condoitems = nullptr; /* Items in condo */
 
 /* high score names, levels, behavior */
-int  Shadowlordbehavior, Archmagebehavior, Primebehavior, Commandantbehavior;
-int  Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
-int  Chaoslordbehavior, Lawlordbehavior, Justiciarbehavior, Grandmasterbehavior;
+int Shadowlordbehavior, Archmagebehavior, Primebehavior, Commandantbehavior;
+int Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
+int Chaoslordbehavior, Lawlordbehavior, Justiciarbehavior, Grandmasterbehavior;
 std::string Shadowlord, Archmage, Prime, Commandant, Duke;
 std::string Champion, Priest[7], Hiscorer, Hidescrip;
 std::string Chaoslord, Lawlord, Justiciar, Grandmaster;
-int  Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel, Dukelevel;
-int  Championlevel, Priestlevel[7], Hilevel, Justiciarlevel, Grandmasterlevel;
-long Hiscore        = 0L;
-int  Chaoslordlevel = 0, Lawlordlevel = 0, Chaos = 0, Law = 0;
+int Shadowlordlevel, Archmagelevel, Primelevel, Commandantlevel, Dukelevel;
+int Championlevel, Priestlevel[7], Hilevel, Justiciarlevel, Grandmasterlevel;
+long Hiscore       = 0L;
+int Chaoslordlevel = 0, Lawlordlevel = 0, Chaos = 0, Law = 0;
 
 /* New globals which used to be statics */
 int twiddle       = false;
@@ -168,7 +170,7 @@ int level_seed[E_MAX + 1]; /* random number seed that generated level */
 void initrand(int environment, int level)
 {
   static int store;
-  int        seed;
+  int seed;
 
   if(environment >= 0)
   {
@@ -243,28 +245,28 @@ int main(int, char *[])
 
 #ifndef NO_SIGNAL_CATCH
 #  ifdef SIGQUIT
-     signal(SIGQUIT, signalexit);
+  signal(SIGQUIT, signalexit);
 #  endif
-     signal(SIGILL, signalexit);
+  signal(SIGILL, signalexit);
 #  ifdef SIGTRAP
-     signal(SIGTRAP, signalexit);
+  signal(SIGTRAP, signalexit);
 #  endif
-     signal(SIGFPE, signalexit);
-     signal(SIGSEGV, signalexit);
+  signal(SIGFPE, signalexit);
+  signal(SIGSEGV, signalexit);
 #  ifdef SIGIOT
-     signal(SIGIOT, signalexit);
+  signal(SIGIOT, signalexit);
 #  endif
 #  ifdef SIGABRT
-     signal(SIGABRT, signalexit);
+  signal(SIGABRT, signalexit);
 #  endif
 #  ifdef SIGEMT
-     signal(SIGEMT, signalexit);
+  signal(SIGEMT, signalexit);
 #  endif
 #  ifdef SIGBUS
-     signal(SIGBUS, signalexit);
+  signal(SIGBUS, signalexit);
 #  endif
 #  ifdef SIGSYS
-     signal(SIGSYS, signalexit);
+  signal(SIGSYS, signalexit);
 #  endif
 #endif
 
@@ -300,7 +302,7 @@ int main(int, char *[])
 
   omega_title();
 
-  Player.name = get_username();
+  Player.name         = get_username();
   Player.name.front() = std::toupper(Player.name.front());
   optionset(SHOW_COLOUR, Player);
   bool continuing = false;

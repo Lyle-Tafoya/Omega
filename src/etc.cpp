@@ -349,35 +349,35 @@ void learnclericalspells(int deity, int level)
       }
       else if(deity == DRUID)
       {
-        spell::Spells[spell::SELF_KNOWLEDGE].known = true;
-        spell::Spells[spell::MONSTER_DETECTION].known   = true;
+        spell::Spells[spell::SELF_KNOWLEDGE].known    = true;
+        spell::Spells[spell::MONSTER_DETECTION].known = true;
       }
       break;
     case ACOLYTE:
       if(deity == ODIN)
       {
-        spell::Spells[spell::BALL_LIGHTNING].known     = true;
-        spell::Spells[spell::TRUESIGHT].known = true;
+        spell::Spells[spell::BALL_LIGHTNING].known = true;
+        spell::Spells[spell::TRUESIGHT].known      = true;
       }
       else if(deity == SET)
       {
-        spell::Spells[spell::SUMMONING].known   = true;
-        spell::Spells[spell::FIREBOLT].known = true;
+        spell::Spells[spell::SUMMONING].known = true;
+        spell::Spells[spell::FIREBOLT].known  = true;
       }
       else if(deity == ATHENA)
       {
-        spell::Spells[spell::HEALING].known      = true;
+        spell::Spells[spell::HEALING].known   = true;
         spell::Spells[spell::SANCTUARY].known = true;
       }
       else if(deity == HECATE)
       {
-        spell::Spells[spell::SLEEP].known  = true;
+        spell::Spells[spell::SLEEP].known      = true;
         spell::Spells[spell::DISPELLING].known = true;
       }
       else if(deity == DRUID)
       {
         spell::Spells[spell::HEALING].known = true;
-        spell::Spells[spell::CURING].known = true;
+        spell::Spells[spell::CURING].known  = true;
       }
       else if(deity == DESTINY)
       {
@@ -394,7 +394,7 @@ void learnclericalspells(int deity, int level)
       else if(deity == SET)
       {
         spell::Spells[spell::INVISIBILITY].known = true;
-        spell::Spells[spell::DISPELLING].known    = true;
+        spell::Spells[spell::DISPELLING].known   = true;
       }
       else if(deity == ATHENA)
       {
@@ -404,12 +404,12 @@ void learnclericalspells(int deity, int level)
       else if(deity == HECATE)
       {
         spell::Spells[spell::SHADOWFORM].known = true;
-        spell::Spells[spell::CURING].known       = true;
+        spell::Spells[spell::CURING].known     = true;
       }
       else if(deity == DRUID)
       {
         spell::Spells[spell::DISRUPT].known      = true;
-        spell::Spells[spell::ALERTNESS].known        = true;
+        spell::Spells[spell::ALERTNESS].known    = true;
         spell::Spells[spell::CLAIRVOYANCE].known = true;
       }
       else if(deity == DESTINY)
@@ -465,7 +465,7 @@ void learnclericalspells(int deity, int level)
       else if(deity == DRUID)
       {
         spell::Spells[spell::DISINTEGRATE].known = true;
-        spell::Spells[spell::HEROISM].known         = true;
+        spell::Spells[spell::HEROISM].known      = true;
       }
       else if(deity == DESTINY)
       {
@@ -475,8 +475,7 @@ void learnclericalspells(int deity, int level)
   }
 }
 
-constexpr std::array names
-{
+constexpr std::array names{
   "Orion Splash",
   "Gorgar",
   "Hieronymous",
@@ -516,8 +515,7 @@ constexpr std::array names
   "Gurkov",
   "Krilos the Slayer",
   "Oxxblud",
-  "Dorian"
-};
+  "Dorian"};
 
 /* random names for various uses */
 std::string_view nameprint()

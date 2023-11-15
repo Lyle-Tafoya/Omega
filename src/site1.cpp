@@ -39,7 +39,7 @@ extern interactive_menu *menu;
 /* the bank; can be broken into (!) */
 void l_bank()
 {
-  int  done = false, valid = false;
+  int done = false, valid = false;
   long amount;
   char response;
   std::string passwd;
@@ -80,18 +80,16 @@ void l_bank()
       {
         append_message("Password: ", true);
         passwd = msgscanstring();
-        valid = (passwd == Password);
+        valid  = (passwd == Password);
         if(!valid)
         {
-          done = true;
-          std::vector<std::string> lines =
-          {
+          done                           = true;
+          std::vector<std::string> lines = {
             {"Alert! Alert! Invalid Password!"},
             {"The police are being summoned!"},
             {"Please wait for the police to arrive...."},
             {""},
-            {"----Hit space bar to continue----"}
-          };
+            {"----Hit space bar to continue----"}};
           menu->load(lines);
           response = menu->get_player_input();
           if(response == ' ')
@@ -229,7 +227,7 @@ void buyfromstock(int base, int numitems)
   std::vector<std::string> lines;
   for(int i = 0; i < numitems; ++i)
   {
-    lines.emplace_back(std::format("{}:{}", static_cast<char>(i+'a'), Objects[base + i].objstr));
+    lines.emplace_back(std::format("{}:{}", static_cast<char>(i + 'a'), Objects[base + i].objstr));
   }
   menu->load(lines);
   int player_input = ' ';
@@ -369,6 +367,7 @@ void l_club()
     }
   }
 }
+
 #undef hinthour
 
 void l_gym()
@@ -376,8 +375,7 @@ void l_gym()
   int done    = true;
   int trained = 0;
   print_messages();
-  std::vector<std::string> lines =
-  {
+  std::vector<std::string> lines = {
     {"The Rampart Gymnasium"},
     {""},
     {""},
@@ -387,8 +385,7 @@ void l_gym()
     {"b: use our gymnastics equipment"},
     {"c: take our new anaerobics course"},
     {"d: enroll in dance lessons"},
-    {"ESCAPE: Leave this place"}
-  };
+    {"ESCAPE: Leave this place"}};
   menu->load(lines);
   menu->print();
   append_message("The Rampart Gymnasium", true);
@@ -882,16 +879,14 @@ void l_tavern()
   queue_message("The Centaur and Nymph -- J. Riley, prop.");
   if(nighttime())
   {
-    std::vector<std::string> lines =
-    {
+    std::vector<std::string> lines = {
       {"Riley says: Whataya have?"},
       {""},
       {"a: Pint of Riley's ultra-dark 1Au"},
       {"b: Shot of Tullimore Dew 10Au"},
       {"c: Round for the House. 100Au"},
       {"d: Bed and Breakfast. 25Au"},
-      {"ESCAPE: Leave this comfortable haven."}
-    };
+      {"ESCAPE: Leave this comfortable haven."}};
     menu->load(lines);
     menu->print();
     do
@@ -964,11 +959,11 @@ void l_tavern()
           switch(random_range(4))
           {
             case 0:
-              if(Player.alignment < 0 && !CitySiteList[L_THIEVES_GUILD-CITYSITEBASE][0])
+              if(Player.alignment < 0 && !CitySiteList[L_THIEVES_GUILD - CITYSITEBASE][0])
               {
                 queue_message("A shadowy figure nods his head at you and hands you a note.");
                 queue_message("It contains directions to the thieves' guild");
-                CitySiteList[L_THIEVES_GUILD-CITYSITEBASE][0] = true;
+                CitySiteList[L_THIEVES_GUILD - CITYSITEBASE][0] = true;
               }
               else
               {
@@ -1062,6 +1057,7 @@ void l_tavern()
   }
   xredraw();
 }
+
 #undef hinthour
 
 void l_alchemist()
@@ -1135,9 +1131,11 @@ void l_alchemist()
             }
             else
             {
-              int mlevel = Monsters[obj->charge].level;
+              int mlevel           = Monsters[obj->charge].level;
               long transform_price = std::max(10l, obj->basevalue * 2 * obj->number);
-              queue_message(std::format("It'll cost you {} Au for the transformation. Pay it? [yn] ", transform_price));
+              queue_message(std::format(
+                "It'll cost you {} Au for the transformation. Pay it? [yn] ", transform_price
+              ));
               if(ynq() == 'y')
               {
                 if(Player.cash < transform_price)
@@ -1232,8 +1230,8 @@ void l_dpw()
 void l_library()
 {
   char response;
-  int  studied = false;
-  int  done = false, fee = 1000;
+  int studied = false;
+  int done = false, fee = 1000;
   queue_message("Rampart Public Library.");
   if(nighttime())
   {
@@ -1265,16 +1263,14 @@ void l_library()
           {
             studied = true;
             dataprint();
-            std::vector<std::string> lines =
-            {
+            std::vector<std::string> lines = {
               {"Peruse a scroll:"},
               {"a: Omegan Theology"},
               {"b: Guide to Rampart"},
               {"c: High Magick"},
               {"d: Odd Uncatalogued Document"},
               {"e: Attempt Advanced Research"},
-              {"ESCAPE: Leave this font of learning."}
-            };
+              {"ESCAPE: Leave this font of learning."}};
             menu->load(lines);
             menu->print();
             response = (char)mcigetc();
@@ -1407,7 +1403,7 @@ void l_pawn_shop()
       {
         if(Pawnitems[i])
         {
-          lines.emplace_back(std::format("{}:{}", static_cast<char>(i+'a'), itemid(Pawnitems[i])));
+          lines.emplace_back(std::format("{}:{}", static_cast<char>(i + 'a'), itemid(Pawnitems[i])));
         }
       }
       menu->load(lines);

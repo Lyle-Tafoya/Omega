@@ -209,8 +209,9 @@ void l_trap_blade()
     else
     {
       queue_message("A heavy blade scythes across the room and hits you!");
-      p_damage(random_range(difficulty() * 3) + difficulty() - Player.absorption, NORMAL_DAMAGE,
-               "a blade trap");
+      p_damage(
+        random_range(difficulty() * 3) + difficulty() - Player.absorption, NORMAL_DAMAGE, "a blade trap"
+      );
     }
   }
 }

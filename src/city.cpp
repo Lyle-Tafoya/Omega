@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
 void assign_city_function(int x, int y)
@@ -34,7 +34,7 @@ void assign_city_function(int x, int y)
   static int setup = 0;
   static int next  = 0;
   static int permutation[64]; /* number of x's in city map */
-  int        i, j, k, l;
+  int i, j, k, l;
 
   Level->site[x][y].aux = true;
 
@@ -201,9 +201,9 @@ void assign_city_function(int x, int y)
 // makes a hiscore npc for mansions
 void make_justiciar(int i, int j)
 {
-  monsterlist *ml   = new monsterlist;
-  ml->m    = new monster;
-  *(ml->m) = Monsters[NPC];
+  monsterlist *ml = new monsterlist;
+  ml->m           = new monster;
+  *(ml->m)        = Monsters[NPC];
   make_hiscore_npc(ml->m, 15);
   ml->m->x                   = i;
   ml->m->y                   = j;
@@ -281,8 +281,8 @@ void randommazesite(int i, int j, int populate)
 void mazesite(int i, int j, int populate)
 {
   static FILE *fd = nullptr;
-  static int   k  = 0;
-  static char  site;
+  static int k    = 0;
+  static char site;
   if(!fd)
   {
     fd   = checkfopen(std::format("{}maze{}.dat", Omegalib, MazeNum), "rb");
@@ -337,8 +337,8 @@ void mazesite(int i, int j, int populate)
 // loads the city level
 void load_city(int populate)
 {
-  int  i, j;
-  pml  ml;
+  int i, j;
+  pml ml;
   char site;
 
   FILE *fd;
@@ -428,11 +428,11 @@ void load_city(int populate)
           CitySiteList[L_MERC_GUILD - CITYSITEBASE][2] = j;
           break;
         case 'K':
-          Level->site[i][j].locchar = OPEN_DOOR;
-          Level->site[i][j].p_locf  = L_MONASTERY;
-          CitySiteList[L_MONASTERY-CITYSITEBASE][0] = true;
-          CitySiteList[L_MONASTERY-CITYSITEBASE][1] = i;
-          CitySiteList[L_MONASTERY-CITYSITEBASE][2] = j;
+          Level->site[i][j].locchar                   = OPEN_DOOR;
+          Level->site[i][j].p_locf                    = L_MONASTERY;
+          CitySiteList[L_MONASTERY - CITYSITEBASE][0] = true;
+          CitySiteList[L_MONASTERY - CITYSITEBASE][1] = i;
+          CitySiteList[L_MONASTERY - CITYSITEBASE][2] = j;
           break;
         case 'c':
           Level->site[i][j].locchar                = OPEN_DOOR;
@@ -657,7 +657,7 @@ void load_city(int populate)
 /* loads the city level */
 void resurrect_guards()
 {
-  int  i, j;
+  int i, j;
   char site;
 
   FILE *fd;

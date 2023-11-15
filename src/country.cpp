@@ -27,13 +27,13 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
 /* loads the countryside level from the data file */
 void load_country()
 {
-  FILE *fd = checkfopen(std::format("{}country.dat", Omegalib), "rb");
+  FILE *fd  = checkfopen(std::format("{}country.dat", Omegalib), "rb");
   char site = cryptkey("country.dat");
 
   for(int j = 0; j < LENGTH; j++)
@@ -159,8 +159,8 @@ void load_dlair(int empty, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_DLAIR;
-  FILE *fd = checkfopen(std::format("{}dlair.dat", Omegalib), "rb");
-  char site = cryptkey("dlair.dat");
+  FILE *fd           = checkfopen(std::format("{}dlair.dat", Omegalib), "rb");
+  char site          = cryptkey("dlair.dat");
   for(int j = 0; j < LENGTH; j++)
   {
     for(int i = 0; i < WIDTH; i++)
@@ -305,8 +305,8 @@ void load_speak(int empty, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_STARPEAK;
-  FILE *fd   = checkfopen(std::format("{}speak.dat", Omegalib), "rb");
-  char site = cryptkey("speak.dat");
+  FILE *fd           = checkfopen(std::format("{}speak.dat", Omegalib), "rb");
+  char site          = cryptkey("speak.dat");
   for(int j = 0; j < LENGTH; j++)
   {
     for(int i = 0; i < WIDTH; i++)
@@ -446,8 +446,8 @@ void load_misle(int empty, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_MAGIC_ISLE;
-  FILE *fd = checkfopen(std::format("{}misle.dat", Omegalib), "rb");
-  char site = cryptkey("misle.dat");
+  FILE *fd           = checkfopen(std::format("{}misle.dat", Omegalib), "rb");
+  char site          = cryptkey("misle.dat");
   for(int j = 0; j < LENGTH; j++)
   {
     for(int i = 0; i < WIDTH; i++)
@@ -592,8 +592,8 @@ void load_temple(int deity, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_TEMPLE;
-  FILE *fd   = checkfopen(std::format("{}temple.dat", Omegalib), "rb");
-  char site = cryptkey("temple.dat");
+  FILE *fd           = checkfopen(std::format("{}temple.dat", Omegalib), "rb");
+  char site          = cryptkey("temple.dat");
   for(int j = 0; j < LENGTH; j++)
   {
     for(int i = 0; i < WIDTH; i++)
@@ -629,16 +629,14 @@ void load_temple(int deity, int populate)
           break;
         case 'H':
           Level->site[i][j].locchar = FLOOR;
-          if(populate && (!Player.patron || Player.name != Priest[Player.patron] ||
-                          Player.rank[PRIESTHOOD] != HIGHPRIEST))
+          if(populate && (!Player.patron || Player.name != Priest[Player.patron] || Player.rank[PRIESTHOOD] != HIGHPRIEST))
           {
             make_high_priest(i, j, deity);
           }
           break;
         case 'S':
           Level->site[i][j].locchar = FLOOR;
-          if(!Player.patron || Player.name != Priest[Player.patron] ||
-             Player.rank[PRIESTHOOD] != HIGHPRIEST)
+          if(!Player.patron || Player.name != Priest[Player.patron] || Player.rank[PRIESTHOOD] != HIGHPRIEST)
           {
             lset(i, j, SECRET, *Level);
           }

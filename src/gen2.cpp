@@ -24,7 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
 /* For each level, there should be one stairway going up and one down.
@@ -296,8 +296,9 @@ void room_corridor(int fx, int fy, int tx, int ty, int baux)
     }
     fx += dx;
     fy += dy;
-    continuing = (((fx != tx) || (fy != ty)) &&
-                  ((Level->site[fx][fy].buildaux == 0) || (Level->site[fx][fy].buildaux == baux)));
+    continuing =
+      (((fx != tx) || (fy != ty)) &&
+       ((Level->site[fx][fy].buildaux == 0) || (Level->site[fx][fy].buildaux == baux)));
   }
   makedoor(fx, fy);
 }
@@ -308,7 +309,7 @@ fully connected level. */
 
 void room_level()
 {
-  int  i, fx, fy, tx, ty, t, l, e;
+  int i, fx, fy, tx, ty, t, l, e;
   char rsi;
 
   Level->numrooms = random_range(8) + 9;
@@ -461,7 +462,7 @@ void room_level()
 
 void maze_level()
 {
-  int  i, j, tx, ty, mid;
+  int i, j, tx, ty, mid;
   char rsi;
   if(Current_Environment == E_ASTRAL)
   {
@@ -487,8 +488,10 @@ void maze_level()
   {
     rsi = RS_VOLCANO;
   }
-  maze_corridor(random_range(WIDTH - 1) + 1, random_range(LENGTH - 1) + 1, random_range(WIDTH - 1) + 1,
-                random_range(LENGTH - 1) + 1, rsi, 0);
+  maze_corridor(
+    random_range(WIDTH - 1) + 1, random_range(LENGTH - 1) + 1, random_range(WIDTH - 1) + 1,
+    random_range(LENGTH - 1) + 1, rsi, 0
+  );
   if(Current_Dungeon == E_ASTRAL)
   {
     for(i = 0; i < WIDTH; i++)

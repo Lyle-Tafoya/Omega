@@ -82,8 +82,9 @@ pob create_object(int itemlevel)
     }
     /* not ok if object is too good for level, or if unique and already made */
     /* 1/100 chance of finding object if too good for level */
-    ok = ((o->uniqueness < UNIQUE_MADE) &&
-          ((o->level < itemlevel + random_range(3)) || (random_range(100) == 23)));
+    ok =
+      ((o->uniqueness < UNIQUE_MADE) &&
+       ((o->level < itemlevel + random_range(3)) || (random_range(100) == 23)));
     if(!ok)
     {
       delete o;

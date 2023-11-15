@@ -32,8 +32,8 @@ extern interactive_menu *menu;
 
 void l_condo()
 {
-  pol  ol, prev = nullptr;
-  int  i, done = false, over = false, weeksleep = false;
+  pol ol, prev = nullptr;
+  int i, done = false, over = false, weeksleep = false;
   char response;
 
   if(!gamestatusp(SOLD_CONDO, GameStatus))
@@ -84,15 +84,9 @@ void l_condo()
   }
   else
   {
-    const std::vector<std::string> lines =
-    {
-      {"Home Sweet Home"},
-      {"a: Leave items in your safe."},
-      {"b: Retrieve items."},
-      {"c: Take a week off to rest."},
-      {"d: Retire permanently."},
-      {"ESCAPE: Leave this place."}
-    };
+    const std::vector<std::string> lines = {{"Home Sweet Home"},        {"a: Leave items in your safe."},
+                                            {"b: Retrieve items."},     {"c: Take a week off to rest."},
+                                            {"d: Retire permanently."}, {"ESCAPE: Leave this place."}};
     while(!done)
     {
       menu->load(lines);
@@ -327,9 +321,7 @@ void send_to_jail()
   else
   {
     pacify_guards();
-    if(((Current_Environment == E_HOUSE) || (Current_Environment == E_MANSION) ||
-        (Current_Environment == E_HOVEL)) &&
-       (Last_Environment == E_CITY))
+    if(((Current_Environment == E_HOUSE) || (Current_Environment == E_MANSION) || (Current_Environment == E_HOVEL)) && (Last_Environment == E_CITY))
     {
       setgamestatus(SUPPRESS_PRINTING, GameStatus);
       change_environment(E_CITY);
@@ -481,15 +473,13 @@ void l_triffid()
     {
       p_damage(damage, UNSTOPPABLE, "a triffid");
       queue_message("You are entangled in tendrils...");
-      std::vector<std::string> lines =
-      {
+      std::vector<std::string> lines = {
         {"a: Try to break free."},
         {"b: Hang limp and hope the tendrils uncoil."},
         {"c: Pray for assistance."},
         {"d: Attempt to bargain with the hedge."},
         {"e: Click your heels together and wish for escape."},
-        {"ANYTHING ELSE: writhe and scream hopelessly."}
-      };
+        {"ANYTHING ELSE: writhe and scream hopelessly."}};
       menu->load(lines);
       menu->print();
       switch(menugetc())
@@ -563,7 +553,7 @@ void l_vault()
         if(Player.rank[NOBILITY] == DUKE)
         {
           queue_message("\"Ah, just testing us, your Grace?  I hope we're up to "
-                 "scratch.\"");
+                        "scratch.\"");
         }
         else
         {
@@ -586,13 +576,11 @@ void l_brothel()
   queue_message("Try to enter? [yn] ");
   if(ynq() == 'y')
   {
-    std::vector<std::string> lines =
-    {
+    std::vector<std::string> lines = {
       {"a:knock on the door."},
       {"b:try to pick the lock."},
       {"c:bash down the door."},
-      {"ESCAPE: Leave this house of ill repute."}
-    };
+      {"ESCAPE: Leave this house of ill repute."}};
     menu->load(lines);
     menu->print();
     do
@@ -773,8 +761,7 @@ void l_brothel()
 /* if signp is true, always print message, otherwise do so only sometimes */
 void sign_print(int x, int y, int signp)
 {
-  if((Level->site[x][y].p_locf >= CITYSITEBASE) &&
-     (Level->site[x][y].p_locf < CITYSITEBASE + NUMCITYSITES))
+  if((Level->site[x][y].p_locf >= CITYSITEBASE) && (Level->site[x][y].p_locf < CITYSITEBASE + NUMCITYSITES))
   {
     CitySiteList[Level->site[x][y].p_locf - CITYSITEBASE][0] = true;
   }
@@ -1010,7 +997,7 @@ void l_oracle()
         else if(!gamestatusp(COMPLETED_CAVES, GameStatus))
         {
           queue_message("'Thou mayest find aught of interest in the caves to the "
-                 "South.'");
+                        "South.'");
         }
         else if(!gamestatusp(COMPLETED_SEWERS, GameStatus))
         {
@@ -1097,8 +1084,8 @@ void l_hovel()
 void l_safe()
 {
   char response;
-  pob  newitem;
-  int  attempt = 0;
+  pob newitem;
+  int attempt = 0;
   queue_message("You have discovered a safe!");
   queue_message("Pick the lock [p], Force the door [f], or ignore [ESCAPE]");
   do

@@ -32,8 +32,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 #include <iostream>
 #include <list>
-#include <thread>
 #include <string>
+#include <thread>
 #include <utility>
 
 extern void item_use(object *);
@@ -84,7 +84,7 @@ void rest()
 /* read a scroll, book, tome, etc. */
 void peruse()
 {
-  int            index;
+  int index;
   object *obj;
 
   if(Player.status[BLINDED] > 0)
@@ -123,7 +123,7 @@ void peruse()
 
 void quaff()
 {
-  int            index;
+  int index;
   object *obj;
   queue_message("Quaff --");
   index = getitem(POTION);
@@ -150,7 +150,7 @@ void quaff()
 
 void activate()
 {
-  int  index;
+  int index;
   char response;
 
   queue_message("Activate -- item [i] or artifact [a] or quit [ESCAPE]?");
@@ -186,7 +186,7 @@ void activate()
 
 void eat()
 {
-  int            index;
+  int index;
   object *obj;
 
   queue_message("Eat --");
@@ -277,17 +277,16 @@ void drop_pack_item()
   std::list<std::pair<object *, char>> jewelery;
   std::list<std::pair<object *, char>> artifacts;
   std::list<std::pair<object *, char>> other;
-  const std::array object_categories
-  {
-    std::pair{"|YFood|w", &food},
-    std::pair{"|YWeapons|w", &weapons},
-    std::pair{"|YScrolls|w", &scrolls},
-    std::pair{"|YPotions|w", &potions},
-    std::pair{"|YArmor|w", &armor},
-    std::pair{"|YSticks|w", &sticks},
-    std::pair{"|YJewelery|w", &jewelery},
-    std::pair{"|YArtifacts|w", &artifacts},
-    std::pair{"|YMiscellaneous|w", &other}
+  const std::array object_categories{
+    std::pair{"|YFood|w",          &food     },
+    std::pair{"|YWeapons|w",       &weapons  },
+    std::pair{"|YScrolls|w",       &scrolls  },
+    std::pair{"|YPotions|w",       &potions  },
+    std::pair{"|YArmor|w",         &armor    },
+    std::pair{"|YSticks|w",        &sticks   },
+    std::pair{"|YJewelery|w",      &jewelery },
+    std::pair{"|YArtifacts|w",     &artifacts},
+    std::pair{"|YMiscellaneous|w", &other    }
   };
   for(int i = 0; i < Player.packptr; ++i)
   {
@@ -295,36 +294,36 @@ void drop_pack_item()
     switch(pack_item->objchar)
     {
       case FOOD:
-        food.emplace_back(std::make_pair(pack_item, 'a'+i));
+        food.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case WEAPON:
       case MISSILEWEAPON:
-        weapons.emplace_back(std::make_pair(pack_item, 'a'+i));
+        weapons.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case SCROLL:
-        scrolls.emplace_back(std::make_pair(pack_item, 'a'+i));
+        scrolls.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case POTION:
-        potions.emplace_back(std::make_pair(pack_item, 'a'+i));
+        potions.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case ARMOR:
       case SHIELD:
       case CLOAK:
       case BOOTS:
-        armor.emplace_back(std::make_pair(pack_item, 'a'+i));
+        armor.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case STICK:
-        sticks.emplace_back(std::make_pair(pack_item, 'a'+i));
+        sticks.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case RING:
-        jewelery.emplace_back(std::make_pair(pack_item, 'a'+i));
+        jewelery.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case ARTIFACT:
-        artifacts.emplace_back(std::make_pair(pack_item, 'a'+i));
+        artifacts.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
       case THING:
       default:
-        other.emplace_back(std::make_pair(pack_item, 'a'+i));
+        other.emplace_back(std::make_pair(pack_item, 'a' + i));
         break;
     }
   }
@@ -361,12 +360,12 @@ void drop_pack_item()
       calc_melee();
       return;
     }
-  } while((player_input < 'a' || player_input > 'a'+Player.packptr-1));
-  int index = player_input-'a';
+  } while((player_input < 'a' || player_input > 'a' + Player.packptr - 1));
+  int index    = player_input - 'a';
   object *item = Player.pack[index];
-  for(int i = index; i < Player.packptr-1; ++i)
+  for(int i = index; i < Player.packptr - 1; ++i)
   {
-    Player.pack[i] = Player.pack[i+1];
+    Player.pack[i] = Player.pack[i + 1];
   }
   Player.pack[--Player.packptr] = nullptr;
   p_drop_at(Player.x, Player.y, item->number, item);
@@ -413,8 +412,8 @@ void drop_equipped_item()
 /* talk to the animals -- learn their languages.... */
 void talk()
 {
-  int             dx, dy, index = 0;
-  char            response;
+  int dx, dy, index = 0;
+  char response;
   monster *m;
 
   queue_message("Talk --");
@@ -429,8 +428,7 @@ void talk()
     dx = Dirs[0][index];
     dy = Dirs[1][index];
 
-    if(!inbounds(Player.x + dx, Player.y + dy) ||
-       !Level->site[Player.x + dx][Player.y + dy].creature)
+    if(!inbounds(Player.x + dx, Player.y + dy) || !Level->site[Player.x + dx][Player.y + dy].creature)
     {
       queue_message("There's nothing there to talk to!!!");
       setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -498,8 +496,7 @@ void disarm()
     }
     else
     {
-      if(random_range(50 + difficulty() * 5) <
-         Player.dex * 2 + Player.level * 3 + Player.rank[THIEVES] * 10)
+      if(random_range(50 + difficulty() * 5) < Player.dex * 2 + Player.level * 3 + Player.rank[THIEVES] * 10)
       {
         queue_message("You disarmed the trap!");
         if(random_range(100) < Player.dex + Player.rank[THIEVES] * 10)
@@ -571,10 +568,10 @@ void disarm()
 /* is it more blessed to give, or receive? */
 void give()
 {
-  int             index;
-  int             dx, dy, dindex = 0;
+  int index;
+  int dx, dy, dindex = 0;
   monster *m;
-  pob             obj;
+  pob obj;
 
   queue_message("Give to monster --");
   dindex = getdir();
@@ -631,7 +628,7 @@ void give()
 /* zap a wand, of course */
 void zapwand()
 {
-  int            index;
+  int index;
   object *obj;
 
   if(Player.status[AFRAID] > 0)
@@ -760,8 +757,7 @@ void downstairs()
   {
     queue_message("Not here!");
   }
-  else if(Level->site[Player.x][Player.y].p_locf == L_ENTER_CIRCLE ||
-          Level->site[Player.x][Player.y].p_locf == L_ENTER_COURT)
+  else if(Level->site[Player.x][Player.y].p_locf == L_ENTER_CIRCLE || Level->site[Player.x][Player.y].p_locf == L_ENTER_COURT)
   {
     p_movefunction(Level->site[Player.x][Player.y].p_locf);
   }
@@ -1147,8 +1143,10 @@ void bash_location()
           {
             queue_message("Your own deity's aegis defends you from the bolt!");
           }
-          p_damage(std::max(0, random_range(100) - Player.rank[PRIESTHOOD] * 20), UNSTOPPABLE,
-                   "a bolt of godsfire");
+          p_damage(
+            std::max(0, random_range(100) - Player.rank[PRIESTHOOD] * 20), UNSTOPPABLE,
+            "a bolt of godsfire"
+          );
           if(Player.rank[PRIESTHOOD] * 20 + Player.pow + Player.level > random_range(200))
           {
             queue_message("The altar crumbles...");
@@ -1525,8 +1523,7 @@ void movepincountry(int dx, int dy)
             }
           }
         }
-        if(gamestatusp(LOST, GameStatus) && (Precipitation < 1) &&
-           c_statusp(Player.x, Player.y, SEEN, Country))
+        if(gamestatusp(LOST, GameStatus) && (Precipitation < 1) && c_statusp(Player.x, Player.y, SEEN, Country))
         {
           queue_message("Ah! Now you know where you are!");
           resetgamestatus(LOST, GameStatus);

@@ -253,7 +253,7 @@ void i_symbol(pob o)
   else
   {
     queue_message("A mystic flow of theurgic energy courses through your body!");
-    SymbolUseDay = day();
+    SymbolUseDay  = day();
     SymbolUseHour = hour();
     cleanse(1);
     heal(10);
@@ -276,14 +276,14 @@ void i_crystal(pob o)
     }
     else if((o->blessing < 0) || (Player.iq + Player.level < random_range(30)))
     {
-      ViewDay = day();
+      ViewDay  = day();
       ViewHour = hour();
       queue_message("Weird interference patterns from the crystal fog your mind....");
       amnesia();
     }
     else
     {
-      ViewDay = day();
+      ViewDay  = day();
       ViewHour = hour();
       queue_message("You sense the presence of life...");
       mondet(1);
@@ -375,14 +375,14 @@ void i_enchantment(pob o)
   }
   else if(!o->known)
   {
-    ZapDay = day();
+    ZapDay  = day();
     ZapHour = hour();
     queue_message("You blast the staff backwards....");
     dispel(-1);
   }
   else
   {
-    ZapDay = day();
+    ZapDay  = day();
     ZapHour = hour();
     queue_message("Zap with white or black end [wb] ");
     do
@@ -409,14 +409,14 @@ void i_helm(pob o)
   }
   else if(!o->known)
   {
-    HelmDay = day();
+    HelmDay  = day();
     HelmHour = hour();
     queue_message("You put the helm on backwards....");
     p_teleport(-1);
   }
   else
   {
-    HelmDay = day();
+    HelmDay  = day();
     HelmHour = hour();
     queue_message("Your environment fades.... and rematerializes.");
     p_teleport(o->blessing);
@@ -599,8 +599,7 @@ void i_orbmastery(pob o)
       o->known = 1;
     }
   }
-  else if((find_and_remove_item(ARTIFACTID + 1, -1)) && (find_and_remove_item(ARTIFACTID + 2, -1)) &&
-          (find_and_remove_item(ARTIFACTID + 3, -1)) && (find_and_remove_item(ARTIFACTID + 4, -1)))
+  else if((find_and_remove_item(ARTIFACTID + 1, -1)) && (find_and_remove_item(ARTIFACTID + 2, -1)) && (find_and_remove_item(ARTIFACTID + 3, -1)) && (find_and_remove_item(ARTIFACTID + 4, -1)))
   {
     queue_message("The Orb of Mastery radiates rainbow colors!");
     queue_message("You feel godlike.");

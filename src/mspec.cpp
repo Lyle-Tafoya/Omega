@@ -529,8 +529,8 @@ void m_sp_were(monster *m)
     m->meleef       = Monsters[mid].meleef;
     m->strikef      = Monsters[mid].strikef;
     m->specialf     = Monsters[mid].specialf;
-    m->monstring = std::format("were-{}", Monsters[mid].monstring);
-    m->corpsestr = std::format("dead were-{}", Monsters[mid].monstring);
+    m->monstring    = std::format("were-{}", Monsters[mid].monstring);
+    m->corpsestr    = std::format("dead were-{}", Monsters[mid].monstring);
     m->immunity += pow2(NORMAL_DAMAGE);
     if(los_p(m->x, m->y, Player.x, Player.y))
     {

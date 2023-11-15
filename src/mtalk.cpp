@@ -373,7 +373,9 @@ void m_talk_im(monster *m)
   {
     m->possessions->thing->known = 2;
     long price                   = std::max(10l, 4 * true_item_value(m->possessions->thing));
-    queue_message(std::format("I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions->thing), price));
+    queue_message(std::format(
+      "I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions->thing), price
+    ));
     if(ynq() == 'y')
     {
       if(Player.cash < price)

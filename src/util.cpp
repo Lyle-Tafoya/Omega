@@ -63,6 +63,7 @@ int screenmod(int y)
 {
   return (y - ScreenOffset);
 }
+
 int screenmod_horizontal(int x)
 {
   return x - HorizontalOffset;
@@ -163,8 +164,10 @@ int m_unblocked(monster *m, int x, int y)
   }
   else if(Level->site[x][y].locchar == WATER)
   {
-    return (m_statusp(*m, SWIMMING) || m_statusp(*m, ONLYSWIM) || m_statusp(*m, INTANGIBLE) ||
-            m_statusp(*m, FLYING));
+    return (
+      m_statusp(*m, SWIMMING) || m_statusp(*m, ONLYSWIM) || m_statusp(*m, INTANGIBLE) ||
+      m_statusp(*m, FLYING)
+    );
   }
   else if(Level->site[x][y].locchar == CLOSED_DOOR)
   {
@@ -189,8 +192,10 @@ int m_unblocked(monster *m, int x, int y)
   }
   else if(Level->site[x][y].locchar == LAVA)
   {
-    return ((m_immunityp(*m, FLAME) && m_statusp(*m, SWIMMING)) || m_statusp(*m, INTANGIBLE) ||
-            m_statusp(*m, FLYING));
+    return (
+      (m_immunityp(*m, FLAME) && m_statusp(*m, SWIMMING)) || m_statusp(*m, INTANGIBLE) ||
+      m_statusp(*m, FLYING)
+    );
   }
   else if(Level->site[x][y].locchar == FIRE)
   {
@@ -574,7 +579,7 @@ int view_los_p(int x1, int y1, int x2, int y2)
 
 long calc_points()
 {
-  int  i;
+  int i;
   long points = 0;
 
   if(gamestatusp(SPOKE_TO_DRUID, GameStatus))
@@ -693,9 +698,7 @@ int nighttime()
 
 const std::string getarticle(const std::string &str)
 {
-  if((str[0] == 'a') || (str[0] == 'A') || (str[0] == 'e') || (str[0] == 'E') || (str[0] == 'i') ||
-     (str[0] == 'I') || (str[0] == 'o') || (str[0] == 'O') || (str[0] == 'u') || (str[0] == 'U') ||
-     (((str[0] == 'h') || (str[0] == 'H')) && ((str[1] == 'i') || (str[1] == 'e'))))
+  if((str[0] == 'a') || (str[0] == 'A') || (str[0] == 'e') || (str[0] == 'E') || (str[0] == 'i') || (str[0] == 'I') || (str[0] == 'o') || (str[0] == 'O') || (str[0] == 'u') || (str[0] == 'U') || (((str[0] == 'h') || (str[0] == 'H')) && ((str[1] == 'i') || (str[1] == 'e'))))
   {
     return "an ";
   }
@@ -773,8 +776,10 @@ const std::string month()
 sets x,y there. There must *be* floor space somewhere on level.... */
 int spaceok(int i, int j, int baux)
 {
-  return (Level->site[i][j].locchar == FLOOR && !Level->site[i][j].creature &&
-          !loc_statusp(i, j, SECRET, *Level) && Level->site[i][j].buildaux != baux);
+  return (
+    Level->site[i][j].locchar == FLOOR && !Level->site[i][j].creature &&
+    !loc_statusp(i, j, SECRET, *Level) && Level->site[i][j].buildaux != baux
+  );
 }
 
 void findspace(int *x, int *y, int baux)
@@ -863,8 +868,8 @@ int confirmation()
 /* is character c a member of string s */
 int strmem(char c, const std::string &s)
 {
-  int    found = false;
-  size_t i     = 0;
+  int found = false;
+  size_t i  = 0;
   for(i = 0; ((i < s.length()) && (!found)); i++)
   {
     found = (s[i] == c);
@@ -883,8 +888,7 @@ void calc_weight()
       weight += Player.possessions[i]->weight * Player.possessions[i]->number;
     }
   }
-  if(Player.possessions[O_WEAPON_HAND] &&
-     Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
+  if(Player.possessions[O_WEAPON_HAND] && Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
   {
     weight -= Player.possessions[O_READY_HAND]->weight * Player.possessions[O_READY_HAND]->number;
   }
@@ -908,8 +912,10 @@ int ok_to_free(plv level)
   }
   else
   {
-    return ((level->environment != E_CITY) && (level->environment != E_VILLAGE) &&
-            (level->environment != Current_Dungeon));
+    return (
+      (level->environment != E_CITY) && (level->environment != E_VILLAGE) &&
+      (level->environment != Current_Dungeon)
+    );
   }
 }
 
@@ -919,7 +925,7 @@ void free_objlist(pol pobjlist)
 
   while(pobjlist)
   {
-    delete (tmp = pobjlist)->thing;
+    delete(tmp = pobjlist)->thing;
     pobjlist = pobjlist->next;
     delete tmp;
   }

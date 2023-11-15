@@ -26,15 +26,15 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
 /* loads the arena level into Level*/
 void load_arena()
 {
-  int   i, j;
-  char  site;
-  pob   box = new object;
+  int i, j;
+  char site;
+  pob box = new object;
   FILE *fd;
 
   *box = Objects[THINGID + 0];
@@ -55,8 +55,8 @@ void load_arena()
 #endif
   clear_level(Level);
   Level->environment = E_ARENA;
-  fd   = checkfopen(std::format("{}arena.dat", Omegalib), "rb");
-  site = cryptkey("arena.dat");
+  fd                 = checkfopen(std::format("{}arena.dat", Omegalib), "rb");
+  site               = cryptkey("arena.dat");
   for(j = 0; j < LENGTH; j++)
   {
     for(i = 0; i < WIDTH; i++)
@@ -132,9 +132,9 @@ void make_prime(int i, int j)
 /* loads the sorcereror's circle into Level*/
 void load_circle(int populate)
 {
-  int   i, j;
-  int   safe = (Player.rank[CIRCLE] > 0);
-  char  site;
+  int i, j;
+  int safe = (Player.rank[CIRCLE] > 0);
+  char site;
   FILE *fd;
 
   TempLevel = Level;
@@ -153,8 +153,8 @@ void load_circle(int populate)
 #endif
   clear_level(Level);
   Level->environment = E_CIRCLE;
-  fd   = checkfopen(std::format("{}circle.dat",Omegalib), "rb");
-  site = cryptkey("circle.dat");
+  fd                 = checkfopen(std::format("{}circle.dat", Omegalib), "rb");
+  site               = cryptkey("circle.dat");
   for(j = 0; j < LENGTH; j++)
   {
     for(i = 0; i < WIDTH; i++)
@@ -288,8 +288,8 @@ void make_archmage(int i, int j)
 /* loads the court of the archmage into Level*/
 void load_court(int populate)
 {
-  int   i, j;
-  char  site;
+  int i, j;
+  char site;
   FILE *fd;
 
   TempLevel = Level;
@@ -308,8 +308,8 @@ void load_court(int populate)
 #endif
   clear_level(Level);
   Level->environment = E_COURT;
-  fd   = checkfopen(std::format("{}court.dat", Omegalib), "rb");
-  site = cryptkey("court.dat");
+  fd                 = checkfopen(std::format("{}court.dat", Omegalib), "rb");
+  site               = cryptkey("court.dat");
   for(j = 0; j < LENGTH; j++)
   {
     for(i = 0; i < WIDTH; i++)

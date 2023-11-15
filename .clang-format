@@ -1,10 +1,10 @@
 Language: Cpp
 Standard: c++20
-AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Right
+AlignAfterOpenBracket: BlockIndent
+AlignArrayOfStructures: Left
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: Consecutive
-AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveDeclarations: None
 AlignConsecutiveMacros: AcrossEmptyLinesAndComments
 AlignEscapedNewlines: Left
 AlignOperands: Align
@@ -54,16 +54,16 @@ LambdaBodyIndentation: Signature
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: Inner
 PPIndentWidth: -1
-#PackConstructorInitializers: CurrentLine
+PackConstructorInitializers: BinPack
 PointerAlignment: Right
-#QualifierAlignment: Custom
-#QualifierOrder: ['static', 'constexpr', 'inline', 'volatile', 'const', 'type']
+QualifierAlignment: Custom
+QualifierOrder: ['static', 'constexpr', 'inline', 'volatile', 'const', 'type']
 ReferenceAlignment: Right
 ReflowComments: false
-#RemoveBracesLLVM: false
-#SeparateDefinitionBlocks: Always
+RemoveBracesLLVM: false
+SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 0
-#SortIncludesOptions: CaseSensitive
+SortIncludes: CaseSensitive
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false

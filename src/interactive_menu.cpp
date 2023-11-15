@@ -15,14 +15,15 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "interactive_menu.hpp"
+
 #include "defs.h"
 #include "scr.h"
-#include "interactive_menu.hpp"
 
 extern bool IsMenu;
 
-interactive_menu::interactive_menu(WINDOW *menu_window, uint16_t width, uint16_t height)
-    : menu_window(menu_window), width(width), height(height) {};
+interactive_menu::interactive_menu(WINDOW *menu_window, uint16_t width, uint16_t height) :
+    menu_window(menu_window), width(width), height(height){};
 
 void interactive_menu::load(const std::vector<std::string> &lines)
 {
@@ -31,20 +32,24 @@ void interactive_menu::load(const std::vector<std::string> &lines)
   position = 0;
 }
 
-void interactive_menu::load(const std::vector<std::string> &lines, const std::vector<std::string> &header)
+void interactive_menu::load(
+  const std::vector<std::string> &lines, const std::vector<std::string> &header
+)
 {
-  this->lines = lines;
+  this->lines  = lines;
   this->header = header;
-  position = 0;
+  position     = 0;
 }
 
 void interactive_menu::resize(uint16_t width, uint16_t height)
 {
   wresize(menu_window, height, width);
-  this->width = width;
-  this->height = height;
-  uint16_t body_size = height-static_cast<uint16_t>(header.size());
-  uint16_t max_increment = static_cast<uint16_t>(lines.size()) > body_size ? static_cast<uint16_t>(lines.size())-body_size : 0;
+  this->width            = width;
+  this->height           = height;
+  uint16_t body_size     = height - static_cast<uint16_t>(header.size());
+  uint16_t max_increment = static_cast<uint16_t>(lines.size()) > body_size
+                             ? static_cast<uint16_t>(lines.size()) - body_size
+                             : 0;
   if(position > max_increment)
   {
     position = max_increment;
@@ -70,13 +75,15 @@ void interactive_menu::print()
   }
   for(uint16_t i = 0; i + position < lines.size() && i + header.size() < height; ++i)
   {
-    if(static_cast<uint16_t>(header.size()) + i == height-1 && i + position + 1u < lines.size())
+    if(static_cast<uint16_t>(header.size()) + i == height - 1 && i + position + 1u < lines.size())
     {
-      color_mvwaddstr(menu_window, i+static_cast<uint16_t>(header.size()), 0, "** MORE **");
+      color_mvwaddstr(menu_window, i + static_cast<uint16_t>(header.size()), 0, "** MORE **");
     }
     else
     {
-      color_mvwaddstr(menu_window, i+static_cast<uint16_t>(header.size()), 0, lines[i + position].c_str());
+      color_mvwaddstr(
+        menu_window, i + static_cast<uint16_t>(header.size()), 0, lines[i + position].c_str()
+      );
     }
   }
   wnoutrefresh(menu_window);
@@ -95,14 +102,16 @@ int interactive_menu::get_player_input()
     }
     else if(player_input == KEY_DOWN)
     {
-      uint16_t body_size = static_cast<uint16_t>(height-header.size());
-      uint16_t max_increment = lines.size() > body_size ? static_cast<uint16_t>(lines.size())-body_size : 0;
+      uint16_t body_size = static_cast<uint16_t>(height - header.size());
+      uint16_t max_increment =
+        lines.size() > body_size ? static_cast<uint16_t>(lines.size()) - body_size : 0;
       position = position + 1 >= max_increment ? max_increment : position + 1;
     }
     else if(player_input == ' ')
     {
-      uint16_t body_size = height-static_cast<uint16_t>(header.size());
-      uint16_t max_increment = lines.size() > body_size ? static_cast<uint16_t>(lines.size())-body_size : 0;
+      uint16_t body_size = height - static_cast<uint16_t>(header.size());
+      uint16_t max_increment =
+        lines.size() > body_size ? static_cast<uint16_t>(lines.size()) - body_size : 0;
       position = position + body_size >= max_increment ? max_increment : position + body_size;
     }
     else
@@ -112,4 +121,3 @@ int interactive_menu::get_player_input()
     }
   }
 }
-

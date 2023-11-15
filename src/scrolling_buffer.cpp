@@ -34,8 +34,7 @@ void scrolling_buffer::receive(const std::string &message, bool force_break)
 void scrolling_buffer::append(const std::string &message, bool pad, bool force_break)
 {
   process_queue();
-  if(!message_history.empty() && !force_break &&
-     message_history.back().size() + message.size() + pad < width)
+  if(!message_history.empty() && !force_break && message_history.back().size() + message.size() + pad < width)
   {
     std::string &previous_line = message_history.back();
     previous_line += (pad ? " " : "") + message;
@@ -64,11 +63,11 @@ void scrolling_buffer::pop_back()
 void scrolling_buffer::process_queue()
 {
   std::string message;
-  std::string buffer_row      = "_";
-  uint16_t    duplicate_count = 1;
+  std::string buffer_row   = "_";
+  uint16_t duplicate_count = 1;
   while(!message_queue.empty())
   {
-    message = message_queue.front().message;
+    message          = message_queue.front().message;
     bool force_break = message_queue.front().force_break;
     message_queue.pop();
     while(!message_queue.empty() && message_queue.front().message == message)

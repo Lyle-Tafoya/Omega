@@ -241,7 +241,7 @@ void save_country(std::ofstream &save_file)
 
   // since we don't mark the 'seen' bits as CHANGED, need to save a bitmask
   unsigned long int mask = 0;
-  int run = 8 * sizeof(mask);
+  int run                = 8 * sizeof(mask);
   for(x = 0; x < MAXWIDTH; x++)
   {
     for(y = 0; y < MAXLENGTH; y++)
@@ -329,7 +329,9 @@ void save_level(std::ofstream &save_file, plv level)
       {
         // find how many in a row
         int run;
-        for(run = x + 1; run < MAXWIDTH && level->site[run][y].lstatus & CHANGED; ++run) {}
+        for(run = x + 1; run < MAXWIDTH && level->site[run][y].lstatus & CHANGED; ++run)
+        {
+        }
         file_write(save_file, x);
         file_write(save_file, y);
         file_write(save_file, run);
@@ -344,7 +346,7 @@ void save_level(std::ofstream &save_file, plv level)
   file_write(save_file, y);
   // since we don't mark the 'seen' bits as CHANGED, need to save a bitmask
   unsigned long int mask = 0;
-  int run  = 8 * sizeof(mask);
+  int run                = 8 * sizeof(mask);
   for(y = 0; y < MAXLENGTH; ++y)
   {
     for(x = 0; x < MAXWIDTH; ++x)
@@ -396,9 +398,8 @@ bool save_game(const std::string &save_file_name)
   bool writeok = true;
   if(std::filesystem::exists(save_file_name))
   {
-    queue_message( "Save file already exists. Overwrite it? [yn] ");
+    queue_message("Save file already exists. Overwrite it? [yn] ");
     writeok = (ynq() == 'y');
-
   }
   std::ofstream save_file{save_file_name, std::ios::binary};
   if(!save_file)
@@ -442,7 +443,9 @@ bool save_game(const std::string &save_file_name)
   }
   int i;
   level *current;
-  for(i = 0, current = save; current; current = current->next, i++) {}
+  for(i = 0, current = save; current; current = current->next, i++)
+  {
+  }
   file_write(save_file, i);
 
 #ifdef SAVE_LEVELS
@@ -489,9 +492,9 @@ object *restore_item(std::ifstream &save_file)
     item->cursestr.~basic_string();
 
     file_read(save_file, *item);
-    new (&item->objstr) std::string;
-    new (&item->truename) std::string;
-    new (&item->cursestr) std::string;
+    new(&item->objstr) std::string;
+    new(&item->truename) std::string;
+    new(&item->cursestr) std::string;
     size_t size;
     if(type & (1 << 0))
     {
@@ -540,7 +543,7 @@ objectlist *restore_itemlist(std::ifstream &save_file)
     new_pol->next  = nullptr;
     if(first_time)
     {
-      ol = cur  = new_pol;
+      ol = cur   = new_pol;
       first_time = false;
     }
     else
@@ -557,8 +560,8 @@ void restore_player(std::ifstream &save_file, player &p)
   p.name.~basic_string();
   p.meleestr.~basic_string();
   file_read(save_file, p);
-  new (&p.name) std::string;
-  new (&p.meleestr) std::string;
+  new(&p.name) std::string;
+  new(&p.meleestr) std::string;
 
   size_t size;
   file_read(save_file, size);
@@ -696,7 +699,7 @@ void restore_player(std::ifstream &save_file, player &p)
 
 void restore_hiscore_npc(monster *npc, int npcid)
 {
-  int  level, behavior;
+  int level, behavior;
   long status;
 
   std::string npc_name;
@@ -780,24 +783,24 @@ void restore_hiscore_npc(monster *npc, int npcid)
 
 void restore_monsters(std::ifstream &save_file, level *lvl)
 {
-  monsterlist  *ml = nullptr;
-  lvl->mlist = nullptr;
+  monsterlist *ml = nullptr;
+  lvl->mlist      = nullptr;
 
   int num_monsters;
   file_read(save_file, num_monsters);
 
   for(int i = 0; i < num_monsters; ++i)
   {
-    ml       = new monsterlist;
-    ml->m    = new monster;
+    ml    = new monsterlist;
+    ml->m = new monster;
     ml->m->monstring.~basic_string();
     ml->m->corpsestr.~basic_string();
     ml->m->meleestr.~basic_string();
     ml->next = nullptr;
     file_read(save_file, *ml->m);
-    new (&ml->m->monstring) std::string;
-    new (&ml->m->corpsestr) std::string;
-    new (&ml->m->meleestr) std::string;
+    new(&ml->m->monstring) std::string;
+    new(&ml->m->corpsestr) std::string;
+    new(&ml->m->meleestr) std::string;
     if(ml->m->id == HISCORE_NPC)
     {
       restore_hiscore_npc(ml->m, ml->m->aux2);
@@ -830,7 +833,7 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
       }
       ml->m->meleestr = Monsters[ml->m->id].meleestr;
     }
-    ml->m->possessions = restore_itemlist(save_file);
+    ml->m->possessions                     = restore_itemlist(save_file);
     lvl->site[ml->m->x][ml->m->y].creature = ml->m;
     ml->next                               = lvl->mlist;
     lvl->mlist                             = ml;
@@ -988,7 +991,6 @@ void restore_level(std::ifstream &save_file)
 
 void restore_country(std::ifstream &save_file)
 {
-
   load_country();
   int x, y;
   file_read(save_file, x);
@@ -1061,7 +1063,6 @@ bool restore_game(const std::string &save_file_name)
     file_read(save_file, i);
     for(; i > 0; --i)
     {
-
 #ifdef SAVE_LEVELS
       msdos_changelevel(Level, 0, -1);
 #endif

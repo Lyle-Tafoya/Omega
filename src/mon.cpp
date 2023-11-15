@@ -23,10 +23,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scr.h"
 
 #include <algorithm>
-#include <string>
 #include <format>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 extern bool merge_item_with_list(objectlist *l, object *o, int n);
 extern std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode);
@@ -317,6 +317,7 @@ void monster_action(monster *m, int action)
     }
   }
 }
+
 void monster_move(monster *m)
 {
   monster_action(m, m->movef);
@@ -399,8 +400,7 @@ void m_pulse(monster *m)
         }
       }
 
-      if((m_statusp(*m, HOSTILE) || m_statusp(*m, NEEDY)) && (range > 1) && m_statusp(*m, MOBILE) &&
-         (!STRIKE || (random_range(2) == 1)))
+      if((m_statusp(*m, HOSTILE) || m_statusp(*m, NEEDY)) && (range > 1) && m_statusp(*m, MOBILE) && (!STRIKE || (random_range(2) == 1)))
       {
         monster_move(m);
       }
@@ -609,41 +609,41 @@ void m_death(monster *m)
           case 5:
           case 6:
             queue_message("You hear a faroff sound like angels crying....");
-            Priest[m->aux2] = nameprint();
+            Priest[m->aux2]         = nameprint();
             Priestbehavior[m->aux2] = 2933;
             break;
           case 7:
             queue_message("A furtive figure dashes out of the shadows, takes a look at");
             queue_message("the corpse, and runs away!");
-            Shadowlord = nameprint();
+            Shadowlord         = nameprint();
             Shadowlordbehavior = 2912;
             break;
           case 8:
             queue_message("An aide-de-camp approaches, removes the corpse's insignia,");
             queue_message("and departs.");
-            Commandant = nameprint();
+            Commandant         = nameprint();
             Commandantbehavior = 2912;
             break;
           case 9:
             queue_message("An odd glow surrounds the corpse, and slowly fades.");
-            Archmage = nameprint();
+            Archmage         = nameprint();
             Archmagebehavior = 2933;
             break;
           case 10:
             queue_message("A demon materializes, takes a quick look at the corpse,");
             queue_message("and teleports away with a faint popping noise.");
-            Prime = nameprint();
+            Prime         = nameprint();
             Primebehavior = 2932;
             break;
           case 11:
             queue_message("A sports columnist rushes forward and takes a quick photo");
             queue_message("of the corpse and rushes off muttering about a deadline.");
-            Champion = nameprint();
+            Champion         = nameprint();
             Championbehavior = 2913;
             break;
           case 12:
             queue_message("You hear a fanfare in the distance, and feel dismayed.");
-            Duke = nameprint();
+            Duke         = nameprint();
             Dukebehavior = 2911;
             break;
           case 13:
@@ -655,7 +655,7 @@ void m_death(monster *m)
             {
               queue_message("You feel ashamed.");
             }
-            Chaoslord = nameprint();
+            Chaoslord         = nameprint();
             Chaoslordbehavior = 2912;
             break;
           case 14:
@@ -667,7 +667,7 @@ void m_death(monster *m)
             {
               queue_message("You feel ashamed.");
             }
-            Lawlord = nameprint();
+            Lawlord         = nameprint();
             Lawlordbehavior = 2911;
             break;
           case 15:
@@ -682,7 +682,7 @@ void m_death(monster *m)
                 prev = curr;
                 curr = curr->next;
               }
-              Justiciar = nameprint();
+              Justiciar         = nameprint();
               Justiciarbehavior = 2911;
               queue_message("In the distance you hear a trumpet. A Servant of Law");
               /* promote one of the city guards to be justiciar */
@@ -700,7 +700,7 @@ void m_death(monster *m)
                 if(curr)
                 {
                   queue_message("materializes, sheds a tear, picks up the badge, and "
-                         "leaves.");
+                                "leaves.");
                   m_pickup(ml->m, curr->thing);
                   if(prev)
                   {
@@ -741,7 +741,7 @@ void m_death(monster *m)
             break;
           case 16:
             queue_message("The universal equilibrium slides down a notch.");
-            Grandmaster = nameprint();
+            Grandmaster         = nameprint();
             Grandmasterbehavior = 2933;
             break;
         }
@@ -811,7 +811,6 @@ void monster_talk(monster *m)
 {
   monster_action(m, m->talkf);
 }
-
 
 /* makes one of the highscore npcs */
 void make_hiscore_npc(pmt npc, int npcid)
@@ -1036,22 +1035,22 @@ void make_log_npc(monster *npc)
   {
     if(level < 3)
     {
-      *npc = Monsters[GHOST];
+      *npc       = Monsters[GHOST];
       npc_prefix = "ghost named ";
     }
     else if(level < 7)
     {
-      *npc = Monsters[HAUNT];
+      *npc       = Monsters[HAUNT];
       npc_prefix = "haunt named ";
     }
     else if(level < 12)
     {
-      *npc = Monsters[SPECTRE];
+      *npc       = Monsters[SPECTRE];
       npc_prefix = "spectre named ";
     }
     else
     {
-      *npc = Monsters[LICHE];
+      *npc       = Monsters[LICHE];
       npc_prefix = "lich named ";
     }
     npc->monstring = std::format("{}{}", npc_prefix, npc_name);

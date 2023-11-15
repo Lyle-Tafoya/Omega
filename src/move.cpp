@@ -280,9 +280,9 @@ void l_abyss()
 void l_lift()
 {
   char response;
-  int  levelnum;
-  int  distance;
-  int  too_far = 0;
+  int levelnum;
+  int distance;
+  int too_far = 0;
 
   Level->site[Player.x][Player.y].locchar = FLOOR;
   Level->site[Player.x][Player.y].p_locf  = L_NO_OP;
@@ -337,8 +337,9 @@ void l_lift()
     {
       queue_message("You rematerialize.....");
     }
-    change_level(Level->depth, (response == 'd' ? Level->depth + levelnum : Level->depth - levelnum),
-                 false);
+    change_level(
+      Level->depth, (response == 'd' ? Level->depth + levelnum : Level->depth - levelnum), false
+    );
     roomcheck();
   }
 }

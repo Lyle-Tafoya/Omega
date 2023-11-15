@@ -20,16 +20,17 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* functions with file access in them. Also some direct calls to
    curses functions */
 
-#include "glob.h"
 #include "file.h"
+
+#include "glob.h"
 #include "scr.h"
 
 #include <array>
 #include <chrono>
-#include <iostream>
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <thread>
 
@@ -87,7 +88,7 @@ bool read_omegarc()
   Player.con = Player.maxcon;
   Player.dex = Player.maxdex;
   Player.agi = Player.maxagi;
-  Player.iq = Player.maxiq;
+  Player.iq  = Player.maxiq;
   Player.pow = Player.maxpow;
   omegarc_file.close();
   if(omegarc_file.fail())
@@ -130,7 +131,7 @@ std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode
 
 FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
 {
-  char  response;
+  char response;
 
   FILE *fd = fopen(filestring.c_str(), optionstring.c_str());
   while(!fd)
@@ -173,8 +174,8 @@ void commandlist()
 void displaycryptfile(const std::string &filestr)
 {
   FILE *fd = checkfopen(filestr, "rb");
-  int   c, d = ' ';
-  char  key = 100;
+  int c, d = ' ';
+  char key = 100;
 
   clear();
   refresh();
@@ -262,7 +263,7 @@ void showmotd()
 void lock_score_file()
 {
 #ifdef MULTI_USER_SYSTEM
-  int   attempts = 0;
+  int attempts = 0;
   int64_t timestamp, last_timestamp = -1;
 
   std::string filepath = std::format("{}omega.hi.lock", Omegalib);
@@ -270,7 +271,8 @@ void lock_score_file()
   do
   {
     std::chrono::system_clock::time_point current_time = std::chrono::system_clock::now();
-    std::chrono::milliseconds milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(current_time.time_since_epoch());
+    std::chrono::milliseconds milliseconds =
+      std::chrono::duration_cast<std::chrono::milliseconds>(current_time.time_since_epoch());
     auto milliseconds_count = milliseconds.count();
     lock = std::fstream{filepath, std::ios::out | std::ios::noreplace} << milliseconds_count;
     if(!lock.is_open())
@@ -312,7 +314,7 @@ void read_scores()
   lock_score_file();
 
   std::string high_scores_file_path = std::format("{}omega.hi", Omegalib);
-  std::fstream high_score_file = check_fstream_open(high_scores_file_path, std::ios::in);
+  std::fstream high_score_file      = check_fstream_open(high_scores_file_path, std::ios::in);
 
   std::getline(high_score_file, Hiscorer);
   std::getline(high_score_file, Hidescrip);
@@ -357,10 +359,10 @@ void save_hiscore_npc(int npc)
     return;
   }
   lock_score_file();
-  std::string infile_name = std::format("{}omega.hi", Omegalib);
-  std::fstream infile = check_fstream_open(infile_name, std::ios::in);
+  std::string infile_name  = std::format("{}omega.hi", Omegalib);
+  std::fstream infile      = check_fstream_open(infile_name, std::ios::in);
   std::string outfile_name = std::format("{}omega.hi.new", Omegalib);
-  std::fstream outfile = check_fstream_open(outfile_name, std::ios::out);
+  std::fstream outfile     = check_fstream_open(outfile_name, std::ios::out);
   for(int i = 0; i < 16; ++i)
   {
     if(npc == i)
@@ -368,7 +370,9 @@ void save_hiscore_npc(int npc)
       switch(i)
       {
         case 0:
-          outfile << std::format("{}\n{}\n{} {} {}\n", Hiscorer, Hidescrip, Hiscore, Hilevel, Hibehavior);
+          outfile << std::format(
+            "{}\n{}\n{} {} {}\n", Hiscorer, Hidescrip, Hiscore, Hilevel, Hibehavior
+          );
           break;
         case 1:
         case 2:
@@ -452,8 +456,8 @@ void checkhigh(const std::string &descrip, int behavior)
   {
     if(Hiscore < points)
     {
-      Hiscorer = Player.name;
-      Hidescrip = descrip;
+      Hiscorer   = Player.name;
+      Hidescrip  = descrip;
       Hiscore    = points;
       Hilevel    = Player.level;
       Hibehavior = behavior;
@@ -462,7 +466,7 @@ void checkhigh(const std::string &descrip, int behavior)
     }
     if(Player.alignment < Chaos)
     {
-      Chaoslord = Player.name;
+      Chaoslord         = Player.name;
       Chaoslordlevel    = Player.level;
       Chaos             = Player.alignment;
       Chaoslordbehavior = behavior;
@@ -471,7 +475,7 @@ void checkhigh(const std::string &descrip, int behavior)
     }
     if(Player.alignment > Law)
     {
-      Lawlord = Player.name;
+      Lawlord         = Player.name;
       Lawlordlevel    = Player.level;
       Law             = Player.alignment;
       Lawlordbehavior = behavior;
@@ -496,7 +500,7 @@ void extendlog(const std::string &descrip, int lifestatus)
 bool test_file_access(const std::string &file_name, char mode)
 {
   std::fstream file;
-  auto         file_mode = (mode == 'r' ? std::ios::in : std::ios::in | std::ios::out);
+  auto file_mode = (mode == 'r' ? std::ios::in : std::ios::in | std::ios::out);
   file.open(file_name, file_mode);
   if(!file)
   {
@@ -506,57 +510,17 @@ bool test_file_access(const std::string &file_name, char mode)
   return true;
 }
 
-const std::array<std::string, 27> required_file_list
-{
-  "city.dat",
-  "country.dat",
-  "dlair.dat",
-  "misle.dat",
-  "court.dat",
-  "speak.dat",
-  "temple.dat",
-  "abyss.dat",
-  "village1.dat",
-  "village2.dat",
-  "village3.dat",
-  "village4.dat",
-  "village5.dat",
-  "village6.dat",
-  "home1.dat",
-  "home2.dat",
-  "home3.dat",
-  "arena.dat",
-  "maze1.dat",
-  "maze2.dat",
-  "maze3.dat",
-  "maze4.dat",
-  "omega.hi",
-  "omega.log",
-  "motd.txt",
-  "license.txt",
-  "circle.dat"
-};
+const std::array<std::string, 27> required_file_list{
+  "city.dat",     "country.dat",  "dlair.dat",    "misle.dat",    "court.dat",    "speak.dat",
+  "temple.dat",   "abyss.dat",    "village1.dat", "village2.dat", "village3.dat", "village4.dat",
+  "village5.dat", "village6.dat", "home1.dat",    "home2.dat",    "home3.dat",    "arena.dat",
+  "maze1.dat",    "maze2.dat",    "maze3.dat",    "maze4.dat",    "omega.hi",     "omega.log",
+  "motd.txt",     "license.txt",  "circle.dat"};
 
-const std::array<std::string, 18> optional_file_list
-{
-  "help1.txt",
-  "help2.txt",
-  "help4.txt",
-  "help5.txt",
-  "help6.txt",
-  "help7.txt",
-  "help8.txt",
-  "help9.txt",
-  "help10.txt",
-  "help11.txt",
-  "help12.txt",
-  "help13.txt",
-  "abyss.txt",
-  "scroll1.txt",
-  "scroll2.txt",
-  "scroll3.txt",
-  "scroll4.txt"
-};
+const std::array<std::string, 18> optional_file_list{
+  "help1.txt", "help2.txt",   "help4.txt",   "help5.txt",   "help6.txt",  "help7.txt",
+  "help8.txt", "help9.txt",   "help10.txt",  "help11.txt",  "help12.txt", "help13.txt",
+  "abyss.txt", "scroll1.txt", "scroll2.txt", "scroll3.txt", "scroll4.txt"};
 
 /* Checks existence of omega data files */
 /* Returns 1 if OK, 0 if impossible to run, -1 if possible but not OK */
@@ -631,7 +595,7 @@ int filecheck()
 void displayfile(const std::string &filestr)
 {
   FILE *fd = checkfopen(filestr, "r");
-  int   c, d = ' ';
+  int c, d = ' ';
   clear();
   refresh();
   c = fgetc(fd);

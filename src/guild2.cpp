@@ -35,9 +35,9 @@ extern void item_unequip(object *);
 
 void l_thieves_guild()
 {
-  int  fee, count, i, number, done = false, dues = 1000;
+  int fee, count, i, number, done = false, dues = 1000;
   char c, action;
-  pob  lockpick;
+  pob lockpick;
   queue_message("You have penetrated to the Lair of the Thieves' Guild.");
   if(!nighttime())
   {
@@ -45,20 +45,19 @@ void l_thieves_guild()
   }
   else
   {
-    if((Player.rank[THIEVES] == TMASTER) && (Player.level > Shadowlordlevel) &&
-       find_and_remove_item(THINGID + 16, -1))
+    if((Player.rank[THIEVES] == TMASTER) && (Player.level > Shadowlordlevel) && find_and_remove_item(THINGID + 16, -1))
     {
       queue_message("You nicked the Justiciar's Badge!");
       queue_message("The Badge is put in a place of honor in the Guild Hall.");
       queue_message("You are now the Shadowlord of the Thieves' Guild!");
       queue_message("Who says there's no honor among thieves?");
-      Shadowlord = Player.name;
+      Shadowlord         = Player.name;
       Shadowlordlevel    = Player.level;
       Shadowlordbehavior = fixnpc(4);
       save_hiscore_npc(7);
       queue_message("You learn the Spell of Shadowform.");
       spell::Spells[spell::SHADOWFORM].known = true;
-      Player.rank[THIEVES]       = SHADOWLORD;
+      Player.rank[THIEVES]                   = SHADOWLORD;
       Player.maxagi += 2;
       Player.maxdex += 2;
       Player.agi += 2;
@@ -114,12 +113,14 @@ void l_thieves_guild()
             }
             else
             {
-              queue_message(std::format("Shadowlord {} enters your name into the roll of the guild.", Shadowlord));
+              queue_message(
+                std::format("Shadowlord {} enters your name into the roll of the guild.", Shadowlord)
+              );
               queue_message("As a special bonus, you get a free lockpick.");
               queue_message("You are taught the spell of Object Detection.");
               spell::Spells[spell::OBJECT_DETECTION].known = true;
-              lockpick                = new object;
-              *lockpick               = Objects[THINGID + 2]; /* lock pick */
+              lockpick                                     = new object;
+              *lockpick                                    = Objects[THINGID + 2]; /* lock pick */
               gain_item(lockpick);
               Player.cash -= dues;
               dataprint();
@@ -168,7 +169,7 @@ void l_thieves_guild()
             queue_message("the badge of the Justiciar (cursed be his name).");
             queue_message("The Justiciar's office is just south of the gaol.");
             spell::Spells[spell::APPORTATION].known = true;
-            Player.rank[THIEVES]   = TMASTER;
+            Player.rank[THIEVES]                    = TMASTER;
             Player.maxagi++;
             Player.maxdex++;
             Player.agi++;
@@ -186,7 +187,7 @@ void l_thieves_guild()
             queue_message("You are now a ranking Thief of the Guild!");
             queue_message("You learn the Spell of Invisibility.");
             spell::Spells[spell::INVISIBILITY].known = true;
-            Player.rank[THIEVES]      = THIEF;
+            Player.rank[THIEVES]                     = THIEF;
             Player.agi++;
             Player.maxagi++;
           }
@@ -202,7 +203,7 @@ void l_thieves_guild()
             queue_message("You are now an Apprentice Thief!");
             queue_message("You are taught the Spell of Levitation.");
             spell::Spells[spell::LEVITATE].known = true;
-            Player.rank[THIEVES]     = ATHIEF;
+            Player.rank[THIEVES]                 = ATHIEF;
             Player.dex++;
             Player.maxdex++;
           }
@@ -326,7 +327,9 @@ void l_thieves_guild()
               if(Player.pack[i]->blessing > -1)
               {
                 long price = 2 * item_value(Player.pack[i]) / 3;
-                queue_message(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price));
+                queue_message(
+                  std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price)
+                );
                 if((c = ynq()) == 'y')
                 {
                   number = getnumber(Player.pack[i]->number);
@@ -363,7 +366,7 @@ void l_thieves_guild()
 void l_college()
 {
   char action;
-  int  done = false, enrolled = false;
+  int done = false, enrolled = false;
   queue_message("The Collegium Magii. Founded 16937, AOF.");
   if(nighttime())
   {
@@ -373,13 +376,12 @@ void l_college()
   {
     while(!done)
     {
-      if((Player.rank[COLLEGE] == MAGE) && (Player.level > Archmagelevel) &&
-         find_and_remove_item(CORPSEID, EATER))
+      if((Player.rank[COLLEGE] == MAGE) && (Player.level > Archmagelevel) && find_and_remove_item(CORPSEID, EATER))
       {
         queue_message("You brought back the heart of the Eater of Magic!");
         queue_message("The Heart is sent to the labs for analysis.");
         queue_message("The Board of Trustees appoints you Archmage!");
-        Archmage = Player.name;
+        Archmage             = Player.name;
         Archmagelevel        = Player.level;
         Player.rank[COLLEGE] = ARCHMAGE;
         Player.maxiq += 5;
@@ -517,7 +519,7 @@ void l_college()
             queue_message("Your position allows you to research 4 spells.");
             Spellsleft += 4;
             spell::Spells[spell::RITUAL_MAGIC].known = true;
-            Player.rank[COLLEGE]   = PRECEPTOR;
+            Player.rank[COLLEGE]                     = PRECEPTOR;
             Player.maxiq += 1;
             Player.iq += 1;
             Player.maxpow += 1;
@@ -537,7 +539,7 @@ void l_college()
             queue_message("Thesis research credit is 2 spells.");
             Spellsleft += 2;
             spell::Spells[spell::IDENTIFICATION].known = true;
-            Player.rank[COLLEGE]     = STUDENT;
+            Player.rank[COLLEGE]                       = STUDENT;
             Player.maxiq += 1;
             Player.iq += 1;
             Player.maxpow += 1;
@@ -591,7 +593,7 @@ void l_monastery()
   }
   else
   {
-    bool done=false;
+    bool done = false;
     while(!done)
     {
       menuclear();
@@ -635,15 +637,15 @@ void l_monastery()
           if(Player.pow > 17)
           {
             queue_message("Your spirit is strong. You may study the Path with us.");
-            enrolled=true;
+            enrolled = true;
           }
           else
           {
             queue_message("A substantial cash sacrifice will cleanse your spirit.. ");
             queue_message("Donate your worldly goods? [yn] ");
-            if(ynq() =='y')
+            if(ynq() == 'y')
             {
-              if (Player.cash < 1000)
+              if(Player.cash < 1000)
               {
                 // WDT HACK! I'd rather the monks have some other criteria for joining
                 queue_message("You have not much to give.");
@@ -651,7 +653,7 @@ void l_monastery()
               else
               {
                 Player.cash = 0;
-                enrolled = true;
+                enrolled    = true;
                 dataprint();
               }
             }
@@ -661,8 +663,8 @@ void l_monastery()
             queue_message(std::format("Grandmaster {} welcomes you to the Brotherhood.", Grandmaster));
             queue_message("You are now a Tholian Monk trainee!");
             queue_message("You may study the Way with us.");
-            Studiesleft = 1;
-            Player.rank[MONKS] = MONK_TRAINEE;
+            Studiesleft           = 1;
+            Player.rank[MONKS]    = MONK_TRAINEE;
             Player.guildxp[MONKS] = 1;
             Player.maxpow += 1;
             Player.pow += 1;
@@ -675,27 +677,27 @@ void l_monastery()
         {
           queue_message("You are not yet initiated, child.");
         }
-        else if(Player.rank[MONKS]==MONK_GRANDMASTER)
+        else if(Player.rank[MONKS] == MONK_GRANDMASTER)
         {
           queue_message("Your advancement lies within, Grandmaster.");
         }
-        else if(Player.rank[MONKS]==MONK_MASTER_TEARS)
+        else if(Player.rank[MONKS] == MONK_MASTER_TEARS)
         {
           if(Player.level <= Grandmasterlevel)
           {
             queue_message("Seek more experience, Master.");
           }
-          else if(Player.rank[MONKS]==MONK_MASTER_TEARS && Player.level > Grandmasterlevel && find_and_remove_item(CORPSEID,EATER))
+          else if(Player.rank[MONKS] == MONK_MASTER_TEARS && Player.level > Grandmasterlevel && find_and_remove_item(CORPSEID, EATER))
           {
             queue_message("You brought back the heart of the Eater of Magic!");
             queue_message("The Heart is sent to the placed in the kitchen cauldron.");
             queue_message("The Grandmaster steps down. You are the new Grandmaster.");
-            Grandmaster = Player.name;
-            Grandmasterlevel = Player.level;
+            Grandmaster        = Player.name;
+            Grandmasterlevel   = Player.level;
             Player.rank[MONKS] = MONK_GRANDMASTER;
             Player.maxhp += (Player.maxpow * 3);
             Player.maxiq += 5;
-            Player.iq+= 5;
+            Player.iq += 5;
             Player.maxpow += 3;
             Player.pow += 3;
             Player.maxstr += 3;
@@ -707,9 +709,8 @@ void l_monastery()
           {
             queue_message("You must return with the heart of the Eater of Magic!");
           }
-
         }
-        else if(Player.rank[MONKS]==MONK_MASTER_PAINS)
+        else if(Player.rank[MONKS] == MONK_MASTER_PAINS)
         {
           if(Player.guildxp[MONKS] < 40000)
           {
@@ -724,7 +725,7 @@ void l_monastery()
             queue_message("heart of the Eater of Magic");
             queue_message("The Eater may be found on a desert isle somewhere.");
             spell::Spells[spell::REGENERATE].known = true;
-            Player.rank[MONKS] = MONK_MASTER_TEARS;
+            Player.rank[MONKS]                     = MONK_MASTER_TEARS;
             Player.maxhp += (Player.maxpow * 2);
             Player.maxpow += 2;
             Player.pow += 2;
@@ -734,7 +735,7 @@ void l_monastery()
             Player.agi += 2;
           }
         }
-        else if(Player.rank[MONKS]==MONK_MASTER_SIGHS)
+        else if(Player.rank[MONKS] == MONK_MASTER_SIGHS)
         {
           if(Player.guildxp[MONKS] < 15000)
           {
@@ -745,11 +746,11 @@ void l_monastery()
             queue_message("The Path is long, Master.");
             queue_message("You are now Master of Pain.");
             queue_message("You feel enlightened.");
-            Studiesleft +=4;
+            Studiesleft += 4;
             spell::Spells[spell::RITUAL_MAGIC].known = true;
-            spell::Spells[spell::RESTORATION].known = true;
-            Player.status[ILLUMINATION] = 1500;  // enlightened
-            Player.rank[MONKS] = MONK_MASTER_PAINS;
+            spell::Spells[spell::RESTORATION].known  = true;
+            Player.status[ILLUMINATION]              = 1500; // enlightened
+            Player.rank[MONKS]                       = MONK_MASTER_PAINS;
             Player.maxhp += Player.maxpow;
             Player.maxcon += 1;
             Player.con += 1;
@@ -757,18 +758,19 @@ void l_monastery()
             Player.dex += 2;
           }
         }
-        else if (Player.rank[MONKS]==MONK_MASTER)
+        else if(Player.rank[MONKS] == MONK_MASTER)
         {
           if(Player.guildxp[MONKS] < 9000)
           {
             queue_message("Seek more experience, Master.");
           }
-          else {
+          else
+          {
             queue_message("Drink, weary Master.");
             queue_message("You are now Master of Sighs.");
-            Studiesleft +=2;
+            Studiesleft += 2;
             spell::Spells[spell::HASTE].known = true;
-            Player.rank[MONKS] = MONK_MASTER_SIGHS;
+            Player.rank[MONKS]                = MONK_MASTER_SIGHS;
             Player.maxhp += Player.maxpow;
             Player.maxcon += 1;
             Player.con += 1;
@@ -776,7 +778,7 @@ void l_monastery()
             Player.iq += 2;
           }
         }
-        else if(Player.rank[MONKS]==MONK_MONK)
+        else if(Player.rank[MONKS] == MONK_MONK)
         {
           if(Player.guildxp[MONKS] < 3000)
           {
@@ -786,9 +788,9 @@ void l_monastery()
           {
             queue_message("A thousand steps on the path, Brother.");
             queue_message("You are now a Master.");
-            Studiesleft +=2;
+            Studiesleft += 2;
             spell::Spells[spell::HEALING].known = true;
-            Player.rank[MONKS] = MONK_MASTER;
+            Player.rank[MONKS]                  = MONK_MASTER;
             Player.maxhp += Player.maxpow;
             Player.maxcon += 1;
             Player.con += 1;
@@ -796,7 +798,7 @@ void l_monastery()
             Player.pow += 5;
           }
         }
-        else if(Player.rank[MONKS]==MONK_TRAINEE)
+        else if(Player.rank[MONKS] == MONK_TRAINEE)
         {
           if(Player.guildxp[MONKS] < 1500)
           {
@@ -806,9 +808,9 @@ void l_monastery()
           {
             queue_message("You have sought wisdom, Brother.");
             queue_message("You are now a Tholian Monk.");
-            Studiesleft +=2;
+            Studiesleft += 2;
             spell::Spells[spell::CURING].known = true;
-            Player.rank[MONKS] = MONK_MONK;
+            Player.rank[MONKS]                 = MONK_MONK;
             Player.maxhp += Player.maxpow;
             Player.maxcon += 1;
             Player.con += 1;
@@ -827,7 +829,7 @@ void l_monastery()
         {
           queue_message("Sacrifice clears a cluttered heart. ");
           queue_message("Donate your worldly cash? [yn] ");
-          if(ynq()=='y')
+          if(ynq() == 'y')
           {
             if(Player.cash < 2000)
             {
@@ -858,7 +860,7 @@ void l_monastery()
       }
       else if(action == 'd')
       {
-        if (Player.rank[MONKS] < MONK_MASTER)
+        if(Player.rank[MONKS] < MONK_MASTER)
         {
           queue_message("Only Masters can achieve extended meditation, child.");
         }
@@ -867,18 +869,18 @@ void l_monastery()
           queue_message("Seeking inner truth...");
           toggle_item_use(true);
           Player.cash = 0;
-          Player.hp = Player.maxhp;
-          Player.str = Player.maxstr;
-          Player.agi = Player.maxagi;
-          Player.con = Player.maxcon;
-          Player.dex = Player.maxdex;
-          Player.iq = Player.maxiq;
-          Player.pow = Player.maxpow;
-          for(int i=0; i < NUMSTATI; ++i)
+          Player.hp   = Player.maxhp;
+          Player.str  = Player.maxstr;
+          Player.agi  = Player.maxagi;
+          Player.con  = Player.maxcon;
+          Player.dex  = Player.maxdex;
+          Player.iq   = Player.maxiq;
+          Player.pow  = Player.maxpow;
+          for(int i = 0; i < NUMSTATI; ++i)
           {
             if(Player.status[i] < 1000)
             {
-              Player.status[i]=0;
+              Player.status[i] = 0;
             }
           }
           toggle_item_use(false);
@@ -890,7 +892,7 @@ void l_monastery()
             Player.maxhp += 1;
           }
         }
-        Time += 60*24*7;
+        Time += 60 * 24 * 7;
         Date += 7;
         moon_check();
         timeprint();
@@ -903,7 +905,7 @@ void l_monastery()
 void l_sorcerors()
 {
   char action;
-  int  done = false, fee = 3000;
+  int done = false, fee = 3000;
   long total;
   queue_message("The Circle of Sorcerors.");
   if(Player.rank[CIRCLE] == -1)
@@ -916,19 +918,18 @@ void l_sorcerors()
   {
     while(!done)
     {
-      if((Player.rank[CIRCLE] == HIGHSORCEROR) && (Player.level > Primelevel) &&
-         find_and_remove_item(CORPSEID, LAWBRINGER))
+      if((Player.rank[CIRCLE] == HIGHSORCEROR) && (Player.level > Primelevel) && find_and_remove_item(CORPSEID, LAWBRINGER))
       {
         queue_message("You obtained the Crown of the Lawgiver!");
         queue_message("The Crown is ritually sacrificed to the Lords of Chaos.");
         queue_message("You are now the Prime Sorceror of the Inner Circle!");
-        Prime = Player.name;
+        Prime         = Player.name;
         Primelevel    = Player.level;
         Primebehavior = fixnpc(4);
         save_hiscore_npc(10);
         queue_message("You learn the Spell of Disintegration!");
         spell::Spells[spell::DISINTEGRATE].known = true;
-        Player.rank[CIRCLE]          = PRIME;
+        Player.rank[CIRCLE]                      = PRIME;
         Player.maxpow += 10;
         Player.pow += 10;
       }
@@ -977,7 +978,9 @@ void l_sorcerors()
             }
             else
             {
-              queue_message(std::format("Prime Sorceror {} conducts your initiation into the circle of novices.", Prime));
+              queue_message(std::format(
+                "Prime Sorceror {} conducts your initiation into the circle of novices.", Prime
+              ));
               queue_message("You learn the Spell of Magic Missiles.");
               spell::Spells[spell::MAGIC_MISSILE].known = true;
               Player.cash -= fee;
@@ -1042,7 +1045,7 @@ void l_sorcerors()
             queue_message("To advance you must return with the LawBringer's Crown!");
             queue_message("The LawBringer resides on Star Peak.");
             spell::Spells[spell::DISRUPT].known = true;
-            Player.rank[CIRCLE]     = HIGHSORCEROR;
+            Player.rank[CIRCLE]                 = HIGHSORCEROR;
             Player.maxpow += 5;
             Player.pow += 5;
           }
@@ -1058,7 +1061,7 @@ void l_sorcerors()
             queue_message("You are now a member of the Circle of Sorcerors!");
             queue_message("You learn the Spell of Ball Lightning!");
             spell::Spells[spell::BALL_LIGHTNING].known = true;
-            Player.rank[CIRCLE]   = SORCEROR;
+            Player.rank[CIRCLE]                        = SORCEROR;
             Player.maxpow += 2;
             Player.pow += 2;
           }
@@ -1074,7 +1077,7 @@ void l_sorcerors()
             queue_message("You are now a member of the Circle of Enchanters!");
             queue_message("You learn the Spell of Firebolts.");
             spell::Spells[spell::FIREBOLT].known = true;
-            Player.rank[CIRCLE]      = ENCHANTER;
+            Player.rank[CIRCLE]                  = ENCHANTER;
             Player.maxpow += 2;
             Player.pow += 2;
           }
@@ -1261,7 +1264,7 @@ void l_order()
         queue_message("The Oracle will send you to the Astral Plane if you");
         queue_message("prove yourself worthy to her.");
         spell::Spells[spell::HEROISM].known = true;
-        Player.rank[ORDER]   = PALADIN;
+        Player.rank[ORDER]                  = PALADIN;
       }
     }
     else if(Player.rank[ORDER] == GUARDIAN)

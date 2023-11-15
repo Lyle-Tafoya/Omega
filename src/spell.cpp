@@ -19,17 +19,18 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* spell.c */
 /* functions having to do with spellcasting */
 
+#include "spell.h"
+
 #include "extern.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
 #include "scr.h"
 #include "scrolling_buffer.hpp"
-#include "spell.h"
 
 #include <algorithm>
 #include <array>
-#include <optional>
 #include <format>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -252,7 +253,7 @@ void s_ritual()
     time_clock(false);
     setgamestatus(SKIP_PLAYER, GameStatus);
     time_clock(false);
-    RitualDay = day();
+    RitualDay  = day();
     RitualHour = hour();
     /* set of random conditions for different ritual effects */
     if(Current_Environment == E_CITY)
@@ -489,53 +490,51 @@ void s_mondet()
   mondet(1);
 }
 
-std::array<spell, spell::NUM_SPELLS> spell::Spells
-{{
-  { spell::ACCURACY, 20, s_accuracy },
-  { spell::ALERTNESS, 15, s_alert },
-  { spell::APPORTATION, 15, s_apport },
-  { spell::BALL_LIGHTNING, 25, s_lball },
-  { spell::BLESSING, 30, s_bless },
-  { spell::BREATHING, 20, s_breathe },
-  { spell::CLAIRVOYANCE, 10, s_clairvoyance },
-  { spell::CURING, 20, s_cure },
-  { spell::DESECRATION, 50, s_desecrate },
-  { spell::DISINTEGRATE, 40, s_disintegrate },
-  { spell::DISPELLING, 40, s_dispel },
-  { spell::DISRUPT, 30, s_disrupt },
-  { spell::ENCHANTMENT, 30,s_enchant },
-  { spell::ENERGY_DRAIN, 40, s_drain },
-  { spell::FEAR, 10, s_fear },
-  { spell::FIREBOLT, 20, s_firebolt },
-  { spell::HASTE, 15, s_haste },
-  { spell::HEALING, 15, s_heal },
-  { spell::HELLFIRE, 90, s_hellfire },
-  { spell::HEROISM, 20, s_hero },
-  { spell::IDENTIFICATION, 10, s_identify },
-  { spell::INVISIBILITY, 15, s_invisible },
-  { spell::LEVITATE, 25, s_levitate },
-  { spell::MAGIC_MISSILE, 10, s_missile },
-  { spell::MONSTER_DETECTION, 3, s_mondet },
-  { spell::OBJECT_DETECTION, 3, s_objdet },
-  { spell::POLYMORPH, 30, s_polymorph },
-  { spell::REGENERATE, 20, s_regenerate },
-  { spell::RESTORATION, 20, s_restore },
-  { spell::RETURN, 10, s_return },
-  { spell::RITUAL_MAGIC, 50, s_ritual },
-  { spell::SANCTIFICATION, 75, s_sanctify },
-  { spell::SANCTUARY, 75, s_sanctuary },
-  { spell::SELF_KNOWLEDGE, 10, s_knowledge },
-  { spell::SHADOWFORM, 50, s_shadowform },
-  { spell::SLEEP, 15, s_sleep },
-  { spell::SUMMONING, 20, s_summon },
-  { spell::TELEPORT, 20, s_teleport },
-  { spell::THE_WARP, 50, s_warp },
-  { spell::TRUESIGHT, 20, s_truesight },
-  { spell::WISH, 100, s_wish }
-}};
+std::array<spell, spell::NUM_SPELLS> spell::Spells{
+  {{spell::ACCURACY, 20, s_accuracy},
+   {spell::ALERTNESS, 15, s_alert},
+   {spell::APPORTATION, 15, s_apport},
+   {spell::BALL_LIGHTNING, 25, s_lball},
+   {spell::BLESSING, 30, s_bless},
+   {spell::BREATHING, 20, s_breathe},
+   {spell::CLAIRVOYANCE, 10, s_clairvoyance},
+   {spell::CURING, 20, s_cure},
+   {spell::DESECRATION, 50, s_desecrate},
+   {spell::DISINTEGRATE, 40, s_disintegrate},
+   {spell::DISPELLING, 40, s_dispel},
+   {spell::DISRUPT, 30, s_disrupt},
+   {spell::ENCHANTMENT, 30, s_enchant},
+   {spell::ENERGY_DRAIN, 40, s_drain},
+   {spell::FEAR, 10, s_fear},
+   {spell::FIREBOLT, 20, s_firebolt},
+   {spell::HASTE, 15, s_haste},
+   {spell::HEALING, 15, s_heal},
+   {spell::HELLFIRE, 90, s_hellfire},
+   {spell::HEROISM, 20, s_hero},
+   {spell::IDENTIFICATION, 10, s_identify},
+   {spell::INVISIBILITY, 15, s_invisible},
+   {spell::LEVITATE, 25, s_levitate},
+   {spell::MAGIC_MISSILE, 10, s_missile},
+   {spell::MONSTER_DETECTION, 3, s_mondet},
+   {spell::OBJECT_DETECTION, 3, s_objdet},
+   {spell::POLYMORPH, 30, s_polymorph},
+   {spell::REGENERATE, 20, s_regenerate},
+   {spell::RESTORATION, 20, s_restore},
+   {spell::RETURN, 10, s_return},
+   {spell::RITUAL_MAGIC, 50, s_ritual},
+   {spell::SANCTIFICATION, 75, s_sanctify},
+   {spell::SANCTUARY, 75, s_sanctuary},
+   {spell::SELF_KNOWLEDGE, 10, s_knowledge},
+   {spell::SHADOWFORM, 50, s_shadowform},
+   {spell::SLEEP, 15, s_sleep},
+   {spell::SUMMONING, 20, s_summon},
+   {spell::TELEPORT, 20, s_teleport},
+   {spell::THE_WARP, 50, s_warp},
+   {spell::TRUESIGHT, 20, s_truesight},
+   {spell::WISH, 100, s_wish}}
+};
 
-const std::array<std::string, spell::NUM_SPELLS> spell::spell_names
-{
+const std::array<std::string, spell::NUM_SPELLS> spell::spell_names{
   "accuracy",
   "alertness",
   "apportation",
@@ -576,8 +575,7 @@ const std::array<std::string, spell::NUM_SPELLS> spell::spell_names
   "teleport",
   "the warp",
   "true sight",
-  "wishing"
-};
+  "wishing"};
 
 std::vector<std::string> known_spells(int first, int last)
 {
@@ -590,7 +588,9 @@ std::vector<std::string> known_spells(int first, int last)
     if(spell::Spells[i].known)
     {
       printed = true;
-      lines.emplace_back(std::format("  {} ({} mana)", spell::spell_names[i], spell::Spells[i].powerdrain));
+      lines.emplace_back(
+        std::format("  {} ({} mana)", spell::spell_names[i], spell::Spells[i].powerdrain)
+      );
     }
   }
   if(!printed)
@@ -613,9 +613,9 @@ std::optional<spell::spell_id> spellparse()
     return {};
   }
   std::string prefix;
-  bool found = false;
+  bool found         = false;
   spell_id_type last = spell::NUM_SPELLS - 1;
-  bool menu_shown = false;
+  bool menu_shown    = false;
   int player_input;
   append_message("", true);
   do
@@ -684,8 +684,9 @@ std::optional<spell::spell_id> spellparse()
           continue;
         }
         int f = first;
-        while(f < spell::NUM_SPELLS && (!spell::Spells[f].known || spell::spell_names[f].length() < prefix.length() ||
-                                spell::spell_names[f][prefix.length()] < player_input))
+        while(f < spell::NUM_SPELLS &&
+              (!spell::Spells[f].known || spell::spell_names[f].length() < prefix.length() ||
+               spell::spell_names[f][prefix.length()] < player_input))
         {
           ++f;
         }
@@ -722,6 +723,7 @@ std::optional<spell::spell_id> spellparse()
     return {};
   }
 }
+
 /* select a spell to cast */
 std::optional<spell::spell_id> getspell()
 {

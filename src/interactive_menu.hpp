@@ -18,9 +18,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifndef OMEGA_INTERACTIVE_MENU_HPP_
 #define OMEGA_INTERACTIVE_MENU_HPP_
 
+#include <curses.h>
 #include <string>
 #include <vector>
-#include <curses.h>
 
 class interactive_menu
 {

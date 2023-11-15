@@ -318,8 +318,7 @@ void examine()
 
 void help()
 {
-  std::vector<std::string> lines =
-  {
+  std::vector<std::string> lines = {
     {"a: Overview"},
     {"b: Characters"},
     {"c: Inventories"},
@@ -335,18 +334,17 @@ void help()
     {"m: Countryside Command List"},
     {"ESCAPE: Forget the whole thing."},
     {""},
-    {"Please enter the letter indcating what topic you want help on."}
-  };
+    {"Please enter the letter indcating what topic you want help on."}};
   menu->load(lines);
   menu->print();
-  char  c;
+  char c;
   do
   {
     c = static_cast<char>(mcigetc());
   } while((c < 'a' || c > 'm') && c != ESCAPE);
   if(c != ESCAPE)
   {
-    displayfile(std::format("{}help{}.txt", Omegalib, c+1-'a'));
+    displayfile(std::format("{}help{}.txt", Omegalib, c + 1 - 'a'));
   }
   xredraw();
 }
@@ -362,8 +360,8 @@ void version()
 
 void fire()
 {
-  int             index, x1, y1, x2, y2;
-  pob             obj;
+  int index, x1, y1, x2, y2;
+  pob obj;
   monster *m;
 
   queue_message("Fire/Throw --");
@@ -550,7 +548,7 @@ void nap()
 
 void charid()
 {
-  int  countryside = false;
+  int countryside = false;
 
   queue_message("Character to identify: ");
   char id = mgetc();
@@ -841,8 +839,8 @@ void tacoptions()
 
   size_t actionsleft = maneuvers();
   size_t place       = 0;
-  bool   done        = false;
-  bool   draw_again  = true;
+  bool done          = false;
+  bool draw_again    = true;
   do
   {
     if(draw_again)
@@ -993,7 +991,7 @@ void tacoptions()
 /* Do the Artful Dodger trick */
 void pickpocket()
 {
-  int             dx, dy;
+  int dx, dy;
   monster *m;
 
   queue_message("Pickpocketing --");
@@ -1035,7 +1033,7 @@ void pickpocket()
       }
       else
       {
-        bool success = (Player.dex*5 + Player.rank[THIEVES]*20 - m->level*20) > random_range(100);
+        bool success = (Player.dex * 5 + Player.rank[THIEVES] * 20 - m->level * 20) > random_range(100);
         if(!m->possessions)
         {
           queue_message("You couldn't find anything worth taking!");
@@ -1052,7 +1050,7 @@ void pickpocket()
         {
           queue_message("You fail to obtain anything.");
         }
-        bool caught = (Player.dex*4 + Player.rank[THIEVES]*20 - m->level*10) < random_range(100);
+        bool caught = (Player.dex * 4 + Player.rank[THIEVES] * 20 - m->level * 10) < random_range(100);
         if(caught && (!Player.status[INVISIBLE] || random_range(2)))
         {
           queue_message("You manage to annoy it...");
@@ -1071,7 +1069,7 @@ void rename_player()
   if(!name.empty())
   {
     name.front() = std::toupper(name.front());
-    Player.name = name;
+    Player.name  = name;
   }
   queue_message(std::format("Henceforth, you shall be known as {}.", Player.name));
   dataprint();

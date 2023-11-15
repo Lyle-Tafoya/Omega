@@ -27,8 +27,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-void                kill_levels(const std::string &str);
-plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+void kill_levels(const std::string &str);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
 /* Deallocate current dungeon */
@@ -113,7 +113,7 @@ plv findlevel(level *dungeon, char levelnum)
 // if can't find them, just drops player anywhere....
 void find_stairs(char fromlevel, char tolevel)
 {
-  int    i, j, found = false;
+  int i, j, found = false;
   Symbol sitechar;
   if(fromlevel > tolevel)
   {
@@ -156,8 +156,8 @@ from scratch */
 void change_level(char fromlevel, char tolevel, char rewrite_level)
 {
   level *thislevel = nullptr;
-  Player.sx               = -1;
-  Player.sy               = -1; /* sanctuary effect dispelled */
+  Player.sx        = -1;
+  Player.sy        = -1; /* sanctuary effect dispelled */
 #ifdef SAVE_LEVELS
   thislevel = msdos_changelevel(Level, Current_Environment, tolevel);
 #else
@@ -526,7 +526,7 @@ void build_room(int x, int y, int l, char rsi, int baux)
 
 void cavern_level()
 {
-  int  i, fx, fy, tx, ty, t, l, e;
+  int i, fx, fy, tx, ty, t, l, e;
   char rsi;
 
   Level->numrooms = 1;
@@ -608,13 +608,15 @@ void sewer_corridor(int x, int y, int dx, int dy, Symbol locchar)
     y += dy;
     if(locchar == WATER)
     {
-      continuing = (inbounds(x, y) &&
-                    ((Level->site[x][y].locchar == WALL) || (Level->site[x][y].locchar == WATER)));
+      continuing =
+        (inbounds(x, y) && ((Level->site[x][y].locchar == WALL) || (Level->site[x][y].locchar == WATER))
+        );
     }
     else
     {
-      continuing = (inbounds(x, y) && ((Level->site[x][y].roomnumber == RS_WALLSPACE) ||
-                                       (Level->site[x][y].roomnumber == RS_SEWER_DUCT)));
+      continuing =
+        (inbounds(x, y) && ((Level->site[x][y].roomnumber == RS_WALLSPACE) ||
+                            (Level->site[x][y].roomnumber == RS_SEWER_DUCT)));
     }
   }
   if(inbounds(x, y))
@@ -625,8 +627,8 @@ void sewer_corridor(int x, int y, int dx, int dy, Symbol locchar)
 
 void sewer_level()
 {
-  int    i, tx, ty, t, l, e;
-  char   rsi;
+  int i, tx, ty, t, l, e;
+  char rsi;
   Symbol lchar;
 
   Level->numrooms = random_range(3) + 3;
@@ -679,8 +681,7 @@ void install_specials()
   {
     for(y = 0; y < LENGTH; y++)
     {
-      if((Level->site[x][y].locchar == FLOOR) && (Level->site[x][y].p_locf == L_NO_OP) &&
-         (random_range(300) < difficulty()))
+      if((Level->site[x][y].locchar == FLOOR) && (Level->site[x][y].p_locf == L_NO_OP) && (random_range(300) < difficulty()))
       {
         i = random_range(100);
         if(i < 10)

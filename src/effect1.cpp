@@ -44,8 +44,7 @@ void enchant(int delta)
     {
       queue_message("You feel fortunate.");
     }
-    else if(Player.possessions[i]->blessing < 0 ||
-            (Player.possessions[i]->objchar == ARTIFACT && random_range(3)))
+    else if(Player.possessions[i]->blessing < 0 || (Player.possessions[i]->objchar == ARTIFACT && random_range(3)))
     {
       if(Player.possessions[i]->uniqueness == COMMON)
       {
@@ -265,9 +264,9 @@ void heal(int amount)
 // from f to t
 void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
 {
-  int             xx, yy;
+  int xx, yy;
   monster *target;
-  Symbol          boltchar;
+  Symbol boltchar;
   xx = fx;
   yy = fy;
 
@@ -446,9 +445,9 @@ void nbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
 // from f to t
 void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
 {
-  int             xx, yy, ex, ey, i;
+  int xx, yy, ex, ey, i;
   monster *target;
-  Symbol          expchar = ('@' | CLR(LIGHT_PURPLE));
+  Symbol expchar = ('@' | CLR(LIGHT_PURPLE));
 
   xx = fx;
   yy = fy;
@@ -749,7 +748,7 @@ void wish(int blessing)
   {
     wishstr = msgscanstring();
   }
-  if(blessing < 0 ||  wishstr == "Death")
+  if(blessing < 0 || wishstr == "Death")
   {
     queue_message("As you wish, so shall it be.");
     p_death("a deathwish");
@@ -862,7 +861,7 @@ void acquire(int blessing)
   else
   {
     object *newthing = new object;
-    newthing->id = -1;
+    newthing->id     = -1;
     if(gamestatusp(CHEATED, GameStatus))
     {
       queue_message("Acquire which kind of item: !?][}{)/=%%\\& ");
@@ -871,7 +870,7 @@ void acquire(int blessing)
     {
       queue_message("Acquire which kind of item: !?][}{)/=%%\\ ");
     }
-    int id = ABORT;
+    int id     = ABORT;
     char otype = mgetc();
     switch(otype)
     {

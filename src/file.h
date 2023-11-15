@@ -27,6 +27,7 @@ void file_write(std::ofstream &file, T &&data)
 {
   file.write(reinterpret_cast<const char *>(&data), sizeof(data));
 }
+
 template<typename T>
 void file_read(std::ifstream &file, T &data)
 {

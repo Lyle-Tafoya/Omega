@@ -25,10 +25,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <iostream>
 #include <string>
 
 extern scrolling_buffer message_buffer;
@@ -84,8 +84,8 @@ std::ifstream omegarc_check()
 std::string version_string(int version)
 {
   int bugfix_version = version % 100;
-  int minor_version = version / 100;
-  int major_version = version / 10000;
+  int minor_version  = version / 100;
+  int major_version  = version / 10000;
   return std::format("{}.{}.{}", major_version, minor_version, bugfix_version);
 }
 
@@ -443,9 +443,9 @@ void user_character_stats()
 
 void omegan_character_stats()
 {
-  int stat_num = 0;
-  int stat_pool = 10;
-  int stats[6] = { 10, 10, 10, 10, 10, 10 };
+  int stat_num              = 0;
+  int stat_pool             = 10;
+  int stats[6]              = {10, 10, 10, 10, 10, 10};
   std::string stat_names[6] = {"Str", "Dex", "Con", "Agi", "Int", "Pow"};
   for(bool character_creation_done = false; !character_creation_done;)
   {
@@ -456,15 +456,16 @@ void omegan_character_stats()
     Player.agi = Player.maxagi = stats[3];
     Player.iq = Player.maxiq = stats[4];
     Player.pow = Player.maxpow = stats[5];
-    Player.cash = 250;
+    Player.cash                = 250;
     Player.hp = Player.maxhp = Player.maxcon;
     Player.mana = Player.maxmana = calcmana();
     calc_melee();
 
     enable_attr(menu_window, A_NORMAL);
-    mvwaddstr(menu_window, 0, 0,
-        "Add or remove points from your stats using the point pool.\n"
-        "Point Pool: "
+    mvwaddstr(
+      menu_window, 0, 0,
+      "Add or remove points from your stats using the point pool.\n"
+      "Point Pool: "
     );
     if(stat_pool > 0)
     {
@@ -476,14 +477,14 @@ void omegan_character_stats()
       if(i == stat_num)
       {
         enable_attr(menu_window, CLR(GREY));
-        mvwaddstr(menu_window, 3+i, 0, ">>");
+        mvwaddstr(menu_window, 3 + i, 0, ">>");
         enable_attr(menu_window, CLR(WHITE));
       }
       else
       {
         enable_attr(menu_window, CLR(GREY));
       }
-      mvwprintw(menu_window, 3+i, 3, "%s: ", stat_names[i].c_str());
+      mvwprintw(menu_window, 3 + i, 3, "%s: ", stat_names[i].c_str());
       if(stats[i] < 10)
       {
         enable_attr(menu_window, CLR(RED));
@@ -596,7 +597,7 @@ void initplayer(bool play_yourself = false)
   Player.hp = Player.maxhp = Player.maxcon;
   Player.mana = Player.maxmana = calcmana();
   Player.click                 = 1;
-  Player.meleestr = "ACBC";
+  Player.meleestr              = "ACBC";
   calc_melee();
   ScreenOffset = -1000; /* to force a redraw */
 }
@@ -607,8 +608,8 @@ void init_game(bool play_yourself = false)
 {
   read_scores();
   inititem(true);
-  Date = random_range(360);
-  Phase = random_range(24);
+  Date    = random_range(360);
+  Phase   = random_range(24);
   MazeNum = random_range(4) + 1;
   initplayer(play_yourself);
   init_world();
@@ -618,7 +619,7 @@ void init_game(bool play_yourself = false)
 
 bool title_menu()
 {
-  const std::string default_name = Player.name;
+  const std::string default_name       = Player.name;
   std::filesystem::path save_directory = std::format("{}saves/{}", Omegalib, get_username());
 
   size_t longest_line_length = 16;
@@ -643,8 +644,8 @@ bool title_menu()
           p.name.~basic_string();
           p.meleestr.~basic_string();
           file_read(save_file, p);
-          new (&p.name) std::string;
-          new (&p.meleestr) std::string;
+          new(&p.name) std::string;
+          new(&p.meleestr) std::string;
           size_t size;
           file_read(save_file, size);
           save_file.seekg(size, std::ios::cur);
@@ -654,8 +655,8 @@ bool title_menu()
 
           if(!save_file.fail())
           {
-
-            std::string line{std::format("{}, Level {}, v{}", p.name, p.level, version_string(game_version))};
+            std::string line{
+              std::format("{}, Level {}, v{}", p.name, p.level, version_string(game_version))};
             if(line.length() > longest_line_length)
             {
               longest_line_length = line.length();
@@ -669,19 +670,19 @@ bool title_menu()
     }
   }
 
+  enum menu_option : uint8_t
+  {
+    PLAY_GAME,
+    PLAY_YOURSELF,
+    SHOW_SCORES,
+    DISPLAY_HELP
+  };
 
-  enum menu_option : uint8_t { PLAY_GAME, PLAY_YOURSELF, SHOW_SCORES, DISPLAY_HELP };
-  const int top_option = PLAY_GAME;
+  const int top_option    = PLAY_GAME;
   const int bottom_option = DISPLAY_HELP;
 
-  std::array menu_lines =
-  {
-    "Omega Rebirth",
-    "Play As Yourself",
-    "High Scores",
-    "Help Menu"
-  };
-  uint8_t selected_option = save_file_lines.empty() ? PLAY_GAME : bottom_option+1;
+  std::array menu_lines   = {"Omega Rebirth", "Play As Yourself", "High Scores", "Help Menu"};
+  uint8_t selected_option = save_file_lines.empty() ? PLAY_GAME : bottom_option + 1;
   std::string name;
   int player_input;
   while(true)
@@ -712,13 +713,13 @@ bool title_menu()
       {
         attroff(CLR(BRIGHT_WHITE));
         attron(A_REVERSE);
-        mvaddstr(5+i, 17, std::format("{:<{}}", menu_lines[i], longest_line_length).c_str());
+        mvaddstr(5 + i, 17, std::format("{:<{}}", menu_lines[i], longest_line_length).c_str());
         attroff(A_REVERSE);
         attron(CLR(BRIGHT_WHITE));
       }
       else
       {
-        mvaddstr(5+i, 17, menu_lines[i]);
+        mvaddstr(5 + i, 17, menu_lines[i]);
       }
     }
     if(!save_file_paths.empty())
@@ -732,13 +733,13 @@ bool title_menu()
         {
           attroff(CLR(BRIGHT_WHITE));
           attron(A_REVERSE);
-          mvaddstr(10+i, 17, std::format("{:<{}}", save_file_lines[i], longest_line_length).c_str());
+          mvaddstr(10 + i, 17, std::format("{:<{}}", save_file_lines[i], longest_line_length).c_str());
           attroff(A_REVERSE);
           attron(CLR(BRIGHT_WHITE));
         }
         else
         {
-          mvaddstr(10+i, 17, std::format("{:<{}}", save_file_lines[i], longest_line_length).c_str());
+          mvaddstr(10 + i, 17, std::format("{:<{}}", save_file_lines[i], longest_line_length).c_str());
         }
       }
     }
@@ -776,7 +777,7 @@ bool title_menu()
             break;
           default:
             erase();
-            if(game_restore(save_file_paths[selected_option-menu_lines.size()]))
+            if(game_restore(save_file_paths[selected_option - menu_lines.size()]))
             {
               return true;
             }
@@ -786,7 +787,10 @@ bool title_menu()
         selected_option = static_cast<menu_option>(std::max(top_option, selected_option - 1));
         break;
       case KEY_DOWN:
-        selected_option = static_cast<menu_option>(std::min(static_cast<uint16_t>(bottom_option+save_file_paths.size()), static_cast<uint16_t>(selected_option + 1u)));
+        selected_option = static_cast<menu_option>(std::min(
+          static_cast<uint16_t>(bottom_option + save_file_paths.size()),
+          static_cast<uint16_t>(selected_option + 1u)
+        ));
         break;
       case KEY_BACKSPACE:
       case '\b':
@@ -829,7 +833,7 @@ int competence_check(int attack)
     case 2: // missle
       ability += statmod(Player.dex);
       ability += Player.rank[LEGION];
-      ability += static_cast<int>(Player.dmg/10 - 1);
+      ability += static_cast<int>(Player.dmg / 10 - 1);
       break;
     case 3: // spellcasting
       ability += statmod(Player.iq);
@@ -870,7 +874,7 @@ status : 1 = dead, 2 = saved, 3 = retired, 4 = still playing
 */
 int fixnpc(int status)
 {
-  int  npcbehavior = 0;
+  int npcbehavior = 0;
   char response;
   if(status == 1)
   { /* player is dead, all undead are chaotic */

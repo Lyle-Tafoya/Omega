@@ -21,11 +21,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* plus a few file i/o stuff */
 /* also some in file.c */
 
+#include "scr.h"
+
 #include "defs.h"
 #include "file.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
-#include "scr.h"
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
@@ -121,7 +122,7 @@ void color_waddstr(WINDOW *window, const std::string &s)
   std::string::size_type length = s.length();
   for(std::string::size_type i = 0; i < length; ++i)
   {
-    if(s[i] == '|' && i < length-1)
+    if(s[i] == '|' && i < length - 1)
     {
       switch(s[++i])
       {
@@ -129,49 +130,49 @@ void color_waddstr(WINDOW *window, const std::string &s)
           omega_wcolor_set(window, COLOR_BLACK);
           break;
         case 'L':
-          omega_wcolor_set(window, COLOR_BLACK+8);
+          omega_wcolor_set(window, COLOR_BLACK + 8);
           break;
         case 'r':
           omega_wcolor_set(window, COLOR_RED);
           break;
         case 'R':
-          omega_wcolor_set(window, COLOR_RED+8);
+          omega_wcolor_set(window, COLOR_RED + 8);
           break;
         case 'g':
           omega_wcolor_set(window, COLOR_GREEN);
           break;
         case 'G':
-          omega_wcolor_set(window, COLOR_GREEN+8);
+          omega_wcolor_set(window, COLOR_GREEN + 8);
           break;
         case 'y':
           omega_wcolor_set(window, COLOR_YELLOW);
           break;
         case 'Y':
-          omega_wcolor_set(window, COLOR_YELLOW+8);
+          omega_wcolor_set(window, COLOR_YELLOW + 8);
           break;
         case 'b':
           omega_wcolor_set(window, COLOR_BLUE);
           break;
         case 'B':
-          omega_wcolor_set(window, COLOR_BLUE+8);
+          omega_wcolor_set(window, COLOR_BLUE + 8);
           break;
         case 'm':
           omega_wcolor_set(window, COLOR_MAGENTA);
           break;
         case 'M':
-          omega_wcolor_set(window, COLOR_MAGENTA+8);
+          omega_wcolor_set(window, COLOR_MAGENTA + 8);
           break;
         case 'c':
           omega_wcolor_set(window, COLOR_CYAN);
           break;
         case 'C':
-          omega_wcolor_set(window, COLOR_CYAN+8);
+          omega_wcolor_set(window, COLOR_CYAN + 8);
           break;
         case 'w':
           omega_wcolor_set(window, COLOR_WHITE);
           break;
         case 'W':
-          omega_wcolor_set(window, COLOR_WHITE+8);
+          omega_wcolor_set(window, COLOR_WHITE + 8);
           break;
         case '!':
           wattr_on(window, WA_REVERSE, nullptr);
@@ -203,18 +204,20 @@ void color_mvwaddstr(WINDOW *window, int y, int x, const std::string &s)
 struct entity_info
 {
   std::string name;
-  Symbol      character;
-  int         count;
-  long int    value;
+  Symbol character;
+  int count;
+  long int value;
 };
+
 bool operator<(const entity_info &a, const entity_info &b)
 {
   return a.value < b.value;
 }
-std::unordered_map<std::string, entity_info>                  shown_mobs;
-std::unordered_map<std::string, entity_info>                  shown_items;
+
+std::unordered_map<std::string, entity_info> shown_mobs;
+std::unordered_map<std::string, entity_info> shown_items;
 std::array<std::unordered_map<std::string, entity_info> *, 2> entity_maps{&shown_mobs, &shown_items};
-int                                                           max_shown_entities;
+int max_shown_entities;
 
 long int perceived_item_value(object &o)
 {
@@ -302,8 +305,9 @@ void print_messages()
   werase(message_window);
   const std::deque<std::string> &message_history = message_buffer.get_message_history();
   size_t size = std::min(message_history.size(), static_cast<size_t>(message_window_length));
-  uint16_t i = 0;
-  for(auto message = message_history.rbegin(); message != message_history.rend() && i < size; ++message, ++i)
+  uint16_t i  = 0;
+  for(auto message = message_history.rbegin(); message != message_history.rend() && i < size;
+      ++message, ++i)
   {
     mvwaddstr(message_window, static_cast<int>(size - 1 - i), 0, message->c_str());
   }
@@ -346,10 +350,10 @@ void show_screen()
 {
   werase(level_window);
   shown_items.clear();
-  int left      = std::max(0, HorizontalOffset);
-  int top       = std::max(0, ScreenOffset);
-  int bottom    = std::min(LENGTH, ScreenOffset + ScreenLength);
-  int right     = std::min(WIDTH, HorizontalOffset + ScreenWidth);
+  int left   = std::max(0, HorizontalOffset);
+  int top    = std::max(0, ScreenOffset);
+  int bottom = std::min(LENGTH, ScreenOffset + ScreenLength);
+  int right  = std::min(WIDTH, HorizontalOffset + ScreenWidth);
 
   if(Current_Environment != E_COUNTRYSIDE)
   {
@@ -358,7 +362,7 @@ void show_screen()
       wmove(level_window, screenmod(y), 0);
       for(int x = left; x < right; ++x)
       {
-        Symbol c = loc_statusp(x, y, SEEN, *Level) ? getspot(x, y, false) : SPACE;
+        Symbol c     = loc_statusp(x, y, SEEN, *Level) ? getspot(x, y, false) : SPACE;
         bool is_pile = c == PILE;
         if(is_pile)
         {
@@ -367,15 +371,16 @@ void show_screen()
         color_waddch(level_window, c);
 
         if((!Level->site[x][y].things || (Level->site[x][y].things->thing->objchar != c && !is_pile)) ||
-            (Player.x == x && Player.y == y && (!Player.status[INVISIBLE] || Player.status[TRUESIGHT])) ||
-            (Level->site[x][y].creature && (!m_statusp(*Level->site[x][y].creature, M_INVISIBLE) || Player.status[TRUESIGHT])))
+           (Player.x == x && Player.y == y && (!Player.status[INVISIBLE] || Player.status[TRUESIGHT])) ||
+           (Level->site[x][y].creature &&
+            (!m_statusp(*Level->site[x][y].creature, M_INVISIBLE) || Player.status[TRUESIGHT])))
         {
           continue;
         }
         object *o = Level->site[x][y].things->thing;
         if(shown_items.find(o->objstr) == shown_items.end())
         {
-          std::string obj_name = itemid(o);
+          std::string obj_name  = itemid(o);
           shown_items[obj_name] = {obj_name, c, 1, perceived_item_value(*o)};
         }
         else
@@ -483,6 +488,7 @@ void queue_message(const std::string &message, bool force_break)
     message_buffer.receive(message, force_break);
   }
 }
+
 void append_message(const std::string &message, bool force_break)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
@@ -490,6 +496,7 @@ void append_message(const std::string &message, bool force_break)
     message_buffer.append(message, true, force_break);
   }
 }
+
 void replace_last_message(const std::string &message)
 {
   if(!gamestatusp(SUPPRESS_PRINTING, GameStatus))
@@ -532,7 +539,10 @@ void calculate_screen_size()
 
 void initialize_colors()
 {
-  if(!can_change_color()) { return; }
+  if(!can_change_color())
+  {
+    return;
+  }
   init_color(COLOR_BLACK, 0, 0, 0);
   init_color(COLOR_RED, 698, 94, 94);
   init_color(COLOR_GREEN, 94, 698, 94);
@@ -541,14 +551,14 @@ void initialize_colors()
   init_color(COLOR_MAGENTA, 698, 94, 698);
   init_color(COLOR_CYAN, 94, 698, 698);
   init_color(COLOR_WHITE, 698, 698, 698);
-  init_color(COLOR_BLACK+8, 408, 408, 408);
-  init_color(COLOR_RED+8, 1000, 329, 329);
-  init_color(COLOR_GREEN+8, 329, 1000, 329);
-  init_color(COLOR_YELLOW+8, 1000, 1000, 329);
-  init_color(COLOR_BLUE+8, 329, 329, 1000);
-  init_color(COLOR_MAGENTA+8, 1000, 329, 1000);
-  init_color(COLOR_CYAN+8, 329, 1000, 1000);
-  init_color(COLOR_WHITE+8, 1000, 1000, 1000);
+  init_color(COLOR_BLACK + 8, 408, 408, 408);
+  init_color(COLOR_RED + 8, 1000, 329, 329);
+  init_color(COLOR_GREEN + 8, 329, 1000, 329);
+  init_color(COLOR_YELLOW + 8, 1000, 1000, 329);
+  init_color(COLOR_BLUE + 8, 329, 329, 1000);
+  init_color(COLOR_MAGENTA + 8, 1000, 329, 1000);
+  init_color(COLOR_CYAN + 8, 329, 1000, 1000);
+  init_color(COLOR_WHITE + 8, 1000, 1000, 1000);
 }
 
 void initialize_windows()
@@ -561,7 +571,7 @@ void initialize_windows()
     werase(Showline[i]);
   }
   uint16_t menu_width = (COLS - 42 < 64 ? COLS : 64);
-  menu_window = newwin(ScreenLength, menu_width, 0, 0);
+  menu_window         = newwin(ScreenLength, menu_width, 0, 0);
   keypad(menu_window, true);
   menu = new interactive_menu(menu_window, menu_width, ScreenLength);
 
@@ -713,6 +723,7 @@ int get_message_input()
 {
   return get_player_input(message_window);
 }
+
 int get_level_input()
 {
   return get_player_input(level_window);
@@ -738,6 +749,7 @@ void mouse_enable()
   mousemask(ALL_MOUSE_EVENTS, nullptr);
   mouseinterval(0);
 }
+
 void mouse_disable()
 {
   mousemask(0, nullptr);
@@ -753,10 +765,10 @@ bool pop_mouse_event(mouse_event &event, MEVENT &mevent)
       {
         if(mevent.bstate & mouse_button_events[button_num][event_type_num])
         {
-          event.type = static_cast<mouse_event_t>(event_type_num);
+          event.type   = static_cast<mouse_event_t>(event_type_num);
           event.button = button_num + 1;
-          event.x = mevent.x;
-          event.y = mevent.y;
+          event.x      = mevent.x;
+          event.y      = mevent.y;
           return true;
         }
       }
@@ -890,7 +902,7 @@ int litroom(int x, int y)
 void drawvision(int x, int y)
 {
   static int oldx = -1, oldy = -1;
-  int        i, j;
+  int i, j;
 
   if(Current_Environment != E_COUNTRYSIDE)
   {
@@ -956,7 +968,7 @@ void drawvision(int x, int y)
         if(!offscreen(x + i, y + j))
         {
           Symbol c = Country[x + i][y + j].current_terrain_type;
-          color_mvwaddch(level_window, screenmod(y+j), screenmod_horizontal(x+i), c);
+          color_mvwaddch(level_window, screenmod(y + j), screenmod_horizontal(x + i), c);
         }
       }
     }
@@ -1307,9 +1319,10 @@ void print_combat_stats()
 void print_health()
 {
   int hp_meter_length = std::min(
-    24, Player.maxhp == 0 ? 0 : static_cast<int>(static_cast<float>(Player.hp) / Player.maxhp * 24));
+    24, Player.maxhp == 0 ? 0 : static_cast<int>(static_cast<float>(Player.hp) / Player.maxhp * 24)
+  );
   std::string hp_meter_filled(hp_meter_length, '=');
-  std::string hp_meter_empty(24-hp_meter_length, '-');
+  std::string hp_meter_empty(24 - hp_meter_length, '-');
 
   werase(health_label_window);
   enable_attr(health_label_window, CLR(GREY));
@@ -1335,10 +1348,10 @@ void print_health()
 void print_mana()
 {
   int mana_meter_length = std::min(
-    24,
-    Player.maxmana == 0 ? 0 : static_cast<int>(static_cast<float>(Player.mana) / Player.maxmana * 24));
+    24, Player.maxmana == 0 ? 0 : static_cast<int>(static_cast<float>(Player.mana) / Player.maxmana * 24)
+  );
   std::string mana_meter_filled(mana_meter_length, '=');
-  std::string mana_meter_empty(24-mana_meter_length, '-');
+  std::string mana_meter_empty(24 - mana_meter_length, '-');
 
   werase(mana_label_window);
   enable_attr(mana_label_window, CLR(GREY));
@@ -1401,7 +1414,6 @@ void print_dexterity()
 
 void print_constitution()
 {
-
   werase(constitution_label_window);
   enable_attr(constitution_label_window, CLR(GREY));
   waddstr(constitution_label_window, "Con:");
@@ -1841,9 +1853,9 @@ int getnumber(int range)
 /* reads a positive number up to 999999 */
 long parsenum()
 {
-  int  number[8];
-  int  place = -1;
-  int  i, mult = 1;
+  int number[8];
+  int place = -1;
+  int i, mult = 1;
   long num = 0;
 
   int player_input = ' ';
@@ -1892,8 +1904,8 @@ void display_death(const std::string &source)
 {
   clear();
   touchwin(stdscr);
-  addstr(std::format("\n\n\n\nRequiescat In Pace, {} ({} points)\n",
-        Player.name, calc_points()).c_str());
+  addstr(std::format("\n\n\n\nRequiescat In Pace, {} ({} points)\n", Player.name, calc_points()).c_str()
+  );
   std::string killed_by{std::format("Killed by {}", source)};
   addstr(killed_by.c_str());
   addstr(".\n\n\n\n\nHit 'c' to continue.");
@@ -1914,16 +1926,17 @@ void display_win()
   std::string win_message;
   if(Player.rank[ADEPT])
   {
-    addstr(std::format("\n\n\n\n{} is a total master of omega with {} points!",
-          Player.name, FixedPoints).c_str());
+    addstr(std::format("\n\n\n\n{} is a total master of omega with {} points!", Player.name, FixedPoints)
+             .c_str());
     printw(" is a total master of omega with %ld points!", FixedPoints);
     win_message = "A total master of omega";
   }
   else
   {
     win_message = "retired a winner";
-    addstr(std::format("\n\n\n\n{} triumphed in omega with {} points!",
-          Player.name, calc_points()).c_str());
+    addstr(
+      std::format("\n\n\n\n{} triumphed in omega with {} points!", Player.name, calc_points()).c_str()
+    );
   }
   addstr("\n\n\n\n\nHit 'c' to continue.");
   while(getch() != 'c')
@@ -1948,8 +1961,9 @@ void display_quit()
   clear();
   touchwin(stdscr);
   std::string quit_message = "A quitter.";
-  addstr(std::format("\n\n\n\n{} wimped out with {} points!\n\n\n\n\n",
-        Player.name, calc_points()).c_str());
+  addstr(
+    std::format("\n\n\n\n{} wimped out with {} points!\n\n\n\n\n", Player.name, calc_points()).c_str()
+  );
   addstr("Hit 'c' to continue.");
   while(getch() != 'c')
   {
@@ -1966,8 +1980,9 @@ void display_bigwin()
   clear();
   touchwin(stdscr);
   std::string win_message = "retired, an Adept of Omega.";
-  addstr(std::format("\n\n\n\n{} {} with {} points!\n\n\n\n\n",
-        Player.name, win_message, FixedPoints).c_str());
+  addstr(
+    std::format("\n\n\n\n{} {} with {} points!\n\n\n\n\n", Player.name, win_message, FixedPoints).c_str()
+  );
   addstr("Hit 'c' to continue.");
   while(getch() != 'c')
   {
@@ -2190,7 +2205,7 @@ void lightspot(int x, int y)
   lset(x, y, LIT, *Level);
   lset(x, y, SEEN, *Level);
   lset(x, y, CHANGED, *Level);
-  Symbol c = getspot(x, y, false);
+  Symbol c                   = getspot(x, y, false);
   Level->site[x][y].showchar = c;
   putspot(x, y, c);
 }
@@ -2222,7 +2237,7 @@ void display_pack()
     lines.emplace_back("Items in Pack:");
     for(int i = 0; i < Player.packptr; i++)
     {
-      lines.emplace_back(std::format("  {}: {}", static_cast<char>('a'+i), itemid(Player.pack[i])));
+      lines.emplace_back(std::format("  {}: {}", static_cast<char>('a' + i), itemid(Player.pack[i])));
     }
     menu->load(lines);
     menu->get_player_input();
@@ -2244,24 +2259,11 @@ object *find_first_pack_obj(uint8_t slot)
   return nullptr;
 }
 
-constexpr std::array SLOT_NAMES
-{
-  "Up in Air     ",
-  "Ready Hand    ",
-  "Weapon Hand   ",
-  "Left Shoulder ",
-  "Right Shoulder",
-  "Belt          ",
-  "Belt          ",
-  "Belt          ",
-  "Shield        ",
-  "Armor         ",
-  "Boots         ",
-  "Cloak         ",
-  "Finger        ",
-  "Finger        ",
-  "Finger        ",
-  "Finger        ",
+constexpr std::array SLOT_NAMES{
+  "Up in Air     ", "Ready Hand    ", "Weapon Hand   ", "Left Shoulder ",
+  "Right Shoulder", "Belt          ", "Belt          ", "Belt          ",
+  "Shield        ", "Armor         ", "Boots         ", "Cloak         ",
+  "Finger        ", "Finger        ", "Finger        ", "Finger        ",
 };
 
 void print_inventory_menu(Symbol item_type)
@@ -2272,12 +2274,12 @@ void print_inventory_menu(Symbol item_type)
   {
     object *item = Player.possessions[i];
 
-    bool wildcard = (item_type == NULL_ITEM || item_type == CASH);
+    bool wildcard   = (item_type == NULL_ITEM || item_type == CASH);
     bool selectable = false;
     if((item && (item->objchar == item_type || wildcard)) || (!item && wildcard && find_first_pack_obj(i)))
     {
       selectable = true;
-      line = std::format("|Y{} |y-|w ", index_to_key(i));
+      line       = std::format("|Y{} |y-|w ", index_to_key(i));
     }
     else
     {
@@ -2463,49 +2465,41 @@ void showscores()
   read_scores();
   clear();
   addstr(std::format(
-      "High Score: {}, by {} ({})\n"
-      "{}\n"
-      "\n"
-      "Lord of Chaos: {} ({})\n"
-      "Lord of Law: {} ({})\n"
-      "\n"
-      "Duke of Rampart:              {} ({})\n"
-      "Justiciar:                    {} ({})\n"
-      "Commandant:                   {} ({})\n"
-      "Champion:                     {} ({})\n"
-      "Archmage:                     {} ({})\n"
-      "Prime Sorceror:               {} ({})\n"
-      "Shadowlord:                   {} ({})\n"
-      "\n"
-      "High Preists:\n"
-      " of Odin:                     {} ({})\n"
-      " of Set:                      {} ({})\n"
-      " of Athena:                   {} ({})\n"
-      " of Hecate:                   {} ({})\n"
-      " of the Lords of Destiny:     {} ({})\n"
-      "The ArchDruid:                {} ({})\n"
-      "Tholian Grandmaster:          {} ({})\n"
-      "\n"
-      "Hit any key to continue.",
-      Hiscore, Hiscorer, levelname(Hilevel),
-      Hidescrip,
-      Chaoslord, levelname(Chaoslordlevel),
-      Lawlord, levelname(Lawlordlevel),
-      Duke, levelname(Dukelevel),
-      Justiciar, levelname(Justiciarlevel),
-      Commandant, levelname(Commandantlevel),
-      Champion, levelname(Championlevel),
-      Archmage, levelname(Archmagelevel),
-      Prime, levelname(Primelevel),
-      Shadowlord, levelname(Shadowlordlevel),
-      Priest[ODIN], levelname(Priestlevel[ODIN]),
-      Priest[SET], levelname(Priestlevel[SET]),
-      Priest[ATHENA], levelname(Priestlevel[ATHENA]),
-      Priest[HECATE], levelname(Priestlevel[HECATE]),
-      Priest[DESTINY], levelname(Priestlevel[DESTINY]),
-      Priest[DRUID], levelname(Priestlevel[DRUID]),
-      Grandmaster, levelname(Grandmasterlevel)
-  ).c_str());
+           "High Score: {}, by {} ({})\n"
+           "{}\n"
+           "\n"
+           "Lord of Chaos: {} ({})\n"
+           "Lord of Law: {} ({})\n"
+           "\n"
+           "Duke of Rampart:              {} ({})\n"
+           "Justiciar:                    {} ({})\n"
+           "Commandant:                   {} ({})\n"
+           "Champion:                     {} ({})\n"
+           "Archmage:                     {} ({})\n"
+           "Prime Sorceror:               {} ({})\n"
+           "Shadowlord:                   {} ({})\n"
+           "\n"
+           "High Preists:\n"
+           " of Odin:                     {} ({})\n"
+           " of Set:                      {} ({})\n"
+           " of Athena:                   {} ({})\n"
+           " of Hecate:                   {} ({})\n"
+           " of the Lords of Destiny:     {} ({})\n"
+           "The ArchDruid:                {} ({})\n"
+           "Tholian Grandmaster:          {} ({})\n"
+           "\n"
+           "Hit any key to continue.",
+           Hiscore, Hiscorer, levelname(Hilevel), Hidescrip, Chaoslord, levelname(Chaoslordlevel),
+           Lawlord, levelname(Lawlordlevel), Duke, levelname(Dukelevel), Justiciar,
+           levelname(Justiciarlevel), Commandant, levelname(Commandantlevel), Champion,
+           levelname(Championlevel), Archmage, levelname(Archmagelevel), Prime, levelname(Primelevel),
+           Shadowlord, levelname(Shadowlordlevel), Priest[ODIN], levelname(Priestlevel[ODIN]),
+           Priest[SET], levelname(Priestlevel[SET]), Priest[ATHENA], levelname(Priestlevel[ATHENA]),
+           Priest[HECATE], levelname(Priestlevel[HECATE]), Priest[DESTINY],
+           levelname(Priestlevel[DESTINY]), Priest[DRUID], levelname(Priestlevel[DRUID]), Grandmaster,
+           levelname(Grandmasterlevel)
+  )
+           .c_str());
   getch();
   clear_screen();
 }

@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
 // makes a log npc for houses and hovels
@@ -97,9 +97,9 @@ void make_mansion_npc(int i, int j)
 /* loads the house level into Level*/
 void load_house(int kind, int populate)
 {
-  int  i, j;
+  int i, j;
   char site;
-  int  stops;
+  int stops;
 
   FILE *fd;
 
@@ -123,18 +123,18 @@ void load_house(int kind, int populate)
   switch(kind)
   {
     case E_HOUSE:
-      home_filepath = std::format("{}home1.dat", Omegalib);
+      home_filepath      = std::format("{}home1.dat", Omegalib);
       Level->environment = E_HOUSE;
       site               = cryptkey("home1.dat");
       break;
     case E_MANSION:
-      home_filepath = std::format("{}home2.dat", Omegalib);
+      home_filepath      = std::format("{}home2.dat", Omegalib);
       Level->environment = E_MANSION;
       site               = cryptkey("home2.dat");
       break;
     default:
     case E_HOVEL:
-      home_filepath = std::format("{}home3.dat", Omegalib);
+      home_filepath      = std::format("{}home3.dat", Omegalib);
       Level->environment = E_HOVEL;
       site               = cryptkey("home3.dat");
       break;

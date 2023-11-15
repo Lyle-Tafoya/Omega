@@ -117,13 +117,13 @@ void l_merc_guild()
           queue_message("and announces his own overdue retirement.");
           queue_message("You are the new Commandant of the Legion!");
           queue_message("The Emperor's Regalia is sold for a ridiculous sum.");
-          Commandant = Player.name;
+          Commandant         = Player.name;
           Commandantlevel    = Player.level;
           Commandantbehavior = fixnpc(4);
           save_hiscore_npc(8);
           queue_message("You now know the Spell of Regeneration.");
           spell::Spells[spell::REGENERATE].known = true;
-          Player.rank[LEGION]        = COMMANDANT;
+          Player.rank[LEGION]                    = COMMANDANT;
           Player.maxstr += 2;
           Player.str += 2;
           Player.maxcon += 2;
@@ -157,7 +157,7 @@ void l_merc_guild()
           queue_message("to the far south, in the heart of a swamp.");
           queue_message("You have been taught the spell of heroism!");
           spell::Spells[spell::HEROISM].known = true;
-          Player.rank[LEGION]  = COLONEL;
+          Player.rank[LEGION]                 = COLONEL;
           Player.maxstr++;
           Player.str++;
           Player.maxcon++;
@@ -297,7 +297,7 @@ void l_castle()
         queue_message("Oh, you can keep the Orb, by the way....");
         Player.rank[NOBILITY] = DUKE;
         gain_experience(10000);
-        Duke = Player.name;
+        Duke         = Player.name;
         Dukebehavior = fixnpc(4);
         save_hiscore_npc(12);
         for(y = 52; y < 63; y++)
@@ -332,9 +332,9 @@ void l_castle()
 
 void l_arena()
 {
-  char  response;
-  pob   newitem;
-  int   i, prize, monsterlevel;
+  char response;
+  pob newitem;
+  int i, prize, monsterlevel;
 
   queue_message("Rampart Coliseum");
   if(Player.rank[ARENA] == 0)
@@ -471,7 +471,7 @@ void l_arena()
     monsterlevel = Arena_Monster->level;
     if(Arena_Monster->id == HISCORE_NPC)
     {
-      std::string name = std::format("{}, the arena champion", Champion);
+      std::string name         = std::format("{}, the arena champion", Champion);
       Arena_Monster->monstring = name;
       Arena_Monster->corpsestr = std::format("The corse of {}", name);
       Arena_Monster->level     = 20;
@@ -548,8 +548,8 @@ void l_arena()
         if(Player.rank[ARENA])
         {
           queue_message("You are the new Arena Champion!");
-          Championlevel = Player.level;
-          Champion = Player.name;
+          Championlevel      = Player.level;
+          Champion           = Player.name;
           Player.rank[ARENA] = 5;
           Championbehavior   = fixnpc(4);
           save_hiscore_npc(11);

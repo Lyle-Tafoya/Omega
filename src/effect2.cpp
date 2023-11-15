@@ -74,11 +74,11 @@ void knowledge(int blessing)
     }
     if(Player.alignment < 0)
     {
-      lines[lines.size()-1] += "Chaos";
+      lines[lines.size() - 1] += "Chaos";
     }
     else if(Player.alignment > 0)
     {
-      lines[lines.size()-1] += "Law";
+      lines[lines.size() - 1] += "Law";
     }
     lines.emplace_back("");
     lines.emplace_back("Current stati:");
@@ -246,7 +246,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[LEGION] > 0)
     {
-      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[LEGION]);
+      lines[lines.size() - 1] += std::format(" ({} XP)", Player.guildxp[LEGION]);
     }
     switch(Player.rank[ARENA])
     {
@@ -271,7 +271,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[ARENA] > 0)
     {
-      lines[lines.size()-1] += std::format(" (Opponent {})", Arena_Opponent);
+      lines[lines.size() - 1] += std::format(" (Opponent {})", Arena_Opponent);
     }
     switch(Player.rank[COLLEGE])
     {
@@ -293,7 +293,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[COLLEGE] > 0)
     {
-      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[COLLEGE]);
+      lines[lines.size() - 1] += std::format(" ({} XP)", Player.guildxp[COLLEGE]);
     }
     switch(Player.rank[NOBILITY])
     {
@@ -318,11 +318,13 @@ void knowledge(int blessing)
     }
     if(Player.rank[NOBILITY] > 1)
     {
-      lines[lines.size()-1] += std::format(" ({}{} Quest Completed)", Player.rank[NOBILITY] - 1, ordinal(Player.rank[NOBILITY] - 1));
+      lines[lines.size() - 1] += std::format(
+        " ({}{} Quest Completed)", Player.rank[NOBILITY] - 1, ordinal(Player.rank[NOBILITY] - 1)
+      );
     }
     else if(Player.rank[NOBILITY] == 1)
     {
-      lines[lines.size()-1] += " (1st Quest Undertaken)";
+      lines[lines.size() - 1] += " (1st Quest Undertaken)";
     }
     switch(Player.rank[CIRCLE])
     {
@@ -347,7 +349,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[CIRCLE] > 0)
     {
-      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[CIRCLE]);
+      lines[lines.size() - 1] += std::format(" ({} XP)", Player.guildxp[CIRCLE]);
     }
     switch(Player.rank[ORDER])
     {
@@ -372,7 +374,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[ORDER] > 0)
     {
-      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[ORDER]);
+      lines[lines.size() - 1] += std::format(" ({} XP)", Player.guildxp[ORDER]);
     }
     switch(Player.rank[THIEVES])
     {
@@ -394,7 +396,7 @@ void knowledge(int blessing)
     }
     if(Player.rank[THIEVES] > 0)
     {
-      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[THIEVES]);
+      lines[lines.size() - 1] += std::format(" ({} XP)", Player.guildxp[THIEVES]);
     }
     switch(Player.rank[PRIESTHOOD])
     {
@@ -417,27 +419,27 @@ void knowledge(int blessing)
     switch(Player.patron)
     {
       case ODIN:
-        lines[lines.size()-1] += "Odin";
+        lines[lines.size() - 1] += "Odin";
         break;
       case SET:
-        lines[lines.size()-1] += "Set";
+        lines[lines.size() - 1] += "Set";
         break;
       case ATHENA:
-        lines[lines.size()-1] += "Athena";
+        lines[lines.size() - 1] += "Athena";
         break;
       case HECATE:
-        lines[lines.size()-1] += "Hecate";
+        lines[lines.size() - 1] += "Hecate";
         break;
       case DRUID:
-        lines[lines.size()-1] += "Druidism";
+        lines[lines.size() - 1] += "Druidism";
         break;
       case DESTINY:
-        lines[lines.size()-1] += "the Lords of Destiny";
+        lines[lines.size() - 1] += "the Lords of Destiny";
         break;
     }
     if(Player.rank[PRIESTHOOD] > 0)
     {
-      lines[lines.size()-1] += std::format(" ({} XP)", Player.guildxp[PRIESTHOOD]);
+      lines[lines.size() - 1] += std::format(" ({} XP)", Player.guildxp[PRIESTHOOD]);
     }
     if(Player.rank[MONKS] > 0)
     {
@@ -811,8 +813,7 @@ void sanctify(int blessing)
       }
       else if((Player.patron == ATHENA) || (Player.patron == ODIN))
       {
-        if((Level->site[Player.x][Player.y].aux == SET) ||
-           (Level->site[Player.x][Player.y].aux == HECATE))
+        if((Level->site[Player.x][Player.y].aux == SET) || (Level->site[Player.x][Player.y].aux == HECATE))
         {
           queue_message("Your deity applauds the eradication of Chaos' taint");
           gain_experience(1000);
@@ -825,8 +826,7 @@ void sanctify(int blessing)
       }
       else if((Player.patron == SET) || (Player.patron == HECATE))
       {
-        if((Level->site[Player.x][Player.y].aux == ODIN) ||
-           (Level->site[Player.x][Player.y].aux == ATHENA))
+        if((Level->site[Player.x][Player.y].aux == ODIN) || (Level->site[Player.x][Player.y].aux == ATHENA))
         {
           queue_message("Your deity applauds the obliteration of Law");
           gain_experience(1000);

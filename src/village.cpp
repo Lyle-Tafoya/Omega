@@ -25,14 +25,14 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
 void assign_village_function(int x, int y, int setup)
 {
   static int next = 0;
   static int permutation[24]; // number of x's in village map
-  int        i, j, k;
+  int i, j, k;
 
   if(setup)
   {
@@ -211,8 +211,8 @@ void load_village(int villagenum, int populate)
 #endif
   clear_level(Level);
   Level->environment = E_VILLAGE;
-  char site = cryptkey("village.dat");
-  FILE *fd = checkfopen(std::format("{}village{}.dat", Omegalib, villagenum), "rb");
+  char site          = cryptkey("village.dat");
+  FILE *fd           = checkfopen(std::format("{}village{}.dat", Omegalib, villagenum), "rb");
   for(int j = 0; j < LENGTH; j++)
   {
     for(int i = 0; i < WIDTH; i++)

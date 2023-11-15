@@ -44,7 +44,7 @@ int list_monsters()
       std::vector<std::string> lines;
       for(i = 0; i < NUMMONSTERS; i++)
       {
-        lines.emplace_back(std::format("{}:{}", i+1, Monsters[i].monstring));
+        lines.emplace_back(std::format("{}:{}", i + 1, Monsters[i].monstring));
       }
       menu->load(lines);
       int player_input = menu->get_player_input();
@@ -91,8 +91,7 @@ void summon(int blessing, int id)
   {
     x       = Player.x + Dirs[0][i];
     y       = Player.y + Dirs[1][i];
-    looking = (!inbounds(x, y) || Level->site[x][y].locchar != FLOOR ||
-               Level->site[x][y].creature);
+    looking = (!inbounds(x, y) || Level->site[x][y].locchar != FLOOR || Level->site[x][y].creature);
   }
 
   if(!looking)
@@ -133,7 +132,7 @@ int itemlist(int itemindex, int num)
     std::vector<std::string> lines;
     for(int i = 0; i < num; ++i)
     {
-      lines.emplace_back(std::format("{}:{}", i+1, Objects[i + itemindex].truename));
+      lines.emplace_back(std::format("{}:{}", i + 1, Objects[i + itemindex].truename));
     }
     menu->load(lines);
     player_input = menu->get_player_input();
@@ -213,7 +212,7 @@ void annihilate(int blessing)
       queue_message("Bolts of lightning flash down for as far as you can see!!!");
       queue_message("There is a rain of small birds and insects from the sky, and you");
       queue_message("notice that you can't hear any animal noises around here any "
-             "more...");
+                    "more...");
       Player.alignment -= 3;
     }
     else
@@ -373,7 +372,7 @@ void learnspell(int blessing)
   else
   {
     Objects[SCROLLID + 1].known = true;
-    spell::spell_id id = static_cast<spell::spell_id>(random_range(spell::NUM_SPELLS));
+    spell::spell_id id          = static_cast<spell::spell_id>(random_range(spell::NUM_SPELLS));
     queue_message("Spell Research");
     if((random_range(4 * spell::Spells[id].powerdrain) + spell::Spells[id].powerdrain) <
        (4 * Player.iq + 8 * Player.level))
@@ -655,8 +654,7 @@ void p_teleport(int type)
   else
   {
     setspot(Player.x, Player.y);
-    if(Level->site[Player.x][Player.y].locchar != FLOOR ||
-       Level->site[Player.x][Player.y].creature)
+    if(Level->site[Player.x][Player.y].locchar != FLOOR || Level->site[Player.x][Player.y].creature)
     {
       queue_message("You feel deflected.");
       p_teleport(0);
@@ -721,8 +719,7 @@ void strategic_teleport(int blessing)
    * Hy Magic offers the Location wish, and some artifacts grant this
    * as well.  Seems to me that Hy Magic ought to allow it, and nothing
    * else (aside from the Star Gem, of course). */
-  if((Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL) &&
-     !gamestatusp(CHEATED, GameStatus))
+  if((Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL) && !gamestatusp(CHEATED, GameStatus))
   {
     queue_message("Some property of this eerie place interferes with the magic!\n");
     return;
@@ -1128,7 +1125,7 @@ void dispel(int blessing)
 
 void polymorph(int blessing)
 {
-  int             x = Player.x, y = Player.y, newmonster;
+  int x = Player.x, y = Player.y, newmonster;
   monster *m;
   setspot(x, y);
   if((x == Player.x) && (y == Player.y))
@@ -1250,7 +1247,7 @@ void hellfire(int x, int y, int blessing)
 
 void drain(int blessing)
 {
-  int             x = Player.x, y = Player.y;
+  int x = Player.x, y = Player.y;
   monster *m;
   setspot(x, y);
   queue_message("You begin to drain energy...");

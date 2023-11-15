@@ -59,18 +59,18 @@ void p_hit(monster *m, int dmg, damage_type dtype)
       if(random_range(100) < Player.level + std::max(0, Player.rank[MONKS]))
       {
         hit_message = "You annihilate ";
-        dmult = 1000;
+        dmult       = 1000;
       }
       else
       {
         hit_message = "You blast ";
-        dmult = 5;
+        dmult       = 5;
       }
       break;
     case 1:
     case 2:
       hit_message = "You smash ";
-      dmult = 2;
+      dmult       = 2;
       break;
 
     default:
@@ -626,7 +626,9 @@ void gain_level()
   {
     Player.level++;
     queue_message("You have attained a new experience level!");
-    queue_message(std::format("You are now {}{}", getarticle(levelname(Player.level)), levelname(Player.level)));
+    queue_message(
+      std::format("You are now {}{}", getarticle(levelname(Player.level)), levelname(Player.level))
+    );
     hp_gain = random_range(Player.con) + 1; /* start fix 12/30/98 */
     if(Player.hp < Player.maxhp)
     {
@@ -735,12 +737,10 @@ void p_drown()
         case 0:
           p_death("drowning");
       }
-      std::vector<std::string> lines =
-      {
+      std::vector<std::string> lines = {
         {"a: Drop an item."},
         {"b: Bash an item."},
-        {"c: Drop your whole pack."}
-      };
+        {"c: Drop your whole pack."}};
       menu->load(lines);
       menu->print();
       switch(menugetc())
@@ -874,8 +874,8 @@ int player_hit(int hitmod, char hitloc, monster *m)
 
     transcribe_monster_actions(m);
 
-    bool blocks     = false;
-    int  goodblocks = 0;
+    bool blocks    = false;
+    int goodblocks = 0;
 
     for(size_t i = 0; i < m->meleestr.length(); i += 2)
     {
@@ -1090,17 +1090,12 @@ void change_environment(char new_environment)
     LastCountryLocX = Player.x;
     LastCountryLocY = Player.y;
   }
-  if(((Last_Environment == E_CITY) || (Last_Environment == E_VILLAGE)) &&
-     ((new_environment == E_MANSION) || (new_environment == E_HOUSE) || (new_environment == E_HOVEL) ||
-      (new_environment == E_SEWERS) || (new_environment == E_ARENA)))
+  if(((Last_Environment == E_CITY) || (Last_Environment == E_VILLAGE)) && ((new_environment == E_MANSION) || (new_environment == E_HOUSE) || (new_environment == E_HOVEL) || (new_environment == E_SEWERS) || (new_environment == E_ARENA)))
   {
     LastTownLocX = Player.x;
     LastTownLocY = Player.y;
   }
-  else if(((Last_Environment == E_MANSION) || (Last_Environment == E_HOUSE) ||
-           (Last_Environment == E_HOVEL) || (Last_Environment == E_SEWERS) ||
-           (Last_Environment == E_ARENA)) &&
-          ((new_environment == E_CITY) || (new_environment == E_VILLAGE)))
+  else if(((Last_Environment == E_MANSION) || (Last_Environment == E_HOUSE) || (Last_Environment == E_HOVEL) || (Last_Environment == E_SEWERS) || (Last_Environment == E_ARENA)) && ((new_environment == E_CITY) || (new_environment == E_VILLAGE)))
   {
     Player.x = LastTownLocX;
     Player.y = LastTownLocY;

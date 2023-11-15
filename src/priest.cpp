@@ -243,7 +243,7 @@ void make_hp(pob o)
     queue_message("Your deity raises you to the post of High Priest!");
   }
   queue_message("You feel holy.");
-  Priest[Player.patron] = Player.name;
+  Priest[Player.patron]         = Player.name;
   Priestlevel[Player.patron]    = Player.level;
   Player.rank[PRIESTHOOD]       = HIGHPRIEST;
   Priestbehavior[Player.patron] = fixnpc(4);
@@ -510,7 +510,7 @@ int increase_priest_rank(int deity)
 // prayer occurs at altars, hence name of function
 void l_altar()
 {
-  int  i, deity;
+  int i, deity;
   char response;
 
   if(Current_Environment == E_COUNTRYSIDE)

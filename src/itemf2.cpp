@@ -275,7 +275,12 @@ void weapon_hit(pob weapon, monster *m, int damage_modifier, damage_type damage_
     pob weapon_hand_object = Player.possessions[O_WEAPON_HAND];
     if(weapon_hand_object && weapon_hand_object->used)
     {
-      p_hit(m, Player.dmg - weapon_hand_object->dmg - weapon_hand_object->plus + damage_modifier + weapon->dmg + weapon->plus, damage_type);
+      p_hit(
+        m,
+        Player.dmg - weapon_hand_object->dmg - weapon_hand_object->plus + damage_modifier + weapon->dmg +
+          weapon->plus,
+        damage_type
+      );
     }
     else
     {
@@ -401,8 +406,7 @@ void weapon_tangle(int dmgmod, pob o, monster *m)
 /* if wielding a bow, add bow damage to arrow damage */
 void weapon_arrow(int dmgmod, pob o, monster *m)
 {
-  if(Player.possessions[O_WEAPON_HAND] &&
-     (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
+  if(Player.possessions[O_WEAPON_HAND] && (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
   { /* ie, using a bow */
     p_hit(m, Player.dmg + o->plus + o->dmg + dmgmod, NORMAL_DAMAGE);
   }
