@@ -27,36 +27,36 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string_view>
 
 // omega.cpp functions
-void init_world(void);
+void init_world();
 void inititem(int);
 void initrand(int, int);
 
 // abyss.cpp functions
-void load_abyss(void);
+void load_abyss();
 
 // aux1.cpp functions
 std::string levelname(int);
 std::string mstatus_string(monster *);
 std::string trapid(int);
-int getdir(void);
-bool goberserk(void);
+int getdir();
+bool goberserk();
 int p_country_moveable(int, int);
 int p_moveable(int, int);
-int player_on_sanctuary(void);
-void calc_melee(void);
+int player_on_sanctuary();
+void calc_melee();
 int damage_item(pob);
-std::string describe_player(void);
-void foodcheck(void);
+std::string describe_player();
+void foodcheck();
 void gain_experience(int);
 void p_damage(int, int, const std::string &);
 void p_death(const std::string &);
-void roomcheck(void);
+void roomcheck();
 void searchat(int, int);
 void setspot(int &, int &);
 void showroom(int);
 void surrender(monster *);
 void threaten(monster *);
-void tunnelcheck(void);
+void tunnelcheck();
 
 // aux2.cpp functions
 long item_value(pob);
@@ -66,103 +66,103 @@ int p_immune(int);
 int statmod(int);
 void change_environment(char);
 void enter_site(Symbol);
-void gain_level(void);
-void minute_status_check(void);
-void moon_check(void);
+void gain_level();
+void minute_status_check();
+void moon_check();
 void movecursor(int &, int &, int, int);
-void p_drown(void);
+void p_drown();
 void p_hit(monster *, int, damage_type);
-void p_win(void);
+void p_win();
 void tacplayer(monster *);
-void tenminute_status_check(void);
+void tenminute_status_check();
 void toggle_item_use(bool);
-void torch_check(void);
+void torch_check();
 void weapon_use(int, pob, monster *);
 
 // aux3.cpp functions
 std::string countryid(Symbol);
-char getlocation(void);
-int hostilemonstersnear(void);
+char getlocation();
+int hostilemonstersnear();
 int magic_resist(int);
-size_t maneuvers(void);
-int parsecitysite(void);
+size_t maneuvers();
+int parsecitysite();
 int stonecheck(int);
-void alert_guards(void);
-void countrysearch(void);
-void hourly_check(void);
-void tenminute_check(void);
+void alert_guards();
+void countrysearch();
+void hourly_check();
+void tenminute_check();
 void terrain_check(int);
 
 // char.cpp functions
-long calcmana(void);
+long calcmana();
 int fixnpc(int);
-void save_omegarc(void);
+void save_omegarc();
 
 // city.cpp functions
 void load_city(int);
-void repair_jail(void);
-void resurrect_guards(void);
+void repair_jail();
+void resurrect_guards();
 
 // command1.cpp functions
-void p_country_process(void);
-void p_process(void);
+void p_country_process();
+void p_process();
 
 // command2.cpp functions
-void pickup(void);
-void activate(void);
-void bash_item(void);
-void bash_location(void);
-void callitem(void);
-void closedoor(void);
-void disarm(void);
-void downstairs(void);
-void drop_equipped_item(void);
-void drop_pack_item(void);
-void eat(void);
-void give(void);
-void magic(void);
+void pickup();
+void activate();
+void bash_item();
+void bash_location();
+void callitem();
+void closedoor();
+void disarm();
+void downstairs();
+void drop_equipped_item();
+void drop_pack_item();
+void eat();
+void give();
+void magic();
 void movepincountry(int, int);
 void moveplayer(int, int);
-void opendoor(void);
-void peruse(void);
-void quaff(void);
-void rest(void);
+void opendoor();
+void peruse();
+void quaff();
+void rest();
 void save(int);
 void search(int *);
-void setoptions(void);
-void talk(void);
-void upstairs(void);
-void zapwand(void);
+void setoptions();
+void talk();
+void upstairs();
+void zapwand();
 
 // command3.cpp functions
-void abortshadowform(void);
-void charid(void);
-void city_move(void);
-void dismount_steed(void);
-void examine(void);
-void fire(void);
-void frobgamestatus(void);
-void help(void);
+void abortshadowform();
+void charid();
+void city_move();
+void dismount_steed();
+void examine();
+void fire();
+void frobgamestatus();
+void help();
 void hunt(Symbol);
-void nap(void);
-void pickpocket(void);
+void nap();
+void pickpocket();
 void quit(int = 0);
-void rename_player(void);
-void tacoptions(void);
-void tunnel(void);
-void vault(void);
-void version(void);
-void wizard(void);
+void rename_player();
+void tacoptions();
+void tunnel();
+void vault();
+void version();
+void wizard();
 
 // country.cpp functions
-void load_country(void);
+void load_country();
 void load_dlair(int, int);
 void load_misle(int, int);
 void load_speak(int, int);
 void load_temple(int, int);
 
 // effect1.cpp functions
-int random_item(void);
+int random_item();
 void acquire(int);
 void bless(int);
 void enchant(int);
@@ -198,9 +198,9 @@ void warp(int);
 
 // effect3.cpp functions
 int itemlist(int, int);
-void acid_cloud(void);
-void aggravate(void);
-void amnesia(void);
+void acid_cloud();
+void aggravate();
+void amnesia();
 void annihilate(int);
 void apport(int);
 void clairvoyance(int);
@@ -220,13 +220,13 @@ void illuminate(int);
 void inflict_fear(int, int);
 void learnspell(int);
 void level_drain(int, const std::string &);
-void level_return(void);
+void level_return();
 void levitate(int);
 void p_poison(int);
 void p_teleport(int);
 void polymorph(int);
-void sanctuary(void);
-void shadowform(void);
+void sanctuary();
+void shadowform();
 void sleep_monster(int);
 void sleep_player(int);
 void strategic_teleport(int);
@@ -234,73 +234,73 @@ void summon(int, int);
 void truesight(int);
 
 // env.cpp functions
-void load_arena(void);
+void load_arena();
 void load_circle(int);
 void load_court(int);
 
 // etc.cpp functions
-std::string_view nameprint(void);
+std::string_view nameprint();
 const std::string wordnum(int);
-void hint(void);
+void hint();
 void learnclericalspells(int, int);
 
 // file.cpp functions
 FILE *checkfopen(const std::string &, const std::string &);
-int filecheck(void);
-void abyss_file(void);
-void adeptfile(void);
-void cityguidefile(void);
-void combat_help(void);
-void commandlist(void);
+int filecheck();
+void abyss_file();
+void adeptfile();
+void cityguidefile();
+void combat_help();
+void commandlist();
 void displayfile(const std::string &);
 void extendlog(const std::string &, int);
 void save_hiscore_npc(int);
-void show_license(void);
-void showmotd(void);
-void theologyfile(void);
-void user_intro(void);
-void wishfile(void);
+void show_license();
+void showmotd();
+void theologyfile();
+void user_intro();
+void wishfile();
 
 // gen1.cpp functions
 const std::string roomname(int);
 void build_room(int, int, int, char, int);
-void cavern_level(void);
+void cavern_level();
 void change_level(char, char, char);
 void clear_level(level *);
-void free_dungeon(void);
-void install_specials(void);
-void install_traps(void);
+void free_dungeon();
+void install_specials();
+void install_traps();
 void makedoor(int, int);
-void sewer_level(void);
+void sewer_level();
 void straggle_corridor(int, int, int, int, Symbol, char);
 
 // gen2.cpp functions
 void make_country_screen(Symbol);
 void make_stairs(int);
 void maze_corridor(int, int, int, int, char, char);
-void maze_level(void);
-void room_level(void);
+void maze_level();
+void room_level();
 
 // guild1.cpp functions
-void l_arena(void);
-void l_castle(void);
-void l_merc_guild(void);
+void l_arena();
+void l_castle();
+void l_merc_guild();
 
 // guild2.cpp functions
-void l_college(void);
+void l_college();
 void l_monastery();
-void l_order(void);
-void l_sorcerors(void);
-void l_thieves_guild(void);
+void l_order();
+void l_sorcerors();
+void l_thieves_guild();
 
 // house.cpp functions
 void load_house(int, int);
 
 // inv.cpp functions
-void do_inventory_control(void);
+void do_inventory_control();
 char index_to_key(int);
 long get_money(long);
-const std::string cashstr(void);
+const std::string cashstr();
 std::string itemid(pob);
 bool cursed(pob);
 int find_and_remove_item(int, int);
@@ -313,12 +313,12 @@ void conform_lost_objects(int, pob);
 void conform_unused_object(pob);
 void dispose_lost_objects(int, pob);
 void drop_at(int, int, pob);
-void drop_money(void);
-void fixpack(void);
+void drop_money();
+void fixpack();
 void gain_item(pob);
 void give_money(monster *);
 void givemonster(monster *, object *);
-void lose_all_items(void);
+void lose_all_items();
 void p_drop_at(int, int, int, pob);
 void pickup_at(int, int);
 
@@ -484,7 +484,7 @@ void i_summon(pob);
 void i_symbol(pob);
 
 // lev.cpp functions
-int difficulty(void); /* this function in util.c if MSDOS defined */
+int difficulty(); /* this function in util.c if MSDOS defined */
 pmt m_create(int, int, int, int);
 pmt make_creature(int);
 void make_country_monsters(Symbol);
@@ -492,11 +492,11 @@ void make_site_monster(int, int, int);
 void make_site_treasure(int, int, int);
 void make_specific_treasure(int, int, int);
 void populate_level(int);
-void stock_level(void);
-void wandercheck(void);
+void stock_level();
+void wandercheck();
 
 // mmelee.cpp functions
-char random_loc(void);
+char random_loc();
 void tacmonster(monster *);
 void transcribe_monster_actions(monster *);
 
@@ -516,7 +516,7 @@ void m_vanish(monster *);
 void m_move_leash(monster *);
 
 // mon.cpp functions
-const char *mantype(void);
+const char *mantype();
 void determine_npc_behavior(pmt, int, int);
 void m_abyss(monster *);
 void m_altar(monster *);
@@ -547,46 +547,46 @@ void monster_talk(monster *);
 void movemonster(monster *, int, int);
 
 // move.cpp functions
-void l_abyss(void);
-void l_air_station(void);
-void l_arena_exit(void);
-void l_balancestone(void);
-void l_chaos(void);
-void l_chaostone(void);
-void l_circle_library(void);
-void l_drop_every_portcullis(void);
-void l_earth_station(void);
-void l_enter_circle(void);
-void l_enter_court(void);
-void l_escalator(void);
-void l_fire(void);
-void l_fire_station(void);
-void l_hedge(void);
-void l_house_exit(void);
-void l_lava(void);
-void l_lawstone(void);
-void l_lift(void);
-void l_magic_pool(void);
-void l_mindstone(void);
-void l_no_op(void);
-void l_portcullis_trap(void);
-void l_raise_portcullis(void);
-void l_rubble(void);
-void l_sacrificestone(void);
-void l_tactical_exit(void);
-void l_temple_warning(void);
-void l_throne(void);
-void l_tome1(void);
-void l_tome2(void);
-void l_voice1(void);
-void l_voice2(void);
-void l_voice3(void);
-void l_void(void);
-void l_void_station(void);
-void l_voidstone(void);
-void l_water(void);
-void l_water_station(void);
-void l_whirlwind(void);
+void l_abyss();
+void l_air_station();
+void l_arena_exit();
+void l_balancestone();
+void l_chaos();
+void l_chaostone();
+void l_circle_library();
+void l_drop_every_portcullis();
+void l_earth_station();
+void l_enter_circle();
+void l_enter_court();
+void l_escalator();
+void l_fire();
+void l_fire_station();
+void l_hedge();
+void l_house_exit();
+void l_lava();
+void l_lawstone();
+void l_lift();
+void l_magic_pool();
+void l_mindstone();
+void l_no_op();
+void l_portcullis_trap();
+void l_raise_portcullis();
+void l_rubble();
+void l_sacrificestone();
+void l_tactical_exit();
+void l_temple_warning();
+void l_throne();
+void l_tome1();
+void l_tome2();
+void l_voice1();
+void l_voice2();
+void l_voice3();
+void l_void();
+void l_void_station();
+void l_voidstone();
+void l_water();
+void l_water_station();
+void l_whirlwind();
 
 // movef.cpp functions
 void m_movefunction(monster *, int);
@@ -675,7 +675,7 @@ void m_talk_thief(monster *);
 void m_talk_titter(monster *);
 
 // priest.cpp functions
-void l_altar(void);
+void l_altar();
 
 // save.cpp functions
 bool restore_game(const std::string &);
@@ -683,75 +683,75 @@ bool save_game(const std::string &);
 void signalsave(int = 0);
 
 // site1.cpp functions
-void l_alchemist(void);
-void l_armorer(void);
-void l_bank(void);
-void l_casino(void);
-void l_club(void);
-void l_commandant(void);
-void l_crap(void);
-void l_diner(void);
-void l_dpw(void);
-void l_gym(void);
-void l_healer(void);
-void l_library(void);
-void l_pawn_shop(void);
-void l_statue_wake(void);
-void l_tavern(void);
+void l_alchemist();
+void l_armorer();
+void l_bank();
+void l_casino();
+void l_club();
+void l_commandant();
+void l_crap();
+void l_diner();
+void l_dpw();
+void l_gym();
+void l_healer();
+void l_library();
+void l_pawn_shop();
+void l_statue_wake();
+void l_tavern();
 void statue_random(int, int);
 
 // site2.cpp functions
-void cureforpay(void);
+void cureforpay();
 void gymtrain(int *, int *);
-void healforpay(void);
-void l_adept(void);
-void l_brothel(void);
-void l_cartographer(void);
-void l_charity(void);
-void l_condo(void);
-void l_countryside(void);
-void l_house(void);
-void l_hovel(void);
-void l_mansion(void);
-void l_oracle(void);
-void l_safe(void);
-void l_triffid(void);
-void l_vault(void);
-void pacify_guards(void);
-void send_to_jail(void);
+void healforpay();
+void l_adept();
+void l_brothel();
+void l_cartographer();
+void l_charity();
+void l_condo();
+void l_countryside();
+void l_house();
+void l_hovel();
+void l_mansion();
+void l_oracle();
+void l_safe();
+void l_triffid();
+void l_vault();
+void pacify_guards();
+void send_to_jail();
 
 // time.cpp functions
 void time_clock(int);
 
 // trap.cpp functions
-void l_trap_abyss(void);
-void l_trap_acid(void);
-void l_trap_blade(void);
-void l_trap_dart(void);
-void l_trap_disintegrate(void);
-void l_trap_door(void);
-void l_trap_fire(void);
-void l_trap_manadrain(void);
-void l_trap_pit(void);
-void l_trap_siren(void);
-void l_trap_sleepgas(void);
-void l_trap_snare(void);
-void l_trap_teleport(void);
+void l_trap_abyss();
+void l_trap_acid();
+void l_trap_blade();
+void l_trap_dart();
+void l_trap_disintegrate();
+void l_trap_door();
+void l_trap_fire();
+void l_trap_manadrain();
+void l_trap_pit();
+void l_trap_siren();
+void l_trap_sleepgas();
+void l_trap_snare();
+void l_trap_teleport();
 
 // util.cpp functions
-long calc_points(void);
+long calc_points();
 const std::string getarticle(const std::string &);
 const std::string ordinal(int);
-int confirmation(void);
+int confirmation();
 char cryptkey(const std::string &);
-int day(void);
+int day();
 int distance(int, int, int, int);
 bool hitp(int, int);
-int hour(void);
+int hour();
 int inbounds(int, int);
 int los_p(int, int, int, int);
 int m_unblocked(monster *, int, int);
-int nighttime(void);
+int nighttime();
 int offscreen(int, int);
 int ok_to_free(plv);
 void free_level(plv);
@@ -759,17 +759,17 @@ void free_objlist(pol);
 int random_range(int);
 int screenmod(int);
 int screenmod_horizontal(int);
-int showhour(void);
-int showminute(void);
+int showhour();
+int showminute();
 int strmem(char, const std::string &);
 int unblocked(int, int);
 int view_los_p(int, int, int, int);
 int view_unblocked(int, int);
-void calc_weight(void);
+void calc_weight();
 void do_los(Symbol, int *, int *, int, int);
 void do_object_los(Symbol, int *, int *, int, int);
 void findspace(int *, int *, int);
-void initdirs(void);
+void initdirs();
 
 // village.cpp functions
 void load_village(int, int);

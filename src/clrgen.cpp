@@ -19,7 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <cstdlib>
 #include <curses.h>
 
-void clrgen_init(void)
+void clrgen_init()
 {
   if(32 > COLOR_PAIRS - 1)
   {

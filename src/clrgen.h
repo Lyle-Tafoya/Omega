@@ -55,4 +55,4 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #define CLR_YELLOW_BROWN       COLOR_PAIR(32) | A_BOLD
 #define CLR_YELLOW_WHITE       COLOR_PAIR(31) | A_BOLD
 
-extern void clrgen_init(void);
+extern void clrgen_init();
