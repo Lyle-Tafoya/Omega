@@ -1181,7 +1181,7 @@ void tunnel()
   }
 }
 
-void hunt(Symbol terrain)
+void hunt(chtype terrain)
 {
   int fertility = 0;
   switch(terrain)

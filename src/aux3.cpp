@@ -904,7 +904,7 @@ void countrysearch()
   }
 }
 
-std::string countryid(Symbol terrain)
+std::string countryid(chtype terrain)
 {
   switch(terrain & 0xff)
   {

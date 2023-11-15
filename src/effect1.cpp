@@ -266,7 +266,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
 {
   int xx, yy;
   monster *target;
-  Symbol boltchar;
+  chtype boltchar;
   xx = fx;
   yy = fy;
 
@@ -447,7 +447,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
 {
   int xx, yy, ex, ey, i;
   monster *target;
-  Symbol expchar = ('@' | CLR(LIGHT_PURPLE));
+  chtype expchar = ('@' | CLR(LIGHT_PURPLE));
 
   xx = fx;
   yy = fy;

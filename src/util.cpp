@@ -257,7 +257,7 @@ void initdirs()
 /* do_los moves pyx along a lineofsight from x1 to x2 */
 /* x1 and x2 are pointers because as a side effect they are changed */
 /* to the final location of the pyx */
-void do_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
+void do_los(chtype pyx, int *x1, int *y1, int x2, int y2)
 {
   int dx, dy, ox, oy;
   int major, minor;
@@ -340,7 +340,7 @@ void do_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
 
 /* This is the same as do_los, except we stop before hitting nonliving
 obstructions */
-void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
+void do_object_los(chtype pyx, int *x1, int *y1, int x2, int y2)
 {
   int dx, dy, ox, oy;
   int major, minor;

@@ -65,7 +65,7 @@ std::string actionlocstr(char);
 bool p_immune(int);
 int statmod(int);
 void change_environment(char);
-void enter_site(Symbol);
+void enter_site(chtype);
 void gain_level();
 void minute_status_check();
 void moon_check();
@@ -80,7 +80,7 @@ void torch_check();
 void weapon_use(int, pob, monster *);
 
 // aux3.cpp functions
-std::string countryid(Symbol);
+std::string countryid(chtype);
 char getlocation();
 bool hostilemonstersnear();
 bool magic_resist(int);
@@ -143,7 +143,7 @@ void examine();
 void fire();
 void frobgamestatus();
 void help();
-void hunt(Symbol);
+void hunt(chtype);
 void nap();
 void pickpocket();
 void quit(int = 0);
@@ -272,10 +272,10 @@ void install_specials();
 void install_traps();
 void makedoor(int, int);
 void sewer_level();
-void straggle_corridor(int, int, int, int, Symbol, char);
+void straggle_corridor(int, int, int, int, chtype, char);
 
 // gen2.cpp functions
-void make_country_screen(Symbol);
+void make_country_screen(chtype);
 void make_stairs(int);
 void maze_corridor(int, int, int, int, char, char);
 void maze_level();
@@ -305,7 +305,7 @@ std::string itemid(pob);
 bool cursed(pob);
 bool find_and_remove_item(int, int);
 bool find_item(pob *, int, int);
-int getitem(Symbol);
+int getitem(chtype);
 bool slottable(pob, int);
 pob split_item(int, pob);
 void conform_lost_object(pob);
@@ -487,7 +487,7 @@ void i_symbol(pob);
 int difficulty(); /* this function in util.c if MSDOS defined */
 pmt m_create(int, int, int, int);
 pmt make_creature(int);
-void make_country_monsters(Symbol);
+void make_country_monsters(chtype);
 void make_site_monster(int, int, int);
 void make_site_treasure(int, int, int);
 void make_specific_treasure(int, int, int);
@@ -765,8 +765,8 @@ bool unblocked(int, int);
 bool view_los_p(int, int, int, int);
 bool view_unblocked(int, int);
 void calc_weight();
-void do_los(Symbol, int *, int *, int, int);
-void do_object_los(Symbol, int *, int *, int, int);
+void do_los(chtype, int *, int *, int, int);
+void do_object_los(chtype, int *, int *, int, int);
 void findspace(int *, int *, int);
 void initdirs();
 

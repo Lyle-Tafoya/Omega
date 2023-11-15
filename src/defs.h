@@ -1233,10 +1233,6 @@ enum inventory_slots
   O_RING4
 };
 
-// typedefs needed by structs
-
-typedef chtype Symbol;
-
 // structure definitions
 
 struct room
@@ -1267,7 +1263,7 @@ struct object
   int on_equip;
   int on_unequip;
   unsigned char level;
-  Symbol objchar;
+  chtype objchar;
   std::string objstr;
   std::string truename;
   std::string cursestr;
@@ -1291,7 +1287,7 @@ struct monster
   unsigned char uniqueness;
   int talkf, movef, meleef, strikef, specialf;
   long status, immunity;
-  Symbol monchar;
+  chtype monchar;
   std::string monstring;
   std::string corpsestr;
   std::string meleestr;
@@ -1330,8 +1326,8 @@ struct player
 // terrain locations
 struct terrain
 {
-  Symbol base_terrain_type;
-  Symbol current_terrain_type;
+  chtype base_terrain_type;
+  chtype current_terrain_type;
   char aux;
   char status;
 };
@@ -1342,8 +1338,8 @@ struct location
   char p_locf;            // function executed when moved on
   unsigned char lstatus;  // seen,stopsrun,lit,secret,
   char roomnumber;        // so room can be named
-  Symbol locchar;         // terrain type
-  Symbol showchar;        // char instantaneously drawn for site
+  chtype locchar;         // terrain type
+  chtype showchar;        // char instantaneously drawn for site
   int aux;                // signifies various things
   unsigned char buildaux; // used in constructing level
   objectlist *things;

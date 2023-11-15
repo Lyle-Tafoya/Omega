@@ -204,7 +204,7 @@ void color_mvwaddstr(WINDOW *window, int y, int x, const std::string &s)
 struct entity_info
 {
   std::string name;
-  Symbol character;
+  chtype character;
   int count;
   long int value;
 };
@@ -362,7 +362,7 @@ void show_screen()
       wmove(level_window, screenmod(y), 0);
       for(int x = left; x < right; ++x)
       {
-        Symbol c     = loc_statusp(x, y, SEEN, *Level) ? getspot(x, y, false) : SPACE;
+        chtype c     = loc_statusp(x, y, SEEN, *Level) ? getspot(x, y, false) : SPACE;
         bool is_pile = c == PILE;
         if(is_pile)
         {
@@ -398,7 +398,7 @@ void show_screen()
       wmove(level_window, screenmod(y), 0);
       for(int x = left; x < right; ++x)
       {
-        Symbol c = c_statusp(x, y, SEEN, Country) ? Country[x][y].current_terrain_type : SPACE;
+        chtype c = c_statusp(x, y, SEEN, Country) ? Country[x][y].current_terrain_type : SPACE;
         color_waddch(level_window, c);
       }
     }
@@ -856,7 +856,7 @@ void drawplayer()
   {
     if(inbounds(lastx, lasty) && !offscreen(lastx, lasty))
     {
-      Symbol c = Country[lastx][lasty].current_terrain_type;
+      chtype c = Country[lastx][lasty].current_terrain_type;
       color_mvwaddch(level_window, screenmod(lasty), screenmod_horizontal(lastx), c);
     }
     color_mvwaddch(level_window, screenmod(Player.y), screenmod_horizontal(Player.x), PLAYER);
@@ -873,7 +873,7 @@ void drawplayer()
     }
     else
     {
-      Symbol c = getspot(Player.x, Player.y, false);
+      chtype c = getspot(Player.x, Player.y, false);
       color_mvwaddch(level_window, screenmod(Player.y), screenmod_horizontal(Player.x), c | A_REVERSE);
     }
   }
@@ -967,7 +967,7 @@ void drawvision(int x, int y)
         c_set(x + i, y + j, SEEN, Country);
         if(!offscreen(x + i, y + j))
         {
-          Symbol c = Country[x + i][y + j].current_terrain_type;
+          chtype c = Country[x + i][y + j].current_terrain_type;
           color_mvwaddch(level_window, screenmod(y + j), screenmod_horizontal(x + i), c);
         }
       }
@@ -996,7 +996,7 @@ void drawspot(int x, int y)
 {
   if(inbounds(x, y))
   {
-    Symbol c = getspot(x, y, false);
+    chtype c = getspot(x, y, false);
     if(c != Level->site[x][y].showchar)
     {
       if(view_los_p(Player.x, Player.y, x, y))
@@ -1014,7 +1014,7 @@ void dodrawspot(int x, int y)
 {
   if(inbounds(x, y))
   {
-    Symbol c = getspot(x, y, false);
+    chtype c = getspot(x, y, false);
     if(c != Level->site[x][y].showchar)
     {
       lset(x, y, SEEN, *Level);
@@ -1067,7 +1067,7 @@ void plotspot(int x, int y, int showmonster)
 }
 
 /* Puts c at x,y on screen. No fuss, no bother. */
-void putspot(int x, int y, Symbol c)
+void putspot(int x, int y, chtype c)
 {
   if(!offscreen(x, y))
   {
@@ -1152,7 +1152,7 @@ void erase_monster(monster *m)
 }
 
 /* find apt char to display at some location */
-Symbol getspot(int x, int y, int showmonster)
+chtype getspot(int x, int y, int showmonster)
 {
   if(loc_statusp(x, y, SECRET, *Level))
   {
@@ -1698,7 +1698,7 @@ void endgraf()
   endwin();
 }
 
-void plotchar(Symbol pyx, int x, int y)
+void plotchar(chtype pyx, int x, int y)
 {
   if(!offscreen(x, y))
   {
@@ -1707,7 +1707,7 @@ void plotchar(Symbol pyx, int x, int y)
   }
 }
 
-void draw_explosion(Symbol pyx, int x, int y)
+void draw_explosion(chtype pyx, int x, int y)
 {
   int i, j;
 
@@ -2205,7 +2205,7 @@ void lightspot(int x, int y)
   lset(x, y, LIT, *Level);
   lset(x, y, SEEN, *Level);
   lset(x, y, CHANGED, *Level);
-  Symbol c                   = getspot(x, y, false);
+  chtype c                   = getspot(x, y, false);
   Level->site[x][y].showchar = c;
   putspot(x, y, c);
 }
@@ -2266,7 +2266,7 @@ constexpr std::array SLOT_NAMES{
   "Finger        ", "Finger        ", "Finger        ", "Finger        ",
 };
 
-void print_inventory_menu(Symbol item_type)
+void print_inventory_menu(chtype item_type)
 {
   std::vector<std::string> lines;
   std::string line;

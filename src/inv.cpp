@@ -673,7 +673,7 @@ listed in the possibilities.
    if itype is any other object type (eg SCROLL, POTION, etc.), only
 that type of item is acceptable or is listed */
 
-int getitem(Symbol itype)
+int getitem(chtype itype)
 {
   std::string invstr;
   char key;

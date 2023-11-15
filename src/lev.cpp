@@ -27,7 +27,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 level structure generation */
 
 /* monsters for tactical encounters */
-void make_country_monsters(Symbol terrain)
+void make_country_monsters(chtype terrain)
 {
   pml tml, ml = nullptr;
   static int plains[10] = {BUNNY, BUNNY, HORNET, QUAIL, HAWK, DEER, WOLF, LION, BRIGAND, RANDOM};

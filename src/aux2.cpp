@@ -1036,7 +1036,7 @@ void toggle_item_use(bool on)
   resetgamestatus(SUPPRESS_PRINTING, GameStatus);
 }
 
-void enter_site(Symbol site)
+void enter_site(chtype site)
 {
   switch(site)
   {

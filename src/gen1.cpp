@@ -114,7 +114,7 @@ plv findlevel(level *dungeon, char levelnum)
 void find_stairs(char fromlevel, char tolevel)
 {
   int i, j, found = false;
-  Symbol sitechar;
+  chtype sitechar;
   if(fromlevel > tolevel)
   {
     sitechar = STAIRS_DOWN;
@@ -247,7 +247,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
   roomcheck();
 }
 
-void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, Symbol loc, char rsi)
+void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, chtype loc, char rsi)
 {
   int i;
   for(i = 0; i < n; i++)
@@ -280,7 +280,7 @@ void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, Symbol loc, char rs
 /* keep going in one orthogonal direction or another until we hit our */
 /* destination */
 
-void straggle_corridor(int fx, int fy, int tx, int ty, Symbol loc, char rsi)
+void straggle_corridor(int fx, int fy, int tx, int ty, chtype loc, char rsi)
 {
   int dx, dy;
   while((fx != tx) || (fy != ty))
@@ -586,7 +586,7 @@ void cavern_level()
   }
 }
 
-void sewer_corridor(int x, int y, int dx, int dy, Symbol locchar)
+void sewer_corridor(int x, int y, int dx, int dy, chtype locchar)
 {
   int continuing = true;
   makedoor(x, y);
@@ -629,7 +629,7 @@ void sewer_level()
 {
   int i, tx, ty, t, l, e;
   char rsi;
-  Symbol lchar;
+  chtype lchar;
 
   Level->numrooms = random_range(3) + 3;
   rsi             = RS_DRAINED_SEWER;

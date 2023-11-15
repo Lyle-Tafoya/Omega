@@ -204,7 +204,7 @@ void make_swamp()
 }
 
 // tactical map generating functions
-void make_country_screen(Symbol terrain)
+void make_country_screen(chtype terrain)
 {
   int i, j;
   TempLevel = Level;
