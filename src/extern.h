@@ -44,7 +44,7 @@ int p_country_moveable(int, int);
 int p_moveable(int, int);
 int player_on_sanctuary();
 void calc_melee();
-int damage_item(pob);
+bool damage_item(object *);
 std::string describe_player();
 void foodcheck();
 void gain_experience(int);
