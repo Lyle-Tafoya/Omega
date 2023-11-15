@@ -546,7 +546,7 @@ void statue_random(int x, int y)
 void wake_statue(int x, int y, int first)
 {
   int i;
-  pml tml;
+  monsterlist *tml;
   if(Level->site[x][y].locchar == STATUE)
   {
     if(!first)

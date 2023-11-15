@@ -521,7 +521,7 @@ void strengthen_death(monster *m)
 void m_death(monster *m)
 {
   pob corpse;
-  pml ml;
+  monsterlist *ml;
   int x, y, found = false;
   pol curr, prev = nullptr;
 

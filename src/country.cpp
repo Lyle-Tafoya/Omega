@@ -517,7 +517,7 @@ void load_misle(int empty, int populate)
 
 void make_high_priest(int i, int j, int deity)
 {
-  pml ml = new monsterlist;
+  monsterlist *ml = new monsterlist;
   pmt m  = new monster;
   make_hiscore_npc(m, deity);
   m->x                       = i;
@@ -709,7 +709,7 @@ void load_temple(int deity, int populate)
   /* Main Temple is peaceful for player of same sect,druids always peaceful. */
   if((Player.patron == deity) || (deity == DRUID))
   {
-    for(pml ml = Level->mlist; ml; ml = ml->next)
+    for(monsterlist *ml = Level->mlist; ml; ml = ml->next)
     {
       m_status_reset(*ml->m, HOSTILE);
     }

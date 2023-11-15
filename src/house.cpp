@@ -32,7 +32,7 @@ plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 // makes a log npc for houses and hovels
 void make_house_npc(int i, int j)
 {
-  pml ml = new monsterlist;
+  monsterlist *ml = new monsterlist;
   pob ob;
   ml->m    = new monster;
   *(ml->m) = Monsters[NPC];
@@ -72,7 +72,7 @@ void make_house_npc(int i, int j)
 // makes a hiscore npc for mansions
 void make_mansion_npc(int i, int j)
 {
-  pml ml   = new monsterlist;
+  monsterlist *ml   = new monsterlist;
   ml->m    = new monster;
   *(ml->m) = Monsters[NPC];
   make_hiscore_npc(ml->m, random_range(14) + 1);

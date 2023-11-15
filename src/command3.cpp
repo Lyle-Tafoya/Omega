@@ -1270,7 +1270,7 @@ void hunt(chtype terrain)
 
 void dismount_steed()
 {
-  pml ml;
+  monsterlist *ml;
   if(!gamestatusp(MOUNTED, GameStatus))
   {
     queue_message("You're on foot already!");

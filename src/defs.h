@@ -1366,9 +1366,6 @@ struct level
 
 // random typedef's
 
-typedef monsterlist mltype;
-typedef mltype *pml;
-
 typedef struct monster montype;
 typedef montype *pmt;
 

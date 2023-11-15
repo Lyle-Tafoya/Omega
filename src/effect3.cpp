@@ -72,7 +72,7 @@ int list_monsters()
 void summon(int blessing, int id)
 {
   int i, looking = true, x, y;
-  pml tml;
+  monsterlist *tml;
 
   if(id < 0)
   {
@@ -191,7 +191,7 @@ void cleanse(int blessing)
 
 void annihilate(int blessing)
 {
-  pml ml;
+  monsterlist *ml;
   int i;
 
   if(blessing == 0)
@@ -251,7 +251,7 @@ void sleep_monster(int blessing)
   else if(blessing > 0)
   {
     queue_message("A silence pervades the area.");
-    for(pml ml = Level->mlist; ml; ml = ml->next)
+    for(monsterlist *ml = Level->mlist; ml; ml = ml->next)
     {
       m_status_reset(*ml->m, AWAKE);
       ml->m->wakeup = 0;
@@ -340,7 +340,7 @@ void clairvoyance(int vision)
 
 void aggravate()
 {
-  pml tm;
+  monsterlist *tm;
 
   for(tm = Level->mlist; tm; tm = tm->next)
   {

@@ -1092,7 +1092,7 @@ void drawmonsters(int display)
   int top    = std::max(0, ScreenOffset);
   int bottom = std::min(LENGTH, ScreenOffset + ScreenLength);
   int right  = std::min(WIDTH, HorizontalOffset + ScreenWidth);
-  for(pml ml = Level->mlist; ml; ml = ml->next)
+  for(monsterlist *ml = Level->mlist; ml; ml = ml->next)
   {
     if(ml->m->hp > 0)
     {

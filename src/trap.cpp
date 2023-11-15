@@ -28,7 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* note special function on different levels */
 void l_trap_siren()
 {
-  pml ml;
+  monsterlist *ml;
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   queue_message("A klaxon goes off!");

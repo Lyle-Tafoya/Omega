@@ -31,7 +31,7 @@ extern bool received_directions;
 void m_talk_druid(monster *m)
 {
   int i;
-  pml curr;
+  monsterlist *curr;
 
   if(!m_statusp(*m, HOSTILE))
   {

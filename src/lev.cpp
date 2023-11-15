@@ -29,7 +29,7 @@ level structure generation */
 /* monsters for tactical encounters */
 void make_country_monsters(chtype terrain)
 {
-  pml tml, ml = nullptr;
+  monsterlist *tml, *ml = nullptr;
   static int plains[10] = {BUNNY, BUNNY, HORNET, QUAIL, HAWK, DEER, WOLF, LION, BRIGAND, RANDOM};
   /*    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};*/
   /* DG changed (WDT: I'd like to see a blacksnake). */
@@ -110,7 +110,7 @@ is completely random, but also gets harder as it is explored;
 the astral and the volcano just stay hard... */
 void populate_level(int monstertype)
 {
-  pml head, tml;
+  monsterlist *head, *tml;
   int i, j, k, monsterid, nummonsters = (random_range(difficulty() / 3) + 1) * 3 + 8;
 
   if(monstertype == E_CASTLE)
@@ -476,7 +476,7 @@ void populate_level(int monstertype)
 void wandercheck()
 {
   int x, y;
-  pml tml;
+  monsterlist *tml;
   if(random_range(MaxDungeonLevels) < difficulty())
   {
     findspace(&x, &y, -1);
@@ -490,7 +490,7 @@ void wandercheck()
 /* call make_creature and place created monster on Level->mlist and Level */
 void make_site_monster(int i, int j, int mid)
 {
-  pml ml = new monsterlist;
+  monsterlist *ml = new monsterlist;
   pmt m;
   if(mid > -1)
   {

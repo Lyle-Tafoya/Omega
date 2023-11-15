@@ -1123,7 +1123,7 @@ void l_sorcerors()
 void l_order()
 {
   pob newitem;
-  pml ml;
+  monsterlist *ml;
   queue_message("The Headquarters of the Order of Paladins.");
   if((Player.rank[ORDER] == PALADIN) && (Player.level > Justiciarlevel) &&
      gamestatusp(GAVE_STARGEM, GameStatus) && Player.alignment > 300)

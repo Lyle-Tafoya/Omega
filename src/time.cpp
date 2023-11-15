@@ -46,7 +46,7 @@ void fix_phantom(monster *m)
 void time_clock(int reset)
 {
   int env;
-  pml ml, *prev;
+  monsterlist *ml, **prev;
 
   if(++Tick > 60)
   {

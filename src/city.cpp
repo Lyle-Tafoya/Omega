@@ -338,7 +338,7 @@ void mazesite(int i, int j, int populate)
 void load_city(int populate)
 {
   int i, j;
-  pml ml;
+  monsterlist *ml;
   char site;
 
   FILE *fd;

@@ -919,9 +919,9 @@ void free_objlist(pol pobjlist)
   }
 }
 
-void free_mons_and_objs(pml mlist)
+void free_mons_and_objs(monsterlist *mlist)
 {
-  pml tmp;
+  monsterlist *tmp;
 
   while(mlist)
   {

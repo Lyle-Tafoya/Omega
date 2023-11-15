@@ -263,7 +263,7 @@ void cureforpay()
 
 void pacify_guards()
 {
-  pml ml;
+  monsterlist *ml;
 
   for(ml = Level->mlist; ml; ml = ml->next)
   {

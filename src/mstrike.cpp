@@ -66,7 +66,7 @@ void m_blind_strike(monster *m)
     {
       queue_message("You've been blinded!");
       Player.status[BLINDED] = random_range(4) + 1;
-      for(pml ml = Level->mlist; ml; ml = ml->next)
+      for(monsterlist *ml = Level->mlist; ml; ml = ml->next)
       {
         plotspot(ml->m->x, ml->m->y, false);
       }

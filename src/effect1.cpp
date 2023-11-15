@@ -591,7 +591,7 @@ void fball(int fx, int fy, int tx, int ty, int dmg)
 
 void mondet(int blessing)
 {
-  pml ml;
+  monsterlist *ml;
   for(ml = Level->mlist; ml; ml = ml->next)
   {
     if(ml->m->hp > 0) /* FIXED 12/30/98 DG */

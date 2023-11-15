@@ -40,7 +40,7 @@ extern interactive_menu *menu;
 
 void indoors_random_event()
 {
-  pml ml;
+  monsterlist *ml;
   pol ol;
   switch(random_range(1000))
   {
@@ -1384,7 +1384,7 @@ void destroy_order()
 void alert_guards()
 {
   int foundguard = false;
-  pml ml;
+  monsterlist *ml;
   int suppress = 0;
   for(ml = Level->mlist; ml; ml = ml->next)
   {
