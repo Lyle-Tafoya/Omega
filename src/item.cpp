@@ -22,9 +22,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "spell.h"
 
 /* make a random new object, returning pointer */
-pob create_object(int itemlevel)
+object *create_object(int itemlevel)
 {
-  pob o;
+  object *o;
   int r;
   int ok = false;
 
@@ -97,7 +97,7 @@ pob create_object(int itemlevel)
   return o;
 }
 
-void make_cash(pob o, int level)
+void make_cash(object *o, int level)
 {
   *o           = Objects[CASHID];
   o->basevalue = random_range(level * level + 10) + 1; /* aux is AU value */
@@ -105,7 +105,7 @@ void make_cash(pob o, int level)
   o->cursestr = o->truename = o->objstr;
 }
 
-void make_food(pob o, int id)
+void make_food(object *o, int id)
 {
   if(id == -1)
   {
@@ -114,7 +114,7 @@ void make_food(pob o, int id)
   *o = Objects[FOODID + id];
 }
 
-void make_corpse(pob o, monster *m)
+void make_corpse(object *o, monster *m)
 {
   *o           = Objects[CORPSEID];
   o->charge    = m->id;
@@ -227,7 +227,7 @@ int itemcharge()
   return (random_range(20) + 1);
 }
 
-void make_ring(pob o, int id)
+void make_ring(object *o, int id)
 {
   if(id == -1)
   {
@@ -296,7 +296,7 @@ const std::string grotname()
   }
 }
 
-void make_thing(pob o, int id)
+void make_thing(object *o, int id)
 {
   if(id == -1)
   {
@@ -310,7 +310,7 @@ void make_thing(pob o, int id)
   }
 }
 
-void make_scroll(pob o, int id)
+void make_scroll(object *o, int id)
 {
   if(id == -1)
   {
@@ -324,7 +324,7 @@ void make_scroll(pob o, int id)
   }
 }
 
-void make_potion(pob o, int id)
+void make_potion(object *o, int id)
 {
   if(id == -1)
   {
@@ -337,7 +337,7 @@ void make_potion(pob o, int id)
   }
 }
 
-void make_weapon(pob o, int id)
+void make_weapon(object *o, int id)
 {
   if(id == -1)
   {
@@ -366,7 +366,7 @@ void make_weapon(pob o, int id)
   }
 }
 
-void make_shield(pob o, int id)
+void make_shield(object *o, int id)
 {
   if(id == -1)
   {
@@ -391,7 +391,7 @@ void make_shield(pob o, int id)
   }
 }
 
-void make_armor(pob o, int id)
+void make_armor(object *o, int id)
 {
   if(id == -1)
   {
@@ -416,7 +416,7 @@ void make_armor(pob o, int id)
   }
 }
 
-void make_cloak(pob o, int id)
+void make_cloak(object *o, int id)
 {
   if(id == -1)
   {
@@ -430,7 +430,7 @@ void make_cloak(pob o, int id)
   }
 }
 
-void make_boots(pob o, int id)
+void make_boots(object *o, int id)
 {
   if(id == -1)
   {
@@ -443,7 +443,7 @@ void make_boots(pob o, int id)
   }
 }
 
-void make_stick(pob o, int id)
+void make_stick(object *o, int id)
 {
   if(id == -1)
   {
@@ -457,7 +457,7 @@ void make_stick(pob o, int id)
   }
 }
 
-void make_artifact(pob o, int id)
+void make_artifact(object *o, int id)
 {
   if(id == -1)
   {

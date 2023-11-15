@@ -574,7 +574,7 @@ monster *m_create(int x, int y, int kind, int level)
 monster *make_creature(int mid)
 {
   monster *newmonster = new monster;
-  pob ob;
+  object *ob;
   int i, treasures;
 
   if(mid == -1)
@@ -675,7 +675,7 @@ monster *make_creature(int mid)
     {
       do
       {
-        ob = (pob)(create_object(newmonster->level));
+        ob = create_object(newmonster->level);
         if(ob->uniqueness != COMMON)
         {
           Objects[ob->id].uniqueness = UNIQUE_UNMADE;
@@ -733,7 +733,7 @@ void stock_level()
 void make_site_treasure(int i, int j, int itemlevel)
 {
   objectlist *tmp                  = new objectlist;
-  tmp->thing               = ((pob)create_object(itemlevel));
+  tmp->thing               = create_object(itemlevel);
   tmp->next                = Level->site[i][j].things;
   Level->site[i][j].things = tmp;
 }

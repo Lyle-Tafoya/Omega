@@ -37,7 +37,7 @@ void l_thieves_guild()
 {
   int fee, count, i, number, done = false, dues = 1000;
   char c, action;
-  pob lockpick;
+  object *lockpick;
   queue_message("You have penetrated to the Lair of the Thieves' Guild.");
   if(!nighttime())
   {
@@ -1122,7 +1122,7 @@ void l_sorcerors()
 
 void l_order()
 {
-  pob newitem;
+  object *newitem;
   monsterlist *ml;
   queue_message("The Headquarters of the Order of Paladins.");
   if((Player.rank[ORDER] == PALADIN) && (Player.level > Justiciarlevel) &&

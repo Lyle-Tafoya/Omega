@@ -649,7 +649,7 @@ void gain_level()
 }
 
 /* If an item is unidentified, it isn't worth much to those who would buy it */
-long item_value(pob item)
+long item_value(object *item)
 {
   if(item->known == 0)
   {
@@ -680,7 +680,7 @@ long item_value(pob item)
 }
 
 /* figures value based on item base-value, charge, plus, and blessing */
-long true_item_value(pob item)
+long true_item_value(object *item)
 {
   long value = item->basevalue;
 
@@ -787,7 +787,7 @@ void p_drown()
 }
 
 /* the effect of some weapon on monster m, with dmgmod a bonus to damage */
-void weapon_use(int dmgmod, pob weapon, monster *m)
+void weapon_use(int dmgmod, object *weapon, monster *m)
 {
   int aux = (!weapon ? -2 : weapon->aux); /* bare hands */
   switch(aux)

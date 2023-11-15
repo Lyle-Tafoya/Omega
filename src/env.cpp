@@ -34,7 +34,7 @@ void load_arena()
 {
   int i, j;
   char site;
-  pob box = new object;
+  object *box = new object;
   FILE *fd;
 
   *box = Objects[THINGID + 0];
@@ -109,7 +109,7 @@ void make_prime(int i, int j)
   monsterlist *ml = new monsterlist;
   monster *m  = new monster;
   objectlist *ol;
-  pob o;
+  object *o;
   make_hiscore_npc(m, 10); /* 10 is index for prime */
   m->x                       = i;
   m->y                       = j;

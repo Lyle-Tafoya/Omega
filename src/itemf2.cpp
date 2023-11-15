@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 
 /* ring functions */
-void i_perm_knowledge(pob o)
+void i_perm_knowledge(object *o)
 {
   if(o->known < 1)
   {
@@ -42,7 +42,7 @@ void i_perm_knowledge(pob o)
   }
 }
 
-void i_perm_strength(pob o)
+void i_perm_strength(object *o)
 {
   if(o->known < 1)
   {
@@ -74,7 +74,7 @@ void i_perm_strength(pob o)
   calc_melee();
 }
 
-void i_perm_burden(pob o)
+void i_perm_burden(object *o)
 {
   int i;
 
@@ -98,7 +98,7 @@ void i_perm_burden(pob o)
   }
 }
 
-void i_perm_gaze_immune(pob o)
+void i_perm_gaze_immune(object *o)
 {
   if(o->used)
   {
@@ -110,7 +110,7 @@ void i_perm_gaze_immune(pob o)
   }
 }
 
-void i_perm_fire_resist(pob o)
+void i_perm_fire_resist(object *o)
 {
   if(o->used)
   {
@@ -122,7 +122,7 @@ void i_perm_fire_resist(pob o)
   }
 }
 
-void i_perm_poison_resist(pob o)
+void i_perm_poison_resist(object *o)
 {
   if(o->used)
   {
@@ -148,7 +148,7 @@ void i_perm_poison_resist(pob o)
   }
 }
 
-void i_perm_regenerate(pob o)
+void i_perm_regenerate(object *o)
 {
   if(o->known < 1)
   {
@@ -176,7 +176,7 @@ void i_perm_regenerate(pob o)
 
 /* armor functions */
 
-void i_normal_armor(pob o)
+void i_normal_armor(object *o)
 {
   if(o->used)
   {
@@ -184,7 +184,7 @@ void i_normal_armor(pob o)
   }
 }
 
-void i_perm_energy_resist(pob o)
+void i_perm_energy_resist(object *o)
 {
   if(o->used)
   {
@@ -200,7 +200,7 @@ void i_perm_energy_resist(pob o)
   }
 }
 
-void i_perm_fear_resist(pob o)
+void i_perm_fear_resist(object *o)
 {
   if(o->used)
   {
@@ -226,7 +226,7 @@ void i_perm_fear_resist(pob o)
   }
 }
 
-void i_perm_breathing(pob o)
+void i_perm_breathing(object *o)
 {
   if(o->known < 1)
   {
@@ -264,7 +264,7 @@ void i_perm_breathing(pob o)
 
 /* weapons functions */
 
-void weapon_hit(pob weapon, monster *m, int damage_modifier, damage_type damage_type)
+void weapon_hit(object *weapon, monster *m, int damage_modifier, damage_type damage_type)
 {
   if(weapon->used)
   {
@@ -272,7 +272,7 @@ void weapon_hit(pob weapon, monster *m, int damage_modifier, damage_type damage_
   }
   else
   {
-    pob weapon_hand_object = Player.possessions[O_WEAPON_HAND];
+    object *weapon_hand_object = Player.possessions[O_WEAPON_HAND];
     if(weapon_hand_object && weapon_hand_object->used)
     {
       p_hit(
@@ -289,7 +289,7 @@ void weapon_hit(pob weapon, monster *m, int damage_modifier, damage_type damage_
   }
 }
 
-void weapon_acidwhip(int dmgmod, pob o, monster *m)
+void weapon_acidwhip(int dmgmod, object *o, monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
@@ -299,7 +299,7 @@ void weapon_acidwhip(int dmgmod, pob o, monster *m)
   weapon_hit(o, m, dmgmod, ACID);
 }
 
-void weapon_scythe(int, pob, monster *m)
+void weapon_scythe(int, object *, monster *m)
 {
   queue_message("Slice!");
   m_death(m);
@@ -311,7 +311,7 @@ void weapon_scythe(int, pob, monster *m)
   }
 }
 
-void weapon_demonblade(int dmgmod, pob o, monster *m)
+void weapon_demonblade(int dmgmod, object *o, monster *m)
 {
   if(o->blessing > -1)
   {
@@ -369,7 +369,7 @@ void weapon_demonblade(int dmgmod, pob o, monster *m)
   }
 }
 
-void weapon_lightsabre(int, pob o, monster *m)
+void weapon_lightsabre(int, object *o, monster *m)
 {
   if(!o->known)
   {
@@ -393,7 +393,7 @@ void weapon_lightsabre(int, pob o, monster *m)
   }
 }
 
-void weapon_tangle(int dmgmod, pob o, monster *m)
+void weapon_tangle(int dmgmod, object *o, monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
@@ -404,7 +404,7 @@ void weapon_tangle(int dmgmod, pob o, monster *m)
 }
 
 /* if wielding a bow, add bow damage to arrow damage */
-void weapon_arrow(int dmgmod, pob o, monster *m)
+void weapon_arrow(int dmgmod, object *o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] && (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
   { /* ie, using a bow */
@@ -417,7 +417,7 @@ void weapon_arrow(int dmgmod, pob o, monster *m)
 }
 
 /* if wielding a crossbow, add bow damage to arrow damage */
-void weapon_bolt(int dmgmod, pob o, monster *m)
+void weapon_bolt(int dmgmod, object *o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] &&
      (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) && /*ie using a crossbow */
@@ -432,7 +432,7 @@ void weapon_bolt(int dmgmod, pob o, monster *m)
   }
 }
 
-void weapon_mace_disrupt(int dmgmod, pob o, monster *m)
+void weapon_mace_disrupt(int dmgmod, object *o, monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
@@ -445,7 +445,7 @@ void weapon_mace_disrupt(int dmgmod, pob o, monster *m)
   }
 }
 
-void weapon_normal_hit(int dmgmod, pob o, monster *m)
+void weapon_normal_hit(int dmgmod, object *o, monster *m)
 {
   weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
 }
@@ -456,7 +456,7 @@ void weapon_bare_hands(int dmgmod, monster *m)
   p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
 }
 
-void i_demonblade(pob o)
+void i_demonblade(object *o)
 {
   if(o->used)
   {
@@ -474,7 +474,7 @@ void i_demonblade(pob o)
   }
 }
 
-void i_normal_weapon(pob o)
+void i_normal_weapon(object *o)
 {
   if(o->used)
   {
@@ -482,7 +482,7 @@ void i_normal_weapon(pob o)
   }
 }
 
-void i_lightsabre(pob o)
+void i_lightsabre(object *o)
 {
   if(o->used)
   {
@@ -494,12 +494,12 @@ void i_lightsabre(pob o)
   }
 }
 
-void i_mace_disrupt(pob)
+void i_mace_disrupt(object *)
 {
   queue_message("That's a damned heavy mace!");
 }
 
-void weapon_vorpal(int dmgmod, pob o, monster *m)
+void weapon_vorpal(int dmgmod, object *o, monster *m)
 {
   if((random_range(10) < 3) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
@@ -520,7 +520,7 @@ void weapon_vorpal(int dmgmod, pob o, monster *m)
   }
 }
 
-void weapon_desecrate(int dmgmod, pob o, monster *m)
+void weapon_desecrate(int dmgmod, object *o, monster *m)
 {
   o->known = 2;
   if(Player.alignment < 0)
@@ -545,7 +545,7 @@ void weapon_desecrate(int dmgmod, pob o, monster *m)
   }
 }
 
-void weapon_firestar(int dmgmod, pob o, monster *m)
+void weapon_firestar(int dmgmod, object *o, monster *m)
 {
   if(random_range(3) == 1)
   {
@@ -558,7 +558,7 @@ void weapon_firestar(int dmgmod, pob o, monster *m)
   }
 }
 
-void weapon_defend(int dmgmod, pob o, monster *m)
+void weapon_defend(int dmgmod, object *o, monster *m)
 {
   if((Player.alignment < 0) && (o->blessing > 0))
   {
@@ -580,7 +580,7 @@ void weapon_defend(int dmgmod, pob o, monster *m)
   weapon_normal_hit(dmgmod, o, m);
 }
 
-void weapon_victrix(int dmgmod, pob o, monster *m)
+void weapon_victrix(int dmgmod, object *o, monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
@@ -593,7 +593,7 @@ void weapon_victrix(int dmgmod, pob o, monster *m)
   }
 }
 
-void i_defend(pob o)
+void i_defend(object *o)
 {
   o->known = 2;
   if(o->used)
@@ -607,7 +607,7 @@ void i_defend(pob o)
   }
 }
 
-void i_victrix(pob o)
+void i_victrix(object *o)
 {
   o->known    = 2;
   o->blessing = abs(o->blessing);
@@ -625,7 +625,7 @@ void i_victrix(pob o)
   }
 }
 
-void i_desecrate(pob o)
+void i_desecrate(object *o)
 {
   if(o->known < 1)
   {
@@ -644,7 +644,7 @@ void i_desecrate(pob o)
 }
 
 /* shield functions */
-void i_normal_shield(pob o)
+void i_normal_shield(object *o)
 {
   if(o->used)
   {
@@ -652,7 +652,7 @@ void i_normal_shield(pob o)
   }
 }
 
-void i_perm_deflect(pob o)
+void i_perm_deflect(object *o)
 {
   if(o->known < 1)
   {

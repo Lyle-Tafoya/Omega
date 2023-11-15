@@ -215,7 +215,7 @@ void s_fear()
    Eventually will be more interesting */
 void s_ritual()
 {
-  pob symbol;
+  object *symbol;
   int roomno;
   int x, y;
 

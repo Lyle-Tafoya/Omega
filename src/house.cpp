@@ -33,7 +33,7 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 void make_house_npc(int i, int j)
 {
   monsterlist *ml = new monsterlist;
-  pob ob;
+  object *ob;
   ml->m    = new monster;
   *(ml->m) = Monsters[NPC];
   make_log_npc(ml->m);

@@ -221,7 +221,7 @@ void l_bank()
 
 void buyfromstock(int base, int numitems)
 {
-  pob newitem;
+  object *newitem;
 
   append_message("Purchase which item? [ESCAPE to quit] ", true);
   std::vector<std::string> lines;
@@ -459,7 +459,7 @@ void l_healer()
 
 void statue_random(int x, int y)
 {
-  pob item;
+  object *item;
   int i, j;
   switch(random_range(difficulty() + 3) - 1)
   {
@@ -786,7 +786,7 @@ void l_casino()
 void l_commandant()
 {
   int num;
-  pob food;
+  object *food;
   queue_message("Commandant Sonder's Rampart-fried Lyzzard partes. Open 24 hrs.");
   append_message("Buy a bucket! Only 5 Au. Make a purchase? [yn] ", true);
   if(ynq() == 'y')
@@ -1085,7 +1085,7 @@ void l_alchemist()
           i    = getitem(CORPSE);
           if(i != ABORT && Player.possessions[i])
           {
-            pob obj = Player.possessions[i];
+            object *obj = Player.possessions[i];
             if(Monsters[obj->charge].transformid == -1)
             {
               queue_message("I don't want such a thing.");
@@ -1120,7 +1120,7 @@ void l_alchemist()
           i    = getitem(CORPSE);
           if(i != ABORT && Player.possessions[i])
           {
-            pob obj = Player.possessions[i];
+            object *obj = Player.possessions[i];
             if(Monsters[obj->charge].transformid == -1)
             {
               queue_message("Oy vey! You want me to transform such a thing?");

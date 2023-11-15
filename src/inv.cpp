@@ -35,10 +35,10 @@ extern interactive_menu *menu;
 
 // returns some money from player back into "money" item.
 // for giving and dropping money
-pob detach_money()
+object *detach_money()
 {
   long c;
-  pob cash = nullptr;
+  object *cash = nullptr;
   c        = get_money(Player.cash);
   if(c != ABORT)
   {
@@ -53,7 +53,7 @@ pob detach_money()
 /* drops money, heh heh */
 void drop_money()
 {
-  pob money;
+  object *money;
 
   /* WDT HACK!  Let me guess -- this is yet another memory leak, right? */
   money = detach_money();
@@ -133,7 +133,7 @@ void pickup_at(int x, int y)
 
 /* criteria for being able to put some item in some slot */
 /* WDT -- why on earth does the 'slottable' function print stuff???? */
-int aux_slottable(pob o, int slot)
+int aux_slottable(object *o, int slot)
 {
   int ok = true;
   if(!o)
@@ -221,10 +221,10 @@ bool merge_item_with_list(objectlist *l, object *o, int n)
 
 /* put all of o on objlist at x,y on Level->depth */
 /* Not necessarily dropped by character; just dropped... */
-void drop_at(int x, int y, pob o)
+void drop_at(int x, int y, object *o)
 {
   objectlist *tmp;
-  pob cpy;
+  object *cpy;
 
   if(Current_Environment != E_COUNTRYSIDE)
   {
@@ -250,7 +250,7 @@ void drop_at(int x, int y, pob o)
 }
 
 /* put n of o on objlist at x,y on Level->depth */
-void p_drop_at(int x, int y, int n, pob o)
+void p_drop_at(int x, int y, int n, object *o)
 {
   if(Current_Environment != E_COUNTRYSIDE)
   {
@@ -277,7 +277,7 @@ void p_drop_at(int x, int y, int n, pob o)
 }
 
 // return an object's plus as a string
-std::string getplusstr(pob obj)
+std::string getplusstr(object *obj)
 {
   if(obj->plus < 0)
   {
@@ -290,7 +290,7 @@ std::string getplusstr(pob obj)
 }
 
 // return object with charges
-std::string getchargestr(pob obj)
+std::string getchargestr(object *obj)
 {
   std::string chargestr = " [";
   if(obj->charge < 0)
@@ -305,7 +305,7 @@ std::string getchargestr(pob obj)
 }
 
 /* return an object's number as a string */
-std::string getnumstr(pob obj)
+std::string getnumstr(object *obj)
 {
   std::string numstr;
   if(obj->number > 1 && obj->number < 41)
@@ -320,7 +320,7 @@ std::string getnumstr(pob obj)
 }
 
 // returns a string for identified items
-std::string itemid(pob obj)
+std::string itemid(object *obj)
 {
   std::string item_name;
   if(obj->objchar == CASH)
@@ -441,7 +441,7 @@ const std::string cashstr()
 
 void give_money(monster *m)
 {
-  pob cash;
+  object *cash;
 
   cash = detach_money();
   if(!cash)
@@ -548,7 +548,7 @@ void givemonster(monster *m, object *o)
 }
 
 /* will clear all, not just one of an object. */
-void conform_lost_object(pob obj)
+void conform_lost_object(object *obj)
 {
   if(obj)
   {
@@ -558,7 +558,7 @@ void conform_lost_object(pob obj)
 
 /* removes n of object from inventory; frees object if appropriate. */
 
-void dispose_lost_objects(int n, pob obj)
+void dispose_lost_objects(int n, object *obj)
 {
   int i, conformed = false, subtracted = false;
 
@@ -594,7 +594,7 @@ void dispose_lost_objects(int n, pob obj)
 
 /* removes n of object from inventory without freeing object.
    Removes all instances of pointer (might be 2 handed weapon, etc) */
-void conform_lost_objects(int n, pob obj)
+void conform_lost_objects(int n, object *obj)
 {
   int i, conformed = false, subtracted = false;
   if(obj)
@@ -623,7 +623,7 @@ void conform_lost_objects(int n, pob obj)
 }
 
 /* clears unused possession */
-void conform_unused_object(pob obj)
+void conform_unused_object(object *obj)
 {
   if(obj->used)
   {
@@ -798,7 +798,7 @@ bool merge_item_with_inventory(object *o)
 }
 
 /* inserts the item at the start of the pack array */
-void push_pack(pob o)
+void push_pack(object *o)
 {
   for(int i = Player.packptr; i > 0; i--)
   {
@@ -808,7 +808,7 @@ void push_pack(pob o)
   Player.packptr++;
 }
 
-void add_to_pack(pob o)
+void add_to_pack(object *o)
 {
   if(merge_item_with_pack(o))
   {
@@ -826,7 +826,7 @@ void add_to_pack(pob o)
   }
 }
 
-int get_to_pack(pob o)
+int get_to_pack(object *o)
 {
   if(merge_item_with_pack(o))
   {
@@ -888,7 +888,7 @@ int pack_item_cost(int index)
 }
 
 // whether or not an item o can be used in a slot. Assumes o can in fact be placed in the slot.
-bool item_useable(pob o, int slot)
+bool item_useable(object *o, int slot)
 {
   if(slot == O_ARMOR || slot == O_CLOAK || slot == O_SHIELD || slot == O_BOOTS || slot >= O_RING1)
   {
@@ -926,9 +926,9 @@ bool item_useable(pob o, int slot)
 }
 
 // prevents people from wielding 3 short swords, etc.
-void pack_extra_items(pob item)
+void pack_extra_items(object *item)
 {
-  pob extra     = new object;
+  object *extra     = new object;
   *extra        = *item;
   extra->number = item->number - 1;
   extra->used   = false;
@@ -949,7 +949,7 @@ void pack_extra_items(pob item)
 /* WDT -- 'response' must be an index into the pack. */
 void use_pack_item(int response, int slot)
 {
-  pob item;
+  object *item;
   int i;
   i = pack_item_cost(response);
   if(i > 10)
@@ -1125,7 +1125,7 @@ void take_from_pack(int slot)
 }
 
 // returns some number between 0 and o->number
-int get_item_number(pob o)
+int get_item_number(object *o)
 {
   int n = 0;
   if(o->number == 1)
@@ -1231,9 +1231,9 @@ void do_inventory_control()
 /* splits num off of item to make newitem which is returned */
 /* something else (conform_lost_objects) has to reduce the actual
    number value of item and Player.itemweight */
-pob split_item(int num, pob item)
+object *split_item(int num, object *item)
 {
-  pob newitem = nullptr;
+  object *newitem = nullptr;
   if(item)
   {
     newitem  = new object;
@@ -1249,7 +1249,7 @@ pob split_item(int num, pob item)
 }
 
 // criteria for being able to put some item in some slot
-bool slottable(pob o, int slot)
+bool slottable(object *o, int slot)
 {
   bool ok = true;
   if(!o)
@@ -1299,7 +1299,7 @@ bool slottable(pob o, int slot)
   return ok;
 }
 
-bool cursed(pob obj)
+bool cursed(object *obj)
 {
   if(!obj)
   {
@@ -1314,7 +1314,7 @@ bool cursed(pob obj)
 // returns true if item with id and charge is found in pack or in
 // inventory slot. charge is used to differentiate
 // corpses instead of aux, which is their food value.
-bool find_item(pob *o, int id, int chargeval)
+bool find_item(object **o, int id, int chargeval)
 {
   int i;
   bool found = false;
@@ -1354,7 +1354,7 @@ bool find_and_remove_item(int id, int chargeval)
 {
   int i;
   bool found = false;
-  pob o = nullptr;
+  object *o = nullptr;
 
   for(i = 1; ((i < MAXITEMS) && (!found)); i++)
   {
@@ -1418,7 +1418,7 @@ void lose_all_items()
 /* makes sure Player.pack is OK, (used after sale from pack) */
 void fixpack()
 {
-  pob tpack[MAXPACK];
+  object *tpack[MAXPACK];
   int i, tctr = 0;
   for(i = 0; i < MAXPACK; i++)
   {

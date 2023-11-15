@@ -795,7 +795,7 @@ void l_air_station()
 
 void l_earth_station()
 {
-  pob o;
+  object *o;
   queue_message("The tendrilled mass reaches out for you from the muddy ooze.");
   if(find_item(&o, THINGID + 6, -1))
   {
@@ -1012,7 +1012,7 @@ void l_temple_warning()
 
 void l_throne()
 {
-  pob o;
+  object *o;
   queue_message("You have come upon a huge ornately appointed throne!");
   queue_message("Sit in it? [yn] ");
   if(ynq() == 'y')

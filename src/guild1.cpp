@@ -33,7 +33,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 void l_merc_guild()
 {
-  pob newitem;
+  object *newitem;
 
   queue_message("Legion of Destiny, Mercenary Guild, Inc.");
   if(nighttime())
@@ -204,7 +204,7 @@ void l_merc_guild()
 
 void l_castle()
 {
-  pob o;
+  object *o;
   int x, y;
 
   if(Player.level < 3)
@@ -333,7 +333,7 @@ void l_castle()
 void l_arena()
 {
   char response;
-  pob newitem;
+  object *newitem;
   int i, prize, monsterlevel;
 
   queue_message("Rampart Coliseum");

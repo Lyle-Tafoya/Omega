@@ -207,7 +207,7 @@ void hp_req_print()
   }
 }
 
-void make_hp(pob o)
+void make_hp(object *o)
 {
   queue_message("A full-scale heavenly choir chants 'Hallelujah' all around you!");
   queue_message("You notice a change in the symbol you carry....");
@@ -253,7 +253,7 @@ void make_hp(pob o)
 
 void hp_req_test()
 {
-  pob o;
+  object *o;
   switch(Player.patron)
   {
     case ODIN:

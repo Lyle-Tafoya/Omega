@@ -1364,10 +1364,6 @@ struct level
   int last_visited;   // time player was last on this level
 };
 
-// random typedef's
-typedef struct object objtype;
-typedef objtype *pob;
-
 // random  function declarations from system libraries
 
 #undef sign

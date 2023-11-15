@@ -471,7 +471,7 @@ void talk()
 void disarm()
 {
   int x, y, index = 0;
-  pob o;
+  object *o;
 
   queue_message("Disarm -- ");
 
@@ -571,7 +571,7 @@ void give()
   int index;
   int dx, dy, dindex = 0;
   monster *m;
-  pob obj;
+  object *obj;
 
   queue_message("Give to monster --");
   dindex = getdir();
@@ -920,7 +920,7 @@ void setoptions()
 void callitem()
 {
   int index;
-  pob obj;
+  object *obj;
 
   setgamestatus(SKIP_MONSTERS, GameStatus);
   queue_message("Call --");
@@ -1177,7 +1177,7 @@ void bash_location()
 void bash_item()
 {
   int item;
-  pob obj;
+  object *obj;
 
   queue_message("Destroy an item --");
   item = getitem(NULL_ITEM);

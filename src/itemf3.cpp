@@ -30,7 +30,7 @@ extern void item_equip(object *);
 extern void item_unequip(object *);
 
 /* amulet of the planes */
-void i_planes(pob)
+void i_planes(object *)
 {
   if(Player.mana < 1)
   {
@@ -46,7 +46,7 @@ void i_planes(pob)
 }
 
 /* the sceptre of high magic */
-void i_sceptre(pob)
+void i_sceptre(object *)
 {
   if(HiMagicUse == Date)
   {
@@ -74,7 +74,7 @@ void i_sceptre(pob)
 }
 
 /* the star gem */
-void i_stargem(pob o)
+void i_stargem(object *o)
 {
   if(StarGemUse == Date)
   {
@@ -116,7 +116,7 @@ void i_stargem(pob o)
 }
 
 /* wand of fear */
-void i_fear(pob o)
+void i_fear(object *o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -130,7 +130,7 @@ void i_fear(pob o)
   inflict_fear(x, y);
 }
 
-void i_juggernaut(pob o)
+void i_juggernaut(object *o)
 {
   int d, x = Player.x, y = Player.y;
   int seen = 1, not_seen = 0;
@@ -216,7 +216,7 @@ void i_juggernaut(pob o)
   }
 }
 
-void i_symbol(pob o)
+void i_symbol(object *o)
 {
   int i;
   if(!o->known)
@@ -261,7 +261,7 @@ void i_symbol(pob o)
   }
 }
 
-void i_crystal(pob o)
+void i_crystal(object *o)
 {
   if(!o->known)
   {
@@ -295,7 +295,7 @@ void i_crystal(pob o)
   }
 }
 
-void i_antioch(pob o)
+void i_antioch(object *o)
 {
   int x = Player.x, y = Player.y;
   int count;
@@ -345,7 +345,7 @@ void i_antioch(pob o)
   dispose_lost_objects(1, o);
 }
 
-void i_kolwynia(pob o)
+void i_kolwynia(object *o)
 {
   int i;
   if(!o->known)
@@ -366,7 +366,7 @@ void i_kolwynia(pob o)
   dispose_lost_objects(1, o);
 }
 
-void i_enchantment(pob o)
+void i_enchantment(object *o)
 {
   char response;
   if(ZapDay == day() && ZapHour == hour())
@@ -401,7 +401,7 @@ void i_enchantment(pob o)
   }
 }
 
-void i_helm(pob o)
+void i_helm(object *o)
 {
   if(HelmDay == day() && HelmHour == hour())
   {
@@ -423,13 +423,13 @@ void i_helm(pob o)
   }
 }
 
-void i_death(pob)
+void i_death(object *)
 {
   queue_message("Bad move...");
   p_death("the Potion of Death");
 }
 
-void i_life(pob o)
+void i_life(object *o)
 {
   queue_message("Good move.");
   Player.hp = Player.maxhp = 2 * Player.maxhp;
@@ -457,7 +457,7 @@ int orbcheck(char element)
 }
 
 /* orb functions */
-void i_orbfire(pob o)
+void i_orbfire(object *o)
 {
   if(!orbcheck('f'))
   {
@@ -483,7 +483,7 @@ void i_orbfire(pob o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbwater(pob o)
+void i_orbwater(object *o)
 {
   if(!orbcheck('w'))
   {
@@ -509,7 +509,7 @@ void i_orbwater(pob o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbearth(pob o)
+void i_orbearth(object *o)
 {
   int i;
   if(!orbcheck('e'))
@@ -560,7 +560,7 @@ void i_orbearth(pob o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbair(pob o)
+void i_orbair(object *o)
 {
   if(!orbcheck('a'))
   {
@@ -587,7 +587,7 @@ void i_orbair(pob o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbmastery(pob o)
+void i_orbmastery(object *o)
 {
   if(!orbcheck('m'))
   {
@@ -624,7 +624,7 @@ void i_orbmastery(pob o)
   }
 }
 
-void i_orbdead(pob)
+void i_orbdead(object *)
 {
   queue_message("The burnt-out orb drains all your energy!");
   for(int i = 0; i < spell::NUM_SPELLS; ++i)
@@ -661,7 +661,7 @@ void i_orbdead(pob)
   Player.pow -= 10;
 }
 
-void i_dispel(pob o)
+void i_dispel(object *o)
 {
   dispel((o->blessing > -1) ? o->blessing + random_range(3) : o->blessing);
 }
@@ -669,7 +669,7 @@ void i_dispel(pob o)
 /* stick functions */
 
 /* wand of apportation */
-void i_apport(pob o)
+void i_apport(object *o)
 {
   o->known             = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
@@ -677,7 +677,7 @@ void i_apport(pob o)
 }
 
 /* staff of firebolts */
-void i_firebolt(pob o)
+void i_firebolt(object *o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -691,7 +691,7 @@ void i_firebolt(pob o)
   fbolt(Player.x, Player.y, x, y, Player.dex * 2 + Player.level, 75);
 }
 
-void i_disintegrate(pob o)
+void i_disintegrate(object *o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -705,7 +705,7 @@ void i_disintegrate(pob o)
   disintegrate(x, y);
 }
 
-void i_disrupt(pob o)
+void i_disrupt(object *o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -720,7 +720,7 @@ void i_disrupt(pob o)
 }
 
 /* staff of lightning bolts */
-void i_lbolt(pob o)
+void i_lbolt(object *o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -735,7 +735,7 @@ void i_lbolt(pob o)
 }
 
 /* wand of magic missiles */
-void i_missile(pob o)
+void i_missile(object *o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -750,7 +750,7 @@ void i_missile(pob o)
 }
 
 /* wand of fire balls */
-void i_fireball(pob o)
+void i_fireball(object *o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -765,7 +765,7 @@ void i_fireball(pob o)
 }
 
 /* wand of snowballs */
-void i_snowball(pob o)
+void i_snowball(object *o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -780,7 +780,7 @@ void i_snowball(pob o)
 }
 
 /* wand of lightning balls */
-void i_lball(pob o)
+void i_lball(object *o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -795,7 +795,7 @@ void i_lball(pob o)
 }
 
 /* staff of sleep */
-void i_sleep_other(pob o)
+void i_sleep_other(object *o)
 {
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -804,14 +804,14 @@ void i_sleep_other(pob o)
 
 /* rod of summoning */
 /* rod of summoning now always summons as if cursed */
-void i_summon(pob o)
+void i_summon(object *o)
 {
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
   summon(-1, -1);
 }
 
-void i_hide(pob o)
+void i_hide(object *o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -820,7 +820,7 @@ void i_hide(pob o)
   hide(x, y);
 }
 
-void i_polymorph(pob o)
+void i_polymorph(object *o)
 {
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));

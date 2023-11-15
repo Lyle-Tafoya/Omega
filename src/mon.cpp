@@ -504,7 +504,7 @@ void m_damage(monster *m, int dmg, damage_type dtype)
 void strengthen_death(monster *m)
 {
   objectlist *ol     = new objectlist;
-  pob scythe = new object;
+  object *scythe = new object;
   m->xpv += std::min(10000l, m->xpv + 1000);
   m->hit += std::min(1000, m->hit + 10);
   m->dmg = std::min(10000, m->dmg * 2);
@@ -520,7 +520,7 @@ void strengthen_death(monster *m)
 
 void m_death(monster *m)
 {
-  pob corpse;
+  object *corpse;
   monsterlist *ml;
   int x, y, found = false;
   objectlist *curr, *prev = nullptr;
@@ -816,7 +816,7 @@ void monster_talk(monster *m)
 void make_hiscore_npc(monster *npc, int npcid)
 {
   int st = -1;
-  pob ob;
+  object *ob;
   *npc      = Monsters[HISCORE_NPC];
   npc->aux2 = npcid;
   /* each of the high score npcs can be created here */

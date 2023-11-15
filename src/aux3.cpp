@@ -186,7 +186,7 @@ void hourly_check()
 void outdoors_random_event()
 {
   int num;
-  pob ob;
+  object *ob;
 
   switch(random_range(300))
   {

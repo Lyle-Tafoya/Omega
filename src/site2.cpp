@@ -1084,7 +1084,7 @@ void l_hovel()
 void l_safe()
 {
   char response;
-  pob newitem;
+  object *newitem;
   int attempt = 0;
   queue_message("You have discovered a safe!");
   queue_message("Pick the lock [p], Force the door [f], or ignore [ESCAPE]");

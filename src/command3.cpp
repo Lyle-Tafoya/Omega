@@ -361,7 +361,7 @@ void version()
 void fire()
 {
   int index, x1, y1, x2, y2;
-  pob obj;
+  object *obj;
   monster *m;
 
   queue_message("Fire/Throw --");
@@ -415,7 +415,7 @@ void fire()
         }
         else
         {
-          pob main_hand_object = Player.possessions[O_WEAPON_HAND];
+          object *main_hand_object = Player.possessions[O_WEAPON_HAND];
           if(main_hand_object && main_hand_object->used)
           {
             hitroll = Player.hit - main_hand_object->hit - main_hand_object->plus + obj->hit + obj->plus;

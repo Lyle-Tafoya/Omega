@@ -129,7 +129,7 @@ extern int Date;
 extern int Pawndate;
 /* Pawn Shop item generation date */
 
-extern pob Pawnitems[PAWNITEMS];
+extern object *Pawnitems[PAWNITEMS];
 /* items in pawn shop */
 
 extern int ViewDay;
