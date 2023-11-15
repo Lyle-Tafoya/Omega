@@ -23,7 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 // clang-format off
 
-struct monster Monsters[NUMMONSTERS] =
+monster Monsters[NUMMONSTERS] =
 {
   {
     nullptr,

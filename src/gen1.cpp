@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <ctime>
 
 #ifdef SAVE_LEVELS
-extern struct level TheLevel;
+extern level TheLevel;
 void                kill_levels(const std::string &str);
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
@@ -52,7 +52,7 @@ void free_dungeon()
 }
 
 /* erase the level w/o deallocating it*/
-void clear_level(struct level *dungeon_level)
+void clear_level(level *dungeon_level)
 {
   int i, j;
   if(dungeon_level)
@@ -82,6 +82,71 @@ void clear_level(struct level *dungeon_level)
   }
 }
 
+#ifndef SAVE_LEVELS
+// tries to find the level of depth levelnum in dungeon; if can't find it returns nullptr
+plv findlevel(level *dungeon, char levelnum)
+{
+  if(!dungeon)
+  {
+    return nullptr;
+  }
+  else
+  {
+    while(dungeon->next && (dungeon->depth != levelnum))
+    {
+      dungeon = dungeon->next;
+    }
+    if(dungeon->depth == levelnum)
+    {
+      dungeon->last_visited = time(nullptr);
+      return (dungeon);
+    }
+    else
+    {
+      return nullptr;
+    }
+  }
+}
+#endif
+
+// puts the player on the first set of stairs from the apt level
+// if can't find them, just drops player anywhere....
+void find_stairs(char fromlevel, char tolevel)
+{
+  int    i, j, found = false;
+  Symbol sitechar;
+  if(fromlevel > tolevel)
+  {
+    sitechar = STAIRS_DOWN;
+  }
+  else
+  {
+    sitechar = STAIRS_UP;
+  }
+  for(i = 0; i < WIDTH; i++)
+  {
+    for(j = 0; j < LENGTH; j++)
+    {
+      if((Level->site[i][j].locchar == sitechar) && (!found))
+      {
+        found    = true;
+        Player.x = i;
+        Player.y = j;
+        break;
+      }
+    }
+  }
+  if(!found)
+  {
+    findspace(&Player.x, &Player.y, -1);
+    if(Level->environment != E_ASTRAL)
+    {
+      Level->site[Player.x][Player.y].locchar = sitechar;
+      lset(Player.x, Player.y, CHANGED, *Level);
+    }
+  }
+}
+
 /* Looks for level tolevel in current dungeon which is named by
 Dungeon, which may be nullptr. If the level is found, and rewrite_level
 is false, and the level has already been generated, nothing happens
@@ -90,7 +155,7 @@ from scratch */
 
 void change_level(char fromlevel, char tolevel, char rewrite_level)
 {
-  struct level *thislevel = nullptr;
+  level *thislevel = nullptr;
   Player.sx               = -1;
   Player.sy               = -1; /* sanctuary effect dispelled */
 #ifdef SAVE_LEVELS
@@ -182,33 +247,35 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
   roomcheck();
 }
 
-#ifndef SAVE_LEVELS
-/* tries to find the level of depth levelnum in dungeon; if can't find
-   it returns nullptr */
-plv findlevel(struct level *dungeon, char levelnum)
+void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, Symbol loc, char rsi)
 {
-  if(!dungeon)
+  int i;
+  for(i = 0; i < n; i++)
   {
-    return nullptr;
-  }
-  else
-  {
-    while(dungeon->next && (dungeon->depth != levelnum))
+    *fx += sx;
+    *fy += sy;
+    if((*fx < WIDTH) && (*fx > -1) && (*fy > -1) && (*fy < LENGTH))
     {
-      dungeon = dungeon->next;
-    }
-    if(dungeon->depth == levelnum)
-    {
-      dungeon->last_visited = time(nullptr);
-      return (dungeon);
-    }
-    else
-    {
-      return nullptr;
+      Level->site[*fx][*fy].locchar = loc;
+      if(Level->site[*fx][*fy].roomnumber == RS_WALLSPACE)
+      {
+        Level->site[*fx][*fy].roomnumber = rsi;
+      }
+      if(loc == WATER)
+      {
+        Level->site[*fx][*fy].p_locf = L_WATER;
+      }
+      else if(loc == FLOOR)
+      {
+        Level->site[*fx][*fy].p_locf = L_NO_OP;
+      }
+      else if(loc == RUBBLE)
+      {
+        Level->site[*fx][*fy].p_locf = L_RUBBLE;
+      }
     }
   }
 }
-#endif
 
 /* keep going in one orthogonal direction or another until we hit our */
 /* destination */
@@ -269,36 +336,6 @@ void makedoor(int x, int y)
   }
   Level->site[x][y].p_locf = L_NO_OP;
   /* prevents water corridors from being instant death in sewers */
-}
-
-void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, Symbol loc, char rsi)
-{
-  int i;
-  for(i = 0; i < n; i++)
-  {
-    *fx += sx;
-    *fy += sy;
-    if((*fx < WIDTH) && (*fx > -1) && (*fy > -1) && (*fy < LENGTH))
-    {
-      Level->site[*fx][*fy].locchar = loc;
-      if(Level->site[*fx][*fy].roomnumber == RS_WALLSPACE)
-      {
-        Level->site[*fx][*fy].roomnumber = rsi;
-      }
-      if(loc == WATER)
-      {
-        Level->site[*fx][*fy].p_locf = L_WATER;
-      }
-      else if(loc == FLOOR)
-      {
-        Level->site[*fx][*fy].p_locf = L_NO_OP;
-      }
-      else if(loc == RUBBLE)
-      {
-        Level->site[*fx][*fy].p_locf = L_RUBBLE;
-      }
-    }
-  }
 }
 
 const std::string roomname(int index)
@@ -442,44 +479,6 @@ const std::string roomname(int index)
   }
 }
 
-/* puts the player on the first set of stairs from the apt level */
-/* if can't find them, just drops player anywhere.... */
-void find_stairs(char fromlevel, char tolevel)
-{
-  int    i, j, found = false;
-  Symbol sitechar;
-  if(fromlevel > tolevel)
-  {
-    sitechar = STAIRS_DOWN;
-  }
-  else
-  {
-    sitechar = STAIRS_UP;
-  }
-  for(i = 0; i < WIDTH; i++)
-  {
-    for(j = 0; j < LENGTH; j++)
-    {
-      if((Level->site[i][j].locchar == sitechar) && (!found))
-      {
-        found    = true;
-        Player.x = i;
-        Player.y = j;
-        break;
-      }
-    }
-  }
-  if(!found)
-  {
-    findspace(&Player.x, &Player.y, -1);
-    if(Level->environment != E_ASTRAL)
-    {
-      Level->site[Player.x][Player.y].locchar = sitechar;
-      lset(Player.x, Player.y, CHANGED, *Level);
-    }
-  }
-}
-
 void install_traps()
 {
   int i, j;
@@ -496,8 +495,8 @@ void install_traps()
   }
 }
 
-/* x, y, is top left corner, l is length of side, rsi is room string index */
-/* baux is so all rooms will have a key field. */
+// x, y, is top left corner, l is length of side, rsi is room string index
+// baux is so all rooms will have a key field.
 void build_square_room(int x, int y, int l, char rsi, int baux)
 {
   int i, j;
@@ -587,6 +586,43 @@ void cavern_level()
   }
 }
 
+void sewer_corridor(int x, int y, int dx, int dy, Symbol locchar)
+{
+  int continuing = true;
+  makedoor(x, y);
+  x += dx;
+  y += dy;
+  while(continuing)
+  {
+    Level->site[x][y].locchar = locchar;
+    if(locchar == WATER)
+    {
+      Level->site[x][y].p_locf = L_WATER;
+    }
+    else
+    {
+      Level->site[x][y].p_locf = L_NO_OP;
+    }
+    Level->site[x][y].roomnumber = RS_SEWER_DUCT;
+    x += dx;
+    y += dy;
+    if(locchar == WATER)
+    {
+      continuing = (inbounds(x, y) &&
+                    ((Level->site[x][y].locchar == WALL) || (Level->site[x][y].locchar == WATER)));
+    }
+    else
+    {
+      continuing = (inbounds(x, y) && ((Level->site[x][y].roomnumber == RS_WALLSPACE) ||
+                                       (Level->site[x][y].roomnumber == RS_SEWER_DUCT)));
+    }
+  }
+  if(inbounds(x, y))
+  {
+    makedoor(x, y);
+  }
+}
+
 void sewer_level()
 {
   int    i, tx, ty, t, l, e;
@@ -632,43 +668,6 @@ void sewer_level()
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
-  }
-}
-
-void sewer_corridor(int x, int y, int dx, int dy, Symbol locchar)
-{
-  int continuing = true;
-  makedoor(x, y);
-  x += dx;
-  y += dy;
-  while(continuing)
-  {
-    Level->site[x][y].locchar = locchar;
-    if(locchar == WATER)
-    {
-      Level->site[x][y].p_locf = L_WATER;
-    }
-    else
-    {
-      Level->site[x][y].p_locf = L_NO_OP;
-    }
-    Level->site[x][y].roomnumber = RS_SEWER_DUCT;
-    x += dx;
-    y += dy;
-    if(locchar == WATER)
-    {
-      continuing = (inbounds(x, y) &&
-                    ((Level->site[x][y].locchar == WALL) || (Level->site[x][y].locchar == WATER)));
-    }
-    else
-    {
-      continuing = (inbounds(x, y) && ((Level->site[x][y].roomnumber == RS_WALLSPACE) ||
-                                       (Level->site[x][y].roomnumber == RS_SEWER_DUCT)));
-    }
-  }
-  if(inbounds(x, y))
-  {
-    makedoor(x, y);
   }
 }
 

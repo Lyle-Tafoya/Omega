@@ -25,9 +25,74 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 
 #ifdef SAVE_LEVELS
-extern struct level TheLevel;
+extern level TheLevel;
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
+
+// makes a log npc for houses and hovels
+void make_house_npc(int i, int j)
+{
+  pml ml = new monsterlist;
+  pob ob;
+  ml->m    = new monster;
+  *(ml->m) = Monsters[NPC];
+  make_log_npc(ml->m);
+  if(ml->m->id == NPC)
+  {
+    queue_message("You detect signs of life in this house.");
+  }
+  else
+  {
+    queue_message("An eerie shiver runs down your spine as you enter....");
+  }
+  // if not == NPC, then we got a ghost off the npc list
+  ml->m->x                   = i;
+  ml->m->y                   = j;
+  Level->site[i][j].creature = ml->m;
+  ml->m->click               = (Tick + 1) % 50;
+  ml->next                   = Level->mlist;
+  Level->mlist               = ml;
+  m_status_set(*ml->m, HOSTILE);
+  if(nighttime())
+  {
+    m_status_reset(*ml->m, AWAKE);
+  }
+  else
+  {
+    m_status_set(*ml->m, AWAKE);
+  }
+  if(ml->m->startthing > -1)
+  {
+    ob  = new object;
+    *ob = Objects[ml->m->startthing];
+    m_pickup(ml->m, ob);
+  }
+}
+
+// makes a hiscore npc for mansions
+void make_mansion_npc(int i, int j)
+{
+  pml ml   = new monsterlist;
+  ml->m    = new monster;
+  *(ml->m) = Monsters[NPC];
+  make_hiscore_npc(ml->m, random_range(14) + 1);
+  queue_message("You detect signs of life in this house.");
+  ml->m->x                   = i;
+  ml->m->y                   = j;
+  Level->site[i][j].creature = ml->m;
+  ml->m->click               = (Tick + 1) % 50;
+  ml->next                   = Level->mlist;
+  Level->mlist               = ml;
+  m_status_set(*ml->m, HOSTILE);
+  if(nighttime())
+  {
+    m_status_reset(*ml->m, AWAKE);
+  }
+  else
+  {
+    m_status_set(*ml->m, AWAKE);
+  }
+}
 
 /* loads the house level into Level*/
 void load_house(int kind, int populate)
@@ -228,69 +293,4 @@ void load_house(int kind, int populate)
   }
   fclose(fd);
   initrand(E_RESTORE, 0);
-}
-
-/* makes a log npc for houses and hovels */
-void make_house_npc(int i, int j)
-{
-  pml ml = new monsterlist;
-  pob ob;
-  ml->m    = new monster;
-  *(ml->m) = Monsters[NPC];
-  make_log_npc(ml->m);
-  if(ml->m->id == NPC)
-  {
-    queue_message("You detect signs of life in this house.");
-  }
-  else
-  {
-    queue_message("An eerie shiver runs down your spine as you enter....");
-  }
-  /* if not == NPC, then we got a ghost off the npc list */
-  ml->m->x                   = i;
-  ml->m->y                   = j;
-  Level->site[i][j].creature = ml->m;
-  ml->m->click               = (Tick + 1) % 50;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
-  m_status_set(*ml->m, HOSTILE);
-  if(nighttime())
-  {
-    m_status_reset(*ml->m, AWAKE);
-  }
-  else
-  {
-    m_status_set(*ml->m, AWAKE);
-  }
-  if(ml->m->startthing > -1)
-  {
-    ob  = new object;
-    *ob = Objects[ml->m->startthing];
-    m_pickup(ml->m, ob);
-  }
-}
-
-/* makes a hiscore npc for mansions */
-void make_mansion_npc(int i, int j)
-{
-  pml ml   = new monsterlist;
-  ml->m    = new monster;
-  *(ml->m) = Monsters[NPC];
-  make_hiscore_npc(ml->m, random_range(14) + 1);
-  queue_message("You detect signs of life in this house.");
-  ml->m->x                   = i;
-  ml->m->y                   = j;
-  Level->site[i][j].creature = ml->m;
-  ml->m->click               = (Tick + 1) % 50;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
-  m_status_set(*ml->m, HOSTILE);
-  if(nighttime())
-  {
-    m_status_reset(*ml->m, AWAKE);
-  }
-  else
-  {
-    m_status_set(*ml->m, AWAKE);
-  }
 }

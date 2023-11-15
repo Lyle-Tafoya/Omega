@@ -169,6 +169,44 @@ void commandlist()
   xredraw();
 }
 
+// display a file given a string name of file
+void displaycryptfile(const std::string &filestr)
+{
+  FILE *fd = checkfopen(filestr, "rb");
+  int   c, d = ' ';
+  char  key = 100;
+
+  clear();
+  refresh();
+  c = fgetc(fd);
+  while((c != EOF) && (static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE))
+  {
+    if(getcury(stdscr) > ScreenLength)
+    {
+      standout();
+      printw("\n-More-");
+      standend();
+      refresh();
+      d = wgetch(stdscr);
+      clear();
+    }
+    key = static_cast<unsigned char>(c) ^ key;
+    printw("%c", key);
+    c = fgetc(fd);
+  }
+  if((static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE))
+  {
+    standout();
+    printw("\n-Done-");
+    standend();
+    refresh();
+    getch();
+  }
+  clear();
+  refresh();
+  fclose(fd);
+}
+
 void user_intro()
 {
   displaycryptfile(std::format("{}intro.txt", Omegalib));
@@ -184,12 +222,6 @@ void show_license()
 void abyss_file()
 {
   displaycryptfile(std::format("{}abyss.txt", Omegalib));
-}
-
-void inv_help()
-{
-  displayfile(std::format("{}help3.txt", Omegalib));
-  xredraw();
 }
 
 void combat_help()
@@ -461,32 +493,6 @@ void extendlog(const std::string &descrip, int lifestatus)
   }
 }
 
-/* reads a string from a file. If it is a line with more than 80 char's,
-   then remainder of line to \n is consumed */
-void filescanstring(FILE *fd, std::string &fstr)
-{
-  int byte;
-  for(int i = 0; i < 80; ++i)
-  {
-    byte = fgetc(fd);
-    if(byte == '\n' || byte == EOF)
-    {
-      break;
-    }
-    else
-    {
-      fstr.push_back(byte);
-    }
-  }
-  if(byte != '\n')
-  {
-    while((byte != '\n') && (byte != EOF))
-    {
-      byte = fgetc(fd);
-    }
-  }
-}
-
 bool test_file_access(const std::string &file_name, char mode)
 {
   std::fstream file;
@@ -535,7 +541,6 @@ const std::array<std::string, 18> optional_file_list
 {
   "help1.txt",
   "help2.txt",
-  "help3.txt",
   "help4.txt",
   "help5.txt",
   "help6.txt",
@@ -642,44 +647,6 @@ void displayfile(const std::string &filestr)
       clear();
     }
     printw("%c", static_cast<char>(c));
-    c = fgetc(fd);
-  }
-  if((static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE))
-  {
-    standout();
-    printw("\n-Done-");
-    standend();
-    refresh();
-    getch();
-  }
-  clear();
-  refresh();
-  fclose(fd);
-}
-
-/* display a file given a string name of file */
-void displaycryptfile(const std::string &filestr)
-{
-  FILE *fd = checkfopen(filestr, "rb");
-  int   c, d = ' ';
-  char  key = 100;
-
-  clear();
-  refresh();
-  c = fgetc(fd);
-  while((c != EOF) && (static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE))
-  {
-    if(getcury(stdscr) > ScreenLength)
-    {
-      standout();
-      printw("\n-More-");
-      standend();
-      refresh();
-      d = wgetch(stdscr);
-      clear();
-    }
-    key = static_cast<unsigned char>(c) ^ key;
-    printw("%c", key);
     c = fgetc(fd);
   }
   if((static_cast<char>(d) != 'q') && (static_cast<char>(d) != ESCAPE))

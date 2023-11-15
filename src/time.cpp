@@ -23,11 +23,26 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 #include "scr.h"
 
-/* This function coordinates monsters and player actions, as well as
-random events. Each tick is a second. There are therefore 60 ticks to
-the minute and 60 minutes to the hour.
-*/
+// remedies occasional defective monsters
+void fix_phantom(monster *m)
+{
+  if(!Level->site[m->x][m->y].creature)
+  {
+    queue_message("You hear a sound like a sigh of relief....");
+    Level->site[m->x][m->y].creature = m;
+  }
+  else
+  {
+    queue_message("You hear a puff of displaced air....");
+    findspace(&(m->x), &(m->y), -1);
+    Level->site[m->x][m->y].creature = m;
+    m_death(m);
+  }
+}
 
+// This function coordinates monsters and player actions, as well as
+// random events. Each tick is a second. There are therefore 60 ticks to
+// the minute and 60 minutes to the hour.
 void time_clock(int reset)
 {
   int env;
@@ -83,7 +98,7 @@ void time_clock(int reset)
     {
       if(ml->m->hp > 0)
       {
-        /* following is a hack until I discover source of phantom monsters */
+        // following is a hack until I discover source of phantom monsters
         if(Level->site[ml->m->x][ml->m->y].creature != ml->m)
         {
           fix_phantom(ml->m);
@@ -112,22 +127,5 @@ void time_clock(int reset)
         ml = ml->next;
       }
     }
-  }
-}
-
-/* remedies occasional defective monsters */
-void fix_phantom(struct monster *m)
-{
-  if(!Level->site[m->x][m->y].creature)
-  {
-    queue_message("You hear a sound like a sigh of relief....");
-    Level->site[m->x][m->y].creature = m;
-  }
-  else
-  {
-    queue_message("You hear a puff of displaced air....");
-    findspace(&(m->x), &(m->y), -1);
-    Level->site[m->x][m->y].creature = m;
-    m_death(m);
   }
 }

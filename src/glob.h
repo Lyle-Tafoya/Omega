@@ -33,15 +33,15 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern const char *Omegalib;
 
 /* one of each monster */
-extern struct monster Monsters[NUMMONSTERS];
+extern monster Monsters[NUMMONSTERS];
 
 /* one of each item */
-extern struct object Objects[TOTALITEMS];
+extern object Objects[TOTALITEMS];
 
 /* locations of city sites [0] - found, [1] - x, [2] - y */
 extern int CitySiteList[NUMCITYSITES][3];
 
-extern struct player Player;
+extern player Player;
 /* the player */
 
 extern int LENGTH;
@@ -58,19 +58,19 @@ extern int ScreenLength;
 
 extern int ScreenWidth;
 
-extern struct terrain Country[MAXWIDTH][MAXLENGTH];
+extern terrain Country[MAXWIDTH][MAXLENGTH];
 /* The countryside */
 
-extern struct level *City;
+extern level *City;
 /* The city of Rampart */
 
-extern struct level *TempLevel;
+extern level *TempLevel;
 /* Place holder */
 
-extern struct level *Dungeon;
+extern level *Dungeon;
 /* Pointer to current Dungeon */
 
-extern struct level *Level;
+extern level *Level;
 /* Pointer to current Level */
 
 extern int Current_Dungeon;
@@ -102,7 +102,7 @@ extern int Cmd;
 extern int Command_Duration;
 /* how long does current command take */
 
-extern struct monster *Arena_Monster;
+extern monster *Arena_Monster;
 /* Opponent in arena */
 
 extern int Arena_Opponent;

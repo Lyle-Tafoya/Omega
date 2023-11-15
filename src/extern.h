@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* extern.h -- function declarations */
+// extern.h -- function declarations
 
 #ifndef OMEGA_EXTERN_H_
 #define OMEGA_EXTERN_H_
@@ -26,21 +26,17 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <string_view>
 
-/* omega.cpp functions */
-
+// omega.cpp functions
 void init_world(void);
 void inititem(int);
 void initrand(int, int);
-void signalexit(int = 0);
 
-/* abyss.cpp functions */
-
+// abyss.cpp functions
 void load_abyss(void);
 
-/* aux1.cpp functions */
-
+// aux1.cpp functions
 std::string levelname(int);
-std::string mstatus_string(struct monster *);
+std::string mstatus_string(monster *);
 std::string trapid(int);
 int         getdir(void);
 bool        goberserk(void);
@@ -50,7 +46,6 @@ int         player_on_sanctuary(void);
 void        calc_melee(void);
 int         damage_item(pob);
 std::string describe_player(void);
-void        fight_monster(struct monster *);
 void        foodcheck(void);
 void        gain_experience(int);
 void        p_damage(int, int, const std::string &);
@@ -59,40 +54,32 @@ void        roomcheck(void);
 void        searchat(int, int);
 void        setspot(int &, int &);
 void        showroom(int);
-void        surrender(struct monster *);
-void        threaten(struct monster *);
+void        surrender(monster *);
+void        threaten(monster *);
 void        tunnelcheck(void);
 
-/* aux2.cpp functions */
-
-long        expval(int);
+// aux2.cpp functions
 long        item_value(pob);
 long        true_item_value(pob);
 std::string actionlocstr(char);
 int         p_immune(int);
-int         player_hit(int, char, struct monster *);
 int         statmod(int);
-void        break_weapon(void);
 void        change_environment(char);
-void        drop_weapon(void);
 void        enter_site(Symbol);
 void        gain_level(void);
 void        minute_status_check(void);
 void        moon_check(void);
 void        movecursor(int &, int &, int, int);
 void        p_drown(void);
-void        p_fumble(int);
-void        p_hit(struct monster *, int, damage_type);
+void        p_hit(monster *, int, damage_type);
 void        p_win(void);
-void        player_miss(struct monster *, int);
-void        tacplayer(struct monster *);
+void        tacplayer(monster *);
 void        tenminute_status_check(void);
 void        toggle_item_use(bool);
 void        torch_check(void);
-void        weapon_use(int, pob, struct monster *);
+void        weapon_use(int, pob, monster *);
 
-/* aux3.cpp functions */
-
+// aux3.cpp functions
 std::string countryid(Symbol);
 char   getlocation(void);
 int    hostilemonstersnear(void);
@@ -102,41 +89,25 @@ int    parsecitysite(void);
 int    stonecheck(int);
 void   alert_guards(void);
 void   countrysearch(void);
-void   destroy_order(void);
 void   hourly_check(void);
-void   indoors_random_event(void);
-void   outdoors_random_event(void);
 void   tenminute_check(void);
 void   terrain_check(int);
 
-/* char.cpp functions */
-
+// char.cpp functions
 long  calcmana(void);
-int   competence_check(int);
 int   fixnpc(int);
-void  omegan_character_stats(void);
 void  save_omegarc(void);
-void  user_character_stats(void);
 
-/* city.cpp functions */
-
-void assign_city_function(int, int);
+// city.cpp functions
 void load_city(int);
-void make_justiciar(int, int);
-void make_major_undead(int, int);
-void make_minor_undead(int, int);
-void mazesite(int, int, int);
-void randommazesite(int, int, int);
 void repair_jail(void);
 void resurrect_guards(void);
 
-/* command1.cpp functions */
-
+// command1.cpp functions
 void p_country_process(void);
 void p_process(void);
 
-/* command2.cpp functions */
-
+// command2.cpp functions
 void pickup(void);
 void activate(void);
 void bash_item(void);
@@ -148,7 +119,6 @@ void downstairs(void);
 void drop_equipped_item(void);
 void drop_pack_item(void);
 void eat(void);
-void floor_inv(void);
 void give(void);
 void magic(void);
 void movepincountry(int, int);
@@ -164,8 +134,7 @@ void talk(void);
 void upstairs(void);
 void zapwand(void);
 
-/* command3.cpp functions */
-
+// command3.cpp functions
 void abortshadowform(void);
 void charid(void);
 void city_move(void);
@@ -185,23 +154,17 @@ void vault(void);
 void version(void);
 void wizard(void);
 
-/* country.cpp functions */
-
+// country.cpp functions
 void load_country(void);
 void load_dlair(int, int);
 void load_misle(int, int);
 void load_speak(int, int);
 void load_temple(int, int);
-void make_high_priest(int, int, int);
-void random_temple_site(int, int, int, int);
 
-/* effect1.cpp functions */
-
+// effect1.cpp functions
 int  random_item(void);
 void acquire(int);
-void ball(int, int, int, int, int, damage_type);
 void bless(int);
-void bolt(int, int, int, int, int, int, damage_type);
 void enchant(int);
 void fball(int, int, int, int, int);
 void fbolt(int, int, int, int, int, int);
@@ -216,8 +179,7 @@ void objdet(int);
 void snowball(int, int, int, int, int);
 void wish(int);
 
-/* effect2.cpp functions */
-
+// effect2.cpp functions
 void accuracy(int);
 void alert(int);
 void augment(int);
@@ -234,8 +196,7 @@ void regenerate(int);
 void sanctify(int);
 void warp(int);
 
-/* effect3.cpp functions */
-
+// effect3.cpp functions
 int  itemlist(int, int);
 void acid_cloud(void);
 void aggravate(void);
@@ -272,39 +233,27 @@ void strategic_teleport(int);
 void summon(int, int);
 void truesight(int);
 
-/* env.cpp functions */
-
+// env.cpp functions
 void load_arena(void);
 void load_circle(int);
 void load_court(int);
-void make_archmage(int, int);
-void make_prime(int, int);
 
-/* etc.cpp functions */
-
+// etc.cpp functions
 std::string_view nameprint(void);
 const std::string wordnum(int);
 void        hint(void);
 void        learnclericalspells(int, int);
 
-/* file.cpp functions */
-
-void  lock_score_file(void);
-void  unlock_score_file(void);
+// file.cpp functions
 FILE *checkfopen(const std::string &, const std::string &);
 int   filecheck(void);
-bool  test_file_access(const std::string &, char);
 void  abyss_file(void);
 void  adeptfile(void);
-void  checkhigh(const std::string &, int);
 void  cityguidefile(void);
 void  combat_help(void);
 void  commandlist(void);
 void  displayfile(const std::string &);
-void  displaycryptfile(const std::string &);
 void  extendlog(const std::string &, int);
-void  filescanstring(FILE *, std::string &);
-void  inv_help(void);
 void  save_hiscore_npc(int);
 void  show_license(void);
 void  showmotd(void);
@@ -312,65 +261,43 @@ void  theologyfile(void);
 void  user_intro(void);
 void  wishfile(void);
 
-/* gen1.cpp functions */
-
+// gen1.cpp functions
 const std::string roomname(int);
-plv         findlevel(struct level *, char);
 void        build_room(int, int, int, char, int);
-void        build_square_room(int, int, int, char, int);
 void        cavern_level(void);
 void        change_level(char, char, char);
-void        clear_level(struct level *);
-void        corridor_crawl(int *, int *, int, int, int, Symbol, char);
-void        find_stairs(char, char);
+void        clear_level(level *);
 void        free_dungeon(void);
 void        install_specials(void);
 void        install_traps(void);
 void        makedoor(int, int);
-void        sewer_corridor(int, int, int, int, Symbol);
 void        sewer_level(void);
 void        straggle_corridor(int, int, int, int, Symbol, char);
 
-/* gen2.cpp functions */
-
+// gen2.cpp functions
 void make_country_screen(Symbol);
-void make_forest(void);
-void make_jungle(void);
-void make_mountains(void);
-void make_plains(void);
-void make_river(void);
-void make_road(void);
 void make_stairs(int);
-void make_swamp(void);
 void maze_corridor(int, int, int, int, char, char);
 void maze_level(void);
-void room_corridor(int, int, int, int, int);
 void room_level(void);
 
-/* guild1.cpp functions */
-
+// guild1.cpp functions
 void l_arena(void);
 void l_castle(void);
 void l_merc_guild(void);
 
-/* guild2.cpp functions */
-
+// guild2.cpp functions
 void l_college(void);
 void l_monastery();
 void l_order(void);
 void l_sorcerors(void);
 void l_thieves_guild(void);
 
-/* house.cpp functions */
-
+// house.cpp functions
 void load_house(int, int);
-void make_house_npc(int, int);
-void make_mansion_npc(int, int);
 
-/* inv.cpp functions */
-
+// inv.cpp functions
 void        do_inventory_control(void);
-int         key_to_index(signed char);
 char        index_to_key(int);
 long        get_money(long);
 const std::string cashstr(void);
@@ -378,42 +305,31 @@ std::string itemid(pob);
 bool        cursed(pob);
 int         find_and_remove_item(int, int);
 int         find_item(pob *, int, int);
-int         get_item_number(pob);
 int         getitem(Symbol);
-bool        item_useable(pob, int);
-int         objequal(struct object *, struct object *);
 int         slottable(pob, int);
-pob         detach_money(void);
 pob         split_item(int, pob);
 void        conform_lost_object(pob);
 void        conform_lost_objects(int, pob);
 void        conform_unused_object(pob);
 void        dispose_lost_objects(int, pob);
 void        drop_at(int, int, pob);
-void        drop_from_slot(int);
 void        drop_money(void);
 void        fixpack(void);
 void        gain_item(pob);
-void        give_money(struct monster *);
-void        givemonster(struct monster *, struct object *);
+void        give_money(monster *);
+void        givemonster(monster *, object *);
 void        lose_all_items(void);
 void        p_drop_at(int, int, int, pob);
-void        pack_extra_items(pob);
 void        pickup_at(int, int);
 
-/* item.cpp functions */
-
+// item.cpp functions
 void        shuffle(int[], int);
 const std::string bootname(int);
 const std::string cloakname(int);
-const std::string grotname(void);
 const std::string potionname(int);
 const std::string ringname(int);
 const std::string scrollname(int);
 const std::string stickname(int);
-int         itemblessing(void);
-int         itemcharge(void);
-int         itemplus(void);
 int         twohandedp(int);
 pob         create_object(int);
 void        make_armor(pob, int);
@@ -421,7 +337,7 @@ void        make_artifact(pob, int);
 void        make_boots(pob, int);
 void        make_cash(pob, int);
 void        make_cloak(pob, int);
-void        make_corpse(pob, struct monster *);
+void        make_corpse(pob, monster *);
 void        make_food(pob, int);
 void        make_potion(pob, int);
 void        make_ring(pob, int);
@@ -431,8 +347,7 @@ void        make_stick(pob, int);
 void        make_thing(pob, int);
 void        make_weapon(pob, int);
 
-/* itemf1.cpp functions */
-
+// itemf1.cpp functions
 void i_accuracy(pob);
 void i_acquire(pob);
 void i_alert(pob);
@@ -496,8 +411,7 @@ void i_truesight(pob);
 void i_warp(pob);
 void i_wish(pob);
 
-/* itemf2.cpp functions */
-
+// itemf2.cpp functions
 void i_defend(pob);
 void i_demonblade(pob);
 void i_desecrate(pob);
@@ -518,25 +432,23 @@ void i_perm_poison_resist(pob);
 void i_perm_regenerate(pob);
 void i_perm_strength(pob);
 void i_victrix(pob);
-void weapon_acidwhip(int, pob, struct monster *);
-void weapon_arrow(int, pob, struct monster *);
-void weapon_bare_hands(int, struct monster *);
-void weapon_bolt(int, pob, struct monster *);
-void weapon_defend(int, pob, struct monster *);
-void weapon_demonblade(int, pob, struct monster *);
-void weapon_desecrate(int, pob, struct monster *);
-void weapon_firestar(int, pob, struct monster *);
-void weapon_lightsabre(int, pob, struct monster *);
-void weapon_mace_disrupt(int, pob, struct monster *);
-void weapon_normal_hit(int, pob, struct monster *);
-void weapon_scythe(int, pob, struct monster *);
-void weapon_tangle(int, pob, struct monster *);
-void weapon_victrix(int, pob, struct monster *);
-void weapon_vorpal(int, pob, struct monster *);
+void weapon_acidwhip(int, pob, monster *);
+void weapon_arrow(int, pob, monster *);
+void weapon_bare_hands(int, monster *);
+void weapon_bolt(int, pob, monster *);
+void weapon_defend(int, pob, monster *);
+void weapon_demonblade(int, pob, monster *);
+void weapon_desecrate(int, pob, monster *);
+void weapon_firestar(int, pob, monster *);
+void weapon_lightsabre(int, pob, monster *);
+void weapon_mace_disrupt(int, pob, monster *);
+void weapon_normal_hit(int, pob, monster *);
+void weapon_scythe(int, pob, monster *);
+void weapon_tangle(int, pob, monster *);
+void weapon_victrix(int, pob, monster *);
+void weapon_vorpal(int, pob, monster *);
 
-/* itemf3.cpp functions */
-
-int  orbcheck(char);
+// itemf3.cpp functions
 void i_antioch(pob);
 void i_apport(pob);
 void i_crystal(pob);
@@ -571,8 +483,7 @@ void i_stargem(pob);
 void i_summon(pob);
 void i_symbol(pob);
 
-/* lev.cpp functions */
-
+// lev.cpp functions
 int  difficulty(void); /* this function in util.c if MSDOS defined */
 pmt  m_create(int, int, int, int);
 pmt  make_creature(int);
@@ -584,70 +495,58 @@ void populate_level(int);
 void stock_level(void);
 void wandercheck(void);
 
-/* mmelee.cpp functions */
-
+// mmelee.cpp functions
 char random_loc(void);
-bool monster_hit(struct monster *, char, int);
-void m_hit(struct monster *, int);
-void monster_melee(struct monster *, char, int);
-void tacmonster(struct monster *);
-void transcribe_monster_actions(struct monster *);
+void tacmonster(monster *);
+void transcribe_monster_actions(monster *);
 
-/* mmove.cpp functions */
+// mmove.cpp functions
+void m_confused_move(monster *);
+void m_flutter_move(monster *);
+void m_follow_move(monster *);
+void m_move_animal(monster *);
+void m_normal_move(monster *);
+void m_random_move(monster *);
+void m_scaredy_move(monster *);
+void m_simple_move(monster *);
+void m_smart_move(monster *);
+void m_spirit_move(monster *);
+void m_teleport(monster *);
+void m_vanish(monster *);
+void m_move_leash(monster *);
 
-void m_confused_move(struct monster *);
-void m_flutter_move(struct monster *);
-void m_follow_move(struct monster *);
-void m_move_animal(struct monster *);
-void m_normal_move(struct monster *);
-void m_random_move(struct monster *);
-void m_scaredy_move(struct monster *);
-void m_simple_move(struct monster *);
-void m_smart_move(struct monster *);
-void m_spirit_move(struct monster *);
-void m_teleport(struct monster *);
-void m_vanish(struct monster *);
-void m_move_leash(struct monster *);
-
-/* mon.cpp functions */
-
+// mon.cpp functions
 const char *mantype(void);
 void        determine_npc_behavior(pmt, int, int);
-void        m_abyss(struct monster *);
-void        m_altar(struct monster *);
-void        m_damage(struct monster *, int, damage_type);
-void        m_death(struct monster *);
-void        m_dropstuff(struct monster *);
-void        m_fire(struct monster *);
-void        m_lava(struct monster *);
-void        m_no_op(struct monster *);
-void        m_pickup(struct monster *, struct object *);
-void        m_pulse(struct monster *);
-void        m_trap_abyss(struct monster *);
-void        m_trap_acid(struct monster *);
-void        m_trap_blade(struct monster *);
-void        m_trap_dart(struct monster *);
-void        m_trap_disintegrate(struct monster *);
-void        m_trap_door(struct monster *);
-void        m_trap_fire(struct monster *);
-void        m_trap_manadrain(struct monster *);
-void        m_trap_pit(struct monster *);
-void        m_trap_sleepgas(struct monster *);
-void        m_trap_snare(struct monster *);
-void        m_trap_teleport(struct monster *);
-void        m_water(struct monster *);
+void        m_abyss(monster *);
+void        m_altar(monster *);
+void        m_damage(monster *, int, damage_type);
+void        m_death(monster *);
+void        m_dropstuff(monster *);
+void        m_fire(monster *);
+void        m_lava(monster *);
+void        m_no_op(monster *);
+void        m_pickup(monster *, object *);
+void        m_pulse(monster *);
+void        m_trap_abyss(monster *);
+void        m_trap_acid(monster *);
+void        m_trap_blade(monster *);
+void        m_trap_dart(monster *);
+void        m_trap_disintegrate(monster *);
+void        m_trap_door(monster *);
+void        m_trap_fire(monster *);
+void        m_trap_manadrain(monster *);
+void        m_trap_pit(monster *);
+void        m_trap_sleepgas(monster *);
+void        m_trap_snare(monster *);
+void        m_trap_teleport(monster *);
+void        m_water(monster *);
 void        make_hiscore_npc(pmt, int);
-void        make_log_npc(struct monster *);
-void        monster_action(struct monster *, int);
-void        monster_move(struct monster *);
-void        monster_special(struct monster *);
-void        monster_strike(struct monster *);
-void        monster_talk(struct monster *);
-void        movemonster(struct monster *, int, int);
-void        strengthen_death(struct monster *);
+void        make_log_npc(monster *);
+void        monster_talk(monster *);
+void        movemonster(monster *, int, int);
 
-/* move.cpp functions */
-
+// move.cpp functions
 void l_abyss(void);
 void l_air_station(void);
 void l_arena_exit(void);
@@ -688,117 +587,102 @@ void l_voidstone(void);
 void l_water(void);
 void l_water_station(void);
 void l_whirlwind(void);
-void stationcheck(void);
 
-/* movef.cpp functions */
-
-void m_movefunction(struct monster *, int);
+// movef.cpp functions
+void m_movefunction(monster *, int);
 void p_movefunction(int);
 void sign_print(int, int, int); /* this function in site1.c if MSDOS defined */
 
-/* mspec.cpp functions */
+// mspec.cpp functions
+void m_aggravate(monster *);
+void m_huge_sounds(monster *);
+void m_illusion(monster *);
+void m_sp_acid_cloud(monster *);
+void m_sp_angel(monster *);
+void m_sp_av(monster *);
+void m_sp_blackout(monster *);
+void m_sp_bogthing(monster *);
+void m_sp_court(monster *);
+void m_sp_demon(monster *);
+void m_sp_demonlover(monster *);
+void m_sp_dragonlord(monster *);
+void m_sp_eater(monster *);
+void m_sp_escape(monster *);
+void m_sp_explode(monster *);
+void m_sp_ghost(monster *);
+void m_sp_lair(monster *);
+void m_sp_lw(monster *);
+void m_sp_mb(monster *);
+void m_sp_merchant(monster *);
+void m_sp_mirror(monster *);
+void m_sp_mp(monster *);
+void m_sp_ng(monster *);
+void m_sp_poison_cloud(monster *);
+void m_sp_prime(monster *);
+void m_sp_raise(monster *);
+void m_sp_seductor(monster *);
+void m_sp_servant(monster *);
+void m_sp_spell(monster *);
+void m_sp_surprise(monster *);
+void m_sp_swarm(monster *);
+void m_sp_were(monster *);
+void m_sp_whistleblower(monster *);
+void m_summon(monster *);
+void m_thief_f(monster *);
 
-void m_aggravate(struct monster *);
-void m_huge_sounds(struct monster *);
-void m_illusion(struct monster *);
-void m_sp_acid_cloud(struct monster *);
-void m_sp_angel(struct monster *);
-void m_sp_av(struct monster *);
-void m_sp_blackout(struct monster *);
-void m_sp_bogthing(struct monster *);
-void m_sp_court(struct monster *);
-void m_sp_demon(struct monster *);
-void m_sp_demonlover(struct monster *);
-void m_sp_dragonlord(struct monster *);
-void m_sp_eater(struct monster *);
-void m_sp_escape(struct monster *);
-void m_sp_explode(struct monster *);
-void m_sp_ghost(struct monster *);
-void m_sp_lair(struct monster *);
-void m_sp_lw(struct monster *);
-void m_sp_mb(struct monster *);
-void m_sp_merchant(struct monster *);
-void m_sp_mirror(struct monster *);
-void m_sp_mp(struct monster *);
-void m_sp_ng(struct monster *);
-void m_sp_poison_cloud(struct monster *);
-void m_sp_prime(struct monster *);
-void m_sp_raise(struct monster *);
-void m_sp_seductor(struct monster *);
-void m_sp_servant(struct monster *);
-void m_sp_spell(struct monster *);
-void m_sp_surprise(struct monster *);
-void m_sp_swarm(struct monster *);
-void m_sp_were(struct monster *);
-void m_sp_whistleblower(struct monster *);
-void m_summon(struct monster *);
-void m_thief_f(struct monster *);
+// mstrike.cpp functions
+void m_blind_strike(monster *);
+void m_fireball(monster *);
+void m_firebolt(monster *);
+void m_lball(monster *);
+void m_nbolt(monster *);
+void m_snowball(monster *);
+void m_strike_sonic(monster *);
 
-/* mstrike.cpp functions */
+// mtalk.cpp functions
+void m_talk_animal(monster *);
+void m_talk_archmage(monster *);
+void m_talk_assassin(monster *);
+void m_talk_beg(monster *);
+void m_talk_burble(monster *);
+void m_talk_demonlover(monster *);
+void m_talk_druid(monster *);
+void m_talk_ef(monster *);
+void m_talk_evil(monster *);
+void m_talk_gf(monster *);
+void m_talk_greedy(monster *);
+void m_talk_guard(monster *);
+void m_talk_hint(monster *);
+void m_talk_horse(monster *);
+void m_talk_hungry(monster *);
+void m_talk_hyena(monster *);
+void m_talk_im(monster *);
+void m_talk_man(monster *);
+void m_talk_merchant(monster *);
+void m_talk_mimsy(monster *);
+void m_talk_mp(monster *);
+void m_talk_ninja(monster *);
+void m_talk_parrot(monster *);
+void m_talk_prime(monster *);
+void m_talk_robot(monster *);
+void m_talk_scream(monster *);
+void m_talk_seductor(monster *);
+void m_talk_servant(monster *);
+void m_talk_silent(monster *);
+void m_talk_slithy(monster *);
+void m_talk_stupid(monster *);
+void m_talk_thief(monster *);
+void m_talk_titter(monster *);
 
-void m_blind_strike(struct monster *);
-void m_fireball(struct monster *);
-void m_firebolt(struct monster *);
-void m_lball(struct monster *);
-void m_nbolt(struct monster *);
-void m_snowball(struct monster *);
-void m_strike_sonic(struct monster *);
-
-/* mtalk.cpp functions */
-
-void m_talk_animal(struct monster *);
-void m_talk_archmage(struct monster *);
-void m_talk_assassin(struct monster *);
-void m_talk_beg(struct monster *);
-void m_talk_burble(struct monster *);
-void m_talk_demonlover(struct monster *);
-void m_talk_druid(struct monster *);
-void m_talk_ef(struct monster *);
-void m_talk_evil(struct monster *);
-void m_talk_gf(struct monster *);
-void m_talk_greedy(struct monster *);
-void m_talk_guard(struct monster *);
-void m_talk_hint(struct monster *);
-void m_talk_horse(struct monster *);
-void m_talk_hungry(struct monster *);
-void m_talk_hyena(struct monster *);
-void m_talk_im(struct monster *);
-void m_talk_man(struct monster *);
-void m_talk_merchant(struct monster *);
-void m_talk_mimsy(struct monster *);
-void m_talk_mp(struct monster *);
-void m_talk_ninja(struct monster *);
-void m_talk_parrot(struct monster *);
-void m_talk_prime(struct monster *);
-void m_talk_robot(struct monster *);
-void m_talk_scream(struct monster *);
-void m_talk_seductor(struct monster *);
-void m_talk_servant(struct monster *);
-void m_talk_silent(struct monster *);
-void m_talk_slithy(struct monster *);
-void m_talk_stupid(struct monster *);
-void m_talk_thief(struct monster *);
-void m_talk_titter(struct monster *);
-
-/* priest.cpp functions */
-
-int  check_sacrilege(int);
-void answer_prayer(void);
-void hp_req_print(void);
-void hp_req_test(void);
-int  increase_priest_rank(int);
+// priest.cpp functions
 void l_altar(void);
-void make_hp(pob);
 
-/* save.cpp functions */
-
+// save.cpp functions
 bool restore_game(const std::string &);
 bool save_game(const std::string &);
 void signalsave(int = 0);
 
-/* site1.cpp functions */
-
-void buyfromstock(int, int);
+// site1.cpp functions
 void l_alchemist(void);
 void l_armorer(void);
 void l_bank(void);
@@ -815,10 +699,8 @@ void l_pawn_shop(void);
 void l_statue_wake(void);
 void l_tavern(void);
 void statue_random(int, int);
-void wake_statue(int, int, int);
 
-/* site2.cpp functions */
-
+// site2.cpp functions
 void cureforpay(void);
 void gymtrain(int *, int *);
 void healforpay(void);
@@ -838,13 +720,10 @@ void l_vault(void);
 void pacify_guards(void);
 void send_to_jail(void);
 
-/* time.cpp functions */
-
-void fix_phantom(struct monster *);
+// time.cpp functions
 void time_clock(int);
 
-/* trap.cpp functions */
-
+// trap.cpp functions
 void l_trap_abyss(void);
 void l_trap_acid(void);
 void l_trap_blade(void);
@@ -859,13 +738,10 @@ void l_trap_sleepgas(void);
 void l_trap_snare(void);
 void l_trap_teleport(void);
 
-/* util.cpp functions */
-
+// util.cpp functions
 long        calc_points(void);
 const std::string getarticle(const std::string &);
-const std::string month(void);
 const std::string ordinal(int);
-char        inversedir(int);
 int         confirmation(void);
 char        cryptkey(const std::string &);
 int         day(void);
@@ -874,12 +750,11 @@ bool        hitp(int, int);
 int         hour(void);
 int         inbounds(int, int);
 int         los_p(int, int, int, int);
-int         m_unblocked(struct monster *, int, int);
+int         m_unblocked(monster *, int, int);
 int         nighttime(void);
 int         offscreen(int, int);
 int         ok_to_free(plv);
 void        free_level(plv);
-void        free_mons_and_objs(pml);
 void        free_objlist(pol);
 int         random_range(int);
 int         screenmod(int);
@@ -887,7 +762,6 @@ int         screenmod_horizontal(int);
 int         showhour(void);
 int         showminute(void);
 int         strmem(char, const std::string &);
-int         strprefix(const std::string &, const std::string &);
 int         unblocked(int, int);
 int         view_los_p(int, int, int, int);
 int         view_unblocked(int, int);
@@ -897,15 +771,7 @@ void        do_object_los(Symbol, int *, int *, int, int);
 void        findspace(int *, int *, int);
 void        initdirs(void);
 
-/* village.cpp functions */
-
-void assign_village_function(int, int, int);
+// village.cpp functions
 void load_village(int, int);
-void make_food_bin(int, int);
-void make_guard(int, int);
-void make_horse(int, int);
-void make_merchant(int, int);
-void make_sheep(int, int);
-void special_village_site(int, int, int);
 
 #endif

@@ -221,40 +221,6 @@ void l_bank()
   xredraw();
 }
 
-void l_armorer()
-{
-  int done = false;
-  if(hour() == 12)
-  {
-    queue_message("Unfortunately, this is Julie's lunch hour -- try again later.");
-  }
-  else if(nighttime())
-  {
-    queue_message("It seems that Julie keeps regular business hours.");
-  }
-  else
-  {
-    while(!done)
-    {
-      queue_message("Julie's: Buy Armor, Weapons, or Leave [a,w,ESCAPE] ");
-      int player_input = mgetc();
-      if(player_input == ESCAPE)
-      {
-        done = true;
-      }
-      else if(player_input == 'a')
-      {
-        buyfromstock(ARMORID, 10);
-      }
-      else if(player_input == 'w')
-      {
-        buyfromstock(WEAPONID, 23);
-      }
-    }
-  }
-  xredraw();
-}
-
 void buyfromstock(int base, int numitems)
 {
   pob newitem;
@@ -298,6 +264,40 @@ void buyfromstock(int base, int numitems)
       delete newitem;
     }
   }
+}
+
+void l_armorer()
+{
+  int done = false;
+  if(hour() == 12)
+  {
+    queue_message("Unfortunately, this is Julie's lunch hour -- try again later.");
+  }
+  else if(nighttime())
+  {
+    queue_message("It seems that Julie keeps regular business hours.");
+  }
+  else
+  {
+    while(!done)
+    {
+      queue_message("Julie's: Buy Armor, Weapons, or Leave [a,w,ESCAPE] ");
+      int player_input = mgetc();
+      if(player_input == ESCAPE)
+      {
+        done = true;
+      }
+      else if(player_input == 'a')
+      {
+        buyfromstock(ARMORID, 10);
+      }
+      else if(player_input == 'w')
+      {
+        buyfromstock(WEAPONID, 23);
+      }
+    }
+  }
+  xredraw();
 }
 
 void l_club()
@@ -546,16 +546,6 @@ void statue_random(int x, int y)
   }
 }
 
-void l_statue_wake()
-{
-  int i;
-  int x = Player.x, y = Player.y;
-  for(i = 0; i < 9; i++)
-  {
-    wake_statue(x + Dirs[0][i], y + Dirs[1][i], true);
-  }
-}
-
 void wake_statue(int x, int y, int first)
 {
   int i;
@@ -581,6 +571,16 @@ void wake_statue(int x, int y, int first)
     {
       wake_statue(x + Dirs[0][i], y + Dirs[1][i], false);
     }
+  }
+}
+
+void l_statue_wake()
+{
+  int i;
+  int x = Player.x, y = Player.y;
+  for(i = 0; i < 9; i++)
+  {
+    wake_statue(x + Dirs[0][i], y + Dirs[1][i], true);
   }
 }
 

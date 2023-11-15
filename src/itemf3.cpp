@@ -436,7 +436,7 @@ void i_life(pob o)
   dispose_lost_objects(1, o);
 }
 
-/* f = fire, w = water, e = earth, a = air, m = mastery */
+// f = fire, w = water, e = earth, a = air, m = mastery
 int orbcheck(char element)
 {
   char response;

@@ -43,40 +43,60 @@ void m_hit(monster *m, int dtype)
   }
 }
 
-/* execute monster attacks versus player */
-void tacmonster(monster *m)
+// checks to see if player hits with hitmod vs. monster m at location hitloc
+bool monster_hit(monster *m, char hitloc, int bonus)
 {
-  drawvision(Player.x, Player.y);
-  transcribe_monster_actions(m);
-  for(size_t i = 0; i < m->meleestr.length() && m->hp > 0; i += 2)
+  int    goodblocks = 0;
+  bool   blocks = false, riposte = false;
+  size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);
+  for(size_t i = 0; i < meleestr_length; i += 2)
   {
-    std::string monster_name;
-    if(m->uniqueness == COMMON)
+    if(Player.meleestr[i] == 'B' || (Player.meleestr[i] == 'R'))
     {
-      monster_name = "The ";
-    }
-    monster_name += m->monstring;
-    if(m->meleestr[i] == 'A')
-    {
-      if(Verbosity == VERBOSE)
+      blocks = true;
+      if(hitloc == Player.meleestr[i + 1])
       {
-        queue_message(monster_name + " attacks " + actionlocstr(m->meleestr[i + 1]));
+        ++goodblocks;
+        if(Player.meleestr[i] == 'R' && Player.possessions[O_WEAPON_HAND] &&
+           Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
+        {
+          riposte = true;
+        }
       }
-      monster_melee(m, m->meleestr[i + 1], 0);
     }
-    else if(m->meleestr[i] == 'L')
-    {
-      if(Verbosity == VERBOSE)
-      {
-        queue_message(monster_name + " lunges " + actionlocstr(m->meleestr[i + 1]));
-      }
-      monster_melee(m, m->meleestr[i + 1], m->level);
-    }
-    i += 2;
   }
+  if(!blocks)
+  {
+    goodblocks = -1;
+  }
+  bool hit = hitp(m->hit + bonus, Player.defense + goodblocks * 10);
+  if(!hit && goodblocks > 0)
+  {
+    if(Verbosity == VERBOSE)
+    {
+      queue_message("You blocked it!");
+    }
+    if(riposte)
+    {
+      if(Verbosity != TERSE)
+      {
+        queue_message("You got a riposte!");
+      }
+      if(hitp(Player.hit, m->ac))
+      {
+        queue_message("You hit!");
+        weapon_use(0, Player.possessions[O_WEAPON_HAND], m);
+      }
+      else
+      {
+        queue_message("You missed.");
+      }
+    }
+  }
+  return hit;
 }
 
-void monster_melee(struct monster *m, char hitloc, int bonus)
+void monster_melee(monster *m, char hitloc, int bonus)
 {
   if(player_on_sanctuary())
   {
@@ -243,57 +263,37 @@ void monster_melee(struct monster *m, char hitloc, int bonus)
   }
 }
 
-/* checks to see if player hits with hitmod vs. monster m at location hitloc */
-bool monster_hit(monster *m, char hitloc, int bonus)
+/* execute monster attacks versus player */
+void tacmonster(monster *m)
 {
-  int    goodblocks = 0;
-  bool   blocks = false, riposte = false;
-  size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);
-  for(size_t i = 0; i < meleestr_length; i += 2)
+  drawvision(Player.x, Player.y);
+  transcribe_monster_actions(m);
+  for(size_t i = 0; i < m->meleestr.length() && m->hp > 0; i += 2)
   {
-    if(Player.meleestr[i] == 'B' || (Player.meleestr[i] == 'R'))
+    std::string monster_name;
+    if(m->uniqueness == COMMON)
     {
-      blocks = true;
-      if(hitloc == Player.meleestr[i + 1])
-      {
-        ++goodblocks;
-        if(Player.meleestr[i] == 'R' && Player.possessions[O_WEAPON_HAND] &&
-           Player.possessions[O_WEAPON_HAND]->type == THRUSTING)
-        {
-          riposte = true;
-        }
-      }
+      monster_name = "The ";
     }
-  }
-  if(!blocks)
-  {
-    goodblocks = -1;
-  }
-  bool hit = hitp(m->hit + bonus, Player.defense + goodblocks * 10);
-  if(!hit && goodblocks > 0)
-  {
-    if(Verbosity == VERBOSE)
+    monster_name += m->monstring;
+    if(m->meleestr[i] == 'A')
     {
-      queue_message("You blocked it!");
+      if(Verbosity == VERBOSE)
+      {
+        queue_message(monster_name + " attacks " + actionlocstr(m->meleestr[i + 1]));
+      }
+      monster_melee(m, m->meleestr[i + 1], 0);
     }
-    if(riposte)
+    else if(m->meleestr[i] == 'L')
     {
-      if(Verbosity != TERSE)
+      if(Verbosity == VERBOSE)
       {
-        queue_message("You got a riposte!");
+        queue_message(monster_name + " lunges " + actionlocstr(m->meleestr[i + 1]));
       }
-      if(hitp(Player.hit, m->ac))
-      {
-        queue_message("You hit!");
-        weapon_use(0, Player.possessions[O_WEAPON_HAND], m);
-      }
-      else
-      {
-        queue_message("You missed.");
-      }
+      monster_melee(m, m->meleestr[i + 1], m->level);
     }
+    i += 2;
   }
-  return hit;
 }
 
 /* decide monster actions in tactical combat mode */

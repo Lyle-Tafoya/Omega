@@ -38,62 +38,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern scrolling_buffer message_buffer;
 extern interactive_menu *menu;
 
-/* check every ten minutes */
-void tenminute_check()
-{
-  if(Time % 60 == 0)
-  {
-    hourly_check();
-  }
-  else
-  {
-    if(Current_Environment == Current_Dungeon)
-    {
-      wandercheck();
-    }
-    minute_status_check();
-    tenminute_status_check();
-    if((Player.status[DISEASED] < 1) && (Player.hp < Player.maxhp))
-    {
-      Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
-    }
-    if(Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
-    {
-      indoors_random_event();
-    }
-  }
-}
-
-/* hourly check is same as ten_minutely check except food is also
-   checked, and since time moves in hours out of doors, also
-   outdoors_random_event is possible */
-
-void hourly_check()
-{
-  Player.food--;
-  foodcheck();
-  if(hour() == 0)
-  { /* midnight, a new day */
-    moon_check();
-    Date++;
-  }
-  torch_check();
-  if(Current_Environment == Current_Dungeon)
-  {
-    wandercheck();
-  }
-  minute_status_check();
-  tenminute_status_check();
-  if((Player.status[DISEASED] == 0) && (Player.hp < Player.maxhp))
-  {
-    Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
-  }
-  if(Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
-  {
-    indoors_random_event();
-  }
-}
-
 void indoors_random_event()
 {
   pml ml;
@@ -181,6 +125,62 @@ void indoors_random_event()
   }
   dataprint();
   showflags();
+}
+
+// check every ten minutes
+void tenminute_check()
+{
+  if(Time % 60 == 0)
+  {
+    hourly_check();
+  }
+  else
+  {
+    if(Current_Environment == Current_Dungeon)
+    {
+      wandercheck();
+    }
+    minute_status_check();
+    tenminute_status_check();
+    if((Player.status[DISEASED] < 1) && (Player.hp < Player.maxhp))
+    {
+      Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
+    }
+    if(Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
+    {
+      indoors_random_event();
+    }
+  }
+}
+
+/* hourly check is same as ten_minutely check except food is also
+   checked, and since time moves in hours out of doors, also
+   outdoors_random_event is possible */
+
+void hourly_check()
+{
+  Player.food--;
+  foodcheck();
+  if(hour() == 0)
+  { /* midnight, a new day */
+    moon_check();
+    Date++;
+  }
+  torch_check();
+  if(Current_Environment == Current_Dungeon)
+  {
+    wandercheck();
+  }
+  minute_status_check();
+  tenminute_status_check();
+  if((Player.status[DISEASED] == 0) && (Player.hp < Player.maxhp))
+  {
+    Player.hp = std::min(Player.maxhp, Player.hp + Player.level + 1);
+  }
+  if(Current_Environment != E_COUNTRYSIDE && Current_Environment != E_ABYSS)
+  {
+    indoors_random_event();
+  }
 }
 
 void outdoors_random_event()
@@ -1369,6 +1369,46 @@ int stonecheck(int alignment)
   return (cycle);
 }
 
+// can only occur when player is in city, so OK to use Level
+void destroy_order()
+{
+  setgamestatus(DESTROYED_ORDER, GameStatus);
+  if(Level != City)
+  {
+    queue_message("Zounds! A Serious Mistake!");
+  }
+  else
+  {
+    for(int i = 35; i < 46; ++i)
+    {
+      for(int j = 60; j < 63; ++j)
+      {
+        if(i == 40 && (j == 60 || j == 61))
+        {
+          lreset(i, j, SECRET, *Level);
+          Level->site[i][j].locchar = FLOOR;
+          Level->site[i][j].p_locf  = L_NO_OP;
+          lset(i, j, CHANGED, *Level);
+        }
+        else
+        {
+          Level->site[i][j].locchar = RUBBLE;
+          Level->site[i][j].p_locf  = L_RUBBLE;
+          lset(i, j, CHANGED, *Level);
+        }
+        if(Level->site[i][j].creature)
+        {
+          Level->site[i][j].creature->hp = -1;
+          Level->site[i][j].creature     = nullptr;
+        }
+        make_site_monster(i, j, GHOST);
+        Level->site[i][j].creature->monstring = "ghost of a Paladin";
+        m_status_set(*Level->site[i][j].creature, HOSTILE);
+      }
+    }
+  }
+}
+
 void alert_guards()
 {
   int foundguard = false;
@@ -1428,46 +1468,6 @@ void alert_guards()
   if(suppress)
   {
     resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-  }
-}
-
-/* can only occur when player is in city, so OK to use Level */
-void destroy_order()
-{
-  setgamestatus(DESTROYED_ORDER, GameStatus);
-  if(Level != City)
-  {
-    queue_message("Zounds! A Serious Mistake!");
-  }
-  else
-  {
-    for(int i = 35; i < 46; ++i)
-    {
-      for(int j = 60; j < 63; ++j)
-      {
-        if(i == 40 && (j == 60 || j == 61))
-        {
-          lreset(i, j, SECRET, *Level);
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_NO_OP;
-          lset(i, j, CHANGED, *Level);
-        }
-        else
-        {
-          Level->site[i][j].locchar = RUBBLE;
-          Level->site[i][j].p_locf  = L_RUBBLE;
-          lset(i, j, CHANGED, *Level);
-        }
-        if(Level->site[i][j].creature)
-        {
-          Level->site[i][j].creature->hp = -1;
-          Level->site[i][j].creature     = nullptr;
-        }
-        make_site_monster(i, j, GHOST);
-        Level->site[i][j].creature->monstring = "ghost of a Paladin";
-        m_status_set(*Level->site[i][j].creature, HOSTILE);
-      }
-    }
   }
 }
 

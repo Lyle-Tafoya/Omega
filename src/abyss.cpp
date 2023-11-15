@@ -27,7 +27,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 /* This stuff is in this file because the file was really small. */
-extern struct level TheLevel;
+extern level TheLevel;
 
 void kill_levels(const std::string &str)
 {

@@ -31,10 +31,328 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern bool merge_item_with_list(objectlist *l, object *o, int n);
 extern std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode);
 
+void monster_action(monster *m, int action)
+{
+  int meleef;
+  if((action >= M_MELEE_NORMAL) && (action < M_MOVE_NORMAL))
+  {
+    /* kluge allows multiple attack forms */
+    if(distance(m->x, m->y, Player.x, Player.y) < 2)
+    {
+      meleef    = m->meleef;
+      m->meleef = action;
+      tacmonster(m);
+      m->meleef = meleef;
+    }
+  }
+  else
+  {
+    switch(action)
+    {
+      case M_NO_OP:
+        m_no_op(m);
+        break;
+
+      case M_MOVE_NORMAL:
+        m_normal_move(m);
+        break;
+      case M_MOVE_FLUTTER:
+        m_flutter_move(m);
+        break;
+      case M_MOVE_FOLLOW:
+        m_follow_move(m);
+        break;
+      case M_MOVE_TELEPORT:
+        m_teleport(m);
+        break;
+      case M_MOVE_RANDOM:
+        m_random_move(m);
+        break;
+      case M_MOVE_SMART:
+        m_smart_move(m);
+        break;
+      case M_MOVE_SPIRIT:
+        m_spirit_move(m);
+        break;
+      case M_MOVE_CONFUSED:
+        m_confused_move(m);
+        break;
+      case M_MOVE_SCAREDY:
+        m_scaredy_move(m);
+        break;
+      case M_MOVE_ANIMAL:
+        m_move_animal(m);
+        break;
+      case M_MOVE_LEASH:
+        m_move_leash(m);
+        break;
+
+      case M_STRIKE_MISSILE:
+        m_nbolt(m);
+        break;
+      case M_STRIKE_FBOLT:
+        m_firebolt(m);
+        break;
+      case M_STRIKE_LBALL:
+        m_lball(m);
+        break;
+      case M_STRIKE_FBALL:
+        m_fireball(m);
+        break;
+      case M_STRIKE_SNOWBALL:
+        m_snowball(m);
+        break;
+      case M_STRIKE_BLIND:
+        m_blind_strike(m);
+        break;
+      case M_STRIKE_SONIC:
+        m_strike_sonic(m);
+        break;
+
+      case M_TALK_HORSE:
+        m_talk_horse(m);
+        break;
+      case M_TALK_THIEF:
+        m_talk_thief(m);
+        break;
+      case M_TALK_STUPID:
+        m_talk_stupid(m);
+        break;
+      case M_TALK_SILENT:
+        m_talk_silent(m);
+        break;
+      case M_TALK_HUNGRY:
+        m_talk_hungry(m);
+        break;
+      case M_TALK_GREEDY:
+        m_talk_greedy(m);
+        break;
+      case M_TALK_TITTER:
+        m_talk_titter(m);
+        break;
+      case M_TALK_MP:
+        m_talk_mp(m);
+        break;
+      case M_TALK_IM:
+        m_talk_im(m);
+        break;
+      case M_TALK_MAN:
+        m_talk_man(m);
+        break;
+      case M_TALK_ROBOT:
+        m_talk_robot(m);
+        break;
+      case M_TALK_EVIL:
+        m_talk_evil(m);
+        break;
+      case M_TALK_GUARD:
+        m_talk_guard(m);
+        break;
+      case M_TALK_MIMSY:
+        m_talk_mimsy(m);
+        break;
+      case M_TALK_SLITHY:
+        m_talk_slithy(m);
+        break;
+      case M_TALK_BURBLE:
+        m_talk_burble(m);
+        break;
+      case M_TALK_BEG:
+        m_talk_beg(m);
+        break;
+      case M_TALK_HINT:
+        m_talk_hint(m);
+        break;
+      case M_TALK_EF:
+        m_talk_ef(m);
+        break;
+      case M_TALK_GF:
+        m_talk_gf(m);
+        break;
+      case M_TALK_SEDUCTOR:
+        m_talk_seductor(m);
+        break;
+      case M_TALK_DEMONLOVER:
+        m_talk_demonlover(m);
+        break;
+      case M_TALK_NINJA:
+        m_talk_ninja(m);
+        break;
+      case M_TALK_ASSASSIN:
+        m_talk_assassin(m);
+        break;
+      case M_TALK_SERVANT:
+        m_talk_servant(m);
+        break;
+      case M_TALK_ANIMAL:
+        m_talk_animal(m);
+        break;
+      case M_TALK_SCREAM:
+        m_talk_scream(m);
+        break;
+      case M_TALK_PARROT:
+        m_talk_parrot(m);
+        break;
+      case M_TALK_HYENA:
+        m_talk_hyena(m);
+        break;
+      case M_TALK_DRUID:
+        m_talk_druid(m);
+        break;
+      case M_TALK_ARCHMAGE:
+        m_talk_archmage(m);
+        break;
+      case M_TALK_MERCHANT:
+        m_talk_merchant(m);
+        break;
+      case M_TALK_PRIME:
+        m_talk_prime(m);
+        break;
+
+      case M_SP_BOG:
+        m_sp_bogthing(m);
+        break;
+      case M_SP_WERE:
+        m_sp_were(m);
+        break;
+      case M_SP_WHISTLEBLOWER:
+        m_sp_whistleblower(m);
+        break;
+      case M_SP_MERCHANT:
+        m_sp_merchant(m);
+        break;
+      case M_SP_SURPRISE:
+        m_sp_surprise(m);
+        break;
+      case M_SP_MP:
+        m_sp_mp(m);
+        break;
+      case M_SP_THIEF:
+        m_thief_f(m);
+        break;
+      case M_SP_DEMONLOVER:
+        m_sp_demonlover(m);
+        break;
+      case M_SP_AGGRAVATE:
+        m_aggravate(m);
+        break;
+      case M_SP_POISON_CLOUD:
+        m_sp_poison_cloud(m);
+        break;
+      case M_SP_HUGE:
+        m_huge_sounds(m);
+        break;
+      case M_SP_SUMMON:
+        m_summon(m);
+        break;
+      case M_SP_ILLUSION:
+        m_illusion(m);
+        break;
+      case M_SP_ESCAPE:
+        m_sp_escape(m);
+        break;
+      case M_SP_FLUTTER:
+        m_flutter_move(m);
+        break;
+      case M_SP_EXPLODE:
+        m_sp_explode(m);
+        break;
+      case M_SP_DEMON:
+        m_sp_demon(m);
+        break;
+      case M_SP_ACID_CLOUD:
+        m_sp_acid_cloud(m);
+        break;
+      case M_SP_GHOST:
+        m_sp_ghost(m);
+        break;
+      case M_SP_SPELL:
+        m_sp_spell(m);
+        break;
+      case M_SP_SEDUCTOR:
+        m_sp_seductor(m);
+        break;
+      case M_SP_EATER:
+        m_sp_eater(m);
+        break;
+      case M_SP_DRAGONLORD:
+        m_sp_dragonlord(m);
+        break;
+      case M_SP_BLACKOUT:
+        m_sp_blackout(m);
+        break;
+      case M_SP_SWARM:
+        m_sp_swarm(m);
+        break;
+      case M_SP_ANGEL:
+        m_sp_angel(m);
+        break;
+      case M_SP_SERVANT:
+        m_sp_servant(m);
+        break;
+      case M_SP_AV:
+        m_sp_av(m);
+        break;
+      case M_SP_LW:
+        m_sp_lw(m);
+        break;
+      case M_SP_MB:
+        m_sp_mb(m);
+        break;
+      case M_SP_RAISE:
+        m_sp_raise(m);
+        break;
+      case M_SP_MIRROR:
+        m_sp_mirror(m);
+        break;
+      case M_SP_COURT:
+        m_sp_court(m);
+        break;
+      case M_SP_LAIR:
+        m_sp_lair(m);
+        break;
+      case M_SP_PRIME:
+        m_sp_prime(m);
+        break;
+    }
+  }
+}
+void monster_move(monster *m)
+{
+  monster_action(m, m->movef);
+}
+
+void monster_special(monster *m)
+{
+  // since many special functions are really attacks, cancel them all if on sanctuary
+  if(!player_on_sanctuary())
+  {
+    monster_action(m, m->specialf);
+  }
+}
+
+void monster_strike(monster *m)
+{
+  if(player_on_sanctuary())
+  {
+    queue_message("The aegis of your deity protects you!");
+  }
+  else
+  {
+    /* It's lawful to wait to be attacked */
+    if(m->attacked == 0)
+    {
+      Player.alignment++;
+    }
+    m->attacked++;
+    monster_action(m, m->strikef);
+  }
+}
+
 /*               Revised function                   */
 /* WDT: code contributed by David J. Robertson */
 /* consider one monster's action */
-void m_pulse(struct monster *m)
+void m_pulse(monster *m)
 {
   int range  = distance(m->x, m->y, Player.x, Player.y);
   int STRIKE = false;
@@ -112,7 +430,7 @@ void m_pulse(struct monster *m)
 }
 
 /* actually make a move */
-void movemonster(struct monster *m, int newx, int newy)
+void movemonster(monster *m, int newx, int newy)
 {
   if(Level->site[newx][newy].creature)
   {
@@ -129,7 +447,7 @@ void movemonster(struct monster *m, int newx, int newy)
 }
 
 /* give object o to monster m */
-void m_pickup(struct monster *m, struct object *o)
+void m_pickup(monster *m, object *o)
 {
   pol tmp        = new objectlist;
   tmp->thing     = o;
@@ -137,7 +455,7 @@ void m_pickup(struct monster *m, struct object *o)
   m->possessions = tmp;
 }
 
-void m_dropstuff(struct monster *m)
+void m_dropstuff(monster *m)
 {
   objectlist *drop_pile = Level->site[m->x][m->y].things;
   for(objectlist *possessions = m->possessions; possessions;)
@@ -159,7 +477,7 @@ void m_dropstuff(struct monster *m)
   Level->site[m->x][m->y].things = drop_pile;
 }
 
-void m_damage(struct monster *m, int dmg, damage_type dtype)
+void m_damage(monster *m, int dmg, damage_type dtype)
 {
   m_status_set(*m, AWAKE);
   m_status_set(*m, HOSTILE);
@@ -183,7 +501,24 @@ void m_damage(struct monster *m, int dmg, damage_type dtype)
   }
 }
 
-void m_death(struct monster *m)
+void strengthen_death(monster *m)
+{
+  pol ol     = new objectlist;
+  pob scythe = new object;
+  m->xpv += std::min(10000l, m->xpv + 1000);
+  m->hit += std::min(1000, m->hit + 10);
+  m->dmg = std::min(10000, m->dmg * 2);
+  m->ac += std::min(1000, m->ac + 10);
+  m->speed       = std::max(m->speed - 1, 1);
+  m->movef       = M_MOVE_SMART;
+  m->hp          = std::min(100000, 100 + m->dmg * 10);
+  *scythe        = Objects[WEAPONID + 39];
+  ol->thing      = scythe;
+  ol->next       = nullptr;
+  m->possessions = ol;
+}
+
+void m_death(monster *m)
 {
   pob corpse;
   pml ml;
@@ -472,330 +807,11 @@ void m_death(struct monster *m)
   }
 }
 
-void monster_move(struct monster *m)
-{
-  monster_action(m, m->movef);
-}
-
-void monster_strike(struct monster *m)
-{
-  if(player_on_sanctuary())
-  {
-    queue_message("The aegis of your deity protects you!");
-  }
-  else
-  {
-    /* It's lawful to wait to be attacked */
-    if(m->attacked == 0)
-    {
-      Player.alignment++;
-    }
-    m->attacked++;
-    monster_action(m, m->strikef);
-  }
-}
-
-void monster_special(struct monster *m)
-{
-  /* since many special functions are really attacks, cancel them
-     all if on sanctuary */
-  if(!player_on_sanctuary())
-  {
-    monster_action(m, m->specialf);
-  }
-}
-
-void monster_talk(struct monster *m)
+void monster_talk(monster *m)
 {
   monster_action(m, m->talkf);
 }
 
-void monster_action(struct monster *m, int action)
-{
-  int meleef;
-  if((action >= M_MELEE_NORMAL) && (action < M_MOVE_NORMAL))
-  {
-    /* kluge allows multiple attack forms */
-    if(distance(m->x, m->y, Player.x, Player.y) < 2)
-    {
-      meleef    = m->meleef;
-      m->meleef = action;
-      tacmonster(m);
-      m->meleef = meleef;
-    }
-  }
-  else
-  {
-    switch(action)
-    {
-      case M_NO_OP:
-        m_no_op(m);
-        break;
-
-      case M_MOVE_NORMAL:
-        m_normal_move(m);
-        break;
-      case M_MOVE_FLUTTER:
-        m_flutter_move(m);
-        break;
-      case M_MOVE_FOLLOW:
-        m_follow_move(m);
-        break;
-      case M_MOVE_TELEPORT:
-        m_teleport(m);
-        break;
-      case M_MOVE_RANDOM:
-        m_random_move(m);
-        break;
-      case M_MOVE_SMART:
-        m_smart_move(m);
-        break;
-      case M_MOVE_SPIRIT:
-        m_spirit_move(m);
-        break;
-      case M_MOVE_CONFUSED:
-        m_confused_move(m);
-        break;
-      case M_MOVE_SCAREDY:
-        m_scaredy_move(m);
-        break;
-      case M_MOVE_ANIMAL:
-        m_move_animal(m);
-        break;
-      case M_MOVE_LEASH:
-        m_move_leash(m);
-        break;
-
-      case M_STRIKE_MISSILE:
-        m_nbolt(m);
-        break;
-      case M_STRIKE_FBOLT:
-        m_firebolt(m);
-        break;
-      case M_STRIKE_LBALL:
-        m_lball(m);
-        break;
-      case M_STRIKE_FBALL:
-        m_fireball(m);
-        break;
-      case M_STRIKE_SNOWBALL:
-        m_snowball(m);
-        break;
-      case M_STRIKE_BLIND:
-        m_blind_strike(m);
-        break;
-      case M_STRIKE_SONIC:
-        m_strike_sonic(m);
-        break;
-
-      case M_TALK_HORSE:
-        m_talk_horse(m);
-        break;
-      case M_TALK_THIEF:
-        m_talk_thief(m);
-        break;
-      case M_TALK_STUPID:
-        m_talk_stupid(m);
-        break;
-      case M_TALK_SILENT:
-        m_talk_silent(m);
-        break;
-      case M_TALK_HUNGRY:
-        m_talk_hungry(m);
-        break;
-      case M_TALK_GREEDY:
-        m_talk_greedy(m);
-        break;
-      case M_TALK_TITTER:
-        m_talk_titter(m);
-        break;
-      case M_TALK_MP:
-        m_talk_mp(m);
-        break;
-      case M_TALK_IM:
-        m_talk_im(m);
-        break;
-      case M_TALK_MAN:
-        m_talk_man(m);
-        break;
-      case M_TALK_ROBOT:
-        m_talk_robot(m);
-        break;
-      case M_TALK_EVIL:
-        m_talk_evil(m);
-        break;
-      case M_TALK_GUARD:
-        m_talk_guard(m);
-        break;
-      case M_TALK_MIMSY:
-        m_talk_mimsy(m);
-        break;
-      case M_TALK_SLITHY:
-        m_talk_slithy(m);
-        break;
-      case M_TALK_BURBLE:
-        m_talk_burble(m);
-        break;
-      case M_TALK_BEG:
-        m_talk_beg(m);
-        break;
-      case M_TALK_HINT:
-        m_talk_hint(m);
-        break;
-      case M_TALK_EF:
-        m_talk_ef(m);
-        break;
-      case M_TALK_GF:
-        m_talk_gf(m);
-        break;
-      case M_TALK_SEDUCTOR:
-        m_talk_seductor(m);
-        break;
-      case M_TALK_DEMONLOVER:
-        m_talk_demonlover(m);
-        break;
-      case M_TALK_NINJA:
-        m_talk_ninja(m);
-        break;
-      case M_TALK_ASSASSIN:
-        m_talk_assassin(m);
-        break;
-      case M_TALK_SERVANT:
-        m_talk_servant(m);
-        break;
-      case M_TALK_ANIMAL:
-        m_talk_animal(m);
-        break;
-      case M_TALK_SCREAM:
-        m_talk_scream(m);
-        break;
-      case M_TALK_PARROT:
-        m_talk_parrot(m);
-        break;
-      case M_TALK_HYENA:
-        m_talk_hyena(m);
-        break;
-      case M_TALK_DRUID:
-        m_talk_druid(m);
-        break;
-      case M_TALK_ARCHMAGE:
-        m_talk_archmage(m);
-        break;
-      case M_TALK_MERCHANT:
-        m_talk_merchant(m);
-        break;
-      case M_TALK_PRIME:
-        m_talk_prime(m);
-        break;
-
-      case M_SP_BOG:
-        m_sp_bogthing(m);
-        break;
-      case M_SP_WERE:
-        m_sp_were(m);
-        break;
-      case M_SP_WHISTLEBLOWER:
-        m_sp_whistleblower(m);
-        break;
-      case M_SP_MERCHANT:
-        m_sp_merchant(m);
-        break;
-      case M_SP_SURPRISE:
-        m_sp_surprise(m);
-        break;
-      case M_SP_MP:
-        m_sp_mp(m);
-        break;
-      case M_SP_THIEF:
-        m_thief_f(m);
-        break;
-      case M_SP_DEMONLOVER:
-        m_sp_demonlover(m);
-        break;
-      case M_SP_AGGRAVATE:
-        m_aggravate(m);
-        break;
-      case M_SP_POISON_CLOUD:
-        m_sp_poison_cloud(m);
-        break;
-      case M_SP_HUGE:
-        m_huge_sounds(m);
-        break;
-      case M_SP_SUMMON:
-        m_summon(m);
-        break;
-      case M_SP_ILLUSION:
-        m_illusion(m);
-        break;
-      case M_SP_ESCAPE:
-        m_sp_escape(m);
-        break;
-      case M_SP_FLUTTER:
-        m_flutter_move(m);
-        break;
-      case M_SP_EXPLODE:
-        m_sp_explode(m);
-        break;
-      case M_SP_DEMON:
-        m_sp_demon(m);
-        break;
-      case M_SP_ACID_CLOUD:
-        m_sp_acid_cloud(m);
-        break;
-      case M_SP_GHOST:
-        m_sp_ghost(m);
-        break;
-      case M_SP_SPELL:
-        m_sp_spell(m);
-        break;
-      case M_SP_SEDUCTOR:
-        m_sp_seductor(m);
-        break;
-      case M_SP_EATER:
-        m_sp_eater(m);
-        break;
-      case M_SP_DRAGONLORD:
-        m_sp_dragonlord(m);
-        break;
-      case M_SP_BLACKOUT:
-        m_sp_blackout(m);
-        break;
-      case M_SP_SWARM:
-        m_sp_swarm(m);
-        break;
-      case M_SP_ANGEL:
-        m_sp_angel(m);
-        break;
-      case M_SP_SERVANT:
-        m_sp_servant(m);
-        break;
-      case M_SP_AV:
-        m_sp_av(m);
-        break;
-      case M_SP_LW:
-        m_sp_lw(m);
-        break;
-      case M_SP_MB:
-        m_sp_mb(m);
-        break;
-      case M_SP_RAISE:
-        m_sp_raise(m);
-        break;
-      case M_SP_MIRROR:
-        m_sp_mirror(m);
-        break;
-      case M_SP_COURT:
-        m_sp_court(m);
-        break;
-      case M_SP_LAIR:
-        m_sp_lair(m);
-        break;
-      case M_SP_PRIME:
-        m_sp_prime(m);
-        break;
-    }
-  }
-}
 
 /* makes one of the highscore npcs */
 void make_hiscore_npc(pmt npc, int npcid)
@@ -993,7 +1009,7 @@ void determine_npc_behavior(pmt npc, int level, int behavior)
 }
 
 /* makes an ordinary npc (maybe undead) */
-void make_log_npc(struct monster *npc)
+void make_log_npc(monster *npc)
 {
   // in case the log file is null
   int behavior = 2718, level = 1, status = 2;
@@ -1049,7 +1065,7 @@ void make_log_npc(struct monster *npc)
   determine_npc_behavior(npc, level, behavior);
 }
 
-void m_trap_dart(struct monster *m)
+void m_trap_dart(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1067,7 +1083,7 @@ void m_trap_dart(struct monster *m)
   m_damage(m, difficulty() * 2, NORMAL_DAMAGE);
 }
 
-void m_trap_pit(struct monster *m)
+void m_trap_pit(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1089,7 +1105,7 @@ void m_trap_pit(struct monster *m)
   m_damage(m, difficulty() * 5, NORMAL_DAMAGE);
 }
 
-void m_trap_door(struct monster *m)
+void m_trap_door(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1107,7 +1123,7 @@ void m_trap_door(struct monster *m)
   m_vanish(m);
 }
 
-void m_trap_abyss(struct monster *m)
+void m_trap_abyss(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1129,7 +1145,7 @@ void m_trap_abyss(struct monster *m)
   resetgamestatus(SUPPRESS_PRINTING, GameStatus);
 }
 
-void m_trap_snare(struct monster *m)
+void m_trap_snare(monster *m)
 {
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
@@ -1150,7 +1166,7 @@ void m_trap_snare(struct monster *m)
   }
 }
 
-void m_trap_blade(struct monster *m)
+void m_trap_blade(monster *m)
 {
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
@@ -1168,7 +1184,7 @@ void m_trap_blade(struct monster *m)
   m_damage(m, (difficulty() + 1) * 7 - Player.defense, NORMAL_DAMAGE);
 }
 
-void m_trap_fire(struct monster *m)
+void m_trap_fire(monster *m)
 {
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
@@ -1186,7 +1202,7 @@ void m_trap_fire(struct monster *m)
   m_damage(m, (difficulty() + 1) * 5, FLAME);
 }
 
-void m_fire(struct monster *m)
+void m_fire(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1202,7 +1218,7 @@ void m_fire(struct monster *m)
   m_damage(m, random_range(100), FLAME);
 }
 
-void m_trap_teleport(struct monster *m)
+void m_trap_teleport(monster *m)
 {
   Level->site[m->x][m->y].locchar = TRAP;
   lset(m->x, m->y, CHANGED, *Level);
@@ -1220,7 +1236,7 @@ void m_trap_teleport(struct monster *m)
   m_teleport(m);
 }
 
-void m_trap_disintegrate(struct monster *m)
+void m_trap_disintegrate(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1238,7 +1254,7 @@ void m_trap_disintegrate(struct monster *m)
   disintegrate(m->x, m->y);
 }
 
-void m_trap_sleepgas(struct monster *m)
+void m_trap_sleepgas(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1259,7 +1275,7 @@ void m_trap_sleepgas(struct monster *m)
   }
 }
 
-void m_trap_acid(struct monster *m)
+void m_trap_acid(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1277,7 +1293,7 @@ void m_trap_acid(struct monster *m)
   m_damage(m, random_range(difficulty() * difficulty()), ACID);
 }
 
-void m_trap_manadrain(struct monster *m)
+void m_trap_manadrain(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1298,7 +1314,7 @@ void m_trap_manadrain(struct monster *m)
   }
 }
 
-void m_water(struct monster *m)
+void m_water(monster *m)
 {
   if((!m_statusp(*m, INTANGIBLE)) && (!m_statusp(*m, SWIMMING)) && (!m_statusp(*m, ONLYSWIM)))
   {
@@ -1317,7 +1333,7 @@ void m_water(struct monster *m)
   }
 }
 
-void m_abyss(struct monster *m)
+void m_abyss(monster *m)
 {
   if(los_p(m->x, m->y, Player.x, Player.y))
   {
@@ -1333,7 +1349,7 @@ void m_abyss(struct monster *m)
   m_vanish(m);
 }
 
-void m_lava(struct monster *m)
+void m_lava(monster *m)
 {
   if((!m_immunityp(*m, FLAME)) || ((!m_statusp(*m, SWIMMING)) && (!m_statusp(*m, ONLYSWIM))))
   {
@@ -1352,7 +1368,7 @@ void m_lava(struct monster *m)
   }
 }
 
-void m_altar(struct monster *m)
+void m_altar(monster *m)
 {
   int visible  = view_los_p(Player.x, Player.y, m->x, m->y);
   int reaction = 0;
@@ -1465,21 +1481,4 @@ const char *mantype()
   }
 }
 
-void strengthen_death(struct monster *m)
-{
-  pol ol     = new objectlist;
-  pob scythe = new object;
-  m->xpv += std::min(10000l, m->xpv + 1000);
-  m->hit += std::min(1000, m->hit + 10);
-  m->dmg = std::min(10000, m->dmg * 2);
-  m->ac += std::min(1000, m->ac + 10);
-  m->speed       = std::max(m->speed - 1, 1);
-  m->movef       = M_MOVE_SMART;
-  m->hp          = std::min(100000, 100 + m->dmg * 10);
-  *scythe        = Objects[WEAPONID + 39];
-  ol->thing      = scythe;
-  ol->next       = nullptr;
-  m->possessions = ol;
-}
-
-void m_no_op(struct monster *) {}
+void m_no_op(monster *) {}

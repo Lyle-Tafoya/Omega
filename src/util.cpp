@@ -115,7 +115,7 @@ int unblocked(int x, int y)
 }
 
 /* do monsters want to move through a spot */
-int m_unblocked(struct monster *m, int x, int y)
+int m_unblocked(monster *m, int x, int y)
 {
   if((!inbounds(x, y)) || ((x == Player.x) && (y == Player.y)))
   {
@@ -572,32 +572,6 @@ int view_los_p(int x1, int y1, int x2, int y2)
   return ((x1 == x2) && (y1 == y2));
 }
 
-/* returns the command direction from the index into Dirs */
-char inversedir(int dirindex)
-{
-  switch(dirindex)
-  {
-    case 0:
-      return ('n');
-    case 1:
-      return ('u');
-    case 2:
-      return ('b');
-    case 3:
-      return ('y');
-    case 4:
-      return ('l');
-    case 5:
-      return ('h');
-    case 6:
-      return ('j');
-    case 7:
-      return ('k');
-    default:
-      return ('\0');
-  }
-}
-
 long calc_points()
 {
   int  i;
@@ -855,26 +829,6 @@ void findspace(int *x, int *y, int baux)
   } while(!done);
   *x = i;
   *y = j;
-}
-
-/* is prefix a prefix of s? */
-int strprefix(const std::string &prefix, const std::string &s)
-{
-  int    matched = true;
-  size_t i       = 0;
-  if(prefix.length() > s.length())
-  {
-    return (false);
-  }
-  else
-  {
-    while(matched && (i < prefix.length()))
-    {
-      matched = (prefix[i] == s[i]);
-      i++;
-    }
-    return (matched);
-  }
 }
 
 int confirmation()

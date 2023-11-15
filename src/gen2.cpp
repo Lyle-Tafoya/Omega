@@ -23,7 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scr.h"
 
 #ifdef SAVE_LEVELS
-extern struct level TheLevel;
+extern level TheLevel;
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
@@ -68,8 +68,142 @@ void make_stairs(int fromlevel)
   }
 }
 
-/* tactical map generating functions */
+void make_general_map(const std::string &terrain)
+{
+  char curr;
 
+  for(int i = 0; i < WIDTH; i++)
+  {
+    for(int j = 0; j < LENGTH; j++)
+    {
+      if((i == 0 && j == 0) || !random_range(5))
+      {
+        curr = terrain[random_range(static_cast<int>(terrain.length()))];
+      }
+      else if(j == 0 || (random_range(2) && i > 0))
+      {
+        curr = Level->site[i - 1][j].locchar & 0xff;
+      }
+      else
+      {
+        curr = Level->site[i][j - 1].locchar & 0xff;
+      }
+      switch(curr)
+      {
+        case(FLOOR & 0xff):
+          Level->site[i][j].locchar = Level->site[i][j].showchar = FLOOR;
+          Level->site[i][j].p_locf                               = L_NO_OP;
+          break;
+        case(HEDGE & 0xff):
+          Level->site[i][j].locchar = Level->site[i][j].showchar = HEDGE;
+          Level->site[i][j].p_locf                               = L_HEDGE;
+          break;
+        case(WATER & 0xff):
+          Level->site[i][j].locchar = Level->site[i][j].showchar = WATER;
+          Level->site[i][j].p_locf                               = L_WATER;
+          break;
+        case(RUBBLE & 0xff):
+          Level->site[i][j].locchar = Level->site[i][j].showchar = RUBBLE;
+          Level->site[i][j].p_locf                               = L_RUBBLE;
+          break;
+      }
+      Level->site[i][j].lstatus    = SEEN + LIT;
+      Level->site[i][j].roomnumber = RS_COUNTRYSIDE;
+      if((i == 0) || (j == 0) || (i == WIDTH - 1) || (j == LENGTH - 1))
+      {
+        Level->site[i][j].p_locf = L_TACTICAL_EXIT;
+      }
+    }
+  }
+}
+
+void make_forest()
+{
+  make_general_map("\".");
+  straggle_corridor(0, random_range(LENGTH), WIDTH, random_range(LENGTH), WATER, RS_COUNTRYSIDE);
+}
+
+void make_plains()
+{
+  make_general_map(".");
+}
+
+void make_road()
+{
+  int x, y;
+  make_general_map("\"\"~4....");
+  for(x = WIDTH / 2 - 3; x <= WIDTH / 2 + 3; x++)
+  {
+    for(y = 0; y < LENGTH; y++)
+    {
+      Level->site[x][y].locchar = Level->site[x][y].showchar = FLOOR;
+      if(y != 0 && y != LENGTH - 1)
+      {
+        Level->site[x][y].p_locf = L_NO_OP;
+      }
+    }
+  }
+}
+
+void make_jungle()
+{
+  make_general_map("\"\".");
+}
+
+void make_river()
+{
+  int i, y, y1;
+  make_general_map("\".......");
+  y  = random_range(LENGTH);
+  y1 = random_range(LENGTH);
+  straggle_corridor(0, y, WIDTH, y1, WATER, RS_COUNTRYSIDE);
+  for(i = 0; i < 7; i++)
+  {
+    if(y > LENGTH / 2)
+    {
+      y--;
+    }
+    else
+    {
+      y++;
+    }
+    if(y1 > LENGTH / 2)
+    {
+      y1--;
+    }
+    else
+    {
+      y1++;
+    }
+    straggle_corridor(0, y, WIDTH, y1, WATER, RS_COUNTRYSIDE);
+  }
+}
+
+void make_mountains()
+{
+  int i, x, y, x1, y1;
+  make_general_map("4...");
+  x  = 0;
+  y  = random_range(LENGTH);
+  x1 = WIDTH;
+  y1 = random_range(LENGTH);
+  straggle_corridor(x, y, x1, y1, WATER, RS_COUNTRYSIDE);
+  for(i = 0; i < 7; i++)
+  {
+    x  = random_range(WIDTH);
+    x1 = random_range(WIDTH);
+    y  = 0;
+    y1 = LENGTH;
+    straggle_corridor(x, y, x1, y1, WATER, RS_COUNTRYSIDE);
+  }
+}
+
+void make_swamp()
+{
+  make_general_map("~~\".");
+}
+
+// tactical map generating functions
 void make_country_screen(Symbol terrain)
 {
   int i, j;
@@ -129,139 +263,43 @@ void make_country_screen(Symbol terrain)
   }
 }
 
-void make_general_map(const std::string &terrain)
+// goes from f to t unless it hits a site which is not a wall and doesn't have buildaux field == baux
+void room_corridor(int fx, int fy, int tx, int ty, int baux)
 {
-  char curr;
+  int dx, dy, continuing = true;
 
-  for(int i = 0; i < WIDTH; i++)
+  dx = sign(tx - fx);
+  dy = sign(ty - fy);
+
+  makedoor(fx, fy);
+
+  fx += dx;
+  fy += dy;
+
+  while(continuing)
   {
-    for(int j = 0; j < LENGTH; j++)
+    Level->site[fx][fy].locchar    = FLOOR;
+    Level->site[fx][fy].roomnumber = RS_CORRIDOR;
+    Level->site[fx][fy].buildaux   = baux;
+    dx                             = sign(tx - fx);
+    dy                             = sign(ty - fy);
+    if((dx != 0) && (dy != 0))
     {
-      if((i == 0 && j == 0) || !random_range(5))
+      if(random_range(2))
       {
-        curr = terrain[random_range(static_cast<int>(terrain.length()))];
+        dx = 0;
       }
-      else if(j == 0 || (random_range(2) && i > 0))
+      else if(random_range(2))
       {
-        curr = Level->site[i - 1][j].locchar & 0xff;
-      }
-      else
-      {
-        curr = Level->site[i][j - 1].locchar & 0xff;
-      }
-      switch(curr)
-      {
-        case(FLOOR & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = FLOOR;
-          Level->site[i][j].p_locf                               = L_NO_OP;
-          break;
-        case(HEDGE & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = HEDGE;
-          Level->site[i][j].p_locf                               = L_HEDGE;
-          break;
-        case(WATER & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = WATER;
-          Level->site[i][j].p_locf                               = L_WATER;
-          break;
-        case(RUBBLE & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = RUBBLE;
-          Level->site[i][j].p_locf                               = L_RUBBLE;
-          break;
-      }
-      Level->site[i][j].lstatus    = SEEN + LIT;
-      Level->site[i][j].roomnumber = RS_COUNTRYSIDE;
-      if((i == 0) || (j == 0) || (i == WIDTH - 1) || (j == LENGTH - 1))
-      {
-        Level->site[i][j].p_locf = L_TACTICAL_EXIT;
+        dy = 0;
       }
     }
+    fx += dx;
+    fy += dy;
+    continuing = (((fx != tx) || (fy != ty)) &&
+                  ((Level->site[fx][fy].buildaux == 0) || (Level->site[fx][fy].buildaux == baux)));
   }
-}
-
-void make_plains()
-{
-  make_general_map(".");
-}
-
-void make_road()
-{
-  int x, y;
-  make_general_map("\"\"~4....");
-  for(x = WIDTH / 2 - 3; x <= WIDTH / 2 + 3; x++)
-  {
-    for(y = 0; y < LENGTH; y++)
-    {
-      Level->site[x][y].locchar = Level->site[x][y].showchar = FLOOR;
-      if(y != 0 && y != LENGTH - 1)
-      {
-        Level->site[x][y].p_locf = L_NO_OP;
-      }
-    }
-  }
-}
-
-void make_forest()
-{
-  make_general_map("\".");
-  straggle_corridor(0, random_range(LENGTH), WIDTH, random_range(LENGTH), WATER, RS_COUNTRYSIDE);
-}
-
-void make_jungle()
-{
-  make_general_map("\"\".");
-}
-
-void make_river()
-{
-  int i, y, y1;
-  make_general_map("\".......");
-  y  = random_range(LENGTH);
-  y1 = random_range(LENGTH);
-  straggle_corridor(0, y, WIDTH, y1, WATER, RS_COUNTRYSIDE);
-  for(i = 0; i < 7; i++)
-  {
-    if(y > LENGTH / 2)
-    {
-      y--;
-    }
-    else
-    {
-      y++;
-    }
-    if(y1 > LENGTH / 2)
-    {
-      y1--;
-    }
-    else
-    {
-      y1++;
-    }
-    straggle_corridor(0, y, WIDTH, y1, WATER, RS_COUNTRYSIDE);
-  }
-}
-
-void make_mountains()
-{
-  int i, x, y, x1, y1;
-  make_general_map("4...");
-  x  = 0;
-  y  = random_range(LENGTH);
-  x1 = WIDTH;
-  y1 = random_range(LENGTH);
-  straggle_corridor(x, y, x1, y1, WATER, RS_COUNTRYSIDE);
-  for(i = 0; i < 7; i++)
-  {
-    x  = random_range(WIDTH);
-    x1 = random_range(WIDTH);
-    y  = 0;
-    y1 = LENGTH;
-    straggle_corridor(x, y, x1, y1, WATER, RS_COUNTRYSIDE);
-  }
-}
-
-void make_swamp()
-{
-  make_general_map("~~\".");
+  makedoor(fx, fy);
 }
 
 /* builds a room. Then, for each successive room, sends off at least one
@@ -419,46 +457,6 @@ void room_level()
       Level->mlist->m->y = ty;
     }
   }
-}
-
-/* goes from f to t unless it hits a site which is not a wall and doesn't
-   have buildaux field == baux */
-void room_corridor(int fx, int fy, int tx, int ty, int baux)
-{
-  int dx, dy, continuing = true;
-
-  dx = sign(tx - fx);
-  dy = sign(ty - fy);
-
-  makedoor(fx, fy);
-
-  fx += dx;
-  fy += dy;
-
-  while(continuing)
-  {
-    Level->site[fx][fy].locchar    = FLOOR;
-    Level->site[fx][fy].roomnumber = RS_CORRIDOR;
-    Level->site[fx][fy].buildaux   = baux;
-    dx                             = sign(tx - fx);
-    dy                             = sign(ty - fy);
-    if((dx != 0) && (dy != 0))
-    {
-      if(random_range(2))
-      {
-        dx = 0;
-      }
-      else if(random_range(2))
-      {
-        dy = 0;
-      }
-    }
-    fx += dx;
-    fy += dy;
-    continuing = (((fx != tx) || (fy != ty)) &&
-                  ((Level->site[fx][fy].buildaux == 0) || (Level->site[fx][fy].buildaux == baux)));
-  }
-  makedoor(fx, fy);
 }
 
 void maze_level()

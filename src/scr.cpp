@@ -1064,7 +1064,7 @@ void putspot(int x, int y, Symbol c)
 }
 
 /* regardless of line of sight, etc, draw a monster */
-void plotmon(struct monster *m)
+void plotmon(monster *m)
 {
   if(!offscreen(m->x, m->y))
   {
@@ -1127,7 +1127,7 @@ void drawmonsters(int display)
 }
 
 /* replace monster with what would be displayed if monster weren't there */
-void erase_monster(struct monster *m)
+void erase_monster(monster *m)
 {
   if(loc_statusp(m->x, m->y, SEEN, *Level))
   {

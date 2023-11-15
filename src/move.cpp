@@ -610,6 +610,36 @@ void l_void()
   }
 }
 
+void stationcheck()
+{
+  int stationsleft = false;
+  int i, j;
+  queue_message("You feel regenerated.");
+  Player.hp = Player.maxhp;
+  dataprint();
+  for(i = 0; i < WIDTH; i++)
+  {
+    for(j = 0; j < LENGTH; j++)
+    {
+      if((Level->site[i][j].locchar == WATER) || (Level->site[i][j].locchar == HEDGE) ||
+         (Level->site[i][j].locchar == WHIRLWIND) || (Level->site[i][j].locchar == FIRE))
+      {
+        stationsleft = true;
+      }
+    }
+  }
+  if(!stationsleft)
+  {
+    queue_message("There is a noise like a wild horse's neigh.");
+    queue_message("You spin around, and don't see anyone around at all");
+    queue_message("except for a spurred black cloaked figure carrying a scythe.");
+    queue_message("Death coughs apologetically. He seems a little embarrassed.");
+    queue_message("A voice peals out:");
+    queue_message("'An Adept must be able to conquer Death himself....");
+    make_site_monster(32, 4, DEATH);
+  }
+}
+
 void l_fire_station()
 {
   queue_message("The flames leap up, and the heat is incredible.");
@@ -809,36 +839,6 @@ void l_earth_station()
   else
   {
     queue_message("You step back from the ominous vegetation.");
-  }
-}
-
-void stationcheck()
-{
-  int stationsleft = false;
-  int i, j;
-  queue_message("You feel regenerated.");
-  Player.hp = Player.maxhp;
-  dataprint();
-  for(i = 0; i < WIDTH; i++)
-  {
-    for(j = 0; j < LENGTH; j++)
-    {
-      if((Level->site[i][j].locchar == WATER) || (Level->site[i][j].locchar == HEDGE) ||
-         (Level->site[i][j].locchar == WHIRLWIND) || (Level->site[i][j].locchar == FIRE))
-      {
-        stationsleft = true;
-      }
-    }
-  }
-  if(!stationsleft)
-  {
-    queue_message("There is a noise like a wild horse's neigh.");
-    queue_message("You spin around, and don't see anyone around at all");
-    queue_message("except for a spurred black cloaked figure carrying a scythe.");
-    queue_message("Death coughs apologetically. He seems a little embarrassed.");
-    queue_message("A voice peals out:");
-    queue_message("'An Adept must be able to conquer Death himself....");
-    make_site_monster(32, 4, DEATH);
   }
 }
 

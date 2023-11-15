@@ -33,6 +33,23 @@ extern void item_equip(object *);
 extern void item_unequip(object *);
 extern interactive_menu *menu;
 
+// returns some money from player back into "money" item.
+// for giving and dropping money
+pob detach_money()
+{
+  long c;
+  pob  cash = nullptr;
+  c         = get_money(Player.cash);
+  if(c != ABORT)
+  {
+    Player.cash -= c;
+    cash = new object;
+    make_cash(cash, difficulty());
+    cash->basevalue = c;
+  }
+  return (cash);
+}
+
 /* drops money, heh heh */
 void drop_money()
 {
@@ -56,23 +73,6 @@ void drop_money()
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
-}
-
-/* returns some money from player back into "money" item.
-   for giving and dropping money */
-pob detach_money()
-{
-  long c;
-  pob  cash = nullptr;
-  c         = get_money(Player.cash);
-  if(c != ABORT)
-  {
-    Player.cash -= c;
-    cash = new object;
-    make_cash(cash, difficulty());
-    cash->basevalue = c;
-  }
-  return (cash);
 }
 
 /* gets a legal amount of money or ABORT */
@@ -131,40 +131,6 @@ void pickup_at(int x, int y)
   }
 }
 
-/* WDT -- convert from a char (keypress) to an item index in
- * player inventory */
-/* Item identifiers, in this case the letters of the alphabet minus
- * any letters already used for commands.  Yes, there are more here
- * than could be needed, but I don't want to short myself for later.
- */
-char inventory_keymap[] = "-abcfghimnoqruvwyz";
-int         key_to_index(signed char key)
-{
-  assert(MAXITEMS > 0); /* must have room for an item, or this loop will
-                         * die! */
-
-  for(int i = 0; i < MAXITEMS; i++)
-  {
-    if(key == inventory_keymap[i])
-    {
-      return (signed char)i;
-    }
-  }
-  return O_UP_IN_AIR;
-}
-
-char index_to_key(signed int index)
-{
-  if(index < MAXITEMS)
-  {
-    return inventory_keymap[index];
-  }
-  else
-  {
-    return '-';
-  }
-}
-
 /* criteria for being able to put some item in some slot */
 /* WDT -- why on earth does the 'slottable' function print stuff???? */
 int aux_slottable(pob o, int slot)
@@ -210,6 +176,23 @@ int aux_slottable(pob o, int slot)
     }
   }
   return (ok);
+}
+
+// are two objects equal except for their number field?
+// returns false if either object is null
+int objequal(object *o, object *p)
+{
+  if(!o || !p)
+  {
+    return false;
+  }
+  else
+  {
+    return (o->id == p->id && o->weight == p->weight && o->plus == p->plus && o->charge == p->charge &&
+            o->dmg == p->dmg && o->hit == p->hit && o->aux == p->aux && o->fragility == p->fragility &&
+            o->basevalue == p->basevalue && o->known == p->known && o->blessing == p->blessing &&
+            o->on_use == p->on_use && o->on_equip == p->on_equip && o->on_unequip == p->on_unequip);
+  }
 }
 
 bool merge_item_with_list(objectlist *l, object *o, int n)
@@ -455,7 +438,7 @@ const std::string cashstr()
   }
 }
 
-void give_money(struct monster *m)
+void give_money(monster *m)
 {
   pob cash;
 
@@ -470,7 +453,7 @@ void give_money(struct monster *m)
   }
 }
 
-void givemonster(struct monster *m, struct object *o)
+void givemonster(monster *m, object *o)
 {
   /* special case -- give gem to LawBringer */
   if((m->id == LAWBRINGER) && (o->id == ARTIFACTID + 21))
@@ -646,6 +629,39 @@ void conform_unused_object(pob obj)
     item_unequip(obj);
   }
   calc_melee();
+}
+
+// Item identifiers, in this case the letters of the alphabet minus
+// any letters already used for commands.  Yes, there are more here
+// than could be needed, but I don't want to short myself for later.
+char inventory_keymap[] = "-abcfghimnoqruvwyz";
+
+// WDT -- convert from a char (keypress) to an item index in player inventory
+int         key_to_index(signed char key)
+{
+  assert(MAXITEMS > 0); /* must have room for an item, or this loop will
+                         * die! */
+
+  for(int i = 0; i < MAXITEMS; i++)
+  {
+    if(key == inventory_keymap[i])
+    {
+      return (signed char)i;
+    }
+  }
+  return O_UP_IN_AIR;
+}
+
+char index_to_key(signed int index)
+{
+  if(index < MAXITEMS)
+  {
+    return inventory_keymap[index];
+  }
+  else
+  {
+    return '-';
+  }
 }
 
 /* select an item from inventory */
@@ -873,6 +889,65 @@ int pack_item_cost(int index)
   return cost;
 }
 
+// whether or not an item o can be used in a slot. Assumes o can in fact be placed in the slot.
+bool item_useable(pob o, int slot)
+{
+  if(slot == O_ARMOR || slot == O_CLOAK || slot == O_SHIELD || slot == O_BOOTS || slot >= O_RING1)
+  {
+    return true;
+  }
+  else if(o->objchar == WEAPON || o->objchar == MISSILEWEAPON)
+  {
+    if(twohandedp(o->id) && (slot == O_READY_HAND || slot == O_WEAPON_HAND))
+    {
+      if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
+      {
+        queue_message("You heft the weapon and find you must use both hands.");
+        return true;
+      }
+      else
+      {
+        queue_message("This weapon is two-handed, so at the moment, ");
+        queue_message("you are just lugging it around....");
+        return false;
+      }
+    }
+    else
+    {
+      return slot == O_WEAPON_HAND;
+    }
+  }
+  else if((slot == O_READY_HAND || slot == O_WEAPON_HAND) && o->id == 8)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+// prevents people from wielding 3 short swords, etc.
+void pack_extra_items(pob item)
+{
+  pob extra     = new object;
+  *extra        = *item;
+  extra->number = item->number - 1;
+  extra->used   = false;
+  item->number  = 1;
+  if(Player.packptr < MAXPACK)
+  {
+    queue_message("Putting extra items back in pack.");
+    push_pack(extra);
+  }
+  else
+  {
+    queue_message("No room for extra copies of item -- dropping them.");
+    drop_at(Player.x, Player.y, extra);
+  }
+  calc_melee();
+}
+
 /* WDT -- 'response' must be an index into the pack. */
 void use_pack_item(int response, int slot)
 {
@@ -1049,6 +1124,34 @@ void take_from_pack(int slot)
   print_inventory_menu();
 }
 
+// returns some number between 0 and o->number
+int get_item_number(pob o)
+{
+  int n = 0;
+  if(o->number == 1)
+  {
+    return 1;
+  }
+  do
+  {
+    queue_message(std::format("How many? -- max {}:", o->number));
+    n = (int)parsenum();
+    if(n > o->number)
+    {
+      queue_message("Too many!");
+    }
+    else if(n < 1)
+    {
+      n = 0;
+    }
+  } while(n > o->number);
+  if(n < 1)
+  {
+    n = 0;
+  }
+  return (n);
+}
+
 void put_to_pack(int slot)
 {
   object *oslot = Player.possessions[slot];
@@ -1126,62 +1229,6 @@ void do_inventory_control()
   xredraw();
 }
 
-/* returns some number between 0 and o->number */
-int get_item_number(pob o)
-{
-  int n = 0;
-  if(o->number == 1)
-  {
-    return 1;
-  }
-  do
-  {
-    queue_message(std::format("How many? -- max {}:", o->number));
-    n = (int)parsenum();
-    if(n > o->number)
-    {
-      queue_message("Too many!");
-    }
-    else if(n < 1)
-    {
-      n = 0;
-    }
-  } while(n > o->number);
-  if(n < 1)
-  {
-    n = 0;
-  }
-  return (n);
-}
-
-void drop_from_slot(int slot)
-{
-  if(Player.possessions[slot])
-  {
-    if(cursed(Player.possessions[slot]) && Player.possessions[slot]->used)
-    {
-      queue_message("It sticks to your fingers!");
-    }
-    else
-    {
-      int n = get_item_number(Player.possessions[slot]);
-      if(n > 0)
-      {
-        p_drop_at(Player.x, Player.y, n, Player.possessions[slot]);
-        conform_lost_objects(n, Player.possessions[slot]);
-      }
-      else
-      {
-        queue_message("Didn't drop anything.");
-      }
-    }
-  }
-  else
-  {
-    queue_message("Didn't drop anything.");
-  }
-}
-
 /* splits num off of item to make newitem which is returned */
 /* something else (conform_lost_objects) has to reduce the actual
    number value of item and Player.itemweight */
@@ -1202,23 +1249,6 @@ pob split_item(int num, pob item)
   return (newitem);
 }
 
-
-/* are two objects equal except for their number field? */
-/* returns false if either object is null */
-int objequal(struct object *o, struct object *p)
-{
-  if(!o || !p)
-  {
-    return false;
-  }
-  else
-  {
-    return (o->id == p->id && o->weight == p->weight && o->plus == p->plus && o->charge == p->charge &&
-            o->dmg == p->dmg && o->hit == p->hit && o->aux == p->aux && o->fragility == p->fragility &&
-            o->basevalue == p->basevalue && o->known == p->known && o->blessing == p->blessing &&
-            o->on_use == p->on_use && o->on_equip == p->on_equip && o->on_unequip == p->on_unequip);
-  }
-}
 
 /* criteria for being able to put some item in some slot */
 int slottable(pob o, int slot)
@@ -1269,44 +1299,6 @@ int slottable(pob o, int slot)
     }
   }
   return (ok);
-}
-
-// whether or not an item o can be used in a slot. Assumes o can in fact be placed in the slot.
-bool item_useable(pob o, int slot)
-{
-  if(slot == O_ARMOR || slot == O_CLOAK || slot == O_SHIELD || slot == O_BOOTS || slot >= O_RING1)
-  {
-    return true;
-  }
-  else if(o->objchar == WEAPON || o->objchar == MISSILEWEAPON)
-  {
-    if(twohandedp(o->id) && (slot == O_READY_HAND || slot == O_WEAPON_HAND))
-    {
-      if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
-      {
-        queue_message("You heft the weapon and find you must use both hands.");
-        return true;
-      }
-      else
-      {
-        queue_message("This weapon is two-handed, so at the moment, ");
-        queue_message("you are just lugging it around....");
-        return false;
-      }
-    }
-    else
-    {
-      return slot == O_WEAPON_HAND;
-    }
-  }
-  else if((slot == O_READY_HAND || slot == O_WEAPON_HAND) && o->id == 8)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
 }
 
 bool cursed(pob obj)
@@ -1422,27 +1414,6 @@ void lose_all_items()
     Player.pack[i] = nullptr;
   }
   Player.packptr = 0;
-  calc_melee();
-}
-
-/* prevents people from wielding 3 short swords, etc. */
-void pack_extra_items(pob item)
-{
-  pob extra     = new object;
-  *extra        = *item;
-  extra->number = item->number - 1;
-  extra->used   = false;
-  item->number  = 1;
-  if(Player.packptr < MAXPACK)
-  {
-    queue_message("Putting extra items back in pack.");
-    push_pack(extra);
-  }
-  else
-  {
-    queue_message("No room for extra copies of item -- dropping them.");
-    drop_at(Player.x, Player.y, extra);
-  }
   calc_melee();
 }
 

@@ -238,7 +238,7 @@ void annihilate(int blessing)
 void sleep_monster(int blessing)
 {
   int x = Player.x, y = Player.y;
-  struct monster *target;
+  monster *target;
 
   if(blessing == 0)
   {
@@ -432,7 +432,7 @@ void level_drain(int levels, const std::string &source)
 
 void disrupt(int x, int y, int amount)
 {
-  struct monster *target;
+  monster *target;
 
   if((x == Player.x) && (y == Player.y))
   {
@@ -469,7 +469,7 @@ void disrupt(int x, int y, int amount)
 
 void disintegrate(int x, int y)
 {
-  struct monster *target;
+  monster *target;
   if(!inbounds(x, y))
   {
     queue_message("You feel a sense of wastage.");
@@ -1129,7 +1129,7 @@ void dispel(int blessing)
 void polymorph(int blessing)
 {
   int             x = Player.x, y = Player.y, newmonster;
-  struct monster *m;
+  monster *m;
   setspot(x, y);
   if((x == Player.x) && (y == Player.y))
   {
@@ -1206,7 +1206,7 @@ void polymorph(int blessing)
 
 void hellfire(int x, int y, int blessing)
 {
-  struct monster *m;
+  monster *m;
   if((x == Player.x) && (y == Player.y))
   {
     queue_message("You have been completely annihilated. Congratulations.");
@@ -1251,7 +1251,7 @@ void hellfire(int x, int y, int blessing)
 void drain(int blessing)
 {
   int             x = Player.x, y = Player.y;
-  struct monster *m;
+  monster *m;
   setspot(x, y);
   queue_message("You begin to drain energy...");
   if((x == Player.x) && (y == Player.y))
@@ -1443,7 +1443,7 @@ void drain_life(int amount)
 
 void inflict_fear(int x, int y)
 {
-  struct monster *m;
+  monster *m;
   if((Player.x == x) && (Player.y == y))
   {
     queue_message("You shudder with otherworldly dread.");

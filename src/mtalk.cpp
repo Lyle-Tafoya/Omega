@@ -28,7 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern bool received_directions;
 
 /* The druid's altar is in the northern forest */
-void m_talk_druid(struct monster *m)
+void m_talk_druid(monster *m)
 {
   int i;
   pml curr;
@@ -134,7 +134,7 @@ void m_talk_druid(struct monster *m)
   }
 }
 
-void m_talk_silent(struct monster *m)
+void m_talk_silent(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -162,7 +162,7 @@ void m_talk_silent(struct monster *m)
   }
 }
 
-void m_talk_stupid(struct monster *m)
+void m_talk_stupid(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -190,7 +190,7 @@ void m_talk_stupid(struct monster *m)
   }
 }
 
-void m_talk_greedy(struct monster *m)
+void m_talk_greedy(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -218,7 +218,7 @@ void m_talk_greedy(struct monster *m)
   }
 }
 
-void m_talk_hungry(struct monster *m)
+void m_talk_hungry(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -246,7 +246,7 @@ void m_talk_hungry(struct monster *m)
   }
 }
 
-void m_talk_guard(struct monster *m)
+void m_talk_guard(monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
@@ -306,12 +306,12 @@ void m_talk_guard(struct monster *m)
   }
 }
 
-void m_talk_mp(struct monster *)
+void m_talk_mp(monster *)
 {
   queue_message("The mendicant priest asks you to spare some treasure for the needy");
 }
 
-void m_talk_titter(struct monster *m)
+void m_talk_titter(monster *m)
 {
   if(m->uniqueness == COMMON)
   {
@@ -323,13 +323,13 @@ void m_talk_titter(struct monster *m)
   }
 }
 
-void m_talk_ninja(struct monster *)
+void m_talk_ninja(monster *)
 {
   queue_message("The black-garbed figure says apologetically:");
   queue_message("'Situree simasita, wakarimasen.'");
 }
 
-void m_talk_thief(struct monster *m)
+void m_talk_thief(monster *m)
 {
   if(Player.rank[THIEVES])
   {
@@ -352,14 +352,14 @@ void m_talk_thief(struct monster *m)
   }
 }
 
-void m_talk_assassin(struct monster *m)
+void m_talk_assassin(monster *m)
 {
   m->monstring = "master assassin";
   queue_message("The ominous figure does not reply, but hands you an embossed card:");
   queue_message("'Guild of Assassins Ops are forbidden to converse with targets.'");
 }
 
-void m_talk_im(struct monster *m)
+void m_talk_im(monster *m)
 {
   if(m->monstring != "itinerant merchant")
   {
@@ -406,7 +406,7 @@ void m_talk_im(struct monster *m)
   }
 }
 
-void m_talk_man(struct monster *m)
+void m_talk_man(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -437,7 +437,7 @@ void m_talk_man(struct monster *m)
   }
 }
 
-void m_talk_evil(struct monster *m)
+void m_talk_evil(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -495,7 +495,7 @@ void m_talk_evil(struct monster *m)
   }
 }
 
-void m_talk_robot(struct monster *m)
+void m_talk_robot(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -523,17 +523,17 @@ void m_talk_robot(struct monster *m)
   }
 }
 
-void m_talk_slithy(struct monster *)
+void m_talk_slithy(monster *)
 {
   queue_message("It can't talk -- it's too slithy!");
 }
 
-void m_talk_mimsy(struct monster *)
+void m_talk_mimsy(monster *)
 {
   queue_message("It can't talk -- it's too mimsy!");
 }
 
-void m_talk_burble(struct monster *m)
+void m_talk_burble(monster *m)
 {
   if(m->uniqueness == COMMON)
   {
@@ -545,7 +545,7 @@ void m_talk_burble(struct monster *m)
   }
 }
 
-void m_talk_beg(struct monster *m)
+void m_talk_beg(monster *m)
 {
   if(m->uniqueness == COMMON)
   {
@@ -557,7 +557,7 @@ void m_talk_beg(struct monster *m)
   }
 }
 
-void m_talk_hint(struct monster *m)
+void m_talk_hint(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -580,7 +580,7 @@ void m_talk_hint(struct monster *m)
   }
 }
 
-void m_talk_gf(struct monster *m)
+void m_talk_gf(monster *m)
 {
   queue_message("The good fairy glints: Would you like a wish?");
   if(ynq() == 'y')
@@ -614,7 +614,7 @@ void m_talk_gf(struct monster *m)
   m_vanish(m);
 }
 
-void m_talk_ef(struct monster *m)
+void m_talk_ef(monster *m)
 {
   queue_message("The evil fairy roils: Eat my pixie dust!");
   queue_message("She waves her black-glowing wand, which screams thinly....");
@@ -630,7 +630,7 @@ void m_talk_ef(struct monster *m)
   summon(-1, -1);
 }
 
-void m_talk_seductor(struct monster *m)
+void m_talk_seductor(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -656,7 +656,7 @@ void m_talk_seductor(struct monster *m)
   m_vanish(m);
 }
 
-void m_talk_demonlover(struct monster *m)
+void m_talk_demonlover(monster *m)
 {
   std::string monster_name;
   if(m->uniqueness == COMMON)
@@ -697,7 +697,7 @@ void m_talk_demonlover(struct monster *m)
   queue_message("You now notice the fangs, claws, batwings...");
 }
 
-void m_talk_horse(struct monster *m)
+void m_talk_horse(monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
@@ -730,17 +730,17 @@ void m_talk_horse(struct monster *m)
   }
 }
 
-void m_talk_hyena(struct monster *)
+void m_talk_hyena(monster *)
 {
   queue_message("The hyena only laughs at you...");
 }
 
-void m_talk_parrot(struct monster *)
+void m_talk_parrot(monster *)
 {
   queue_message("Polly wanna cracker?");
 }
 
-void m_talk_servant(struct monster *m)
+void m_talk_servant(monster *m)
 {
   int target, x = Player.x, y = Player.y;
   if(m->id == SERV_LAW)
@@ -791,7 +791,7 @@ void m_talk_servant(struct monster *m)
   }
 }
 
-void m_talk_animal(struct monster *m)
+void m_talk_animal(monster *m)
 {
   if(m->uniqueness == COMMON)
   {
@@ -807,7 +807,7 @@ void m_talk_animal(struct monster *m)
   queue_message("It giggles softly to itself and takes back the paper.");
 }
 
-void m_talk_scream(struct monster *m)
+void m_talk_scream(monster *m)
 {
   queue_message("A thinly echoing scream reaches your ears....");
   queue_message("You feel doomed....");
@@ -816,7 +816,7 @@ void m_talk_scream(struct monster *m)
   m->talkf = M_TALK_EVIL;
 }
 
-void m_talk_archmage(struct monster *m)
+void m_talk_archmage(monster *m)
 {
   if(m_statusp(*m, HOSTILE))
   {
@@ -844,7 +844,7 @@ void m_talk_archmage(struct monster *m)
   }
 }
 
-void m_talk_merchant(struct monster *m)
+void m_talk_merchant(monster *m)
 {
   if(!m_statusp(*m, HOSTILE))
   {
@@ -887,7 +887,7 @@ void m_talk_merchant(struct monster *m)
   }
 }
 
-void m_talk_prime(struct monster *m)
+void m_talk_prime(monster *m)
 {
   if(!m_statusp(*m, HOSTILE))
   {

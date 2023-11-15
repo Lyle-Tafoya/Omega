@@ -47,7 +47,7 @@ int statmod(int stat)
 }
 
 /* effects of hitting */
-void p_hit(struct monster *m, int dmg, damage_type dtype)
+void p_hit(monster *m, int dmg, damage_type dtype)
 {
   int dmult;
 
@@ -133,6 +133,57 @@ void p_hit(struct monster *m, int dmg, damage_type dtype)
   }
 }
 
+// try to break a weapon (from fumbling)
+void break_weapon()
+{
+  if(Player.possessions[O_WEAPON_HAND])
+  {
+    queue_message("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
+    (void)damage_item(Player.possessions[O_WEAPON_HAND]);
+  }
+}
+
+// try to drop a weapon (from fumbling)
+void drop_weapon()
+{
+  if(Player.possessions[O_WEAPON_HAND])
+  {
+    queue_message(std::format("You dropped your {}.", Player.possessions[O_WEAPON_HAND]->objstr));
+    p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND]);
+    conform_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
+  }
+  else
+  {
+    queue_message("You feel fortunate.");
+  }
+}
+
+// oh nooooo, a fumble....
+void p_fumble(int dtype)
+{
+  queue_message("Ooops! You fumbled....");
+  switch(random_range(10))
+  {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      drop_weapon();
+      break;
+    case 6:
+    case 7:
+    case 8:
+      break_weapon();
+      break;
+    case 9:
+      queue_message("Oh No! You hit yourself!");
+      p_damage(Player.dmg, dtype, "stupidity");
+      break;
+  }
+}
+
 void player_miss(monster *m, int dtype)
 {
   if(!random_range(30))
@@ -176,57 +227,6 @@ void player_miss(monster *m, int dtype)
     {
       queue_message("You missed it.");
     }
-  }
-}
-
-/* oh nooooo, a fumble.... */
-void p_fumble(int dtype)
-{
-  queue_message("Ooops! You fumbled....");
-  switch(random_range(10))
-  {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-      drop_weapon();
-      break;
-    case 6:
-    case 7:
-    case 8:
-      break_weapon();
-      break;
-    case 9:
-      queue_message("Oh No! You hit yourself!");
-      p_damage(Player.dmg, dtype, "stupidity");
-      break;
-  }
-}
-
-/* try to drop a weapon (from fumbling) */
-void drop_weapon()
-{
-  if(Player.possessions[O_WEAPON_HAND])
-  {
-    queue_message(std::format("You dropped your {}.", Player.possessions[O_WEAPON_HAND]->objstr));
-    p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND]);
-    conform_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
-  }
-  else
-  {
-    queue_message("You feel fortunate.");
-  }
-}
-
-/* try to break a weapon (from fumbling) */
-void break_weapon()
-{
-  if(Player.possessions[O_WEAPON_HAND])
-  {
-    queue_message("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
-    (void)damage_item(Player.possessions[O_WEAPON_HAND]);
   }
 }
 
@@ -581,6 +581,38 @@ void tenminute_status_check()
   dataprint();
 }
 
+// experience requirements
+long expval(int plevel)
+{
+  switch(plevel)
+  {
+    case 0:
+      return (0L);
+    case 1:
+      return (20L);
+    case 2:
+      return (50L);
+    case 3:
+      return (200L);
+    case 4:
+      return (500L);
+    case 5:
+      return (1000L);
+    case 6:
+      return (2000L);
+    case 7:
+      return (3000L);
+    case 8:
+      return (5000L);
+    case 9:
+      return (7000L);
+    case 10:
+      return (10000L);
+    default:
+      return ((plevel - 9) * 10000L);
+  }
+}
+
 /* Increase in level at appropriate experience gain */
 void gain_level()
 {
@@ -612,38 +644,6 @@ void gain_level()
     Player.mana = std::max(Player.mana, Player.maxmana); /* end fix 12/30/98 */
   }
   calc_melee();
-}
-
-/* experience requirements */
-long expval(int plevel)
-{
-  switch(plevel)
-  {
-    case 0:
-      return (0L);
-    case 1:
-      return (20L);
-    case 2:
-      return (50L);
-    case 3:
-      return (200L);
-    case 4:
-      return (500L);
-    case 5:
-      return (1000L);
-    case 6:
-      return (2000L);
-    case 7:
-      return (3000L);
-    case 8:
-      return (5000L);
-    case 9:
-      return (7000L);
-    case 10:
-      return (10000L);
-    default:
-      return ((plevel - 9) * 10000L);
-  }
 }
 
 /* If an item is unidentified, it isn't worth much to those who would buy it */
@@ -787,7 +787,7 @@ void p_drown()
 }
 
 /* the effect of some weapon on monster m, with dmgmod a bonus to damage */
-void weapon_use(int dmgmod, pob weapon, struct monster *m)
+void weapon_use(int dmgmod, pob weapon, monster *m)
 {
   int aux = (!weapon ? -2 : weapon->aux); /* bare hands */
   switch(aux)
@@ -854,6 +854,64 @@ std::string actionlocstr(char dir)
       return "high.";
     default:
       return "wildly.";
+  }
+}
+
+// checks to see if player hits with hitmod vs. monster m at location hitloc
+int player_hit(int hitmod, char hitloc, monster *m)
+{
+  if(m->hp < 1)
+  {
+    queue_message("Unfortunately, your opponent is already dead!");
+    return false;
+  }
+  else
+  {
+    if(hitloc == 'X')
+    {
+      hitloc = random_loc();
+    }
+
+    transcribe_monster_actions(m);
+
+    bool blocks     = false;
+    int  goodblocks = 0;
+
+    for(size_t i = 0; i < m->meleestr.length(); i += 2)
+    {
+      if((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R'))
+      {
+        blocks = true;
+        if(hitloc == m->meleestr[i + 1])
+        {
+          ++goodblocks;
+        }
+      }
+    }
+
+    if(!blocks)
+    {
+      goodblocks = -1;
+    }
+    int hit = hitp(Player.hit + hitmod, m->ac + goodblocks * 10);
+    if(!hit && goodblocks > 0)
+    {
+      std::string block_message;
+      if(m->uniqueness == COMMON)
+      {
+        block_message = std::format("The {}", m->monstring);
+      }
+      else
+      {
+        block_message = m->monstring;
+      }
+      block_message += " blocks it!";
+      if(Verbosity == VERBOSE)
+      {
+        queue_message(block_message);
+      }
+    }
+    return hit;
   }
 }
 
@@ -936,64 +994,6 @@ void tacplayer(monster *m)
         }
         break;
     }
-  }
-}
-
-/* checks to see if player hits with hitmod vs. monster m at location hitloc */
-int player_hit(int hitmod, char hitloc, monster *m)
-{
-  if(m->hp < 1)
-  {
-    queue_message("Unfortunately, your opponent is already dead!");
-    return false;
-  }
-  else
-  {
-    if(hitloc == 'X')
-    {
-      hitloc = random_loc();
-    }
-
-    transcribe_monster_actions(m);
-
-    bool blocks     = false;
-    int  goodblocks = 0;
-
-    for(size_t i = 0; i < m->meleestr.length(); i += 2)
-    {
-      if((m->meleestr[i] == 'B') || (m->meleestr[i] == 'R'))
-      {
-        blocks = true;
-        if(hitloc == m->meleestr[i + 1])
-        {
-          ++goodblocks;
-        }
-      }
-    }
-
-    if(!blocks)
-    {
-      goodblocks = -1;
-    }
-    int hit = hitp(Player.hit + hitmod, m->ac + goodblocks * 10);
-    if(!hit && goodblocks > 0)
-    {
-      std::string block_message;
-      if(m->uniqueness == COMMON)
-      {
-        block_message = std::format("The {}", m->monstring);
-      }
-      else
-      {
-        block_message = m->monstring;
-      }
-      block_message += " blocks it!";
-      if(Verbosity == VERBOSE)
-      {
-        queue_message(block_message);
-      }
-    }
-    return hit;
   }
 }
 

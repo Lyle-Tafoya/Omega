@@ -113,7 +113,7 @@ void make_food(pob o, int id)
   *o = Objects[FOODID + id];
 }
 
-void make_corpse(pob o, struct monster *m)
+void make_corpse(pob o, monster *m)
 {
   *o           = Objects[CORPSEID];
   o->charge    = m->id;
@@ -195,6 +195,37 @@ void make_corpse(pob o, struct monster *m)
   }
 }
 
+int itemblessing()
+{
+  switch(random_range(10))
+  {
+    case 0:
+    case 1:
+      return (-1 - random_range(10));
+    case 8:
+    case 9:
+      return (1 + random_range(10));
+    default:
+      return (0);
+  }
+}
+
+int itemplus()
+{
+  int p = 0;
+
+  while(random_range(2) == 0)
+  {
+    p++;
+  }
+  return (p);
+}
+
+int itemcharge()
+{
+  return (random_range(20) + 1);
+}
+
 void make_ring(pob o, int id)
 {
   if(id == -1)
@@ -213,6 +244,54 @@ void make_ring(pob o, int id)
   if(o->blessing < 0)
   {
     o->plus = -1 - abs(o->plus);
+  }
+}
+
+const std::string grotname()
+{
+  switch(random_range(20))
+  {
+    case 0:
+      return "pot lid";
+    case 1:
+      return "mound of offal";
+    case 2:
+      return "sword that was broken";
+    case 3:
+      return "salted snail";
+    case 4:
+      return "key";
+    case 5:
+      return "toadstool";
+    case 6:
+      return "greenish spindle";
+    case 7:
+      return "tin soldier";
+    case 8:
+      return "broken yo-yo";
+    case 9:
+      return "NYC subway map";
+    case 10:
+      return "Nixon's the One! button";
+    case 11:
+      return "beer can (empty)";
+    case 12:
+      return "golden bejewelled falcon";
+    case 13:
+      return "hamster cage";
+    case 14:
+      return "wooden nickel";
+    case 15:
+      return "three-dollar bill";
+    case 16:
+      return "rosebud";
+    case 17:
+      return "water pistol";
+    case 18:
+      return "shattered skull";
+    default:
+    case 19:
+      return "jawbone of an ass";
   }
 }
 
@@ -478,54 +557,6 @@ const std::string scrollname(int id)
   }
 }
 
-const std::string grotname()
-{
-  switch(random_range(20))
-  {
-    case 0:
-      return "pot lid";
-    case 1:
-      return "mound of offal";
-    case 2:
-      return "sword that was broken";
-    case 3:
-      return "salted snail";
-    case 4:
-      return "key";
-    case 5:
-      return "toadstool";
-    case 6:
-      return "greenish spindle";
-    case 7:
-      return "tin soldier";
-    case 8:
-      return "broken yo-yo";
-    case 9:
-      return "NYC subway map";
-    case 10:
-      return "Nixon's the One! button";
-    case 11:
-      return "beer can (empty)";
-    case 12:
-      return "golden bejewelled falcon";
-    case 13:
-      return "hamster cage";
-    case 14:
-      return "wooden nickel";
-    case 15:
-      return "three-dollar bill";
-    case 16:
-      return "rosebud";
-    case 17:
-      return "water pistol";
-    case 18:
-      return "shattered skull";
-    default:
-    case 19:
-      return "jawbone of an ass";
-  }
-}
-
 const std::string potionname(int id)
 {
   switch(potion_ids[id])
@@ -769,37 +800,6 @@ const std::string bootname(int id)
     default:
     case 19:
       return "riding boots";
-  }
-}
-
-int itemplus()
-{
-  int p = 0;
-
-  while(random_range(2) == 0)
-  {
-    p++;
-  }
-  return (p);
-}
-
-int itemcharge()
-{
-  return (random_range(20) + 1);
-}
-
-int itemblessing()
-{
-  switch(random_range(10))
-  {
-    case 0:
-    case 1:
-      return (-1 - random_range(10));
-    case 8:
-    case 9:
-      return (1 + random_range(10));
-    default:
-      return (0);
   }
 }
 

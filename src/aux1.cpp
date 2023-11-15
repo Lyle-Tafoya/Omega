@@ -184,6 +184,67 @@ int player_on_sanctuary()
   }
 }
 
+// player attacks monster m
+void fight_monster(monster *m)
+{
+  int hitmod      = 0;
+  int reallyfight = true;
+
+  if(Player.status[AFRAID])
+  {
+    queue_message("You are much too afraid to fight!");
+    reallyfight = false;
+  }
+  else if(player_on_sanctuary())
+  {
+    queue_message("You restrain yourself from desecrating this holy place.");
+    reallyfight = false;
+  }
+  else if(Player.status[SHADOWFORM])
+  {
+    queue_message("Your attack has no effect in your shadowy state.");
+    reallyfight = false;
+  }
+  else if((Player.status[BERSERK] < 1) && (!m_statusp(*m, HOSTILE)))
+  {
+    if(optionp(BELLICOSE, Player))
+    {
+      reallyfight = true;
+    }
+    else
+    {
+      reallyfight = confirmation();
+    }
+  }
+  else
+  {
+    reallyfight = true;
+  }
+
+  if(reallyfight)
+  {
+    if(Lunarity == 1)
+    {
+      hitmod += Player.level;
+    }
+    else if(Lunarity == -1)
+    {
+      hitmod -= (Player.level / 2);
+    }
+
+    if(!m->attacked)
+    {
+      Player.alignment -= 2; /* chaotic action */
+    }
+    m_status_set(*m, AWAKE);
+    m_status_set(*m, HOSTILE);
+    m->attacked = true;
+    Player.hit += hitmod;
+    tacplayer(m);
+    Player.hit -= hitmod;
+  }
+}
+
 /* check a move attempt, maybe attack something, return true if ok to move. */
 /* x y is the proposed place to move to */
 int p_moveable(int x, int y)
@@ -474,67 +535,6 @@ void calc_melee()
   dataprint();
 }
 
-/* player attacks monster m */
-void fight_monster(struct monster *m)
-{
-  int hitmod      = 0;
-  int reallyfight = true;
-
-  if(Player.status[AFRAID])
-  {
-    queue_message("You are much too afraid to fight!");
-    reallyfight = false;
-  }
-  else if(player_on_sanctuary())
-  {
-    queue_message("You restrain yourself from desecrating this holy place.");
-    reallyfight = false;
-  }
-  else if(Player.status[SHADOWFORM])
-  {
-    queue_message("Your attack has no effect in your shadowy state.");
-    reallyfight = false;
-  }
-  else if((Player.status[BERSERK] < 1) && (!m_statusp(*m, HOSTILE)))
-  {
-    if(optionp(BELLICOSE, Player))
-    {
-      reallyfight = true;
-    }
-    else
-    {
-      reallyfight = confirmation();
-    }
-  }
-  else
-  {
-    reallyfight = true;
-  }
-
-  if(reallyfight)
-  {
-    if(Lunarity == 1)
-    {
-      hitmod += Player.level;
-    }
-    else if(Lunarity == -1)
-    {
-      hitmod -= (Player.level / 2);
-    }
-
-    if(!m->attacked)
-    {
-      Player.alignment -= 2; /* chaotic action */
-    }
-    m_status_set(*m, AWAKE);
-    m_status_set(*m, HOSTILE);
-    m->attacked = true;
-    Player.hit += hitmod;
-    tacplayer(m);
-    Player.hit -= hitmod;
-  }
-}
-
 /* Attempt to break an object o */
 int damage_item(pob o)
 {
@@ -806,7 +806,7 @@ int getdir()
 }
 
 /* functions describes monster m's state for examine function */
-std::string mstatus_string(struct monster *m)
+std::string mstatus_string(monster *m)
 {
   std::string monster_status;
   if(m_statusp(*m, M_INVISIBLE) && !Player.status[TRUESIGHT])
@@ -1048,7 +1048,7 @@ void roomcheck()
 }
 
 /* ask for mercy */
-void surrender(struct monster *m)
+void surrender(monster *m)
 {
   int  i;
   long bestitem, bestvalue;
@@ -1151,7 +1151,7 @@ void surrender(struct monster *m)
 }
 
 /* threaten a monster */
-void threaten(struct monster *m)
+void threaten(monster *m)
 {
   char response;
   switch(random_range(4))

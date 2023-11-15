@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 
 #ifdef SAVE_LEVELS
-extern struct level TheLevel;
+extern level TheLevel;
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
@@ -515,6 +515,60 @@ void load_misle(int empty, int populate)
   fclose(fd);
 }
 
+void make_high_priest(int i, int j, int deity)
+{
+  pml ml = new monsterlist;
+  pmt m  = new monster;
+  make_hiscore_npc(m, deity);
+  m->x                       = i;
+  m->y                       = j;
+  Level->site[i][j].creature = m;
+  ml->m                      = m;
+  ml->next                   = Level->mlist;
+  Level->mlist               = ml;
+}
+
+void random_temple_site(int i, int j, int, int populate)
+{
+  switch(random_range(12))
+  {
+    case 0:
+      if(populate)
+      {
+        make_site_monster(i, j, MEND_PRIEST);
+      }
+      break; /* mendicant priest */
+    case 1:
+      Level->site[i][j].locchar = WATER;
+      Level->site[i][j].p_locf  = L_MAGIC_POOL;
+      [[fallthrough]];
+    case 2:
+      if(populate)
+      {
+        make_site_monster(i, j, INNER_DEMON);
+      }
+      break; /* inner circle demon */
+    case 3:
+      if(populate)
+      {
+        make_site_monster(i, j, ANGEL);
+      }
+      break; /* angel of apropriate sect */
+    case 4:
+      if(populate)
+      {
+        make_site_monster(i, j, HIGH_ANGEL);
+      }
+      break; /* high angel of apropriate sect */
+    case 5:
+      if(populate)
+      {
+        make_site_monster(i, j, ARCHANGEL);
+      }
+      break; /* archangel of apropriate sect */
+  }
+}
+
 /* loads a temple into Level*/
 void load_temple(int deity, int populate)
 {
@@ -664,58 +718,4 @@ void load_temple(int deity, int populate)
   }
   fclose(fd);
   /*  initrand(-2, 0); */ /* FIXED! 12/30/98 */
-}
-
-void random_temple_site(int i, int j, int, int populate)
-{
-  switch(random_range(12))
-  {
-    case 0:
-      if(populate)
-      {
-        make_site_monster(i, j, MEND_PRIEST);
-      }
-      break; /* mendicant priest */
-    case 1:
-      Level->site[i][j].locchar = WATER;
-      Level->site[i][j].p_locf  = L_MAGIC_POOL;
-      [[fallthrough]];
-    case 2:
-      if(populate)
-      {
-        make_site_monster(i, j, INNER_DEMON);
-      }
-      break; /* inner circle demon */
-    case 3:
-      if(populate)
-      {
-        make_site_monster(i, j, ANGEL);
-      }
-      break; /* angel of apropriate sect */
-    case 4:
-      if(populate)
-      {
-        make_site_monster(i, j, HIGH_ANGEL);
-      }
-      break; /* high angel of apropriate sect */
-    case 5:
-      if(populate)
-      {
-        make_site_monster(i, j, ARCHANGEL);
-      }
-      break; /* archangel of apropriate sect */
-  }
-}
-
-void make_high_priest(int i, int j, int deity)
-{
-  pml ml = new monsterlist;
-  pmt m  = new monster;
-  make_hiscore_npc(m, deity);
-  m->x                       = i;
-  m->y                       = j;
-  Level->site[i][j].creature = m;
-  ml->m                      = m;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
 }

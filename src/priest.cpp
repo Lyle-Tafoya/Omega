@@ -29,156 +29,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern void item_equip(object *);
 extern void item_unequip(object *);
 
-/* prayer occurs at altars, hence name of function */
-void l_altar()
-{
-  int  i, deity;
-  char response;
-
-  if(Current_Environment == E_COUNTRYSIDE)
-  {
-    deity = DRUID;
-  }
-  else
-  {
-    deity = Level->site[Player.x][Player.y].aux;
-  }
-
-  switch(deity)
-  {
-    default:
-      queue_message("This rude altar has no markings.");
-      break;
-    case ODIN:
-      queue_message("This granite altar is graven with a gallows.");
-      break;
-    case SET:
-      queue_message("This sandstone altar has a black hand drawn on it.");
-      break;
-    case HECATE:
-      queue_message("This silver altar is inlaid with a black crescent moon.");
-      break;
-    case ATHENA:
-      queue_message("This golden altar is inscribed with an owl.");
-      break;
-    case DESTINY:
-      queue_message("This crystal altar is in the form of an omega.");
-      break;
-    case DRUID:
-      queue_message("This oaken altar is ornately engraved with leaves.");
-      break;
-  }
-  bool confirm;
-  if(optionp(PARANOID_CONFIRM, Player))
-  {
-    queue_message("Worship at this altar? (yes) [no] ");
-    confirm = (msgscanstring() == "yes");
-  }
-  else
-  {
-    queue_message("Worship at this altar? [yn] ");
-    confirm = (ynq() == 'y');
-  }
-  if(confirm)
-  {
-    if(Player.rank[MONKS] > 0)
-    {
-      queue_message("A monk seeks truth within.");
-    }
-    else if(Player.rank[PRIESTHOOD] == 0)
-    {
-      increase_priest_rank(deity);
-    }
-    else if(!check_sacrilege(deity))
-    {
-      if(Blessing)
-      {
-        queue_message("You have a sense of immanence.");
-      }
-      queue_message("Request a Blessing, Sacrifice an item, or just Pray [b,s,p] ");
-      do
-      {
-        response = (char)mcigetc();
-      } while((response != 'b') && (response != 's') && (response != 'p') && (response != ESCAPE));
-      if(response == 'b')
-      {
-        queue_message("You beg a heavenly benefice.");
-        queue_message("You hear a gong resonating throughout eternity....");
-        if(Blessing)
-        {
-          queue_message("A shaft of lucent radiance lances down from the heavens!");
-          queue_message("You feel uplifted....");
-          gain_experience(Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * 50);
-          cleanse(1);
-          heal(10);
-          bless(1);
-          Blessing = false;
-          increase_priest_rank(deity);
-        }
-        else
-        {
-          queue_message("Your ardent plea is ignored.");
-          queue_message("You feel ashamed.");
-          Player.xp -= (Player.xp / 4);
-        }
-        calc_melee();
-      }
-      else if(response == 's')
-      {
-        queue_message("Which item to Sacrifice?");
-        i = getitem(NULL_ITEM);
-        if(i == ABORT)
-        {
-          i = 0;
-        }
-        if(!Player.possessions[i])
-        {
-          queue_message("You have insulted your deity!");
-          queue_message("Not a good idea, as it turns out...");
-          dispel(-1);
-          p_damage(Player.hp - 1, UNSTOPPABLE, "a god's pique");
-        }
-        else if(true_item_value(Player.possessions[i]) >
-                (long)(Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * 50))
-        {
-          queue_message("With a burst of blue flame, your offering vanishes!");
-          dispose_lost_objects(1, Player.possessions[i]);
-          queue_message("A violet nimbus settles around your head and slowly fades.");
-          Blessing = true;
-        }
-        else
-        {
-          queue_message("A darkling glow envelopes your offering!");
-          queue_message("The glow slowly fades....");
-          setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          if(Player.possessions[i]->used)
-          {
-            item_unequip(Player.possessions[i]);
-            Player.possessions[i]->blessing = -1 - abs(Player.possessions[i]->blessing);
-            item_equip(Player.possessions[i]);
-          }
-          else
-          {
-            Player.possessions[i]->blessing = -1 - abs(Player.possessions[i]->blessing);
-          }
-          resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-        }
-      }
-      else if(response == 'p')
-      {
-        if(deity != Player.patron)
-        {
-          queue_message("Nothing seems to happen.");
-        }
-        else if(!increase_priest_rank(deity))
-        {
-          answer_prayer();
-        }
-      }
-    }
-  }
-}
-
 int check_sacrilege(int deity)
 {
   int sacrilege = false;
@@ -305,6 +155,180 @@ int check_sacrilege(int deity)
     }
   }
   return (sacrilege);
+}
+
+void answer_prayer()
+{
+  switch(random_range(12))
+  {
+    case 0:
+      queue_message("You have a revelation!");
+      break;
+    case 1:
+      queue_message("You feel pious.");
+      break;
+    case 2:
+      queue_message("A feeling of sanctity comes over you.");
+      break;
+    default:
+      queue_message("Nothing unusual seems to happen.");
+      break;
+  }
+}
+
+void hp_req_print()
+{
+  queue_message("To advance further, you must obtain the Holy Symbol of ");
+  switch(Player.patron)
+  {
+    case ODIN:
+      queue_message(Priest[SET]);
+      queue_message("who may be found in the main Temple of Set.");
+      break;
+    case SET:
+      queue_message(Priest[ODIN]);
+      queue_message("who may be found in the main Temple of Odin.");
+      break;
+    case ATHENA:
+      queue_message(Priest[HECATE]);
+      queue_message("who may be found in the main Temple of Hecate.");
+      break;
+    case HECATE:
+      queue_message(Priest[ATHENA]);
+      queue_message("who may be found in the main Temple of Athena.");
+      break;
+    case DRUID:
+      queue_message("any of the aligned priests who may be found in their main Temples.");
+      break;
+    case DESTINY:
+      queue_message(Priest[DESTINY]);
+      queue_message("who may be found in the main Temple of Destiny.");
+      break;
+  }
+}
+
+void make_hp(pob o)
+{
+  queue_message("A full-scale heavenly choir chants 'Hallelujah' all around you!");
+  queue_message("You notice a change in the symbol you carry....");
+  switch(Player.patron)
+  {
+    case ODIN:
+      *o = Objects[ARTIFACTID + 14];
+      break;
+    case SET:
+      *o = Objects[ARTIFACTID + 15];
+      break;
+    case ATHENA:
+      *o = Objects[ARTIFACTID + 16];
+      break;
+    case HECATE:
+      *o = Objects[ARTIFACTID + 17];
+      break;
+    case DRUID:
+      *o = Objects[ARTIFACTID + 18];
+      break;
+    case DESTINY:
+      *o = Objects[ARTIFACTID + 19];
+      break;
+  }
+  o->known  = 2;
+  o->charge = 17; /* random hack to convey bit that symbol is functional */
+  if(Player.patron == DRUID)
+  {
+    queue_message("Your deity raises you to the post of ArchDruid!");
+  }
+  else
+  {
+    queue_message("Your deity raises you to the post of High Priest!");
+  }
+  queue_message("You feel holy.");
+  Priest[Player.patron] = Player.name;
+  Priestlevel[Player.patron]    = Player.level;
+  Player.rank[PRIESTHOOD]       = HIGHPRIEST;
+  Priestbehavior[Player.patron] = fixnpc(4);
+  save_hiscore_npc(Player.patron);
+  learnclericalspells(Player.patron, HIGHPRIEST);
+}
+
+void hp_req_test()
+{
+  pob o;
+  switch(Player.patron)
+  {
+    case ODIN:
+      if(find_item(&o, ARTIFACTID + 15, -1))
+      {
+        make_hp(o);
+      }
+      else
+      {
+        hp_req_print();
+      }
+      break;
+    case SET:
+      if(find_item(&o, ARTIFACTID + 14, -1))
+      {
+        make_hp(o);
+      }
+      else
+      {
+        hp_req_print();
+      }
+      break;
+    case ATHENA:
+      if(find_item(&o, ARTIFACTID + 17, -1))
+      {
+        make_hp(o);
+      }
+      else
+      {
+        hp_req_print();
+      }
+      break;
+    case HECATE:
+      if(find_item(&o, ARTIFACTID + 16, -1))
+      {
+        make_hp(o);
+      }
+      else
+      {
+        hp_req_print();
+      }
+      break;
+    case DRUID:
+      if(find_item(&o, ARTIFACTID + 14, -1))
+      {
+        make_hp(o);
+      }
+      else if(find_item(&o, ARTIFACTID + 15, -1))
+      {
+        make_hp(o);
+      }
+      else if(find_item(&o, ARTIFACTID + 16, -1))
+      {
+        make_hp(o);
+      }
+      else if(find_item(&o, ARTIFACTID + 17, -1))
+      {
+        make_hp(o);
+      }
+      else
+      {
+        hp_req_print();
+      }
+      break;
+    case DESTINY:
+      if(find_item(&o, ARTIFACTID + 19, -1))
+      {
+        make_hp(o);
+      }
+      else
+      {
+        hp_req_print();
+      }
+      break;
+  }
 }
 
 int increase_priest_rank(int deity)
@@ -483,176 +507,152 @@ int increase_priest_rank(int deity)
   return 1;
 }
 
-void answer_prayer()
+// prayer occurs at altars, hence name of function
+void l_altar()
 {
-  switch(random_range(12))
-  {
-    case 0:
-      queue_message("You have a revelation!");
-      break;
-    case 1:
-      queue_message("You feel pious.");
-      break;
-    case 2:
-      queue_message("A feeling of sanctity comes over you.");
-      break;
-    default:
-      queue_message("Nothing unusual seems to happen.");
-      break;
-  }
-}
+  int  i, deity;
+  char response;
 
-void hp_req_test()
-{
-  pob o;
-  switch(Player.patron)
+  if(Current_Environment == E_COUNTRYSIDE)
   {
-    case ODIN:
-      if(find_item(&o, ARTIFACTID + 15, -1))
-      {
-        make_hp(o);
-      }
-      else
-      {
-        hp_req_print();
-      }
-      break;
-    case SET:
-      if(find_item(&o, ARTIFACTID + 14, -1))
-      {
-        make_hp(o);
-      }
-      else
-      {
-        hp_req_print();
-      }
-      break;
-    case ATHENA:
-      if(find_item(&o, ARTIFACTID + 17, -1))
-      {
-        make_hp(o);
-      }
-      else
-      {
-        hp_req_print();
-      }
-      break;
-    case HECATE:
-      if(find_item(&o, ARTIFACTID + 16, -1))
-      {
-        make_hp(o);
-      }
-      else
-      {
-        hp_req_print();
-      }
-      break;
-    case DRUID:
-      if(find_item(&o, ARTIFACTID + 14, -1))
-      {
-        make_hp(o);
-      }
-      else if(find_item(&o, ARTIFACTID + 15, -1))
-      {
-        make_hp(o);
-      }
-      else if(find_item(&o, ARTIFACTID + 16, -1))
-      {
-        make_hp(o);
-      }
-      else if(find_item(&o, ARTIFACTID + 17, -1))
-      {
-        make_hp(o);
-      }
-      else
-      {
-        hp_req_print();
-      }
-      break;
-    case DESTINY:
-      if(find_item(&o, ARTIFACTID + 19, -1))
-      {
-        make_hp(o);
-      }
-      else
-      {
-        hp_req_print();
-      }
-      break;
-  }
-}
-
-void hp_req_print()
-{
-  queue_message("To advance further, you must obtain the Holy Symbol of ");
-  switch(Player.patron)
-  {
-    case ODIN:
-      queue_message(Priest[SET]);
-      queue_message("who may be found in the main Temple of Set.");
-      break;
-    case SET:
-      queue_message(Priest[ODIN]);
-      queue_message("who may be found in the main Temple of Odin.");
-      break;
-    case ATHENA:
-      queue_message(Priest[HECATE]);
-      queue_message("who may be found in the main Temple of Hecate.");
-      break;
-    case HECATE:
-      queue_message(Priest[ATHENA]);
-      queue_message("who may be found in the main Temple of Athena.");
-      break;
-    case DRUID:
-      queue_message("any of the aligned priests who may be found in their main Temples.");
-      break;
-    case DESTINY:
-      queue_message(Priest[DESTINY]);
-      queue_message("who may be found in the main Temple of Destiny.");
-      break;
-  }
-}
-
-void make_hp(pob o)
-{
-  queue_message("A full-scale heavenly choir chants 'Hallelujah' all around you!");
-  queue_message("You notice a change in the symbol you carry....");
-  switch(Player.patron)
-  {
-    case ODIN:
-      *o = Objects[ARTIFACTID + 14];
-      break;
-    case SET:
-      *o = Objects[ARTIFACTID + 15];
-      break;
-    case ATHENA:
-      *o = Objects[ARTIFACTID + 16];
-      break;
-    case HECATE:
-      *o = Objects[ARTIFACTID + 17];
-      break;
-    case DRUID:
-      *o = Objects[ARTIFACTID + 18];
-      break;
-    case DESTINY:
-      *o = Objects[ARTIFACTID + 19];
-      break;
-  }
-  o->known  = 2;
-  o->charge = 17; /* random hack to convey bit that symbol is functional */
-  if(Player.patron == DRUID)
-  {
-    queue_message("Your deity raises you to the post of ArchDruid!");
+    deity = DRUID;
   }
   else
   {
-    queue_message("Your deity raises you to the post of High Priest!");
+    deity = Level->site[Player.x][Player.y].aux;
   }
-  queue_message("You feel holy.");
-  Priest[Player.patron] = Player.name;
-  Priestlevel[Player.patron]    = Player.level;
-  Player.rank[PRIESTHOOD]       = HIGHPRIEST;
-  Priestbehavior[Player.patron] = fixnpc(4);
-  save_hiscore_npc(Player.patron);
-  learnclericalspells(Player.patron, HIGHPRIEST);
+
+  switch(deity)
+  {
+    default:
+      queue_message("This rude altar has no markings.");
+      break;
+    case ODIN:
+      queue_message("This granite altar is graven with a gallows.");
+      break;
+    case SET:
+      queue_message("This sandstone altar has a black hand drawn on it.");
+      break;
+    case HECATE:
+      queue_message("This silver altar is inlaid with a black crescent moon.");
+      break;
+    case ATHENA:
+      queue_message("This golden altar is inscribed with an owl.");
+      break;
+    case DESTINY:
+      queue_message("This crystal altar is in the form of an omega.");
+      break;
+    case DRUID:
+      queue_message("This oaken altar is ornately engraved with leaves.");
+      break;
+  }
+  bool confirm;
+  if(optionp(PARANOID_CONFIRM, Player))
+  {
+    queue_message("Worship at this altar? (yes) [no] ");
+    confirm = (msgscanstring() == "yes");
+  }
+  else
+  {
+    queue_message("Worship at this altar? [yn] ");
+    confirm = (ynq() == 'y');
+  }
+  if(confirm)
+  {
+    if(Player.rank[MONKS] > 0)
+    {
+      queue_message("A monk seeks truth within.");
+    }
+    else if(Player.rank[PRIESTHOOD] == 0)
+    {
+      increase_priest_rank(deity);
+    }
+    else if(!check_sacrilege(deity))
+    {
+      if(Blessing)
+      {
+        queue_message("You have a sense of immanence.");
+      }
+      queue_message("Request a Blessing, Sacrifice an item, or just Pray [b,s,p] ");
+      do
+      {
+        response = (char)mcigetc();
+      } while((response != 'b') && (response != 's') && (response != 'p') && (response != ESCAPE));
+      if(response == 'b')
+      {
+        queue_message("You beg a heavenly benefice.");
+        queue_message("You hear a gong resonating throughout eternity....");
+        if(Blessing)
+        {
+          queue_message("A shaft of lucent radiance lances down from the heavens!");
+          queue_message("You feel uplifted....");
+          gain_experience(Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * 50);
+          cleanse(1);
+          heal(10);
+          bless(1);
+          Blessing = false;
+          increase_priest_rank(deity);
+        }
+        else
+        {
+          queue_message("Your ardent plea is ignored.");
+          queue_message("You feel ashamed.");
+          Player.xp -= (Player.xp / 4);
+        }
+        calc_melee();
+      }
+      else if(response == 's')
+      {
+        queue_message("Which item to Sacrifice?");
+        i = getitem(NULL_ITEM);
+        if(i == ABORT)
+        {
+          i = 0;
+        }
+        if(!Player.possessions[i])
+        {
+          queue_message("You have insulted your deity!");
+          queue_message("Not a good idea, as it turns out...");
+          dispel(-1);
+          p_damage(Player.hp - 1, UNSTOPPABLE, "a god's pique");
+        }
+        else if(true_item_value(Player.possessions[i]) >
+                (long)(Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * 50))
+        {
+          queue_message("With a burst of blue flame, your offering vanishes!");
+          dispose_lost_objects(1, Player.possessions[i]);
+          queue_message("A violet nimbus settles around your head and slowly fades.");
+          Blessing = true;
+        }
+        else
+        {
+          queue_message("A darkling glow envelopes your offering!");
+          queue_message("The glow slowly fades....");
+          setgamestatus(SUPPRESS_PRINTING, GameStatus);
+          if(Player.possessions[i]->used)
+          {
+            item_unequip(Player.possessions[i]);
+            Player.possessions[i]->blessing = -1 - abs(Player.possessions[i]->blessing);
+            item_equip(Player.possessions[i]);
+          }
+          else
+          {
+            Player.possessions[i]->blessing = -1 - abs(Player.possessions[i]->blessing);
+          }
+          resetgamestatus(SUPPRESS_PRINTING, GameStatus);
+        }
+      }
+      else if(response == 'p')
+      {
+        if(deity != Player.patron)
+        {
+          queue_message("Nothing seems to happen.");
+        }
+        else if(!increase_priest_rank(deity))
+        {
+          answer_prayer();
+        }
+      }
+    }
+  }
 }

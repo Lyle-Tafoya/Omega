@@ -284,7 +284,7 @@ void weapon_hit(pob weapon, monster *m, int damage_modifier, damage_type damage_
   }
 }
 
-void weapon_acidwhip(int dmgmod, pob o, struct monster *m)
+void weapon_acidwhip(int dmgmod, pob o, monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
@@ -294,7 +294,7 @@ void weapon_acidwhip(int dmgmod, pob o, struct monster *m)
   weapon_hit(o, m, dmgmod, ACID);
 }
 
-void weapon_scythe(int, pob, struct monster *m)
+void weapon_scythe(int, pob, monster *m)
 {
   queue_message("Slice!");
   m_death(m);
@@ -306,7 +306,7 @@ void weapon_scythe(int, pob, struct monster *m)
   }
 }
 
-void weapon_demonblade(int dmgmod, pob o, struct monster *m)
+void weapon_demonblade(int dmgmod, pob o, monster *m)
 {
   if(o->blessing > -1)
   {
@@ -364,7 +364,7 @@ void weapon_demonblade(int dmgmod, pob o, struct monster *m)
   }
 }
 
-void weapon_lightsabre(int, pob o, struct monster *m)
+void weapon_lightsabre(int, pob o, monster *m)
 {
   if(!o->known)
   {
@@ -388,7 +388,7 @@ void weapon_lightsabre(int, pob o, struct monster *m)
   }
 }
 
-void weapon_tangle(int dmgmod, pob o, struct monster *m)
+void weapon_tangle(int dmgmod, pob o, monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
@@ -399,7 +399,7 @@ void weapon_tangle(int dmgmod, pob o, struct monster *m)
 }
 
 /* if wielding a bow, add bow damage to arrow damage */
-void weapon_arrow(int dmgmod, pob o, struct monster *m)
+void weapon_arrow(int dmgmod, pob o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] &&
      (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
@@ -413,7 +413,7 @@ void weapon_arrow(int dmgmod, pob o, struct monster *m)
 }
 
 /* if wielding a crossbow, add bow damage to arrow damage */
-void weapon_bolt(int dmgmod, pob o, struct monster *m)
+void weapon_bolt(int dmgmod, pob o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] &&
      (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) && /*ie using a crossbow */
@@ -428,7 +428,7 @@ void weapon_bolt(int dmgmod, pob o, struct monster *m)
   }
 }
 
-void weapon_mace_disrupt(int dmgmod, pob o, struct monster *m)
+void weapon_mace_disrupt(int dmgmod, pob o, monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
@@ -441,13 +441,13 @@ void weapon_mace_disrupt(int dmgmod, pob o, struct monster *m)
   }
 }
 
-void weapon_normal_hit(int dmgmod, pob o, struct monster *m)
+void weapon_normal_hit(int dmgmod, pob o, monster *m)
 {
   weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
 }
 
 /* will be updated eventually */
-void weapon_bare_hands(int dmgmod, struct monster *m)
+void weapon_bare_hands(int dmgmod, monster *m)
 {
   p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
 }
@@ -495,7 +495,7 @@ void i_mace_disrupt(pob)
   queue_message("That's a damned heavy mace!");
 }
 
-void weapon_vorpal(int dmgmod, pob o, struct monster *m)
+void weapon_vorpal(int dmgmod, pob o, monster *m)
 {
   if((random_range(10) < 3) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
@@ -516,7 +516,7 @@ void weapon_vorpal(int dmgmod, pob o, struct monster *m)
   }
 }
 
-void weapon_desecrate(int dmgmod, pob o, struct monster *m)
+void weapon_desecrate(int dmgmod, pob o, monster *m)
 {
   o->known = 2;
   if(Player.alignment < 0)
@@ -541,7 +541,7 @@ void weapon_desecrate(int dmgmod, pob o, struct monster *m)
   }
 }
 
-void weapon_firestar(int dmgmod, pob o, struct monster *m)
+void weapon_firestar(int dmgmod, pob o, monster *m)
 {
   if(random_range(3) == 1)
   {
@@ -554,7 +554,7 @@ void weapon_firestar(int dmgmod, pob o, struct monster *m)
   }
 }
 
-void weapon_defend(int dmgmod, pob o, struct monster *m)
+void weapon_defend(int dmgmod, pob o, monster *m)
 {
   if((Player.alignment < 0) && (o->blessing > 0))
   {
@@ -576,7 +576,7 @@ void weapon_defend(int dmgmod, pob o, struct monster *m)
   weapon_normal_hit(dmgmod, o, m);
 }
 
-void weapon_victrix(int dmgmod, pob o, struct monster *m)
+void weapon_victrix(int dmgmod, pob o, monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {

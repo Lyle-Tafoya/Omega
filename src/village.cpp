@@ -24,11 +24,170 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 
 #ifdef SAVE_LEVELS
-extern struct level TheLevel;
+extern level TheLevel;
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
-/* loads the village level into Level*/
+void assign_village_function(int x, int y, int setup)
+{
+  static int next = 0;
+  static int permutation[24]; // number of x's in village map
+  int        i, j, k;
+
+  if(setup)
+  {
+    next = 0;
+    for(i = 0; i < 24; i++)
+    {
+      permutation[i] = i;
+    }
+    for(i = 0; i < 24; i++)
+    {
+      j              = permutation[i];
+      k              = random_range(24);
+      permutation[i] = permutation[k];
+      permutation[k] = j;
+    }
+  }
+  else
+  {
+    lset(x, y + 1, STOPS, *Level);
+    lset(x + 1, y, STOPS, *Level);
+    lset(x - 1, y, STOPS, *Level);
+    lset(x, y - 1, STOPS, *Level);
+    lset(x, y, STOPS, *Level);
+
+    switch(permutation[next++])
+    {
+      case 0:
+        Level->site[x][y].locchar = OPEN_DOOR;
+        Level->site[x][y].p_locf  = L_ARMORER;
+        break;
+      case 1:
+        Level->site[x][y].locchar = OPEN_DOOR;
+        Level->site[x][y].p_locf  = L_HEALER;
+        break;
+      case 2:
+        Level->site[x][y].locchar = OPEN_DOOR;
+        Level->site[x][y].p_locf  = L_TAVERN;
+        break;
+      case 3:
+        Level->site[x][y].locchar = OPEN_DOOR;
+        Level->site[x][y].p_locf  = L_COMMANDANT;
+        break;
+      case 4:
+        Level->site[x][y].locchar = OPEN_DOOR;
+        Level->site[x][y].p_locf  = L_CARTOGRAPHER;
+        break;
+      default:
+        Level->site[x][y].locchar = CLOSED_DOOR;
+        if(random_range(2))
+        {
+          Level->site[x][y].aux = LOCKED;
+        }
+        if(random_range(2))
+        {
+          Level->site[x][y].p_locf = L_HOVEL;
+        }
+        else
+        {
+          Level->site[x][y].p_locf = L_HOUSE;
+        }
+        break;
+    }
+  }
+}
+
+void make_food_bin(int i, int j)
+{
+  pol tol;
+  int k;
+
+  for(k = 0; k < 10; k++)
+  {
+    tol        = new objectlist;
+    tol->thing = new object;
+    make_food(tol->thing, 15); // grain
+    tol->next                = Level->site[i][j].things;
+    Level->site[i][j].things = tol;
+  }
+}
+
+void make_guard(int i, int j)
+{
+  pml tml      = new monsterlist;
+  tml->m       = (Level->site[i][j].creature = make_creature(GUARD));
+  tml->m->x    = i;
+  tml->m->y    = j;
+  tml->next    = Level->mlist;
+  Level->mlist = tml;
+}
+
+void make_sheep(int i, int j)
+{
+  pml tml      = new monsterlist;
+  tml->m       = (Level->site[i][j].creature = make_creature(SHEEP));
+  tml->m->x    = i;
+  tml->m->y    = j;
+  tml->next    = Level->mlist;
+  Level->mlist = tml;
+}
+
+void make_horse(int i, int j)
+{
+  pml tml      = new monsterlist;
+  tml->m       = (Level->site[i][j].creature = make_creature(HORSE));
+  tml->m->x    = i;
+  tml->m->y    = j;
+  tml->next    = Level->mlist;
+  Level->mlist = tml;
+}
+
+void make_merchant(int i, int j)
+{
+  pml tml      = new monsterlist;
+  tml->m       = (Level->site[i][j].creature = make_creature(MERCHANT));
+  tml->m->x    = i;
+  tml->m->y    = j;
+  tml->next    = Level->mlist;
+  Level->mlist = tml;
+}
+
+void special_village_site(int i, int j, int villagenum)
+{
+  if(villagenum == 1)
+  {
+    Level->site[i][j].locchar = ALTAR;
+    Level->site[i][j].p_locf  = L_LAWSTONE;
+  }
+  if(villagenum == 2)
+  {
+    Level->site[i][j].locchar = ALTAR;
+    Level->site[i][j].p_locf  = L_BALANCESTONE;
+  }
+  else if(villagenum == 3)
+  {
+    Level->site[i][j].locchar = ALTAR;
+    Level->site[i][j].p_locf  = L_CHAOSTONE;
+  }
+  else if(villagenum == 4)
+  {
+    Level->site[i][j].locchar = ALTAR;
+    Level->site[i][j].p_locf  = L_MINDSTONE;
+  }
+  else if(villagenum == 5)
+  {
+    Level->site[i][j].locchar = ALTAR;
+    Level->site[i][j].p_locf  = L_SACRIFICESTONE;
+  }
+  else if(villagenum == 6)
+  {
+    Level->site[i][j].locchar = ALTAR;
+    Level->site[i][j].p_locf  = L_VOIDSTONE;
+  }
+}
+
+// loads the village level into Level
 void load_village(int villagenum, int populate)
 {
   TempLevel = Level;
@@ -169,163 +328,4 @@ void load_village(int villagenum, int populate)
   }
   fclose(fd);
   initrand(E_RESTORE, 0);
-}
-
-void make_guard(int i, int j)
-{
-  pml tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(GUARD));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
-}
-
-void make_sheep(int i, int j)
-{
-  pml tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(SHEEP));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
-}
-
-void make_food_bin(int i, int j)
-{
-  pol tol;
-  int k;
-
-  for(k = 0; k < 10; k++)
-  {
-    tol        = new objectlist;
-    tol->thing = new object;
-    make_food(tol->thing, 15); /* grain */
-    tol->next                = Level->site[i][j].things;
-    Level->site[i][j].things = tol;
-  }
-}
-
-void make_horse(int i, int j)
-{
-  pml tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(HORSE));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
-}
-
-void make_merchant(int i, int j)
-{
-  pml tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(MERCHANT));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
-}
-
-void assign_village_function(int x, int y, int setup)
-{
-  static int next = 0;
-  static int permutation[24]; /* number of x's in village map */
-  int        i, j, k;
-
-  if(setup)
-  {
-    next = 0;
-    for(i = 0; i < 24; i++)
-    {
-      permutation[i] = i;
-    }
-    for(i = 0; i < 24; i++)
-    {
-      j              = permutation[i];
-      k              = random_range(24);
-      permutation[i] = permutation[k];
-      permutation[k] = j;
-    }
-  }
-  else
-  {
-    lset(x, y + 1, STOPS, *Level);
-    lset(x + 1, y, STOPS, *Level);
-    lset(x - 1, y, STOPS, *Level);
-    lset(x, y - 1, STOPS, *Level);
-    lset(x, y, STOPS, *Level);
-
-    switch(permutation[next++])
-    {
-      case 0:
-        Level->site[x][y].locchar = OPEN_DOOR;
-        Level->site[x][y].p_locf  = L_ARMORER;
-        break;
-      case 1:
-        Level->site[x][y].locchar = OPEN_DOOR;
-        Level->site[x][y].p_locf  = L_HEALER;
-        break;
-      case 2:
-        Level->site[x][y].locchar = OPEN_DOOR;
-        Level->site[x][y].p_locf  = L_TAVERN;
-        break;
-      case 3:
-        Level->site[x][y].locchar = OPEN_DOOR;
-        Level->site[x][y].p_locf  = L_COMMANDANT;
-        break;
-      case 4:
-        Level->site[x][y].locchar = OPEN_DOOR;
-        Level->site[x][y].p_locf  = L_CARTOGRAPHER;
-        break;
-      default:
-        Level->site[x][y].locchar = CLOSED_DOOR;
-        if(random_range(2))
-        {
-          Level->site[x][y].aux = LOCKED;
-        }
-        if(random_range(2))
-        {
-          Level->site[x][y].p_locf = L_HOVEL;
-        }
-        else
-        {
-          Level->site[x][y].p_locf = L_HOUSE;
-        }
-        break;
-    }
-  }
-}
-
-void special_village_site(int i, int j, int villagenum)
-{
-  if(villagenum == 1)
-  {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_LAWSTONE;
-  }
-  if(villagenum == 2)
-  {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_BALANCESTONE;
-  }
-  else if(villagenum == 3)
-  {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_CHAOSTONE;
-  }
-  else if(villagenum == 4)
-  {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_MINDSTONE;
-  }
-  else if(villagenum == 5)
-  {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_SACRIFICESTONE;
-  }
-  else if(villagenum == 6)
-  {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_VOIDSTONE;
-  }
 }

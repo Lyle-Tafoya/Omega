@@ -364,7 +364,7 @@ void fire()
 {
   int             index, x1, y1, x2, y2;
   pob             obj;
-  struct monster *m;
+  monster *m;
 
   queue_message("Fire/Throw --");
   index = getitem(NULL_ITEM);
@@ -994,7 +994,7 @@ void tacoptions()
 void pickpocket()
 {
   int             dx, dy;
-  struct monster *m;
+  monster *m;
 
   queue_message("Pickpocketing --");
 

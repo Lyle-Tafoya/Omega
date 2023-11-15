@@ -262,32 +262,11 @@ void heal(int amount)
   dataprint();
 }
 
-void fbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
-{
-  bolt(fx, fy, tx, ty, hit, dmg, FLAME);
-}
-
-void lbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
-{
-  bolt(fx, fy, tx, ty, hit, dmg, ELECTRICITY);
-}
-
-/* Added 12/30/98 DG */
-void icebolt(int fx, int fy, int tx, int ty, int hit, int dmg)
-{
-  bolt(fx, fy, tx, ty, hit, dmg, COLD);
-}
-
-void nbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
-{
-  bolt(fx, fy, tx, ty, hit, dmg, NORMAL_DAMAGE);
-}
-
-/* from f to t */
+// from f to t
 void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
 {
   int             xx, yy;
-  struct monster *target;
+  monster *target;
   Symbol          boltchar;
   xx = fx;
   yy = fy;
@@ -444,31 +423,31 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
   }
 }
 
-void lball(int fx, int fy, int tx, int ty, int dmg)
+void fbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
 {
-  ball(fx, fy, tx, ty, dmg, ELECTRICITY);
+  bolt(fx, fy, tx, ty, hit, dmg, FLAME);
 }
 
-void manastorm(int x, int y, int dmg)
+void lbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
 {
-  ball(x, y, x, y, dmg, UNSTOPPABLE);
+  bolt(fx, fy, tx, ty, hit, dmg, ELECTRICITY);
 }
 
-void snowball(int fx, int fy, int tx, int ty, int dmg)
+void icebolt(int fx, int fy, int tx, int ty, int hit, int dmg)
 {
-  ball(fx, fy, tx, ty, dmg, COLD);
+  bolt(fx, fy, tx, ty, hit, dmg, COLD);
 }
 
-void fball(int fx, int fy, int tx, int ty, int dmg)
+void nbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
 {
-  ball(fx, fy, tx, ty, dmg, FLAME);
+  bolt(fx, fy, tx, ty, hit, dmg, NORMAL_DAMAGE);
 }
 
-/* from f to t */
+// from f to t
 void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
 {
   int             xx, yy, ex, ey, i;
-  struct monster *target;
+  monster *target;
   Symbol          expchar = ('@' | CLR(LIGHT_PURPLE));
 
   xx = fx;
@@ -589,6 +568,26 @@ void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
       }
     }
   }
+}
+
+void lball(int fx, int fy, int tx, int ty, int dmg)
+{
+  ball(fx, fy, tx, ty, dmg, ELECTRICITY);
+}
+
+void manastorm(int x, int y, int dmg)
+{
+  ball(x, y, x, y, dmg, UNSTOPPABLE);
+}
+
+void snowball(int fx, int fy, int tx, int ty, int dmg)
+{
+  ball(fx, fy, tx, ty, dmg, COLD);
+}
+
+void fball(int fx, int fy, int tx, int ty, int dmg)
+{
+  ball(fx, fy, tx, ty, dmg, FLAME);
 }
 
 void mondet(int blessing)

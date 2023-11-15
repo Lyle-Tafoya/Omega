@@ -131,7 +131,7 @@ void i_enchant(pob o)
 }
 
 /* scroll of clairvoyance */
-void i_clairvoyance(struct object *o)
+void i_clairvoyance(object *o)
 {
   if(o->blessing > -1)
   {

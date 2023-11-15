@@ -25,7 +25,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 
 #ifdef SAVE_LEVELS
-extern struct level TheLevel;
+extern level TheLevel;
 plv                 msdos_changelevel(plv oldlevel, int newenv, int newdepth);
 #endif
 
@@ -101,6 +101,32 @@ void load_arena()
   Arena_Monster->hp += Arena_Monster->level * 10;
   Arena_Monster->hit += Arena_Monster->hit;
   Arena_Monster->dmg += Arena_Monster->dmg / 2;
+}
+
+// make the prime sorceror
+void make_prime(int i, int j)
+{
+  pml ml = new monsterlist;
+  pmt m  = new monster;
+  pol ol;
+  pob o;
+  make_hiscore_npc(m, 10); /* 10 is index for prime */
+  m->x                       = i;
+  m->y                       = j;
+  Level->site[i][j].creature = m;
+  ml->m                      = m;
+  ml->next                   = Level->mlist;
+  Level->mlist               = ml;
+
+  if(Objects[ARTIFACTID + 21].uniqueness != UNIQUE_TAKEN)
+  {
+    ol             = new objectlist;
+    o              = new object;
+    *o             = Objects[ARTIFACTID + 21];
+    ol->thing      = o;
+    ol->next       = nullptr;
+    m->possessions = ol;
+  }
 }
 
 /* loads the sorcereror's circle into Level*/
@@ -244,30 +270,19 @@ void load_circle(int populate)
   fclose(fd);
 }
 
-/* make the prime sorceror */
-void make_prime(int i, int j)
+// make the archmage
+void make_archmage(int i, int j)
 {
   pml ml = new monsterlist;
   pmt m  = new monster;
-  pol ol;
-  pob o;
-  make_hiscore_npc(m, 10); /* 10 is index for prime */
+  make_hiscore_npc(m, 9); /* 9 is index for archmage */
   m->x                       = i;
   m->y                       = j;
   Level->site[i][j].creature = m;
   ml->m                      = m;
   ml->next                   = Level->mlist;
   Level->mlist               = ml;
-
-  if(Objects[ARTIFACTID + 21].uniqueness != UNIQUE_TAKEN)
-  {
-    ol             = new objectlist;
-    o              = new object;
-    *o             = Objects[ARTIFACTID + 21];
-    ol->thing      = o;
-    ol->next       = nullptr;
-    m->possessions = ol;
-  }
+  m->specialf                = M_SP_COURT;
 }
 
 /* loads the court of the archmage into Level*/
@@ -368,19 +383,4 @@ void load_court(int populate)
     site = getc(fd) ^ site;
   }
   fclose(fd);
-}
-
-/* make the archmage */
-void make_archmage(int i, int j)
-{
-  pml ml = new monsterlist;
-  pmt m  = new monster;
-  make_hiscore_npc(m, 9); /* 9 is index for archmage */
-  m->x                       = i;
-  m->y                       = j;
-  Level->site[i][j].creature = m;
-  ml->m                      = m;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
-  m->specialf                = M_SP_COURT;
 }

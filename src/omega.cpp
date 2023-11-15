@@ -64,15 +64,15 @@ bool           IsMenu              = false;
 long           GameStatus          = 0L; /* Game Status bit vector */
 int            ScreenLength        = 0;  /* How large is level window */
 int            ScreenWidth         = 0;
-struct player  Player;                       /* the player */
-struct terrain Country[MAXWIDTH][MAXLENGTH]; /* The countryside */
+player  Player;                       /* the player */
+terrain Country[MAXWIDTH][MAXLENGTH]; /* The countryside */
 #ifdef SAVE_LEVELS
-struct level TheLevel;
+level TheLevel;
 #endif
-struct level   *City                = nullptr; /* The city of Rampart */
-struct level   *TempLevel           = nullptr; /* Place holder */
-struct level   *Level               = nullptr; /* Pointer to current Level */
-struct level   *Dungeon             = nullptr; /* Pointer to current Dungeon */
+level   *City                = nullptr; /* The city of Rampart */
+level   *TempLevel           = nullptr; /* Place holder */
+level   *Level               = nullptr; /* Pointer to current Level */
+level   *Dungeon             = nullptr; /* Pointer to current Dungeon */
 int             Villagenum          = 0;    /* Current Village number */
 int             ScreenOffset        = 0;    /* Offset of displayed screen to level */
 int             HorizontalOffset    = 0;
@@ -83,7 +83,7 @@ int             Last_Environment    = E_COUNTRYSIDE; /* Which environment were w
 int             Dirs[2][9];                          /* 9 xy directions */
 int             Cmd                  = 's';          /* last player command */
 int             Command_Duration     = 0;            /* how long does current command take */
-struct monster *Arena_Monster        = nullptr;         /* Opponent in arena */
+monster *Arena_Monster        = nullptr;         /* Opponent in arena */
 int             Arena_Opponent       = 0;            /* case label of opponent in l_arena()*/
 int             Arena_Victory        = 0;            /* did player win in arena? */
 int             Imprisonment         = 0;            /* amount of time spent in jail */
@@ -201,6 +201,26 @@ bool game_restore(const std::filesystem::path &save_file_path)
   {
     return false;
   }
+}
+
+void signalexit(int)
+{
+  int reply;
+  queue_message("Yikes!");
+  queue_message("Sorry, caught a core-dump signal.");
+  queue_message("Want to try and save the game?");
+  reply = ynq();
+  if(reply == 'y')
+  {
+    save(true); // force save
+  }
+  else if(reply == EOF)
+  {
+    signalsave();
+  }
+  queue_message("Bye!");
+  endgraf();
+  exit(0);
 }
 
 void omega_title();
@@ -341,26 +361,6 @@ int main(int, char *[])
       time_clock(false);
     }
   }
-}
-
-void signalexit(int)
-{
-  int reply;
-  queue_message("Yikes!");
-  queue_message("Sorry, caught a core-dump signal.");
-  queue_message("Want to try and save the game?");
-  reply = ynq();
-  if(reply == 'y')
-  {
-    save(true); // force save
-  }
-  else if(reply == EOF)
-  {
-    signalsave();
-  }
-  queue_message("Bye!");
-  endgraf();
-  exit(0);
 }
 
 /* Start up game with new dungeons; start with player in city */

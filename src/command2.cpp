@@ -85,7 +85,7 @@ void rest()
 void peruse()
 {
   int            index;
-  struct object *obj;
+  object *obj;
 
   if(Player.status[BLINDED] > 0)
   {
@@ -124,7 +124,7 @@ void peruse()
 void quaff()
 {
   int            index;
-  struct object *obj;
+  object *obj;
   queue_message("Quaff --");
   index = getitem(POTION);
   if(index == ABORT)
@@ -187,7 +187,7 @@ void activate()
 void eat()
 {
   int            index;
-  struct object *obj;
+  object *obj;
 
   queue_message("Eat --");
   index = getitem(FOOD);
@@ -259,29 +259,6 @@ void pickup()
   {
     pickup_at(Player.x, Player.y);
   }
-}
-
-/* floor inventory */
-void floor_inv()
-{
-  pol ol = Level->site[Player.x][Player.y].things;
-  setgamestatus(SKIP_MONSTERS, GameStatus);
-  std::vector<std::string> lines;
-  while(ol)
-  {
-    if(!ol->thing)
-    {
-      queue_message("***Error; null thing on things list***");
-    }
-    else
-    {
-      lines.emplace_back(itemid(ol->thing));
-    }
-    ol = ol->next;
-  }
-  menu->load(lines);
-  menu->get_player_input();
-  xredraw();
 }
 
 void drop_pack_item()
@@ -438,7 +415,7 @@ void talk()
 {
   int             dx, dy, index = 0;
   char            response;
-  struct monster *m;
+  monster *m;
 
   queue_message("Talk --");
   index = getdir();
@@ -596,7 +573,7 @@ void give()
 {
   int             index;
   int             dx, dy, dindex = 0;
-  struct monster *m;
+  monster *m;
   pob             obj;
 
   queue_message("Give to monster --");
@@ -655,7 +632,7 @@ void give()
 void zapwand()
 {
   int            index;
-  struct object *obj;
+  object *obj;
 
   if(Player.status[AFRAID] > 0)
   {

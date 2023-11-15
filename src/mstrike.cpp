@@ -24,32 +24,32 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <format>
 
-void m_firebolt(struct monster *m)
+void m_firebolt(monster *m)
 {
   fbolt(m->x, m->y, Player.x, Player.y, m->hit, m->dmg);
 }
 
-void m_nbolt(struct monster *m)
+void m_nbolt(monster *m)
 {
   nbolt(m->x, m->y, Player.x, Player.y, m->hit, m->dmg);
 }
 
-void m_lball(struct monster *m)
+void m_lball(monster *m)
 {
   lball(m->x, m->y, Player.x, Player.y, m->dmg);
 }
 
-void m_fireball(struct monster *m)
+void m_fireball(monster *m)
 {
   fball(m->x, m->y, Player.x, Player.y, m->dmg);
 }
 
-void m_snowball(struct monster *m)
+void m_snowball(monster *m)
 {
   snowball(m->x, m->y, Player.x, Player.y, m->dmg);
 }
 
-void m_blind_strike(struct monster *m)
+void m_blind_strike(monster *m)
 {
   if((Player.status[BLINDED] == 0) && los_p(m->x, m->y, Player.x, Player.y) &&
      (distance(m->x, m->y, Player.x, Player.y) < 5))
@@ -78,7 +78,7 @@ void m_blind_strike(struct monster *m)
   }
 }
 
-void m_strike_sonic(struct monster *m)
+void m_strike_sonic(monster *m)
 {
   if(m->uniqueness == COMMON)
   {

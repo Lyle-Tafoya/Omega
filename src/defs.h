@@ -1241,30 +1241,6 @@ struct room
   int rsi; // index into roomname switch
 };
 
-struct monster
-{
-  struct objectlist *possessions;
-  unsigned char      attacked;
-  int                aux1, aux2, x, y, click;
-  int                id, hp, hit, ac, dmg, sense, wakeup, level, speed;
-  unsigned char      sleep, treasure;
-  long               xpv;
-  int                corpseweight, corpsevalue, transformid, startthing;
-  unsigned char      uniqueness;
-  int                talkf, movef, meleef, strikef, specialf;
-  long               status, immunity;
-  Symbol             monchar;
-  std::string        monstring;
-  std::string        corpsestr;
-  std::string        meleestr;
-};
-
-struct monsterlist
-{
-  monster     *m;
-  monsterlist *next;
-};
-
 struct object
 {
   int           id;
@@ -1292,6 +1268,36 @@ struct object
   std::string   cursestr;
 };
 
+struct objectlist
+{
+  object     *thing;
+  objectlist *next;
+};
+
+struct monster
+{
+  objectlist *possessions;
+  unsigned char      attacked;
+  int                aux1, aux2, x, y, click;
+  int                id, hp, hit, ac, dmg, sense, wakeup, level, speed;
+  unsigned char      sleep, treasure;
+  long               xpv;
+  int                corpseweight, corpsevalue, transformid, startthing;
+  unsigned char      uniqueness;
+  int                talkf, movef, meleef, strikef, specialf;
+  long               status, immunity;
+  Symbol             monchar;
+  std::string        monstring;
+  std::string        corpsestr;
+  std::string        meleestr;
+};
+
+struct monsterlist
+{
+  monster     *m;
+  monsterlist *next;
+};
+
 struct player
 {
   int            str, con, dex, agi, iq, pow, maxstr, maxcon, maxdex, maxagi, maxiq, maxpow;
@@ -1316,12 +1322,6 @@ struct player
   int            packptr;
 };
 
-struct objectlist
-{
-  struct object     *thing;
-  struct objectlist *next;
-};
-
 // terrain locations
 struct terrain
 {
@@ -1341,19 +1341,19 @@ struct location
   Symbol             showchar;   // char instantaneously drawn for site
   int                aux;        // signifies various things
   unsigned char      buildaux;   // used in constructing level
-  struct objectlist *things;
-  struct monster    *creature;
+  objectlist *things;
+  monster    *creature;
 };
 
 struct level
 {
   char          depth; // which level is this
-  struct level *next;  // pointer to next level in dungeon
+  level *next;  // pointer to next level in dungeon
 #ifdef SAVE_LEVELS
   // Over 64K worth of data!
-  struct location *site[MAXWIDTH]; // dungeon data
+  location *site[MAXWIDTH]; // dungeon data
 #else
-  struct location site[MAXWIDTH][MAXLENGTH]; // dungeon data
+  location site[MAXWIDTH][MAXLENGTH]; // dungeon data
 #endif
   char                generated;    // has the level been made (visited) yet?
   char                numrooms;     // number of rooms on level
