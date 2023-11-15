@@ -29,7 +29,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 
 #ifdef SAVE_LEVELS
-plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
 extern std::string version_string(int version);
@@ -313,7 +313,7 @@ void save_monsters(std::ofstream &save_file, monsterlist *ml)
   }
 }
 
-void save_level(std::ofstream &save_file, plv level)
+void save_level(std::ofstream &save_file, level *level)
 {
   file_write(save_file, level->depth);
   file_write(save_file, level->numrooms);

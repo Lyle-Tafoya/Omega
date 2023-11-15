@@ -28,7 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifdef SAVE_LEVELS
 extern level TheLevel;
 void kill_levels(const std::string &str);
-plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
 /* Deallocate current dungeon */
@@ -40,7 +40,7 @@ void free_dungeon()
     kill_levels(std::format("om{}.*.lev", Dungeon->environment));
   }
 #else
-  plv tlv;
+  level *tlv;
 
   while(Dungeon)
   {
@@ -84,7 +84,7 @@ void clear_level(level *dungeon_level)
 
 #ifndef SAVE_LEVELS
 // tries to find the level of depth levelnum in dungeon; if can't find it returns nullptr
-plv findlevel(level *dungeon, char levelnum)
+level *findlevel(level *dungeon, char levelnum)
 {
   if(!dungeon)
   {

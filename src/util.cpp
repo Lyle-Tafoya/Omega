@@ -892,7 +892,7 @@ void calc_weight()
 }
 
 // returns true if its ok to get rid of a level
-bool ok_to_free(plv level)
+bool ok_to_free(level *level)
 {
   if(!level)
   {
@@ -933,7 +933,7 @@ void free_mons_and_objs(monsterlist *mlist)
 }
 
 /* Free up monsters and items on a level*/
-void free_level(plv level)
+void free_level(level *level)
 {
   int i, j;
 

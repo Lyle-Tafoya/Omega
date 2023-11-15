@@ -36,7 +36,7 @@ extern void item_unequip(object *);
 extern interactive_menu *menu;
 
 #ifdef SAVE_LEVELS
-plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
 /* Player stats like str, agi, etc give modifications to various abilities

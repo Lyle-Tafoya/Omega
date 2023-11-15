@@ -1372,9 +1372,6 @@ typedef montype *pmt;
 typedef struct location loctype;
 typedef loctype *plc;
 
-typedef struct level levtype;
-typedef levtype *plv;
-
 typedef struct object objtype;
 typedef objtype *pob;
 

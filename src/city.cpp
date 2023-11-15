@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #ifdef SAVE_LEVELS
 extern level TheLevel;
-plv msdos_changelevel(plv oldlevel, int newenv, int newdepth);
+level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
 void assign_city_function(int x, int y)

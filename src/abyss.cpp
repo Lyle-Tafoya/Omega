@@ -63,7 +63,7 @@ static FILE *open_levfile(int env, int depth, int rw)
 
 /* Saves oldlevel (unless nullptr), and reads in the new level,
    unless depth is < 0. */
-plv msdos_changelevel(plv oldlevel, int newenv, int newdepth)
+level *msdos_changelevel(level *oldlevel, int newenv, int newdepth)
 {
   FILE *fp;
 

@@ -1022,7 +1022,7 @@ void foodcheck()
 void roomcheck()
 {
   static int oldroomno = -1;
-  static plv oldlevel  = nullptr;
+  static level *oldlevel  = nullptr;
   int roomno           = Level->site[Player.x][Player.y].roomnumber;
 
   if((roomno == RS_CAVERN) || (roomno == RS_SEWER_DUCT) || (roomno == RS_KITCHEN) || (roomno == RS_BATHROOM) || (roomno == RS_BEDROOM) || (roomno == RS_DININGROOM) || (roomno == RS_CLOSET) || (roomno > ROOMBASE))
