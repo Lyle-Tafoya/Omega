@@ -761,7 +761,6 @@ int screenmod(int);
 int screenmod_horizontal(int);
 int showhour();
 int showminute();
-bool strmem(char, const std::string &);
 bool unblocked(int, int);
 bool view_los_p(int, int, int, int);
 bool view_unblocked(int, int);

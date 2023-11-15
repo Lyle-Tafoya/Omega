@@ -675,13 +675,12 @@ that type of item is acceptable or is listed */
 
 int getitem(Symbol itype)
 {
-  char invstr[64];
+  std::string invstr;
   char key;
-  int i, k = 0, ok = false, drewmenu = false, found = false;
+  bool ok = false, drewmenu = false, found = false;
 
   found     = (itype == NULL_ITEM || (itype == CASH && Player.cash > 0));
-  invstr[0] = 0;
-  for(i = 1; i < MAXITEMS; i++)
+  for(int i = 1; i < MAXITEMS; ++i)
   {
     if(Player.possessions[i])
     {
@@ -689,15 +688,13 @@ int getitem(Symbol itype)
          (itype == FOOD && Player.possessions[i]->objchar == CORPSE))
       {
         found       = true;
-        invstr[k++] = index_to_key(i);
-        invstr[k]   = 0;
+        invstr += index_to_key(i);
       }
     }
   }
   if((itype == CASH) && found)
   {
-    invstr[k++] = '$';
-    invstr[k]   = 0;
+    invstr += '$';
   }
   if(!found)
   {
@@ -733,7 +730,7 @@ int getitem(Symbol itype)
           ok = false;
         }
       }
-      else if(!strmem(key, invstr) || key_to_index(key) == (signed char)-1)
+      else if(!invstr.contains(key) || key_to_index(key) == -1)
       {
         queue_message("Nope! Try again [? for inventory, ESCAPE to quit]:");
       }
@@ -748,11 +745,11 @@ int getitem(Symbol itype)
     }
     if(key == ESCAPE)
     {
-      return (ABORT);
+      return ABORT;
     }
     else if(key == (CASH & 0xff))
     {
-      return (CASHVALUE);
+      return CASHVALUE;
     }
     else
     {

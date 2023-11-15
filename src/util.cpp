@@ -865,18 +865,6 @@ bool confirmation()
   }
 }
 
-// is character c a member of string s
-bool strmem(char c, const std::string &s)
-{
-  bool found = false;
-  size_t i  = 0;
-  for(i = 0; ((i < s.length()) && (!found)); i++)
-  {
-    found = (s[i] == c);
-  }
-  return found;
-}
-
 void calc_weight()
 {
   int i, weight = 0;
