@@ -604,7 +604,7 @@ void acid_cloud()
   queue_message("You are caught in an acid cloud!  ");
   if(Player.possessions[O_CLOAK])
   {
-    (void)damage_item(Player.possessions[O_CLOAK]);
+    damage_item(Player.possessions[O_CLOAK]);
     queue_message("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
   }
@@ -612,7 +612,7 @@ void acid_cloud()
   {
     queue_message("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
-    (void)damage_item(Player.possessions[O_ARMOR]);
+    damage_item(Player.possessions[O_ARMOR]);
   }
   else if(p_immune(ACID))
   {

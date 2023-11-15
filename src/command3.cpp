@@ -1128,7 +1128,7 @@ void tunnel()
                  (Player.possessions[O_WEAPON_HAND]->fragility < random_range(20))))
         {
           queue_message("Clang! Uh oh...");
-          (void)damage_item(Player.possessions[O_WEAPON_HAND]);
+          damage_item(Player.possessions[O_WEAPON_HAND]);
         }
         else
         {

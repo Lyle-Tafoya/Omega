@@ -139,7 +139,7 @@ void break_weapon()
   if(Player.possessions[O_WEAPON_HAND])
   {
     queue_message("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
-    (void)damage_item(Player.possessions[O_WEAPON_HAND]);
+    damage_item(Player.possessions[O_WEAPON_HAND]);
   }
 }
 
