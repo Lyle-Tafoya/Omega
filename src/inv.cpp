@@ -1251,10 +1251,10 @@ pob split_item(int num, pob item)
   return (newitem);
 }
 
-/* criteria for being able to put some item in some slot */
-int slottable(pob o, int slot)
+// criteria for being able to put some item in some slot
+bool slottable(pob o, int slot)
 {
-  int ok = true;
+  bool ok = true;
   if(!o)
   {
     ok = false;
@@ -1299,7 +1299,7 @@ int slottable(pob o, int slot)
       ok = false;
     }
   }
-  return (ok);
+  return ok;
 }
 
 bool cursed(pob obj)
@@ -1314,12 +1314,13 @@ bool cursed(pob obj)
   }
 }
 
-/* returns true if item with id and charge is found in pack or in
-   inventory slot. charge is used to differentiate
-   corpses instead of aux, which is their food value. */
-int find_item(pob *o, int id, int chargeval)
+// returns true if item with id and charge is found in pack or in
+// inventory slot. charge is used to differentiate
+// corpses instead of aux, which is their food value.
+bool find_item(pob *o, int id, int chargeval)
 {
-  int i, found = false;
+  int i;
+  bool found = false;
   *o = nullptr;
   for(i = 1; ((i < MAXITEMS) && (!found)); i++)
   {
@@ -1346,15 +1347,16 @@ int find_item(pob *o, int id, int chargeval)
       }
     }
   }
-  return (found);
+  return found;
 }
 
-/* returns true if item with id and charge is found in pack or in
-   inventory slot. Destroys item. charge is used to differentiate
-   corpses instead of aux, which is their food value. */
-int find_and_remove_item(int id, int chargeval)
+// returns true if item with id and charge is found in pack or in
+// inventory slot. Destroys item. charge is used to differentiate
+// corpses instead of aux, which is their food value.
+bool find_and_remove_item(int id, int chargeval)
 {
-  int i, found = false;
+  int i;
+  bool found = false;
   pob o = nullptr;
 
   for(i = 1; ((i < MAXITEMS) && (!found)); i++)
@@ -1389,7 +1391,7 @@ int find_and_remove_item(int id, int chargeval)
     }
   }
   fixpack();
-  return (found);
+  return found;
 }
 
 void lose_all_items()

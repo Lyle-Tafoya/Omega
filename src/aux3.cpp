@@ -455,9 +455,9 @@ char getlocation()
   return (c - 'a' + 'A');
 }
 
-/* chance for player to resist magic somehow */
-/* hostile_magic ranges in power from 0 (weak) to 10 (strong) */
-int magic_resist(int hostile_magic)
+// chance for player to resist magic somehow
+// hostile_magic ranges in power from 0 (weak) to 10 (strong)
+bool magic_resist(int hostile_magic)
 {
   if((Player.rank[COLLEGE] + Player.rank[CIRCLE] > 0) && (Player.level / 2 + random_range(20) > hostile_magic + random_range(20)))
   {
@@ -466,17 +466,17 @@ int magic_resist(int hostile_magic)
       queue_message("Thinking fast, you defend youself with a counterspell!");
       Player.mana -= hostile_magic * hostile_magic;
       dataprint();
-      return (true);
+      return true;
     }
   }
   if(Player.level / 4 + Player.status[PROTECTION] + random_range(20) > hostile_magic + random_range(30))
   {
     queue_message("You resist the spell!");
-    return (true);
+    return true;
   }
   else
   {
-    return (false);
+    return false;
   }
 }
 
@@ -1124,10 +1124,10 @@ int parsecitysite()
   }
 }
 
-/* are there hostile monsters within 2 moves? */
-int hostilemonstersnear()
+// are there hostile monsters within 2 moves?
+bool hostilemonstersnear()
 {
-  int hostile = false;
+  bool hostile = false;
 
   for(int i = Player.x - 2; ((i < Player.x + 3) && (!hostile)); ++i)
   {
@@ -1143,14 +1143,15 @@ int hostilemonstersnear()
     }
   }
 
-  return (hostile);
+  return hostile;
 }
 
-/* random effects from some of stones in villages */
-/* if alignment of stone is alignment of player, gets done sooner */
-int stonecheck(int alignment)
+// random effects from some of stones in villages
+// if alignment of stone is alignment of player, gets done sooner
+bool stonecheck(int alignment)
 {
-  int *stone, match = false, cycle = false;
+  int *stone;
+  bool match = false, cycle = false;
 
   if(alignment == 1)
   {
@@ -1337,7 +1338,7 @@ int stonecheck(int alignment)
       break;
   }
   calc_melee();
-  return (cycle);
+  return cycle;
 }
 
 // can only occur when player is in city, so OK to use Level

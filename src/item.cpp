@@ -804,7 +804,7 @@ const std::string bootname(int id)
   }
 }
 
-int twohandedp(int id)
+bool twohandedp(int id)
 {
   switch(id)
   {
@@ -818,9 +818,9 @@ int twohandedp(int id)
     case WEAPONID + 36:
     case WEAPONID + 38:
     case WEAPONID + 39:
-      return (true);
+      return true;
     default:
-      return (false);
+      return false;
   }
 }
 

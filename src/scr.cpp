@@ -887,7 +887,7 @@ void setlastxy(int new_x, int new_y) /* used when changing environments */
   lasty = new_y;
 }
 
-int litroom(int x, int y)
+bool litroom(int x, int y)
 {
   if(Level->site[x][y].roomnumber < ROOMBASE)
   {
@@ -1643,9 +1643,9 @@ void menuaddch(char c)
   wnoutrefresh(menu_window);
 }
 
-int stillonblock()
+bool stillonblock()
 {
-  int display = true;
+  bool display = true;
   int c;
   do
   {

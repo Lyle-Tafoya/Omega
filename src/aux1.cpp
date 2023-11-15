@@ -156,7 +156,7 @@ void showroom(int i)
   room_name_print(room_name);
 }
 
-int player_on_sanctuary()
+bool player_on_sanctuary()
 {
   if((Player.x == Player.sx) && (Player.y == Player.sy))
   {
@@ -244,9 +244,9 @@ void fight_monster(monster *m)
   }
 }
 
-/* check a move attempt, maybe attack something, return true if ok to move. */
-/* x y is the proposed place to move to */
-int p_moveable(int x, int y)
+// check a move attempt, maybe attack something, return true if ok to move.
+// x y is the proposed place to move to
+bool p_moveable(int x, int y)
 {
   setgamestatus(SKIP_MONSTERS, GameStatus);
   if(!inbounds(x, y))
@@ -312,7 +312,7 @@ int p_moveable(int x, int y)
        (Level->site[x][y].locchar == WATER) || (Level->site[x][y].locchar == RUBBLE) ||
        (Level->site[x][y].locchar == LIFT) || (Level->site[x][y].locchar == TRAP))
     {
-      /* horses WILL go into water... */
+      // horses WILL go into water...
       if(gamestatusp(MOUNTED, GameStatus))
       {
         if(Level->site[x][y].locchar != WATER || Level->site[x][y].p_locf != L_WATER)
@@ -349,8 +349,8 @@ int p_moveable(int x, int y)
   }
 }
 
-/* check a move attempt in the countryside */
-int p_country_moveable(int x, int y)
+// check a move attempt in the countryside
+bool p_country_moveable(int x, int y)
 {
   if(!inbounds(x, y))
   {

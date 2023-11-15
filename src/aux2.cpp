@@ -252,8 +252,8 @@ void movecursor(int &x, int &y, int dx, int dy)
   omshowcursor(x, y);
 }
 
-/* is Player immune to damage type dtype */
-int p_immune(int dtype)
+// is Player immune to damage type dtype
+bool p_immune(int dtype)
 {
   return (Player.immunity[dtype] > 0);
 }

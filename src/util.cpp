@@ -31,8 +31,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 std::mt19937 generator;
 
-/* x and y on level? */
-int inbounds(int x, int y)
+// x and y on level?
+bool inbounds(int x, int y)
 {
   return ((x >= 0) && (y >= 0) && (x < WIDTH) && (y < LENGTH));
 }
@@ -69,7 +69,7 @@ int screenmod_horizontal(int x)
   return x - HorizontalOffset;
 }
 
-int offscreen(int x, int y)
+bool offscreen(int x, int y)
 {
   return ((y < 0) || (y < ScreenOffset) || (y > ScreenOffset + ScreenLength - 1) || (y > LENGTH)) ||
          ((x < 0) || (x < HorizontalOffset) || (x > HorizontalOffset + ScreenWidth - 1) || (x > WIDTH));
@@ -99,32 +99,32 @@ int distance(int x1, int y1, int x2, int y2)
   return (std::max(abs(x2 - x1), abs(y2 - y1)));
 }
 
-/* can you shoot, or move monsters through a spot? */
-int unblocked(int x, int y)
+// can you shoot, or move monsters through a spot?
+bool unblocked(int x, int y)
 {
   if(!inbounds(x, y) || Level->site[x][y].creature || Level->site[x][y].locchar == WALL ||
      (Level->site[x][y].locchar == PORTCULLIS) || (Level->site[x][y].locchar == STATUE) ||
      (Level->site[x][y].locchar == HEDGE) || (Level->site[x][y].locchar == CLOSED_DOOR) ||
      loc_statusp(x, y, SECRET, *Level) || ((x == Player.x) && (y == Player.y)))
   {
-    return (false);
+    return false;
   }
   else
   {
-    return (true);
+    return true;
   }
 }
 
-/* do monsters want to move through a spot */
-int m_unblocked(monster *m, int x, int y)
+// do monsters want to move through a spot
+bool m_unblocked(monster *m, int x, int y)
 {
   if((!inbounds(x, y)) || ((x == Player.x) && (y == Player.y)))
   {
-    return (false);
+    return false;
   }
   else if(Level->site[x][y].creature || Level->site[x][y].locchar == SPACE)
   {
-    return (false);
+    return false;
   }
   else if(m_statusp(*m, ONLYSWIM))
   {
@@ -144,9 +144,9 @@ int m_unblocked(monster *m, int x, int y)
       {
         queue_message("You hear a door creak open, and then close again.");
       }
-      /* smart monsters would close secret doors behind them if the */
-      /* player didn't see them using it */
-      return (true);
+      // smart monsters would close secret doors behind them if the
+      // player didn't see them using it
+      return true;
     }
     else
     {
@@ -155,7 +155,7 @@ int m_unblocked(monster *m, int x, int y)
   }
   else if((Level->site[x][y].locchar == FLOOR) || (Level->site[x][y].locchar == OPEN_DOOR))
   {
-    return (true);
+    return true;
   }
   else if((Level->site[x][y].locchar == PORTCULLIS) || (Level->site[x][y].locchar == WALL) ||
           (Level->site[x][y].locchar == STATUE))
@@ -176,14 +176,14 @@ int m_unblocked(monster *m, int x, int y)
       queue_message("You hear a door creak open.");
       Level->site[x][y].locchar = OPEN_DOOR;
       lset(x, y, CHANGED, *Level);
-      return (true);
+      return true;
     }
     else if(random_range(m->dmg) > random_range(100) && Level->site[x][y].p_locf != L_ORACLE)
     {
       queue_message("You hear a door shattering.");
       Level->site[x][y].locchar = RUBBLE;
       lset(x, y, CHANGED, *Level);
-      return (true);
+      return true;
     }
     else
     {
@@ -208,26 +208,26 @@ int m_unblocked(monster *m, int x, int y)
   }
   else
   {
-    return (true);
+    return true;
   }
 }
 
-/* can you see through a spot? */
-int view_unblocked(int x, int y)
+// can you see through a spot?
+bool view_unblocked(int x, int y)
 {
   if(!inbounds(x, y))
   {
-    return (false);
+    return false;
   }
   else if((Level->site[x][y].locchar == WALL) || (Level->site[x][y].locchar == STATUE) ||
           (Level->site[x][y].locchar == HEDGE) || (Level->site[x][y].locchar == FIRE) ||
           (Level->site[x][y].locchar == CLOSED_DOOR) || loc_statusp(x, y, SECRET, *Level))
   {
-    return (false);
+    return false;
   }
   else
   {
-    return (true);
+    return true;
   }
 }
 
@@ -429,8 +429,8 @@ void do_object_los(Symbol pyx, int *x1, int *y1, int x2, int y2)
   levelrefresh();
 }
 
-/* los_p checks to see whether there is an unblocked los from x1,y1 to x2,y2 */
-int los_p(int x1, int y1, int x2, int y2)
+// los_p checks to see whether there is an unblocked los from x1,y1 to x2,y2
+bool los_p(int x1, int y1, int x2, int y2)
 {
   int dx, dy;
   int major, minor;
@@ -476,7 +476,7 @@ int los_p(int x1, int y1, int x2, int y2)
     delta = 2 * abs(x2 - x1);
   }
   if(major == -1)
-  { /* x1,y2 already == x2,y2 */
+  { // x1,y2 already == x2,y2
     return true;
   }
   error = 0;
@@ -486,7 +486,7 @@ int los_p(int x1, int y1, int x2, int y2)
     y1 += Dirs[1][major];
     error += delta;
     if(error > step)
-    { /* don't need to check that minor >= 0 */
+    { // don't need to check that minor >= 0
       x1 += Dirs[0][minor];
       y1 += Dirs[1][minor];
       error -= 2 * step;
@@ -504,12 +504,12 @@ int los_p(int x1, int y1, int x2, int y2)
 }
 
 /* view_los_p sees through monsters */
-int view_los_p(int x1, int y1, int x2, int y2)
+bool view_los_p(int x1, int y1, int x2, int y2)
 {
   int dx, dy;
   int major, minor;
   int error, delta, step;
-  int blocked;
+  bool blocked;
 
   if(x2 - x1 < 0)
   {
@@ -550,7 +550,7 @@ int view_los_p(int x1, int y1, int x2, int y2)
     delta = 2 * abs(x2 - x1);
   }
   if(major == -1)
-  { /* x1,y2 already == x2,y2 */
+  { // x1,y2 already == x2,y2
     return true;
   }
   error = 0;
@@ -690,8 +690,8 @@ int showhour()
   return (showtime);
 }
 
-/* nighttime is defined from 9 PM to 6AM */
-int nighttime()
+// nighttime is defined from 9 PM to 6AM
+bool nighttime()
 {
   return ((hour() > 20) || (hour() < 7));
 }
@@ -836,7 +836,7 @@ void findspace(int *x, int *y, int baux)
   *y = j;
 }
 
-int confirmation()
+bool confirmation()
 {
   switch(random_range(4))
   {
@@ -865,16 +865,16 @@ int confirmation()
   }
 }
 
-/* is character c a member of string s */
-int strmem(char c, const std::string &s)
+// is character c a member of string s
+bool strmem(char c, const std::string &s)
 {
-  int found = false;
+  bool found = false;
   size_t i  = 0;
   for(i = 0; ((i < s.length()) && (!found)); i++)
   {
     found = (s[i] == c);
   }
-  return (found);
+  return found;
 }
 
 void calc_weight()
@@ -903,8 +903,8 @@ void calc_weight()
   dataprint();
 }
 
-/* returns true if its ok to get rid of a level */
-int ok_to_free(plv level)
+// returns true if its ok to get rid of a level
+bool ok_to_free(plv level)
 {
   if(!level)
   {
