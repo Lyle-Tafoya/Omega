@@ -565,8 +565,7 @@ void cavern_level()
       findspace(&tx, &ty, -1);
       Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature =
-        ((pmt)make_creature(GOBLIN_KING)); /* goblin king */
+      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(GOBLIN_KING);
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -578,8 +577,7 @@ void cavern_level()
       findspace(&tx, &ty, -1);
       Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature =
-        ((pmt)make_creature(DEMON_EMP)); /* The dark emp */
+      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(DEMON_EMP);
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -665,8 +663,7 @@ void sewer_level()
       findspace(&tx, &ty, -1);
       Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature =
-        ((pmt)make_creature(GREAT_WYRM)); /* The Great Wyrm */
+      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(GREAT_WYRM);
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }

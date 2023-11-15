@@ -1365,13 +1365,6 @@ struct level
 };
 
 // random typedef's
-
-typedef struct monster montype;
-typedef montype *pmt;
-
-typedef struct location loctype;
-typedef loctype *plc;
-
 typedef struct object objtype;
 typedef objtype *pob;
 

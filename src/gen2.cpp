@@ -430,8 +430,7 @@ void room_level()
       findspace(&tx, &ty, -1);
       Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature =
-        ((pmt)make_creature(GREAT_WYRM)); /* The Great Wyrm */
+      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(GREAT_WYRM);
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -452,8 +451,7 @@ void room_level()
       findspace(&tx, &ty, -1);
       Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature =
-        ((pmt)make_creature(DEMON_EMP)); /* The demon emp */
+      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(DEMON_EMP);
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }
@@ -553,7 +551,7 @@ void maze_level()
       findspace(&tx, &ty, -1);
       Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
-      Level->mlist->m = Level->site[tx][ty].creature = ((pmt)make_creature(mid));
+      Level->mlist->m = Level->site[tx][ty].creature = make_creature(mid);
       Level->mlist->m->x                             = tx;
       Level->mlist->m->y                             = ty;
     }
@@ -565,8 +563,7 @@ void maze_level()
       findspace(&tx, &ty, -1);
       Level->mlist       = new monsterlist;
       Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature =
-        ((pmt)make_creature(DEMON_EMP)); /* The demon emp */
+      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(DEMON_EMP);
       Level->mlist->m->x = tx;
       Level->mlist->m->y = ty;
     }

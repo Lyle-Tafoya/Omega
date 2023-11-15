@@ -813,7 +813,7 @@ void monster_talk(monster *m)
 }
 
 /* makes one of the highscore npcs */
-void make_hiscore_npc(pmt npc, int npcid)
+void make_hiscore_npc(monster *npc, int npcid)
 {
   int st = -1;
   pob ob;
@@ -929,7 +929,7 @@ void make_hiscore_npc(pmt npc, int npcid)
 }
 
 /* sets npc behavior given level and behavior code */
-void determine_npc_behavior(pmt npc, int level, int behavior)
+void determine_npc_behavior(monster *npc, int level, int behavior)
 {
   int combatype, competence, talktype;
   npc->hp     = (level + 1) * 20;

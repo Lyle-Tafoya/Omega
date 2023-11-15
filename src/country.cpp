@@ -518,7 +518,7 @@ void load_misle(int empty, int populate)
 void make_high_priest(int i, int j, int deity)
 {
   monsterlist *ml = new monsterlist;
-  pmt m  = new monster;
+  monster *m  = new monster;
   make_hiscore_npc(m, deity);
   m->x                       = i;
   m->y                       = j;

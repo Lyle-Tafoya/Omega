@@ -485,8 +485,8 @@ void i_symbol(pob);
 
 // lev.cpp functions
 int difficulty(); /* this function in util.c if MSDOS defined */
-pmt m_create(int, int, int, int);
-pmt make_creature(int);
+monster *m_create(int, int, int, int);
+monster *make_creature(int);
 void make_country_monsters(chtype);
 void make_site_monster(int, int, int);
 void make_site_treasure(int, int, int);
@@ -517,7 +517,7 @@ void m_move_leash(monster *);
 
 // mon.cpp functions
 const char *mantype();
-void determine_npc_behavior(pmt, int, int);
+void determine_npc_behavior(monster *, int, int);
 void m_abyss(monster *);
 void m_altar(monster *);
 void m_damage(monster *, int, damage_type);
@@ -541,7 +541,7 @@ void m_trap_sleepgas(monster *);
 void m_trap_snare(monster *);
 void m_trap_teleport(monster *);
 void m_water(monster *);
-void make_hiscore_npc(pmt, int);
+void make_hiscore_npc(monster *, int);
 void make_log_npc(monster *);
 void monster_talk(monster *);
 void movemonster(monster *, int, int);

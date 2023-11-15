@@ -107,7 +107,7 @@ void load_arena()
 void make_prime(int i, int j)
 {
   monsterlist *ml = new monsterlist;
-  pmt m  = new monster;
+  monster *m  = new monster;
   pol ol;
   pob o;
   make_hiscore_npc(m, 10); /* 10 is index for prime */
@@ -274,7 +274,7 @@ void load_circle(int populate)
 void make_archmage(int i, int j)
 {
   monsterlist *ml = new monsterlist;
-  pmt m  = new monster;
+  monster *m  = new monster;
   make_hiscore_npc(m, 9); /* 9 is index for archmage */
   m->x                       = i;
   m->y                       = j;

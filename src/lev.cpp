@@ -491,7 +491,7 @@ void wandercheck()
 void make_site_monster(int i, int j, int mid)
 {
   monsterlist *ml = new monsterlist;
-  pmt m;
+  monster *m;
   if(mid > -1)
   {
     Level->site[i][j].creature = (m = make_creature(mid));
@@ -510,9 +510,9 @@ void make_site_monster(int i, int j, int mid)
 /* make and return an appropriate monster for the level and depth*/
 /* called by populate_level, doesn't actually add to mlist for some reason*/
 /* eventually to be more intelligent */
-pmt m_create(int x, int y, int kind, int level)
+monster *m_create(int x, int y, int kind, int level)
 {
-  pmt newmonster;
+  monster *newmonster;
   int monster_range;
   int mid;
 
@@ -571,7 +571,7 @@ pmt m_create(int x, int y, int kind, int level)
 
 /* make creature # mid, totally random if mid == -1 */
 /* make creature allocates space for the creature */
-pmt make_creature(int mid)
+monster *make_creature(int mid)
 {
   monster *newmonster = new monster;
   pob ob;
