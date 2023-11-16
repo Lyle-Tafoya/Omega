@@ -33,7 +33,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <string>
 #include <thread>
-using std::literals::string_literals::operator""s;
 
 extern std::string get_home_path();
 extern std::string version_string(int version);
@@ -511,22 +510,22 @@ bool test_file_access(const std::string &file_name, char mode)
   return true;
 }
 
-const std::array required_file_list{
-  "city.dat"s,     "country.dat"s,  "dlair.dat"s,    "misle.dat"s,    "court.dat"s,    "speak.dat"s,
-  "temple.dat"s,   "abyss.dat"s,    "village1.dat"s, "village2.dat"s, "village3.dat"s, "village4.dat"s,
-  "village5.dat"s, "village6.dat"s, "home1.dat"s,    "home2.dat"s,    "home3.dat"s,    "arena.dat"s,
-  "maze1.dat"s,    "maze2.dat"s,    "maze3.dat"s,    "maze4.dat"s,    "omega.hi"s,     "omega.log"s,
-  "motd.txt"s,     "license.txt"s,  "circle.dat"s};
-
-const std::array optional_file_list{
-  "help1.txt"s, "help2.txt"s,   "help4.txt"s,   "help5.txt"s,   "help6.txt"s,  "help7.txt"s,
-  "help8.txt"s, "help9.txt"s,   "help10.txt"s,  "help11.txt"s,  "help12.txt"s, "help13.txt"s,
-  "abyss.txt"s, "scroll1.txt"s, "scroll2.txt"s, "scroll3.txt"s, "scroll4.txt"s};
-
 /* Checks existence of omega data files */
 /* Returns 1 if OK, 0 if impossible to run, -1 if possible but not OK */
 int filecheck()
 {
+  const std::array required_file_list{std::to_array<std::string>({
+    "city.dat",     "country.dat",  "dlair.dat",    "misle.dat",    "court.dat",    "speak.dat",
+    "temple.dat",   "abyss.dat",    "village1.dat", "village2.dat", "village3.dat", "village4.dat",
+    "village5.dat", "village6.dat", "home1.dat",    "home2.dat",    "home3.dat",    "arena.dat",
+    "maze1.dat",    "maze2.dat",    "maze3.dat",    "maze4.dat",    "omega.hi",     "omega.log",
+    "motd.txt",     "license.txt",  "circle.dat"})};
+
+  const std::array optional_file_list{std::to_array<std::string>({
+    "help1.txt", "help2.txt",   "help4.txt",   "help5.txt",   "help6.txt",  "help7.txt",
+    "help8.txt", "help9.txt",   "help10.txt",  "help11.txt",  "help12.txt", "help13.txt",
+    "abyss.txt", "scroll1.txt", "scroll2.txt", "scroll3.txt", "scroll4.txt"})};
+
   int impossible = false, badbutpossible = false;
 
   std::string omega_lib_path = Omegalib;

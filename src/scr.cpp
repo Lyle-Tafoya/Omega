@@ -216,7 +216,7 @@ bool operator<(const entity_info &a, const entity_info &b)
 
 std::unordered_map<std::string, entity_info> shown_mobs;
 std::unordered_map<std::string, entity_info> shown_items;
-std::array<std::unordered_map<std::string, entity_info> *, 2> entity_maps{&shown_mobs, &shown_items};
+std::array entity_maps{&shown_mobs, &shown_items};
 int max_shown_entities;
 
 long int perceived_item_value(object &o)
