@@ -340,7 +340,7 @@ void s_ritual()
             queue_message("A smoky form begins to coalesce....");
             summon(-1, -1);
             queue_message("Fortunately, it seems confined to the pentagram.");
-            m_status_reset(*Level->mlist->m, MOBILE);
+            m_status_reset(*Level->mlist.front(), MOBILE);
             break;
           case ROOMBASE + 29: /* blue omega room */
             queue_message("The Lords of Destiny look upon you....");

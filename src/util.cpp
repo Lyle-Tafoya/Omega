@@ -919,16 +919,12 @@ void free_objlist(objectlist *pobjlist)
   }
 }
 
-void free_mons_and_objs(monsterlist *mlist)
+void free_mons_and_objs(std::forward_list<monster *> &mlist)
 {
-  monsterlist *tmp;
-
-  while(mlist)
+  for(monster *m : mlist)
   {
-    free_objlist((tmp = mlist)->m->possessions);
-    delete tmp->m;
-    mlist = mlist->next;
-    delete tmp;
+    free_objlist(m->possessions);
+    delete m;
   }
 }
 

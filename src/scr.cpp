@@ -1092,46 +1092,45 @@ void drawmonsters(int display)
   int top    = std::max(0, ScreenOffset);
   int bottom = std::min(LENGTH, ScreenOffset + ScreenLength);
   int right  = std::min(WIDTH, HorizontalOffset + ScreenWidth);
-  for(monsterlist *ml = Level->mlist; ml; ml = ml->next)
+  for(monster *m : Level->mlist)
   {
-    if(ml->m->hp > 0)
+    if(m->hp > 0)
     {
       if(display)
       {
-        if(view_los_p(Player.x, Player.y, ml->m->x, ml->m->y))
+        if(view_los_p(Player.x, Player.y, m->x, m->y))
         {
-          if(Player.status[TRUESIGHT] || (!m_statusp(*ml->m, M_INVISIBLE)))
+          if(Player.status[TRUESIGHT] || (!m_statusp(*m, M_INVISIBLE)))
           {
-            if(!optionp(SHOW_COLOUR, Player) && (ml->m->level > 5) && ((ml->m->monchar & 0xff) != '@') &&
-               ((ml->m->monchar & 0xff) != '|'))
+            if(!optionp(SHOW_COLOUR, Player) && (m->level > 5) && ((m->monchar & 0xff) != '@') &&
+               ((m->monchar & 0xff) != '|'))
             {
               wstandout(level_window);
             }
-            putspot(ml->m->x, ml->m->y, ml->m->monchar);
+            putspot(m->x, m->y, m->monchar);
             if(!optionp(SHOW_COLOUR, Player))
             {
               wstandend(level_window);
             }
 
-            const monster &m = *ml->m;
-            if(m.x < left || m.x > right || m.y < top || m.y > bottom)
+            if(m->x < left || m->x > right || m->y < top || m->y > bottom)
             {
               continue;
             }
-            if(shown_mobs.find(m.monstring) == shown_mobs.end())
+            if(shown_mobs.find(m->monstring) == shown_mobs.end())
             {
-              shown_mobs[m.monstring] = {m.monstring, m.monchar, 1, m.level};
+              shown_mobs[m->monstring] = {m->monstring, m->monchar, 1, m->level};
             }
             else
             {
-              ++shown_mobs[m.monstring].count;
+              ++shown_mobs[m->monstring].count;
             }
           }
         }
       }
       else
       {
-        erase_monster(ml->m);
+        erase_monster(m);
       }
     }
   }

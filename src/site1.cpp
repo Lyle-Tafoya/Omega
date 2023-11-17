@@ -545,8 +545,6 @@ void statue_random(int x, int y)
 
 void wake_statue(int x, int y, int first)
 {
-  int i;
-  monsterlist *tml;
   if(Level->site[x][y].locchar == STATUE)
   {
     if(!first)
@@ -559,12 +557,10 @@ void wake_statue(int x, int y, int first)
     }
     Level->site[x][y].locchar = FLOOR;
     lset(x, y, CHANGED, *Level);
-    tml    = new monsterlist;
-    tml->m = (Level->site[x][y].creature = m_create(x, y, 0, difficulty() + 1));
+    Level->site[x][y].creature = m_create(x, y, 0, difficulty() + 1);
     m_status_set(*Level->site[x][y].creature, HOSTILE);
-    tml->next    = Level->mlist;
-    Level->mlist = tml;
-    for(i = 0; i < 8; i++)
+    Level->mlist.push_front(Level->site[x][y].creature);
+    for(int i = 0; i < 8; ++i)
     {
       wake_statue(x + Dirs[0][i], y + Dirs[1][i], false);
     }

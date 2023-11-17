@@ -28,7 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* note special function on different levels */
 void l_trap_siren()
 {
-  monsterlist *ml;
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   queue_message("A klaxon goes off!");
@@ -59,15 +58,15 @@ void l_trap_siren()
       summon(-1, DEMON_PRINCE);
       summon(-1, DEMON_PRINCE);
     }
-    for(ml = Level->mlist; ml; ml = ml->next)
+    for(monster *m : Level->mlist)
     {
-      m_status_set(*ml->m, AWAKE);
-      ml->m->sense *= 2;
-      if((Current_Environment == E_CIRCLE) ||
-         ((Current_Environment == E_VILLAGE) && (ml->m->id == GUARD)) ||
-         ((Current_Environment == E_CITY) && (ml->m->id == GUARD)))
+      m_status_set(*m, AWAKE);
+      m->sense *= 2;
+      if(Current_Environment == E_CIRCLE ||
+         (Current_Environment == E_VILLAGE && m->id == GUARD) ||
+         (Current_Environment == E_CITY && m->id == GUARD))
       {
-        m_status_set(*ml->m, HOSTILE);
+        m_status_set(*m, HOSTILE);
       }
     }
   }

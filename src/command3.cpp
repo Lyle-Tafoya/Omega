@@ -1270,7 +1270,6 @@ void hunt(chtype terrain)
 
 void dismount_steed()
 {
-  monsterlist *ml;
   if(!gamestatusp(MOUNTED, GameStatus))
   {
     queue_message("You're on foot already!");
@@ -1287,16 +1286,13 @@ void dismount_steed()
   else
   {
     resetgamestatus(MOUNTED, GameStatus);
-    ;
-    ml                                       = new monsterlist;
-    ml->m                                    = new monster;
-    *(ml->m)                                 = Monsters[HORSE];
-    ml->m->x                                 = Player.x;
-    ml->m->y                                 = Player.y;
-    ml->m->status                            = MOBILE + SWIMMING;
-    ml->next                                 = Level->mlist;
-    Level->site[Player.x][Player.y].creature = ml->m;
-    Level->mlist                             = ml;
+    monster *m                               = new monster;
+    *m                                       = Monsters[HORSE];
+    m->x                                     = Player.x;
+    m->y                                     = Player.y;
+    m->status                                = MOBILE + SWIMMING;
+    Level->site[Player.x][Player.y].creature = m;
+    Level->mlist.push_front(m);
   }
   calc_melee();
 }

@@ -29,7 +29,6 @@ level structure generation */
 /* monsters for tactical encounters */
 void make_country_monsters(chtype terrain)
 {
-  monsterlist *tml, *ml = nullptr;
   static int plains[10] = {BUNNY, BUNNY, HORNET, QUAIL, HAWK, DEER, WOLF, LION, BRIGAND, RANDOM};
   /*    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};*/
   /* DG changed (WDT: I'd like to see a blacksnake). */
@@ -40,7 +39,7 @@ void make_country_monsters(chtype terrain)
   static int desert[10]   = {HAWK, HAWK, CAMEL, CAMEL, HYENA, HYENA, LION, LION, RANDOM, RANDOM};
   static int tundra[10]   = {WOLF, WOLF, BEAR, BEAR, DEER, DEER, RANDOM, RANDOM, RANDOM, RANDOM};
   static int mountain[10] = {BUNNY, SHEEP, WOLF, WOLF, HAWK, HAWK, HAWK, RANDOM, RANDOM, RANDOM};
-  int *monsters, i, nummonsters;
+  int *monsters, nummonsters;
 
   nummonsters = (random_range(5) + 1) * (random_range(3) + 1);
 
@@ -75,33 +74,30 @@ void make_country_monsters(chtype terrain)
     default:
       monsters = nullptr;
   }
-  for(i = 0; i < nummonsters; i++)
+  for(int i = 0; i < nummonsters; ++i)
   {
-    tml    = new monsterlist;
-    tml->m = new monster;
+    monster *m = new monster;
     if(!monsters)
     {
-      tml->m = m_create(random_range(WIDTH), random_range(LENGTH), true, difficulty());
+      m = m_create(random_range(WIDTH), random_range(LENGTH), true, difficulty());
     }
     else
     {
-      tml->m    = make_creature(*(monsters + random_range(10)));
-      tml->m->x = random_range(WIDTH);
-      tml->m->y = random_range(LENGTH);
+      m    = make_creature(*(monsters + random_range(10)));
+      m->x = random_range(WIDTH);
+      m->y = random_range(LENGTH);
     }
-    Level->site[tml->m->x][tml->m->y].creature = tml->m;
-    tml->m->sense                              = WIDTH;
-    if(m_statusp(*tml->m, ONLYSWIM))
+    Level->site[m->x][m->y].creature = m;
+    m->sense                         = WIDTH;
+    if(m_statusp(*m, ONLYSWIM))
     {
-      Level->site[tml->m->x][tml->m->y].locchar = WATER;
-      Level->site[tml->m->x][tml->m->y].p_locf  = L_WATER;
-      lset(tml->m->x, tml->m->y, CHANGED, *Level);
+      Level->site[m->x][m->y].locchar = WATER;
+      Level->site[m->x][m->y].p_locf  = L_WATER;
+      lset(m->x, m->y, CHANGED, *Level);
     }
 
-    tml->next = ml;
-    ml        = tml;
+    Level->mlist.push_front(m);
   }
-  Level->mlist = ml;
 }
 
 /* monstertype is more or less Current_Dungeon */
@@ -110,7 +106,6 @@ is completely random, but also gets harder as it is explored;
 the astral and the volcano just stay hard... */
 void populate_level(int monstertype)
 {
-  monsterlist *head, *tml;
   int i, j, k, monsterid, nummonsters = (random_range(difficulty() / 3) + 1) * 3 + 8;
 
   if(monstertype == E_CASTLE)
@@ -125,8 +120,6 @@ void populate_level(int monstertype)
   {
     nummonsters += 20;
   }
-
-  head = tml = new monsterlist;
 
   for(k = 0; k < nummonsters; k++)
   {
@@ -455,20 +448,7 @@ void populate_level(int monstertype)
       lset(i, j, CHANGED, *Level);
     }
 
-    tml->next    = new monsterlist;
-    tml->next->m = Level->site[i][j].creature;
-    tml          = tml->next;
-  }
-
-  if(!Level->mlist)
-  {
-    tml->next    = nullptr;
-    Level->mlist = head->next;
-  }
-  else
-  {
-    tml->next    = Level->mlist;
-    Level->mlist = head->next;
+    Level->mlist.push_front(Level->site[i][j].creature);
   }
 }
 
@@ -476,21 +456,17 @@ void populate_level(int monstertype)
 void wandercheck()
 {
   int x, y;
-  monsterlist *tml;
   if(random_range(MaxDungeonLevels) < difficulty())
   {
     findspace(&x, &y, -1);
-    tml       = new monsterlist;
-    tml->next = Level->mlist;
-    tml->m = Level->site[x][y].creature = m_create(x, y, WANDERING, difficulty());
-    Level->mlist                        = tml;
+    Level->site[x][y].creature = m_create(x, y, WANDERING, difficulty());
+    Level->mlist.push_front(Level->site[x][y].creature);
   }
 }
 
 /* call make_creature and place created monster on Level->mlist and Level */
 void make_site_monster(int i, int j, int mid)
 {
-  monsterlist *ml = new monsterlist;
   monster *m;
   if(mid > -1)
   {
@@ -502,9 +478,7 @@ void make_site_monster(int i, int j, int mid)
   }
   m->x         = i;
   m->y         = j;
-  ml->m        = m;
-  ml->next     = Level->mlist;
-  Level->mlist = ml;
+  Level->mlist.push_front(m);
 }
 
 /* make and return an appropriate monster for the level and depth*/

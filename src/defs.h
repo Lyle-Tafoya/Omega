@@ -24,6 +24,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <cstdint>
 #include <string>
+#include <forward_list>
 
 //--------------------------USER DEFINITIONS--------------------------
 
@@ -1293,12 +1294,6 @@ struct monster
   std::string meleestr;
 };
 
-struct monsterlist
-{
-  monster *m;
-  monsterlist *next;
-};
-
 struct player
 {
   int str, con, dex, agi, iq, pow, maxstr, maxcon, maxdex, maxagi, maxiq, maxpow;
@@ -1359,7 +1354,7 @@ struct level
   char generated;     // has the level been made (visited) yet?
   char numrooms;      // number of rooms on level
   char tunnelled;     // amount of tunnelling done on this level
-  monsterlist *mlist; // List of monsters on level
+  std::forward_list<monster *> mlist; // List of monsters on level
   int environment;    // where kind of level is this?
   int last_visited;   // time player was last on this level
 };

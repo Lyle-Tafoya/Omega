@@ -596,7 +596,7 @@ void l_void()
 {
   queue_message("Geronimo!");
   queue_message("You leap into the void.");
-  if(Level->mlist)
+  if(!Level->mlist.empty())
   {
     queue_message("Death peers over the edge and gazes quizzically at you....");
     queue_message("'Bye-bye,' he says... 'We'll meet again.'");
@@ -854,7 +854,7 @@ void l_void_station()
   queue_message("You are at the brink of an endless void. Enter it? [yn] ");
   if(ynq() == 'y')
   {
-    if(!Level->mlist)
+    if(Level->mlist.empty())
     {
       queue_message("You fall forever. Eventually you die of starvation.");
       while(Player.hp > 0)

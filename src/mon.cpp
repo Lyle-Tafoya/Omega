@@ -521,8 +521,7 @@ void strengthen_death(monster *m)
 void m_death(monster *m)
 {
   object *corpse;
-  monsterlist *ml;
-  int x, y, found = false;
+  int x, y;
   objectlist *curr, *prev = nullptr;
 
   m->hp = -1;
@@ -685,23 +684,23 @@ void m_death(monster *m)
               Justiciar         = nameprint();
               Justiciarbehavior = 2911;
               queue_message("In the distance you hear a trumpet. A Servant of Law");
-              /* promote one of the city guards to be justiciar */
-              ml = City->mlist;
-              while(!found && ml)
+              // promote one of the city guards to be justiciar
+              std::forward_list<monster *>::iterator it;
+              for(it = City->mlist.begin(); it != City->mlist.end(); ++it)
               {
-                found = ((ml->m->id == GUARD) && (ml->m->hp > 0));
-                if(!found)
+                if((*it)->id == GUARD && (*it)->hp > 0)
                 {
-                  ml = ml->next;
+                  break;
                 }
               }
-              if(ml)
+              if(it != City->mlist.end())
               {
+                monster *guard = *it;
                 if(curr)
                 {
                   queue_message("materializes, sheds a tear, picks up the badge, and "
                                 "leaves.");
-                  m_pickup(ml->m, curr->thing);
+                  m_pickup(guard, curr->thing);
                   if(prev)
                   {
                     prev->next = curr->next;
@@ -717,14 +716,14 @@ void m_death(monster *m)
                   queue_message("materializes, sheds a tear, and leaves.");
                 }
                 queue_message("A new justiciar has been promoted!");
-                x = ml->m->x;
-                y = ml->m->y;
-                make_hiscore_npc(ml->m, 15);
-                ml->m->x     = x;
-                ml->m->y     = y;
-                ml->m->click = (Tick + 1) % 60;
-                m_status_reset(*ml->m, AWAKE);
-                m_status_reset(*ml->m, HOSTILE);
+                x = guard->x;
+                y = guard->y;
+                make_hiscore_npc(guard, 15);
+                guard->x     = x;
+                guard->y     = y;
+                guard->click = (Tick + 1) % 60;
+                m_status_reset(*guard, AWAKE);
+                m_status_reset(*guard, HOSTILE);
               }
               else
               {

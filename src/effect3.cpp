@@ -72,7 +72,6 @@ int list_monsters()
 void summon(int blessing, int id)
 {
   int i, looking = true, x, y;
-  monsterlist *tml;
 
   if(id < 0)
   {
@@ -106,18 +105,15 @@ void summon(int blessing, int id)
     }
     Level->site[x][y].creature->x = x;
     Level->site[x][y].creature->y = y;
-    tml                           = new monsterlist;
-    tml->m                        = Level->site[x][y].creature;
     if(blessing > 0)
     {
-      m_status_reset(*tml->m, HOSTILE);
+      m_status_reset(*Level->site[x][y].creature, HOSTILE);
     }
     else if(blessing < 0)
     {
-      m_status_set(*tml->m, HOSTILE);
+      m_status_set(*Level->site[x][y].creature, HOSTILE);
     }
-    tml->next    = Level->mlist;
-    Level->mlist = tml;
+    Level->mlist.push_front(Level->site[x][y].creature);
   }
 }
 
@@ -191,7 +187,6 @@ void cleanse(int blessing)
 
 void annihilate(int blessing)
 {
-  monsterlist *ml;
   int i;
 
   if(blessing == 0)
@@ -218,11 +213,11 @@ void annihilate(int blessing)
     else
     {
       queue_message("Thousands of bolts of lightning flash throughout the level!!!");
-      for(ml = Level->mlist; ml; ml = ml->next)
+      for(monster *m : Level->mlist)
       {
-        if(ml->m && ml->m->hp > 0)
+        if(m && m->hp > 0)
         {
-          m_death(ml->m);
+          m_death(m);
         }
       }
     }
@@ -251,10 +246,10 @@ void sleep_monster(int blessing)
   else if(blessing > 0)
   {
     queue_message("A silence pervades the area.");
-    for(monsterlist *ml = Level->mlist; ml; ml = ml->next)
+    for(monster *m : Level->mlist)
     {
-      m_status_reset(*ml->m, AWAKE);
-      ml->m->wakeup = 0;
+      m_status_reset(*m, AWAKE);
+      m->wakeup = 0;
     }
   }
   else
@@ -340,12 +335,10 @@ void clairvoyance(int vision)
 
 void aggravate()
 {
-  monsterlist *tm;
-
-  for(tm = Level->mlist; tm; tm = tm->next)
+  for(monster *m : Level->mlist)
   {
-    m_status_set(*tm->m, AWAKE);
-    m_status_set(*tm->m, HOSTILE);
+    m_status_set(*m, AWAKE);
+    m_status_set(*m, HOSTILE);
   }
 }
 

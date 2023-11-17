@@ -263,40 +263,37 @@ void cureforpay()
 
 void pacify_guards()
 {
-  monsterlist *ml;
-
-  for(ml = Level->mlist; ml; ml = ml->next)
+  for(monster *m : Level->mlist)
   {
-    if((ml->m->id == GUARD) || /*guard*/
-       ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15)))
-    { /* justiciar */
-      m_status_reset(*ml->m, HOSTILE);
-      ml->m->specialf = M_NO_OP;
-      if(ml->m->id == GUARD && ml->m->hp > 0 && ml->m->aux1 > 0)
+    if(m->id == GUARD || (m->id == HISCORE_NPC && m->aux2 == 15))
+    { // justiciar
+      m_status_reset(*m, HOSTILE);
+      m->specialf = M_NO_OP;
+      if(m->id == GUARD && m->hp > 0 && m->aux1 > 0)
       {
-        if(Level->site[ml->m->x][ml->m->y].creature == ml->m)
+        if(Level->site[m->x][m->y].creature == m)
         {
-          Level->site[ml->m->x][ml->m->y].creature = nullptr;
+          Level->site[m->x][m->y].creature = nullptr;
         }
-        ml->m->x                                 = ml->m->aux1;
-        ml->m->y                                 = ml->m->aux2;
-        Level->site[ml->m->x][ml->m->y].creature = ml->m;
+        m->x                             = m->aux1;
+        m->y                             = m->aux2;
+        Level->site[m->x][m->y].creature = m;
       }
-      else if(ml->m->id == HISCORE_NPC && ml->m->hp > 0 && Current_Environment == E_CITY)
+      else if(m->id == HISCORE_NPC && m->hp > 0 && Current_Environment == E_CITY)
       {
-        if(Level->site[ml->m->x][ml->m->y].creature == ml->m)
+        if(Level->site[m->x][m->y].creature == m)
         {
-          Level->site[ml->m->x][ml->m->y].creature = nullptr;
+          Level->site[m->x][m->y].creature = nullptr;
         }
-        ml->m->x                                 = 40;
-        ml->m->y                                 = 62;
-        Level->site[ml->m->x][ml->m->y].creature = ml->m;
+        m->x                             = 40;
+        m->y                             = 62;
+        Level->site[m->x][m->y].creature = m;
       }
     }
   }
   if(Current_Environment == E_CITY)
   {
-    Level->site[40][60].p_locf = L_ORDER; /* undoes action in alert_guards */
+    Level->site[40][60].p_locf = L_ORDER; // undoes action in alert_guards
   }
 }
 

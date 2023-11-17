@@ -32,12 +32,11 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 // makes a log npc for houses and hovels
 void make_house_npc(int i, int j)
 {
-  monsterlist *ml = new monsterlist;
   object *ob;
-  ml->m    = new monster;
-  *(ml->m) = Monsters[NPC];
-  make_log_npc(ml->m);
-  if(ml->m->id == NPC)
+  monster *m = new monster;
+  *m         = Monsters[NPC];
+  make_log_npc(m);
+  if(m->id == NPC)
   {
     queue_message("You detect signs of life in this house.");
   }
@@ -46,51 +45,48 @@ void make_house_npc(int i, int j)
     queue_message("An eerie shiver runs down your spine as you enter....");
   }
   // if not == NPC, then we got a ghost off the npc list
-  ml->m->x                   = i;
-  ml->m->y                   = j;
-  Level->site[i][j].creature = ml->m;
-  ml->m->click               = (Tick + 1) % 50;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
-  m_status_set(*ml->m, HOSTILE);
+  m->x                       = i;
+  m->y                       = j;
+  Level->site[i][j].creature = m;
+  m->click                   = (Tick + 1) % 50;
+  Level->mlist.push_front(m);
+  m_status_set(*m, HOSTILE);
   if(nighttime())
   {
-    m_status_reset(*ml->m, AWAKE);
+    m_status_reset(*m, AWAKE);
   }
   else
   {
-    m_status_set(*ml->m, AWAKE);
+    m_status_set(*m, AWAKE);
   }
-  if(ml->m->startthing > -1)
+  if(m->startthing > -1)
   {
     ob  = new object;
-    *ob = Objects[ml->m->startthing];
-    m_pickup(ml->m, ob);
+    *ob = Objects[m->startthing];
+    m_pickup(m, ob);
   }
 }
 
 // makes a hiscore npc for mansions
 void make_mansion_npc(int i, int j)
 {
-  monsterlist *ml   = new monsterlist;
-  ml->m    = new monster;
-  *(ml->m) = Monsters[NPC];
-  make_hiscore_npc(ml->m, random_range(14) + 1);
+  monster *m = new monster;
+  *m         = Monsters[NPC];
+  make_hiscore_npc(m, random_range(14) + 1);
   queue_message("You detect signs of life in this house.");
-  ml->m->x                   = i;
-  ml->m->y                   = j;
-  Level->site[i][j].creature = ml->m;
-  ml->m->click               = (Tick + 1) % 50;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
-  m_status_set(*ml->m, HOSTILE);
+  m->x                       = i;
+  m->y                       = j;
+  Level->site[i][j].creature = m;
+  m->click                   = (Tick + 1) % 50;
+  Level->mlist.push_front(m);
+  m_status_set(*m, HOSTILE);
   if(nighttime())
   {
-    m_status_reset(*ml->m, AWAKE);
+    m_status_reset(*m, AWAKE);
   }
   else
   {
-    m_status_set(*ml->m, AWAKE);
+    m_status_set(*m, AWAKE);
   }
 }
 

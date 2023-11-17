@@ -30,9 +30,6 @@ extern bool received_directions;
 /* The druid's altar is in the northern forest */
 void m_talk_druid(monster *m)
 {
-  int i;
-  monsterlist *curr;
-
   if(!m_statusp(*m, HOSTILE))
   {
     queue_message("The Archdruid raises a hand in greeting.");
@@ -46,7 +43,7 @@ void m_talk_druid(monster *m)
       {
         queue_message("The Archdruid conveys to you the wisdom of nature....");
         queue_message("You feel like a sage.");
-        for(i = 0; i < NUMRANKS; i++)
+        for(int i = 0; i < NUMRANKS; ++i)
         {
           if(Player.guildxp[i] > 0)
           {
@@ -120,9 +117,9 @@ void m_talk_druid(monster *m)
     if(ynq())
     {
       queue_message("'I certainly hope so!' says the ArchDruid.");
-      for(curr = Level->mlist; curr; curr = curr->next)
+      for(monster *level_monster : Level->mlist)
       {
-        m_status_reset(*curr->m, HOSTILE);
+        m_status_reset(*level_monster, HOSTILE);
       }
       m_vanish(m);
     }

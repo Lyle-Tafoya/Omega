@@ -40,7 +40,6 @@ extern interactive_menu *menu;
 
 void indoors_random_event()
 {
-  monsterlist *ml;
   objectlist *ol;
   switch(random_range(1000))
   {
@@ -58,11 +57,11 @@ void indoors_random_event()
       break;
     case 4:
       queue_message("A mysterious healing flux settles over the level.");
-      for(ml = Level->mlist; ml; ml = ml->next)
+      for(monster *m : Level->mlist)
       {
-        if(ml->m->hp > 0)
+        if(m->hp > 0)
         {
-          ml->m->hp = Monsters[ml->m->id].hp;
+          m->hp = Monsters[m->id].hp;
         }
       }
       Player.hp = std::max(Player.hp, Player.maxhp);
@@ -1384,16 +1383,14 @@ void destroy_order()
 void alert_guards()
 {
   int foundguard = false;
-  monsterlist *ml;
   int suppress = 0;
-  for(ml = Level->mlist; ml; ml = ml->next)
+  for(monster *m : Level->mlist)
   {
-    if(((ml->m->id == GUARD) || ((ml->m->id == HISCORE_NPC) && (ml->m->aux2 == 15))) && /*justiciar*/
-       (ml->m->hp > 0))
-    {
+    if((m->id == GUARD || (m->id == HISCORE_NPC && m->aux2 == 15)) && m->hp > 0)
+    { //justiciar
       foundguard = true;
-      m_status_set(*ml->m, AWAKE);
-      m_status_set(*ml->m, HOSTILE);
+      m_status_set(*m, AWAKE);
+      m_status_set(*m, HOSTILE);
     }
   }
   if(foundguard)
@@ -1401,7 +1398,7 @@ void alert_guards()
     queue_message("You hear a whistle and the sound of running feet!");
     if(Current_Environment == E_CITY)
     {
-      Level->site[40][60].p_locf = L_NO_OP; /* pacify_guards restores this */
+      Level->site[40][60].p_locf = L_NO_OP; // pacify_guards restores this
     }
   }
   if((!foundguard) && (Current_Environment == E_CITY) && !gamestatusp(DESTROYED_ORDER, GameStatus))

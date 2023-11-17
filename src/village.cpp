@@ -115,42 +115,38 @@ void make_food_bin(int i, int j)
 
 void make_guard(int i, int j)
 {
-  monsterlist *tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(GUARD));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
+  monster *m;
+  m       = Level->site[i][j].creature = make_creature(GUARD);
+  m->x    = i;
+  m->y    = j;
+  Level->mlist.push_front(m);
 }
 
 void make_sheep(int i, int j)
 {
-  monsterlist *tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(SHEEP));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
+  monster *m;
+  m       = Level->site[i][j].creature = make_creature(SHEEP);
+  m->x    = i;
+  m->y    = j;
+  Level->mlist.push_front(m);
 }
 
 void make_horse(int i, int j)
 {
-  monsterlist *tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(HORSE));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
+  monster *m;
+  m       = Level->site[i][j].creature = make_creature(HORSE);
+  m->x    = i;
+  m->y    = j;
+  Level->mlist.push_front(m);
 }
 
 void make_merchant(int i, int j)
 {
-  monsterlist *tml      = new monsterlist;
-  tml->m       = (Level->site[i][j].creature = make_creature(MERCHANT));
-  tml->m->x    = i;
-  tml->m->y    = j;
-  tml->next    = Level->mlist;
-  Level->mlist = tml;
+  monster *m;
+  m       = Level->site[i][j].creature = make_creature(MERCHANT);
+  m->x    = i;
+  m->y    = j;
+  Level->mlist.push_front(m);
 }
 
 void special_village_site(int i, int j, int villagenum)

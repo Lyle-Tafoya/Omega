@@ -517,15 +517,12 @@ void load_misle(int empty, int populate)
 
 void make_high_priest(int i, int j, int deity)
 {
-  monsterlist *ml = new monsterlist;
   monster *m  = new monster;
   make_hiscore_npc(m, deity);
   m->x                       = i;
   m->y                       = j;
   Level->site[i][j].creature = m;
-  ml->m                      = m;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
+  Level->mlist.push_front(m);
 }
 
 void random_temple_site(int i, int j, int, int populate)
@@ -706,14 +703,13 @@ void load_temple(int deity, int populate)
     }
     site = getc(fd) ^ site;
   }
-  /* Main Temple is peaceful for player of same sect,druids always peaceful. */
+  // Main Temple is peaceful for player of same sect,druids always peaceful.
   if((Player.patron == deity) || (deity == DRUID))
   {
-    for(monsterlist *ml = Level->mlist; ml; ml = ml->next)
+    for(monster *m : Level->mlist)
     {
-      m_status_reset(*ml->m, HOSTILE);
+      m_status_reset(*m, HOSTILE);
     }
   }
   fclose(fd);
-  /*  initrand(-2, 0); */ /* FIXED! 12/30/98 */
 }

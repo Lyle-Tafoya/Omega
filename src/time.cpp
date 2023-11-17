@@ -46,7 +46,6 @@ void fix_phantom(monster *m)
 void time_clock(int reset)
 {
   int env;
-  monsterlist *ml, **prev;
 
   if(++Tick > 60)
   {
@@ -92,39 +91,35 @@ void time_clock(int reset)
 
   if(Current_Environment != E_COUNTRYSIDE)
   {
-    prev = &(Level->mlist);
-    ml   = *prev;
-    while(ml)
+    for(auto prev = Level->mlist.before_begin(); std::next(prev) != Level->mlist.end();)
     {
-      if(ml->m->hp > 0)
+      auto it = std::next(prev);
+      if((*it)->hp > 0)
       {
         // following is a hack until I discover source of phantom monsters
-        if(Level->site[ml->m->x][ml->m->y].creature != ml->m)
+        if(Level->site[(*it)->x][(*it)->y].creature != *it)
         {
-          fix_phantom(ml->m);
+          fix_phantom(*it);
         }
-        if(Tick == ml->m->click)
+        if(Tick == (*it)->click)
         {
-          ml->m->click += ml->m->speed;
-          while(ml->m->click > 60)
+          (*it)->click += (*it)->speed;
+          while((*it)->click > 60)
           {
-            ml->m->click -= 60;
+            (*it)->click -= 60;
           }
-          m_pulse(ml->m);
+          m_pulse(*it);
         }
-        prev = &(ml->next);
-        ml   = ml->next;
+        ++prev;
       }
-      else if(ml->m != Arena_Monster)
+      else if(*it != Arena_Monster)
       {
-        *prev = ml->next;
-        delete ml->m;
-        delete ml;
-        ml = *prev;
+        delete(*it);
+        Level->mlist.erase_after(prev);
       }
       else
       {
-        ml = ml->next;
+        ++prev;
       }
     }
   }

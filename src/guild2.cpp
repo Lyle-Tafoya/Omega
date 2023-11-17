@@ -1123,7 +1123,6 @@ void l_sorcerors()
 void l_order()
 {
   object *newitem;
-  monsterlist *ml;
   queue_message("The Headquarters of the Order of Paladins.");
   if((Player.rank[ORDER] == PALADIN) && (Player.level > Justiciarlevel) &&
      gamestatusp(GAVE_STARGEM, GameStatus) && Player.alignment > 300)
@@ -1132,22 +1131,21 @@ void l_order()
     queue_message("The previous Justiciar steps down in your favor.");
     queue_message("You are now the Justiciar of Rampart and the Order!");
     Justiciar = Player.name;
-    for(ml = Level->mlist; ml && (ml->m->id != HISCORE_NPC || ml->m->aux2 != 15); ml = ml->next)
+    std::forward_list<monster *>::iterator it;
+    // just scan for current Justicar
+    for(it = Level->mlist.begin(); it != Level->mlist.end() && ((*it)->id != HISCORE_NPC || (*it)->aux2 != 15); ++it) {}
+    if(it != Level->mlist.end() && *it)
     {
-      /* just scan for current Justicar */;
-    }
-    if(ml)
-    {
-      Level->site[ml->m->x][ml->m->y].creature = nullptr;
-      erase_monster(ml->m);
-      ml->m->hp = -1; /* signals "death" -- no credit to player, though */
+      Level->site[(*it)->x][(*it)->y].creature = nullptr;
+      erase_monster(*it);
+      (*it)->hp = -1; // signals "death" -- no credit to player, though
     }
     Justiciarlevel    = Player.level;
     Justiciarbehavior = fixnpc(4);
     save_hiscore_npc(15);
     queue_message("You are awarded a blessed shield of deflection!");
     newitem           = new object;
-    *newitem          = Objects[SHIELDID + 7]; /* shield of deflection */
+    *newitem          = Objects[SHIELDID + 7]; // shield of deflection
     newitem->blessing = 9;
     gain_item(newitem);
     Player.rank[ORDER] = JUSTICIAR;

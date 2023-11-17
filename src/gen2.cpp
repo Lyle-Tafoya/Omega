@@ -428,11 +428,10 @@ void room_level()
     if(Level->depth == SEWERLEVELS)
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = new monsterlist;
-      Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(GREAT_WYRM);
-      Level->mlist->m->x = tx;
-      Level->mlist->m->y = ty;
+      Level->site[tx][ty].creature    = make_creature(GREAT_WYRM);
+      Level->site[tx][ty].creature->x = tx;
+      Level->site[tx][ty].creature->y = ty;
+      Level->mlist.push_front(Level->site[tx][ty].creature);
     }
   }
   else if(Current_Environment == E_CASTLE)
@@ -449,11 +448,10 @@ void room_level()
     if(Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = new monsterlist;
-      Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(DEMON_EMP);
-      Level->mlist->m->x = tx;
-      Level->mlist->m->y = ty;
+      Level->site[tx][ty].creature    = make_creature(DEMON_EMP);
+      Level->site[tx][ty].creature->x = tx;
+      Level->site[tx][ty].creature->y = ty;
+      Level->mlist.push_front(Level->site[tx][ty].creature);
     }
   }
 }
@@ -549,11 +547,10 @@ void maze_level()
     if(!gamestatusp(COMPLETED_ASTRAL, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = new monsterlist;
-      Level->mlist->next = nullptr;
-      Level->mlist->m = Level->site[tx][ty].creature = make_creature(mid);
-      Level->mlist->m->x                             = tx;
-      Level->mlist->m->y                             = ty;
+      Level->site[tx][ty].creature    = make_creature(mid);
+      Level->site[tx][ty].creature->x = tx;
+      Level->site[tx][ty].creature->y = ty;
+      Level->mlist.push_front(Level->site[tx][ty].creature);
     }
   }
   else if(Current_Environment == E_VOLCANO)
@@ -561,11 +558,10 @@ void maze_level()
     if(Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = new monsterlist;
-      Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(DEMON_EMP);
-      Level->mlist->m->x = tx;
-      Level->mlist->m->y = ty;
+      Level->site[tx][ty].creature    = make_creature(DEMON_EMP);
+      Level->site[tx][ty].creature->x = tx;
+      Level->site[tx][ty].creature->y = ty;
+      Level->mlist.push_front(Level->site[tx][ty].creature);
     }
   }
 }

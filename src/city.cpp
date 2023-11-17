@@ -201,17 +201,15 @@ void assign_city_function(int x, int y)
 // makes a hiscore npc for mansions
 void make_justiciar(int i, int j)
 {
-  monsterlist *ml = new monsterlist;
-  ml->m           = new monster;
-  *(ml->m)        = Monsters[NPC];
-  make_hiscore_npc(ml->m, 15);
-  ml->m->x                   = i;
-  ml->m->y                   = j;
-  Level->site[i][j].creature = ml->m;
-  ml->m->click               = (Tick + 1) % 60;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
-  m_status_reset(*ml->m, AWAKE);
+  monster *m = new monster;
+  *m         = Monsters[NPC];
+  make_hiscore_npc(m, 15);
+  m->x                       = i;
+  m->y                       = j;
+  Level->site[i][j].creature = m;
+  m->click                   = (Tick + 1) % 60;
+  Level->mlist.push_front(m);
+  m_status_reset(*m, AWAKE);
 }
 
 // undead are not hostile unless disturbed....
@@ -338,7 +336,6 @@ void mazesite(int i, int j, int populate)
 void load_city(int populate)
 {
   int i, j;
-  monsterlist *ml;
   char site;
 
   FILE *fd;
@@ -642,13 +639,12 @@ void load_city(int populate)
   }
   City = Level;
 
-  /* make all city monsters asleep, and shorten their wakeup range to 2 */
-  /* to prevent players from being molested by vicious monsters on */
-  /* the streets */
-  for(ml = Level->mlist; ml; ml = ml->next)
+  // make all city monsters asleep, and shorten their wakeup range to 2
+  // to prevent players from being molested by vicious monsters on the streets
+  for(monster *m : Level->mlist)
   {
-    m_status_reset(*ml->m, AWAKE);
-    ml->m->wakeup = 2;
+    m_status_reset(*m, AWAKE);
+    m->wakeup = 2;
   }
   fclose(fd);
   initrand(E_RESTORE, 0);

@@ -93,10 +93,8 @@ void load_arena()
   Arena_Monster->sense        = 50;
   m_pickup(Arena_Monster, box);
   m_status_set(*Arena_Monster, AWAKE);
-  Level->mlist       = new monsterlist;
-  Level->mlist->m    = Arena_Monster;
-  Level->mlist->next = nullptr;
-  /* hehehehe cackled the dungeon master.... */
+  Level->mlist.push_front(Arena_Monster);
+  // hehehehe cackled the dungeon master....
   queue_message("Your opponent holds the only way you can leave!");
   Arena_Monster->hp += Arena_Monster->level * 10;
   Arena_Monster->hit += Arena_Monster->hit;
@@ -106,7 +104,6 @@ void load_arena()
 // make the prime sorceror
 void make_prime(int i, int j)
 {
-  monsterlist *ml = new monsterlist;
   monster *m  = new monster;
   objectlist *ol;
   object *o;
@@ -114,9 +111,7 @@ void make_prime(int i, int j)
   m->x                       = i;
   m->y                       = j;
   Level->site[i][j].creature = m;
-  ml->m                      = m;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
+  Level->mlist.push_front(m);
 
   if(Objects[ARTIFACTID + 21].uniqueness != UNIQUE_TAKEN)
   {
@@ -273,19 +268,16 @@ void load_circle(int populate)
 // make the archmage
 void make_archmage(int i, int j)
 {
-  monsterlist *ml = new monsterlist;
   monster *m  = new monster;
-  make_hiscore_npc(m, 9); /* 9 is index for archmage */
+  make_hiscore_npc(m, 9); // 9 is index for archmage
   m->x                       = i;
   m->y                       = j;
   Level->site[i][j].creature = m;
-  ml->m                      = m;
-  ml->next                   = Level->mlist;
-  Level->mlist               = ml;
   m->specialf                = M_SP_COURT;
+  Level->mlist.push_front(m);
 }
 
-/* loads the court of the archmage into Level*/
+// loads the court of the archmage into Level
 void load_court(int populate)
 {
   int i, j;

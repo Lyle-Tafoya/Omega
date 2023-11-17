@@ -827,17 +827,16 @@ void m_aggravate(monster *m)
 
 void m_sp_merchant(monster *m)
 {
-  monsterlist *ml;
   if(m_statusp(*m, HOSTILE))
   {
     if(Current_Environment == E_VILLAGE)
     {
       queue_message("The merchant screams: 'Help! Murder! Guards! Help!'");
       queue_message("You hear the sound of police whistles and running feet.");
-      for(ml = Level->mlist; ml; ml = ml->next)
+      for(monster *level_monster : Level->mlist)
       {
-        m_status_set(*ml->m, AWAKE);
-        m_status_set(*ml->m, HOSTILE);
+        m_status_set(*level_monster, AWAKE);
+        m_status_set(*level_monster, HOSTILE);
       }
       m->specialf = M_NO_OP;
     }
@@ -848,17 +847,16 @@ void m_sp_merchant(monster *m)
 /* and the sorcerors' circle */
 void m_sp_court(monster *m)
 {
-  monsterlist *ml;
   if(m_statusp(*m, HOSTILE))
   {
     queue_message("A storm of spells hits you!");
-    for(ml = Level->mlist; ml; ml = ml->next)
+    for(monster *level_monster : Level->mlist)
     {
-      m_status_set(*ml->m, HOSTILE);
-      m_sp_spell(ml->m);
-      if(ml->m->specialf == M_SP_COURT)
+      m_status_set(*level_monster, HOSTILE);
+      m_sp_spell(level_monster);
+      if(level_monster->specialf == M_SP_COURT)
       {
-        ml->m->specialf = M_SP_SPELL;
+        level_monster->specialf = M_SP_SPELL;
       }
     }
   }
@@ -867,24 +865,23 @@ void m_sp_court(monster *m)
 /* The special function of the dragons in the dragons' lair */
 void m_sp_lair(monster *m)
 {
-  monsterlist *ml;
   if(m_statusp(*m, HOSTILE))
   {
     queue_message("You notice a number of dragons waking up....");
     queue_message("You are struck by a quantity of firebolts.");
-    for(ml = Level->mlist; ml; ml = ml->next)
+    for(monster *level_monster : Level->mlist)
     {
-      if(ml->m->hp > 0 && ml->m->specialf == M_SP_LAIR)
+      if(level_monster->hp > 0 && level_monster->specialf == M_SP_LAIR)
       {
-        m_status_set(*ml->m, HOSTILE);
-        fbolt(ml->m->x, ml->m->y, Player.x, Player.y, 100, 100);
-        if(ml->m->id == DRAGON_LORD)
+        m_status_set(*level_monster, HOSTILE);
+        fbolt(level_monster->x, level_monster->y, Player.x, Player.y, 100, 100);
+        if(level_monster->id == DRAGON_LORD)
         {
-          ml->m->specialf = M_SP_DRAGONLORD;
+          level_monster->specialf = M_SP_DRAGONLORD;
         }
         else
         {
-          ml->m->specialf = M_STRIKE_FBOLT;
+          level_monster->specialf = M_STRIKE_FBOLT;
         }
       }
     }

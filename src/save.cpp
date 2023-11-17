@@ -266,13 +266,13 @@ void save_country(std::ofstream &save_file)
   }
 }
 
-void save_monsters(std::ofstream &save_file, monsterlist *ml)
+void save_monsters(std::ofstream &save_file, std::forward_list<monster *> &ml)
 {
   // First count monsters
   int num_monsters = 0;
-  for(monsterlist *tml = ml; tml; tml = tml->next)
+  for(monster *m : ml)
   {
-    if(tml->m->hp > 0)
+    if(m->hp > 0)
     {
       ++num_monsters;
     }
@@ -280,35 +280,35 @@ void save_monsters(std::ofstream &save_file, monsterlist *ml)
   file_write(save_file, num_monsters);
 
   // Now save monsters
-  for(monsterlist *tml = ml; tml; tml = tml->next)
+  for(monster *m : ml)
   {
-    if(tml->m->hp > 0)
+    if(m->hp > 0)
     {
-      file_write(save_file, *tml->m);
-      if(tml->m->id != HISCORE_NPC)
+      file_write(save_file, *m);
+      if(m->id != HISCORE_NPC)
       {
         unsigned char type = 0x0;
-        if(tml->m->monstring != Monsters[tml->m->id].monstring)
+        if(m->monstring != Monsters[m->id].monstring)
         {
           type |= 0x1;
         }
-        if(tml->m->corpsestr != Monsters[tml->m->id].corpsestr)
+        if(m->corpsestr != Monsters[m->id].corpsestr)
         {
           type |= 0x2;
         }
         file_write(save_file, type);
         if(type & 1)
         {
-          file_write(save_file, tml->m->monstring.size());
-          save_file.write(reinterpret_cast<char *>(tml->m->monstring.data()), tml->m->monstring.size());
+          file_write(save_file, m->monstring.size());
+          save_file.write(reinterpret_cast<char *>(m->monstring.data()), m->monstring.size());
         }
         if(type & 2)
         {
-          file_write(save_file, tml->m->corpsestr.size());
-          save_file.write(reinterpret_cast<char *>(tml->m->corpsestr.data()), tml->m->corpsestr.size());
+          file_write(save_file, m->corpsestr.size());
+          save_file.write(reinterpret_cast<char *>(m->corpsestr.data()), m->corpsestr.size());
         }
       }
-      save_itemlist(save_file, tml->m->possessions);
+      save_itemlist(save_file, m->possessions);
     }
   }
 }
@@ -783,27 +783,23 @@ void restore_hiscore_npc(monster *npc, int npcid)
 
 void restore_monsters(std::ifstream &save_file, level *lvl)
 {
-  monsterlist *ml = nullptr;
-  lvl->mlist      = nullptr;
-
   int num_monsters;
   file_read(save_file, num_monsters);
 
   for(int i = 0; i < num_monsters; ++i)
   {
-    ml    = new monsterlist;
-    ml->m = new monster;
-    ml->m->monstring.~basic_string();
-    ml->m->corpsestr.~basic_string();
-    ml->m->meleestr.~basic_string();
-    ml->next = nullptr;
-    file_read(save_file, *ml->m);
-    new(&ml->m->monstring) std::string;
-    new(&ml->m->corpsestr) std::string;
-    new(&ml->m->meleestr) std::string;
-    if(ml->m->id == HISCORE_NPC)
+    monster *m;
+    m = new monster;
+    m->monstring.~basic_string();
+    m->corpsestr.~basic_string();
+    m->meleestr.~basic_string();
+    file_read(save_file, *m);
+    new(&m->monstring) std::string;
+    new(&m->corpsestr) std::string;
+    new(&m->meleestr) std::string;
+    if(m->id == HISCORE_NPC)
     {
-      restore_hiscore_npc(ml->m, ml->m->aux2);
+      restore_hiscore_npc(m, m->aux2);
     }
     else
     {
@@ -813,30 +809,29 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
       {
         size_t size;
         file_read(save_file, size);
-        ml->m->monstring.resize(size);
-        save_file.read(&ml->m->monstring[0], size);
+        m->monstring.resize(size);
+        save_file.read(&m->monstring[0], size);
       }
       else
       {
-        ml->m->monstring = Monsters[ml->m->id].monstring;
+        m->monstring = Monsters[m->id].monstring;
       }
       if(type & (1 << 1))
       {
         size_t size;
         file_read(save_file, size);
-        ml->m->corpsestr.resize(size);
-        save_file.read(&ml->m->corpsestr[0], size);
+        m->corpsestr.resize(size);
+        save_file.read(&m->corpsestr[0], size);
       }
       else
       {
-        ml->m->corpsestr = Monsters[ml->m->id].corpsestr;
+        m->corpsestr = Monsters[m->id].corpsestr;
       }
-      ml->m->meleestr = Monsters[ml->m->id].meleestr;
+      m->meleestr = Monsters[m->id].meleestr;
     }
-    ml->m->possessions                     = restore_itemlist(save_file);
-    lvl->site[ml->m->x][ml->m->y].creature = ml->m;
-    ml->next                               = lvl->mlist;
-    lvl->mlist                             = ml;
+    m->possessions                 = restore_itemlist(save_file);
+    lvl->site[m->x][m->y].creature = m;
+    lvl->mlist.push_front(m);
   }
 }
 

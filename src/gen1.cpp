@@ -61,7 +61,7 @@ void clear_level(level *dungeon_level)
     dungeon_level->numrooms     = 0;
     dungeon_level->tunnelled    = 0;
     dungeon_level->depth        = 0;
-    dungeon_level->mlist        = nullptr;
+    dungeon_level->mlist.clear();
     dungeon_level->next         = nullptr;
     dungeon_level->last_visited = time(nullptr);
     for(i = 0; i < MAXWIDTH; i++)
@@ -563,11 +563,10 @@ void cavern_level()
     if((Level->depth == CAVELEVELS) && (!gamestatusp(COMPLETED_CAVES, GameStatus)))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = new monsterlist;
-      Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(GOBLIN_KING);
-      Level->mlist->m->x = tx;
-      Level->mlist->m->y = ty;
+      Level->site[tx][ty].creature    = make_creature(GOBLIN_KING);
+      Level->site[tx][ty].creature->x = tx;
+      Level->site[tx][ty].creature->y = ty;
+      Level->mlist.push_front(Level->site[tx][ty].creature);
     }
   }
   else if(Current_Environment == E_VOLCANO)
@@ -575,11 +574,10 @@ void cavern_level()
     if(Level->depth == VOLCANOLEVELS)
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = new monsterlist;
-      Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(DEMON_EMP);
-      Level->mlist->m->x = tx;
-      Level->mlist->m->y = ty;
+      Level->site[tx][ty].creature    = make_creature(DEMON_EMP);
+      Level->site[tx][ty].creature->x = tx;
+      Level->site[tx][ty].creature->y = ty;
+      Level->mlist.push_front(Level->site[tx][ty].creature);
     }
   }
 }
@@ -661,11 +659,10 @@ void sewer_level()
     if((Level->depth == SEWERLEVELS) && (!gamestatusp(COMPLETED_SEWERS, GameStatus)))
     {
       findspace(&tx, &ty, -1);
-      Level->mlist       = new monsterlist;
-      Level->mlist->next = nullptr;
-      Level->mlist->m    = Level->site[tx][ty].creature = make_creature(GREAT_WYRM);
-      Level->mlist->m->x = tx;
-      Level->mlist->m->y = ty;
+      Level->site[tx][ty].creature = make_creature(GREAT_WYRM);
+      Level->mlist.push_front(Level->site[tx][ty].creature);
+      Level->site[tx][ty].creature->x = tx;
+      Level->site[tx][ty].creature->y = ty;
     }
   }
 }
