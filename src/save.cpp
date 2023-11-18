@@ -94,17 +94,13 @@ void save_item(std::ofstream &save_file, object *o)
   }
 }
 
-void save_itemlist(std::ofstream &save_file, objectlist *ol)
+void save_itemlist(std::ofstream &save_file, std::forward_list<object *> &ol)
 {
-  int num_items = 0;
-  for(objectlist *tol = ol; tol; tol = tol->next)
-  {
-    ++num_items;
-  }
+  int num_items = std::distance(ol.begin(), ol.end());
   file_write(save_file, num_items);
-  for(objectlist *tol = ol; tol; tol = tol->next)
+  for(object *o : ol)
   {
-    save_item(save_file, tol->thing);
+    save_item(save_file, o);
   }
 }
 
@@ -374,7 +370,7 @@ void save_level(std::ofstream &save_file, level *level)
   {
     for(y = 0; y < MAXLENGTH; ++y)
     {
-      if(level->site[x][y].things)
+      if(!level->site[x][y].things.empty())
       {
         file_write(save_file, x);
         file_write(save_file, y);
@@ -530,29 +526,17 @@ object *restore_item(std::ifstream &save_file)
   return item;
 }
 
-objectlist *restore_itemlist(std::ifstream &save_file)
+std::forward_list<object *> restore_itemlist(std::ifstream &save_file)
 {
-  objectlist *ol = nullptr, *cur = nullptr, *new_pol = nullptr;
+  std::forward_list<object *> item_list;
   int num_items;
   file_read(save_file, num_items);
-  bool first_time = true;
   for(int i = 0; i < num_items; ++i)
   {
-    new_pol        = new objectlist;
-    new_pol->thing = restore_item(save_file);
-    new_pol->next  = nullptr;
-    if(first_time)
-    {
-      ol = cur   = new_pol;
-      first_time = false;
-    }
-    else
-    {
-      cur->next = new_pol;
-      cur       = new_pol;
-    }
+    object *o = restore_item(save_file);
+    item_list.push_front(o);
   }
-  return ol;
+  return item_list;
 }
 
 void restore_player(std::ifstream &save_file, player &p)
@@ -793,10 +777,12 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
     m->monstring.~basic_string();
     m->corpsestr.~basic_string();
     m->meleestr.~basic_string();
+    m->possessions.~forward_list();
     file_read(save_file, *m);
     new(&m->monstring) std::string;
     new(&m->corpsestr) std::string;
     new(&m->meleestr) std::string;
+    new(&m->possessions) std::forward_list<object *>;
     if(m->id == HISCORE_NPC)
     {
       restore_hiscore_npc(m, m->aux2);
@@ -947,9 +933,10 @@ void restore_level(std::ifstream &save_file)
     file_read(save_file, run);
     for(; x < run; ++x)
     {
+      Level->site[x][y].things.~forward_list();
       file_read(save_file, Level->site[x][y]);
+      new(&Level->site[x][y].things) std::forward_list<object *>;
       Level->site[x][y].creature = nullptr;
-      Level->site[x][y].things   = nullptr;
     }
     file_read(save_file, x);
     file_read(save_file, y);

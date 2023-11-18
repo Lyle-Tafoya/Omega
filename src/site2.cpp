@@ -32,8 +32,7 @@ extern interactive_menu *menu;
 
 void l_condo()
 {
-  objectlist *ol, *prev = nullptr;
-  int i, done = false, over = false, weeksleep = false;
+  bool done = false, weeksleep = false;
   char response;
 
   if(!gamestatusp(SOLD_CONDO, GameStatus))
@@ -56,7 +55,6 @@ void l_condo()
           Player.cash -= 50000;
           dataprint();
           queue_message("You are the proud owner of a luxurious condo penthouse.");
-          Condoitems = nullptr;
         }
       }
     }
@@ -94,7 +92,7 @@ void l_condo()
       response = static_cast<char>(menu->get_player_input());
       if(response == 'a')
       {
-        i = getitem(NULL_ITEM);
+        int i = getitem(NULL_ITEM);
         if(i != ABORT)
         {
           if(Player.possessions[i]->blessing < 0)
@@ -103,43 +101,33 @@ void l_condo()
           }
           else
           {
-            ol         = new objectlist;
-            ol->thing  = Player.possessions[i];
-            ol->next   = Condoitems;
-            Condoitems = ol;
+            queue_message(std::format("Item stored in safe: {}", itemid(Player.possessions[i])));
+            Condoitems.push_front(Player.possessions[i]);
             conform_unused_object(Player.possessions[i]);
             Player.possessions[i] = nullptr;
-            queue_message(std::format("Item stored in safe: {}", itemid(ol->thing)));
           }
         }
       }
       else if(response == 'b')
       {
-        ol = Condoitems;
-        while(ol && !over)
+        for(auto prev = Condoitems.before_begin(); std::next(prev) != Condoitems.end();)
         {
-          queue_message("Retrieve ");
-          queue_message(itemid(ol->thing));
-          queue_message(" [ynq] ");
+          auto it = std::next(prev);
+          queue_message(std::format("Retrieve {} [ynq] ", itemid(*it)));
           response = (char)mcigetc();
           if(response == 'y')
           {
-            gain_item(ol->thing);
-            if(ol == Condoitems)
-            {
-              Condoitems = Condoitems->next;
-            }
-            else if(prev)
-            {
-              prev->next = ol->next;
-            }
+            gain_item(*it);
+            Condoitems.erase_after(prev);
           }
           else if(response == 'q')
           {
-            over = true;
+            break;
           }
-          prev = ol;
-          ol   = ol->next;
+          else
+          {
+            ++prev;
+          }
         }
       }
       else if(response == 'c')
@@ -173,7 +161,7 @@ void l_condo()
     Player.dex = Player.maxdex;
     Player.iq  = Player.maxiq;
     Player.pow = Player.maxpow;
-    for(i = 0; i < NUMSTATI; i++)
+    for(int i = 0; i < NUMSTATI; i++)
     {
       if(Player.status[i] < 1000)
       {

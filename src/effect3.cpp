@@ -678,7 +678,7 @@ void apport(int blessing)
   {
     queue_message("Apport from:");
     setspot(x, y);
-    if(Level->site[x][y].things)
+    if(!Level->site[x][y].things.empty())
     {
       pickup_at(x, y);
       plotspot(x, y, true);
@@ -1227,7 +1227,7 @@ void hellfire(int x, int y, int blessing)
         m->corpsestr = "a greasy spot";
         m->id        = 0;
         free_objlist(m->possessions);
-        m->possessions = nullptr;
+        m->possessions.clear();
       }
       else
       {

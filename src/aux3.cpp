@@ -40,7 +40,6 @@ extern interactive_menu *menu;
 
 void indoors_random_event()
 {
-  objectlist *ol;
   switch(random_range(1000))
   {
     case 0:
@@ -88,11 +87,8 @@ void indoors_random_event()
       break;
     case 10:
       queue_message("You trip over something hidden in a shadow...");
-      ol        = new objectlist;
-      ol->thing = create_object(difficulty()); /* FIXED!  12/30/98 */
-      assert(ol->thing);                       /* WDT I want to make sure... */
-      ol->next                               = Level->site[Player.x][Player.y].things;
-      Level->site[Player.x][Player.y].things = ol;
+      Level->site[Player.x][Player.y].things.push_front(create_object(difficulty()));
+      assert(Level->site[Player.x][Player.y].things.front());  // WDT I want to make sure...
       pickup();
       break;
     case 11:

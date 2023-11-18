@@ -105,8 +105,6 @@ void load_arena()
 void make_prime(int i, int j)
 {
   monster *m  = new monster;
-  objectlist *ol;
-  object *o;
   make_hiscore_npc(m, 10); /* 10 is index for prime */
   m->x                       = i;
   m->y                       = j;
@@ -115,12 +113,9 @@ void make_prime(int i, int j)
 
   if(Objects[ARTIFACTID + 21].uniqueness != UNIQUE_TAKEN)
   {
-    ol             = new objectlist;
-    o              = new object;
+    object *o      = new object;
     *o             = Objects[ARTIFACTID + 21];
-    ol->thing      = o;
-    ol->next       = nullptr;
-    m->possessions = ol;
+    m->possessions.push_front(o);
   }
 }
 

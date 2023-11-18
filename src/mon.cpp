@@ -28,7 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <sstream>
 #include <string>
 
-extern bool merge_item_with_list(objectlist *l, object *o, int n);
+extern bool merge_item_with_list(std::forward_list<object *> &l, object *o, int n);
 extern std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode);
 
 void monster_action(monster *m, int action)
@@ -357,7 +357,6 @@ void m_pulse(monster *m)
 {
   int range  = distance(m->x, m->y, Player.x, Player.y);
   int STRIKE = false;
-  objectlist *prev;
 
   if(Time % 10 == 0)
   {
@@ -410,18 +409,16 @@ void m_pulse(monster *m)
         tacmonster(m);
       }
     }
-    /* if monster is greedy, picks up treasure it finds */
-    if(m_statusp(*m, GREEDY) && (m->hp > 0))
+    // if monster is greedy, picks up treasure it finds
+    if(m_statusp(*m, GREEDY) && m->hp > 0)
     {
-      while(Level->site[m->x][m->y].things)
+      while(!Level->site[m->x][m->y].things.empty())
       {
-        m_pickup(m, Level->site[m->x][m->y].things->thing);
-        prev                           = Level->site[m->x][m->y].things;
-        Level->site[m->x][m->y].things = Level->site[m->x][m->y].things->next;
-        delete prev;
+        m_pickup(m, Level->site[m->x][m->y].things.front());
+        Level->site[m->x][m->y].things.pop_front();
       }
     }
-    /* prevents monsters from casting spells from other side of dungeon */
+    // prevents monsters from casting spells from other side of dungeon
     if((range < std::max(5, m->level)) && (m->hp > 0) && (random_range(2) == 1))
     {
       monster_special(m);
@@ -446,35 +443,26 @@ void movemonster(monster *m, int newx, int newy)
   m_movefunction(m, Level->site[m->x][m->y].p_locf);
 }
 
-/* give object o to monster m */
+// give object o to monster m
 void m_pickup(monster *m, object *o)
 {
-  objectlist *tmp        = new objectlist;
-  tmp->thing     = o;
-  tmp->next      = m->possessions;
-  m->possessions = tmp;
+  m->possessions.push_front(o);
 }
 
 void m_dropstuff(monster *m)
 {
-  objectlist *drop_pile = Level->site[m->x][m->y].things;
-  for(objectlist *possessions = m->possessions; possessions;)
+  std::forward_list<object *> &drop_pile = Level->site[m->x][m->y].things;
+  for(object *o : m->possessions)
   {
-    objectlist *tmp = possessions->next;
-    if(merge_item_with_list(drop_pile, possessions->thing, possessions->thing->number))
+    if(merge_item_with_list(drop_pile, o, o->number))
     {
-      delete possessions->thing;
-      delete possessions;
+      delete o;
     }
     else
     {
-      possessions->next = drop_pile;
-      drop_pile         = possessions;
+      drop_pile.push_front(o);
     }
-    possessions = tmp;
   }
-  m->possessions                 = nullptr;
-  Level->site[m->x][m->y].things = drop_pile;
 }
 
 void m_damage(monster *m, int dmg, damage_type dtype)
@@ -503,8 +491,6 @@ void m_damage(monster *m, int dmg, damage_type dtype)
 
 void strengthen_death(monster *m)
 {
-  objectlist *ol     = new objectlist;
-  object *scythe = new object;
   m->xpv += std::min(10000l, m->xpv + 1000);
   m->hit += std::min(1000, m->hit + 10);
   m->dmg = std::min(10000, m->dmg * 2);
@@ -512,17 +498,14 @@ void strengthen_death(monster *m)
   m->speed       = std::max(m->speed - 1, 1);
   m->movef       = M_MOVE_SMART;
   m->hp          = std::min(100000, 100 + m->dmg * 10);
-  *scythe        = Objects[WEAPONID + 39];
-  ol->thing      = scythe;
-  ol->next       = nullptr;
-  m->possessions = ol;
+  object *scythe = new object{Objects[WEAPONID + 39]};
+  m->possessions.push_front(scythe);
 }
 
 void m_death(monster *m)
 {
   object *corpse;
   int x, y;
-  objectlist *curr, *prev = nullptr;
 
   m->hp = -1;
   if(los_p(Player.x, Player.y, m->x, m->y))
@@ -540,7 +523,7 @@ void m_death(monster *m)
   }
   m_dropstuff(m);
   if(m->id == DEATH)
-  { /* Death */
+  { // Death
     queue_message("Death lies sprawled out on the ground......");
     queue_message("Death laughs ironically and gets back to its feet.");
     queue_message("It gestures and another scythe appears in its hands.");
@@ -670,16 +653,22 @@ void m_death(monster *m)
             Lawlordbehavior = 2911;
             break;
           case 15:
-            /* just a tad complicated. Promote a new justiciar if any
-           guards are left in the city, otherwise Destroy the Order! */
+            // just a tad complicated. Promote a new justiciar if any
+            // guards are left in the city, otherwise Destroy the Order!
             Player.alignment -= 100;
             if(!gamestatusp(DESTROYED_ORDER, GameStatus))
             {
-              curr = Level->site[m->x][m->y].things;
-              while(curr && curr->thing->id != THINGID + 16)
+              std::forward_list<object *> &item_list = Level->site[m->x][m->y].things;
+              object *badge = nullptr;
+              for(auto prev = item_list.before_begin(); std::next(prev) != item_list.end(); ++prev)
               {
-                prev = curr;
-                curr = curr->next;
+                auto it = std::next(prev);
+                if((*it)->id == THINGID + 16)
+                {
+                  badge = *it;
+                  item_list.erase_after(prev);
+                  break;
+                }
               }
               Justiciar         = nameprint();
               Justiciarbehavior = 2911;
@@ -696,20 +685,11 @@ void m_death(monster *m)
               if(it != City->mlist.end())
               {
                 monster *guard = *it;
-                if(curr)
+                if(badge)
                 {
                   queue_message("materializes, sheds a tear, picks up the badge, and "
                                 "leaves.");
-                  m_pickup(guard, curr->thing);
-                  if(prev)
-                  {
-                    prev->next = curr->next;
-                  }
-                  else
-                  {
-                    Level->site[m->x][m->y].things = curr->next;
-                  }
-                  delete curr;
+                  m_pickup(guard, badge);
                 }
                 else
                 {

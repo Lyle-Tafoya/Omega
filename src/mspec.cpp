@@ -646,26 +646,22 @@ void m_sp_swarm(monster *m)
   }
 }
 
-/* raise nearby corpses from the dead.... */
+// raise nearby corpses from the dead....
 void m_sp_raise(monster *m)
 {
-  int x, y;
-  objectlist *t;
-  for(x = m->x - 2; x <= m->x + 2; x++)
+  for(int x = m->x - 2; x <= m->x + 2; ++x)
   {
-    for(y = m->y - 2; y <= m->y + 2; y++)
+    for(int y = m->y - 2; y <= m->y + 2; ++y)
     {
       if(inbounds(x, y))
       {
-        if(Level->site[x][y].things)
+        if(!Level->site[x][y].things.empty())
         {
-          if(Level->site[x][y].things->thing->id == CORPSEID)
+          if(Level->site[x][y].things.front()->id == CORPSEID)
           {
             queue_message("The Zombie Overlord makes a mystical gesture...");
-            summon(-1, Level->site[x][y].things->thing->charge);
-            t                        = Level->site[x][y].things;
-            Level->site[x][y].things = Level->site[x][y].things->next;
-            delete t;
+            summon(-1, Level->site[x][y].things.front()->charge);
+            Level->site[x][y].things.pop_front();
           }
         }
       }

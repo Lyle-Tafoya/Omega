@@ -1270,15 +1270,9 @@ struct object
   std::string cursestr;
 };
 
-struct objectlist
-{
-  object *thing;
-  objectlist *next;
-};
-
 struct monster
 {
-  objectlist *possessions;
+  std::forward_list<object *> possessions;
   unsigned char attacked;
   int aux1, aux2, x, y, click;
   int id, hp, hit, ac, dmg, sense, wakeup, level, speed;
@@ -1337,7 +1331,7 @@ struct location
   chtype showchar;        // char instantaneously drawn for site
   int aux;                // signifies various things
   unsigned char buildaux; // used in constructing level
-  objectlist *things;
+  std::forward_list<object *> things;
   monster *creature;
 };
 

@@ -616,15 +616,15 @@ void objdet(int blessing)
   {
     for(int j = 0; j < LENGTH; ++j)
     {
-      if(Level->site[i][j].things)
+      if(!Level->site[i][j].things.empty())
       {
         if(blessing < 0)
         {
-          putspot(random_range(WIDTH), random_range(LENGTH), Level->site[i][j].things->thing->objchar);
+          putspot(random_range(WIDTH), random_range(LENGTH), Level->site[i][j].things.front()->objchar);
         }
         else
         {
-          putspot(i, j, Level->site[i][j].things->thing->objchar);
+          putspot(i, j, Level->site[i][j].things.front()->objchar);
         }
       }
     }

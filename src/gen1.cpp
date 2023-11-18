@@ -71,12 +71,12 @@ void clear_level(level *dungeon_level)
         dungeon_level->site[i][j].locchar    = WALL;
         dungeon_level->site[i][j].showchar   = SPACE;
         dungeon_level->site[i][j].creature   = nullptr;
-        dungeon_level->site[i][j].things     = nullptr;
         dungeon_level->site[i][j].aux        = difficulty() * 20;
         dungeon_level->site[i][j].buildaux   = 0;
         dungeon_level->site[i][j].p_locf     = L_NO_OP;
         dungeon_level->site[i][j].lstatus    = 0;
         dungeon_level->site[i][j].roomnumber = RS_WALLSPACE;
+        dungeon_level->site[i][j].things.clear();
       }
     }
   }

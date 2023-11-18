@@ -362,16 +362,16 @@ void m_talk_im(monster *m)
   {
     m->monstring = "itinerant merchant";
   }
-  if(!m->possessions)
+  if(m->possessions.empty())
   {
     queue_message("The merchant says: Alas! I have nothing to sell!");
   }
   else
   {
-    m->possessions->thing->known = 2;
-    long price                   = std::max(10l, 4 * true_item_value(m->possessions->thing));
+    m->possessions.front()->known = 2;
+    long price                    = std::max(10l, 4 * true_item_value(m->possessions.front()));
     queue_message(std::format(
-      "I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions->thing), price
+      "I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions.front()), price
     ));
     if(ynq() == 'y')
     {
@@ -381,8 +381,8 @@ void m_talk_im(monster *m)
         {
           queue_message("Well, I'll let you have it for what you've got.");
           Player.cash = 0;
-          gain_item(m->possessions->thing);
-          m->possessions = nullptr;
+          gain_item(m->possessions.front());
+          m->possessions.pop_front();
         }
         else
         {
@@ -393,8 +393,8 @@ void m_talk_im(monster *m)
       {
         queue_message("Here you are. Have a good day.");
         Player.cash -= price;
-        gain_item(m->possessions->thing);
-        m->possessions = nullptr;
+        gain_item(m->possessions.front());
+        m->possessions.pop_front();
       }
     }
     else

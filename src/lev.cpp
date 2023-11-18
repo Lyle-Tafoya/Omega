@@ -664,67 +664,57 @@ monster *make_creature(int mid)
   return (newmonster);
 }
 
-/* drop treasures randomly onto level */
+// drop treasures randomly onto level
 void stock_level()
 {
-  int i, j, k, numtreasures = 2 * random_range(difficulty() / 4) + 4;
+  int x, y, numtreasures = 2 * random_range(difficulty() / 4) + 4;
 
-  /* put cash anywhere, including walls, put other treasures only on floor */
-  for(k = 0; k < numtreasures + 10; k++)
+  // put cash anywhere, including walls, put other treasures only on floor
+  for(int k = 0; k < numtreasures + 10; ++k)
   {
     do
     {
-      i = random_range(WIDTH);
-      j = random_range(LENGTH);
-    } while(Level->site[i][j].locchar != FLOOR);
-    make_site_treasure(i, j, difficulty());
-    i                               = random_range(WIDTH);
-    j                               = random_range(LENGTH);
-    Level->site[i][j].things        = new objectlist;
-    Level->site[i][j].things->thing = new object;
-    make_cash(Level->site[i][j].things->thing, difficulty());
-    Level->site[i][j].things->next = nullptr;
-    /* caves have more random cash strewn around */
+      x = random_range(WIDTH);
+      y = random_range(LENGTH);
+    } while(Level->site[x][y].locchar != FLOOR);
+    make_site_treasure(x, y, difficulty());
+    x         = random_range(WIDTH);
+    y         = random_range(LENGTH);
+    object *o = new object;
+    make_cash(o, difficulty());
+    Level->site[x][y].things.push_front(o);
+    // caves have more random cash strewn around
     if(Current_Dungeon == E_CAVES)
     {
-      i                               = random_range(WIDTH);
-      j                               = random_range(LENGTH);
-      Level->site[i][j].things        = new objectlist;
-      Level->site[i][j].things->thing = new object;
-      make_cash(Level->site[i][j].things->thing, difficulty());
-      Level->site[i][j].things->next  = nullptr;
-      i                               = random_range(WIDTH);
-      j                               = random_range(LENGTH);
-      Level->site[i][j].things        = new objectlist;
-      Level->site[i][j].things->thing = new object;
-      make_cash(Level->site[i][j].things->thing, difficulty());
-      Level->site[i][j].things->next = nullptr;
+      x = random_range(WIDTH);
+      y = random_range(LENGTH);
+      o = new object;
+      make_cash(o, difficulty());
+      Level->site[x][y].things.push_front(o);
+      x = random_range(WIDTH);
+      y = random_range(LENGTH);
+      o = new object;
+      make_cash(o, difficulty());
+      Level->site[x][y].things.push_front(o);
     }
   }
 }
 
-/* make a new object (of at most level itemlevel) at site i,j on level*/
+// make a new object (of at most level itemlevel) at site i,j on level
 void make_site_treasure(int i, int j, int itemlevel)
 {
-  objectlist *tmp                  = new objectlist;
-  tmp->thing               = create_object(itemlevel);
-  tmp->next                = Level->site[i][j].things;
-  Level->site[i][j].things = tmp;
+  Level->site[i][j].things.push_front(create_object(itemlevel));
 }
 
 /* make a specific new object at site i,j on level*/
 void make_specific_treasure(int i, int j, int itemid)
 {
-  objectlist *tmp;
   if(Objects[itemid].uniqueness == UNIQUE_TAKEN)
   {
     return;
   }
-  tmp                      = new objectlist;
-  tmp->thing               = new object;
-  *(tmp->thing)            = Objects[itemid];
-  tmp->next                = Level->site[i][j].things;
-  Level->site[i][j].things = tmp;
+  object *o = new object{Objects[itemid]};
+  Level->site[i][j].things.push_front(o);
 }
 
 /* returns a "level of difficulty" based on current environment

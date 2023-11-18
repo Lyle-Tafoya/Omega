@@ -244,10 +244,10 @@ void search(int *searchval)
   }
 }
 
-/* pick up a thing where the player is */
+// pick up a thing where the player is
 void pickup()
 {
-  if(!Level->site[Player.x][Player.y].things)
+  if(Level->site[Player.x][Player.y].things.empty())
   {
     queue_message("There's nothing there!");
   }
@@ -1398,21 +1398,25 @@ void moveplayer(int dx, int dy)
 
       if(Current_Environment != E_COUNTRYSIDE)
       {
-        if(Level->site[Player.x][Player.y].things)
+        if(!Level->site[Player.x][Player.y].things.empty())
         {
-          objectlist *item_list = Level->site[Player.x][Player.y].things;
-          if(!item_list->next)
+          std::forward_list<object *> &item_list = Level->site[Player.x][Player.y].things;
+          if(std::next(item_list.begin()) == item_list.end())
           {
-            queue_message("You see here a " + itemid(item_list->thing) + ".");
+            queue_message("You see here a " + itemid(item_list.front()) + ".");
           }
           else
           {
-            std::string items = itemid(item_list->thing);
-            std::string item_characters(1, static_cast<char>(item_list->thing->objchar & A_CHARTEXT));
-            for(objectlist *item = item_list->next; item; item = item->next)
+            std::string items;
+            std::string item_characters;
+            for(auto it = item_list.begin(); it != item_list.end();)
             {
-              items += ", " + itemid(item->thing);
-              item_characters += static_cast<char>(item->thing->objchar & A_CHARTEXT);
+              item_characters += static_cast<char>((*it)->objchar & A_CHARTEXT);
+              items += itemid(*it);
+              if(++it != item_list.end())
+              {
+                items += ", ";
+              }
             }
             if(items.length() > static_cast<unsigned int>(COLS))
             {
@@ -1428,13 +1432,13 @@ void moveplayer(int dx, int dy)
 
         if(gamestatusp(FAST_MOVE, GameStatus))
         {
-          if(Level->site[Player.x][Player.y].things ||
+          if(!Level->site[Player.x][Player.y].things.empty() ||
              (optionp(RUNSTOP, Player) && loc_statusp(Player.x, Player.y, STOPS, *Level)))
           {
             resetgamestatus(FAST_MOVE, GameStatus);
           }
         }
-        if(Level->site[Player.x][Player.y].things && optionp(PICKUP, Player))
+        if(!Level->site[Player.x][Player.y].things.empty() && optionp(PICKUP, Player))
         {
           pickup();
         }

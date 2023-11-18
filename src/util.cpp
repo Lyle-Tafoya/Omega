@@ -907,15 +907,11 @@ bool ok_to_free(level *level)
   }
 }
 
-void free_objlist(objectlist *pobjlist)
+void free_objlist(std::forward_list<object *> &objlist)
 {
-  objectlist *tmp;
-
-  while(pobjlist)
+  for(object *o : objlist)
   {
-    delete(tmp = pobjlist)->thing;
-    pobjlist = pobjlist->next;
-    delete tmp;
+    delete o;
   }
 }
 
@@ -928,20 +924,18 @@ void free_mons_and_objs(std::forward_list<monster *> &mlist)
   }
 }
 
-/* Free up monsters and items on a level*/
+// Free up monsters and items on a level
 void free_level(level *level)
 {
-  int i, j;
-
   free_mons_and_objs(level->mlist);
-  for(i = 0; i < MAXWIDTH; i++)
+  for(int x = 0; x < MAXWIDTH; ++x)
   {
-    for(j = 0; j < MAXLENGTH; j++)
+    for(int y = 0; y < MAXLENGTH; ++y)
     {
-      if(level->site[i][j].things)
+      if(!level->site[x][y].things.empty())
       {
-        free_objlist(level->site[i][j].things);
-        level->site[i][j].things = nullptr;
+        free_objlist(level->site[x][y].things);
+        level->site[x][y].things.clear();
       }
     }
   }

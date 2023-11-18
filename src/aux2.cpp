@@ -747,11 +747,11 @@ void p_drown()
       {
         case 'a':
           drop_equipped_item();
-          if(Level->site[Player.x][Player.y].p_locf == L_WATER && Level->site[Player.x][Player.y].things)
+          if(Level->site[Player.x][Player.y].p_locf == L_WATER && !Level->site[Player.x][Player.y].things.empty())
           {
             queue_message("It sinks without a trace.");
             free_objlist(Level->site[Player.x][Player.y].things);
-            Level->site[Player.x][Player.y].things = nullptr;
+            Level->site[Player.x][Player.y].things.clear();
           }
           break;
         case 'b':

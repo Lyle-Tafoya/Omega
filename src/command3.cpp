@@ -229,21 +229,25 @@ void examine()
               break;
           }
         }
-        objectlist *item_list;
-        if((item_list = Level->site[x][y].things) && !loc_statusp(x, y, SECRET, *Level))
+        std::forward_list<object *> &item_list = Level->site[x][y].things;
+        if(!item_list.empty() && !loc_statusp(x, y, SECRET, *Level))
         {
-          if(!item_list->next)
+          if(std::next(item_list.begin()) == item_list.end())
           {
-            replace_last_message(itemid(item_list->thing));
+            replace_last_message(itemid(item_list.front()));
           }
           else
           {
-            std::string items = "Things that are here : " + itemid(item_list->thing);
-            std::string item_characters(1, static_cast<char>(item_list->thing->objchar & A_CHARTEXT));
-            for(item_list = item_list->next; item_list; item_list = item_list->next)
+            std::string items;
+            std::string item_characters;
+            for(auto it = item_list.begin(); it != item_list.end();)
             {
-              items += ", " + itemid(item_list->thing);
-              item_characters += static_cast<char>(item_list->thing->objchar & A_CHARTEXT);
+              item_characters += static_cast<char>((*it)->objchar & A_CHARTEXT);
+              items += itemid(*it);
+              if(++it != item_list.end())
+              {
+                items += ", ";
+              }
             }
             if(items.length() <= static_cast<size_t>(COLS))
             {
@@ -787,7 +791,7 @@ void vault()
       p_movefunction(Level->site[Player.x][Player.y].p_locf);
       if(Current_Environment != E_COUNTRYSIDE)
       {
-        if((Level->site[Player.x][Player.y].things) && (optionp(PICKUP, Player)))
+        if(!Level->site[Player.x][Player.y].things.empty() && optionp(PICKUP, Player))
         {
           pickup();
         }
@@ -1034,17 +1038,17 @@ void pickpocket()
       else
       {
         bool success = (Player.dex * 5 + Player.rank[THIEVES] * 20 - m->level * 20) > random_range(100);
-        if(!m->possessions)
+        if(m->possessions.empty())
         {
           queue_message("You couldn't find anything worth taking!");
         }
         else if(success)
         {
-          queue_message(std::format("You stole: {}.", itemid(m->possessions->thing)));
+          queue_message(std::format("You stole: {}.", itemid(m->possessions.front())));
           Player.alignment--;
           gain_experience(m->level * m->level);
-          gain_item(m->possessions->thing);
-          m->possessions = m->possessions->next;
+          gain_item(m->possessions.front());
+          m->possessions.pop_front();
         }
         else
         {

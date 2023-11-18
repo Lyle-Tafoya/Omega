@@ -99,34 +99,32 @@ void pickup_at(int x, int y)
 {
   resetgamestatus(FAST_MOVE, GameStatus);
 
-  objectlist *object_list          = Level->site[x][y].things;
-  Level->site[x][y].things = nullptr;
-  if(object_list && !object_list->next)
+  std::forward_list<object *> &object_list = Level->site[x][y].things;
+  if(!object_list.empty() && std::next(object_list.begin()) == object_list.end())
   {
-    gain_item(object_list->thing);
+    gain_item(object_list.front());
+    object_list.pop_front();
   }
   else
   {
-    char player_input = 'y';
-    while(object_list)
+    for(auto prev = object_list.before_begin(); std::next(prev) != object_list.end();)
     {
-      if(player_input != 'q')
+      auto it = std::next(prev);
+      queue_message(std::format("Pick up: {} [ynq] ", itemid(*it)));
+      char player_input = ynq();
+      if(player_input == 'y')
       {
-        queue_message("Pick up: " + itemid(object_list->thing) + " [ynq] ");
-        player_input = ynq();
+        gain_item(*it);
+        object_list.erase_after(prev);
       }
-      switch(player_input)
+      else if(player_input == 'q')
       {
-        case 'y':
-          gain_item(object_list->thing);
-          break;
-        default:
-          drop_at(x, y, object_list->thing);
-          break;
+        break;
       }
-      objectlist *tmp     = object_list;
-      object_list = object_list->next;
-      delete tmp;
+      else
+      {
+        ++prev;
+      }
     }
   }
 }
@@ -197,35 +195,32 @@ int objequal(object *o, object *p)
   }
 }
 
-bool merge_item_with_list(objectlist *l, object *o, int n)
+bool merge_item_with_list(std::forward_list<object *> &l, object *o, int n)
 {
-  for(objectlist *pile = l; pile; pile = pile->next)
+  for(object *list_object : l)
   {
-    if(!pile->thing)
+    if(!list_object)
     {
       continue;
     }
-    if(o->objchar == CASH && pile->thing->objchar == CASH)
+    if(o->objchar == CASH && list_object->objchar == CASH)
     {
-      pile->thing->basevalue += o->basevalue;
+      list_object->basevalue += o->basevalue;
       return true;
     }
-    else if(objequal(pile->thing, o) && pile->thing->objchar != STICK)
+    else if(objequal(list_object, o) && list_object->objchar != STICK)
     {
-      pile->thing->number += n;
+      list_object->number += n;
       return true;
     }
   }
   return false;
 }
 
-/* put all of o on objlist at x,y on Level->depth */
-/* Not necessarily dropped by character; just dropped... */
+// put all of o on objlist at x,y on Level->depth
+// Not necessarily dropped by character; just dropped...
 void drop_at(int x, int y, object *o)
 {
-  objectlist *tmp;
-  object *cpy;
-
   if(Current_Environment != E_COUNTRYSIDE)
   {
     if((Level->site[x][y].locchar != VOID_CHAR) && (Level->site[x][y].locchar != ABYSS))
@@ -234,13 +229,9 @@ void drop_at(int x, int y, object *o)
       {
         return;
       }
-      cpy                      = new object;
-      tmp                      = new objectlist;
-      *cpy                     = *o;
-      cpy->used                = false;
-      tmp->thing               = cpy;
-      tmp->next                = Level->site[x][y].things;
-      Level->site[x][y].things = tmp;
+      object *cpy = new object{*o};
+      cpy->used   = false;
+      Level->site[x][y].things.push_front(cpy);
     }
     else if(Level->site[x][y].p_locf == L_VOID_STATION)
     {
@@ -249,7 +240,7 @@ void drop_at(int x, int y, object *o)
   }
 }
 
-/* put n of o on objlist at x,y on Level->depth */
+// put n of o on objlist at x,y on Level->depth
 void p_drop_at(int x, int y, int n, object *o)
 {
   if(Current_Environment != E_COUNTRYSIDE)
@@ -261,13 +252,10 @@ void p_drop_at(int x, int y, int n, object *o)
       {
         return;
       }
-      objectlist *tmp                  = new objectlist;
-      tmp->thing               = new object;
-      *(tmp->thing)            = *o;
-      tmp->thing->used         = false;
-      tmp->thing->number       = n;
-      tmp->next                = Level->site[x][y].things;
-      Level->site[x][y].things = tmp;
+      object *cpy = new object{*o};
+      cpy->used   = false;
+      cpy->number = n;
+      Level->site[x][y].things.push_front(cpy);
     }
     else if(Level->site[x][y].p_locf == L_VOID_STATION)
     {

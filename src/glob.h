@@ -234,7 +234,7 @@ extern std::string Password;
 
 extern int MazeNum;
 
-extern objectlist *Condoitems;
+extern std::forward_list<object *> Condoitems;
 /* items in condo */
 
 /* high score names, levels, behavior */

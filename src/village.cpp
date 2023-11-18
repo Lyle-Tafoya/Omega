@@ -100,16 +100,11 @@ void assign_village_function(int x, int y, int setup)
 
 void make_food_bin(int i, int j)
 {
-  objectlist *tol;
-  int k;
-
-  for(k = 0; k < 10; k++)
+  for(int k = 0; k < 10; ++k)
   {
-    tol        = new objectlist;
-    tol->thing = new object;
-    make_food(tol->thing, 15); // grain
-    tol->next                = Level->site[i][j].things;
-    Level->site[i][j].things = tol;
+    object *o = new object;
+    make_food(o, 15); // grain
+    Level->site[i][j].things.push_front(o);
   }
 }
 

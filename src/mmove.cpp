@@ -58,7 +58,7 @@ void m_simple_move(monster *m)
     {
       monster_name = m->monstring;
     }
-    if(m->possessions)
+    if(!m->possessions.empty())
     {
       queue_message(std::format("{} drops it's treasure and flees!", monster_name));
       m_dropstuff(m);

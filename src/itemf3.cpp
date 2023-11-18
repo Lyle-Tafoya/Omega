@@ -339,7 +339,7 @@ void i_antioch(object *o)
         m_death(Level->site[x][y].creature);
         queue_message("You are covered with gore.");
       }
-      Level->site[x][y].things = nullptr;
+      Level->site[x][y].things.clear();
     }
   }
   dispose_lost_objects(1, o);
