@@ -92,9 +92,7 @@ long get_money(long limit)
   }
 }
 
-/* pick up from some location x,y */
-/* Lift entire itemlist off ground, pass it to inventory control, which
-   may drop things back onto the now null ground */
+// pick up from some location x,y
 void pickup_at(int x, int y)
 {
   resetgamestatus(FAST_MOVE, GameStatus);

@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifndef OMEGA_DEFS_H_
 #define OMEGA_DEFS_H_
 
+#include <array>
 #include <cstdint>
 #include <string>
 #include <forward_list>
@@ -57,7 +58,7 @@ constexpr int GAME_VERSION      = 601;
 const std::string VERSIONSTRING = "omega rebirth version 0.6.1";
 
 // Just increment these by one whenever an incompatibility is introduced
-constexpr int SAVE_FILE_VERSION   = 3;
+constexpr int SAVE_FILE_VERSION   = 4;
 constexpr int CONFIG_FILE_VERSION = 0;
 
 constexpr int VACANT    = 0;
@@ -1300,15 +1301,15 @@ struct player
   int sx, sy; // sanctuary coordinates
   int x, y;   // current player coordinates
   int itemweight, maxweight;
-  int immunity[NUMIMMUNITIES];
-  int status[NUMSTATI];
+  std::array<int, NUMIMMUNITIES> immunity;
+  std::array<int, NUMSTATI> status;
   long options;
-  int rank[NUMRANKS];
-  long guildxp[NUMRANKS];
+  std::array<int, NUMRANKS> rank;
+  std::array<long, NUMRANKS> guildxp;
   std::string name;
   std::string meleestr;
-  object *possessions[MAXITEMS];
-  object *pack[MAXPACK];
+  std::array<object *, MAXITEMS> possessions;
+  std::array<object *, MAXPACK> pack;
   int packptr;
 };
 
@@ -1343,7 +1344,7 @@ struct level
   // Over 64K worth of data!
   location *site[MAXWIDTH]; // dungeon data
 #else
-  location site[MAXWIDTH][MAXLENGTH]; // dungeon data
+  std::array<std::array<location, MAXLENGTH>, MAXWIDTH> site; // dungeon data
 #endif
   char generated;     // has the level been made (visited) yet?
   char numrooms;      // number of rooms on level
