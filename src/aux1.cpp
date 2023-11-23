@@ -803,8 +803,8 @@ int getdir()
   }
 }
 
-/* functions describes monster m's state for examine function */
-std::string mstatus_string(monster *m)
+// functions describes monster m's state for examine function
+std::string mstatus_string(const monster *m)
 {
   std::string monster_status;
   if(m_statusp(*m, M_INVISIBLE) && !Player.status[TRUESIGHT])
@@ -1042,7 +1042,7 @@ void roomcheck()
   }
 }
 
-/* ask for mercy */
+// ask for mercy
 void surrender(monster *m)
 {
   int i;
@@ -1144,7 +1144,7 @@ void surrender(monster *m)
   dataprint();
 }
 
-/* threaten a monster */
+// threaten a monster
 void threaten(monster *m)
 {
   char response;
@@ -1168,11 +1168,11 @@ void threaten(monster *m)
     queue_message("You only annoy it with your futile demand.");
     m_status_set(*m, HOSTILE);
   }
-  else if(((m->level * 2 > Player.level) && (m->hp > Player.dmg)) || (m->uniqueness != COMMON))
+  else if((m->level * 2 > Player.level && m->hp > Player.dmg) || m->uniqueness != COMMON)
   {
     queue_message("It sneers contemptuously at you.");
   }
-  else if((m->talkf != M_TALK_GREEDY) && (m->talkf != M_TALK_HUNGRY) && (m->talkf != M_TALK_EVIL) && (m->talkf != M_TALK_MAN) && (m->talkf != M_TALK_BEG) && (m->talkf != M_TALK_THIEF) && (m->talkf != M_TALK_MERCHANT) && (m->talkf != M_TALK_IM))
+  else if(m->talkf != M_TALK_GREEDY && m->talkf != M_TALK_HUNGRY && m->talkf != M_TALK_EVIL && m->talkf != M_TALK_MAN && m->talkf != M_TALK_BEG && m->talkf != M_TALK_THIEF && m->talkf != M_TALK_MERCHANT && m->talkf != M_TALK_IM)
   {
     queue_message("Your demand is ignored");
   }

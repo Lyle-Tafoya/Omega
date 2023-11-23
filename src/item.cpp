@@ -112,7 +112,7 @@ void make_food(object *o, int id)
   *o = Objects[FOODID + id];
 }
 
-void make_corpse(object *o, monster *m)
+void make_corpse(object *o, const monster *m)
 {
   *o           = Objects[CORPSEID];
   o->charge    = m->id;

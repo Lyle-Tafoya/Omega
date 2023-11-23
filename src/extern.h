@@ -37,7 +37,7 @@ void load_abyss();
 
 // aux1.cpp functions
 std::string levelname(int);
-std::string mstatus_string(monster *);
+std::string mstatus_string(const monster *);
 std::string trapid(int);
 int getdir();
 bool goberserk();
@@ -60,8 +60,8 @@ void threaten(monster *);
 void tunnelcheck();
 
 // aux2.cpp functions
-long item_value(object *);
-long true_item_value(object *);
+long item_value(const object *);
+long true_item_value(const object *);
 std::string actionlocstr(char);
 bool p_immune(int);
 int statmod(int);
@@ -300,7 +300,7 @@ void load_house(int, int);
 // inv.cpp functions
 const std::string cashstr();
 void conform_unused_object(std::unique_ptr<object> &);
-bool cursed(object *);
+bool cursed(const object *);
 void dispose_lost_objects(int, std::unique_ptr<object> &);
 void do_inventory_control();
 void drop_at(int, int, std::unique_ptr<object>);
@@ -316,11 +316,11 @@ void givemonster(monster *, std::unique_ptr<object>);
 char index_to_key(int);
 std::string itemid(object *);
 void lose_all_items();
-bool merge_item_with_list(std::forward_list<std::unique_ptr<object>> &, object *, int);
+bool merge_item_with_list(std::forward_list<std::unique_ptr<object>> &, const object *, int);
 void p_drop_at(int, int, int, object *);
 void pickup_at(int, int);
-bool slottable(object *, int);
-std::unique_ptr<object> split_item(int, object *);
+bool slottable(const object *, int);
+std::unique_ptr<object> split_item(int, const object *);
 
 // item.cpp functions
 void shuffle(int[], int);
@@ -340,7 +340,7 @@ void make_artifact(object *, int);
 void make_boots(object *, int);
 void make_cash(object *, int);
 void make_cloak(object *, int);
-void make_corpse(object *, monster *);
+void make_corpse(object *, const monster *);
 void make_food(object *, int);
 void make_potion(object *, int);
 void make_ring(object *, int);
@@ -753,7 +753,7 @@ bool hitp(int, int);
 int hour();
 bool inbounds(int, int);
 bool los_p(int, int, int, int);
-bool m_unblocked(monster *, int, int);
+bool m_unblocked(const monster *, int, int);
 bool nighttime();
 bool offscreen(int, int);
 bool ok_to_free(level *);

@@ -44,7 +44,7 @@ int statmod(int stat)
   return ((stat - 10) / 2);
 }
 
-/* effects of hitting */
+// effects of hitting
 void p_hit(monster *m, int dmg, damage_type dtype)
 {
   int dmult;
@@ -182,7 +182,7 @@ void p_fumble(int dtype)
   }
 }
 
-void player_miss(monster *m, int dtype)
+void player_miss(const monster *m, int dtype)
 {
   if(!random_range(30))
   {
@@ -228,7 +228,7 @@ void player_miss(monster *m, int dtype)
   }
 }
 
-/* hooray */
+// hooray
 void p_win()
 {
   queue_message("You won!");
@@ -386,10 +386,10 @@ void minute_status_check()
   }
 }
 
-/* effect of gamma ray radiation... */
+// effect of gamma ray radiation...
 void moon_check()
 {
-  /* 24 day lunar cycle */
+  // 24 day lunar cycle
   Phase    = (Phase + 1) % 24;
   Lunarity = 0;
   if(((Player.patron == DRUID) && ((Phase / 2 == 3) || (Phase / 2 == 9))) ||
@@ -647,7 +647,7 @@ void gain_level()
 }
 
 /* If an item is unidentified, it isn't worth much to those who would buy it */
-long item_value(object *item)
+long item_value(const object *item)
 {
   if(item->known == 0)
   {
@@ -678,7 +678,7 @@ long item_value(object *item)
 }
 
 /* figures value based on item base-value, charge, plus, and blessing */
-long true_item_value(object *item)
+long true_item_value(const object *item)
 {
   long value = item->basevalue;
 
@@ -782,7 +782,7 @@ void p_drown()
   return;
 }
 
-/* the effect of some weapon on monster m, with dmgmod a bonus to damage */
+// the effect of some weapon on monster m, with dmgmod a bonus to damage
 void weapon_use(int dmgmod, std::unique_ptr<object> &weapon, monster *m)
 {
   int aux = (!weapon ? -2 : weapon->aux); // bare hands
@@ -911,7 +911,7 @@ int player_hit(int hitmod, char hitloc, monster *m)
   }
 }
 
-/* execute player combat actions versus monster m */
+// execute player combat actions versus monster m
 void tacplayer(monster *m)
 {
   size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);

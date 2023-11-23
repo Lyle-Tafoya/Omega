@@ -116,7 +116,7 @@ bool unblocked(int x, int y)
 }
 
 // do monsters want to move through a spot
-bool m_unblocked(monster *m, int x, int y)
+bool m_unblocked(const monster *m, int x, int y)
 {
   if((!inbounds(x, y)) || ((x == Player.x) && (y == Player.y)))
   {

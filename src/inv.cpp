@@ -124,9 +124,8 @@ void pickup_at(int x, int y)
   }
 }
 
-/* criteria for being able to put some item in some slot */
-/* WDT -- why on earth does the 'slottable' function print stuff???? */
-int aux_slottable(object *o, int slot)
+// criteria for being able to put some item in some slot
+int aux_slottable(const object *o, int slot)
 {
   int ok = true;
   if(!o)
@@ -173,7 +172,7 @@ int aux_slottable(object *o, int slot)
 
 // are two objects equal except for their number field?
 // returns false if either object is null
-int objequal(object *o, object *p)
+int objequal(const object *o, const object *p)
 {
   if(!o || !p)
   {
@@ -190,7 +189,7 @@ int objequal(object *o, object *p)
   }
 }
 
-bool merge_item_with_list(std::forward_list<std::unique_ptr<object>> &l, object *o, int n)
+bool merge_item_with_list(std::forward_list<std::unique_ptr<object>> &l, const object *o, int n)
 {
   for(std::unique_ptr<object> &list_object : l)
   {
@@ -259,7 +258,7 @@ void p_drop_at(int x, int y, int n, object *o)
 }
 
 // return an object's plus as a string
-std::string getplusstr(object *obj)
+std::string getplusstr(const object *obj)
 {
   if(obj->plus < 0)
   {
@@ -272,7 +271,7 @@ std::string getplusstr(object *obj)
 }
 
 // return object with charges
-std::string getchargestr(object *obj)
+std::string getchargestr(const object *obj)
 {
   std::string chargestr = " [";
   if(obj->charge < 0)
@@ -286,8 +285,8 @@ std::string getchargestr(object *obj)
   return chargestr;
 }
 
-/* return an object's number as a string */
-std::string getnumstr(object *obj)
+// return an object's number as a string
+std::string getnumstr(const object *obj)
 {
   std::string numstr;
   if(obj->number > 1 && obj->number < 41)
@@ -602,13 +601,13 @@ char index_to_key(signed int index)
   }
 }
 
-/* select an item from inventory */
-/* if itype is NULL_ITEM, any kind of item is acceptable.
-   if itype is CASH, any kind of item or '$' (cash) is acceptable.
-   if itype is FOOD, CORPSE or FOOD is acceptable, but only FOOD is
-listed in the possibilities.
-   if itype is any other object type (eg SCROLL, POTION, etc.), only
-that type of item is acceptable or is listed */
+// select an item from inventory
+// if itype is NULL_ITEM, any kind of item is acceptable.
+// if itype is CASH, any kind of item or '$' (cash) is acceptable.
+// if itype is FOOD, CORPSE or FOOD is acceptable, but only FOOD is
+// listed in the possibilities.
+// if itype is any other object type (eg SCROLL, POTION, etc.), only
+// that type of item is acceptable or is listed
 
 int getitem(chtype itype)
 {
@@ -695,7 +694,7 @@ int getitem(chtype itype)
   }
 }
 
-bool merge_item_with_pack(object *o)
+bool merge_item_with_pack(const object *o)
 {
   if(!o || o->objchar == STICK)
   {
@@ -712,7 +711,7 @@ bool merge_item_with_pack(object *o)
   return false;
 }
 
-bool merge_item_with_inventory(object *o)
+bool merge_item_with_inventory(const object *o)
 {
   if(!o && o->objchar == STICK)
   {
@@ -819,7 +818,7 @@ int pack_item_cost(int index)
   return cost;
 }
 
-bool is_two_handed(object *o)
+bool is_two_handed(const object *o)
 {
   if(o && twohandedp(o->id))
   {
@@ -832,7 +831,7 @@ bool is_two_handed(object *o)
 }
 
 // whether or not an item o can be used in a slot. Assumes o can in fact be placed in the slot.
-bool item_useable(object *o, int slot)
+bool item_useable(const object *o, int slot)
 {
   if(slot == O_ARMOR || slot == O_CLOAK || slot == O_SHIELD || slot == O_BOOTS || slot >= O_RING1)
   {
@@ -921,8 +920,8 @@ void use_pack_item(int response, int slot)
   }
 }
 
-/* WDT HACK!  This ought to be in scr.c, along with its companion.  However,
- * right now it's only used in the function directly below. */
+// WDT HACK!  This ought to be in scr.c, along with its companion.  However,
+// right now it's only used in the function directly below.
 int aux_display_pack(int start_item, int slot)
 {
   int i = start_item, items;
@@ -982,7 +981,7 @@ int aux_display_pack(int start_item, int slot)
 void take_from_pack(int slot)
 {
   char pack_item, last_item;
-  int quit = false, ok = true;
+  bool quit = false, ok = true;
   int response;
   if(Player.packptr < 1)
   {
@@ -1014,7 +1013,7 @@ void take_from_pack(int slot)
       response = mcigetc();
       if(response == '?')
       {
-        /* WDT HACK -- display some help instead. */
+        // WDT HACK -- display some help instead.
         queue_message("Help not implemented (sorry).");
         ok = false;
       }
@@ -1056,7 +1055,7 @@ void take_from_pack(int slot)
 }
 
 // returns some number between 0 and o->number
-int get_item_number(object *o)
+int get_item_number(const object *o)
 {
   int n = 0;
   if(o->number == 1)
@@ -1169,7 +1168,7 @@ void do_inventory_control()
 // splits num off of item to make newitem which is returned
 // something else (dispose_lost_objects) has to reduce the actual
 // number value of item and Player.itemweight
-std::unique_ptr<object> split_item(int num, object *item)
+std::unique_ptr<object> split_item(int num, const object *item)
 {
   if(item)
   {
@@ -1188,7 +1187,7 @@ std::unique_ptr<object> split_item(int num, object *item)
 }
 
 // criteria for being able to put some item in some slot
-bool slottable(object *o, int slot)
+bool slottable(const object *o, int slot)
 {
   bool ok = true;
   if(!o)
@@ -1238,7 +1237,7 @@ bool slottable(object *o, int slot)
   return ok;
 }
 
-bool cursed(object *obj)
+bool cursed(const object *obj)
 {
   if(!obj)
   {
