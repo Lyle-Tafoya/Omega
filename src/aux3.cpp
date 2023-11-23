@@ -56,7 +56,7 @@ void indoors_random_event()
       break;
     case 4:
       queue_message("A mysterious healing flux settles over the level.");
-      for(monster *m : Level->mlist)
+      for(std::unique_ptr<monster> &m : Level->mlist)
       {
         if(m->hp > 0)
         {
@@ -181,7 +181,6 @@ void hourly_check()
 void outdoors_random_event()
 {
   int num;
-  object *ob;
 
   switch(random_range(300))
   {
@@ -219,9 +218,7 @@ void outdoors_random_event()
     case 2:
       queue_message("You discover a sprig of athelas growing lonely in the wild.");
       queue_message("Using your herbalist lore you cook a cake of lembas....");
-      ob  = new object;
-      *ob = Objects[FOODID + 1];
-      gain_item(ob);
+      gain_item(std::make_unique<object>(Objects[FOODID + 1]));
       break;
     case 3:
       if(Precipitation > 0)
@@ -311,9 +308,9 @@ void outdoors_random_event()
       else if(num < 70)
       {
         queue_message("A tendril of the storm condenses and falls into your hands.");
-        ob = new object;
-        make_artifact(ob, -1);
-        gain_item(ob);
+        auto o = std::make_unique<object>();
+        make_artifact(o.get(), -1);
+        gain_item(std::move(o));
       }
       else if(num < 80)
       {
@@ -1199,8 +1196,7 @@ bool stonecheck(int alignment)
       {
         if(Player.pack[i])
         {
-          delete Player.pack[i];
-          Player.pack[i] = nullptr;
+          Player.pack[i].reset();
         }
       }
       Player.packptr = 0;
@@ -1380,7 +1376,7 @@ void alert_guards()
 {
   int foundguard = false;
   int suppress = 0;
-  for(monster *m : Level->mlist)
+  for(std::unique_ptr<monster> &m : Level->mlist)
   {
     if((m->id == GUARD || (m->id == HISCORE_NPC && m->aux2 == 15)) && m->hp > 0)
     { //justiciar

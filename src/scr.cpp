@@ -377,7 +377,7 @@ void show_screen()
         {
           continue;
         }
-        object *o = Level->site[x][y].things.front();
+        object *o = Level->site[x][y].things.front().get();
         if(shown_items.find(o->objstr) == shown_items.end())
         {
           std::string obj_name  = itemid(o);
@@ -1092,7 +1092,7 @@ void drawmonsters(int display)
   int top    = std::max(0, ScreenOffset);
   int bottom = std::min(LENGTH, ScreenOffset + ScreenLength);
   int right  = std::min(WIDTH, HorizontalOffset + ScreenWidth);
-  for(monster *m : Level->mlist)
+  for(std::unique_ptr<monster> &m : Level->mlist)
   {
     if(m->hp > 0)
     {
@@ -1130,7 +1130,7 @@ void drawmonsters(int display)
       }
       else
       {
-        erase_monster(m);
+        erase_monster(m.get());
       }
     }
   }
@@ -2236,7 +2236,7 @@ void display_pack()
     lines.emplace_back("Items in Pack:");
     for(int i = 0; i < Player.packptr; i++)
     {
-      lines.emplace_back(std::format("  {}: {}", static_cast<char>('a' + i), itemid(Player.pack[i])));
+      lines.emplace_back(std::format("  {}: {}", static_cast<char>('a' + i), itemid(Player.pack[i].get())));
     }
     menu->load(lines);
     menu->get_player_input();
@@ -2248,10 +2248,10 @@ object *find_first_pack_obj(uint8_t slot)
   setgamestatus(SUPPRESS_PRINTING, GameStatus);
   for(uint8_t i = 0; i < MAXPACK; ++i)
   {
-    if(slottable(Player.pack[i], slot))
+    if(slottable(Player.pack[i].get(), slot))
     {
       resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-      return Player.pack[i];
+      return Player.pack[i].get();
     }
   }
   resetgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -2271,7 +2271,7 @@ void print_inventory_menu(chtype item_type)
   std::string line;
   for(uint8_t i = 1; i < SLOT_NAMES.size(); ++i)
   {
-    object *item = Player.possessions[i];
+    object *item = Player.possessions[i].get();
 
     bool wildcard   = (item_type == NULL_ITEM || item_type == CASH);
     bool selectable = false;
@@ -2298,7 +2298,14 @@ void print_inventory_menu(chtype item_type)
     }
     else
     {
-      line += std::format("{} -|w", selectable ? "|w" : "|L");
+      if(i == O_READY_HAND && Player.possessions[O_WEAPON_HAND] && twohandedp(Player.possessions[O_WEAPON_HAND]->id))
+      {
+        line += std::format("|w {}", itemid(Player.possessions[O_WEAPON_HAND].get()));
+      }
+      else
+      {
+        line += std::format("{} -|w", selectable ? "|w" : "|L");
+      }
     }
     lines.emplace_back(line);
   }

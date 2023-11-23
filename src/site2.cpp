@@ -101,10 +101,9 @@ void l_condo()
           }
           else
           {
-            queue_message(std::format("Item stored in safe: {}", itemid(Player.possessions[i])));
-            Condoitems.push_front(Player.possessions[i]);
+            queue_message(std::format("Item stored in safe: {}", itemid(Player.possessions[i].get())));
             conform_unused_object(Player.possessions[i]);
-            Player.possessions[i] = nullptr;
+            Condoitems.push_front(std::move(Player.possessions[i]));
           }
         }
       }
@@ -113,11 +112,11 @@ void l_condo()
         for(auto prev = Condoitems.before_begin(); std::next(prev) != Condoitems.end();)
         {
           auto it = std::next(prev);
-          queue_message(std::format("Retrieve {} [ynq] ", itemid(*it)));
+          queue_message(std::format("Retrieve {} [ynq] ", itemid((*it).get())));
           response = (char)mcigetc();
           if(response == 'y')
           {
-            gain_item(*it);
+            gain_item(std::move(*it));
             Condoitems.erase_after(prev);
           }
           else if(response == 'q')
@@ -251,7 +250,7 @@ void cureforpay()
 
 void pacify_guards()
 {
-  for(monster *m : Level->mlist)
+  for(std::unique_ptr<monster> &m : Level->mlist)
   {
     if(m->id == GUARD || (m->id == HISCORE_NPC && m->aux2 == 15))
     { // justiciar
@@ -259,23 +258,23 @@ void pacify_guards()
       m->specialf = M_NO_OP;
       if(m->id == GUARD && m->hp > 0 && m->aux1 > 0)
       {
-        if(Level->site[m->x][m->y].creature == m)
+        if(Level->site[m->x][m->y].creature == m.get())
         {
           Level->site[m->x][m->y].creature = nullptr;
         }
         m->x                             = m->aux1;
         m->y                             = m->aux2;
-        Level->site[m->x][m->y].creature = m;
+        Level->site[m->x][m->y].creature = m.get();
       }
       else if(m->id == HISCORE_NPC && m->hp > 0 && Current_Environment == E_CITY)
       {
-        if(Level->site[m->x][m->y].creature == m)
+        if(Level->site[m->x][m->y].creature == m.get())
         {
           Level->site[m->x][m->y].creature = nullptr;
         }
         m->x                             = 40;
         m->y                             = 62;
-        Level->site[m->x][m->y].creature = m;
+        Level->site[m->x][m->y].creature = m.get();
       }
     }
   }
@@ -1069,7 +1068,6 @@ void l_hovel()
 void l_safe()
 {
   char response;
-  object *newitem;
   int attempt = 0;
   queue_message("You have discovered a safe!");
   queue_message("Pick the lock [p], Force the door [f], or ignore [ESCAPE]");
@@ -1098,9 +1096,9 @@ void l_safe()
       queue_message("You find:");
       do
       {
-        newitem = create_object(difficulty());
-        queue_message(itemid(newitem));
-        gain_item(newitem);
+        std::unique_ptr<object> newitem = create_object(difficulty());
+        queue_message(itemid(newitem.get()));
+        gain_item(std::move(newitem));
       } while(random_range(3) == 1);
     }
     else
@@ -1141,7 +1139,10 @@ void l_safe()
       if(Player.possessions[O_CLOAK])
       {
         queue_message("Your cloak is destroyed!");
-        conform_lost_object(Player.possessions[O_CLOAK]);
+        if(Player.possessions[O_CLOAK])
+        {
+          dispose_lost_objects(Player.possessions[O_CLOAK]->number, Player.possessions[O_CLOAK]);
+        }
         p_damage(10, ACID, "a safe");
       }
       else if(Player.possessions[O_ARMOR])

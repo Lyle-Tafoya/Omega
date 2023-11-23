@@ -29,15 +29,11 @@ extern level TheLevel;
 level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
-/* loads the arena level into Level*/
+// loads the arena level into Level
 void load_arena()
 {
-  int i, j;
   char site;
-  object *box = new object;
   FILE *fd;
-
-  *box = Objects[THINGID + 0];
 
   TempLevel = Level;
   if(ok_to_free(TempLevel))
@@ -57,9 +53,9 @@ void load_arena()
   Level->environment = E_ARENA;
   fd                 = checkfopen(std::format("{}arena.dat", Omegalib), "rb");
   site               = cryptkey("arena.dat");
-  for(j = 0; j < LENGTH; j++)
+  for(int j = 0; j < LENGTH; ++j)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; ++i)
     {
       Level->site[i][j].lstatus    = SEEN + LIT;
       Level->site[i][j].roomnumber = RS_ARENA;
@@ -91,9 +87,7 @@ void load_arena()
   Arena_Monster->x            = 60;
   Arena_Monster->y            = 7;
   Arena_Monster->sense        = 50;
-  m_pickup(Arena_Monster, box);
-  m_status_set(*Arena_Monster, AWAKE);
-  Level->mlist.push_front(Arena_Monster);
+  m_pickup(Arena_Monster, std::make_unique<object>(Objects[THINGID + 0]));
   // hehehehe cackled the dungeon master....
   queue_message("Your opponent holds the only way you can leave!");
   Arena_Monster->hp += Arena_Monster->level * 10;
@@ -104,19 +98,17 @@ void load_arena()
 // make the prime sorceror
 void make_prime(int i, int j)
 {
-  monster *m  = new monster;
-  make_hiscore_npc(m, 10); /* 10 is index for prime */
+  auto m = std::make_unique<monster>();
+  make_hiscore_npc(m.get(), 10); /* 10 is index for prime */
   m->x                       = i;
   m->y                       = j;
-  Level->site[i][j].creature = m;
-  Level->mlist.push_front(m);
+  Level->site[i][j].creature = m.get();
 
   if(Objects[ARTIFACTID + 21].uniqueness != UNIQUE_TAKEN)
   {
-    object *o      = new object;
-    *o             = Objects[ARTIFACTID + 21];
-    m->possessions.push_front(o);
+    m->possessions.push_front(std::make_unique<object>(Objects[ARTIFACTID + 21]));
   }
+  Level->mlist.push_front(std::move(m));
 }
 
 /* loads the sorcereror's circle into Level*/
@@ -263,13 +255,13 @@ void load_circle(int populate)
 // make the archmage
 void make_archmage(int i, int j)
 {
-  monster *m  = new monster;
-  make_hiscore_npc(m, 9); // 9 is index for archmage
+  auto m = std::make_unique<monster>();
+  make_hiscore_npc(m.get(), 9); // 9 is index for archmage
   m->x                       = i;
   m->y                       = j;
-  Level->site[i][j].creature = m;
+  Level->site[i][j].creature = m.get();
   m->specialf                = M_SP_COURT;
-  Level->mlist.push_front(m);
+  Level->mlist.push_front(std::move(m));
 }
 
 // loads the court of the archmage into Level

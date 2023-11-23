@@ -30,15 +30,15 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern interactive_menu *menu;
 
-/* general item functions */
+// general item functions
 
-void i_no_op(object *) {}
+void i_no_op(std::unique_ptr<object> &) {}
 
-void i_nothing(object *) {}
+void i_nothing(std::unique_ptr<object> &) {}
 
-/*  scroll functions */
+//  scroll functions
 
-void i_knowledge(object *o)
+void i_knowledge(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -47,7 +47,7 @@ void i_knowledge(object *o)
   knowledge(o->blessing);
 }
 
-void i_jane_t(object *o)
+void i_jane_t(std::unique_ptr<object> &o)
 {
   int volume = random_range(6);
   int i, j, k;
@@ -111,7 +111,7 @@ void i_jane_t(object *o)
   xredraw();
 }
 
-void i_flux(object *o)
+void i_flux(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -120,8 +120,8 @@ void i_flux(object *o)
   flux(o->blessing);
 }
 
-/* enchantment */
-void i_enchant(object *o)
+// enchantment
+void i_enchant(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -130,8 +130,8 @@ void i_enchant(object *o)
   enchant(o->blessing < 0 ? -1 - o->plus : o->plus + 1);
 }
 
-/* scroll of clairvoyance */
-void i_clairvoyance(object *o)
+// scroll of clairvoyance
+void i_clairvoyance(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -147,7 +147,7 @@ void i_clairvoyance(object *o)
   }
 }
 
-void i_acquire(object *o)
+void i_acquire(std::unique_ptr<object> &o)
 {
   int blessing;
 
@@ -156,11 +156,11 @@ void i_acquire(object *o)
     Objects[o->id].known = 1;
   }
   blessing = o->blessing;
-  *o       = Objects[SCROLLID + 0]; /* blank out the scroll */
+  *o       = Objects[SCROLLID + 0]; // blank out the scroll
   acquire(blessing);
 }
 
-void i_teleport(object *o)
+void i_teleport(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -169,7 +169,7 @@ void i_teleport(object *o)
   p_teleport(o->blessing);
 }
 
-void i_spells(object *o)
+void i_spells(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -179,26 +179,26 @@ void i_spells(object *o)
   learnspell(o->blessing);
 }
 
-/* scroll of blessing */
-void i_bless(object *o)
+// scroll of blessing
+void i_bless(std::unique_ptr<object> &o)
 {
   Objects[o->id].known = 1;
   bless(o->blessing);
 }
 
-/* scroll of wishing */
-void i_wish(object *o)
+// scroll of wishing
+void i_wish(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
     Objects[o->id].known = 1;
   }
   wish(o->blessing);
-  *o = Objects[SCROLLID + 0]; /* blank out the scroll */
+  *o = Objects[SCROLLID + 0]; // blank out the scroll
 }
 
-/* scroll of displacement */
-void i_displace(object *o)
+// scroll of displacement
+void i_displace(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -207,8 +207,8 @@ void i_displace(object *o)
   displace(o->blessing);
 }
 
-/* scroll of deflection */
-void i_deflect(object *o)
+// scroll of deflection
+void i_deflect(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -217,8 +217,8 @@ void i_deflect(object *o)
   deflection(o->blessing);
 }
 
-/* scroll of identification */
-void i_id(object *o)
+// scroll of identification
+void i_id(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -227,10 +227,10 @@ void i_id(object *o)
   identify(o->blessing);
 }
 
-/* potion functions */
+// potion functions
 
-/* potion of healing */
-void i_heal(object *o)
+// potion of healing
+void i_heal(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -243,8 +243,8 @@ void i_heal(object *o)
   }
 }
 
-/* potion of monster detection */
-void i_mondet(object *o)
+// potion of monster detection
+void i_mondet(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -253,8 +253,8 @@ void i_mondet(object *o)
   mondet(o->blessing);
 }
 
-/* potion of object detection */
-void i_objdet(object *o)
+// potion of object detection
+void i_objdet(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -263,8 +263,8 @@ void i_objdet(object *o)
   objdet(o->blessing);
 }
 
-/* potion of neutralize poison */
-void i_neutralize_poison(object *o)
+// potion of neutralize poison
+void i_neutralize_poison(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -279,14 +279,14 @@ void i_neutralize_poison(object *o)
 }
 
 /* potion of sleep */
-void i_sleep_self(object *o)
+void i_sleep_self(std::unique_ptr<object> &o)
 {
   sleep_player(6);
   Objects[o->id].known = 1;
 }
 
 /* potion of speed */
-void i_speed(object *o)
+void i_speed(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -296,7 +296,7 @@ void i_speed(object *o)
 }
 
 /* potion of restoration */
-void i_restore(object *o)
+void i_restore(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -305,7 +305,7 @@ void i_restore(object *o)
   recover_stat(o->blessing);
 }
 
-void i_augment(object *o)
+void i_augment(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -314,7 +314,7 @@ void i_augment(object *o)
   augment(o->blessing);
 }
 
-void i_azoth(object *o)
+void i_azoth(std::unique_ptr<object> &o)
 {
   if(o->plus < 0)
   {
@@ -353,13 +353,13 @@ void i_azoth(object *o)
   }
 }
 
-void i_regenerate(object *o)
+void i_regenerate(std::unique_ptr<object> &o)
 {
   regenerate(o->blessing);
 }
 
 /* boots functions */
-void i_perm_speed(object *o)
+void i_perm_speed(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -406,7 +406,7 @@ void i_perm_speed(object *o)
 }
 
 /* cloak functions */
-void i_perm_displace(object *o)
+void i_perm_displace(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -444,7 +444,7 @@ void i_perm_displace(object *o)
   }
 }
 
-void i_perm_negimmune(object *o)
+void i_perm_negimmune(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -465,7 +465,7 @@ void i_perm_negimmune(object *o)
 
 /* food functions */
 
-void i_food(object *)
+void i_food(std::unique_ptr<object> &)
 {
   switch(random_range(5))
   {
@@ -487,7 +487,7 @@ void i_food(object *)
   }
 }
 
-void i_stim(object *o)
+void i_stim(std::unique_ptr<object> &o)
 {
   queue_message("You feel Hyper!");
   i_speed(o);
@@ -496,19 +496,19 @@ void i_stim(object *o)
   calc_melee();
 }
 
-void i_pow(object *)
+void i_pow(std::unique_ptr<object> &)
 {
   queue_message("You feel a surge of mystic power!");
   Player.mana = 2 * calcmana();
 }
 
-void i_poison_food(object *)
+void i_poison_food(std::unique_ptr<object> &)
 {
   queue_message("This food was contaminated with cyanide!");
   p_poison(random_range(20) + 5);
 }
 
-void i_pepper_food(object *)
+void i_pepper_food(std::unique_ptr<object> &)
 {
   queue_message("You innocently start to chew the szechuan pepper.....");
   queue_message("hot.");
@@ -522,19 +522,19 @@ void i_pepper_food(object *)
   Player.immunity[SLEEP]++;
 }
 
-void i_lembas(object *)
+void i_lembas(std::unique_ptr<object> &)
 {
   heal(10);
   cleanse(0);
   Player.food = 40;
 }
 
-void i_cure(object *o)
+void i_cure(std::unique_ptr<object> &o)
 {
   cure(o->blessing);
 }
 
-void i_immune(object *o)
+void i_immune(std::unique_ptr<object> &o)
 {
   if(o->blessing > 0)
   {
@@ -544,7 +544,7 @@ void i_immune(object *o)
   }
 }
 
-void i_breathing(object *o)
+void i_breathing(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -553,7 +553,7 @@ void i_breathing(object *o)
   breathe(o->blessing);
 }
 
-void i_invisible(object *o)
+void i_invisible(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -562,7 +562,7 @@ void i_invisible(object *o)
   invisible(o->blessing);
 }
 
-void i_perm_invisible(object *o)
+void i_perm_invisible(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -604,7 +604,7 @@ void i_perm_invisible(object *o)
   }
 }
 
-void i_warp(object *o)
+void i_warp(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -613,7 +613,7 @@ void i_warp(object *o)
   warp(o->blessing);
 }
 
-void i_alert(object *o)
+void i_alert(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -622,7 +622,7 @@ void i_alert(object *o)
   }
 }
 
-void i_charge(object *o)
+void i_charge(std::unique_ptr<object> &o)
 {
   int i;
   if(o->blessing > -1)
@@ -651,7 +651,7 @@ void i_charge(object *o)
   }
 }
 
-void i_fear_resist(object *o)
+void i_fear_resist(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
   {
@@ -670,7 +670,7 @@ void i_fear_resist(object *o)
 }
 
 /* use a thieves pick */
-void i_pick(object *o)
+void i_pick(std::unique_ptr<object> &o)
 {
   int dir;
   int ox, oy;
@@ -727,8 +727,8 @@ void i_pick(object *o)
   }
 }
 
-/* use a magic key*/
-void i_key(object *o)
+// use a magic key
+void i_key(std::unique_ptr<object> &o)
 {
   int dir;
   int ox, oy;
@@ -757,7 +757,7 @@ void i_key(object *o)
       if((o->blessing < 0) || (Level->depth == MaxDungeonLevels - 1))
       {
         queue_message("The key disintegrates!");
-        conform_lost_objects(1, o);
+        dispose_lost_objects(1, o);
       }
       else
       {
@@ -771,7 +771,7 @@ void i_key(object *o)
   }
 }
 
-void i_corpse(object *o)
+void i_corpse(std::unique_ptr<object> &o)
 {
   /* WDT HACK: there are some comments in this function which need
    * to be backed up with assert(). */
@@ -867,7 +867,7 @@ void i_corpse(object *o)
   }
 }
 
-void i_accuracy(object *o)
+void i_accuracy(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -877,7 +877,7 @@ void i_accuracy(object *o)
   accuracy(o->blessing);
 }
 
-void i_perm_accuracy(object *o)
+void i_perm_accuracy(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -901,7 +901,7 @@ void i_perm_accuracy(object *o)
   }
 }
 
-void i_hero(object *o)
+void i_hero(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -911,7 +911,7 @@ void i_hero(object *o)
   hero(o->blessing);
 }
 
-void i_perm_hero(object *o)
+void i_perm_hero(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -961,7 +961,7 @@ void i_perm_hero(object *o)
   }
 }
 
-void i_levitate(object *o)
+void i_levitate(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -971,7 +971,7 @@ void i_levitate(object *o)
   levitate(o->blessing);
 }
 
-void i_perm_levitate(object *o)
+void i_perm_levitate(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -1002,7 +1002,7 @@ void i_perm_levitate(object *o)
   }
 }
 
-void i_perm_protection(object *o)
+void i_perm_protection(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -1029,7 +1029,7 @@ void i_perm_protection(object *o)
   calc_melee();
 }
 
-void i_perm_agility(object *o)
+void i_perm_agility(std::unique_ptr<object> &o)
 {
   o->known             = 2;
   Objects[o->id].known = 1;
@@ -1058,7 +1058,7 @@ void i_perm_agility(object *o)
   calc_melee();
 }
 
-void i_truesight(object *o)
+void i_truesight(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -1068,7 +1068,7 @@ void i_truesight(object *o)
   truesight(o->blessing);
 }
 
-void i_perm_truesight(object *o)
+void i_perm_truesight(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -1111,7 +1111,7 @@ void i_perm_truesight(object *o)
   }
 }
 
-void i_illuminate(object *o)
+void i_illuminate(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -1121,7 +1121,7 @@ void i_illuminate(object *o)
   illuminate(o->blessing);
 }
 
-void i_torch_use(object *o)
+void i_torch_use(std::unique_ptr<object> &o)
 {
   if(!o->used || !o->charge)
   {
@@ -1143,7 +1143,7 @@ void i_torch_use(object *o)
   }
 }
 
-void i_torch_unequip(object *o)
+void i_torch_unequip(std::unique_ptr<object> &o)
 {
   if(o->aux)
   {
@@ -1152,7 +1152,7 @@ void i_torch_unequip(object *o)
   }
 }
 
-void i_perm_illuminate(object *o)
+void i_perm_illuminate(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -1169,7 +1169,7 @@ void i_perm_illuminate(object *o)
   }
 }
 
-void i_trap(object *o)
+void i_trap(std::unique_ptr<object> &o)
 {
   Objects[o->id].known = 1;
 
@@ -1191,9 +1191,9 @@ void i_trap(object *o)
   dispose_lost_objects(1, o);
 }
 
-void i_raise_portcullis(object *o)
+void i_raise_portcullis(std::unique_ptr<object> &o)
 {
   l_raise_portcullis();
   queue_message("The box beeps once and explodes in your hands!");
-  conform_lost_objects(1, o);
+  dispose_lost_objects(1, o);
 }

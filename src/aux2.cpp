@@ -31,8 +31,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-extern void item_equip(object *);
-extern void item_unequip(object *);
 extern interactive_menu *menu;
 
 #ifdef SAVE_LEVELS
@@ -138,7 +136,7 @@ void break_weapon()
 {
   if(Player.possessions[O_WEAPON_HAND])
   {
-    queue_message("Your " + itemid(Player.possessions[O_WEAPON_HAND]) + " vibrates in your hand....");
+    queue_message("Your " + itemid(Player.possessions[O_WEAPON_HAND].get()) + " vibrates in your hand....");
     damage_item(Player.possessions[O_WEAPON_HAND]);
   }
 }
@@ -149,8 +147,8 @@ void drop_weapon()
   if(Player.possessions[O_WEAPON_HAND])
   {
     queue_message(std::format("You dropped your {}.", Player.possessions[O_WEAPON_HAND]->objstr));
-    p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND]);
-    conform_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
+    p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND].get());
+    dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
   }
   else
   {
@@ -713,7 +711,7 @@ long true_item_value(object *item)
 /* kill off player if he isn't got the "breathing" status */
 void p_drown()
 {
-  int attempts = 3, i;
+  int attempts = 3;
 
   if(Player.status[BREATHING] > 0)
   {
@@ -750,7 +748,6 @@ void p_drown()
           if(Level->site[Player.x][Player.y].p_locf == L_WATER && !Level->site[Player.x][Player.y].things.empty())
           {
             queue_message("It sinks without a trace.");
-            free_objlist(Level->site[Player.x][Player.y].things);
             Level->site[Player.x][Player.y].things.clear();
           }
           break;
@@ -759,16 +756,15 @@ void p_drown()
           break;
         case 'c':
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          for(i = 0; i < MAXPACK; i++)
+          for(int i = 0; i < MAXPACK; ++i)
           {
             if(Player.pack[i])
             {
               if(Level->site[Player.x][Player.y].p_locf != L_WATER)
               {
-                p_drop_at(Player.x, Player.y, Player.pack[i]->number, Player.pack[i]);
+                p_drop_at(Player.x, Player.y, Player.pack[i]->number, Player.pack[i].get());
               }
-              delete Player.pack[i];
-              Player.pack[i] = nullptr;
+              Player.pack[i].reset();
             }
           }
           if(Level->site[Player.x][Player.y].p_locf == L_WATER)
@@ -787,9 +783,9 @@ void p_drown()
 }
 
 /* the effect of some weapon on monster m, with dmgmod a bonus to damage */
-void weapon_use(int dmgmod, object *weapon, monster *m)
+void weapon_use(int dmgmod, std::unique_ptr<object> &weapon, monster *m)
 {
-  int aux = (!weapon ? -2 : weapon->aux); /* bare hands */
+  int aux = (!weapon ? -2 : weapon->aux); // bare hands
   switch(aux)
   {
     case -2:

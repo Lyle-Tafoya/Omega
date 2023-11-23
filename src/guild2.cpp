@@ -31,13 +31,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 #include <string>
 
-extern void item_unequip(object *);
-
 void l_thieves_guild()
 {
   int fee, count, i, number, done = false, dues = 1000;
   char c, action;
-  object *lockpick;
   queue_message("You have penetrated to the Lair of the Thieves' Guild.");
   if(!nighttime())
   {
@@ -119,9 +116,7 @@ void l_thieves_guild()
               queue_message("As a special bonus, you get a free lockpick.");
               queue_message("You are taught the spell of Object Detection.");
               spell::Spells[spell::OBJECT_DETECTION].known = true;
-              lockpick                                     = new object;
-              *lockpick                                    = Objects[THINGID + 2]; /* lock pick */
-              gain_item(lockpick);
+              gain_item(std::make_unique<object>(Objects[THINGID + 2])); // lockpick
               Player.cash -= dues;
               dataprint();
               Player.guildxp[THIEVES] = 1;
@@ -296,7 +291,7 @@ void l_thieves_guild()
             }
             else
             {
-              long price = 2 * item_value(Player.possessions[i]) / 3;
+              long price = 2 * item_value(Player.possessions[i].get()) / 3;
               queue_message(std::format("I'll give you {} Au each. OK? [yn] ", price));
               if(ynq() == 'y')
               {
@@ -326,9 +321,9 @@ void l_thieves_guild()
             {
               if(Player.pack[i]->blessing > -1)
               {
-                long price = 2 * item_value(Player.pack[i]) / 3;
+                long price = 2 * item_value(Player.pack[i].get()) / 3;
                 queue_message(
-                  std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i]), price)
+                  std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i].get()), price)
                 );
                 if((c = ynq()) == 'y')
                 {
@@ -342,8 +337,7 @@ void l_thieves_guild()
                     {
                       Objects[Player.pack[i]->id].uniqueness = UNIQUE_UNMADE;
                     }
-                    delete Player.pack[i];
-                    Player.pack[i] = nullptr;
+                    Player.pack[i].reset();
                   }
                   calc_melee();
                   dataprint();
@@ -1122,7 +1116,6 @@ void l_sorcerors()
 
 void l_order()
 {
-  object *newitem;
   queue_message("The Headquarters of the Order of Paladins.");
   if((Player.rank[ORDER] == PALADIN) && (Player.level > Justiciarlevel) &&
      gamestatusp(GAVE_STARGEM, GameStatus) && Player.alignment > 300)
@@ -1131,23 +1124,22 @@ void l_order()
     queue_message("The previous Justiciar steps down in your favor.");
     queue_message("You are now the Justiciar of Rampart and the Order!");
     Justiciar = Player.name;
-    std::forward_list<monster *>::iterator it;
+    std::forward_list<std::unique_ptr<monster>>::iterator it;
     // just scan for current Justicar
     for(it = Level->mlist.begin(); it != Level->mlist.end() && ((*it)->id != HISCORE_NPC || (*it)->aux2 != 15); ++it) {}
     if(it != Level->mlist.end() && *it)
     {
       Level->site[(*it)->x][(*it)->y].creature = nullptr;
-      erase_monster(*it);
+      erase_monster(it->get());
       (*it)->hp = -1; // signals "death" -- no credit to player, though
     }
     Justiciarlevel    = Player.level;
     Justiciarbehavior = fixnpc(4);
     save_hiscore_npc(15);
     queue_message("You are awarded a blessed shield of deflection!");
-    newitem           = new object;
-    *newitem          = Objects[SHIELDID + 7]; // shield of deflection
-    newitem->blessing = 9;
-    gain_item(newitem);
+    auto shield      = std::make_unique<object>(Objects[SHIELDID + 7]);
+    shield->blessing = 9;
+    gain_item(std::move(shield)); // Shield of Deflection
     Player.rank[ORDER] = JUSTICIAR;
     Player.maxstr += 5;
     Player.str += 5;
@@ -1196,12 +1188,11 @@ void l_order()
         Player.rank[ORDER]    = GALLANT;
         Player.guildxp[ORDER] = 1;
         setgamestatus(MOUNTED, GameStatus);
-        newitem           = new object;
-        *newitem          = Objects[WEAPONID + 19]; /* spear */
-        newitem->blessing = 9;
-        newitem->plus     = 1;
-        newitem->known    = 2;
-        gain_item(newitem);
+        auto spear      = std::make_unique<object>(Objects[WEAPONID + 19]);
+        spear->blessing = 9;
+        spear->plus     = 1;
+        spear->known    = 2;
+        gain_item(std::move(spear));
       }
     }
   }
@@ -1250,11 +1241,10 @@ void l_order()
       {
         queue_message("You are made a Paladin of the Order!");
         queue_message("You learn the Spell of Heroism and get Mithril Plate!");
-        newitem           = new object;
-        *newitem          = Objects[ARMORID + 11]; /* mithril plate armor */
-        newitem->blessing = 9;
-        newitem->known    = 2;
-        gain_item(newitem);
+        auto armor      = std::make_unique<object>(Objects[ARMORID + 11]);
+        armor->blessing = 9;
+        armor->known    = 2;
+        gain_item(std::move(armor)); // Mithril Plate Armor
         queue_message("To advance you must rescue the Star Gem and return it");
         queue_message("to its owner, the LawBringer, who resides on Star Peak.");
         queue_message("The Star Gem was stolen by the cursed Prime Sorceror,");
@@ -1280,10 +1270,9 @@ void l_order()
         Player.rank[ORDER] = CHEVALIER;
         queue_message("You are made a Chevalier of the Order!");
         queue_message("You are given a Mace of Disruption!");
-        newitem        = new object;
-        *newitem       = Objects[WEAPONID + 25]; /* mace of disruption */
-        newitem->known = 2;
-        gain_item(newitem);
+        auto mace = std::make_unique<object>(Objects[WEAPONID + 25]);
+        mace->known = 2;
+        gain_item(std::move(mace)); // Mace of Disruption
       }
     }
     else if(Player.rank[ORDER] == GALLANT)
@@ -1303,10 +1292,9 @@ void l_order()
         queue_message("You hear a nasal monotone in the distance....");
         queue_message("'...and the number of thy counting shall be 3...'");
         Player.rank[ORDER] = GUARDIAN;
-        newitem            = new object;
-        *newitem           = Objects[ARTIFACTID + 7]; /* holy hand grenade. */
-        newitem->known     = 2;
-        gain_item(newitem);
+        auto grenade   = std::make_unique<object>(Objects[ARTIFACTID + 7]);
+        grenade->known = 2;
+        gain_item(std::move(grenade)); // Holy Hand Grenade
       }
     }
   }

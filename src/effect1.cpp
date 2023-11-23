@@ -26,9 +26,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <cassert>
 #include <format>
 
-extern void item_equip(object *);
-extern void item_unequip(object *);
-
 /* enchant */
 void enchant(int delta)
 {
@@ -50,7 +47,7 @@ void enchant(int delta)
       {
         queue_message("Your ");
       }
-      queue_message(itemid(Player.possessions[i]));
+      queue_message(itemid(Player.possessions[i].get()));
       queue_message(" glows, but the glow flickers out...");
     }
     else
@@ -64,7 +61,7 @@ void enchant(int delta)
       {
         queue_message("Your ");
       }
-      queue_message(itemid(Player.possessions[i]));
+      queue_message(itemid(Player.possessions[i].get()));
       queue_message(" radiates an aura of mundanity!");
       Player.possessions[i]->plus       = 0;
       Player.possessions[i]->charge     = -1;
@@ -108,7 +105,7 @@ void enchant(int delta)
       else
       {
         queue_message("The enchantment spell enfolds the ");
-        queue_message(itemid(Player.possessions[i]));
+        queue_message(itemid(Player.possessions[i].get()));
         queue_message("and the potent enchantment of the Artifact causes a backlash!");
         manastorm(Player.x, Player.y, Player.possessions[i]->level * 5);
       }
@@ -166,7 +163,7 @@ void bless(int blessing)
       {
         queue_message("your ");
       }
-      queue_message(itemid(Player.possessions[index]));
+      queue_message(itemid(Player.possessions[index].get()));
       if(Player.possessions[index]->used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
@@ -591,13 +588,13 @@ void fball(int fx, int fy, int tx, int ty, int dmg)
 
 void mondet(int blessing)
 {
-  for(monster *m : Level->mlist)
+  for(std::unique_ptr<monster> &m : Level->mlist)
   {
     if(m->hp > 0)
     {
       if(blessing > -1)
       {
-        plotmon(m);
+        plotmon(m.get());
       }
       else
       {
@@ -662,7 +659,7 @@ void identify(int blessing)
         Objects[Player.possessions[index]->id].known = 1;
       }
       queue_message("Identified: ");
-      queue_message(itemid(Player.possessions[index]));
+      queue_message(itemid(Player.possessions[index].get()));
     }
   }
   else if(blessing < 0)
@@ -853,13 +850,13 @@ void acquire(int blessing)
     {
       queue_message("Smoke drifts out of your pack.... ");
       queue_message("Destroyed: ");
-      queue_message(itemid(Player.possessions[index]));
+      queue_message(itemid(Player.possessions[index].get()));
       dispose_lost_objects(1, Player.possessions[index]);
     }
   }
   else
   {
-    object *newthing = new object;
+    auto newthing = std::make_unique<object>();
     newthing->id     = -1;
     if(gamestatusp(CHEATED, GameStatus))
     {
@@ -888,7 +885,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_potion(newthing, id);
+          make_potion(newthing.get(), id);
         }
         break;
       case(SCROLL & 0xff):
@@ -906,7 +903,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_scroll(newthing, id);
+          make_scroll(newthing.get(), id);
         }
         break;
       case(RING & 0xff):
@@ -924,7 +921,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_ring(newthing, id);
+          make_ring(newthing.get(), id);
         }
         break;
       case(STICK & 0xff):
@@ -942,7 +939,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_stick(newthing, id);
+          make_stick(newthing.get(), id);
         }
         break;
       case(ARMOR & 0xff):
@@ -960,7 +957,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_armor(newthing, id);
+          make_armor(newthing.get(), id);
         }
         break;
       case(SHIELD & 0xff):
@@ -978,7 +975,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_shield(newthing, id);
+          make_shield(newthing.get(), id);
         }
         break;
       case(WEAPON & 0xff):
@@ -996,7 +993,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_weapon(newthing, id);
+          make_weapon(newthing.get(), id);
         }
         break;
       case(BOOTS & 0xff):
@@ -1014,7 +1011,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_boots(newthing, id);
+          make_boots(newthing.get(), id);
         }
         break;
       case(CLOAK & 0xff):
@@ -1032,7 +1029,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_cloak(newthing, id);
+          make_cloak(newthing.get(), id);
         }
         break;
       case(FOOD & 0xff):
@@ -1050,7 +1047,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_food(newthing, id);
+          make_food(newthing.get(), id);
         }
         break;
       case(THING & 0xff):
@@ -1068,7 +1065,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_thing(newthing, id);
+          make_thing(newthing.get(), id);
         }
         break;
       case(ARTIFACT & 0xff):
@@ -1086,7 +1083,7 @@ void acquire(int blessing)
         }
         else
         {
-          make_artifact(newthing, id);
+          make_artifact(newthing.get(), id);
         }
         break;
       default:
@@ -1101,11 +1098,7 @@ void acquire(int blessing)
         Objects[id].known = 1;
       }
       newthing->used = false;
-      gain_item(newthing);
-    }
-    else
-    {
-      delete newthing;
+      gain_item(std::move(newthing));
     }
   }
 }

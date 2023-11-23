@@ -739,7 +739,7 @@ void breathe(int blessing)
   }
 }
 
-void i_chaos(object *)
+void i_chaos(std::unique_ptr<object> &)
 {
   if(Player.alignment < 0)
   {
@@ -754,7 +754,7 @@ void i_chaos(object *)
   }
 }
 
-void i_law(object *)
+void i_law(std::unique_ptr<object> &)
 {
   if(Player.alignment > 0)
   {

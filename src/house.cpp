@@ -32,10 +32,8 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 // makes a log npc for houses and hovels
 void make_house_npc(int i, int j)
 {
-  object *ob;
-  monster *m = new monster;
-  *m         = Monsters[NPC];
-  make_log_npc(m);
+  auto m = std::make_unique<monster>(Monsters[NPC]);
+  make_log_npc(m.get());
   if(m->id == NPC)
   {
     queue_message("You detect signs of life in this house.");
@@ -47,9 +45,8 @@ void make_house_npc(int i, int j)
   // if not == NPC, then we got a ghost off the npc list
   m->x                       = i;
   m->y                       = j;
-  Level->site[i][j].creature = m;
+  Level->site[i][j].creature = m.get();
   m->click                   = (Tick + 1) % 50;
-  Level->mlist.push_front(m);
   m_status_set(*m, HOSTILE);
   if(nighttime())
   {
@@ -61,24 +58,20 @@ void make_house_npc(int i, int j)
   }
   if(m->startthing > -1)
   {
-    ob  = new object;
-    *ob = Objects[m->startthing];
-    m_pickup(m, ob);
+    m_pickup(m.get(), std::make_unique<object>(Objects[m->startthing]));
   }
+  Level->mlist.push_front(std::move(m));
 }
-
 // makes a hiscore npc for mansions
 void make_mansion_npc(int i, int j)
 {
-  monster *m = new monster;
-  *m         = Monsters[NPC];
-  make_hiscore_npc(m, random_range(14) + 1);
+  auto m = std::make_unique<monster>(Monsters[NPC]);
+  make_hiscore_npc(m.get(), random_range(14) + 1);
   queue_message("You detect signs of life in this house.");
   m->x                       = i;
   m->y                       = j;
-  Level->site[i][j].creature = m;
+  Level->site[i][j].creature = m.get();
   m->click                   = (Tick + 1) % 50;
-  Level->mlist.push_front(m);
   m_status_set(*m, HOSTILE);
   if(nighttime())
   {
@@ -88,9 +81,10 @@ void make_mansion_npc(int i, int j)
   {
     m_status_set(*m, AWAKE);
   }
+  Level->mlist.push_front(std::move(m));
 }
 
-/* loads the house level into Level*/
+// loads the house level into Level
 void load_house(int kind, int populate)
 {
   int i, j;
@@ -279,7 +273,7 @@ void load_house(int kind, int populate)
           Level->site[i][j].roomnumber = RS_CORRIDOR;
           if(populate)
           {
-            make_site_monster(i, j, AUTO_MINOR); /* automaton */
+            make_site_monster(i, j, AUTO_MINOR); // automaton
           }
           break;
       }

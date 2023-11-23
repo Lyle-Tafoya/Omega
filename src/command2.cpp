@@ -36,7 +36,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <thread>
 #include <utility>
 
-extern void item_use(object *);
 extern interactive_menu *menu;
 extern std::string get_username();
 
@@ -85,7 +84,6 @@ void rest()
 void peruse()
 {
   int index;
-  object *obj;
 
   if(Player.status[BLINDED] > 0)
   {
@@ -105,11 +103,11 @@ void peruse()
     }
     else
     {
-      obj = Player.possessions[index];
+      std::unique_ptr<object> &obj = Player.possessions[index];
       if(obj->objchar != SCROLL)
       {
         queue_message("There's nothing written on ");
-        queue_message(itemid(obj));
+        queue_message(itemid(obj.get()));
       }
       else
       {
@@ -123,21 +121,19 @@ void peruse()
 
 void quaff()
 {
-  int index;
-  object *obj;
   queue_message("Quaff --");
-  index = getitem(POTION);
+  int index = getitem(POTION);
   if(index == ABORT)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else
   {
-    obj = Player.possessions[index];
+    std::unique_ptr<object> &obj = Player.possessions[index];
     if(obj->objchar != POTION)
     {
       queue_message("You can't drink ");
-      queue_message(itemid(obj));
+      queue_message(itemid(obj.get()));
     }
     else
     {
@@ -186,22 +182,19 @@ void activate()
 
 void eat()
 {
-  int index;
-  object *obj;
-
   queue_message("Eat --");
-  index = getitem(FOOD);
+  int index = getitem(FOOD);
   if(index == ABORT)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else
   {
-    obj = Player.possessions[index];
-    if((obj->objchar != FOOD) && (obj->objchar != CORPSE))
+    std::unique_ptr<object> &obj = Player.possessions[index];
+    if(obj->objchar != FOOD && obj->objchar != CORPSE)
     {
       queue_message("You can't eat ");
-      queue_message(itemid(obj));
+      queue_message(itemid(obj.get()));
     }
     else
     {
@@ -290,7 +283,7 @@ void drop_pack_item()
   };
   for(int i = 0; i < Player.packptr; ++i)
   {
-    object *pack_item = Player.pack[i];
+    object *pack_item = Player.pack[i].get();
     switch(pack_item->objchar)
     {
       case FOOD:
@@ -362,13 +355,13 @@ void drop_pack_item()
     }
   } while((player_input < 'a' || player_input > 'a' + Player.packptr - 1));
   int index    = player_input - 'a';
-  object *item = Player.pack[index];
+  object *item = Player.pack[index].get();
+  p_drop_at(Player.x, Player.y, item->number, item);
   for(int i = index; i < Player.packptr - 1; ++i)
   {
-    Player.pack[i] = Player.pack[i + 1];
+    Player.pack[i] = std::move(Player.pack[i + 1]);
   }
-  Player.pack[--Player.packptr] = nullptr;
-  p_drop_at(Player.x, Player.y, item->number, item);
+  Player.pack[--Player.packptr].reset();
   calc_melee();
 }
 
@@ -386,24 +379,24 @@ void drop_equipped_item()
     {
       drop_money();
     }
-    else if((!Player.possessions[index]->used) || (!cursed(Player.possessions[index])))
+    else if(!Player.possessions[index]->used || !cursed(Player.possessions[index].get()))
     {
       if(Player.possessions[index]->number == 1)
       {
-        p_drop_at(Player.x, Player.y, 1, Player.possessions[index]);
-        conform_lost_objects(1, Player.possessions[index]);
+        p_drop_at(Player.x, Player.y, 1, Player.possessions[index].get());
+        dispose_lost_objects(1, Player.possessions[index]);
       }
       else
       {
         int n = getnumber(Player.possessions[index]->number);
-        p_drop_at(Player.x, Player.y, n, Player.possessions[index]);
-        conform_lost_objects(n, Player.possessions[index]);
+        p_drop_at(Player.x, Player.y, n, Player.possessions[index].get());
+        dispose_lost_objects(n, Player.possessions[index]);
       }
     }
     else
     {
       queue_message("You can't seem to get rid of: ");
-      queue_message(itemid(Player.possessions[index]));
+      queue_message(itemid(Player.possessions[index].get()));
     }
   }
   calc_melee();
@@ -471,7 +464,6 @@ void talk()
 void disarm()
 {
   int x, y, index = 0;
-  object *o;
 
   queue_message("Disarm -- ");
 
@@ -501,7 +493,7 @@ void disarm()
         queue_message("You disarmed the trap!");
         if(random_range(100) < Player.dex + Player.rank[THIEVES] * 10)
         {
-          o = new object;
+          auto o = std::make_unique<object>();
           switch(Level->site[x][y].p_locf)
           {
             case L_TRAP_DART:
@@ -532,8 +524,7 @@ void disarm()
               *o = Objects[THINGID + 25];
               break;
             default:
-              delete o;
-              o = nullptr;
+              o.reset();
               break;
           }
           if(o)
@@ -541,7 +532,7 @@ void disarm()
             queue_message("You manage to retrieve the trap components!");
             Objects[o->id].known = 1;
             o->known             = 1;
-            gain_item(o);
+            gain_item(std::move(o));
             gain_experience(25);
           }
         }
@@ -571,7 +562,6 @@ void give()
   int index;
   int dx, dy, dindex = 0;
   monster *m;
-  object *obj;
 
   queue_message("Give to monster --");
   dindex = getdir();
@@ -605,21 +595,20 @@ void give()
       {
         give_money(m);
       }
-      else if(!cursed(Player.possessions[index]))
+      else if(!cursed(Player.possessions[index].get()))
       {
-        obj       = new object;
-        *obj      = *(Player.possessions[index]);
+        auto obj = std::make_unique<object>(*Player.possessions[index]);
         obj->used = false;
-        conform_lost_objects(1, Player.possessions[index]);
         obj->number = 1;
-        queue_message(std::format("Given: {}.", itemid(obj)));
-        givemonster(m, obj);
+        dispose_lost_objects(1, Player.possessions[index]);
+        queue_message(std::format("Given: {}.", itemid(obj.get())));
+        givemonster(m, std::move(obj));
         calc_melee();
       }
       else
       {
         queue_message("You can't even give away: ");
-        queue_message(itemid(Player.possessions[index]));
+        queue_message(itemid(Player.possessions[index].get()));
       }
     }
   }
@@ -628,9 +617,6 @@ void give()
 /* zap a wand, of course */
 void zapwand()
 {
-  int index;
-  object *obj;
-
   if(Player.status[AFRAID] > 0)
   {
     queue_message("You are so terror-stricken you can't hold a wand straight!");
@@ -638,18 +624,18 @@ void zapwand()
   else
   {
     queue_message("Zap --");
-    index = getitem(STICK);
+    int index = getitem(STICK);
     if(index == ABORT)
     {
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
     {
-      obj = Player.possessions[index];
+      std::unique_ptr<object> &obj = Player.possessions[index];
       if(obj->objchar != STICK)
       {
         queue_message("You can't zap: ");
-        queue_message(itemid(obj));
+        queue_message(itemid(obj.get()));
       }
       else if(obj->charge < 1)
       {
@@ -919,19 +905,16 @@ void setoptions()
 /* name an item */
 void callitem()
 {
-  int index;
-  object *obj;
-
   setgamestatus(SKIP_MONSTERS, GameStatus);
   queue_message("Call --");
-  index = getitem(NULL_ITEM);
+  int index = getitem(NULL_ITEM);
   if(index == CASHVALUE)
   {
     queue_message("Can't rename cash!");
   }
   else if(index != ABORT)
   {
-    obj = Player.possessions[index];
+    object *obj = Player.possessions[index].get();
     if(obj->known)
     {
       queue_message("That item is already identified!");
@@ -1176,18 +1159,15 @@ void bash_location()
 /* attempt destroy an item */
 void bash_item()
 {
-  int item;
-  object *obj;
-
   queue_message("Destroy an item --");
-  item = getitem(NULL_ITEM);
+  int item = getitem(NULL_ITEM);
   if(item == CASHVALUE)
   {
     queue_message("Can't destroy cash!");
   }
   else if(item != ABORT)
   {
-    obj = Player.possessions[item];
+    std::unique_ptr<object> &obj = Player.possessions[item];
     if(Player.str + random_range(20) > obj->fragility + random_range(20))
     {
       int item_level = obj->level;
@@ -1400,10 +1380,10 @@ void moveplayer(int dx, int dy)
       {
         if(!Level->site[Player.x][Player.y].things.empty())
         {
-          std::forward_list<object *> &item_list = Level->site[Player.x][Player.y].things;
+          std::forward_list<std::unique_ptr<object>> &item_list = Level->site[Player.x][Player.y].things;
           if(std::next(item_list.begin()) == item_list.end())
           {
-            queue_message("You see here a " + itemid(item_list.front()) + ".");
+            queue_message("You see here a " + itemid(item_list.front().get()) + ".");
           }
           else
           {
@@ -1412,7 +1392,7 @@ void moveplayer(int dx, int dy)
             for(auto it = item_list.begin(); it != item_list.end();)
             {
               item_characters += static_cast<char>((*it)->objchar & A_CHARTEXT);
-              items += itemid(*it);
+              items += itemid((*it).get());
               if(++it != item_list.end())
               {
                 items += ", ";
@@ -1455,7 +1435,7 @@ void moveplayer(int dx, int dy)
 /* handle a h,j,k,l, etc. */
 void movepincountry(int dx, int dy)
 {
-  int i, takestime = true;
+  bool takestime = true;
   if((Player.maxweight < Player.itemweight) && random_range(2) && (!Player.status[LEVITATING]))
   {
     if(gamestatusp(MOUNTED, GameStatus))
@@ -1470,13 +1450,9 @@ void movepincountry(int dx, int dy)
       {
         queue_message("You remember (too late) that the contents of your pack");
         queue_message("were kept in your steed's saddlebags!");
-        for(i = 0; i < MAXPACK; i++)
+        for(int i = 0; i < MAXPACK; ++i)
         {
-          if(Player.pack[i])
-          {
-            delete Player.pack[i];
-          }
-          Player.pack[i] = nullptr;
+          Player.pack[i].reset();
         }
         Player.packptr = 0;
         calc_melee();

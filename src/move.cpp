@@ -27,8 +27,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <chrono>
 #include <thread>
 
-extern void item_unequip(object *);
-
 /* various miscellaneous location functions */
 void l_water()
 {

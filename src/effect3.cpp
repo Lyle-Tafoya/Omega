@@ -28,8 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-extern void item_equip(object *);
-extern void item_unequip(object *);
 extern interactive_menu *menu;
 
 int list_monsters()
@@ -95,25 +93,28 @@ void summon(int blessing, int id)
 
   if(!looking)
   {
+    std::unique_ptr<monster> m;
     if((blessing == 0) && (id < 0))
     {
-      Level->site[x][y].creature = m_create(x, y, WANDERING, difficulty());
+      m = m_create(x, y, WANDERING, difficulty());
+      Level->site[x][y].creature = m.get();
     }
     else
     {
-      Level->site[x][y].creature = make_creature(id);
+      m = make_creature(id);
+      Level->site[x][y].creature = m.get();
     }
-    Level->site[x][y].creature->x = x;
-    Level->site[x][y].creature->y = y;
+    m->x = x;
+    m->y = y;
     if(blessing > 0)
     {
-      m_status_reset(*Level->site[x][y].creature, HOSTILE);
+      m_status_reset(*m, HOSTILE);
     }
     else if(blessing < 0)
     {
-      m_status_set(*Level->site[x][y].creature, HOSTILE);
+      m_status_set(*m, HOSTILE);
     }
-    Level->mlist.push_front(Level->site[x][y].creature);
+    Level->mlist.push_front(std::move(m));
   }
 }
 
@@ -213,11 +214,11 @@ void annihilate(int blessing)
     else
     {
       queue_message("Thousands of bolts of lightning flash throughout the level!!!");
-      for(monster *m : Level->mlist)
+      for(std::unique_ptr<monster> &m : Level->mlist)
       {
         if(m && m->hp > 0)
         {
-          m_death(m);
+          m_death(m.get());
         }
       }
     }
@@ -246,7 +247,7 @@ void sleep_monster(int blessing)
   else if(blessing > 0)
   {
     queue_message("A silence pervades the area.");
-    for(monster *m : Level->mlist)
+    for(std::unique_ptr<monster> &m : Level->mlist)
     {
       m_status_reset(*m, AWAKE);
       m->wakeup = 0;
@@ -335,7 +336,7 @@ void clairvoyance(int vision)
 
 void aggravate()
 {
-  for(monster *m : Level->mlist)
+  for(std::unique_ptr<monster> &m : Level->mlist)
   {
     m_status_set(*m, AWAKE);
     m_status_set(*m, HOSTILE);
@@ -673,7 +674,7 @@ void p_poison(int toxicity)
 
 void apport(int blessing)
 {
-  int i, index, x = Player.x, y = Player.y;
+  int x = Player.x, y = Player.y;
   if(blessing > -1)
   {
     queue_message("Apport from:");
@@ -691,13 +692,13 @@ void apport(int blessing)
   else
   {
     queue_message("You have a sense of loss.");
-    for(i = 0; i < abs(blessing); i++)
+    for(int i = 0; i < abs(blessing); ++i)
     {
-      index = random_item();
+      int index = random_item();
       if(index != ABORT)
       {
-        drop_at(x, y, Player.possessions[index]);
-        dispose_lost_objects(Player.possessions[index]->number, Player.possessions[index]);
+        conform_unused_object(Player.possessions[index]);
+        drop_at(x, y, std::move(Player.possessions[index]));
       }
     }
   }
@@ -991,16 +992,15 @@ void truesight(int blessing)
 
 void dispel(int blessing)
 {
-  int i, x = Player.x, y = Player.y;
-  object *o;
+  int x = Player.x, y = Player.y;
   if(blessing > -1)
   {
     setspot(x, y);
     if((x == Player.x) && (y == Player.y))
     {
-      for(i = 0; i < MAXITEMS; i++)
+      for(int i = 0; i < MAXITEMS; i++)
       {
-        o = Player.possessions[i];
+        std::unique_ptr<object> &o = Player.possessions[i];
         if(o)
         {
           if((o->used) && (o->blessing < 0))
@@ -1011,7 +1011,7 @@ void dispel(int blessing)
               item_unequip(o);
               resetgamestatus(SUPPRESS_PRINTING, GameStatus);
               queue_message("You hear a sighing sound from");
-              queue_message(itemid(o));
+              queue_message(itemid(o.get()));
               o->blessing = 0;
               setgamestatus(SUPPRESS_PRINTING, GameStatus);
               item_equip(o);
@@ -1020,7 +1020,7 @@ void dispel(int blessing)
             else
             {
               queue_message("You hear dark laughter from");
-              queue_message(itemid(o));
+              queue_message(itemid(o.get()));
             }
           }
         }
@@ -1226,7 +1226,6 @@ void hellfire(int x, int y, int blessing)
         queue_message("and is utterly annihilated. Only a greasy spot remains...");
         m->corpsestr = "a greasy spot";
         m->id        = 0;
-        free_objlist(m->possessions);
         m->possessions.clear();
       }
       else

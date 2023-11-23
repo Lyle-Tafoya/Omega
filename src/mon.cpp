@@ -28,7 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <sstream>
 #include <string>
 
-extern bool merge_item_with_list(std::forward_list<object *> &l, object *o, int n);
 extern std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode);
 
 void monster_action(monster *m, int action)
@@ -414,7 +413,7 @@ void m_pulse(monster *m)
     {
       while(!Level->site[m->x][m->y].things.empty())
       {
-        m_pickup(m, Level->site[m->x][m->y].things.front());
+        m_pickup(m, std::move(Level->site[m->x][m->y].things.front()));
         Level->site[m->x][m->y].things.pop_front();
       }
     }
@@ -444,24 +443,22 @@ void movemonster(monster *m, int newx, int newy)
 }
 
 // give object o to monster m
-void m_pickup(monster *m, object *o)
+void m_pickup(monster *m, std::unique_ptr<object> o)
 {
-  m->possessions.push_front(o);
+  m->possessions.push_front(std::move(o));
 }
 
 void m_dropstuff(monster *m)
 {
-  std::forward_list<object *> &drop_pile = Level->site[m->x][m->y].things;
-  for(object *o : m->possessions)
+  std::forward_list<std::unique_ptr<object>> &drop_pile = Level->site[m->x][m->y].things;
+  while(!m->possessions.empty())
   {
-    if(merge_item_with_list(drop_pile, o, o->number))
+    std::unique_ptr<object> &o = m->possessions.front();
+    if(!merge_item_with_list(drop_pile, o.get(), o->number))
     {
-      delete o;
+      drop_pile.push_front(std::move(o));
     }
-    else
-    {
-      drop_pile.push_front(o);
-    }
+    m->possessions.pop_front();
   }
 }
 
@@ -498,13 +495,11 @@ void strengthen_death(monster *m)
   m->speed       = std::max(m->speed - 1, 1);
   m->movef       = M_MOVE_SMART;
   m->hp          = std::min(100000, 100 + m->dmg * 10);
-  object *scythe = new object{Objects[WEAPONID + 39]};
-  m->possessions.push_front(scythe);
+  m->possessions.push_front(std::make_unique<object>(Objects[WEAPONID + 39]));
 }
 
 void m_death(monster *m)
 {
-  object *corpse;
   int x, y;
 
   m->hp = -1;
@@ -571,9 +566,9 @@ void m_death(monster *m)
     }
     if(random_range(2) || (m->uniqueness != COMMON))
     {
-      corpse = new object;
-      make_corpse(corpse, m);
-      drop_at(m->x, m->y, corpse);
+      auto corpse = std::make_unique<object>();
+      make_corpse(corpse.get(), m);
+      drop_at(m->x, m->y, std::move(corpse));
     }
     plotspot(m->x, m->y, false);
     switch(m->id)
@@ -658,14 +653,14 @@ void m_death(monster *m)
             Player.alignment -= 100;
             if(!gamestatusp(DESTROYED_ORDER, GameStatus))
             {
-              std::forward_list<object *> &item_list = Level->site[m->x][m->y].things;
-              object *badge = nullptr;
+              std::forward_list<std::unique_ptr<object>> &item_list = Level->site[m->x][m->y].things;
+              std::unique_ptr<object> badge;
               for(auto prev = item_list.before_begin(); std::next(prev) != item_list.end(); ++prev)
               {
                 auto it = std::next(prev);
                 if((*it)->id == THINGID + 16)
                 {
-                  badge = *it;
+                  badge = std::move(*it);
                   item_list.erase_after(prev);
                   break;
                 }
@@ -674,7 +669,7 @@ void m_death(monster *m)
               Justiciarbehavior = 2911;
               queue_message("In the distance you hear a trumpet. A Servant of Law");
               // promote one of the city guards to be justiciar
-              std::forward_list<monster *>::iterator it;
+              std::forward_list<std::unique_ptr<monster>>::iterator it;
               for(it = City->mlist.begin(); it != City->mlist.end(); ++it)
               {
                 if((*it)->id == GUARD && (*it)->hp > 0)
@@ -684,12 +679,12 @@ void m_death(monster *m)
               }
               if(it != City->mlist.end())
               {
-                monster *guard = *it;
+                monster *guard = it->get();
                 if(badge)
                 {
                   queue_message("materializes, sheds a tear, picks up the badge, and "
                                 "leaves.");
-                  m_pickup(guard, badge);
+                  m_pickup(guard, std::move(badge));
                 }
                 else
                 {
@@ -795,7 +790,6 @@ void monster_talk(monster *m)
 void make_hiscore_npc(monster *npc, int npcid)
 {
   int st = -1;
-  object *ob;
   *npc      = Monsters[HISCORE_NPC];
   npc->aux2 = npcid;
   /* each of the high score npcs can be created here */
@@ -899,9 +893,7 @@ void make_hiscore_npc(monster *npc, int npcid)
   }
   if(st > -1 && Objects[st].uniqueness == UNIQUE_MADE)
   {
-    ob  = new object;
-    *ob = Objects[st];
-    m_pickup(npc, ob);
+    m_pickup(npc, std::make_unique<object>(Objects[st]));
   }
   npc->monstring = npc_name;
   npc->corpsestr = std::format("The body of {}", npc_name);

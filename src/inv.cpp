@@ -29,34 +29,32 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-extern void item_equip(object *);
-extern void item_unequip(object *);
 extern interactive_menu *menu;
 
 // returns some money from player back into "money" item.
 // for giving and dropping money
-object *detach_money()
+std::unique_ptr<object> detach_money()
 {
-  long c;
-  object *cash = nullptr;
-  c        = get_money(Player.cash);
-  if(c != ABORT)
+  long c = get_money(Player.cash);
+  if(c == ABORT)
+  {
+    return nullptr;
+  }
+  else
   {
     Player.cash -= c;
-    cash = new object;
-    make_cash(cash, difficulty());
+    auto cash = std::make_unique<object>();
+    make_cash(cash.get(), difficulty());
     cash->basevalue = c;
+    return cash;
   }
-  return (cash);
 }
 
-/* drops money, heh heh */
+// drops money, heh heh
 void drop_money()
 {
-  object *money;
 
-  /* WDT HACK!  Let me guess -- this is yet another memory leak, right? */
-  money = detach_money();
+  std::unique_ptr<object> money = detach_money();
   if(money)
   {
     if(Current_Environment == E_CITY)
@@ -66,7 +64,7 @@ void drop_money()
     }
     else
     {
-      drop_at(Player.x, Player.y, money);
+      drop_at(Player.x, Player.y, std::move(money));
     }
   }
   else
@@ -75,20 +73,19 @@ void drop_money()
   }
 }
 
-/* gets a legal amount of money or ABORT */
+// gets a legal amount of money or ABORT
 long get_money(long limit)
 {
-  long c;
   queue_message("How much? ");
-  c = parsenum();
-  if(c > limit)
+  long c = parsenum();
+  if(c > limit || c <= 0)
   {
     queue_message("Forget it, buddy.");
-    return (ABORT);
+    return ABORT;
   }
   else
   {
-    return (c);
+    return c;
   }
 }
 
@@ -97,10 +94,10 @@ void pickup_at(int x, int y)
 {
   resetgamestatus(FAST_MOVE, GameStatus);
 
-  std::forward_list<object *> &object_list = Level->site[x][y].things;
+  std::forward_list<std::unique_ptr<object>> &object_list = Level->site[x][y].things;
   if(!object_list.empty() && std::next(object_list.begin()) == object_list.end())
   {
-    gain_item(object_list.front());
+    gain_item(std::move(object_list.front()));
     object_list.pop_front();
   }
   else
@@ -108,11 +105,11 @@ void pickup_at(int x, int y)
     for(auto prev = object_list.before_begin(); std::next(prev) != object_list.end();)
     {
       auto it = std::next(prev);
-      queue_message(std::format("Pick up: {} [ynq] ", itemid(*it)));
+      queue_message(std::format("Pick up: {} [ynq] ", itemid(it->get())));
       char player_input = ynq();
       if(player_input == 'y')
       {
-        gain_item(*it);
+        gain_item(std::move(*it));
         object_list.erase_after(prev);
       }
       else if(player_input == 'q')
@@ -193,9 +190,9 @@ int objequal(object *o, object *p)
   }
 }
 
-bool merge_item_with_list(std::forward_list<object *> &l, object *o, int n)
+bool merge_item_with_list(std::forward_list<std::unique_ptr<object>> &l, object *o, int n)
 {
-  for(object *list_object : l)
+  for(std::unique_ptr<object> &list_object : l)
   {
     if(!list_object)
     {
@@ -206,7 +203,7 @@ bool merge_item_with_list(std::forward_list<object *> &l, object *o, int n)
       list_object->basevalue += o->basevalue;
       return true;
     }
-    else if(objequal(list_object, o) && list_object->objchar != STICK)
+    else if(objequal(list_object.get(), o) && list_object->objchar != STICK)
     {
       list_object->number += n;
       return true;
@@ -217,19 +214,18 @@ bool merge_item_with_list(std::forward_list<object *> &l, object *o, int n)
 
 // put all of o on objlist at x,y on Level->depth
 // Not necessarily dropped by character; just dropped...
-void drop_at(int x, int y, object *o)
+void drop_at(int x, int y, std::unique_ptr<object> o)
 {
   if(Current_Environment != E_COUNTRYSIDE)
   {
     if((Level->site[x][y].locchar != VOID_CHAR) && (Level->site[x][y].locchar != ABYSS))
     {
-      if(merge_item_with_list(Level->site[x][y].things, o, o->number))
+      if(merge_item_with_list(Level->site[x][y].things, o.get(), o->number))
       {
         return;
       }
-      object *cpy = new object{*o};
-      cpy->used   = false;
-      Level->site[x][y].things.push_front(cpy);
+      o->used = false;
+      Level->site[x][y].things.push_front(std::move(o));
     }
     else if(Level->site[x][y].p_locf == L_VOID_STATION)
     {
@@ -250,10 +246,10 @@ void p_drop_at(int x, int y, int n, object *o)
       {
         return;
       }
-      object *cpy = new object{*o};
+      auto cpy = std::make_unique<object>(*o);
       cpy->used   = false;
       cpy->number = n;
-      Level->site[x][y].things.push_front(cpy);
+      Level->site[x][y].things.push_front(std::move(cpy));
     }
     else if(Level->site[x][y].p_locf == L_VOID_STATION)
     {
@@ -427,22 +423,20 @@ const std::string cashstr()
 
 void give_money(monster *m)
 {
-  object *cash;
-
-  cash = detach_money();
+  std::unique_ptr<object> cash = detach_money();
   if(!cash)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else
   {
-    givemonster(m, cash);
+    givemonster(m, std::move(cash));
   }
 }
 
-void givemonster(monster *m, object *o)
+void givemonster(monster *m, std::unique_ptr<object> o)
 {
-  /* special case -- give gem to LawBringer */
+  // special case -- give gem to LawBringer
   if((m->id == LAWBRINGER) && (o->id == ARTIFACTID + 21))
   {
     queue_message("The LawBringer accepts the gem reverently.");
@@ -462,8 +456,6 @@ void givemonster(monster *m, object *o)
     Player.pow = Player.maxpow = Player.pow * 2;
     gain_experience(2000);
     setgamestatus(GAVE_STARGEM, GameStatus);
-    /* WDT HACK!!!  Where else would this ever get freed?? */
-    delete o;
   }
   else
   {
@@ -479,14 +471,15 @@ void givemonster(monster *m, object *o)
 
     if(m_statusp(*m, GREEDY) || m_statusp(*m, NEEDY))
     {
-      m_pickup(m, o);
+      long value = true_item_value(o.get());
+      m_pickup(m, std::move(o));
       queue_message(std::format("{} takes your gift.", monster_name));
       Player.alignment++;
-      if(m_statusp(*m, GREEDY) && (true_item_value(o) < (long)m->level * 100))
+      if(m_statusp(*m, GREEDY) && (value < (long)m->level * 100))
       {
         append_message("...but does not appear satisfied.");
       }
-      else if(m_statusp(*m, NEEDY) && (true_item_value(o) < (long)Level->depth * Level->depth))
+      else if(m_statusp(*m, NEEDY) && (value < (long)Level->depth * Level->depth))
       {
         append_message("...and looks chasteningly at you.");
       }
@@ -500,7 +493,7 @@ void givemonster(monster *m, object *o)
     }
     else if(m_statusp(*m, HUNGRY))
     {
-      if(((m->id == HORSE) && (o->id == FOODID + 15)) || /* grain */
+      if(((m->id == HORSE) && (o->id == FOODID + 15)) || // grain
          ((m->id != HORSE) && ((o->on_use == I_FOOD) || (o->on_use == I_POISON_FOOD))))
       {
         queue_message(std::format("{} wolfs dwn your food ...", monster_name));
@@ -517,44 +510,33 @@ void givemonster(monster *m, object *o)
         {
           append_message("...and now seems satiated.");
         }
-        delete o;
       }
       else
       {
         queue_message(std::format("{} spurns your offering and leaves it on the ground.", monster_name));
-        drop_at(m->x, m->y, o);
+        drop_at(m->x, m->y, std::move(o));
       }
     }
     else
     {
       queue_message(std::format("{} doesn't care for your offering and drops it.", monster_name));
-      drop_at(m->x, m->y, o);
+      drop_at(m->x, m->y, std::move(o));
     }
   }
 }
 
-/* will clear all, not just one of an object. */
-void conform_lost_object(object *obj)
+// removes n of object from inventory; frees object if appropriate
+void dispose_lost_objects(int n, std::unique_ptr<object> &obj)
 {
-  if(obj)
-  {
-    conform_lost_objects(obj->number, obj);
-  }
-}
-
-/* removes n of object from inventory; frees object if appropriate. */
-
-void dispose_lost_objects(int n, object *obj)
-{
-  int i, conformed = false, subtracted = false;
+  bool conformed = false, subtracted = false;
 
   if(!obj)
   {
     return;
   }
-  for(i = 0; i < MAXITEMS; i++)
+  for(std::unique_ptr<object> &inventory_item : Player.possessions)
   {
-    if(Player.possessions[i] == obj)
+    if(inventory_item == obj)
     {
       if(!subtracted)
       {
@@ -568,48 +550,17 @@ void dispose_lost_objects(int n, object *obj)
           conform_unused_object(obj);
           conformed = true;
         }
-        Player.possessions[i] = nullptr;
       }
     }
   }
   if(obj->number < 1)
   {
-    delete obj;
+    obj.reset();
   }
 }
 
-/* removes n of object from inventory without freeing object.
-   Removes all instances of pointer (might be 2 handed weapon, etc) */
-void conform_lost_objects(int n, object *obj)
-{
-  int i, conformed = false, subtracted = false;
-  if(obj)
-  {
-    for(i = 0; i < MAXITEMS; i++)
-    {
-      if(Player.possessions[i] == obj)
-      {
-        if(!subtracted)
-        {
-          obj->number -= n;
-          subtracted = true;
-        }
-        if(obj->number < 1)
-        {
-          if(!conformed)
-          {
-            conform_unused_object(obj);
-            conformed = true;
-          }
-          Player.possessions[i] = nullptr;
-        }
-      }
-    }
-  }
-}
-
-/* clears unused possession */
-void conform_unused_object(object *obj)
+// clears unused possession
+void conform_unused_object(std::unique_ptr<object> &obj)
 {
   if(obj->used)
   {
@@ -750,13 +701,11 @@ bool merge_item_with_pack(object *o)
   {
     return false;
   }
-  for(int i = 0; i < MAXPACK; ++i)
+  for(std::unique_ptr<object> &pack_item : Player.pack)
   {
-    object *pack_item = Player.pack[i];
-    if(pack_item && objequal(o, pack_item))
+    if(pack_item && objequal(o, pack_item.get()))
     {
       pack_item->number += o->number;
-      delete o;
       return true;
     }
   }
@@ -772,66 +721,64 @@ bool merge_item_with_inventory(object *o)
   const std::array slots{O_LEFT_SHOULDER, O_RIGHT_SHOULDER, O_BELT1, O_BELT2, O_BELT3};
   for(int slot : slots)
   {
-    object *pack_item = Player.possessions[slot];
+    object *pack_item = Player.possessions[slot].get();
     if(pack_item && objequal(o, pack_item))
     {
       pack_item->number += o->number;
-      delete o;
       return true;
     }
   }
   return false;
 }
 
-/* inserts the item at the start of the pack array */
-void push_pack(object *o)
+// inserts the item at the start of the pack array
+void push_pack(std::unique_ptr<object> o)
 {
-  for(int i = Player.packptr; i > 0; i--)
+  for(int i = Player.packptr; i > 0; --i)
   {
-    Player.pack[i] = Player.pack[i - 1];
+    Player.pack[i] = std::move(Player.pack[i - 1]);
   }
-  Player.pack[0] = o;
+  Player.pack[0] = std::move(o);
   Player.packptr++;
 }
 
-void add_to_pack(object *o)
+void add_to_pack(std::unique_ptr<object> o)
 {
-  if(merge_item_with_pack(o))
+  if(merge_item_with_pack(o.get()))
   {
     return;
   }
   if(Player.packptr >= MAXPACK)
   {
     queue_message("Your pack is full. The item drops to the ground.");
-    drop_at(Player.x, Player.y, o);
+    drop_at(Player.x, Player.y, std::move(o));
   }
   else
   {
-    push_pack(o);
+    push_pack(std::move(o));
     queue_message("Putting item in pack.");
   }
 }
 
-int get_to_pack(object *o)
+void get_to_pack(std::unique_ptr<object> o)
 {
-  if(merge_item_with_pack(o))
+  if(merge_item_with_pack(o.get()))
   {
-    return true;
+    return;
   }
   if(Player.packptr >= MAXPACK)
   {
     queue_message("Your pack is full.");
-    return false;
+    p_drop_at(Player.x, Player.y, o->number, o.get());
   }
   else
   {
-    push_pack(o);
     queue_message("Putting item in pack.");
-    return true;
+    push_pack(std::move(o));
   }
 }
 
-void gain_item(object *o)
+void gain_item(std::unique_ptr<object> o)
 {
   if(o->uniqueness == UNIQUE_MADE)
   {
@@ -841,16 +788,15 @@ void gain_item(object *o)
   {
     queue_message("You gained some cash.");
     Player.cash += o->basevalue;
-    delete o;
     dataprint();
   }
-  else if(merge_item_with_inventory(o))
+  else if(merge_item_with_inventory(o.get()))
   {
     queue_message("You add it to the stack in your inventory");
   }
-  else if(!get_to_pack(o))
+  else
   {
-    p_drop_at(Player.x, Player.y, o->number, o);
+    get_to_pack(std::move(o));
   }
   calc_melee();
 }
@@ -873,6 +819,18 @@ int pack_item_cost(int index)
   return cost;
 }
 
+bool is_two_handed(object *o)
+{
+  if(o && twohandedp(o->id))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 // whether or not an item o can be used in a slot. Assumes o can in fact be placed in the slot.
 bool item_useable(object *o, int slot)
 {
@@ -882,9 +840,9 @@ bool item_useable(object *o, int slot)
   }
   else if(o->objchar == WEAPON || o->objchar == MISSILEWEAPON)
   {
-    if(twohandedp(o->id) && (slot == O_READY_HAND || slot == O_WEAPON_HAND))
+    if(is_two_handed(o) && (slot == O_WEAPON_HAND || slot == O_READY_HAND))
     {
-      if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
+      if(is_two_handed(Player.possessions[O_WEAPON_HAND].get()) && !Player.possessions[O_READY_HAND])
       {
         queue_message("You heft the weapon and find you must use both hands.");
         return true;
@@ -914,30 +872,27 @@ bool item_useable(object *o, int slot)
 // prevents people from wielding 3 short swords, etc.
 void pack_extra_items(object *item)
 {
-  object *extra     = new object;
-  *extra        = *item;
+  auto extra = std::make_unique<object>(*item);
   extra->number = item->number - 1;
   extra->used   = false;
   item->number  = 1;
   if(Player.packptr < MAXPACK)
   {
     queue_message("Putting extra items back in pack.");
-    push_pack(extra);
+    push_pack(std::move(extra));
   }
   else
   {
     queue_message("No room for extra copies of item -- dropping them.");
-    drop_at(Player.x, Player.y, extra);
+    drop_at(Player.x, Player.y, std::move(extra));
   }
   calc_melee();
 }
 
-/* WDT -- 'response' must be an index into the pack. */
+// WDT -- 'response' must be an index into the pack
 void use_pack_item(int response, int slot)
 {
-  object *item;
-  int i;
-  i = pack_item_cost(response);
+  int i = pack_item_cost(response);
   if(i > 10)
   {
     queue_message("You begin to rummage through your pack.");
@@ -948,30 +903,20 @@ void use_pack_item(int response, int slot)
   }
   queue_message("You take the item from your pack.");
   Command_Duration += i;
-  item = Player.possessions[slot] = Player.pack[response];
-  for(i = response; i < Player.packptr - 1; i++)
+
+  Player.possessions[slot] = std::move(Player.pack[response]);
+  for(i = response; i < Player.packptr - 1; ++i)
   {
-    Player.pack[i] = Player.pack[i + 1];
+    Player.pack[i] = std::move(Player.pack[i + 1]);
   }
   Player.pack[--Player.packptr] = nullptr;
 
-  if((slot == O_READY_HAND || slot == O_WEAPON_HAND) && twohandedp(item->id))
+  if(item_useable(Player.possessions[slot].get(), slot))
   {
-    if(!Player.possessions[O_READY_HAND])
+    item_equip(Player.possessions[slot]);
+    if(Player.possessions[slot]->number > 1)
     {
-      Player.possessions[O_READY_HAND] = item;
-    }
-    if(!Player.possessions[O_WEAPON_HAND])
-    {
-      Player.possessions[O_WEAPON_HAND] = item;
-    }
-  }
-  if(item_useable(item, slot))
-  {
-    item_equip(item);
-    if(item->number > 1)
-    {
-      pack_extra_items(item);
+      pack_extra_items(Player.possessions[slot].get());
     }
   }
 }
@@ -996,7 +941,7 @@ int aux_display_pack(int start_item, int slot)
     items = 0;
     for(i = start_item; i < Player.packptr && items < ScreenLength - 5; i++)
     {
-      if(aux_slottable(Player.pack[i], slot))
+      if(aux_slottable(Player.pack[i].get(), slot))
       {
         if(pack_item_cost(i) > 10)
         {
@@ -1015,7 +960,7 @@ int aux_display_pack(int start_item, int slot)
           menuprint("Items in Pack:\n");
         }
         menuprint(
-          std::format("  {}: {} {}\n", static_cast<char>('a' + i), depth_string, itemid(Player.pack[i]))
+          std::format("  {}: {} {}\n", static_cast<char>('a' + i), depth_string, itemid(Player.pack[i].get()))
         );
         ++items;
       }
@@ -1098,7 +1043,7 @@ void take_from_pack(int slot)
         ok = ((response >= 'a') && (response < 'a' + Player.packptr));
         if(ok)
         {
-          ok = slottable(Player.pack[response - 'a'], slot);
+          ok = slottable(Player.pack[response - 'a'].get(), slot);
         }
       }
     } while(!ok);
@@ -1140,38 +1085,37 @@ int get_item_number(object *o)
 
 void put_to_pack(int slot)
 {
-  object *oslot = Player.possessions[slot];
-  if(!oslot)
+  std::unique_ptr<object> &inventory_item = Player.possessions[slot];
+  if(!inventory_item)
   {
     queue_message("Slot is empty!");
   }
-  else if(oslot->blessing < 0 && oslot->used)
+  else if(inventory_item->blessing < 0 && inventory_item->used)
   {
     queue_message("Item is cursed!");
   }
   else
   {
-    int num        = get_item_number(oslot);
-    bool twohanded = (slot == O_READY_HAND || slot == O_WEAPON_HAND) && twohandedp(oslot->id);
-    if(num >= oslot->number)
+    int num = get_item_number(inventory_item.get());
+    if(num >= inventory_item->number)
     {
-      if(twohanded && oslot && Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
+      if(is_two_handed(Player.possessions[O_WEAPON_HAND].get()) &&
+        (slot == O_READY_HAND && !Player.possessions[O_READY_HAND]))
       {
-        Player.possessions[O_READY_HAND]  = nullptr;
-        Player.possessions[O_WEAPON_HAND] = nullptr;
+        conform_unused_object(Player.possessions[O_WEAPON_HAND]);
+        add_to_pack(std::move(Player.possessions[O_WEAPON_HAND]));
       }
       else
       {
-        Player.possessions[slot] = nullptr;
+        conform_unused_object(inventory_item);
+        add_to_pack(std::move(inventory_item));
       }
-      conform_unused_object(oslot);
-      add_to_pack(oslot);
     }
     else if(num > 0)
     {
-      object *temp = split_item(num, oslot);
-      conform_lost_objects(num, oslot);
-      add_to_pack(temp);
+      std::unique_ptr<object> temp = split_item(num, inventory_item.get());
+      add_to_pack(std::move(temp));
+      dispose_lost_objects(num, inventory_item);
     }
   }
 }
@@ -1185,7 +1129,7 @@ void do_inventory_control()
     switch(response)
     {
       case 12:
-      case 18: /* ^l, ^r */
+      case 18: // ^l, ^r
         print_inventory_menu();
         break;
       case ESCAPE:
@@ -1197,8 +1141,16 @@ void do_inventory_control()
           int slot = key_to_index(response);
           if(!Player.possessions[slot])
           {
-            take_from_pack(slot);
-            Command_Duration += 5;
+            if(slot == O_READY_HAND && is_two_handed(Player.possessions[O_WEAPON_HAND].get()))
+            {
+              put_to_pack(O_WEAPON_HAND);
+              Command_Duration += 2;
+            }
+            else
+            {
+              take_from_pack(slot);
+              Command_Duration += 5;
+            }
           }
           else
           {
@@ -1214,24 +1166,25 @@ void do_inventory_control()
   xredraw();
 }
 
-/* splits num off of item to make newitem which is returned */
-/* something else (conform_lost_objects) has to reduce the actual
-   number value of item and Player.itemweight */
-object *split_item(int num, object *item)
+// splits num off of item to make newitem which is returned
+// something else (dispose_lost_objects) has to reduce the actual
+// number value of item and Player.itemweight
+std::unique_ptr<object> split_item(int num, object *item)
 {
-  object *newitem = nullptr;
   if(item)
   {
-    newitem  = new object;
-    *newitem = *item;
+    auto newitem = std::make_unique<object>(*item);
     if(num <= item->number)
     {
       newitem->number = num;
     }
-    /* else num > item->number, so return newitem with number = item->number */
-    newitem->used = false; /* whether the original item was used or not */
+    newitem->used = false;
+    return newitem;
   }
-  return (newitem);
+  else
+  {
+    return nullptr;
+  }
 }
 
 // criteria for being able to put some item in some slot
@@ -1302,29 +1255,28 @@ bool cursed(object *obj)
 // corpses instead of aux, which is their food value.
 bool find_item(object **o, int id, int chargeval)
 {
-  int i;
   bool found = false;
   *o = nullptr;
-  for(i = 1; ((i < MAXITEMS) && (!found)); i++)
+  for(int i = 1; (i < MAXITEMS && !found); ++i)
   {
     if(Player.possessions[i])
     {
       if((Player.possessions[i]->id == id) && ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
       {
-        *o    = Player.possessions[i];
+        *o    = Player.possessions[i].get();
         found = true;
       }
     }
   }
   if(!found)
   {
-    for(i = 0; ((i < Player.packptr) && (!found)); i++)
+    for(int i = 0; ((i < Player.packptr) && (!found)); ++i)
     {
       if(Player.pack[i])
       {
         if((Player.pack[i]->id == id) && ((chargeval == -1) || (Player.pack[i]->charge == chargeval)))
         {
-          *o    = Player.pack[i];
+          *o    = Player.pack[i].get();
           found = true;
         }
       }
@@ -1338,88 +1290,81 @@ bool find_item(object **o, int id, int chargeval)
 // corpses instead of aux, which is their food value.
 bool find_and_remove_item(int id, int chargeval)
 {
-  int i;
   bool found = false;
-  object *o = nullptr;
-
-  for(i = 1; ((i < MAXITEMS) && (!found)); i++)
+  for(int i = 1; i < MAXITEMS && !found; ++i)
   {
     if(Player.possessions[i])
     {
-      if((Player.possessions[i]->id == id) && ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
+      if(Player.possessions[i]->id == id && (chargeval == -1 || Player.possessions[i]->charge == chargeval))
       {
-        o = Player.possessions[i];
-        conform_lost_objects(1, o);
+        dispose_lost_objects(1, Player.possessions[i]);
         found = true;
       }
     }
   }
   if(!found)
   {
-    for(i = 0; ((i < Player.packptr) && (!found)); i++)
+    for(int i = 0; i < Player.packptr && !found; ++i)
     {
       if(Player.pack[i])
       {
-        if((Player.pack[i]->id == id) && ((chargeval == -1) || (Player.pack[i]->charge == chargeval)))
+        if(Player.pack[i]->id == id && (chargeval == -1 || Player.pack[i]->charge == chargeval))
         {
           Player.pack[i]->number--;
           if(Player.pack[i]->number == 0)
           {
-            delete Player.pack[i];
-            Player.pack[i] = nullptr;
+            Player.pack[i].reset();
+            fixpack();
           }
           found = true;
         }
       }
     }
   }
-  fixpack();
   return found;
 }
 
 void lose_all_items()
 {
-  int i;
   queue_message("You notice that you are completely devoid of all possessions.");
-  for(i = 0; i < MAXITEMS; i++)
+  for(std::unique_ptr<object> &inventory_item : Player.possessions)
   {
-    if(Player.possessions[i])
+    if(inventory_item)
     {
-      dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
-      Player.possessions[i] = nullptr;
+      dispose_lost_objects(inventory_item->number, inventory_item);
     }
   }
-  for(i = 0; i < MAXPACK; i++)
+  for(std::unique_ptr<object> &pack_item : Player.pack)
   {
-    if(Player.pack[i])
+    if(pack_item)
     {
-      delete Player.pack[i];
+      pack_item.reset();
     }
-    Player.pack[i] = nullptr;
   }
   Player.packptr = 0;
   calc_melee();
 }
 
-/* makes sure Player.pack is OK, (used after sale from pack) */
+// makes sure Player.pack is OK, (used after sale from pack)
 void fixpack()
 {
-  object *tpack[MAXPACK];
-  int i, tctr = 0;
-  for(i = 0; i < MAXPACK; i++)
+  for(int i = 0; i < MAXPACK; ++i)
   {
-    tpack[i] = nullptr;
-  }
-  for(i = 0; i < MAXPACK; i++)
-  {
-    if(Player.pack[i])
+    if(!Player.pack[i])
     {
-      tpack[tctr++] = Player.pack[i];
+      for(int j = i + 1; j < MAXPACK; ++j)
+      {
+        if(Player.pack[j])
+        {
+          Player.pack[i] = std::move(Player.pack[j]);
+          break;
+        }
+      }
+    }
+    if(!Player.pack[i])
+    {
+      Player.packptr = i;
+      break;
     }
   }
-  for(i = 0; i < MAXPACK; i++)
-  {
-    Player.pack[i] = tpack[i];
-  }
-  Player.packptr = tctr;
 }

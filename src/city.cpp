@@ -201,15 +201,14 @@ void assign_city_function(int x, int y)
 // makes a hiscore npc for mansions
 void make_justiciar(int i, int j)
 {
-  monster *m = new monster;
-  *m         = Monsters[NPC];
-  make_hiscore_npc(m, 15);
+  auto m = std::make_unique<monster>(Monsters[NPC]);
+  make_hiscore_npc(m.get(), 15);
   m->x                       = i;
   m->y                       = j;
-  Level->site[i][j].creature = m;
   m->click                   = (Tick + 1) % 60;
-  Level->mlist.push_front(m);
+  Level->site[i][j].creature = m.get();
   m_status_reset(*m, AWAKE);
+  Level->mlist.push_front(std::move(m));
 }
 
 // undead are not hostile unless disturbed....
@@ -641,7 +640,7 @@ void load_city(int populate)
 
   // make all city monsters asleep, and shorten their wakeup range to 2
   // to prevent players from being molested by vicious monsters on the streets
-  for(monster *m : Level->mlist)
+  for(std::unique_ptr<monster> &m : Level->mlist)
   {
     m_status_reset(*m, AWAKE);
     m->wakeup = 2;

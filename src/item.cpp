@@ -21,73 +21,71 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 #include "spell.h"
 
-/* make a random new object, returning pointer */
-object *create_object(int itemlevel)
+// make a random new object, returning pointer
+std::unique_ptr<object> create_object(int itemlevel)
 {
-  object *o;
-  int r;
-  int ok = false;
+  bool ok = false;
+  auto o = std::make_unique<object>();
 
   while(!ok)
   {
-    o = new object;
-    r = random_range(135);
+    int r = random_range(135);
     if(r < 20)
     {
-      make_thing(o, -1);
+      make_thing(o.get(), -1);
     }
     else if(r < 40)
     {
-      make_food(o, -1);
+      make_food(o.get(), -1);
     }
     else if(r < 50)
     {
-      make_scroll(o, -1);
+      make_scroll(o.get(), -1);
     }
     else if(r < 60)
     {
-      make_potion(o, -1);
+      make_potion(o.get(), -1);
     }
     else if(r < 70)
     {
-      make_weapon(o, -1);
+      make_weapon(o.get(), -1);
     }
     else if(r < 80)
     {
-      make_armor(o, -1);
+      make_armor(o.get(), -1);
     }
     else if(r < 90)
     {
-      make_shield(o, -1);
+      make_shield(o.get(), -1);
     }
     else if(r < 100)
     {
-      make_stick(o, -1);
+      make_stick(o.get(), -1);
     }
     else if(r < 110)
     {
-      make_boots(o, -1);
+      make_boots(o.get(), -1);
     }
     else if(r < 120)
     {
-      make_cloak(o, -1);
+      make_cloak(o.get(), -1);
     }
     else if(r < 130)
     {
-      make_ring(o, -1);
+      make_ring(o.get(), -1);
     }
     else
     {
-      make_artifact(o, -1);
+      make_artifact(o.get(), -1);
     }
-    /* not ok if object is too good for level, or if unique and already made */
-    /* 1/100 chance of finding object if too good for level */
+    // not ok if object is too good for level, or if unique and already made
+    // 1/100 chance of finding object if too good for level
     ok =
       ((o->uniqueness < UNIQUE_MADE) &&
        ((o->level < itemlevel + random_range(3)) || (random_range(100) == 23)));
     if(!ok)
     {
-      delete o;
+      o = std::make_unique<object>();
     }
   }
   if(o->uniqueness == UNIQUE_UNMADE)
@@ -100,7 +98,7 @@ object *create_object(int itemlevel)
 void make_cash(object *o, int level)
 {
   *o           = Objects[CASHID];
-  o->basevalue = random_range(level * level + 10) + 1; /* aux is AU value */
+  o->basevalue = random_range(level * level + 10) + 1; // aux is AU value
   o->objstr    = cashstr();
   o->cursestr = o->truename = o->objstr;
 }
@@ -824,7 +822,7 @@ bool twohandedp(int id)
   }
 }
 
-void call_item_function(int object_function, object *o)
+void call_item_function(int object_function, std::unique_ptr<object> &o)
 {
   switch(object_function)
   {
@@ -835,7 +833,7 @@ void call_item_function(int object_function, object *o)
       i_nothing(o);
       break;
 
-    /* scrolls */
+    // scrolls
     case I_SPELLS:
       i_spells(o);
       break;
@@ -900,7 +898,7 @@ void call_item_function(int object_function, object *o)
       i_deflect(o);
       break;
 
-    /* potion functions */
+    // potion functions
     case I_HEAL:
       i_heal(o);
       break;
@@ -953,7 +951,7 @@ void call_item_function(int object_function, object *o)
       i_cure(o);
       break;
 
-    /* stick functions */
+    // stick functions
     case I_FIREBOLT:
       i_firebolt(o);
       break;
@@ -1000,7 +998,7 @@ void call_item_function(int object_function, object *o)
       i_fear(o);
       break;
 
-    /* food functions */
+    // food functions
     case I_FOOD:
       i_food(o);
       break;
@@ -1026,7 +1024,7 @@ void call_item_function(int object_function, object *o)
       i_pepper_food(o);
       break;
 
-    /* boots functions */
+    // boots functions
     case I_PERM_SPEED:
       i_perm_speed(o);
       break;
@@ -1040,7 +1038,7 @@ void call_item_function(int object_function, object *o)
       i_perm_agility(o);
       break;
 
-    /* artifact functions */
+    // artifact functions
     case I_SCEPTRE:
       i_sceptre(o);
       break;
@@ -1096,7 +1094,7 @@ void call_item_function(int object_function, object *o)
       i_juggernaut(o);
       break;
 
-    /* cloak functions */
+    // cloak functions
     case I_PERM_DISPLACE:
       i_perm_displace(o);
       break;
@@ -1116,7 +1114,7 @@ void call_item_function(int object_function, object *o)
       i_perm_truesight(o);
       break;
 
-    /* ring functions */
+    // ring functions
     case I_PERM_BURDEN:
       i_perm_burden(o);
       break;
@@ -1139,7 +1137,7 @@ void call_item_function(int object_function, object *o)
       i_perm_knowledge(o);
       break;
 
-    /* armor functions */
+    // armor functions
     case I_NORMAL_ARMOR:
       i_normal_armor(o);
       break;
@@ -1153,7 +1151,7 @@ void call_item_function(int object_function, object *o)
       i_perm_breathing(o);
       break;
 
-    /* weapons functions */
+    // weapons functions
     case I_NORMAL_WEAPON:
       i_normal_weapon(o);
       break;
@@ -1176,7 +1174,7 @@ void call_item_function(int object_function, object *o)
       i_victrix(o);
       break;
 
-    /* thing functions */
+    // thing functions
     case I_PICK:
       i_pick(o);
       break;
@@ -1199,7 +1197,7 @@ void call_item_function(int object_function, object *o)
       i_torch_unequip(o);
       break;
 
-    /* shield functions */
+    // shield functions
     case I_NORMAL_SHIELD:
       i_normal_shield(o);
       break;
@@ -1209,18 +1207,18 @@ void call_item_function(int object_function, object *o)
   }
 }
 
-void item_use(object *o)
+void item_use(std::unique_ptr<object> &o)
 {
   call_item_function(o->on_use, o);
 }
 
-void item_equip(object *o)
+void item_equip(std::unique_ptr<object> &o)
 {
   o->used = true;
   call_item_function(o->on_equip, o);
 }
 
-void item_unequip(object *o)
+void item_unequip(std::unique_ptr<object> &o)
 {
   o->used = false;
   call_item_function(o->on_unequip, o);

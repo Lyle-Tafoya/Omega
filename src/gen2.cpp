@@ -428,10 +428,11 @@ void room_level()
     if(Level->depth == SEWERLEVELS)
     {
       findspace(&tx, &ty, -1);
-      Level->site[tx][ty].creature    = make_creature(GREAT_WYRM);
-      Level->site[tx][ty].creature->x = tx;
-      Level->site[tx][ty].creature->y = ty;
-      Level->mlist.push_front(Level->site[tx][ty].creature);
+      std::unique_ptr<monster> m   = make_creature(GREAT_WYRM);
+      Level->site[tx][ty].creature = m.get();
+      m->x                         = tx;
+      m->y                         = ty;
+      Level->mlist.push_front(std::move(m));
     }
   }
   else if(Current_Environment == E_CASTLE)
@@ -448,10 +449,11 @@ void room_level()
     if(Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->site[tx][ty].creature    = make_creature(DEMON_EMP);
-      Level->site[tx][ty].creature->x = tx;
-      Level->site[tx][ty].creature->y = ty;
-      Level->mlist.push_front(Level->site[tx][ty].creature);
+      std::unique_ptr<monster> m   = make_creature(DEMON_EMP);
+      Level->site[tx][ty].creature = m.get();
+      m->x                         = tx;
+      m->y                         = ty;
+      Level->mlist.push_front(std::move(m));
     }
   }
 }
@@ -547,10 +549,11 @@ void maze_level()
     if(!gamestatusp(COMPLETED_ASTRAL, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->site[tx][ty].creature    = make_creature(mid);
-      Level->site[tx][ty].creature->x = tx;
-      Level->site[tx][ty].creature->y = ty;
-      Level->mlist.push_front(Level->site[tx][ty].creature);
+      std::unique_ptr<monster> m   = make_creature(mid);
+      Level->site[tx][ty].creature = m.get();
+      m->x                         = tx;
+      m->y                         = ty;
+      Level->mlist.push_front(std::move(m));
     }
   }
   else if(Current_Environment == E_VOLCANO)
@@ -558,10 +561,11 @@ void maze_level()
     if(Level->depth == VOLCANOLEVELS && !gamestatusp(COMPLETED_VOLCANO, GameStatus))
     {
       findspace(&tx, &ty, -1);
-      Level->site[tx][ty].creature    = make_creature(DEMON_EMP);
-      Level->site[tx][ty].creature->x = tx;
-      Level->site[tx][ty].creature->y = ty;
-      Level->mlist.push_front(Level->site[tx][ty].creature);
+      std::unique_ptr<monster> m   = make_creature(DEMON_EMP);
+      Level->site[tx][ty].creature = m.get();
+      m->x                         = tx;
+      m->y                         = ty;
+      Level->mlist.push_front(std::move(m));
     }
   }
 }

@@ -117,7 +117,7 @@ void m_talk_druid(monster *m)
     if(ynq())
     {
       queue_message("'I certainly hope so!' says the ArchDruid.");
-      for(monster *level_monster : Level->mlist)
+      for(std::unique_ptr<monster> &level_monster : Level->mlist)
       {
         m_status_reset(*level_monster, HOSTILE);
       }
@@ -369,9 +369,9 @@ void m_talk_im(monster *m)
   else
   {
     m->possessions.front()->known = 2;
-    long price                    = std::max(10l, 4 * true_item_value(m->possessions.front()));
+    long price                    = std::max(10l, 4 * true_item_value(m->possessions.front().get()));
     queue_message(std::format(
-      "I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions.front()), price
+      "I have a fine {} for only {} Au. Want it? [yn] ", itemid(m->possessions.front().get()), price
     ));
     if(ynq() == 'y')
     {
@@ -381,7 +381,7 @@ void m_talk_im(monster *m)
         {
           queue_message("Well, I'll let you have it for what you've got.");
           Player.cash = 0;
-          gain_item(m->possessions.front());
+          gain_item(std::move(m->possessions.front()));
           m->possessions.pop_front();
         }
         else
@@ -393,7 +393,7 @@ void m_talk_im(monster *m)
       {
         queue_message("Here you are. Have a good day.");
         Player.cash -= price;
-        gain_item(m->possessions.front());
+        gain_item(std::move(m->possessions.front()));
         m->possessions.pop_front();
       }
     }

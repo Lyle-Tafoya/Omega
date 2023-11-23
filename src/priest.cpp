@@ -26,9 +26,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <string>
 
-extern void item_equip(object *);
-extern void item_unequip(object *);
-
 int check_sacrilege(int deity)
 {
   int sacrilege = false;
@@ -79,7 +76,7 @@ int check_sacrilege(int deity)
             {
               if(Player.possessions[i] && Player.possessions[i]->blessing > -1)
               {
-                conform_lost_object(Player.possessions[i]);
+                dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
               }
             }
             queue_message("You feel Set's Black Hand on your heart....");
@@ -616,7 +613,7 @@ void l_altar()
           dispel(-1);
           p_damage(Player.hp - 1, UNSTOPPABLE, "a god's pique");
         }
-        else if(true_item_value(Player.possessions[i]) >
+        else if(true_item_value(Player.possessions[i].get()) >
                 (long)(Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * 50))
         {
           queue_message("With a burst of blue flame, your offering vanishes!");

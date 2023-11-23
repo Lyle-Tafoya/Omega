@@ -76,7 +76,7 @@ void make_country_monsters(chtype terrain)
   }
   for(int i = 0; i < nummonsters; ++i)
   {
-    monster *m = new monster;
+    std::unique_ptr<monster> m;
     if(!monsters)
     {
       m = m_create(random_range(WIDTH), random_range(LENGTH), true, difficulty());
@@ -87,7 +87,7 @@ void make_country_monsters(chtype terrain)
       m->x = random_range(WIDTH);
       m->y = random_range(LENGTH);
     }
-    Level->site[m->x][m->y].creature = m;
+    Level->site[m->x][m->y].creature = m.get();
     m->sense                         = WIDTH;
     if(m_statusp(*m, ONLYSWIM))
     {
@@ -96,7 +96,7 @@ void make_country_monsters(chtype terrain)
       lset(m->x, m->y, CHANGED, *Level);
     }
 
-    Level->mlist.push_front(m);
+    Level->mlist.push_front(std::move(m));
   }
 }
 
@@ -429,13 +429,16 @@ void populate_level(int monstertype)
 
     assert(RANDOM == -1); /* WDT: the following test slightly assumes
                            * this. */
+    std::unique_ptr<monster> m;
     if(monsterid > RANDOM)
     {
-      Level->site[i][j].creature = make_creature(monsterid);
+      m = make_creature(monsterid);
+      Level->site[i][j].creature = m.get();
     }
     else
     {
-      Level->site[i][j].creature = m_create(i, j, true, difficulty());
+      m = m_create(i, j, true, difficulty());
+      Level->site[i][j].creature = m.get();
     }
 
     Level->site[i][j].creature->x = i;
@@ -448,47 +451,47 @@ void populate_level(int monstertype)
       lset(i, j, CHANGED, *Level);
     }
 
-    Level->mlist.push_front(Level->site[i][j].creature);
+    Level->mlist.push_front(std::move(m));
   }
 }
 
-/* Add a wandering monster possibly */
+// Add a wandering monster possibly
 void wandercheck()
 {
-  int x, y;
   if(random_range(MaxDungeonLevels) < difficulty())
   {
+    int x, y;
     findspace(&x, &y, -1);
-    Level->site[x][y].creature = m_create(x, y, WANDERING, difficulty());
-    Level->mlist.push_front(Level->site[x][y].creature);
+    std::unique_ptr<monster> m = m_create(x, y, WANDERING, difficulty());
+    Level->site[x][y].creature = m.get();
+    Level->mlist.push_front(std::move(m));
   }
 }
 
-/* call make_creature and place created monster on Level->mlist and Level */
+// call make_creature and place created monster on Level->mlist and Level
 void make_site_monster(int i, int j, int mid)
 {
-  monster *m;
+  std::unique_ptr<monster> m;
   if(mid > -1)
   {
-    Level->site[i][j].creature = (m = make_creature(mid));
+    m = make_creature(mid);
   }
   else
   {
-    Level->site[i][j].creature = (m = m_create(i, j, WANDERING, difficulty()));
+    m = m_create(i, j, WANDERING, difficulty());
   }
-  m->x         = i;
-  m->y         = j;
-  Level->mlist.push_front(m);
+  m->x                       = i;
+  m->y                       = j;
+  Level->site[i][j].creature = m.get();
+  Level->mlist.push_front(std::move(m));
 }
 
 /* make and return an appropriate monster for the level and depth*/
 /* called by populate_level, doesn't actually add to mlist for some reason*/
 /* eventually to be more intelligent */
-monster *m_create(int x, int y, int kind, int level)
+std::unique_ptr<monster> m_create(int x, int y, int kind, int level)
 {
-  monster *newmonster;
   int monster_range;
-  int mid;
 
   switch(level)
   {
@@ -527,29 +530,28 @@ monster *m_create(int x, int y, int kind, int level)
       break;
   }
 
+  int mid;
   do
   {
     mid = random_range(monster_range);
   } while(Monsters[mid].uniqueness != COMMON);
-  newmonster = make_creature(mid);
+  std::unique_ptr<monster> newmonster = make_creature(mid);
 
-  /* no duplicates of unique monsters */
+  // no duplicates of unique monsters
   if(kind == WANDERING)
   {
     m_status_set(*newmonster, WANDERING);
   }
   newmonster->x = x;
   newmonster->y = y;
-  return (newmonster);
+  return newmonster;
 }
 
-/* make creature # mid, totally random if mid == -1 */
-/* make creature allocates space for the creature */
-monster *make_creature(int mid)
+// make creature # mid, totally random if mid == -1
+// make creature allocates space for the creature
+std::unique_ptr<monster> make_creature(int mid)
 {
-  monster *newmonster = new monster;
-  object *ob;
-  int i, treasures;
+  auto newmonster = std::make_unique<monster>();
 
   if(mid == -1)
   {
@@ -626,11 +628,11 @@ monster *make_creature(int mid)
   }
   if(mid == NPC)
   {
-    make_log_npc(newmonster);
+    make_log_npc(newmonster.get());
   }
   else if(mid == HISCORE_NPC)
   {
-    make_hiscore_npc(newmonster, random_range(15));
+    make_hiscore_npc(newmonster.get(), random_range(15));
   }
   else
   {
@@ -640,28 +642,26 @@ monster *make_creature(int mid)
     }
     if(newmonster->startthing > -1 && Objects[newmonster->startthing].uniqueness <= UNIQUE_MADE)
     {
-      ob  = new object;
-      *ob = Objects[newmonster->startthing];
-      m_pickup(newmonster, ob);
+      m_pickup(newmonster.get(), std::make_unique<object>(Objects[newmonster->startthing]));
     }
-    treasures = random_range(newmonster->treasure);
-    for(i = 0; i < treasures; i++)
+    int treasures = random_range(newmonster->treasure);
+    for(int i = 0; i < treasures; ++i)
     {
+      std::unique_ptr<object> o;
       do
       {
-        ob = create_object(newmonster->level);
-        if(ob->uniqueness != COMMON)
+        o = create_object(newmonster->level);
+        if(o->uniqueness != COMMON)
         {
-          Objects[ob->id].uniqueness = UNIQUE_UNMADE;
-          delete ob;
-          ob = nullptr;
+          Objects[o->id].uniqueness = UNIQUE_UNMADE;
+          o.reset();
         }
-      } while(!ob);
-      m_pickup(newmonster, ob);
+      } while(!o);
+      m_pickup(newmonster.get(), std::move(o));
     }
   }
   newmonster->click = (Tick + 1) % 50;
-  return (newmonster);
+  return newmonster;
 }
 
 // drop treasures randomly onto level
@@ -680,22 +680,22 @@ void stock_level()
     make_site_treasure(x, y, difficulty());
     x         = random_range(WIDTH);
     y         = random_range(LENGTH);
-    object *o = new object;
-    make_cash(o, difficulty());
-    Level->site[x][y].things.push_front(o);
+    auto o = std::make_unique<object>();
+    make_cash(o.get(), difficulty());
+    Level->site[x][y].things.push_front(std::move(o));
     // caves have more random cash strewn around
     if(Current_Dungeon == E_CAVES)
     {
       x = random_range(WIDTH);
       y = random_range(LENGTH);
-      o = new object;
-      make_cash(o, difficulty());
-      Level->site[x][y].things.push_front(o);
+      o = std::make_unique<object>();
+      make_cash(o.get(), difficulty());
+      Level->site[x][y].things.push_front(std::move(o));
       x = random_range(WIDTH);
       y = random_range(LENGTH);
-      o = new object;
-      make_cash(o, difficulty());
-      Level->site[x][y].things.push_front(o);
+      o = std::make_unique<object>();
+      make_cash(o.get(), difficulty());
+      Level->site[x][y].things.push_front(std::move(o));
     }
   }
 }
@@ -713,8 +713,7 @@ void make_specific_treasure(int i, int j, int itemid)
   {
     return;
   }
-  object *o = new object{Objects[itemid]};
-  Level->site[i][j].things.push_front(o);
+  Level->site[i][j].things.push_front(std::make_unique<object>(Objects[itemid]));
 }
 
 /* returns a "level of difficulty" based on current environment

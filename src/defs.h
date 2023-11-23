@@ -22,8 +22,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifndef OMEGA_DEFS_H_
 #define OMEGA_DEFS_H_
 
+#include "monster.h"
+#include "object.h"
+
 #include <array>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <forward_list>
 
@@ -1244,73 +1248,30 @@ struct room
   int rsi; // index into roomname switch
 };
 
-struct object
-{
-  int id;
-  int weight;
-  int plus;
-  int charge;
-  int dmg;
-  int hit;
-  int aux;
-  int number;
-  int fragility;
-  long basevalue;
-  unsigned char known;
-  unsigned char used;
-  int blessing;
-  unsigned char type;
-  unsigned char uniqueness;
-  int on_use;
-  int on_equip;
-  int on_unequip;
-  unsigned char level;
-  chtype objchar;
-  std::string objstr;
-  std::string truename;
-  std::string cursestr;
-};
-
-struct monster
-{
-  std::forward_list<object *> possessions;
-  unsigned char attacked;
-  int aux1, aux2, x, y, click;
-  int id, hp, hit, ac, dmg, sense, wakeup, level, speed;
-  unsigned char sleep, treasure;
-  long xpv;
-  int corpseweight, corpsevalue, transformid, startthing;
-  unsigned char uniqueness;
-  int talkf, movef, meleef, strikef, specialf;
-  long status, immunity;
-  chtype monchar;
-  std::string monstring;
-  std::string corpsestr;
-  std::string meleestr;
-};
-
 struct player
 {
-  int str, con, dex, agi, iq, pow, maxstr, maxcon, maxdex, maxagi, maxiq, maxpow;
+  std::string name;
+  int level;
   long xp;
-  int level, hp, maxhp, hit, dmg, absorption, speed, click;
-  int defense, food, alignment;
+  int hp, maxhp;
   long mana, maxmana;
+  int str, con, dex, agi, iq, pow, maxstr, maxcon, maxdex, maxagi, maxiq, maxpow;
+  int hit, dmg, absorption, speed, click;
+  int defense, food, alignment;
   long cash;
   int patron, birthday;
   int sx, sy; // sanctuary coordinates
   int x, y;   // current player coordinates
   int itemweight, maxweight;
+  long options;
+  int packptr;
+  std::string meleestr;
   std::array<int, NUMIMMUNITIES> immunity;
   std::array<int, NUMSTATI> status;
-  long options;
   std::array<int, NUMRANKS> rank;
   std::array<long, NUMRANKS> guildxp;
-  std::string name;
-  std::string meleestr;
-  std::array<object *, MAXITEMS> possessions;
-  std::array<object *, MAXPACK> pack;
-  int packptr;
+  std::array<std::unique_ptr<object>, MAXITEMS> possessions;
+  std::array<std::unique_ptr<object>, MAXPACK> pack;
 };
 
 // terrain locations
@@ -1332,7 +1293,7 @@ struct location
   chtype showchar;        // char instantaneously drawn for site
   int aux;                // signifies various things
   unsigned char buildaux; // used in constructing level
-  std::forward_list<object *> things;
+  std::forward_list<std::unique_ptr<object>> things;
   monster *creature;
 };
 
@@ -1349,7 +1310,7 @@ struct level
   char generated;     // has the level been made (visited) yet?
   char numrooms;      // number of rooms on level
   char tunnelled;     // amount of tunnelling done on this level
-  std::forward_list<monster *> mlist; // List of monsters on level
+  std::forward_list<std::unique_ptr<monster>> mlist; // List of monsters on level
   int environment;    // where kind of level is this?
   int last_visited;   // time player was last on this level
 };

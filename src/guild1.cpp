@@ -33,8 +33,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 void l_merc_guild()
 {
-  object *newitem;
-
   queue_message("Legion of Destiny, Mercenary Guild, Inc.");
   if(nighttime())
   {
@@ -86,12 +84,8 @@ void l_merc_guild()
             append_message("The Legion pays you a 500Au induction fee.", true);
             append_message("You are also issued a shortsword and leather.");
             append_message("You are now a Legionaire.", true);
-            newitem  = new object;
-            *newitem = Objects[WEAPONID + 1]; /* shortsword */
-            gain_item(newitem);
-            newitem  = new object;
-            *newitem = Objects[ARMORID + 1]; /* leather */
-            gain_item(newitem);
+            gain_item(std::make_unique<object>(Objects[WEAPONID + 1])); // shortsword
+            gain_item(std::make_unique<object>(Objects[ARMORID + 1])); // leather
             Player.cash += 500;
             Player.rank[LEGION]    = LEGIONAIRE;
             Player.guildxp[LEGION] = 1;
@@ -330,11 +324,112 @@ void l_castle()
   }
 }
 
+std::unique_ptr<monster> make_arena_monster()
+{
+  auto m = std::make_unique<monster>();
+
+  switch(Arena_Opponent)
+  {
+    case 0:
+      *m = Monsters[GEEK];
+      break;
+    case 1:
+      *m = Monsters[HORNET];
+      break;
+    case 2:
+      *m = Monsters[HYENA];
+      break;
+    case 3:
+      *m = Monsters[GOBLIN];
+      break;
+    case 4:
+      *m = Monsters[GRUNT];
+      break;
+    case 5:
+      *m = Monsters[TOVE];
+      break;
+    case 6:
+      *m = Monsters[APPR_NINJA];
+      break;
+    case 7:
+      *m = Monsters[SALAMANDER];
+      break;
+    case 8:
+      *m = Monsters[ANT];
+      break;
+    case 9:
+      *m = Monsters[MANTICORE];
+      break;
+    case 10:
+      *m = Monsters[SPECTRE];
+      break;
+    case 11:
+      *m = Monsters[BANDERSNATCH];
+      break;
+    case 12:
+      *m = Monsters[LICHE];
+      break;
+    case 13:
+      *m = Monsters[AUTO_MAJOR];
+      break;
+    case 14:
+      *m = Monsters[JABBERWOCK];
+      break;
+    case 15:
+      *m = Monsters[JOTUN];
+      break;
+    default:
+      if((Player.rank[ARENA] < 6) && (Player.rank[ARENA] > 0))
+      {
+        *m = Monsters[HISCORE_NPC];
+      }
+      else
+      {
+        int i;
+        do
+        {
+          i = random_range(ML9 - ML0) + ML0;
+        } while(i == NPC || i == HISCORE_NPC || i == ZERO_NPC || Monsters[i].uniqueness != COMMON || Monsters[i].dmg == 0);
+        *m = Monsters[i];
+      }
+      break;
+  }
+
+  if(m->id == HISCORE_NPC)
+  {
+    m->monstring = std::format("{}, the arena champion", Champion);
+    m->corpsestr = std::format("The corse of {}", m->monstring);
+    m->level     = 20;
+    m->hp        = Championlevel * Championlevel * 5;
+    m->hit       = Championlevel * 4;
+    m->ac        = Championlevel * 3;
+    m->dmg       = 100 + Championlevel * 2;
+    m->xpv       = Championlevel * Championlevel * 5;
+    m->speed     = 3;
+    for(int i = 0; i < Championlevel / 5; ++i)
+    {
+      m->meleestr += "L?R?";
+    }
+    m_status_set(*m, MOBILE);
+    m_status_set(*m, HOSTILE);
+  }
+  else
+  {
+    m->monstring = std::format("{} the {}", nameprint(), m->monstring);
+    m->corpsestr = std::format("The corpse of {}", m->monstring);
+  }
+  m->uniqueness = UNIQUE_MADE;
+  m->attacked = true;
+  m_status_set(*m, HOSTILE);
+  m_status_set(*m, AWAKE);
+
+  return m;
+}
+
 void l_arena()
 {
   char response;
-  object *newitem;
-  int i, prize, monsterlevel;
+  int prize, monsterlevel;
 
   queue_message("Rampart Coliseum");
   if(Player.rank[ARENA] == 0)
@@ -384,12 +479,8 @@ void l_arena()
     {
       queue_message("Ok, yer now an Arena Trainee.");
       queue_message("Here's a wooden sword, and a shield");
-      newitem  = new object;
-      *newitem = Objects[WEAPONID + 17]; /* club */
-      gain_item(newitem);
-      newitem  = new object;
-      *newitem = Objects[SHIELDID + 2]; /* shield */
-      gain_item(newitem);
+      gain_item(std::make_unique<object>(Objects[WEAPONID + 17])); // club
+      gain_item(std::make_unique<object>(Objects[SHIELDID + 2])); // shield
       Player.rank[ARENA] = TRAINEE;
       Arena_Opponent     = 3;
       queue_message("You've got 5000Au credit at the Gym.");
@@ -399,131 +490,23 @@ void l_arena()
   else if(response == 'e')
   {
     queue_message("OK, we're arranging a match....");
-    Arena_Monster = new monster;
     Arena_Victory = false;
-    switch(Arena_Opponent)
-    {
-      case 0:
-        *Arena_Monster = Monsters[GEEK];
-        break;
-      case 1:
-        *Arena_Monster = Monsters[HORNET];
-        break;
-      case 2:
-        *Arena_Monster = Monsters[HYENA];
-        break;
-      case 3:
-        *Arena_Monster = Monsters[GOBLIN];
-        break;
-      case 4:
-        *Arena_Monster = Monsters[GRUNT];
-        break;
-      case 5:
-        *Arena_Monster = Monsters[TOVE];
-        break;
-      case 6:
-        *Arena_Monster = Monsters[APPR_NINJA];
-        break;
-      case 7:
-        *Arena_Monster = Monsters[SALAMANDER];
-        break;
-      case 8:
-        *Arena_Monster = Monsters[ANT];
-        break;
-      case 9:
-        *Arena_Monster = Monsters[MANTICORE];
-        break;
-      case 10:
-        *Arena_Monster = Monsters[SPECTRE];
-        break;
-      case 11:
-        *Arena_Monster = Monsters[BANDERSNATCH];
-        break;
-      case 12:
-        *Arena_Monster = Monsters[LICHE];
-        break;
-      case 13:
-        *Arena_Monster = Monsters[AUTO_MAJOR];
-        break;
-      case 14:
-        *Arena_Monster = Monsters[JABBERWOCK];
-        break;
-      case 15:
-        *Arena_Monster = Monsters[JOTUN];
-        break;
-      default:
-        if((Player.rank[ARENA] < 6) && (Player.rank[ARENA] > 0))
-        {
-          *Arena_Monster = Monsters[HISCORE_NPC];
-        }
-        else
-        {
-          do
-          {
-            i = random_range(ML9 - ML0) + ML0;
-          } while(i == NPC || i == HISCORE_NPC || i == ZERO_NPC || (Monsters[i].uniqueness != COMMON) ||
-                  (Monsters[i].dmg == 0));
-          *Arena_Monster = Monsters[i];
-        }
-        break;
-    }
+    std::unique_ptr<monster> m = make_arena_monster();
+    Arena_Monster = m.get();
+    monsterlevel = m->level;
 
-    monsterlevel = Arena_Monster->level;
-    if(Arena_Monster->id == HISCORE_NPC)
-    {
-      std::string name         = std::format("{}, the arena champion", Champion);
-      Arena_Monster->monstring = name;
-      Arena_Monster->corpsestr = std::format("The corse of {}", name);
-      Arena_Monster->level     = 20;
-      Arena_Monster->hp        = Championlevel * Championlevel * 5;
-      Arena_Monster->hit       = Championlevel * 4;
-      Arena_Monster->ac        = Championlevel * 3;
-      Arena_Monster->dmg       = 100 + Championlevel * 2;
-      Arena_Monster->xpv       = Championlevel * Championlevel * 5;
-      Arena_Monster->speed     = 3;
-      for(i = 0; i < Championlevel / 5; i++)
-      {
-        Arena_Monster->meleestr += "L?R?";
-      }
-      m_status_set(*Arena_Monster, MOBILE);
-      m_status_set(*Arena_Monster, HOSTILE);
-    }
-    else
-    {
-      std::string name{std::format("{} the {}", nameprint(), Arena_Monster->monstring)};
-      Arena_Monster->monstring = name;
-      Arena_Monster->corpsestr = std::format("The corpse of {}", name);
-    }
-    Arena_Monster->uniqueness = UNIQUE_MADE;
     queue_message("You have a challenger: ");
     queue_message(Arena_Monster->monstring);
-    Arena_Monster->attacked = true;
-    m_status_set(*Arena_Monster, HOSTILE);
     change_environment(E_ARENA);
     queue_message("Let the battle begin....");
+
+    Level->mlist.push_front(std::move(m));
 
     time_clock(true);
     while(Current_Environment == E_ARENA)
     {
       time_clock(false);
     }
-
-    /* WDT -- Sheldon Simms points out that these objects are not
-     * wastes of space; on the contrary, they can be carried out of the
-     * arena.  Freeing them was causing subtle and hard to find problems.
-     * However, not freeing them is causing a couple of tiny memory leaks.
-     * This should be fixed, probably by modifying the object destruction
-     * procedures to account for this case.  I'm not really concerned. */
-    /* David Given has proposed a nicer solution, but it still causes a
-     * memory leak.  Obviously, we need a special field just for names
-     * in the monster struct.  Yadda yadda -- I'll mmark this with a
-     * HACK!, and comme back to it later. */
-    /* can not free the corpse string... it is referenced in the */
-    /* corpse string of the corpse object.  */
-    /* Unfortunately, this will cause a memory leak, but I don't see */
-    /* any way to avoid it.  This fixes the munged arena corpse names */
-    /* problem. -DAG */
-    /* free(corpse); */
 
     if(!Arena_Victory)
     {
@@ -554,9 +537,7 @@ void l_arena()
           Championbehavior   = fixnpc(4);
           save_hiscore_npc(11);
           queue_message("You are awarded the Champion's Spear: Victrix!");
-          newitem  = new object;
-          *newitem = Objects[WEAPONID + 35];
-          gain_item(newitem);
+          gain_item(std::make_unique<object>(Objects[WEAPONID + 35]));
         }
         else
         {

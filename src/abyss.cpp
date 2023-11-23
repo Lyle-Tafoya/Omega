@@ -94,10 +94,9 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth)
 
 #endif
 
-/* loads the abyss level into Level*/
+// loads the abyss level into Level
 void load_abyss()
 {
-  int i, j;
   char site;
 
   FILE *fd;
@@ -122,9 +121,9 @@ void load_abyss()
   std::string filepath{std::format("{}abyss.dat", Omegalib)};
   fd   = checkfopen(filepath, "rb");
   site = cryptkey("abyss.dat");
-  for(j = 0; j < LENGTH; j++)
+  for(int j = 0; j < LENGTH; ++j)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; ++i)
     {
       site                         = getc(fd) ^ site;
       Level->site[i][j].roomnumber = RS_ADEPT;

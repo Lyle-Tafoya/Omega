@@ -94,13 +94,13 @@ void save_item(std::ofstream &save_file, object *o)
   }
 }
 
-void save_itemlist(std::ofstream &save_file, std::forward_list<object *> &ol)
+void save_itemlist(std::ofstream &save_file, std::forward_list<std::unique_ptr<object>> &ol)
 {
   int num_items = std::distance(ol.begin(), ol.end());
   file_write(save_file, num_items);
-  for(object *o : ol)
+  for(std::unique_ptr<object> &o : ol)
   {
-    save_item(save_file, o);
+    save_item(save_file, o.get());
   }
 }
 
@@ -109,13 +109,69 @@ void save_player(std::ofstream &save_file)
 {
   // Save random global state information
   Player.click = (Tick + 1) % 60;
-  file_write(save_file, Player);
-  file_write(save_file, Password.size());
-  save_file.write(reinterpret_cast<char *>(Password.data()), Password.size());
+
   file_write(save_file, Player.name.size());
   save_file.write(reinterpret_cast<char *>(Player.name.data()), Player.name.size());
+
+  file_write(save_file, Player.level);
+  file_write(save_file, Player.xp);
+  file_write(save_file, Player.hp);
+  file_write(save_file, Player.maxhp);
+  file_write(save_file, Player.mana);
+  file_write(save_file, Player.maxmana);
+
+  file_write(save_file, Player.str);
+  file_write(save_file, Player.con);
+  file_write(save_file, Player.dex);
+  file_write(save_file, Player.agi);
+  file_write(save_file, Player.iq);
+  file_write(save_file, Player.pow);
+  file_write(save_file, Player.maxstr);
+  file_write(save_file, Player.maxcon);
+  file_write(save_file, Player.maxdex);
+  file_write(save_file, Player.maxagi);
+  file_write(save_file, Player.maxiq);
+  file_write(save_file, Player.maxpow);
+  file_write(save_file, Player.hit);
+  file_write(save_file, Player.dmg);
+  file_write(save_file, Player.absorption);
+  file_write(save_file, Player.speed);
+  file_write(save_file, Player.click);
+  file_write(save_file, Player.defense);
+  file_write(save_file, Player.food);
+  file_write(save_file, Player.alignment);
+  file_write(save_file, Player.cash);
+  file_write(save_file, Player.patron);
+  file_write(save_file, Player.birthday);
+  file_write(save_file, Player.sx);
+  file_write(save_file, Player.sy);
+  file_write(save_file, Player.x);
+  file_write(save_file, Player.y);
+  file_write(save_file, Player.itemweight);
+  file_write(save_file, Player.maxweight);
+  file_write(save_file, Player.options);
+  file_write(save_file, Player.packptr);
+
+  file_write(save_file, Player.immunity);
+  file_write(save_file, Player.status);
+  file_write(save_file, Player.rank);
+  file_write(save_file, Player.guildxp);
+
   file_write(save_file, Player.meleestr.size());
   save_file.write(reinterpret_cast<char *>(Player.meleestr.data()), Player.meleestr.size());
+
+  // Save player possessions
+  for(std::unique_ptr<object> &o : Player.possessions)
+  {
+    save_item(save_file, o.get());
+  }
+  for(std::unique_ptr<object> &o : Player.pack)
+  {
+    save_item(save_file, o.get());
+  }
+
+  file_write(save_file, Password.size());
+  save_file.write(reinterpret_cast<char *>(Password.data()), Password.size());
   file_write(save_file, CitySiteList);
   file_write(save_file, GameStatus);
   file_write(save_file, Current_Environment);
@@ -188,22 +244,9 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, level_seed);
   file_write(save_file, received_directions);
 
-  // Save player possessions
-  if(Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
-  {
-    Player.possessions[O_READY_HAND] = nullptr;
-  }
-  for(int i = 0; i < MAXITEMS; ++i)
-  {
-    save_item(save_file, Player.possessions[i]);
-  }
-  for(int i = 0; i < MAXPACK; ++i)
-  {
-    save_item(save_file, Player.pack[i]);
-  }
   for(int i = 0; i < PAWNITEMS; ++i)
   {
-    save_item(save_file, Pawnitems[i]);
+    save_item(save_file, Pawnitems[i].get());
   }
 
   // Save items in condo vault
@@ -262,11 +305,11 @@ void save_country(std::ofstream &save_file)
   }
 }
 
-void save_monsters(std::ofstream &save_file, std::forward_list<monster *> &ml)
+void save_monsters(std::ofstream &save_file, std::forward_list<std::unique_ptr<monster>> &ml)
 {
   // First count monsters
   int num_monsters = 0;
-  for(monster *m : ml)
+  for(std::unique_ptr<monster> &m : ml)
   {
     if(m->hp > 0)
     {
@@ -276,7 +319,7 @@ void save_monsters(std::ofstream &save_file, std::forward_list<monster *> &ml)
   file_write(save_file, num_monsters);
 
   // Now save monsters
-  for(monster *m : ml)
+  for(std::unique_ptr<monster> &m : ml)
   {
     if(m->hp > 0)
     {
@@ -474,15 +517,15 @@ bool save_game(const std::string &save_file_name)
 
 // Restore an item, the first byte tells us if it's nullptr, and what strings
 // have been saved as different from the typical
-object *restore_item(std::ifstream &save_file)
+std::unique_ptr<object> restore_item(std::ifstream &save_file)
 {
-  object *item = nullptr;
+  std::unique_ptr<object> item;
 
   unsigned char type;
   file_read(save_file, type);
   if(type != 0xff)
   {
-    item = new object;
+    item = std::make_unique<object>();
     item->objstr.~basic_string();
     item->truename.~basic_string();
     item->cursestr.~basic_string();
@@ -526,37 +569,86 @@ object *restore_item(std::ifstream &save_file)
   return item;
 }
 
-std::forward_list<object *> restore_itemlist(std::ifstream &save_file)
+std::forward_list<std::unique_ptr<object>> restore_itemlist(std::ifstream &save_file)
 {
-  std::forward_list<object *> item_list;
+  std::forward_list<std::unique_ptr<object>> item_list;
   int num_items;
   file_read(save_file, num_items);
   for(int i = 0; i < num_items; ++i)
   {
-    object *o = restore_item(save_file);
-    item_list.push_front(o);
+    item_list.push_front(restore_item(save_file));
   }
   return item_list;
 }
 
 void restore_player(std::ifstream &save_file, player &p)
 {
-  p.name.~basic_string();
-  p.meleestr.~basic_string();
-  file_read(save_file, p);
-  new(&p.name) std::string;
-  new(&p.meleestr) std::string;
-
-  size_t size;
-  file_read(save_file, size);
-  Password.resize(size);
-  save_file.read(&Password[0], size);
+  std::string::size_type size;
   file_read(save_file, size);
   p.name.resize(size);
   save_file.read(&p.name[0], size);
+
+  file_read(save_file, p.level);
+  file_read(save_file, p.xp);
+  file_read(save_file, p.hp);
+  file_read(save_file, p.maxhp);
+  file_read(save_file, p.mana);
+  file_read(save_file, p.maxmana);
+
+  file_read(save_file, p.str);
+  file_read(save_file, p.con);
+  file_read(save_file, p.dex);
+  file_read(save_file, p.agi);
+  file_read(save_file, p.iq);
+  file_read(save_file, p.pow);
+  file_read(save_file, p.maxstr);
+  file_read(save_file, p.maxcon);
+  file_read(save_file, p.maxdex);
+  file_read(save_file, p.maxagi);
+  file_read(save_file, p.maxiq);
+  file_read(save_file, p.maxpow);
+  file_read(save_file, p.hit);
+  file_read(save_file, p.dmg);
+  file_read(save_file, p.absorption);
+  file_read(save_file, p.speed);
+  file_read(save_file, p.click);
+  file_read(save_file, p.defense);
+  file_read(save_file, p.food);
+  file_read(save_file, p.alignment);
+  file_read(save_file, p.cash);
+  file_read(save_file, p.patron);
+  file_read(save_file, p.birthday);
+  file_read(save_file, p.sx);
+  file_read(save_file, p.sy);
+  file_read(save_file, p.x);
+  file_read(save_file, p.y);
+  file_read(save_file, p.itemweight);
+  file_read(save_file, p.maxweight);
+  file_read(save_file, p.options);
+  file_read(save_file, p.packptr);
+
+  file_read(save_file, p.immunity);
+  file_read(save_file, p.status);
+  file_read(save_file, p.rank);
+  file_read(save_file, p.guildxp);
+
   file_read(save_file, size);
   p.meleestr.resize(size);
   save_file.read(&p.meleestr[0], size);
+
+  inititem(false); // Set up the strings for the id's
+  for(int i = 0; i < MAXITEMS; ++i)
+  {
+    p.possessions[i] = restore_item(save_file);
+  }
+  for(int i = 0; i < MAXPACK; ++i)
+  {
+    p.pack[i] = restore_item(save_file);
+  }
+
+  file_read(save_file, size);
+  Password.resize(size);
+  save_file.read(&Password[0], size);
 
   file_read(save_file, CitySiteList);
   file_read(save_file, GameStatus);
@@ -651,24 +743,6 @@ void restore_player(std::ifstream &save_file, player &p)
 
   file_read(save_file, received_directions);
 
-  // Set up the strings for the id's
-  inititem(false);
-
-  for(int i = 0; i < MAXITEMS; ++i)
-  {
-    p.possessions[i] = restore_item(save_file);
-  }
-
-  if(!p.possessions[O_READY_HAND] && p.possessions[O_WEAPON_HAND] &&
-     twohandedp(p.possessions[O_WEAPON_HAND]->id))
-  {
-    p.possessions[O_READY_HAND] = p.possessions[O_WEAPON_HAND];
-  }
-
-  for(int i = 0; i < MAXPACK; ++i)
-  {
-    p.pack[i] = restore_item(save_file);
-  }
   for(int i = 0; i < PAWNITEMS; ++i)
   {
     Pawnitems[i] = restore_item(save_file);
@@ -772,8 +846,7 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
 
   for(int i = 0; i < num_monsters; ++i)
   {
-    monster *m;
-    m = new monster;
+    auto m = std::make_unique<monster>();
     m->monstring.~basic_string();
     m->corpsestr.~basic_string();
     m->meleestr.~basic_string();
@@ -782,10 +855,10 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
     new(&m->monstring) std::string;
     new(&m->corpsestr) std::string;
     new(&m->meleestr) std::string;
-    new(&m->possessions) std::forward_list<object *>;
+    new(&m->possessions) std::forward_list<std::unique_ptr<object>>;
     if(m->id == HISCORE_NPC)
     {
-      restore_hiscore_npc(m, m->aux2);
+      restore_hiscore_npc(m.get(), m->aux2);
     }
     else
     {
@@ -816,8 +889,8 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
       m->meleestr = Monsters[m->id].meleestr;
     }
     m->possessions                 = restore_itemlist(save_file);
-    lvl->site[m->x][m->y].creature = m;
-    lvl->mlist.push_front(m);
+    lvl->site[m->x][m->y].creature = m.get();
+    lvl->mlist.push_front(std::move(m));
   }
 }
 
@@ -935,7 +1008,7 @@ void restore_level(std::ifstream &save_file)
     {
       Level->site[x][y].things.~forward_list();
       file_read(save_file, Level->site[x][y]);
-      new(&Level->site[x][y].things) std::forward_list<object *>;
+      new(&Level->site[x][y].things) std::forward_list<std::unique_ptr<object >>;
       Level->site[x][y].creature = nullptr;
     }
     file_read(save_file, x);

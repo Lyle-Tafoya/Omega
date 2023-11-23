@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 
 /* ring functions */
-void i_perm_knowledge(object *o)
+void i_perm_knowledge(std::unique_ptr<object> &o)
 {
   if(o->known < 1)
   {
@@ -42,7 +42,7 @@ void i_perm_knowledge(object *o)
   }
 }
 
-void i_perm_strength(object *o)
+void i_perm_strength(std::unique_ptr<object> &o)
 {
   if(o->known < 1)
   {
@@ -74,7 +74,7 @@ void i_perm_strength(object *o)
   calc_melee();
 }
 
-void i_perm_burden(object *o)
+void i_perm_burden(std::unique_ptr<object> &o)
 {
   int i;
 
@@ -98,7 +98,7 @@ void i_perm_burden(object *o)
   }
 }
 
-void i_perm_gaze_immune(object *o)
+void i_perm_gaze_immune(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -110,7 +110,7 @@ void i_perm_gaze_immune(object *o)
   }
 }
 
-void i_perm_fire_resist(object *o)
+void i_perm_fire_resist(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -122,7 +122,7 @@ void i_perm_fire_resist(object *o)
   }
 }
 
-void i_perm_poison_resist(object *o)
+void i_perm_poison_resist(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -148,7 +148,7 @@ void i_perm_poison_resist(object *o)
   }
 }
 
-void i_perm_regenerate(object *o)
+void i_perm_regenerate(std::unique_ptr<object> &o)
 {
   if(o->known < 1)
   {
@@ -176,7 +176,7 @@ void i_perm_regenerate(object *o)
 
 /* armor functions */
 
-void i_normal_armor(object *o)
+void i_normal_armor(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -184,7 +184,7 @@ void i_normal_armor(object *o)
   }
 }
 
-void i_perm_energy_resist(object *o)
+void i_perm_energy_resist(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -200,7 +200,7 @@ void i_perm_energy_resist(object *o)
   }
 }
 
-void i_perm_fear_resist(object *o)
+void i_perm_fear_resist(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -226,7 +226,7 @@ void i_perm_fear_resist(object *o)
   }
 }
 
-void i_perm_breathing(object *o)
+void i_perm_breathing(std::unique_ptr<object> &o)
 {
   if(o->known < 1)
   {
@@ -262,7 +262,7 @@ void i_perm_breathing(object *o)
   }
 }
 
-/* weapons functions */
+// weapons functions
 
 void weapon_hit(object *weapon, monster *m, int damage_modifier, damage_type damage_type)
 {
@@ -272,7 +272,7 @@ void weapon_hit(object *weapon, monster *m, int damage_modifier, damage_type dam
   }
   else
   {
-    object *weapon_hand_object = Player.possessions[O_WEAPON_HAND];
+    object *weapon_hand_object = Player.possessions[O_WEAPON_HAND].get();
     if(weapon_hand_object && weapon_hand_object->used)
     {
       p_hit(
@@ -289,17 +289,17 @@ void weapon_hit(object *weapon, monster *m, int damage_modifier, damage_type dam
   }
 }
 
-void weapon_acidwhip(int dmgmod, object *o, monster *m)
+void weapon_acidwhip(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
     queue_message("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
-  weapon_hit(o, m, dmgmod, ACID);
+  weapon_hit(o.get(), m, dmgmod, ACID);
 }
 
-void weapon_scythe(int, object *, monster *m)
+void weapon_scythe(int, std::unique_ptr<object> &, monster *m)
 {
   queue_message("Slice!");
   m_death(m);
@@ -311,14 +311,14 @@ void weapon_scythe(int, object *, monster *m)
   }
 }
 
-void weapon_demonblade(int dmgmod, object *o, monster *m)
+void weapon_demonblade(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(o->blessing > -1)
   {
     queue_message("Demonblade disintegrates with a soft sigh.");
     queue_message("You stop foaming at the mouth.");
     Player.status[BERSERK] = 0;
-    conform_lost_object(o);
+    dispose_lost_objects(o->number, o);
   }
   else if(m->specialf == M_SP_DEMON)
   {
@@ -343,7 +343,7 @@ void weapon_demonblade(int dmgmod, object *o, monster *m)
     }
     else
     {
-      weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
+      weapon_hit(o.get(), m, dmgmod, NORMAL_DAMAGE);
     }
   }
   else
@@ -353,7 +353,7 @@ void weapon_demonblade(int dmgmod, object *o, monster *m)
     {
       queue_message("... and shatters into a thousand lost fragments!");
       p_damage(50, UNSTOPPABLE, "Demonblade exploding");
-      conform_lost_object(o);
+      dispose_lost_objects(o->number, o);
     }
     else
     {
@@ -369,7 +369,7 @@ void weapon_demonblade(int dmgmod, object *o, monster *m)
   }
 }
 
-void weapon_lightsabre(int, object *o, monster *m)
+void weapon_lightsabre(int, std::unique_ptr<object> &o, monster *m)
 {
   if(!o->known)
   {
@@ -393,18 +393,18 @@ void weapon_lightsabre(int, object *o, monster *m)
   }
 }
 
-void weapon_tangle(int dmgmod, object *o, monster *m)
+void weapon_tangle(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if((random_range(2) == 1) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
     queue_message("You entangle the monster!");
     m_status_reset(*m, MOBILE);
   }
-  weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
+  weapon_hit(o.get(), m, dmgmod, NORMAL_DAMAGE);
 }
 
 /* if wielding a bow, add bow damage to arrow damage */
-void weapon_arrow(int dmgmod, object *o, monster *m)
+void weapon_arrow(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] && (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
   { /* ie, using a bow */
@@ -417,7 +417,7 @@ void weapon_arrow(int dmgmod, object *o, monster *m)
 }
 
 /* if wielding a crossbow, add bow damage to arrow damage */
-void weapon_bolt(int dmgmod, object *o, monster *m)
+void weapon_bolt(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] &&
      (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) && /*ie using a crossbow */
@@ -432,7 +432,7 @@ void weapon_bolt(int dmgmod, object *o, monster *m)
   }
 }
 
-void weapon_mace_disrupt(int dmgmod, object *o, monster *m)
+void weapon_mace_disrupt(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
@@ -441,13 +441,13 @@ void weapon_mace_disrupt(int dmgmod, object *o, monster *m)
   }
   else
   {
-    weapon_hit(o, m, dmgmod, UNSTOPPABLE);
+    weapon_hit(o.get(), m, dmgmod, UNSTOPPABLE);
   }
 }
 
-void weapon_normal_hit(int dmgmod, object *o, monster *m)
+void weapon_normal_hit(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
-  weapon_hit(o, m, dmgmod, NORMAL_DAMAGE);
+  weapon_hit(o.get(), m, dmgmod, NORMAL_DAMAGE);
 }
 
 /* will be updated eventually */
@@ -456,7 +456,7 @@ void weapon_bare_hands(int dmgmod, monster *m)
   p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
 }
 
-void i_demonblade(object *o)
+void i_demonblade(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -474,7 +474,7 @@ void i_demonblade(object *o)
   }
 }
 
-void i_normal_weapon(object *o)
+void i_normal_weapon(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -482,7 +482,7 @@ void i_normal_weapon(object *o)
   }
 }
 
-void i_lightsabre(object *o)
+void i_lightsabre(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -494,12 +494,12 @@ void i_lightsabre(object *o)
   }
 }
 
-void i_mace_disrupt(object *)
+void i_mace_disrupt(std::unique_ptr<object> &)
 {
   queue_message("That's a damned heavy mace!");
 }
 
-void weapon_vorpal(int dmgmod, object *o, monster *m)
+void weapon_vorpal(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if((random_range(10) < 3) && (!m_immunityp(*m, NORMAL_DAMAGE)))
   {
@@ -520,13 +520,13 @@ void weapon_vorpal(int dmgmod, object *o, monster *m)
   }
 }
 
-void weapon_desecrate(int dmgmod, object *o, monster *m)
+void weapon_desecrate(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   o->known = 2;
   if(Player.alignment < 0)
   {
     queue_message("Your opponent screams in agony!");
-    weapon_hit(o, m, dmgmod, UNSTOPPABLE);
+    weapon_hit(o.get(), m, dmgmod, UNSTOPPABLE);
     Player.alignment--;
     if(Player.hp < Player.maxhp)
     {
@@ -545,7 +545,7 @@ void weapon_desecrate(int dmgmod, object *o, monster *m)
   }
 }
 
-void weapon_firestar(int dmgmod, object *o, monster *m)
+void weapon_firestar(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(random_range(3) == 1)
   {
@@ -558,7 +558,7 @@ void weapon_firestar(int dmgmod, object *o, monster *m)
   }
 }
 
-void weapon_defend(int dmgmod, object *o, monster *m)
+void weapon_defend(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if((Player.alignment < 0) && (o->blessing > 0))
   {
@@ -580,7 +580,7 @@ void weapon_defend(int dmgmod, object *o, monster *m)
   weapon_normal_hit(dmgmod, o, m);
 }
 
-void weapon_victrix(int dmgmod, object *o, monster *m)
+void weapon_victrix(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(m->meleef == M_MELEE_SPIRIT)
   {
@@ -593,7 +593,7 @@ void weapon_victrix(int dmgmod, object *o, monster *m)
   }
 }
 
-void i_defend(object *o)
+void i_defend(std::unique_ptr<object> &o)
 {
   o->known = 2;
   if(o->used)
@@ -607,7 +607,7 @@ void i_defend(object *o)
   }
 }
 
-void i_victrix(object *o)
+void i_victrix(std::unique_ptr<object> &o)
 {
   o->known    = 2;
   o->blessing = abs(o->blessing);
@@ -625,7 +625,7 @@ void i_victrix(object *o)
   }
 }
 
-void i_desecrate(object *o)
+void i_desecrate(std::unique_ptr<object> &o)
 {
   if(o->known < 1)
   {
@@ -644,7 +644,7 @@ void i_desecrate(object *o)
 }
 
 /* shield functions */
-void i_normal_shield(object *o)
+void i_normal_shield(std::unique_ptr<object> &o)
 {
   if(o->used)
   {
@@ -652,7 +652,7 @@ void i_normal_shield(object *o)
   }
 }
 
-void i_perm_deflect(object *o)
+void i_perm_deflect(std::unique_ptr<object> &o)
 {
   if(o->known < 1)
   {

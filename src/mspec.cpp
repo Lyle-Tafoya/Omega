@@ -786,9 +786,8 @@ void m_thief_f(monster *m)
           m_teleport(m);
           m->movef    = M_MOVE_SCAREDY;
           m->specialf = M_MOVE_SCAREDY;
-          m_pickup(m, Player.possessions[i]);
           conform_unused_object(Player.possessions[i]);
-          Player.possessions[i] = nullptr;
+          m_pickup(m, std::move(Player.possessions[i]));
         }
       }
     }
@@ -829,7 +828,7 @@ void m_sp_merchant(monster *m)
     {
       queue_message("The merchant screams: 'Help! Murder! Guards! Help!'");
       queue_message("You hear the sound of police whistles and running feet.");
-      for(monster *level_monster : Level->mlist)
+      for(std::unique_ptr<monster> &level_monster : Level->mlist)
       {
         m_status_set(*level_monster, AWAKE);
         m_status_set(*level_monster, HOSTILE);
@@ -846,10 +845,10 @@ void m_sp_court(monster *m)
   if(m_statusp(*m, HOSTILE))
   {
     queue_message("A storm of spells hits you!");
-    for(monster *level_monster : Level->mlist)
+    for(std::unique_ptr<monster> &level_monster : Level->mlist)
     {
       m_status_set(*level_monster, HOSTILE);
-      m_sp_spell(level_monster);
+      m_sp_spell(level_monster.get());
       if(level_monster->specialf == M_SP_COURT)
       {
         level_monster->specialf = M_SP_SPELL;
@@ -865,7 +864,7 @@ void m_sp_lair(monster *m)
   {
     queue_message("You notice a number of dragons waking up....");
     queue_message("You are struck by a quantity of firebolts.");
-    for(monster *level_monster : Level->mlist)
+    for(std::unique_ptr<monster> &level_monster : Level->mlist)
     {
       if(level_monster->hp > 0 && level_monster->specialf == M_SP_LAIR)
       {

@@ -535,7 +535,7 @@ void calc_melee()
 }
 
 // Attempt to break an object o
-bool damage_item(object *o)
+bool damage_item(std::unique_ptr<object> &o)
 {
   // special case -- break star gem
   if(o->id == ARTIFACTID + 21)
@@ -593,17 +593,17 @@ bool damage_item(object *o)
       }
       else if((o->blessing > 0) && (o->level > random_range(10)))
       {
-        queue_message("Your " + itemid(o) + " glows strongly.");
+        queue_message("Your " + itemid(o.get()) + " glows strongly.");
         return false;
       }
       else if((o->blessing < -1) && (o->level > random_range(10)))
       {
-        queue_message(std::format("You hear an evil giggle from your {}.", itemid(o)));
+        queue_message(std::format("You hear an evil giggle from your {}.", itemid(o.get())));
         return false;
       }
       else if(o->plus > 0)
       {
-        queue_message(std::format("Your {} glos and fades.", itemid(o)));
+        queue_message(std::format("Your {} glos and fades.", itemid(o.get())));
         o->plus--;
         return false;
       }
@@ -617,7 +617,7 @@ bool damage_item(object *o)
         {
           queue_message("You hear an agonized scream!");
         }
-        queue_message(std::format("Your {} shatters in a thousand lost fragments!", itemid(o)));
+        queue_message(std::format("Your {} shatters in a thousand lost fragments!", itemid(o.get())));
         dispose_lost_objects(1, o);
         return true;
       }
@@ -1101,21 +1101,20 @@ void surrender(monster *m)
     {
       if(Player.possessions[i])
       {
-        if(bestvalue < true_item_value(Player.possessions[i]))
+        if(bestvalue < true_item_value(Player.possessions[i].get()))
         {
           bestitem  = i;
-          bestvalue = true_item_value(Player.possessions[i]);
+          bestvalue = true_item_value(Player.possessions[i].get());
         }
       }
     }
     if(bestitem != ABORT)
     {
       queue_message("You also give away your best item... ");
-      queue_message(itemid(Player.possessions[bestitem]));
+      queue_message(itemid(Player.possessions[bestitem].get()));
       queue_message(".");
-      givemonster(m, Player.possessions[bestitem]);
       conform_unused_object(Player.possessions[bestitem]);
-      Player.possessions[bestitem] = nullptr;
+      givemonster(m, std::move(Player.possessions[bestitem]));
     }
     queue_message("You feel less experienced... ");
     Player.xp = std::max(0l, Player.xp - m->xpv);

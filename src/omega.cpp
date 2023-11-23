@@ -93,9 +93,7 @@ int Lunarity             = 0;            /* Effect of the moon on character */
 int Phase                = 0;            /* Phase of the moon */
 int Date                 = 0;            /* Starting date */
 int Pawndate             = -1;           /* Pawn Shop item generation date */
-object *Pawnitems[PAWNITEMS] = {nullptr, nullptr, nullptr, nullptr, nullptr,
-                            nullptr, nullptr, nullptr, nullptr, nullptr};
-/* items in pawn shop */
+std::array<std::unique_ptr<object>, PAWNITEMS> Pawnitems; /* items in pawn shop */
 int SymbolUseDay  = -1;
 int SymbolUseHour = -1; /* holy symbol use marker */
 int ViewDay       = -1;
@@ -134,7 +132,7 @@ int LastCountryLocY = 0;                                  /* previous position i
 std::string Password;                                     /* autoteller password */
 int MazeNum = 0;
 
-std::forward_list<object *> Condoitems;                   /* Items in condo */
+std::forward_list<std::unique_ptr<object>> Condoitems;                   /* Items in condo */
 
 /* high score names, levels, behavior */
 int Shadowlordbehavior, Archmagebehavior, Primebehavior, Commandantbehavior;

@@ -102,46 +102,46 @@ void make_food_bin(int i, int j)
 {
   for(int k = 0; k < 10; ++k)
   {
-    object *o = new object;
-    make_food(o, 15); // grain
-    Level->site[i][j].things.push_front(o);
+    auto o = std::make_unique<object>();
+    make_food(o.get(), 15); // grain
+    Level->site[i][j].things.push_front(std::move(o));
   }
 }
 
 void make_guard(int i, int j)
 {
-  monster *m;
-  m       = Level->site[i][j].creature = make_creature(GUARD);
-  m->x    = i;
-  m->y    = j;
-  Level->mlist.push_front(m);
+  std::unique_ptr<monster> m = make_creature(GUARD);
+  Level->site[i][j].creature = m.get();
+  m->x                       = i;
+  m->y                       = j;
+  Level->mlist.push_front(std::move(m));
 }
 
 void make_sheep(int i, int j)
 {
-  monster *m;
-  m       = Level->site[i][j].creature = make_creature(SHEEP);
-  m->x    = i;
-  m->y    = j;
-  Level->mlist.push_front(m);
+  std::unique_ptr<monster> m = make_creature(SHEEP);
+  Level->site[i][j].creature = m.get();
+  m->x                       = i;
+  m->y                       = j;
+  Level->mlist.push_front(std::move(m));
 }
 
 void make_horse(int i, int j)
 {
-  monster *m;
-  m       = Level->site[i][j].creature = make_creature(HORSE);
-  m->x    = i;
-  m->y    = j;
-  Level->mlist.push_front(m);
+  std::unique_ptr<monster> m = make_creature(HORSE);
+  Level->site[i][j].creature = m.get();
+  m->x                       = i;
+  m->y                       = j;
+  Level->mlist.push_front(std::move(m));
 }
 
 void make_merchant(int i, int j)
 {
-  monster *m;
-  m       = Level->site[i][j].creature = make_creature(MERCHANT);
-  m->x    = i;
-  m->y    = j;
-  Level->mlist.push_front(m);
+  std::unique_ptr<monster> m = make_creature(MERCHANT);
+  Level->site[i][j].creature = m.get();
+  m->x                       = i;
+  m->y                       = j;
+  Level->mlist.push_front(std::move(m));
 }
 
 void special_village_site(int i, int j, int villagenum)

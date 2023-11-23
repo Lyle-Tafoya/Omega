@@ -29,6 +29,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "defs.h"
 #include "extern.h"
 
+#include <memory>
+
 /* This string holds the path to the library files */
 extern const char *Omegalib;
 
@@ -129,7 +131,7 @@ extern int Date;
 extern int Pawndate;
 /* Pawn Shop item generation date */
 
-extern object *Pawnitems[PAWNITEMS];
+extern std::array<std::unique_ptr<object>, PAWNITEMS> Pawnitems;
 /* items in pawn shop */
 
 extern int ViewDay;
@@ -234,7 +236,7 @@ extern std::string Password;
 
 extern int MazeNum;
 
-extern std::forward_list<object *> Condoitems;
+extern std::forward_list<std::unique_ptr<object>> Condoitems;
 /* items in condo */
 
 /* high score names, levels, behavior */

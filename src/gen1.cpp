@@ -563,10 +563,11 @@ void cavern_level()
     if((Level->depth == CAVELEVELS) && (!gamestatusp(COMPLETED_CAVES, GameStatus)))
     {
       findspace(&tx, &ty, -1);
-      Level->site[tx][ty].creature    = make_creature(GOBLIN_KING);
-      Level->site[tx][ty].creature->x = tx;
-      Level->site[tx][ty].creature->y = ty;
-      Level->mlist.push_front(Level->site[tx][ty].creature);
+      std::unique_ptr<monster> m   = make_creature(GOBLIN_KING);
+      Level->site[tx][ty].creature = m.get();
+      m->x                         = tx;
+      m->y                         = ty;
+      Level->mlist.push_front(std::move(m));
     }
   }
   else if(Current_Environment == E_VOLCANO)
@@ -574,10 +575,11 @@ void cavern_level()
     if(Level->depth == VOLCANOLEVELS)
     {
       findspace(&tx, &ty, -1);
-      Level->site[tx][ty].creature    = make_creature(DEMON_EMP);
-      Level->site[tx][ty].creature->x = tx;
-      Level->site[tx][ty].creature->y = ty;
-      Level->mlist.push_front(Level->site[tx][ty].creature);
+      std::unique_ptr<monster> m   = make_creature(DEMON_EMP);
+      Level->site[tx][ty].creature = m.get();
+      m->x                         = tx;
+      m->y                         = ty;
+      Level->mlist.push_front(std::move(m));
     }
   }
 }
@@ -659,10 +661,11 @@ void sewer_level()
     if((Level->depth == SEWERLEVELS) && (!gamestatusp(COMPLETED_SEWERS, GameStatus)))
     {
       findspace(&tx, &ty, -1);
-      Level->site[tx][ty].creature = make_creature(GREAT_WYRM);
-      Level->mlist.push_front(Level->site[tx][ty].creature);
-      Level->site[tx][ty].creature->x = tx;
-      Level->site[tx][ty].creature->y = ty;
+      std::unique_ptr<monster> m   = make_creature(GREAT_WYRM);
+      Level->site[tx][ty].creature = m.get();
+      m->x                         = tx;
+      m->y                         = ty;
+      Level->mlist.push_front(std::move(m));
     }
   }
 }

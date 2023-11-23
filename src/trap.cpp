@@ -58,7 +58,7 @@ void l_trap_siren()
       summon(-1, DEMON_PRINCE);
       summon(-1, DEMON_PRINCE);
     }
-    for(monster *m : Level->mlist)
+    for(std::unique_ptr<monster> &m : Level->mlist)
     {
       m_status_set(*m, AWAKE);
       m->sense *= 2;

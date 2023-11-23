@@ -356,11 +356,10 @@ void s_ritual()
                 queue_message("Your patrons take pity on you.");
                 if((Player.rank[PRIESTHOOD] < SPRIEST) && (!find_item(&symbol, ARTIFACTID + 19, -1)))
                 {
-                  symbol         = new object;
-                  *symbol        = Objects[ARTIFACTID + 19];
+                  auto symbol = std::make_unique<object>(Objects[ARTIFACTID + 19]);
                   symbol->known  = 2;
                   symbol->charge = 17;
-                  gain_item(symbol);
+                  gain_item(std::move(symbol));
                   queue_message("You feel uplifted.");
                 }
                 else

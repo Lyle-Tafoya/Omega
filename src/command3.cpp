@@ -37,7 +37,6 @@ extern void kill_all_levels();
 #endif
 
 extern std::string get_username();
-extern void item_unequip(object *);
 
 extern interactive_menu *menu;
 
@@ -229,12 +228,12 @@ void examine()
               break;
           }
         }
-        std::forward_list<object *> &item_list = Level->site[x][y].things;
+        std::forward_list<std::unique_ptr<object>> &item_list = Level->site[x][y].things;
         if(!item_list.empty() && !loc_statusp(x, y, SECRET, *Level))
         {
           if(std::next(item_list.begin()) == item_list.end())
           {
-            replace_last_message(itemid(item_list.front()));
+            replace_last_message(itemid(item_list.front().get()));
           }
           else
           {
@@ -243,7 +242,7 @@ void examine()
             for(auto it = item_list.begin(); it != item_list.end();)
             {
               item_characters += static_cast<char>((*it)->objchar & A_CHARTEXT);
-              items += itemid(*it);
+              items += itemid((*it).get());
               if(++it != item_list.end())
               {
                 items += ", ";
@@ -365,7 +364,6 @@ void version()
 void fire()
 {
   int index, x1, y1, x2, y2;
-  object *obj;
   monster *m;
 
   queue_message("Fire/Throw --");
@@ -378,7 +376,7 @@ void fire()
   {
     queue_message("Can't fire money at something!");
   }
-  else if(cursed(Player.possessions[index]) && Player.possessions[index]->used)
+  else if(cursed(Player.possessions[index].get()) && Player.possessions[index]->used)
   {
     queue_message("You can't seem to get rid of it!");
     /* load a crossbow */
@@ -393,7 +391,7 @@ void fire()
   }
   else
   {
-    obj = Player.possessions[index];
+    std::unique_ptr<object> &obj = Player.possessions[index];
     x1 = x2 = Player.x;
     y1 = y2 = Player.y;
     setspot(x2, y2);
@@ -419,7 +417,7 @@ void fire()
         }
         else
         {
-          object *main_hand_object = Player.possessions[O_WEAPON_HAND];
+          object *main_hand_object = Player.possessions[O_WEAPON_HAND].get();
           if(main_hand_object && main_hand_object->used)
           {
             hitroll = Player.hit - main_hand_object->hit - main_hand_object->plus + obj->hit + obj->plus;
@@ -434,28 +432,28 @@ void fire()
           if(m->treasure > 0)
           { /* the monster can have treasure/objects */
             queue_message("Your gift is caught!");
-            givemonster(m, split_item(1, obj));
-            conform_lost_objects(1, obj);
+            givemonster(m, split_item(1, obj.get()));
+            dispose_lost_objects(1, obj);
           }
           else
           {
             queue_message("Your thrown offering is ignored.");
             setgamestatus(SUPPRESS_PRINTING, GameStatus);
-            p_drop_at(x1, y1, 1, obj);
+            p_drop_at(x1, y1, 1, obj.get());
             resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-            conform_lost_objects(1, obj);
+            dispose_lost_objects(1, obj);
           }
         }
         else if(obj->aux == I_SCYTHE)
         {
           queue_message("It isn't very aerodynamic... you miss.");
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          p_drop_at(x1, y1, 1, obj);
+          p_drop_at(x1, y1, 1, obj.get());
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-          conform_lost_objects(1, obj);
+          dispose_lost_objects(1, obj);
         }
         else if(hitp(hitroll, m->ac))
-        { /* ok already, hit the damn thing */
+        { // ok already, hit the damn thing
           weapon_use(2 * statmod(Player.str), obj, m);
           if((obj->id == WEAPONID + 28 || obj->id == WEAPONID + 29) && !random_range(4))
           {
@@ -464,26 +462,26 @@ void fire()
           else
           {
             setgamestatus(SUPPRESS_PRINTING, GameStatus);
-            p_drop_at(x1, y1, 1, obj);
+            p_drop_at(x1, y1, 1, obj.get());
             resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-            conform_lost_objects(1, obj);
+            dispose_lost_objects(1, obj);
           }
         }
         else
         {
           queue_message("You miss it.");
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          p_drop_at(x1, y1, 1, obj);
+          p_drop_at(x1, y1, 1, obj.get());
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-          conform_lost_objects(1, obj);
+          dispose_lost_objects(1, obj);
         }
       }
       else
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
-        p_drop_at(x1, y1, 1, obj);
+        p_drop_at(x1, y1, 1, obj.get());
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-        conform_lost_objects(1, obj);
+        dispose_lost_objects(1, obj);
         plotspot(x1, y1, true);
       }
     }
@@ -1044,10 +1042,10 @@ void pickpocket()
         }
         else if(success)
         {
-          queue_message(std::format("You stole: {}.", itemid(m->possessions.front())));
+          queue_message(std::format("You stole: {}.", itemid(m->possessions.front().get())));
           Player.alignment--;
           gain_experience(m->level * m->level);
-          gain_item(m->possessions.front());
+          gain_item(std::move(m->possessions.front()));
           m->possessions.pop_front();
         }
         else
@@ -1290,13 +1288,12 @@ void dismount_steed()
   else
   {
     resetgamestatus(MOUNTED, GameStatus);
-    monster *m                               = new monster;
-    *m                                       = Monsters[HORSE];
+    auto m = std::make_unique<monster>(Monsters[HORSE]);
     m->x                                     = Player.x;
     m->y                                     = Player.y;
     m->status                                = MOBILE + SWIMMING;
-    Level->site[Player.x][Player.y].creature = m;
-    Level->mlist.push_front(m);
+    Level->site[Player.x][Player.y].creature = m.get();
+    Level->mlist.push_front(std::move(m));
   }
   calc_melee();
 }

@@ -99,6 +99,7 @@ add_executable(omega
   src/mmelee.cpp
   src/mmove.cpp
   src/mon.cpp
+  src/monster.cpp
   src/move.cpp
   src/movef.cpp
   src/mspec.cpp

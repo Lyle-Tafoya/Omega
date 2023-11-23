@@ -19,14 +19,16 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 /* minit.h */
 /* This file defines and initializes the Monsters Array */
 
+#include "monster.h"
 #include "defs.h"
+
+#include <array>
 
 // clang-format off
 
-monster Monsters[NUMMONSTERS] =
+std::array Monsters = std::to_array<monster>(
 {
   {
-    {},
     0,
     0,
     0,
@@ -63,7 +65,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -100,7 +101,6 @@ monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -137,7 +137,6 @@ monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -174,7 +173,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -211,7 +209,6 @@ monster Monsters[NUMMONSTERS] =
     "A?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -248,7 +245,6 @@ monster Monsters[NUMMONSTERS] =
     "ALBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -285,7 +281,6 @@ monster Monsters[NUMMONSTERS] =
     "A?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -322,7 +317,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -359,7 +353,6 @@ monster Monsters[NUMMONSTERS] =
     "A?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -396,7 +389,6 @@ monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -433,7 +425,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -470,7 +461,6 @@ monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    {},
     0,
     0,
     0,
@@ -507,7 +497,6 @@ monster Monsters[NUMMONSTERS] =
     "ALAL"
   },
   {
-    {},
     0,
     0,
     0,
@@ -546,7 +535,6 @@ monster Monsters[NUMMONSTERS] =
 
     /* WDT: this one used to blink.  I HATE BLINKING. */
   {
-    {},
     0,
     0,
     0,
@@ -583,7 +571,6 @@ monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -620,7 +607,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -657,7 +643,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -694,7 +679,6 @@ monster Monsters[NUMMONSTERS] =
     "ACBC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -731,7 +715,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -768,7 +751,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -805,7 +787,6 @@ monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    {},
     0,
     0,
     0,
@@ -842,7 +823,6 @@ monster Monsters[NUMMONSTERS] =
     "ALAL"
   },
   {
-    {},
     0,
     0,
     0,
@@ -879,7 +859,6 @@ monster Monsters[NUMMONSTERS] =
     "AH"
   },
   {
-    {},
     0,
     0,
     0,
@@ -916,7 +895,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -953,7 +931,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -990,7 +967,6 @@ monster Monsters[NUMMONSTERS] =
     "AL"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1027,7 +1003,6 @@ monster Monsters[NUMMONSTERS] =
     "AL"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1064,7 +1039,6 @@ monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    {},
     0,
     0,
     0,
@@ -1101,7 +1075,6 @@ monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    {},
     0,
     0,
     0,
@@ -1138,7 +1111,6 @@ monster Monsters[NUMMONSTERS] =
     "AH"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1175,7 +1147,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1212,7 +1183,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1249,7 +1219,6 @@ monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1286,7 +1255,6 @@ monster Monsters[NUMMONSTERS] =
     "AXB?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1323,7 +1291,6 @@ monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    {},
     0,
     0,
     0,
@@ -1360,7 +1327,6 @@ monster Monsters[NUMMONSTERS] =
     "ALBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1397,7 +1363,6 @@ monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1434,7 +1399,6 @@ monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    {},
     0,
     0,
     0,
@@ -1471,7 +1435,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1508,7 +1471,6 @@ monster Monsters[NUMMONSTERS] =
     ""
   },
   {
-    {},
     0,
     0,
     0,
@@ -1545,7 +1507,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1582,7 +1543,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1619,7 +1579,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1656,7 +1615,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1693,7 +1651,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1730,7 +1687,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1767,7 +1723,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1804,7 +1759,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1841,7 +1795,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1878,7 +1831,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1915,7 +1867,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1952,7 +1903,6 @@ monster Monsters[NUMMONSTERS] =
     "AH"
   },
   {
-    {},
     0,
     0,
     0,
@@ -1989,7 +1939,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2026,7 +1975,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2063,7 +2011,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2100,7 +2047,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2137,7 +2083,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2174,7 +2119,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2211,7 +2155,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2248,7 +2191,6 @@ monster Monsters[NUMMONSTERS] =
     "ACACACACAC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2285,7 +2227,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2322,7 +2263,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2359,7 +2299,6 @@ monster Monsters[NUMMONSTERS] =
     "ACBC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2396,7 +2335,6 @@ monster Monsters[NUMMONSTERS] =
     "AL"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2433,7 +2371,6 @@ monster Monsters[NUMMONSTERS] =
     "AHAH"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2470,7 +2407,6 @@ monster Monsters[NUMMONSTERS] =
     "ACAC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2507,7 +2443,6 @@ monster Monsters[NUMMONSTERS] =
     "(null)"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2544,7 +2479,6 @@ monster Monsters[NUMMONSTERS] =
     "(null)"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2581,7 +2515,6 @@ monster Monsters[NUMMONSTERS] =
     "ALALBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2618,7 +2551,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2655,7 +2587,6 @@ monster Monsters[NUMMONSTERS] =
     "LXLXLX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2692,7 +2623,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2729,7 +2659,6 @@ monster Monsters[NUMMONSTERS] =
     "L?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2766,7 +2695,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXAX?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2803,7 +2731,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2840,7 +2767,6 @@ monster Monsters[NUMMONSTERS] =
     "LX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2877,7 +2803,6 @@ monster Monsters[NUMMONSTERS] =
     "LHAHLH"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2914,7 +2839,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?R?R"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2951,7 +2875,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -2988,7 +2911,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3025,7 +2947,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3062,7 +2983,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3099,7 +3019,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3136,7 +3055,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3173,7 +3091,6 @@ monster Monsters[NUMMONSTERS] =
     "A?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3210,7 +3127,6 @@ monster Monsters[NUMMONSTERS] =
     "ACACAC"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3247,7 +3163,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXB?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3284,7 +3199,6 @@ monster Monsters[NUMMONSTERS] =
     "R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3321,7 +3235,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3358,7 +3271,6 @@ monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3395,7 +3307,6 @@ monster Monsters[NUMMONSTERS] =
     "L?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3432,7 +3343,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3469,7 +3379,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXRXRX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3506,7 +3415,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXAXBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3543,7 +3451,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3580,7 +3487,6 @@ monster Monsters[NUMMONSTERS] =
     "AXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3617,7 +3523,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3654,7 +3559,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3691,7 +3595,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3728,7 +3631,6 @@ monster Monsters[NUMMONSTERS] =
     "A?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3765,7 +3667,6 @@ monster Monsters[NUMMONSTERS] =
     "LX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3802,7 +3703,6 @@ monster Monsters[NUMMONSTERS] =
     "L?L?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3839,7 +3739,6 @@ monster Monsters[NUMMONSTERS] =
     "L?L?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3876,7 +3775,6 @@ monster Monsters[NUMMONSTERS] =
     "L?R?RX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3913,7 +3811,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?R?R?R"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3950,7 +3847,6 @@ monster Monsters[NUMMONSTERS] =
     "AHBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -3987,7 +3883,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4024,7 +3919,6 @@ monster Monsters[NUMMONSTERS] =
     "ACACB?B?B?B?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4061,7 +3955,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4098,7 +3991,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4135,7 +4027,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4172,7 +4063,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4209,7 +4099,6 @@ monster Monsters[NUMMONSTERS] =
     "L?L?L?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4246,7 +4135,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4283,7 +4171,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4320,7 +4207,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXL?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4357,7 +4243,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXL?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4394,7 +4279,6 @@ monster Monsters[NUMMONSTERS] =
     "L?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4431,7 +4315,6 @@ monster Monsters[NUMMONSTERS] =
     "L?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4468,7 +4351,6 @@ monster Monsters[NUMMONSTERS] =
     "L?L?R?R?R?RXRXRX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4505,7 +4387,6 @@ monster Monsters[NUMMONSTERS] =
     "B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4542,7 +4423,6 @@ monster Monsters[NUMMONSTERS] =
     "B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4579,7 +4459,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4616,7 +4495,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4653,7 +4531,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?A?A?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4690,7 +4567,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4727,7 +4603,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4764,7 +4639,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?R?R?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4801,7 +4675,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4838,7 +4711,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4875,7 +4747,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4912,7 +4783,6 @@ monster Monsters[NUMMONSTERS] =
     "L?R?RXRX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4949,7 +4819,6 @@ monster Monsters[NUMMONSTERS] =
     "AHAHB?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -4986,7 +4855,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5023,7 +4891,6 @@ monster Monsters[NUMMONSTERS] =
     "AXAXAXBXBX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5060,7 +4927,6 @@ monster Monsters[NUMMONSTERS] =
     "BX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5097,7 +4963,6 @@ monster Monsters[NUMMONSTERS] =
     "A?B?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5134,7 +4999,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5171,7 +5035,6 @@ monster Monsters[NUMMONSTERS] =
     "L?R?R?R?R?R?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5208,7 +5071,6 @@ monster Monsters[NUMMONSTERS] =
     "LLLCLHRLRCRHRLRCRH"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5245,7 +5107,6 @@ monster Monsters[NUMMONSTERS] =
     "AX"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5282,7 +5143,6 @@ monster Monsters[NUMMONSTERS] =
     "B?B?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5319,7 +5179,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?B?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5356,7 +5215,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?A?A?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5393,7 +5251,6 @@ monster Monsters[NUMMONSTERS] =
     "L?L?L?L?L?R?R?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5430,7 +5287,6 @@ monster Monsters[NUMMONSTERS] =
     "A?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5467,7 +5323,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?A?A?A?A?A?A?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5504,7 +5359,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?B?B?B?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5541,7 +5395,6 @@ monster Monsters[NUMMONSTERS] =
     "A?A?A?R?R?R?R?"
   },
   {
-    {},
     0,
     0,
     0,
@@ -5577,6 +5430,6 @@ monster Monsters[NUMMONSTERS] =
     "A burning mound of bubbling mud",
     "A?A?A?A?R?R?R?R?"
   }
-};
+});
 
 // clang-format on

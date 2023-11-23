@@ -555,11 +555,11 @@ void initplayer(bool play_yourself = false)
   Player.options    = 0;
   for(int i = 0; i < MAXITEMS; ++i)
   {
-    Player.possessions[i] = nullptr;
+    Player.possessions[i].reset();
   }
   for(int i = 0; i < MAXPACK; ++i)
   {
-    Player.pack[i] = nullptr;
+    Player.pack[i].reset();
   }
   for(int i = 0; i < NUMIMMUNITIES; ++i)
   {
@@ -627,7 +627,6 @@ bool title_menu()
   std::vector<std::string> save_file_lines;
   if(std::filesystem::is_directory(save_directory))
   {
-    player p;
     for(const auto &entry : std::filesystem::directory_iterator{save_directory})
     {
       const std::string &file_path = entry.path().string();
@@ -641,22 +640,18 @@ bool title_menu()
           int game_version;
           file_read(save_file, game_version);
 
-          p.name.~basic_string();
-          p.meleestr.~basic_string();
-          file_read(save_file, p);
-          new(&p.name) std::string;
-          new(&p.meleestr) std::string;
-          size_t size;
+          std::string::size_type size;
           file_read(save_file, size);
-          save_file.seekg(size, std::ios::cur);
-          file_read(save_file, size);
-          p.name.resize(size);
-          save_file.read(&p.name[0], size);
+          std::string name;
+          name.resize(size);
+          save_file.read(&name[0], size);
+          int level;
+          file_read(save_file, level);
 
           if(!save_file.fail())
           {
             std::string line{
-              std::format("{}, Level {}, v{}", p.name, p.level, version_string(game_version))};
+              std::format("{}, Level {}, v{}", name, level, version_string(game_version))};
             if(line.length() > longest_line_length)
             {
               longest_line_length = line.length();

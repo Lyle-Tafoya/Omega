@@ -97,9 +97,9 @@ void time_clock(int reset)
       if((*it)->hp > 0)
       {
         // following is a hack until I discover source of phantom monsters
-        if(Level->site[(*it)->x][(*it)->y].creature != *it)
+        if(Level->site[(*it)->x][(*it)->y].creature != it->get())
         {
-          fix_phantom(*it);
+          fix_phantom(it->get());
         }
         if(Tick == (*it)->click)
         {
@@ -108,13 +108,13 @@ void time_clock(int reset)
           {
             (*it)->click -= 60;
           }
-          m_pulse(*it);
+          m_pulse(it->get());
         }
         ++prev;
       }
-      else if(*it != Arena_Monster)
+      else if(it->get() != Arena_Monster)
       {
-        delete(*it);
+        Level->site[(*it)->x][(*it)->y].creature = nullptr;
         Level->mlist.erase_after(prev);
       }
       else

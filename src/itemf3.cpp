@@ -26,11 +26,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 
-extern void item_equip(object *);
-extern void item_unequip(object *);
-
 /* amulet of the planes */
-void i_planes(object *)
+void i_planes(std::unique_ptr<object> &)
 {
   if(Player.mana < 1)
   {
@@ -46,7 +43,7 @@ void i_planes(object *)
 }
 
 /* the sceptre of high magic */
-void i_sceptre(object *)
+void i_sceptre(std::unique_ptr<object> &)
 {
   if(HiMagicUse == Date)
   {
@@ -74,7 +71,7 @@ void i_sceptre(object *)
 }
 
 /* the star gem */
-void i_stargem(object *o)
+void i_stargem(std::unique_ptr<object> &o)
 {
   if(StarGemUse == Date)
   {
@@ -116,7 +113,7 @@ void i_stargem(object *o)
 }
 
 /* wand of fear */
-void i_fear(object *o)
+void i_fear(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -130,7 +127,7 @@ void i_fear(object *o)
   inflict_fear(x, y);
 }
 
-void i_juggernaut(object *o)
+void i_juggernaut(std::unique_ptr<object> &o)
 {
   int d, x = Player.x, y = Player.y;
   int seen = 1, not_seen = 0;
@@ -216,7 +213,7 @@ void i_juggernaut(object *o)
   }
 }
 
-void i_symbol(object *o)
+void i_symbol(std::unique_ptr<object> &o)
 {
   int i;
   if(!o->known)
@@ -261,7 +258,7 @@ void i_symbol(object *o)
   }
 }
 
-void i_crystal(object *o)
+void i_crystal(std::unique_ptr<object> &o)
 {
   if(!o->known)
   {
@@ -295,7 +292,7 @@ void i_crystal(object *o)
   }
 }
 
-void i_antioch(object *o)
+void i_antioch(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   int count;
@@ -345,7 +342,7 @@ void i_antioch(object *o)
   dispose_lost_objects(1, o);
 }
 
-void i_kolwynia(object *o)
+void i_kolwynia(std::unique_ptr<object> &o)
 {
   int i;
   if(!o->known)
@@ -366,7 +363,7 @@ void i_kolwynia(object *o)
   dispose_lost_objects(1, o);
 }
 
-void i_enchantment(object *o)
+void i_enchantment(std::unique_ptr<object> &o)
 {
   char response;
   if(ZapDay == day() && ZapHour == hour())
@@ -401,7 +398,7 @@ void i_enchantment(object *o)
   }
 }
 
-void i_helm(object *o)
+void i_helm(std::unique_ptr<object> &o)
 {
   if(HelmDay == day() && HelmHour == hour())
   {
@@ -423,13 +420,13 @@ void i_helm(object *o)
   }
 }
 
-void i_death(object *)
+void i_death(std::unique_ptr<object> &)
 {
   queue_message("Bad move...");
   p_death("the Potion of Death");
 }
 
-void i_life(object *o)
+void i_life(std::unique_ptr<object> &o)
 {
   queue_message("Good move.");
   Player.hp = Player.maxhp = 2 * Player.maxhp;
@@ -457,7 +454,7 @@ int orbcheck(char element)
 }
 
 /* orb functions */
-void i_orbfire(object *o)
+void i_orbfire(std::unique_ptr<object> &o)
 {
   if(!orbcheck('f'))
   {
@@ -483,7 +480,7 @@ void i_orbfire(object *o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbwater(object *o)
+void i_orbwater(std::unique_ptr<object> &o)
 {
   if(!orbcheck('w'))
   {
@@ -509,9 +506,8 @@ void i_orbwater(object *o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbearth(object *o)
+void i_orbearth(std::unique_ptr<object> &o)
 {
-  int i;
   if(!orbcheck('e'))
   {
     queue_message("What a maroon!");
@@ -524,19 +520,18 @@ void i_orbearth(object *o)
     else
     {
       queue_message("Your possessions disintegrate!");
-      for(i = 0; i < MAXITEMS; i++)
+      for(int i = 0; i < MAXITEMS; ++i)
       {
         if(Player.possessions[i])
         {
           dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
         }
       }
-      for(i = 0; i < MAXPACK; i++)
+      for(int i = 0; i < MAXPACK; ++i)
       {
         if(Player.pack[i])
         {
-          delete Player.pack[i];
-          Player.pack[i] = nullptr;
+          Player.pack[i].reset();
         }
       }
       Player.packptr = 0;
@@ -560,7 +555,7 @@ void i_orbearth(object *o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbair(object *o)
+void i_orbair(std::unique_ptr<object> &o)
 {
   if(!orbcheck('a'))
   {
@@ -587,7 +582,7 @@ void i_orbair(object *o)
   *o = Objects[ARTIFACTID + 5];
 }
 
-void i_orbmastery(object *o)
+void i_orbmastery(std::unique_ptr<object> &o)
 {
   if(!orbcheck('m'))
   {
@@ -624,7 +619,7 @@ void i_orbmastery(object *o)
   }
 }
 
-void i_orbdead(object *)
+void i_orbdead(std::unique_ptr<object> &)
 {
   queue_message("The burnt-out orb drains all your energy!");
   for(int i = 0; i < spell::NUM_SPELLS; ++i)
@@ -661,7 +656,7 @@ void i_orbdead(object *)
   Player.pow -= 10;
 }
 
-void i_dispel(object *o)
+void i_dispel(std::unique_ptr<object> &o)
 {
   dispel((o->blessing > -1) ? o->blessing + random_range(3) : o->blessing);
 }
@@ -669,7 +664,7 @@ void i_dispel(object *o)
 /* stick functions */
 
 /* wand of apportation */
-void i_apport(object *o)
+void i_apport(std::unique_ptr<object> &o)
 {
   o->known             = std::max(1, static_cast<int>(o->known));
   Objects[o->id].known = 1;
@@ -677,7 +672,7 @@ void i_apport(object *o)
 }
 
 /* staff of firebolts */
-void i_firebolt(object *o)
+void i_firebolt(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -691,7 +686,7 @@ void i_firebolt(object *o)
   fbolt(Player.x, Player.y, x, y, Player.dex * 2 + Player.level, 75);
 }
 
-void i_disintegrate(object *o)
+void i_disintegrate(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -705,7 +700,7 @@ void i_disintegrate(object *o)
   disintegrate(x, y);
 }
 
-void i_disrupt(object *o)
+void i_disrupt(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -720,7 +715,7 @@ void i_disrupt(object *o)
 }
 
 /* staff of lightning bolts */
-void i_lbolt(object *o)
+void i_lbolt(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -735,7 +730,7 @@ void i_lbolt(object *o)
 }
 
 /* wand of magic missiles */
-void i_missile(object *o)
+void i_missile(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -750,7 +745,7 @@ void i_missile(object *o)
 }
 
 /* wand of fire balls */
-void i_fireball(object *o)
+void i_fireball(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -765,7 +760,7 @@ void i_fireball(object *o)
 }
 
 /* wand of snowballs */
-void i_snowball(object *o)
+void i_snowball(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -780,7 +775,7 @@ void i_snowball(object *o)
 }
 
 /* wand of lightning balls */
-void i_lball(object *o)
+void i_lball(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -795,7 +790,7 @@ void i_lball(object *o)
 }
 
 /* staff of sleep */
-void i_sleep_other(object *o)
+void i_sleep_other(std::unique_ptr<object> &o)
 {
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -804,14 +799,14 @@ void i_sleep_other(object *o)
 
 /* rod of summoning */
 /* rod of summoning now always summons as if cursed */
-void i_summon(object *o)
+void i_summon(std::unique_ptr<object> &o)
 {
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));
   summon(-1, -1);
 }
 
-void i_hide(object *o)
+void i_hide(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
   Objects[o->id].known = 1;
@@ -820,7 +815,7 @@ void i_hide(object *o)
   hide(x, y);
 }
 
-void i_polymorph(object *o)
+void i_polymorph(std::unique_ptr<object> &o)
 {
   Objects[o->id].known = 1;
   o->known             = std::max(1, static_cast<int>(o->known));

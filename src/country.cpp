@@ -517,12 +517,12 @@ void load_misle(int empty, int populate)
 
 void make_high_priest(int i, int j, int deity)
 {
-  monster *m  = new monster;
-  make_hiscore_npc(m, deity);
+  auto m = std::make_unique<monster>();
+  make_hiscore_npc(m.get(), deity);
   m->x                       = i;
   m->y                       = j;
-  Level->site[i][j].creature = m;
-  Level->mlist.push_front(m);
+  Level->site[i][j].creature = m.get();
+  Level->mlist.push_front(std::move(m));
 }
 
 void random_temple_site(int i, int j, int, int populate)
@@ -706,7 +706,7 @@ void load_temple(int deity, int populate)
   // Main Temple is peaceful for player of same sect,druids always peaceful.
   if((Player.patron == deity) || (deity == DRUID))
   {
-    for(monster *m : Level->mlist)
+    for(std::unique_ptr<monster> &m : Level->mlist)
     {
       m_status_reset(*m, HOSTILE);
     }
