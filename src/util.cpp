@@ -782,10 +782,12 @@ int spaceok(int i, int j, int baux)
   );
 }
 
-void findspace(int *x, int *y, int baux)
+bool findspace(int *x, int *y, int baux)
 {
-  int i, j, tog = true, done = false;
+  int i, j;
+  bool tog = true, done = false;
 
+  int attempts = 0;
   do
   {
     i = random_range(WIDTH);
@@ -831,9 +833,11 @@ void findspace(int *x, int *y, int baux)
         }
       }
     }
-  } while(!done);
+  } while(!done && ++attempts < 10000);
   *x = i;
   *y = j;
+
+  return attempts < 10000;
 }
 
 bool confirmation()

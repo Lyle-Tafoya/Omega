@@ -769,7 +769,7 @@ bool view_unblocked(int, int);
 void calc_weight();
 void do_los(chtype, int *, int *, int, int);
 void do_object_los(chtype, int *, int *, int, int);
-void findspace(int *, int *, int);
+bool findspace(int *, int *, int);
 void initdirs();
 
 // village.cpp functions

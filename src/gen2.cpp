@@ -368,10 +368,13 @@ void room_level()
     }
     build_room(l, t, e, rsi, i);
 
-    /* corridor which is guaranteed to connect */
-    findspace(&tx, &ty, i);
+    // corridor which is guaranteed to connect
+    if(!findspace(&tx, &ty, i))
+    {
+      continue;
+    }
 
-    /* figure out where to start corridor from */
+    // figure out where to start corridor from
     if((ty <= t) && (tx <= l + e))
     {
       fx = l + 1 + random_range(e - 1);
@@ -395,10 +398,13 @@ void room_level()
 
     room_corridor(fx, fy, tx, ty, i);
 
-    /* corridor which may not go anywhere */
+    // corridor which may not go anywhere
     if(random_range(2))
     {
-      findspace(&tx, &ty, i);
+      if(!findspace(&tx, &ty, i))
+      {
+        continue;
+      }
       if((ty <= t) && (tx <= l + e))
       {
         fx = l + 1 + random_range(e - 1);
