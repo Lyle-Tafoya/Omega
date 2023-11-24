@@ -910,14 +910,6 @@ bool ok_to_free(level *level)
 // Free up monsters and items on a level
 void free_level(level *level)
 {
-  level->mlist.clear();
-  for(int x = 0; x < MAXWIDTH; ++x)
-  {
-    for(int y = 0; y < MAXLENGTH; ++y)
-    {
-      level->site[x][y].things.clear();
-    }
-  }
 #ifndef SAVE_LEVELS
   delete level;
 #endif
