@@ -199,7 +199,6 @@ void l_merc_guild()
 void l_castle()
 {
   object *o;
-  int x, y;
 
   if(Player.level < 3)
   {
@@ -294,9 +293,9 @@ void l_castle()
         Duke         = Player.name;
         Dukebehavior = fixnpc(4);
         save_hiscore_npc(12);
-        for(y = 52; y < 63; y++)
+        for(int y = 52; y < 63; ++y)
         {
-          for(x = 2; x < 52; x++)
+          for(int x = 2; x < 52; ++x)
           {
             if(Level->site[x][y].p_locf == L_TRAP_SIREN)
             {

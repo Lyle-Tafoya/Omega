@@ -48,11 +48,11 @@ void kill_all_levels()
 
 void msdos_init()
 {
-  /* Allocate the inner level of pointers for TheLevel */
-  for(int i = 0; i < MAXWIDTH; i++)
-    TheLevel.site[i] = new location[MAXLENGTH];
+  // Allocate the inner level of pointers for TheLevel
+  for(int x = 0; x < MAXWIDTH; ++x)
+    TheLevel.site[x] = new location[MAXLENGTH];
 
-  /* Remove old level files */
+  // Remove old level files
   kill_all_levels();
 }
 
@@ -97,10 +97,6 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth)
 // loads the abyss level into Level
 void load_abyss()
 {
-  char site;
-
-  FILE *fd;
-
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
@@ -119,57 +115,57 @@ void load_abyss()
   clear_level(Level);
 
   std::string filepath{std::format("{}abyss.dat", Omegalib)};
-  fd   = checkfopen(filepath, "rb");
-  site = cryptkey("abyss.dat");
-  for(int j = 0; j < LENGTH; ++j)
+  FILE *fd   = checkfopen(filepath, "rb");
+  char site = cryptkey("abyss.dat");
+  for(int y = 0; y < LENGTH; ++y)
   {
-    for(int i = 0; i < WIDTH; ++i)
+    for(int x = 0; x < WIDTH; ++x)
     {
       site                         = getc(fd) ^ site;
-      Level->site[i][j].roomnumber = RS_ADEPT;
+      Level->site[x][y].roomnumber = RS_ADEPT;
       switch(site)
       {
         case '0':
-          Level->site[i][j].locchar = VOID_CHAR;
-          Level->site[i][j].p_locf  = L_VOID;
+          Level->site[x][y].locchar = VOID_CHAR;
+          Level->site[x][y].p_locf  = L_VOID;
           break;
         case 'V':
-          Level->site[i][j].locchar = VOID_CHAR;
-          Level->site[i][j].p_locf  = L_VOID_STATION;
+          Level->site[x][y].locchar = VOID_CHAR;
+          Level->site[x][y].p_locf  = L_VOID_STATION;
           break;
         case '1':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_VOICE1;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_VOICE1;
           break;
         case '2':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_VOICE2;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_VOICE2;
           break;
         case '3':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_VOICE3;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_VOICE3;
           break;
         case '~':
-          Level->site[i][j].locchar = WATER;
-          Level->site[i][j].p_locf  = L_WATER_STATION;
+          Level->site[x][y].locchar = WATER;
+          Level->site[x][y].p_locf  = L_WATER_STATION;
           break;
         case ';':
-          Level->site[i][j].locchar = FIRE;
-          Level->site[i][j].p_locf  = L_FIRE_STATION;
+          Level->site[x][y].locchar = FIRE;
+          Level->site[x][y].p_locf  = L_FIRE_STATION;
           break;
         case '"':
-          Level->site[i][j].locchar = HEDGE;
-          Level->site[i][j].p_locf  = L_EARTH_STATION;
+          Level->site[x][y].locchar = HEDGE;
+          Level->site[x][y].p_locf  = L_EARTH_STATION;
           break;
         case '6':
-          Level->site[i][j].locchar = WHIRLWIND;
-          Level->site[i][j].p_locf  = L_AIR_STATION;
+          Level->site[x][y].locchar = WHIRLWIND;
+          Level->site[x][y].p_locf  = L_AIR_STATION;
           break;
         case '#':
-          Level->site[i][j].locchar = WALL;
+          Level->site[x][y].locchar = WALL;
           break;
         case '.':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           break;
       }
     }

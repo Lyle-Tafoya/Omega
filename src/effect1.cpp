@@ -442,7 +442,7 @@ void nbolt(int fx, int fy, int tx, int ty, int hit, int dmg)
 // from f to t
 void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
 {
-  int xx, yy, ex, ey, i;
+  int xx, yy, ex, ey;
   monster *target;
   chtype expchar = ('@' | CLR(LIGHT_PURPLE));
 
@@ -466,7 +466,7 @@ void ball(int fx, int fy, int tx, int ty, int dmg, damage_type dtype)
 
   do_los(expchar, &xx, &yy, tx, ty);
   draw_explosion(expchar, xx, yy);
-  for(i = 0; i < 9; i++)
+  for(int i = 0; i < 9; ++i)
   {
     ex = xx + Dirs[0][i];
     ey = yy + Dirs[1][i];
@@ -609,19 +609,19 @@ void mondet(int blessing)
 
 void objdet(int blessing)
 {
-  for(int i = 0; i < WIDTH; ++i)
+  for(int x = 0; x < WIDTH; ++x)
   {
-    for(int j = 0; j < LENGTH; ++j)
+    for(int y = 0; y < LENGTH; ++y)
     {
-      if(!Level->site[i][j].things.empty())
+      if(!Level->site[x][y].things.empty())
       {
         if(blessing < 0)
         {
-          putspot(random_range(WIDTH), random_range(LENGTH), Level->site[i][j].things.front()->objchar);
+          putspot(random_range(WIDTH), random_range(LENGTH), Level->site[x][y].things.front()->objchar);
         }
         else
         {
-          putspot(i, j, Level->site[i][j].things.front()->objchar);
+          putspot(x, y, Level->site[x][y].things.front()->objchar);
         }
       }
     }

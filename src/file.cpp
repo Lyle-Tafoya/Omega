@@ -510,8 +510,8 @@ bool test_file_access(const std::string &file_name, char mode)
   return true;
 }
 
-/* Checks existence of omega data files */
-/* Returns 1 if OK, 0 if impossible to run, -1 if possible but not OK */
+// Checks existence of omega data files
+// Returns 1 if OK, 0 if impossible to run, -1 if possible but not OK
 int filecheck()
 {
   const std::array required_file_list{std::to_array<std::string>({
@@ -526,7 +526,7 @@ int filecheck()
     "help8.txt", "help9.txt",   "help10.txt",  "help11.txt",  "help12.txt", "help13.txt",
     "abyss.txt", "scroll1.txt", "scroll2.txt", "scroll3.txt", "scroll4.txt"})};
 
-  int impossible = false, badbutpossible = false;
+  bool impossible = false, badbutpossible = false;
 
   std::string omega_lib_path = Omegalib;
   for(const std::string &file_name : required_file_list)

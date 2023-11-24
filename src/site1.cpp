@@ -37,7 +37,6 @@ extern interactive_menu *menu;
 // the bank; can be broken into (!)
 void l_bank()
 {
-  int done = false, valid = false;
   long amount;
   char response;
   std::string passwd;
@@ -50,6 +49,7 @@ void l_bank()
   else
   {
     append_message("The proximity sensor activates the autoteller as you approach.", true);
+    bool done = false, valid = false;
     while(!done)
     {
       append_message(std::format("Current Balance: {}Au.", Balance), true);
@@ -257,7 +257,6 @@ void buyfromstock(int base, int numitems)
 
 void l_armorer()
 {
-  int done = false;
   if(hour() == 12)
   {
     queue_message("Unfortunately, this is Julie's lunch hour -- try again later.");
@@ -268,6 +267,7 @@ void l_armorer()
   }
   else
   {
+    bool done = false;
     while(!done)
     {
       queue_message("Julie's: Buy Armor, Weapons, or Leave [a,w,ESCAPE] ");
@@ -363,8 +363,6 @@ void l_club()
 
 void l_gym()
 {
-  int done    = true;
-  int trained = 0;
   print_messages();
   std::vector<std::string> lines = {
     {"The Rampart Gymnasium"},
@@ -380,6 +378,8 @@ void l_gym()
   menu->load(lines);
   menu->print();
   append_message("The Rampart Gymnasium", true);
+  bool done    = true;
+  int trained = 0;
   do
   {
     if((Gymcredit > 0) || (Player.rank[ARENA]))
@@ -559,9 +559,8 @@ void wake_statue(int x, int y, int first)
 
 void l_statue_wake()
 {
-  int i;
   int x = Player.x, y = Player.y;
-  for(i = 0; i < 9; i++)
+  for(int i = 0; i < 9; ++i)
   {
     wake_statue(x + Dirs[0][i], y + Dirs[1][i], true);
   }
@@ -1213,9 +1212,6 @@ void l_dpw()
 
 void l_library()
 {
-  char response;
-  int studied = false;
-  int done = false, fee = 1000;
   queue_message("Rampart Public Library.");
   if(nighttime())
   {
@@ -1224,12 +1220,14 @@ void l_library()
   else
   {
     queue_message("Library Research Fee: 1000Au.", true);
+    int fee = 1000;
     if(Player.maxiq < 18)
     {
       queue_message("The Rampart student aid system has arranged a grant!", true);
       fee = std::max(50, 1000 - (18 - Player.maxiq) * 125);
       queue_message(std::format("Your revised fee is: {}Au.", fee), true);
     }
+    bool studied = false, done = false;
     while(!done)
     {
       queue_message("Pay the fee? [yn] ", true);
@@ -1257,7 +1255,7 @@ void l_library()
               {"ESCAPE: Leave this font of learning."}};
             menu->load(lines);
             menu->print();
-            response = (char)mcigetc();
+            char response = (char)mcigetc();
             if(response == 'a')
             {
               queue_message("You unfurl an ancient, yellowing scroll...", true);

@@ -34,36 +34,36 @@ to the destination level. */
 
 void make_stairs(int fromlevel)
 {
-  int i, j;
+  int x, y;
   /* no stairway out of astral */
   if(Current_Environment != E_ASTRAL)
   {
     do
     {
-      findspace(&i, &j, -1);
-    } while(Level->site[i][j].p_locf != L_NO_OP);
-    Level->site[i][j].locchar = STAIRS_UP;
-    Level->site[i][j].aux     = Level->depth - 1;
-    lset(i, j, STOPS, *Level);
+      findspace(&x, &y, -1);
+    } while(Level->site[x][y].p_locf != L_NO_OP);
+    Level->site[x][y].locchar = STAIRS_UP;
+    Level->site[x][y].aux     = Level->depth - 1;
+    lset(x, y, STOPS, *Level);
     if(fromlevel >= 0 && fromlevel < Level->depth)
     {
-      Player.x = i;
-      Player.y = j;
+      Player.x = x;
+      Player.y = y;
     }
   }
   if(Level->depth < MaxDungeonLevels)
   {
     do
     {
-      findspace(&i, &j, -1);
-    } while(Level->site[i][j].p_locf != L_NO_OP);
-    Level->site[i][j].locchar = STAIRS_DOWN;
-    Level->site[i][j].aux     = Level->depth + 1;
-    lset(i, j, STOPS, *Level);
+      findspace(&x, &y, -1);
+    } while(Level->site[x][y].p_locf != L_NO_OP);
+    Level->site[x][y].locchar = STAIRS_DOWN;
+    Level->site[x][y].aux     = Level->depth + 1;
+    lset(x, y, STOPS, *Level);
     if(fromlevel > Level->depth)
     {
-      Player.x = i;
-      Player.y = j;
+      Player.x = x;
+      Player.y = y;
     }
   }
 }
@@ -72,46 +72,46 @@ void make_general_map(const std::string &terrain)
 {
   char curr;
 
-  for(int i = 0; i < WIDTH; i++)
+  for(int x = 0; x < WIDTH; ++x)
   {
-    for(int j = 0; j < LENGTH; j++)
+    for(int y = 0; y < LENGTH; ++y)
     {
-      if((i == 0 && j == 0) || !random_range(5))
+      if((x == 0 && y == 0) || !random_range(5))
       {
         curr = terrain[random_range(static_cast<int>(terrain.length()))];
       }
-      else if(j == 0 || (random_range(2) && i > 0))
+      else if(y == 0 || (random_range(2) && x > 0))
       {
-        curr = Level->site[i - 1][j].locchar & 0xff;
+        curr = Level->site[x - 1][y].locchar & 0xff;
       }
       else
       {
-        curr = Level->site[i][j - 1].locchar & 0xff;
+        curr = Level->site[x][y - 1].locchar & 0xff;
       }
       switch(curr)
       {
         case(FLOOR & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = FLOOR;
-          Level->site[i][j].p_locf                               = L_NO_OP;
+          Level->site[x][y].locchar = Level->site[x][y].showchar = FLOOR;
+          Level->site[x][y].p_locf                               = L_NO_OP;
           break;
         case(HEDGE & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = HEDGE;
-          Level->site[i][j].p_locf                               = L_HEDGE;
+          Level->site[x][y].locchar = Level->site[x][y].showchar = HEDGE;
+          Level->site[x][y].p_locf                               = L_HEDGE;
           break;
         case(WATER & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = WATER;
-          Level->site[i][j].p_locf                               = L_WATER;
+          Level->site[x][y].locchar = Level->site[x][y].showchar = WATER;
+          Level->site[x][y].p_locf                               = L_WATER;
           break;
         case(RUBBLE & 0xff):
-          Level->site[i][j].locchar = Level->site[i][j].showchar = RUBBLE;
-          Level->site[i][j].p_locf                               = L_RUBBLE;
+          Level->site[x][y].locchar = Level->site[x][y].showchar = RUBBLE;
+          Level->site[x][y].p_locf                               = L_RUBBLE;
           break;
       }
-      Level->site[i][j].lstatus    = SEEN + LIT;
-      Level->site[i][j].roomnumber = RS_COUNTRYSIDE;
-      if((i == 0) || (j == 0) || (i == WIDTH - 1) || (j == LENGTH - 1))
+      Level->site[x][y].lstatus    = SEEN + LIT;
+      Level->site[x][y].roomnumber = RS_COUNTRYSIDE;
+      if(x == 0 || y == 0 || x == WIDTH - 1 || y == LENGTH - 1)
       {
-        Level->site[i][j].p_locf = L_TACTICAL_EXIT;
+        Level->site[x][y].p_locf = L_TACTICAL_EXIT;
       }
     }
   }
@@ -130,11 +130,10 @@ void make_plains()
 
 void make_road()
 {
-  int x, y;
   make_general_map("\"\"~4....");
-  for(x = WIDTH / 2 - 3; x <= WIDTH / 2 + 3; x++)
+  for(int x = WIDTH / 2 - 3; x <= WIDTH / 2 + 3; ++x)
   {
-    for(y = 0; y < LENGTH; y++)
+    for(int y = 0; y < LENGTH; ++y)
     {
       Level->site[x][y].locchar = Level->site[x][y].showchar = FLOOR;
       if(y != 0 && y != LENGTH - 1)
@@ -152,12 +151,11 @@ void make_jungle()
 
 void make_river()
 {
-  int i, y, y1;
   make_general_map("\".......");
-  y  = random_range(LENGTH);
-  y1 = random_range(LENGTH);
+  int y  = random_range(LENGTH);
+  int y1 = random_range(LENGTH);
   straggle_corridor(0, y, WIDTH, y1, WATER, RS_COUNTRYSIDE);
-  for(i = 0; i < 7; i++)
+  for(int i = 0; i < 7; ++i)
   {
     if(y > LENGTH / 2)
     {
@@ -181,14 +179,13 @@ void make_river()
 
 void make_mountains()
 {
-  int i, x, y, x1, y1;
   make_general_map("4...");
-  x  = 0;
-  y  = random_range(LENGTH);
-  x1 = WIDTH;
-  y1 = random_range(LENGTH);
+  int x  = 0;
+  int y  = random_range(LENGTH);
+  int x1 = WIDTH;
+  int y1 = random_range(LENGTH);
   straggle_corridor(x, y, x1, y1, WATER, RS_COUNTRYSIDE);
-  for(i = 0; i < 7; i++)
+  for(int i = 0; i < 7; ++i)
   {
     x  = random_range(WIDTH);
     x1 = random_range(WIDTH);
@@ -206,7 +203,6 @@ void make_swamp()
 // tactical map generating functions
 void make_country_screen(chtype terrain)
 {
-  int i, j;
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
@@ -252,12 +248,12 @@ void make_country_screen(chtype terrain)
   if(nighttime())
   {
     queue_message("Night's gloom shrouds your sight.");
-    for(i = 0; i < WIDTH; i++)
+    for(int x = 0; x < WIDTH; ++x)
     {
-      for(j = 0; j < LENGTH; j++)
+      for(int y = 0; y < LENGTH; ++y)
       {
-        Level->site[i][j].showchar = SPACE;
-        Level->site[i][j].lstatus  = 0;
+        Level->site[x][y].showchar = SPACE;
+        Level->site[x][y].lstatus  = 0;
       }
     }
   }
@@ -266,16 +262,15 @@ void make_country_screen(chtype terrain)
 // goes from f to t unless it hits a site which is not a wall and doesn't have buildaux field == baux
 void room_corridor(int fx, int fy, int tx, int ty, int baux)
 {
-  int dx, dy, continuing = true;
-
-  dx = sign(tx - fx);
-  dy = sign(ty - fy);
+  int dx = sign(tx - fx);
+  int dy = sign(ty - fy);
 
   makedoor(fx, fy);
 
   fx += dx;
   fy += dy;
 
+  bool continuing = true;
   while(continuing)
   {
     Level->site[fx][fy].locchar    = FLOOR;
@@ -309,7 +304,7 @@ fully connected level. */
 
 void room_level()
 {
-  int i, fx, fy, tx, ty, t, l, e;
+  int fx, fy, tx, ty, t, l, e;
   char rsi;
 
   Level->numrooms = random_range(8) + 9;
@@ -340,7 +335,7 @@ void room_level()
   }
   build_room(l, t, e, rsi, 1);
 
-  for(i = 2; i <= Level->numrooms; i++)
+  for(int i = 2; i <= Level->numrooms; ++i)
   {
     do
     {
@@ -466,7 +461,7 @@ void room_level()
 
 void maze_level()
 {
-  int i, j, tx, ty, mid;
+  int tx, ty, mid;
   char rsi;
   if(Current_Environment == E_ASTRAL)
   {
@@ -498,32 +493,32 @@ void maze_level()
   );
   if(Current_Dungeon == E_ASTRAL)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int x = 0; x < WIDTH; ++x)
     {
-      for(j = 0; j < LENGTH; j++)
+      for(int y = 0; y < LENGTH; ++y)
       {
-        if(Level->site[i][j].locchar == WALL)
+        if(Level->site[x][y].locchar == WALL)
         {
           switch(Level->depth)
           {
             case 1:
-              Level->site[i][j].aux = 500;
+              Level->site[x][y].aux = 500;
               break;
             case 2:
-              Level->site[i][j].locchar = WHIRLWIND;
-              Level->site[i][j].p_locf  = L_WHIRLWIND;
+              Level->site[x][y].locchar = WHIRLWIND;
+              Level->site[x][y].p_locf  = L_WHIRLWIND;
               break;
             case 3:
-              Level->site[i][j].locchar = WATER;
-              Level->site[i][j].p_locf  = L_WATER;
+              Level->site[x][y].locchar = WATER;
+              Level->site[x][y].p_locf  = L_WATER;
               break;
             case 4:
-              Level->site[i][j].locchar = FIRE;
-              Level->site[i][j].p_locf  = L_FIRE;
+              Level->site[x][y].locchar = FIRE;
+              Level->site[x][y].p_locf  = L_FIRE;
               break;
             case 5:
-              Level->site[i][j].locchar = ABYSS;
-              Level->site[i][j].p_locf  = L_ABYSS;
+              Level->site[x][y].locchar = ABYSS;
+              Level->site[x][y].p_locf  = L_ABYSS;
               break;
           }
         }

@@ -366,15 +366,13 @@ int main(int, char *[])
 /* Start up game with new dungeons; start with player in city */
 void init_world()
 {
-  int env, i;
-
   City = Level = TempLevel = Dungeon = nullptr;
-  for(env = 0; env <= E_MAX; env++)
+  for(int env = 0; env <= E_MAX; ++env)
   {
     level_seed[env] = random_range(RAND_MAX);
   }
   load_country();
-  for(i = 0; i < NUMCITYSITES; i++)
+  for(int i = 0; i < NUMCITYSITES; ++i)
   {
     CitySiteList[i][0] = false;
   }
@@ -388,11 +386,9 @@ void init_world()
   queue_message("You pass through the massive gates of Rampart, the city.");
 }
 
-/* set variable item names */
+// set variable item names
 void inititem(int reset)
 {
-  int i;
-
   if(reset)
   {
     shuffle(scroll_ids, 30);
@@ -402,29 +398,29 @@ void inititem(int reset)
     shuffle(cloak_ids, 20);
     shuffle(ring_ids, 20);
   }
-  for(i = 0; i < NUMSCROLLS; i++)
+  for(int i = 0; i < NUMSCROLLS; ++i)
   {
     Objects[SCROLLID + i].objstr = scrollname(i);
   }
-  for(i = 0; i < NUMPOTIONS; i++)
+  for(int i = 0; i < NUMPOTIONS; ++i)
   {
     Objects[POTIONID + i].objstr = potionname(i);
   }
   Objects[ARTIFACTID + 10].objstr = potionname(18);
   Objects[ARTIFACTID + 13].objstr = potionname(19);
-  for(i = 0; i < NUMSTICKS; i++)
+  for(int i = 0; i < NUMSTICKS; ++i)
   {
     Objects[STICKID + i].objstr = stickname(i);
   }
-  for(i = 0; i < NUMBOOTS; i++)
+  for(int i = 0; i < NUMBOOTS; ++i)
   {
     Objects[BOOTID + i].objstr = bootname(i);
   }
-  for(i = 0; i < NUMCLOAKS; i++)
+  for(int i = 0; i < NUMCLOAKS; ++i)
   {
     Objects[CLOAKID + i].objstr = cloakname(i);
   }
-  for(i = 0; i < NUMRINGS; i++)
+  for(int i = 0; i < NUMRINGS; ++i)
   {
     Objects[RINGID + i].objstr = ringname(i);
   }

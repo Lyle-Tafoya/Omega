@@ -160,7 +160,7 @@ void l_condo()
     Player.dex = Player.maxdex;
     Player.iq  = Player.maxiq;
     Player.pow = Player.maxpow;
-    for(int i = 0; i < NUMSTATI; i++)
+    for(int i = 0; i < NUMSTATI; ++i)
     {
       if(Player.status[i] < 1000)
       {
@@ -436,8 +436,9 @@ void l_adept()
 
 void l_triffid()
 {
-  int damage = 0, stuck = true;
+  int damage = 0;
   queue_message("The hedge comes alive with a surge of alien growth!");
+  bool stuck = true;
   while(stuck)
   {
     dataprint();
@@ -1164,7 +1165,6 @@ void l_safe()
 
 void l_cartographer()
 {
-  int i, j, x, y;
   queue_message("Ye Olde Mappe Shoppe.");
   queue_message("Map of the local area: 500Au. Buy it? [yn] ");
   if(ynq() == 'y')
@@ -1178,6 +1178,7 @@ void l_cartographer()
       queue_message("You now have the local area mapped.");
       Player.cash -= 500;
       dataprint();
+      int x, y;
       switch(Villagenum)
       {
         case 1:
@@ -1206,9 +1207,9 @@ void l_cartographer()
           y = 41;
           break;
       }
-      for(i = x - 15; i <= x + 15; i++)
+      for(int i = x - 15; i <= x + 15; ++i)
       {
-        for(j = y - 15; j <= y + 15; j++)
+        for(int j = y - 15; j <= y + 15; ++j)
         {
           if((i >= 0) && (i < 64) && (j >= 0) && (j < 64))
           {

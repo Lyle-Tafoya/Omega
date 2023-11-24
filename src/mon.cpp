@@ -354,9 +354,6 @@ void monster_strike(monster *m)
 /* consider one monster's action */
 void m_pulse(monster *m)
 {
-  int range  = distance(m->x, m->y, Player.x, Player.y);
-  int STRIKE = false;
-
   if(Time % 10 == 0)
   {
     if(m->hp < Monsters[m->id].hp)
@@ -365,7 +362,8 @@ void m_pulse(monster *m)
     }
   }
 
-  if((!m_statusp(*m, AWAKE)) && (range <= m->wakeup))
+  int range = distance(m->x, m->y, Player.x, Player.y);
+  if(!m_statusp(*m, AWAKE) && range <= m->wakeup)
   {
     m_status_set(*m, AWAKE);
     resetgamestatus(FAST_MOVE, GameStatus);
@@ -384,8 +382,9 @@ void m_pulse(monster *m)
         m_status_reset(*m, WANDERING);
       }
     }
-    else /* not wandering */
+    else // not wandering
     {
+      bool STRIKE = false;
       if(m_statusp(*m, HOSTILE))
       {
         if((range > 2) && (range < m->sense) && (random_range(2) == 1))

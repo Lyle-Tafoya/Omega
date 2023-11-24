@@ -281,9 +281,9 @@ void save_country(std::ofstream &save_file)
   // since we don't mark the 'seen' bits as CHANGED, need to save a bitmask
   unsigned long int mask = 0;
   int run                = 8 * sizeof(mask);
-  for(x = 0; x < MAXWIDTH; x++)
+  for(x = 0; x < MAXWIDTH; ++x)
   {
-    for(y = 0; y < MAXLENGTH; y++)
+    for(y = 0; y < MAXLENGTH; ++y)
     {
       if(run == 0)
       {

@@ -277,7 +277,6 @@ void l_trap_sleepgas()
 
 void l_trap_acid()
 {
-  int i, k, itemdamage;
   Level->site[Player.x][Player.y].locchar = TRAP;
   lset(Player.x, Player.y, CHANGED, *Level);
   if(Player.agi + Player.level < random_range(100))
@@ -293,12 +292,12 @@ void l_trap_acid()
     if(!p_immune(ACID))
     {
       queue_message("The acid seeps over your possessions...");
-      itemdamage = random_range(5);
-      for(i = k = 0; ((i < MAXITEMS) && (k < itemdamage)); i++)
+      int itemdamage = random_range(5);
+      for(int i = 0, k = 0; i < MAXITEMS && k < itemdamage; ++i)
       {
         if(Player.possessions[i])
         {
-          k++;
+          ++k;
           damage_item(Player.possessions[i]);
         }
       }

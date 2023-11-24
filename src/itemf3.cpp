@@ -215,7 +215,6 @@ void i_juggernaut(std::unique_ptr<object> &o)
 
 void i_symbol(std::unique_ptr<object> &o)
 {
-  int i;
   if(!o->known)
   {
     queue_message("Nothing seems to happen.");
@@ -229,7 +228,7 @@ void i_symbol(std::unique_ptr<object> &o)
     for(; Player.hp > 1; Player.hp--)
     {
       dataprint();
-      for(i = 0; i < MAXITEMS; i++)
+      for(int i = 0; i < MAXITEMS; ++i)
       {
         if(Player.possessions[i])
         {
@@ -344,7 +343,6 @@ void i_antioch(std::unique_ptr<object> &o)
 
 void i_kolwynia(std::unique_ptr<object> &o)
 {
-  int i;
   if(!o->known)
   {
     queue_message("You destroy youself with a mana storm. How sad.");
@@ -355,7 +353,7 @@ void i_kolwynia(std::unique_ptr<object> &o)
     gain_experience(5000);
     queue_message("You seem to have gained complete mastery of magic.");
     Player.pow = Player.maxpow = 2 * Player.maxpow;
-    for(i = 0; i < spell::NUM_SPELLS; i++)
+    for(int i = 0; i < spell::NUM_SPELLS; ++i)
     {
       spell::Spells[i].known = true;
     }

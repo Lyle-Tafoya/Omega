@@ -76,8 +76,6 @@ void i_perm_strength(std::unique_ptr<object> &o)
 
 void i_perm_burden(std::unique_ptr<object> &o)
 {
-  int i;
-
   if(o->used)
   {
     o->weight = 1000;
@@ -89,7 +87,7 @@ void i_perm_burden(std::unique_ptr<object> &o)
     queue_message("Phew. What a relief.");
   }
   Player.itemweight = 0;
-  for(i = 0; i < MAXITEMS; i++)
+  for(int i = 0; i < MAXITEMS; ++i)
   {
     if(Player.possessions[i])
     {

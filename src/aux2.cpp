@@ -261,8 +261,6 @@ bool p_immune(int dtype)
 /* A value over 1000 indicates a permanent effect */
 void minute_status_check()
 {
-  int i;
-
   if(Player.status[HASTED] > 0)
   {
     if(Player.status[HASTED] < 1000)
@@ -289,7 +287,7 @@ void minute_status_check()
 
   if(Player.immunity[UNSTOPPABLE] > 0)
   {
-    for(i = 0; i < NUMIMMUNITIES; i++)
+    for(int i = 0; i < NUMIMMUNITIES; ++i)
     {
       Player.immunity[i]--;
     }
@@ -1072,7 +1070,7 @@ void enter_site(chtype site)
 /* Switches context dungeon/countryside/city, etc */
 void change_environment(char new_environment)
 {
-  int i, emerging = false;
+  bool emerging = false;
 
   Player.sx = -1;
   Player.sy = -1;                    /* reset sanctuary if there was one */
@@ -1470,7 +1468,7 @@ void change_environment(char new_environment)
         Player.x = LastCountryLocX;
         Player.y = LastCountryLocY;
       }
-      for(i = 0; i < 9; i++)
+      for(int i = 0; i < 9; ++i)
       {
         c_set(Player.x + Dirs[0][i], Player.y + Dirs[1][i], SEEN, Country);
       }

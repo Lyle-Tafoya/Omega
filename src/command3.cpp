@@ -550,7 +550,7 @@ void nap()
 
 void charid()
 {
-  int countryside = false;
+  bool countryside = false;
 
   queue_message("Character to identify: ");
   char id = mgetc();
@@ -1300,7 +1300,6 @@ void dismount_steed()
 
 void city_move()
 {
-  int site, x = Player.x, y = Player.y, toggle = false;
   if(Current_Environment != E_CITY)
   {
     queue_message("This command only works in the city!");
@@ -1322,9 +1321,11 @@ void city_move()
   else
   {
     queue_message("Move to which establishment [? for help, ESCAPE to quit]");
-    site = parsecitysite();
+    int site = parsecitysite();
     if(site != ABORT)
     {
+      int x = Player.x, y = Player.y;
+      bool toggle = false;
       queue_message("You're on your way...");
       while((x != CitySiteList[site][1]) || (y != CitySiteList[site][2]))
       {

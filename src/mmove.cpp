@@ -206,11 +206,11 @@ void m_spirit_move(monster *m)
   }
 }
 
-/* fluttery dumb movement */
+// fluttery dumb movement
 void m_flutter_move(monster *m)
 {
   int trange, range = distance(m->x, m->y, Player.x, Player.y);
-  int i, tx, ty, nx = m->x, ny = m->y;
+  int tx, ty, nx = m->x, ny = m->y;
   erase_monster(m);
   if(Player.status[INVISIBLE] > 0)
   {
@@ -218,7 +218,7 @@ void m_flutter_move(monster *m)
   }
   else
   {
-    for(i = 0; i < 8; i++)
+    for(int i = 0; i < 8; ++i)
     {
       tx     = m->x + Dirs[0][i];
       ty     = m->y + Dirs[1][i];
@@ -255,15 +255,15 @@ void m_follow_move(monster *m)
   }
 }
 
-/* allows monsters to fall into pools, revealed traps, etc */
+// allows monsters to fall into pools, revealed traps, etc
 void m_confused_move(monster *m)
 {
-  int i, nx, ny, done = false;
   erase_monster(m);
-  for(i = 0; ((i < 8) && (!done)); i++)
+  bool done = false;
+  for(int i = 0; i < 8 && !done; ++i)
   {
-    nx = m->x + random_range(3) - 1;
-    ny = m->y + random_range(3) - 1;
+    int nx = m->x + random_range(3) - 1;
+    int ny = m->y + random_range(3) - 1;
     if(unblocked(nx, ny) && ((nx != Player.x) || (ny != Player.y)))
     {
       done = true;
@@ -274,12 +274,12 @@ void m_confused_move(monster *m)
 
 void m_random_move(monster *m)
 {
-  int i, nx, ny, done = false;
   erase_monster(m);
-  for(i = 0; ((i < 8) && (!done)); i++)
+  bool done = false;
+  for(int i = 0; i < 8 && !done; ++i)
   {
-    nx = m->x + random_range(3) - 1;
-    ny = m->y + random_range(3) - 1;
+    int nx = m->x + random_range(3) - 1;
+    int ny = m->y + random_range(3) - 1;
     if(m_unblocked(m, nx, ny) && ((nx != Player.x) || (ny != Player.y)))
     {
       done = true;
@@ -288,7 +288,7 @@ void m_random_move(monster *m)
   }
 }
 
-/* monster removed from play */
+// monster removed from play
 void m_vanish(monster *m)
 {
   if(m->uniqueness == COMMON)
@@ -301,10 +301,10 @@ void m_vanish(monster *m)
   }
   Level->site[m->x][m->y].creature = nullptr;
   erase_monster(m);
-  m->hp = -1; /* signals "death" -- no credit to player, though */
+  m->hp = -1; // signals "death" -- no credit to player, though
 }
 
-/* monster still in play */
+// monster still in play
 void m_teleport(monster *m)
 {
   erase_monster(m);

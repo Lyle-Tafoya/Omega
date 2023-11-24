@@ -207,7 +207,6 @@ void l_fire()
 
 void l_abyss()
 {
-  int i;
   if(Current_Environment != Current_Dungeon)
   {
     queue_message("You fall through a dimensional portal!");
@@ -236,7 +235,7 @@ void l_abyss()
     }
     else
     {
-      i = 0;
+      int i = 0;
       queue_message("You fall...");
       while(random_range(3) != 2)
       {
@@ -248,9 +247,9 @@ void l_abyss()
         {
           queue_message("and fall... ");
         }
-        i++;
+        ++i;
       }
-      i++;
+      ++i;
       queue_message("Finally,you emerge through an interdimensional interstice...");
       if(Level->depth + i > MaxDungeonLevels)
       {
@@ -483,19 +482,19 @@ void l_rubble()
 /* Drops all portcullises in 5 moves */
 void l_portcullis_trap()
 {
-  int i, j, slam = false;
+  bool slam = false;
 
   queue_message("Click.");
-  for(i = std::max(Player.x - 5, 0); i < std::min(Player.x + 6, WIDTH); i++)
+  for(int x = std::max(Player.x - 5, 0); x < std::min(Player.x + 6, WIDTH); ++x)
   {
-    for(j = std::max(Player.y - 5, 0); j < std::min(Player.y + 6, LENGTH); j++)
+    for(int y = std::max(Player.y - 5, 0); y < std::min(Player.y + 6, LENGTH); ++y)
     {
-      if((Level->site[i][j].p_locf == L_PORTCULLIS) && (Level->site[i][j].locchar != PORTCULLIS))
+      if((Level->site[x][y].p_locf == L_PORTCULLIS) && (Level->site[x][y].locchar != PORTCULLIS))
       {
-        Level->site[i][j].locchar = PORTCULLIS;
-        lset(i, j, CHANGED, *Level);
-        putspot(i, j, PORTCULLIS);
-        if((i == Player.x) && (j == Player.y))
+        Level->site[x][y].locchar = PORTCULLIS;
+        lset(x, y, CHANGED, *Level);
+        putspot(x, y, PORTCULLIS);
+        if(x == Player.x && y == Player.y)
         {
           queue_message("Smash! You've been hit by a falling portcullis!");
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
@@ -510,27 +509,27 @@ void l_portcullis_trap()
   }
 }
 
-/* drops every portcullis on level, then kills itself and all similar traps. */
+// drops every portcullis on level, then kills itself and all similar traps
 void l_drop_every_portcullis()
 {
-  int i, j, slam = false;
+  bool slam = false;
 
   queue_message("Click.");
-  for(i = 0; i < WIDTH; i++)
+  for(int x = 0; x < WIDTH; ++x)
   {
-    for(j = 0; j < LENGTH; j++)
+    for(int y = 0; y < LENGTH; ++y)
     {
-      if(Level->site[i][j].p_locf == L_DROP_EVERY_PORTCULLIS)
+      if(Level->site[x][y].p_locf == L_DROP_EVERY_PORTCULLIS)
       {
-        Level->site[i][j].p_locf = L_NO_OP;
-        lset(i, j, CHANGED, *Level);
+        Level->site[x][y].p_locf = L_NO_OP;
+        lset(x, y, CHANGED, *Level);
       }
-      else if((Level->site[i][j].p_locf == L_PORTCULLIS) && (Level->site[i][j].locchar != PORTCULLIS))
+      else if(Level->site[x][y].p_locf == L_PORTCULLIS && Level->site[x][y].locchar != PORTCULLIS)
       {
-        Level->site[i][j].locchar = PORTCULLIS;
-        lset(i, j, CHANGED, *Level);
-        putspot(i, j, PORTCULLIS);
-        if((i == Player.x) && (j == Player.y))
+        Level->site[x][y].locchar = PORTCULLIS;
+        lset(x, y, CHANGED, *Level);
+        putspot(x, y, PORTCULLIS);
+        if(Player.x == x && Player.y == y)
         {
           queue_message("Smash! You've been hit by a falling portcullis!");
           p_damage(random_range(1000), NORMAL_DAMAGE, "a portcullis");
@@ -547,16 +546,16 @@ void l_drop_every_portcullis()
 
 void l_raise_portcullis()
 {
-  int i, j, open = false;
-  for(i = 0; i < WIDTH; i++)
+  bool open = false;
+  for(int x = 0; x < WIDTH; ++x)
   {
-    for(j = 0; j < LENGTH; j++)
+    for(int y = 0; y < LENGTH; ++y)
     {
-      if(Level->site[i][j].locchar == PORTCULLIS)
+      if(Level->site[x][y].locchar == PORTCULLIS)
       {
-        Level->site[i][j].locchar = FLOOR;
-        lset(i, j, CHANGED, *Level);
-        putspot(i, j, FLOOR);
+        Level->site[x][y].locchar = FLOOR;
+        lset(x, y, CHANGED, *Level);
+        putspot(x, y, FLOOR);
         open = true;
       }
     }
@@ -611,17 +610,16 @@ void l_void()
 
 void stationcheck()
 {
-  int stationsleft = false;
-  int i, j;
   queue_message("You feel regenerated.");
   Player.hp = Player.maxhp;
   dataprint();
-  for(i = 0; i < WIDTH; i++)
+  bool stationsleft = false;
+  for(int x = 0; x < WIDTH; ++x)
   {
-    for(j = 0; j < LENGTH; j++)
+    for(int y = 0; y < LENGTH; ++y)
     {
-      if((Level->site[i][j].locchar == WATER) || (Level->site[i][j].locchar == HEDGE) ||
-         (Level->site[i][j].locchar == WHIRLWIND) || (Level->site[i][j].locchar == FIRE))
+      if(Level->site[x][y].locchar == WATER || Level->site[x][y].locchar == HEDGE ||
+         Level->site[x][y].locchar == WHIRLWIND || Level->site[x][y].locchar == FIRE)
       {
         stationsleft = true;
       }
@@ -848,7 +846,7 @@ void l_earth_station()
 
 void l_void_station()
 {
-  int i, something = false;
+  bool something = false;
   queue_message("You are at the brink of an endless void. Enter it? [yn] ");
   if(ynq() == 'y')
   {
@@ -871,7 +869,7 @@ void l_void_station()
       something = (Player.packptr > 0);
       if(!something)
       {
-        for(i = 0; ((i < MAXITEMS) && (!something)); i++)
+        for(int i = 0; i < MAXITEMS && !something; ++i)
         {
           if(Player.possessions[i])
           {
@@ -905,7 +903,7 @@ void l_void_station()
         Player.rank[ADEPT] = 1;
         setgamestatus(COMPLETED_CHALLENGE, GameStatus);
         FixedPoints = calc_points();
-        /* set so change_environment puts player in correct temple! */
+        // set so change_environment puts player in correct temple!
         Player.x = 49;
         Player.y = 59;
         queue_message("You find yourself back in the Temple of Destiny.");

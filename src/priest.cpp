@@ -28,7 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 int check_sacrilege(int deity)
 {
-  int sacrilege = false;
+  bool sacrilege = false;
   if((Player.patron != deity) && (Player.patron > 0))
   {
     sacrilege = true;
@@ -151,7 +151,7 @@ int check_sacrilege(int deity)
       Player.rank[PRIESTHOOD] = 0;
     }
   }
-  return (sacrilege);
+  return sacrilege;
 }
 
 void answer_prayer()

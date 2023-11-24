@@ -376,17 +376,17 @@ void outdoors_random_event()
         resetgamestatus(LOST, GameStatus);
         queue_message("You know where you are now.");
       }
-      for(int i = Player.x - 5; i < Player.x + 6; ++i)
+      for(int x = Player.x - 5; x < Player.x + 6; ++x)
       {
-        for(int j = Player.y - 5; j < Player.y + 6; ++j)
+        for(int y = Player.y - 5; y < Player.y + 6; ++y)
         {
-          if(inbounds(i, j))
+          if(inbounds(x, y))
           {
-            c_set(i, j, SEEN, Country);
-            if(Country[i][j].current_terrain_type != Country[i][j].base_terrain_type)
+            c_set(x, y, SEEN, Country);
+            if(Country[x][y].current_terrain_type != Country[x][y].base_terrain_type)
             {
-              c_set(i, j, CHANGED, Country);
-              Country[i][j].current_terrain_type = Country[i][j].base_terrain_type;
+              c_set(x, y, CHANGED, Country);
+              Country[x][y].current_terrain_type = Country[x][y].base_terrain_type;
             }
           }
         }
@@ -874,12 +874,11 @@ void terrain_check(int takestime)
 
 void countrysearch()
 {
-  int x, y;
   Time += 60;
   hourly_check();
-  for(x = Player.x - 1; x < Player.x + 2; x++)
+  for(int x = Player.x - 1; x < Player.x + 2; ++x)
   {
-    for(y = Player.y - 1; y < Player.y + 2; y++)
+    for(int y = Player.y - 1; y < Player.y + 2; ++y)
     {
       if(inbounds(x, y))
       {
@@ -984,7 +983,7 @@ static int sitenums[] // the order matches sitenames[]
 std::vector<std::string> known_sites(int first, int last)
 {
   std::vector<std::string> lines;
-  int printed = false;
+  bool printed = false;
   for(int i = first; i <= last; ++i)
   {
     if(CitySiteList[sitenums[i] - CITYSITEBASE][0])
@@ -1121,15 +1120,15 @@ bool hostilemonstersnear()
 {
   bool hostile = false;
 
-  for(int i = Player.x - 2; ((i < Player.x + 3) && (!hostile)); ++i)
+  for(int x = Player.x - 2; (x < Player.x + 3 && !hostile); ++x)
   {
-    for(int j = Player.y - 2; ((j < Player.y + 3) && (!hostile)); ++j)
+    for(int y = Player.y - 2; (y < Player.y + 3 && !hostile); ++y)
     {
-      if(inbounds(i, j))
+      if(inbounds(x, y))
       {
-        if(Level->site[i][j].creature)
+        if(Level->site[x][y].creature)
         {
-          hostile = m_statusp(*Level->site[i][j].creature, HOSTILE);
+          hostile = m_statusp(*Level->site[x][y].creature, HOSTILE);
         }
       }
     }
@@ -1342,31 +1341,31 @@ void destroy_order()
   }
   else
   {
-    for(int i = 35; i < 46; ++i)
+    for(int x = 35; x < 46; ++x)
     {
-      for(int j = 60; j < 63; ++j)
+      for(int y = 60; y < 63; ++y)
       {
-        if(i == 40 && (j == 60 || j == 61))
+        if(x == 40 && (y == 60 || y == 61))
         {
-          lreset(i, j, SECRET, *Level);
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_NO_OP;
-          lset(i, j, CHANGED, *Level);
+          lreset(x, y, SECRET, *Level);
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_NO_OP;
+          lset(x, y, CHANGED, *Level);
         }
         else
         {
-          Level->site[i][j].locchar = RUBBLE;
-          Level->site[i][j].p_locf  = L_RUBBLE;
-          lset(i, j, CHANGED, *Level);
+          Level->site[x][y].locchar = RUBBLE;
+          Level->site[x][y].p_locf  = L_RUBBLE;
+          lset(x, y, CHANGED, *Level);
         }
-        if(Level->site[i][j].creature)
+        if(Level->site[x][y].creature)
         {
-          Level->site[i][j].creature->hp = -1;
-          Level->site[i][j].creature     = nullptr;
+          Level->site[x][y].creature->hp = -1;
+          Level->site[x][y].creature     = nullptr;
         }
-        make_site_monster(i, j, GHOST);
-        Level->site[i][j].creature->monstring = "ghost of a Paladin";
-        m_status_set(*Level->site[i][j].creature, HOSTILE);
+        make_site_monster(x, y, GHOST);
+        Level->site[x][y].creature->monstring = "ghost of a Paladin";
+        m_status_set(*Level->site[x][y].creature, HOSTILE);
       }
     }
   }
@@ -1374,7 +1373,7 @@ void destroy_order()
 
 void alert_guards()
 {
-  int foundguard = false;
+  bool foundguard = false;
   int suppress = 0;
   for(std::unique_ptr<monster> &m : Level->mlist)
   {

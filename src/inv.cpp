@@ -127,7 +127,7 @@ void pickup_at(int x, int y)
 // criteria for being able to put some item in some slot
 int aux_slottable(const object *o, int slot)
 {
-  int ok = true;
+  bool ok = true;
   if(!o)
   {
     ok = false;
@@ -579,7 +579,7 @@ int key_to_index(signed char key)
   assert(MAXITEMS > 0); /* must have room for an item, or this loop will
                          * die! */
 
-  for(int i = 0; i < MAXITEMS; i++)
+  for(int i = 0; i < MAXITEMS; ++i)
   {
     if(key == inventory_keymap[i])
     {
@@ -938,7 +938,7 @@ int aux_display_pack(int start_item, int slot)
   {
     menuclear();
     items = 0;
-    for(i = start_item; i < Player.packptr && items < ScreenLength - 5; i++)
+    for(i = start_item; i < Player.packptr && items < ScreenLength - 5; ++i)
     {
       if(aux_slottable(Player.pack[i].get(), slot))
       {

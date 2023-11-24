@@ -214,10 +214,9 @@ void eat()
   foodcheck();
 }
 
-/* search all adjacent spots for secrecy */
+// search all adjacent spots for secrecy
 void search(int *searchval)
 {
-  int i;
   if(Player.status[AFRAID] > 0)
   {
     queue_message("You are too terror-stricken to stop to search for anything.");
@@ -229,7 +228,7 @@ void search(int *searchval)
       setgamestatus(FAST_MOVE, GameStatus);
       *searchval = Searchnum;
     }
-    for(i = 0; i < 9; i++)
+    for(int i = 0; i < 9; ++i)
     {
       searchat(Player.x + Dirs[0][i], Player.y + Dirs[1][i]);
     }
@@ -775,7 +774,8 @@ void downstairs()
 /* have to redefine in odefs for next full recompile */
 void setoptions()
 {
-  int slot = 1, to, done = false;
+  int slot = 1, to;
+  bool done = false;
   int response;
 
   menuclear();

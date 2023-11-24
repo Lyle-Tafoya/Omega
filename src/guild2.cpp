@@ -33,7 +33,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 void l_thieves_guild()
 {
-  int fee, count, i, number, done = false, dues = 1000;
+  int fee, count, number, dues = 1000;
   char c, action;
   queue_message("You have penetrated to the Lair of the Thieves' Guild.");
   if(!nighttime())
@@ -60,6 +60,7 @@ void l_thieves_guild()
       Player.agi += 2;
       Player.dex += 2;
     }
+    bool done = false;
     while(!done)
     {
       menuclear();
@@ -233,7 +234,7 @@ void l_thieves_guild()
         else
         {
           count = 0;
-          for(i = 1; i < MAXITEMS; i++)
+          for(int i = 1; i < MAXITEMS; ++i)
           {
             if(Player.possessions[i])
             {
@@ -243,7 +244,7 @@ void l_thieves_guild()
               }
             }
           }
-          for(i = 0; i < Player.packptr; i++)
+          for(int i = 0; i < Player.packptr; ++i)
           {
             if(Player.pack[i])
             {
@@ -280,7 +281,7 @@ void l_thieves_guild()
           queue_message("Fence one item or go through pack? [ip] ");
           if((char)mcigetc() == 'i')
           {
-            i = getitem(NULL_ITEM);
+            int i = getitem(NULL_ITEM);
             if(i == ABORT || !Player.possessions[i])
             {
               queue_message("Huh, Is this some kind of set-up?");
@@ -317,7 +318,7 @@ void l_thieves_guild()
           }
           else
           {
-            for(i = 0; i < Player.packptr; i++)
+            for(int i = 0; i < Player.packptr; ++i)
             {
               if(Player.pack[i]->blessing > -1)
               {
@@ -332,7 +333,7 @@ void l_thieves_guild()
                   Player.pack[i]->number -= number;
                   if(Player.pack[i]->number < 1)
                   {
-                    /* Fenced an artifact?  You just might see it again. */
+                    // Fenced an artifact?  You just might see it again
                     if(Objects[Player.pack[i]->id].uniqueness > UNIQUE_UNMADE)
                     {
                       Objects[Player.pack[i]->id].uniqueness = UNIQUE_UNMADE;
@@ -359,8 +360,6 @@ void l_thieves_guild()
 
 void l_college()
 {
-  char action;
-  int done = false, enrolled = false;
   queue_message("The Collegium Magii. Founded 16937, AOF.");
   if(nighttime())
   {
@@ -368,6 +367,8 @@ void l_college()
   }
   else
   {
+    bool done = false, enrolled = false;
+    char action;
     while(!done)
     {
       if((Player.rank[COLLEGE] == MAGE) && (Player.level > Archmagelevel) && find_and_remove_item(CORPSEID, EATER))
@@ -898,8 +899,7 @@ void l_monastery()
 
 void l_sorcerors()
 {
-  char action;
-  int done = false, fee = 3000;
+  int fee = 3000;
   long total;
   queue_message("The Circle of Sorcerors.");
   if(Player.rank[CIRCLE] == -1)
@@ -910,6 +910,7 @@ void l_sorcerors()
   }
   else
   {
+    bool done = false;
     while(!done)
     {
       if((Player.rank[CIRCLE] == HIGHSORCEROR) && (Player.level > Primelevel) && find_and_remove_item(CORPSEID, LAWBRINGER))
@@ -934,7 +935,7 @@ void l_sorcerors()
       menuprint("c: Restore mana points\n");
       menuprint("ESCAPE: Leave these Chambers of Power.\n");
       showmenu();
-      action = mgetc();
+      char action = mgetc();
       if(action == ESCAPE)
       {
         done = true;

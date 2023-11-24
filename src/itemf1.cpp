@@ -50,7 +50,7 @@ void i_knowledge(std::unique_ptr<object> &o)
 void i_jane_t(std::unique_ptr<object> &o)
 {
   int volume = random_range(6);
-  int i, j, k;
+  int j, k;
   char v;
 
   Objects[o->id].known = 1;
@@ -89,7 +89,7 @@ void i_jane_t(std::unique_ptr<object> &o)
   }
   std::vector<std::string> lines;
   lines.emplace_back("You could probably now recognize:");
-  for(i = j; i < k; i++)
+  for(int i = j; i < k; ++i)
   {
     Objects[i].known = 1;
     v                = Objects[i].truename[0];

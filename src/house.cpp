@@ -30,7 +30,7 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
 // makes a log npc for houses and hovels
-void make_house_npc(int i, int j)
+void make_house_npc(int x, int y)
 {
   auto m = std::make_unique<monster>(Monsters[NPC]);
   make_log_npc(m.get());
@@ -43,9 +43,9 @@ void make_house_npc(int i, int j)
     queue_message("An eerie shiver runs down your spine as you enter....");
   }
   // if not == NPC, then we got a ghost off the npc list
-  m->x                       = i;
-  m->y                       = j;
-  Level->site[i][j].creature = m.get();
+  m->x                       = x;
+  m->y                       = y;
+  Level->site[x][y].creature = m.get();
   m->click                   = (Tick + 1) % 50;
   m_status_set(*m, HOSTILE);
   if(nighttime())
@@ -63,14 +63,14 @@ void make_house_npc(int i, int j)
   Level->mlist.push_front(std::move(m));
 }
 // makes a hiscore npc for mansions
-void make_mansion_npc(int i, int j)
+void make_mansion_npc(int x, int y)
 {
   auto m = std::make_unique<monster>(Monsters[NPC]);
   make_hiscore_npc(m.get(), random_range(14) + 1);
   queue_message("You detect signs of life in this house.");
-  m->x                       = i;
-  m->y                       = j;
-  Level->site[i][j].creature = m.get();
+  m->x                       = x;
+  m->y                       = y;
+  Level->site[x][y].creature = m.get();
   m->click                   = (Tick + 1) % 50;
   m_status_set(*m, HOSTILE);
   if(nighttime())
@@ -87,12 +87,6 @@ void make_mansion_npc(int i, int j)
 // loads the house level into Level
 void load_house(int kind, int populate)
 {
-  int i, j;
-  char site;
-  int stops;
-
-  FILE *fd;
-
   TempLevel = Level;
   initrand(Current_Environment, Player.x + Player.y + hour() * 10);
   if(ok_to_free(TempLevel))
@@ -110,6 +104,7 @@ void load_house(int kind, int populate)
 #endif
   clear_level(Level);
   std::string home_filepath;
+  char site;
   switch(kind)
   {
     case E_HOUSE:
@@ -129,155 +124,155 @@ void load_house(int kind, int populate)
       site               = cryptkey("home3.dat");
       break;
   }
-  fd    = checkfopen(home_filepath, "rb");
-  stops = 0;
-  for(j = 0; j < LENGTH; j++)
+  FILE *fd = checkfopen(home_filepath, "rb");
+  int stops = 0;
+  for(int y = 0; y < LENGTH; ++y)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int x = 0; x < WIDTH; ++x)
     {
       if(kind == E_HOVEL)
       {
-        Level->site[i][j].lstatus = SEEN;
+        Level->site[x][y].lstatus = SEEN;
       }
       else
       {
-        Level->site[i][j].lstatus = 0;
+        Level->site[x][y].lstatus = 0;
       }
-      Level->site[i][j].roomnumber = RS_CORRIDOR;
-      Level->site[i][j].p_locf     = L_NO_OP;
+      Level->site[x][y].roomnumber = RS_CORRIDOR;
+      Level->site[x][y].p_locf     = L_NO_OP;
       site                         = getc(fd) ^ site;
       switch(site)
       {
         case 'N':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_BEDROOM;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_BEDROOM;
           if(random_range(2) && populate)
           {
-            make_house_npc(i, j);
+            make_house_npc(x, y);
           }
           break;
         case 'H':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_BEDROOM;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_BEDROOM;
           if(random_range(2) && populate)
           {
-            make_mansion_npc(i, j);
+            make_mansion_npc(x, y);
           }
           break;
         case 'D':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_DININGROOM;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_DININGROOM;
           break;
         case '.':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           if(stops)
           {
-            lset(i, j, STOPS, *Level);
+            lset(x, y, STOPS, *Level);
             stops = 0;
           }
           break;
         case 'c':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_CLOSET;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_CLOSET;
           break;
         case 'G':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_BATHROOM;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_BATHROOM;
           break;
         case 'B':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_BEDROOM;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_BEDROOM;
           break;
         case 'K':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_KITCHEN;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_KITCHEN;
           break;
         case 'S':
-          Level->site[i][j].locchar  = FLOOR;
-          Level->site[i][j].showchar = WALL;
-          lset(i, j, SECRET, *Level);
-          Level->site[i][j].roomnumber = RS_SECRETPASSAGE;
+          Level->site[x][y].locchar  = FLOOR;
+          Level->site[x][y].showchar = WALL;
+          lset(x, y, SECRET, *Level);
+          Level->site[x][y].roomnumber = RS_SECRETPASSAGE;
           break;
         case '3':
-          Level->site[i][j].locchar  = SAFE;
-          Level->site[i][j].showchar = WALL;
-          lset(i, j, SECRET, *Level);
-          Level->site[i][j].p_locf = L_SAFE;
+          Level->site[x][y].locchar  = SAFE;
+          Level->site[x][y].showchar = WALL;
+          lset(x, y, SECRET, *Level);
+          Level->site[x][y].p_locf = L_SAFE;
           break;
         case '^':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = TRAP_BASE + random_range(NUMTRAPS);
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = TRAP_BASE + random_range(NUMTRAPS);
           break;
         case 'P':
-          Level->site[i][j].locchar = PORTCULLIS;
-          Level->site[i][j].p_locf  = L_PORTCULLIS;
+          Level->site[x][y].locchar = PORTCULLIS;
+          Level->site[x][y].p_locf  = L_PORTCULLIS;
           break;
         case 'R':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_RAISE_PORTCULLIS;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_RAISE_PORTCULLIS;
           break;
         case 'p':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_PORTCULLIS;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_PORTCULLIS;
           break;
         case 'T':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_PORTCULLIS_TRAP;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_PORTCULLIS_TRAP;
           break;
         case 'X':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_HOUSE_EXIT;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_HOUSE_EXIT;
           stops                     = 1;
           break;
         case '#':
-          Level->site[i][j].locchar = WALL;
+          Level->site[x][y].locchar = WALL;
           switch(kind)
           {
             case E_HOVEL:
-              Level->site[i][j].aux = 10;
+              Level->site[x][y].aux = 10;
               break;
             case E_HOUSE:
-              Level->site[i][j].aux = 50;
+              Level->site[x][y].aux = 50;
               break;
             case E_MANSION:
-              Level->site[i][j].aux = 150;
+              Level->site[x][y].aux = 150;
               break;
           }
           break;
         case '|':
-          Level->site[i][j].locchar    = OPEN_DOOR;
-          Level->site[i][j].roomnumber = RS_CORRIDOR;
-          lset(i, j, STOPS, *Level);
+          Level->site[x][y].locchar    = OPEN_DOOR;
+          Level->site[x][y].roomnumber = RS_CORRIDOR;
+          lset(x, y, STOPS, *Level);
           break;
         case '+':
-          Level->site[i][j].locchar    = CLOSED_DOOR;
-          Level->site[i][j].roomnumber = RS_CORRIDOR;
-          Level->site[i][j].aux        = LOCKED;
-          lset(i, j, STOPS, *Level);
+          Level->site[x][y].locchar    = CLOSED_DOOR;
+          Level->site[x][y].roomnumber = RS_CORRIDOR;
+          Level->site[x][y].aux        = LOCKED;
+          lset(x, y, STOPS, *Level);
           break;
         case 'd':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_CORRIDOR;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_CORRIDOR;
           if(populate)
           {
-            make_site_monster(i, j, DOBERMAN);
+            make_site_monster(x, y, DOBERMAN);
           }
           break;
         case 'a':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_CORRIDOR;
-          Level->site[i][j].p_locf     = L_TRAP_SIREN;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_CORRIDOR;
+          Level->site[x][y].p_locf     = L_TRAP_SIREN;
           break;
         case 'A':
-          Level->site[i][j].locchar    = FLOOR;
-          Level->site[i][j].roomnumber = RS_CORRIDOR;
+          Level->site[x][y].locchar    = FLOOR;
+          Level->site[x][y].roomnumber = RS_CORRIDOR;
           if(populate)
           {
-            make_site_monster(i, j, AUTO_MINOR); // automaton
+            make_site_monster(x, y, AUTO_MINOR); // automaton
           }
           break;
       }
-      Level->site[i][j].showchar = ' ';
+      Level->site[x][y].showchar = ' ';
     }
     site = getc(fd) ^ site;
   }

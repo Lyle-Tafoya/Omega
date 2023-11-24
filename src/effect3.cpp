@@ -32,7 +32,7 @@ extern interactive_menu *menu;
 
 int list_monsters()
 {
-  int i, itemno;
+  int itemno;
   queue_message("Show ID list? ");
   if(ynq() == 'y')
   {
@@ -40,7 +40,7 @@ int list_monsters()
     {
       queue_message("Summon monster: ");
       std::vector<std::string> lines;
-      for(i = 0; i < NUMMONSTERS; i++)
+      for(int i = 0; i < NUMMONSTERS; ++i)
       {
         lines.emplace_back(std::format("{}:{}", i + 1, Monsters[i].monstring));
       }
@@ -53,7 +53,7 @@ int list_monsters()
       {
         queue_message("How about trying a real monster?");
       }
-    } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
+    } while(itemno < 0 || itemno > NUMMONSTERS - 1);
   }
   else
   {
@@ -61,15 +61,16 @@ int list_monsters()
     {
       queue_message("Summon monster: ");
       itemno = (int)parsenum() - 1;
-    } while((itemno < 0) || (itemno > NUMMONSTERS - 1));
+    } while(itemno < 0 || itemno > NUMMONSTERS - 1);
   }
-  return (itemno);
+  return itemno;
 }
 
 /* if know id, then summon that monster; else (if < 0) get one. */
 void summon(int blessing, int id)
 {
-  int i, looking = true, x, y;
+  bool looking = true;
+  int x, y;
 
   if(id < 0)
   {
@@ -84,7 +85,7 @@ void summon(int blessing, int id)
       id = random_range(NUMMONSTERS);
     }
   }
-  for(i = 0; ((i < 8) && looking); i++)
+  for(int i = 0; i < 8 && looking; ++i)
   {
     x       = Player.x + Dirs[0][i];
     y       = Player.y + Dirs[1][i];
@@ -143,16 +144,14 @@ int itemlist(int itemindex, int num)
   return itemno;
 }
 
-/* uncurse all items, cure diseases, and neutralize poison */
+// uncurse all items, cure diseases, and neutralize poison
 void cleanse(int blessing)
 {
-  int i;
-
   if(blessing > -1)
   {
     if(blessing > 0)
     {
-      for(i = 0; i < MAXITEMS; i++)
+      for(int i = 0; i < MAXITEMS; ++i)
       {
         if(Player.possessions[i])
         {
@@ -188,12 +187,10 @@ void cleanse(int blessing)
 
 void annihilate(int blessing)
 {
-  int i;
-
   if(blessing == 0)
   {
     queue_message("Lightning strikes flash all around you!!!");
-    for(i = 0; i < 9; i++)
+    for(int i = 0; i < 9; ++i)
     {
       if(Level->site[Player.x + Dirs[0][i]][Player.y + Dirs[1][i]].creature)
       {
@@ -314,13 +311,12 @@ void hide(int x, int y)
 
 void clairvoyance(int vision)
 {
-  int i, j;
   int x = Player.x, y = Player.y;
   queue_message("Clairvoyance... ");
   setspot(x, y);
-  for(i = x - vision; i < x + vision + 1; i++)
+  for(int i = x - vision; i < x + vision + 1; ++i)
   {
-    for(j = y - vision; j < y + vision + 1; j++)
+    for(int j = y - vision; j < y + vision + 1; ++j)
     {
       if(inbounds(i, j))
       {
@@ -345,10 +341,11 @@ void aggravate()
 
 void learnspell(int blessing)
 {
-  int i, done = false;
+  bool done = false;
   if(blessing < 0)
   {
-    for(i = spell::NUM_SPELLS; ((i > -1) && (!done)); i--)
+    int i;
+    for(i = spell::NUM_SPELLS; ((i > -1) && (!done)); --i)
     {
       if(spell::Spells[i].known)
       {
@@ -394,12 +391,11 @@ void learnspell(int blessing)
 
 void amnesia()
 {
-  int i, j;
-  for(j = 0; j < LENGTH; j++)
+  for(int y = 0; y < LENGTH; ++y)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int x = 0; x < WIDTH; ++x)
     {
-      lreset(i, j, SEEN, *Level);
+      lreset(x, y, SEEN, *Level);
     }
   }
 
@@ -407,7 +403,7 @@ void amnesia()
   drawvision(Player.x, Player.y);
 }
 
-/*affects player only */
+// affects player only
 void level_drain(int levels, const std::string &source)
 {
   int decrement = ((int)(Player.maxhp / (Player.level + 1)));
@@ -921,7 +917,7 @@ void level_return()
 
 void cure(int blessing)
 {
-  int happened = false;
+  bool happened = false;
   if(blessing > -1)
   {
     if(Player.status[DISEASED])
@@ -998,7 +994,7 @@ void dispel(int blessing)
     setspot(x, y);
     if((x == Player.x) && (y == Player.y))
     {
-      for(int i = 0; i < MAXITEMS; i++)
+      for(int i = 0; i < MAXITEMS; ++i)
       {
         std::unique_ptr<object> &o = Player.possessions[i];
         if(o)

@@ -32,19 +32,18 @@ void assign_village_function(int x, int y, int setup)
 {
   static int next = 0;
   static int permutation[24]; // number of x's in village map
-  int i, j, k;
 
   if(setup)
   {
     next = 0;
-    for(i = 0; i < 24; i++)
+    for(int i = 0; i < 24; ++i)
     {
       permutation[i] = i;
     }
-    for(i = 0; i < 24; i++)
+    for(int i = 0; i < 24; ++i)
     {
-      j              = permutation[i];
-      k              = random_range(24);
+      int j          = permutation[i];
+      int k          = random_range(24);
       permutation[i] = permutation[k];
       permutation[k] = j;
     }
@@ -98,83 +97,83 @@ void assign_village_function(int x, int y, int setup)
   }
 }
 
-void make_food_bin(int i, int j)
+void make_food_bin(int x, int y)
 {
   for(int k = 0; k < 10; ++k)
   {
     auto o = std::make_unique<object>();
     make_food(o.get(), 15); // grain
-    Level->site[i][j].things.push_front(std::move(o));
+    Level->site[x][y].things.push_front(std::move(o));
   }
 }
 
-void make_guard(int i, int j)
+void make_guard(int x, int y)
 {
   std::unique_ptr<monster> m = make_creature(GUARD);
-  Level->site[i][j].creature = m.get();
-  m->x                       = i;
-  m->y                       = j;
+  Level->site[x][y].creature = m.get();
+  m->x                       = x;
+  m->y                       = y;
   Level->mlist.push_front(std::move(m));
 }
 
-void make_sheep(int i, int j)
+void make_sheep(int x, int y)
 {
   std::unique_ptr<monster> m = make_creature(SHEEP);
-  Level->site[i][j].creature = m.get();
-  m->x                       = i;
-  m->y                       = j;
+  Level->site[x][y].creature = m.get();
+  m->x                       = x;
+  m->y                       = y;
   Level->mlist.push_front(std::move(m));
 }
 
-void make_horse(int i, int j)
+void make_horse(int x, int y)
 {
   std::unique_ptr<monster> m = make_creature(HORSE);
-  Level->site[i][j].creature = m.get();
-  m->x                       = i;
-  m->y                       = j;
+  Level->site[x][y].creature = m.get();
+  m->x                       = x;
+  m->y                       = y;
   Level->mlist.push_front(std::move(m));
 }
 
-void make_merchant(int i, int j)
+void make_merchant(int x, int y)
 {
   std::unique_ptr<monster> m = make_creature(MERCHANT);
-  Level->site[i][j].creature = m.get();
-  m->x                       = i;
-  m->y                       = j;
+  Level->site[x][y].creature = m.get();
+  m->x                       = x;
+  m->y                       = y;
   Level->mlist.push_front(std::move(m));
 }
 
-void special_village_site(int i, int j, int villagenum)
+void special_village_site(int x, int y, int villagenum)
 {
   if(villagenum == 1)
   {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_LAWSTONE;
+    Level->site[x][y].locchar = ALTAR;
+    Level->site[x][y].p_locf  = L_LAWSTONE;
   }
   if(villagenum == 2)
   {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_BALANCESTONE;
+    Level->site[x][y].locchar = ALTAR;
+    Level->site[x][y].p_locf  = L_BALANCESTONE;
   }
   else if(villagenum == 3)
   {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_CHAOSTONE;
+    Level->site[x][y].locchar = ALTAR;
+    Level->site[x][y].p_locf  = L_CHAOSTONE;
   }
   else if(villagenum == 4)
   {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_MINDSTONE;
+    Level->site[x][y].locchar = ALTAR;
+    Level->site[x][y].p_locf  = L_MINDSTONE;
   }
   else if(villagenum == 5)
   {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_SACRIFICESTONE;
+    Level->site[x][y].locchar = ALTAR;
+    Level->site[x][y].p_locf  = L_SACRIFICESTONE;
   }
   else if(villagenum == 6)
   {
-    Level->site[i][j].locchar = ALTAR;
-    Level->site[i][j].p_locf  = L_VOIDSTONE;
+    Level->site[x][y].locchar = ALTAR;
+    Level->site[x][y].p_locf  = L_VOIDSTONE;
   }
 }
 
@@ -204,115 +203,115 @@ void load_village(int villagenum, int populate)
   Level->environment = E_VILLAGE;
   char site          = cryptkey("village.dat");
   FILE *fd           = checkfopen(std::format("{}village{}.dat", Omegalib, villagenum), "rb");
-  for(int j = 0; j < LENGTH; j++)
+  for(int y = 0; y < LENGTH; ++y)
   {
-    for(int i = 0; i < WIDTH; i++)
+    for(int x = 0; x < WIDTH; ++x)
     {
-      lset(i, j, SEEN, *Level);
+      lset(x, y, SEEN, *Level);
       site                     = getc(fd) ^ site;
-      Level->site[i][j].p_locf = L_NO_OP;
+      Level->site[x][y].p_locf = L_NO_OP;
       switch(site)
       {
         case 'f':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           if(populate)
           {
-            make_food_bin(i, j);
+            make_food_bin(x, y);
           }
           break;
         case 'g':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_GRANARY;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_GRANARY;
           break;
         case 'h':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           if(populate)
           {
-            make_horse(i, j);
+            make_horse(x, y);
           }
           break;
         case 'S':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_STABLES;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_STABLES;
           break;
         case 'H':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           if(populate)
           {
-            make_merchant(i, j);
+            make_merchant(x, y);
           }
           break;
         case 'C':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_COMMONS;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_COMMONS;
           break;
         case 's':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           if(populate)
           {
-            make_sheep(i, j);
+            make_sheep(x, y);
           }
           break;
         case 'x':
-          assign_village_function(i, j, false);
+          assign_village_function(x, y, false);
           break;
         case 'X':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_COUNTRYSIDE;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_COUNTRYSIDE;
           break;
         case 'G':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           if(populate)
           {
-            make_guard(i, j);
-            Level->site[i][j].creature->aux1 = i;
-            Level->site[i][j].creature->aux2 = j;
+            make_guard(x, y);
+            Level->site[x][y].creature->aux1 = x;
+            Level->site[x][y].creature->aux2 = y;
           }
           break;
         case '^':
-          Level->site[i][j].locchar = FLOOR;
-          Level->site[i][j].p_locf  = L_TRAP_SIREN;
+          Level->site[x][y].locchar = FLOOR;
+          Level->site[x][y].p_locf  = L_TRAP_SIREN;
           break;
         case '"':
-          Level->site[i][j].locchar = HEDGE;
-          Level->site[i][j].p_locf  = L_HEDGE;
+          Level->site[x][y].locchar = HEDGE;
+          Level->site[x][y].p_locf  = L_HEDGE;
           break;
         case '~':
-          Level->site[i][j].locchar = WATER;
-          Level->site[i][j].p_locf  = L_WATER;
+          Level->site[x][y].locchar = WATER;
+          Level->site[x][y].p_locf  = L_WATER;
           break;
         case '+':
-          Level->site[i][j].locchar = WATER;
-          Level->site[i][j].p_locf  = L_CHAOS;
+          Level->site[x][y].locchar = WATER;
+          Level->site[x][y].p_locf  = L_CHAOS;
           break;
         case '\'':
-          Level->site[i][j].locchar = HEDGE;
-          Level->site[i][j].p_locf  = L_TRIFFID;
+          Level->site[x][y].locchar = HEDGE;
+          Level->site[x][y].p_locf  = L_TRIFFID;
           break;
         case '!':
-          special_village_site(i, j, villagenum);
+          special_village_site(x, y, villagenum);
           break;
         case '#':
-          Level->site[i][j].locchar = WALL;
-          Level->site[i][j].aux     = 100;
+          Level->site[x][y].locchar = WALL;
+          Level->site[x][y].aux     = 100;
           break;
         case '.':
-          Level->site[i][j].locchar = FLOOR;
+          Level->site[x][y].locchar = FLOOR;
           break;
         case '-':
-          Level->site[i][j].locchar = CLOSED_DOOR;
+          Level->site[x][y].locchar = CLOSED_DOOR;
           break;
         case '1':
-          Level->site[i][j].locchar = STATUE;
+          Level->site[x][y].locchar = STATUE;
           break;
       }
-      if(loc_statusp(i, j, SECRET, *Level))
+      if(loc_statusp(x, y, SECRET, *Level))
       {
-        Level->site[i][j].showchar = WALL;
+        Level->site[x][y].showchar = WALL;
       }
       else
       {
-        Level->site[i][j].showchar = Level->site[i][j].locchar;
+        Level->site[x][y].showchar = Level->site[x][y].locchar;
       }
     }
     site = getc(fd) ^ site;

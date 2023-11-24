@@ -579,7 +579,6 @@ bool view_los_p(int x1, int y1, int x2, int y2)
 
 long calc_points()
 {
-  int i;
   long points = 0;
 
   if(gamestatusp(SPOKE_TO_DRUID, GameStatus))
@@ -623,7 +622,7 @@ long calc_points()
 
   points += Player.cash / 500;
 
-  for(i = 0; i < MAXITEMS; i++)
+  for(int i = 0; i < MAXITEMS; ++i)
   {
     if(Player.possessions[i])
     {
@@ -631,7 +630,7 @@ long calc_points()
     }
   }
 
-  for(i = 0; i < MAXPACK; i++)
+  for(int i = 0; i < MAXPACK; ++i)
   {
     if(Player.pack[i])
     {
@@ -639,7 +638,7 @@ long calc_points()
     }
   }
 
-  for(i = 0; i < NUMRANKS; i++)
+  for(int i = 0; i < NUMRANKS; ++i)
   {
     if(Player.rank[i] == 5)
     {
@@ -774,11 +773,11 @@ const std::string month()
  * Simms. */
 /* finds floor space on level with buildaux not equal to baux,
 sets x,y there. There must *be* floor space somewhere on level.... */
-int spaceok(int i, int j, int baux)
+int spaceok(int x, int y, int baux)
 {
   return (
-    Level->site[i][j].locchar == FLOOR && !Level->site[i][j].creature &&
-    !loc_statusp(i, j, SECRET, *Level) && Level->site[i][j].buildaux != baux
+    Level->site[x][y].locchar == FLOOR && !Level->site[x][y].creature &&
+    !loc_statusp(x, y, SECRET, *Level) && Level->site[x][y].buildaux != baux
   );
 }
 
@@ -871,9 +870,9 @@ bool confirmation()
 
 void calc_weight()
 {
-  int i, weight = 0;
+  int weight = 0;
 
-  for(i = 1; i < MAXITEMS; i++)
+  for(int i = 1; i < MAXITEMS; ++i)
   {
     if(Player.possessions[i])
     {
@@ -884,7 +883,7 @@ void calc_weight()
   {
     weight -= Player.possessions[O_READY_HAND]->weight * Player.possessions[O_READY_HAND]->number;
   }
-  for(i = 0; i < MAXPACK; i++)
+  for(int i = 0; i < MAXPACK; ++i)
   {
     if(Player.pack[i])
     {

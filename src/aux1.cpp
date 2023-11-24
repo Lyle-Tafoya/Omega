@@ -187,7 +187,7 @@ bool player_on_sanctuary()
 void fight_monster(monster *m)
 {
   int hitmod      = 0;
-  int reallyfight = true;
+  bool reallyfight = true;
 
   if(Player.status[AFRAID])
   {
@@ -373,10 +373,9 @@ bool p_country_moveable(int x, int y)
   }
 }
 
-/* search once particular spot */
+// search once particular spot
 void searchat(int x, int y)
 {
-  int i;
   if(inbounds(x, y) && (random_range(3) || Player.status[ALERT]))
   {
     if(loc_statusp(x, y, SECRET, *Level))
@@ -386,8 +385,8 @@ void searchat(int x, int y)
       if((Level->site[x][y].locchar == OPEN_DOOR) || (Level->site[x][y].locchar == CLOSED_DOOR))
       {
         queue_message("You find a secret door!");
-        for(i = 0; i <= 8; i++)
-        { /* FIXED! 12/25/98 */
+        for(int i = 0; i <= 8; ++i)
+        {
           lset(x + Dirs[0][i], y + Dirs[1][i], STOPS, *Level);
           lset(x + Dirs[0][i], y + Dirs[1][i], CHANGED, *Level);
         }
@@ -899,18 +898,18 @@ std::string describe_player()
 /* share out experience among guild memberships */
 void gain_experience(int amount)
 {
-  int i, count = 0, share;
+  int count = 0, share;
   Player.xp += static_cast<long>(amount);
   gain_level(); /* actually, check to see if should gain level */
-  for(i = 0; i < NUMRANKS; i++)
+  for(int i = 0; i < NUMRANKS; ++i)
   {
     if(Player.guildxp[i] > 0)
     {
-      count++;
+      ++count;
     }
   }
   share = amount / (std::max(count, 1));
-  for(i = 0; i < NUMRANKS; i++)
+  for(int i = 0; i < NUMRANKS; ++i)
   {
     if(Player.guildxp[i] > 0)
     {
@@ -1045,7 +1044,6 @@ void roomcheck()
 // ask for mercy
 void surrender(monster *m)
 {
-  int i;
   long bestitem, bestvalue;
 
   switch(random_range(4))
@@ -1097,7 +1095,7 @@ void surrender(monster *m)
     Player.cash = 0;
     bestvalue   = 0;
     bestitem    = ABORT;
-    for(i = 1; i < MAXITEMS; i++)
+    for(int i = 1; i < MAXITEMS; ++i)
     {
       if(Player.possessions[i])
       {

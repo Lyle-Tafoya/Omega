@@ -106,7 +106,7 @@ is completely random, but also gets harder as it is explored;
 the astral and the volcano just stay hard... */
 void populate_level(int monstertype)
 {
-  int i, j, k, monsterid, nummonsters = (random_range(difficulty() / 3) + 1) * 3 + 8;
+  int nummonsters = (random_range(difficulty() / 3) + 1) * 3 + 8;
 
   if(monstertype == E_CASTLE)
   {
@@ -121,9 +121,10 @@ void populate_level(int monstertype)
     nummonsters += 20;
   }
 
-  for(k = 0; k < nummonsters; k++)
+  int x, y, monsterid;
+  for(int k = 0; k < nummonsters; ++k)
   {
-    findspace(&i, &j, -1);
+    findspace(&x, &y, -1);
 
     switch(monstertype)
     {
@@ -134,7 +135,7 @@ void populate_level(int monstertype)
         }
         else if(Level->depth * 10 + random_range(100) > 100)
         {
-          monsterid = GOBLIN_CHIEF; /* Goblin Chieftain */
+          monsterid = GOBLIN_CHIEF; // Goblin Chieftain
         }
         else if(random_range(100) > 50)
         {
@@ -142,7 +143,7 @@ void populate_level(int monstertype)
         }
         else
         {
-          monsterid = RANDOM; /* IE, random monster */
+          monsterid = RANDOM; // IE, random monster
         }
         break;
       case E_SEWERS:
@@ -159,19 +160,19 @@ void populate_level(int monstertype)
               break;
             case 1:
               monsterid = AGGRAVATOR;
-              break; /* aggravator fungus */
+              break; // aggravator fungus
             case 2:
               monsterid = BLIPPER;
-              break; /* blipper rat */
+              break; // blipper rat
             case 3:
               monsterid = NIGHT_GAUNT;
               break;
             case 4:
               monsterid = NASTY;
-              break; /* transparent nasty */
+              break; // transparent nasty
             case 5:
               monsterid = MURK;
-              break; /* murk fungus */
+              break; // murk fungus
             case 6:
               monsterid = CATOBLEPAS;
               break;
@@ -180,22 +181,22 @@ void populate_level(int monstertype)
               break;
             case 8:
               monsterid = DENEBIAN;
-              break; /* denebian slime devil */
+              break; // denebian slime devil
             case 9:
               monsterid = CROC;
-              break; /* giant crocodile */
+              break; // giant crocodile
             case 10:
               monsterid = TESLA;
-              break; /* tesla monster */
+              break; // tesla monster
             case 11:
               monsterid = SHADOW;
-              break; /* shadow spirit */
+              break; // shadow spirit
             case 12:
               monsterid = BOGTHING;
-              break; /* bogthing */
+              break; // bogthing
             case 13:
               monsterid = WATER_ELEM;
-              break; /* water elemental */
+              break; // water elemental
             case 14:
               monsterid = TRITON;
               break;
@@ -204,13 +205,13 @@ void populate_level(int monstertype)
               break;
             default:
               monsterid = RANDOM;
-              break; /* whatever seems good */
+              break; // whatever seems good
           }
         }
         break;
       case E_ASTRAL:
         if(random_range(2))
-        { /* random astral creatures */
+        { // random astral creatures
           switch(random_range(12))
           {
             case 0:
@@ -218,19 +219,19 @@ void populate_level(int monstertype)
               break;
             case 1:
               monsterid = FUZZY;
-              break; /* astral fuzzy */
+              break; // astral fuzzy
             case 2:
               monsterid = BAN_SIDHE;
               break;
             case 3:
               monsterid = GRUE;
-              break; /* astral grue */
+              break; // astral grue
             case 4:
               monsterid = SHADOW;
-              break; /* shadow spirit */
+              break; // shadow spirit
             case 5:
               monsterid = ASTRAL_VAMP;
-              break; /* astral vampire */
+              break; // astral vampire
             case 6:
               monsterid = MANABURST;
               break;
@@ -239,35 +240,35 @@ void populate_level(int monstertype)
               break;
             case 8:
               monsterid = ILL_FIEND;
-              break; /* illusory fiend */
+              break; // illusory fiend
             case 9:
               monsterid = MIRRORMAST;
-              break; /* mirror master */
+              break; // mirror master
             case 10:
               monsterid = ELDER_GRUE;
-              break; /* elder etheric grue */
+              break; // elder etheric grue
             default:
-              monsterid = SHADOW_SLAY; /* shadow slayer */
+              monsterid = SHADOW_SLAY; // shadow slayer
           }
         }
-        else if(random_range(2) && (Level->depth == 1))
-        {                         /* plane of earth */
-          monsterid = EARTH_ELEM; /* earth elemental */
+        else if(random_range(2) && Level->depth == 1)
+        {                         // plane of earth
+          monsterid = EARTH_ELEM; // earth elemental
         }
-        else if(random_range(2) && (Level->depth == 2))
-        {                       /* plane of air */
-          monsterid = AIR_ELEM; /* air elemental */
+        else if(random_range(2) && Level->depth == 2)
+        {                       // plane of air
+          monsterid = AIR_ELEM; // air elemental
         }
-        else if(random_range(2) && (Level->depth == 3))
-        {                         /* plane of water */
-          monsterid = WATER_ELEM; /* water elemental */
+        else if(random_range(2) && Level->depth == 3)
+        {                         // plane of water
+          monsterid = WATER_ELEM; // water elemental
         }
-        else if(random_range(2) && (Level->depth == 4))
-        {                        /* plane of fire */
-          monsterid = FIRE_ELEM; /* fire elemental */
+        else if(random_range(2) && Level->depth == 4)
+        {                        // plane of fire
+          monsterid = FIRE_ELEM; // fire elemental
         }
         else if(random_range(2) && (Level->depth == 5))
-        { /* deep astral */
+        { // deep astral
           switch(random_range(12))
           {
             case 0:
@@ -275,34 +276,34 @@ void populate_level(int monstertype)
               break;
             case 1:
               monsterid = SERV_LAW;
-              break; /* servant of law */
+              break; // servant of law
             case 2:
               monsterid = SERV_CHAOS;
-              break; /* servant of chaos */
+              break; // servant of chaos
             case 3:
               monsterid = FROST_DEMON;
-              break; /* lesser frost demon */
+              break; // lesser frost demon
             case 4:
               monsterid = OUTER_DEMON;
-              break; /* outer circle demon */
+              break; // outer circle demon
             case 5:
               monsterid = DEMON_SERP;
-              break; /* demon serpent */
+              break; // demon serpent
             case 6:
               monsterid = ANGEL;
               break;
             case 7:
               monsterid = INNER_DEMON;
-              break; /* inner circle demon */
+              break; // inner circle demon
             case 8:
               monsterid = FDEMON_L;
-              break; /* frost demon lord */
+              break; // frost demon lord
             case 9:
               monsterid = HIGH_ANGEL;
               break;
             case 10:
               monsterid = DEMON_PRINCE;
-              break; /* prime circle demon */
+              break; // prime circle demon
             default:
               monsterid = ARCHANGEL;
           }
@@ -323,7 +324,7 @@ void populate_level(int monstertype)
         else
         {
           switch(random_range(Level->depth / 2 + 2))
-          { /* evil & fire creatures */
+          { // evil & fire creatures
             case 0:
               monsterid = HAUNT;
               break;
@@ -427,28 +428,27 @@ void populate_level(int monstertype)
         break;
     }
 
-    assert(RANDOM == -1); /* WDT: the following test slightly assumes
-                           * this. */
+    assert(RANDOM == -1); // WDT: the following test slightly assumes this
     std::unique_ptr<monster> m;
     if(monsterid > RANDOM)
     {
       m = make_creature(monsterid);
-      Level->site[i][j].creature = m.get();
+      Level->site[x][y].creature = m.get();
     }
     else
     {
-      m = m_create(i, j, true, difficulty());
-      Level->site[i][j].creature = m.get();
+      m = m_create(x, y, true, difficulty());
+      Level->site[x][y].creature = m.get();
     }
 
-    Level->site[i][j].creature->x = i;
-    Level->site[i][j].creature->y = j;
+    Level->site[x][y].creature->x = x;
+    Level->site[x][y].creature->y = y;
 
-    if(m_statusp(*Level->site[i][j].creature, ONLYSWIM))
+    if(m_statusp(*Level->site[x][y].creature, ONLYSWIM))
     {
-      Level->site[i][j].locchar = WATER;
-      Level->site[i][j].p_locf  = L_WATER;
-      lset(i, j, CHANGED, *Level);
+      Level->site[x][y].locchar = WATER;
+      Level->site[x][y].p_locf  = L_WATER;
+      lset(x, y, CHANGED, *Level);
     }
 
     Level->mlist.push_front(std::move(m));

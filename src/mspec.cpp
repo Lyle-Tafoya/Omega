@@ -586,7 +586,7 @@ void m_sp_lw(monster *m)
 
 void m_sp_angel(monster *m)
 {
-  int mid, hostile = false;
+  bool hostile = false;
   switch(m->aux1)
   {
     case ATHENA:
@@ -608,6 +608,7 @@ void m_sp_angel(monster *m)
   if(m_statusp(*m, HOSTILE))
   {
     queue_message("The angel summons a heavenly host!");
+    int mid;
     switch(m->level)
     {
       case 9:
@@ -700,7 +701,6 @@ void m_sp_mb(monster *m)
 
 void m_sp_mirror(monster *m)
 {
-  int i, x, y;
   if(view_los_p(m->x, m->y, Player.x, Player.y))
   {
     if(random_range(20) + 6 < m->level)
@@ -710,10 +710,10 @@ void m_sp_mirror(monster *m)
     }
     else
     {
-      for(i = 0; i < 5; i++)
+      for(int i = 0; i < 5; ++i)
       {
-        x = m->x + random_range(13) - 6;
-        y = m->y + random_range(13) - 6;
+        int x = m->x + random_range(13) - 6;
+        int y = m->y + random_range(13) - 6;
         if(inbounds(x, y))
         {
           Level->site[x][y].showchar = m->monchar;
@@ -729,7 +729,7 @@ void m_illusion(monster *m)
   int i = random_range(NUMMONSTERS);
   if(i == NPC || i == HISCORE_NPC || i == ZERO_NPC)
   {
-    i = m->id; /* can't imitate NPC */
+    i = m->id; // can't imitate NPC
   }
   if(Player.status[TRUESIGHT])
   {

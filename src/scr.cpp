@@ -902,7 +902,6 @@ bool litroom(int x, int y)
 void drawvision(int x, int y)
 {
   static int oldx = -1, oldy = -1;
-  int i, j;
 
   if(Current_Environment != E_COUNTRYSIDE)
   {
@@ -916,9 +915,9 @@ void drawvision(int x, int y)
     {
       if(Player.status[ILLUMINATION] > 0)
       {
-        for(i = -2; i < 3; i++)
+        for(int i = -2; i < 3; ++i)
         {
-          for(j = -2; j < 3; j++)
+          for(int j = -2; j < 3; ++j)
           {
             if(inbounds(x + i, y + j))
             {
@@ -932,9 +931,9 @@ void drawvision(int x, int y)
       }
       else
       {
-        for(i = -1; i < 2; i++)
+        for(int i = -1; i < 2; ++i)
         {
-          for(j = -1; j < 2; j++)
+          for(int j = -1; j < 2; ++j)
           {
             if(inbounds(x + i, y + j))
             {
@@ -944,8 +943,8 @@ void drawvision(int x, int y)
         }
       }
       drawplayer();
-      drawmonsters(false); /* erase all monsters */
-      drawmonsters(true);  /* draw those now visible */
+      drawmonsters(false); // erase all monsters
+      drawmonsters(true);  // draw those now visible
     }
     if((!gamestatusp(FAST_MOVE, GameStatus)) || (!optionp(JUMPMOVE, Player)))
     {
@@ -956,9 +955,9 @@ void drawvision(int x, int y)
   }
   else
   {
-    for(i = -1; i < 2; ++i)
+    for(int i = -1; i < 2; ++i)
     {
-      for(j = -1; j < 2; ++j)
+      for(int j = -1; j < 2; ++j)
       {
         if(!inbounds(x + i, y + j) || c_statusp(x + i, y + j, SEEN, Country))
         {
@@ -991,7 +990,7 @@ void levelrefresh()
   wnoutrefresh(level_window);
 }
 
-/* draws a particular spot under if in line-of-sight */
+// draws a particular spot under if in line-of-sight
 void drawspot(int x, int y)
 {
   if(inbounds(x, y))
@@ -1009,7 +1008,7 @@ void drawspot(int x, int y)
   }
 }
 
-/* draws a particular spot regardless of line-of-sight */
+// draws a particular spot regardless of line-of-sight
 void dodrawspot(int x, int y)
 {
   if(inbounds(x, y))
@@ -1024,31 +1023,31 @@ void dodrawspot(int x, int y)
   }
 }
 
-/* write a blank to a spot if it is floor */
-void blankoutspot(int i, int j)
+// write a blank to a spot if it is floor
+void blankoutspot(int x, int y)
 {
-  if(inbounds(i, j))
+  if(inbounds(x, y))
   {
-    lreset(i, j, LIT, *Level);
-    lset(i, j, CHANGED, *Level);
-    if(Level->site[i][j].locchar == FLOOR)
+    lreset(x, y, LIT, *Level);
+    lset(x, y, CHANGED, *Level);
+    if(Level->site[x][y].locchar == FLOOR)
     {
-      Level->site[i][j].showchar = SPACE;
-      putspot(i, j, SPACE);
+      Level->site[x][y].showchar = SPACE;
+      putspot(x, y, SPACE);
     }
   }
 }
 
-/* blank out a spot regardless */
-void blotspot(int i, int j)
+// blank out a spot regardless
+void blotspot(int x, int y)
 {
-  if(inbounds(i, j))
+  if(inbounds(x, y))
   {
-    lreset(i, j, SEEN, *Level);
-    Level->site[i][j].showchar = SPACE;
-    if(!offscreen(i, j))
+    lreset(x, y, SEEN, *Level);
+    Level->site[x][y].showchar = SPACE;
+    if(!offscreen(x, y))
     {
-      color_mvwaddch(level_window, screenmod(j), screenmod_horizontal(i), SPACE);
+      color_mvwaddch(level_window, screenmod(y), screenmod_horizontal(x), SPACE);
     }
   }
 }
@@ -1708,24 +1707,22 @@ void plotchar(chtype pyx, int x, int y)
 
 void draw_explosion(chtype pyx, int x, int y)
 {
-  int i, j;
-
-  for(j = 0; j < 3; j++)
+  for(int j = 0; j < 3; ++j)
   {
-    for(i = 0; i < 9; i++)
+    for(int i = 0; i < 9; ++i)
     {
       plotchar(pyx, x + Dirs[0][i], y + Dirs[1][i]);
     }
     doupdate();
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
-    for(i = 0; i < 9; i++)
+    for(int i = 0; i < 9; ++i)
     {
       plotchar(SPACE, x + Dirs[0][i], y + Dirs[1][i]);
     }
     doupdate();
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
   }
-  for(i = 0; i < 9; i++)
+  for(int i = 0; i < 9; ++i)
   {
     plotspot(x + Dirs[0][i], y + Dirs[1][i], true);
   }
@@ -1778,12 +1775,11 @@ void room_name_print(const std::string &room_name)
 // draw everything whether visible or not
 void drawscreen()
 {
-  int i, j;
   if(Current_Environment == E_COUNTRYSIDE)
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; ++i)
     {
-      for(j = 0; j < LENGTH; j++)
+      for(int j = 0; j < LENGTH; ++j)
       {
         c_set(i, j, SEEN, Country);
       }
@@ -1791,9 +1787,9 @@ void drawscreen()
   }
   else
   {
-    for(i = 0; i < WIDTH; i++)
+    for(int i = 0; i < WIDTH; ++i)
     {
-      for(j = 0; j < LENGTH; j++)
+      for(int j = 0; j < LENGTH; ++j)
       {
         lset(i, j, SEEN, *Level);
       }
@@ -1801,7 +1797,7 @@ void drawscreen()
   }
   if(Current_Environment == E_CITY)
   {
-    for(i = 0; i < NUMCITYSITES; i++)
+    for(int i = 0; i < NUMCITYSITES; ++i)
     {
       CitySiteList[i][0] = 1;
     }
@@ -1809,13 +1805,10 @@ void drawscreen()
   show_screen();
 }
 
-/*selects a number up to range */
-
+// selects a number up to range
 int getnumber(int range)
 {
-  int done = false, value = 1;
-  int atom;
-
+  int value = 1;
   if(range == 1)
   {
     return (1);
@@ -1824,10 +1817,12 @@ int getnumber(int range)
   {
     std::string message = "How many? Change with < or >, ESCAPE to select: " + std::to_string(value);
     append_message(message, true);
+    bool done = false;
     while(!done)
     {
       message = "How many? Change with < or >, ESCAPE to select: " + std::to_string(value);
       message_buffer.replace_last(message);
+      int atom;
       do
       {
         atom = mcigetc();
@@ -1846,7 +1841,7 @@ int getnumber(int range)
       }
     }
   }
-  return (value);
+  return value;
 }
 
 /* reads a positive number up to 999999 */
@@ -2234,7 +2229,7 @@ void display_pack()
   {
     std::vector<std::string> lines;
     lines.emplace_back("Items in Pack:");
-    for(int i = 0; i < Player.packptr; i++)
+    for(int i = 0; i < Player.packptr; ++i)
     {
       lines.emplace_back(std::format("  {}: {}", static_cast<char>('a' + i), itemid(Player.pack[i].get())));
     }
@@ -2445,11 +2440,11 @@ void bufferprint()
     c = mgetc();
     if(c == 16)
     { /* ^p */
-      i--;
+      --i;
     }
     else if(c == 14)
     { /* ^n */
-      i++;
+      ++i;
     }
     else
     {
