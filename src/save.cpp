@@ -574,9 +574,10 @@ std::forward_list<std::unique_ptr<object>> restore_itemlist(std::ifstream &save_
   std::forward_list<std::unique_ptr<object>> item_list;
   int num_items;
   file_read(save_file, num_items);
+  auto it = item_list.before_begin();
   for(int i = 0; i < num_items; ++i)
   {
-    item_list.push_front(restore_item(save_file));
+    it = item_list.insert_after(it, restore_item(save_file));
   }
   return item_list;
 }
@@ -844,6 +845,7 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
   int num_monsters;
   file_read(save_file, num_monsters);
 
+  auto it = lvl->mlist.before_begin();
   for(int i = 0; i < num_monsters; ++i)
   {
     auto m = std::make_unique<monster>();
@@ -890,7 +892,7 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
     }
     m->possessions                 = restore_itemlist(save_file);
     lvl->site[m->x][m->y].creature = m.get();
-    lvl->mlist.push_front(std::move(m));
+    it = lvl->mlist.insert_after(it, std::move(m));
   }
 }
 
