@@ -87,8 +87,8 @@ void indoors_random_event()
       break;
     case 10:
       queue_message("You trip over something hidden in a shadow...");
-      Level->site[Player.x][Player.y].things.push_front(create_object(difficulty()));
-      assert(Level->site[Player.x][Player.y].things.front()); // WDT I want to make sure...
+      Level->site[Player.x][Player.y].things.emplace_back(create_object(difficulty()));
+      assert(Level->site[Player.x][Player.y].things.back()); // WDT I want to make sure...
       pickup();
       break;
     case 11:

@@ -26,6 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <array>
 #include <cassert>
 #include <format>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -94,31 +95,27 @@ void pickup_at(int x, int y)
 {
   resetgamestatus(FAST_MOVE, GameStatus);
 
-  std::forward_list<std::unique_ptr<object>> &object_list = Level->site[x][y].things;
-  if(!object_list.empty() && std::next(object_list.begin()) == object_list.end())
+  std::vector<std::unique_ptr<object>> &object_list = Level->site[x][y].things;
+  if(!object_list.empty() && object_list.size() == 1)
   {
-    gain_item(std::move(object_list.front()));
-    object_list.pop_front();
+    gain_item(std::move(object_list.back()));
+    object_list.pop_back();
   }
   else
   {
-    for(auto prev = object_list.before_begin(); std::next(prev) != object_list.end();)
+    for(auto i = object_list.size(); i-- > 0;)
     {
-      auto it = std::next(prev);
-      queue_message(std::format("Pick up: {} [ynq] ", itemid(it->get())));
+      std::unique_ptr<object> &item = object_list[i];
+      queue_message(std::format("Pick up: {} [ynq] ", itemid(item.get())));
       char player_input = ynq();
       if(player_input == 'y')
       {
-        gain_item(std::move(*it));
-        object_list.erase_after(prev);
+        gain_item(std::move(item));
+        object_list.erase(object_list.begin() + i);
       }
       else if(player_input == 'q')
       {
         break;
-      }
-      else
-      {
-        ++prev;
       }
     }
   }
@@ -189,22 +186,22 @@ int objequal(const object *o, const object *p)
   }
 }
 
-bool merge_item_with_list(std::forward_list<std::unique_ptr<object>> &l, const object *o, int n)
+bool merge_item(std::span<std::unique_ptr<object>> items, const object *o, int n)
 {
-  for(std::unique_ptr<object> &list_object : l)
+  for(std::unique_ptr<object> &item : items)
   {
-    if(!list_object)
+    if(!item)
     {
       continue;
     }
-    if(o->objchar == CASH && list_object->objchar == CASH)
+    if(o->objchar == CASH && item->objchar == CASH)
     {
-      list_object->basevalue += o->basevalue;
+      item->basevalue += o->basevalue;
       return true;
     }
-    else if(objequal(list_object.get(), o) && list_object->objchar != STICK)
+    else if(objequal(item.get(), o) && item->objchar != STICK)
     {
-      list_object->number += n;
+      item->number += n;
       return true;
     }
   }
@@ -219,12 +216,12 @@ void drop_at(int x, int y, std::unique_ptr<object> o)
   {
     if((Level->site[x][y].locchar != VOID_CHAR) && (Level->site[x][y].locchar != ABYSS))
     {
-      if(merge_item_with_list(Level->site[x][y].things, o.get(), o->number))
+      if(merge_item(Level->site[x][y].things, o.get(), o->number))
       {
         return;
       }
       o->used = false;
-      Level->site[x][y].things.push_front(std::move(o));
+      Level->site[x][y].things.emplace_back(std::move(o));
     }
     else if(Level->site[x][y].p_locf == L_VOID_STATION)
     {
@@ -241,14 +238,14 @@ void p_drop_at(int x, int y, int n, object *o)
     if((Level->site[x][y].locchar != VOID_CHAR) && (Level->site[x][y].locchar != ABYSS))
     {
       queue_message(std::format("Dropped {}", itemid(o)));
-      if(merge_item_with_list(Level->site[x][y].things, o, n))
+      if(merge_item(Level->site[x][y].things, o, n))
       {
         return;
       }
       auto cpy = std::make_unique<object>(*o);
       cpy->used   = false;
       cpy->number = n;
-      Level->site[x][y].things.push_front(std::move(cpy));
+      Level->site[x][y].things.emplace_back(std::move(cpy));
     }
     else if(Level->site[x][y].p_locf == L_VOID_STATION)
     {

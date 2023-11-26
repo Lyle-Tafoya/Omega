@@ -1380,8 +1380,8 @@ void moveplayer(int dx, int dy)
       {
         if(!Level->site[Player.x][Player.y].things.empty())
         {
-          std::forward_list<std::unique_ptr<object>> &item_list = Level->site[Player.x][Player.y].things;
-          if(std::next(item_list.begin()) == item_list.end())
+          std::vector<std::unique_ptr<object>> &item_list = Level->site[Player.x][Player.y].things;
+          if(item_list.size() == 1)
           {
             queue_message("You see here a " + itemid(item_list.front().get()) + ".");
           }
@@ -1389,11 +1389,11 @@ void moveplayer(int dx, int dy)
           {
             std::string items;
             std::string item_characters;
-            for(auto it = item_list.begin(); it != item_list.end();)
+            for(auto it = item_list.rbegin(); it != item_list.rend();)
             {
               item_characters += static_cast<char>((*it)->objchar & A_CHARTEXT);
               items += itemid((*it).get());
-              if(++it != item_list.end())
+              if(++it != item_list.rend())
               {
                 items += ", ";
               }

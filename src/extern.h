@@ -25,6 +25,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "level.h"
 
 #include <memory>
+#include <span>
 #include <string>
 #include <string_view>
 
@@ -317,7 +318,7 @@ void givemonster(monster *, std::unique_ptr<object>);
 char index_to_key(int);
 std::string itemid(object *);
 void lose_all_items();
-bool merge_item_with_list(std::forward_list<std::unique_ptr<object>> &, const object *, int);
+bool merge_item(std::span<std::unique_ptr<object>>, const object *, int);
 void p_drop_at(int, int, int, object *);
 void pickup_at(int, int);
 bool slottable(const object *, int);

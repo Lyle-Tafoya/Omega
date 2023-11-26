@@ -657,11 +657,11 @@ void m_sp_raise(monster *m)
       {
         if(!Level->site[x][y].things.empty())
         {
-          if(Level->site[x][y].things.front()->id == CORPSEID)
+          if(Level->site[x][y].things.back()->id == CORPSEID)
           {
             queue_message("The Zombie Overlord makes a mystical gesture...");
-            summon(-1, Level->site[x][y].things.front()->charge);
-            Level->site[x][y].things.pop_front();
+            summon(-1, Level->site[x][y].things.back()->charge);
+            Level->site[x][y].things.pop_back();
           }
         }
       }

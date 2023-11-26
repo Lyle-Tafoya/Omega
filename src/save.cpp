@@ -103,6 +103,14 @@ void save_itemlist(std::ofstream &save_file, std::forward_list<std::unique_ptr<o
     save_item(save_file, o.get());
   }
 }
+void save_items(std::ofstream &save_file, std::vector<std::unique_ptr<object>> &items)
+{
+  file_write(save_file, items.size());
+  for(std::unique_ptr<object> &o : items)
+  {
+    save_item(save_file, o.get());
+  }
+}
 
 // also saves some globals like Level->depth...
 void save_player(std::ofstream &save_file)
@@ -417,7 +425,7 @@ void save_level(std::ofstream &save_file, level *level)
       {
         file_write(save_file, x);
         file_write(save_file, y);
-        save_itemlist(save_file, level->site[x][y].things);
+        save_items(save_file, level->site[x][y].things);
       }
     }
   }
@@ -580,6 +588,17 @@ std::forward_list<std::unique_ptr<object>> restore_itemlist(std::ifstream &save_
     it = item_list.insert_after(it, restore_item(save_file));
   }
   return item_list;
+}
+std::vector<std::unique_ptr<object>> restore_items(std::ifstream &save_file)
+{
+  std::vector<std::unique_ptr<object>> items;
+  std::vector<std::unique_ptr<object>>::size_type num_items;
+  file_read(save_file, num_items);
+  for(std::vector<std::unique_ptr<object>>::size_type i = 0; i < num_items; ++i)
+  {
+    items.emplace_back(restore_item(save_file));
+  }
+  return items;
 }
 
 void restore_player(std::ifstream &save_file, player &p)
@@ -1008,9 +1027,9 @@ void restore_level(std::ifstream &save_file)
     file_read(save_file, run);
     for(; x < run; ++x)
     {
-      Level->site[x][y].things.~forward_list();
+      Level->site[x][y].things.~vector();
       file_read(save_file, Level->site[x][y]);
-      new(&Level->site[x][y].things) std::forward_list<std::unique_ptr<object >>;
+      new(&Level->site[x][y].things) std::vector<std::unique_ptr<object >>;
       Level->site[x][y].creature = nullptr;
     }
     file_read(save_file, x);
@@ -1040,7 +1059,7 @@ void restore_level(std::ifstream &save_file)
   file_read(save_file, y);
   while(y < MAXLENGTH && x < MAXWIDTH)
   {
-    Level->site[x][y].things = restore_itemlist(save_file);
+    Level->site[x][y].things = restore_items(save_file);
     file_read(save_file, x);
     file_read(save_file, y);
   }

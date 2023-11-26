@@ -617,11 +617,11 @@ void objdet(int blessing)
       {
         if(blessing < 0)
         {
-          putspot(random_range(WIDTH), random_range(LENGTH), Level->site[x][y].things.front()->objchar);
+          putspot(random_range(WIDTH), random_range(LENGTH), Level->site[x][y].things.back()->objchar);
         }
         else
         {
-          putspot(x, y, Level->site[x][y].things.front()->objchar);
+          putspot(x, y, Level->site[x][y].things.back()->objchar);
         }
       }
     }

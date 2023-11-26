@@ -6,6 +6,7 @@
 
 #include <curses.h>
 #include <forward_list>
+#include <vector>
 
 // dungeon locations
 struct location
@@ -17,7 +18,7 @@ struct location
   chtype showchar;        // char instantaneously drawn for site
   int aux;                // signifies various things
   unsigned char buildaux; // used in constructing level
-  std::forward_list<std::unique_ptr<object>> things;
+  std::vector<std::unique_ptr<object>> things;
   monster *creature;
 };
 

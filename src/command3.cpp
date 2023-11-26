@@ -227,10 +227,10 @@ void examine()
               break;
           }
         }
-        std::forward_list<std::unique_ptr<object>> &item_list = Level->site[x][y].things;
+        std::vector<std::unique_ptr<object>> &item_list = Level->site[x][y].things;
         if(!item_list.empty() && !loc_statusp(x, y, SECRET, *Level))
         {
-          if(std::next(item_list.begin()) == item_list.end())
+          if(item_list.size() == 1)
           {
             replace_last_message(itemid(item_list.front().get()));
           }
@@ -238,11 +238,11 @@ void examine()
           {
             std::string items;
             std::string item_characters;
-            for(auto it = item_list.begin(); it != item_list.end();)
+            for(auto it = item_list.rbegin(); it != item_list.rend();)
             {
               item_characters += static_cast<char>((*it)->objchar & A_CHARTEXT);
               items += itemid((*it).get());
-              if(++it != item_list.end())
+              if(++it != item_list.rend())
               {
                 items += ", ";
               }

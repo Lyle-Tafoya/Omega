@@ -682,7 +682,7 @@ void stock_level()
     y         = random_range(LENGTH);
     auto o = std::make_unique<object>();
     make_cash(o.get(), difficulty());
-    Level->site[x][y].things.push_front(std::move(o));
+    Level->site[x][y].things.emplace_back(std::move(o));
     // caves have more random cash strewn around
     if(Current_Dungeon == E_CAVES)
     {
@@ -690,12 +690,12 @@ void stock_level()
       y = random_range(LENGTH);
       o = std::make_unique<object>();
       make_cash(o.get(), difficulty());
-      Level->site[x][y].things.push_front(std::move(o));
+      Level->site[x][y].things.emplace_back(std::move(o));
       x = random_range(WIDTH);
       y = random_range(LENGTH);
       o = std::make_unique<object>();
       make_cash(o.get(), difficulty());
-      Level->site[x][y].things.push_front(std::move(o));
+      Level->site[x][y].things.emplace_back(std::move(o));
     }
   }
 }
@@ -703,7 +703,7 @@ void stock_level()
 // make a new object (of at most level itemlevel) at site i,j on level
 void make_site_treasure(int i, int j, int itemlevel)
 {
-  Level->site[i][j].things.push_front(create_object(itemlevel));
+  Level->site[i][j].things.emplace_back(create_object(itemlevel));
 }
 
 // make a specific new object at site i,j on level
@@ -713,7 +713,7 @@ void make_specific_treasure(int i, int j, int itemid)
   {
     return;
   }
-  Level->site[i][j].things.push_front(std::make_unique<object>(Objects[itemid]));
+  Level->site[i][j].things.emplace_back(std::make_unique<object>(Objects[itemid]));
 }
 
 // returns a "level of difficulty" based on current environment

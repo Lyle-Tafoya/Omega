@@ -103,7 +103,7 @@ void make_food_bin(int x, int y)
   {
     auto o = std::make_unique<object>();
     make_food(o.get(), 15); // grain
-    Level->site[x][y].things.push_front(std::move(o));
+    Level->site[x][y].things.emplace_back(std::move(o));
   }
 }
 

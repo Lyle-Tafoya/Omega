@@ -366,18 +366,18 @@ void show_screen()
         bool is_pile = c == PILE;
         if(is_pile)
         {
-          c = Level->site[x][y].things.front()->objchar | A_STANDOUT;
+          c = Level->site[x][y].things.back()->objchar | A_STANDOUT;
         }
         color_waddch(level_window, c);
 
-        if((Level->site[x][y].things.empty() || (Level->site[x][y].things.front()->objchar != c && !is_pile)) ||
+        if((Level->site[x][y].things.empty() || (Level->site[x][y].things.back()->objchar != c && !is_pile)) ||
            (Player.x == x && Player.y == y && (!Player.status[INVISIBLE] || Player.status[TRUESIGHT])) ||
            (Level->site[x][y].creature &&
             (!m_statusp(*Level->site[x][y].creature, M_INVISIBLE) || Player.status[TRUESIGHT])))
         {
           continue;
         }
-        object *o = Level->site[x][y].things.front().get();
+        object *o = Level->site[x][y].things.back().get();
         if(shown_items.find(o->objstr) == shown_items.end())
         {
           std::string obj_name  = itemid(o);
@@ -1223,7 +1223,7 @@ chtype getspot(int x, int y, int showmonster)
           }
           else
           {
-            return Level->site[x][y].things.front()->objchar;
+            return Level->site[x][y].things.back()->objchar;
           }
         }
         else

@@ -412,8 +412,8 @@ void m_pulse(monster *m)
     {
       while(!Level->site[m->x][m->y].things.empty())
       {
-        m_pickup(m, std::move(Level->site[m->x][m->y].things.front()));
-        Level->site[m->x][m->y].things.pop_front();
+        m_pickup(m, std::move(Level->site[m->x][m->y].things.back()));
+        Level->site[m->x][m->y].things.pop_back();
       }
     }
     // prevents monsters from casting spells from other side of dungeon
@@ -449,13 +449,13 @@ void m_pickup(monster *m, std::unique_ptr<object> o)
 
 void m_dropstuff(monster *m)
 {
-  std::forward_list<std::unique_ptr<object>> &drop_pile = Level->site[m->x][m->y].things;
+  std::vector<std::unique_ptr<object>> &drop_pile = Level->site[m->x][m->y].things;
   while(!m->possessions.empty())
   {
     std::unique_ptr<object> &o = m->possessions.front();
-    if(!merge_item_with_list(drop_pile, o.get(), o->number))
+    if(!merge_item(drop_pile, o.get(), o->number))
     {
-      drop_pile.push_front(std::move(o));
+      drop_pile.emplace_back(std::move(o));
     }
     m->possessions.pop_front();
   }
@@ -652,15 +652,14 @@ void m_death(monster *m)
             Player.alignment -= 100;
             if(!gamestatusp(DESTROYED_ORDER, GameStatus))
             {
-              std::forward_list<std::unique_ptr<object>> &item_list = Level->site[m->x][m->y].things;
+              std::vector<std::unique_ptr<object>> &item_list = Level->site[m->x][m->y].things;
               std::unique_ptr<object> badge;
-              for(auto prev = item_list.before_begin(); std::next(prev) != item_list.end(); ++prev)
+              for(auto it = item_list.rbegin(); it != item_list.rend(); ++it)
               {
-                auto it = std::next(prev);
                 if((*it)->id == THINGID + 16)
                 {
                   badge = std::move(*it);
-                  item_list.erase_after(prev);
+                  item_list.erase(it.base());
                   break;
                 }
               }
