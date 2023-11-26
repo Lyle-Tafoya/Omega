@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* move.c */
-/* general functions for player moving */
+// move.cpp
+// general functions for player moving
 
 #include "glob.h"
 #include "scr.h"
@@ -27,7 +27,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <chrono>
 #include <thread>
 
-/* various miscellaneous location functions */
+// various miscellaneous location functions
 void l_water()
 {
   if(!gamestatusp(MOUNTED, GameStatus))
@@ -304,7 +304,7 @@ void l_lift()
     if(response == 'u' && Level->depth - levelnum < 1)
     {
       distance = levelnum - Level->depth;
-      change_environment(E_COUNTRYSIDE); /* "you return to the countryside." */
+      change_environment(E_COUNTRYSIDE); // "you return to the countryside."
       if(distance > 0)
       {
         queue_message("..");
@@ -449,7 +449,7 @@ void l_tactical_exit()
       return;
     }
   }
-  /* Free up monsters and items, and the level, if not SAVE_LEVELS */
+  // Free up monsters and items, and the level, if not SAVE_LEVELS
   free_level(Level);
   Level = nullptr;
   if((Current_Environment == E_TEMPLE) || (Current_Environment == E_TACTICAL_MAP))
@@ -479,7 +479,7 @@ void l_rubble()
   }
 }
 
-/* Drops all portcullises in 5 moves */
+// Drops all portcullises in 5 moves
 void l_portcullis_trap()
 {
   bool slam = false;
@@ -839,10 +839,10 @@ void l_earth_station()
   }
 }
 
-/* To survive the void, the other four stations must be visited first,
-   to activate the void, then something (Death's scythe, possibly)
-   must be thrown in to satiate the void, then all other items must
-   be dropped, then the void must be entered. */
+// To survive the void, the other four stations must be visited first,
+// to activate the void, then something (Death's scythe, possibly)
+// must be thrown in to satiate the void, then all other items must
+// be dropped, then the void must be entered.
 
 void l_void_station()
 {

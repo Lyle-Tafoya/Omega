@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* spell.c */
-/* functions having to do with spellcasting */
+// spell.cpp
+// functions having to do with spellcasting
 
 #include "spell.h"
 
@@ -167,7 +167,7 @@ void s_hero()
   hero(0);
 }
 
-/* spell takes longer and longer to work deeper into dungeon */
+// spell takes longer and longer to work deeper into dungeon
 void s_return()
 {
   queue_message("You hear a whine as your spell begins to charge up.");
@@ -211,8 +211,8 @@ void s_fear()
   inflict_fear(x, y);
 }
 
-/* Has all kinds of effects in different circumstances.
-   Eventually will be more interesting */
+// Has all kinds of effects in different circumstances.
+// Eventually will be more interesting
 void s_ritual()
 {
   object *symbol;
@@ -255,7 +255,7 @@ void s_ritual()
     time_clock(false);
     RitualDay  = day();
     RitualHour = hour();
-    /* set of random conditions for different ritual effects */
+    // set of random conditions for different ritual effects
     if(Current_Environment == E_CITY)
     {
       queue_message("Flowing waves of mystical light congeal all around you.");
@@ -274,7 +274,7 @@ void s_ritual()
         RitualRoom = roomno;
         switch(RitualRoom)
         {
-          case ROOMBASE + 9: /* ransacked treasure chamber */
+          case ROOMBASE + 9: // ransacked treasure chamber
             queue_message("Your spell sets off frenetic growth all around you!");
             for(int i = 0; i < 8; ++i)
             {
@@ -283,19 +283,19 @@ void s_ritual()
               lset(Player.x + Dirs[0][i], Player.y + Dirs[1][i], CHANGED, *Level);
             }
             break;
-          case ROOMBASE + 13: /* harem */
-          case ROOMBASE + 22: /* boudoir */
+          case ROOMBASE + 13: // harem
+          case ROOMBASE + 22: // boudoir
             queue_message("A secret panel opens next to the bed....");
             if(random_range(2))
             {
-              summon(0, INCUBUS); /* succubus/incubus */
+              summon(0, INCUBUS); // succubus/incubus
             }
             else
             {
-              summon(0, SATYR); /* satyr/nymph */
+              summon(0, SATYR); // satyr/nymph
             }
             break;
-          case ROOMBASE + 26: /*shrine to high magic */
+          case ROOMBASE + 26: // shrine to high magic
             queue_message("A storm of mana coaelesces around you.");
             queue_message("You are buffeted by bursts of random magic.");
             p_damage(random_range(Player.pow), UNSTOPPABLE, "high magic");
@@ -332,17 +332,17 @@ void s_ritual()
             }
             lset(Player.x, Player.y, CHANGED, *Level);
             break;
-          case ROOMBASE + 27: /* magician's lab */
+          case ROOMBASE + 27: // magician's lab
             queue_message("Your magical activity sets off a latent spell in the lab!");
             cast_spell(static_cast<spell::spell_id>(random_range(spell::NUM_SPELLS)));
             break;
-          case ROOMBASE + 28: /* pentagram room */
+          case ROOMBASE + 28: // pentagram room
             queue_message("A smoky form begins to coalesce....");
             summon(-1, -1);
             queue_message("Fortunately, it seems confined to the pentagram.");
             m_status_reset(*Level->mlist.front(), MOBILE);
             break;
-          case ROOMBASE + 29: /* blue omega room */
+          case ROOMBASE + 29: // blue omega room
             queue_message("The Lords of Destiny look upon you....");
             if(Player.level > 10)
             {
@@ -466,7 +466,7 @@ void s_polymorph()
   polymorph(0);
 }
 
-/* lball spell */
+// lball spell
 void s_lball()
 {
   int x = Player.x, y = Player.y;
@@ -723,7 +723,7 @@ std::optional<spell::spell_id> spellparse()
   }
 }
 
-/* select a spell to cast */
+// select a spell to cast
 std::optional<spell::spell_id> getspell()
 {
   queue_message("Cast Spell: [type spell abbrev, ?, or ESCAPE]: ");

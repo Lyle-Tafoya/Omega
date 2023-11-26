@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* char.c */
-/* Player generation */
+// char.cpp
+// Player generation
 
 #include "file.h"
 #include "glob.h"
@@ -813,7 +813,7 @@ bool title_menu()
 
 long calcmana()
 {
-  return (Player.pow * (long)(Player.level + 1));
+  return Player.pow * (long)(Player.level + 1);
 }
 
 // estimates on a 0..9 scale how good a player is at something
@@ -855,28 +855,26 @@ int competence_check(int attack)
   {
     ability = 9;
   }
-  return (ability);
+  return ability;
 }
 
-/*  npcbehavior digits 1234
+// npcbehavior digits 1234
+// 4 : alignment (LAWFUL,CHAOTIC, or NEUTRAL)
+// 3 : primary combat action (melee,missile,spell,thief,flight,1..5)
+// 2 : competence at 4 (0..9, 0 = incompetent, 9 = masterful)
+// 1 : conversation mode
+// status : 1 = dead, 2 = saved, 3 = retired, 4 = still playing
 
-4 : alignment (LAWFUL,CHAOTIC, or NEUTRAL)
-3 : primary combat action (melee,missile,spell,thief,flight,1..5)
-2 : competence at 4 (0..9, 0 = incompetent, 9 = masterful)
-1 : conversation mode
-
-status : 1 = dead, 2 = saved, 3 = retired, 4 = still playing
-*/
 int fixnpc(int status)
 {
   int npcbehavior = 0;
   char response;
   if(status == 1)
-  { /* player is dead, all undead are chaotic */
+  { // player is dead, all undead are chaotic
     npcbehavior += CHAOTIC;
-    npcbehavior += 10; /* melee */
+    npcbehavior += 10; // melee
     npcbehavior += 100 * std::min(9, static_cast<int>((Player.level / 3)));
-    npcbehavior += 1000; /* threaten */
+    npcbehavior += 1000; // threaten
   }
   else if(Behavior >= 0)
   {
@@ -937,5 +935,5 @@ int fixnpc(int status)
     xredraw();
   }
   Behavior = npcbehavior;
-  return (npcbehavior);
+  return npcbehavior;
 }

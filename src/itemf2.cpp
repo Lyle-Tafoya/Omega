@@ -16,16 +16,16 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* itemf2.c */
+// itemf2.cpp
 
-/* mostly ring, armor, and weapon functions */
+// mostly ring, armor, and weapon functions
 
 #include "glob.h"
 #include "scr.h"
 
 #include <algorithm>
 
-/* ring functions */
+// ring functions
 void i_perm_knowledge(std::unique_ptr<object> &o)
 {
   if(o->known < 1)
@@ -172,7 +172,7 @@ void i_perm_regenerate(std::unique_ptr<object> &o)
   }
 }
 
-/* armor functions */
+// armor functions
 
 void i_normal_armor(std::unique_ptr<object> &o)
 {
@@ -377,7 +377,7 @@ void weapon_lightsabre(int, std::unique_ptr<object> &o, monster *m)
   }
   else
   {
-    /* test prevents confusing immunity messages.... */
+    // test prevents confusing immunity messages....
     if(!m_immunityp(*m, NORMAL_DAMAGE))
     {
       queue_message("Vzzzzmmm!");
@@ -401,11 +401,11 @@ void weapon_tangle(int dmgmod, std::unique_ptr<object> &o, monster *m)
   weapon_hit(o.get(), m, dmgmod, NORMAL_DAMAGE);
 }
 
-/* if wielding a bow, add bow damage to arrow damage */
+// if wielding a bow, add bow damage to arrow damage
 void weapon_arrow(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] && (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 26))
-  { /* ie, using a bow */
+  { // ie, using a bow
     p_hit(m, Player.dmg + o->plus + o->dmg + dmgmod, NORMAL_DAMAGE);
   }
   else
@@ -414,11 +414,11 @@ void weapon_arrow(int dmgmod, std::unique_ptr<object> &o, monster *m)
   }
 }
 
-/* if wielding a crossbow, add bow damage to arrow damage */
+// if wielding a crossbow, add bow damage to arrow damage
 void weapon_bolt(int dmgmod, std::unique_ptr<object> &o, monster *m)
 {
   if(Player.possessions[O_WEAPON_HAND] &&
-     (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) && /*ie using a crossbow */
+     (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) && // ie using a crossbow
      (Player.possessions[O_WEAPON_HAND]->aux == LOADED))
   {
     p_hit(m, Player.dmg + o->plus + o->dmg + dmgmod, NORMAL_DAMAGE);
@@ -448,7 +448,7 @@ void weapon_normal_hit(int dmgmod, std::unique_ptr<object> &o, monster *m)
   weapon_hit(o.get(), m, dmgmod, NORMAL_DAMAGE);
 }
 
-/* will be updated eventually */
+// will be updated eventually
 void weapon_bare_hands(int dmgmod, monster *m)
 {
   p_hit(m, Player.dmg + dmgmod, NORMAL_DAMAGE);
@@ -641,7 +641,7 @@ void i_desecrate(std::unique_ptr<object> &o)
   }
 }
 
-/* shield functions */
+// shield functions
 void i_normal_shield(std::unique_ptr<object> &o)
 {
   if(o->used)

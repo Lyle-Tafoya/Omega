@@ -16,9 +16,9 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* itemf3.c */
+// itemf3.cpp
 
-/* mostly artifact and stick functions */
+// mostly artifact and stick functions
 
 #include "glob.h"
 #include "scr.h"
@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <algorithm>
 
-/* amulet of the planes */
+// amulet of the planes
 void i_planes(std::unique_ptr<object> &)
 {
   if(Player.mana < 1)
@@ -42,7 +42,7 @@ void i_planes(std::unique_ptr<object> &)
   }
 }
 
-/* the sceptre of high magic */
+// the sceptre of high magic
 void i_sceptre(std::unique_ptr<object> &)
 {
   if(HiMagicUse == Date)
@@ -51,10 +51,9 @@ void i_sceptre(std::unique_ptr<object> &)
   }
   else if(Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL)
   {
-    HiMagicUse = Date; /* WDT: this looks like it's a good place to use
-                        * the batteries. */
+    HiMagicUse = Date; // WDT: this looks like it's a good place to use the batteries
     queue_message("The Sceptre warps strangely for a second, and then subsides.");
-    queue_message("You smell ozone."); /* WDT: explain the battery use. */
+    queue_message("You smell ozone."); // WDT: explain the battery use
   }
   else
   {
@@ -70,7 +69,7 @@ void i_sceptre(std::unique_ptr<object> &)
   }
 }
 
-/* the star gem */
+// the star gem
 void i_stargem(std::unique_ptr<object> &o)
 {
   if(StarGemUse == Date)
@@ -79,7 +78,7 @@ void i_stargem(std::unique_ptr<object> &o)
     queue_message("'You have used me overmuch.'");
     queue_message("and it vanishes a puff of regret.");
     Objects[o->id].uniqueness = UNIQUE_UNMADE;
-    /* it's now out there, somewhere */
+    // it's now out there, somewhere
     dispose_lost_objects(1, o);
   }
   else
@@ -112,7 +111,7 @@ void i_stargem(std::unique_ptr<object> &o)
   }
 }
 
-/* wand of fear */
+// wand of fear
 void i_fear(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
@@ -218,7 +217,7 @@ void i_symbol(std::unique_ptr<object> &o)
   if(!o->known)
   {
     queue_message("Nothing seems to happen.");
-    /* if o->charge != 17, then symbol was stolen from own high priest! */
+    // if o->charge != 17, then symbol was stolen from own high priest!
   }
   else if((o->aux != Player.patron) || (o->charge != 17))
   {
@@ -448,10 +447,10 @@ int orbcheck(char element)
     response = (char)mcigetc();
   } while((response != 'f') && (response != 'w') && (response != 'e') && (response != 'a') &&
           (response != 'm'));
-  return (response == element);
+  return response == element;
 }
 
-/* orb functions */
+// orb functions
 void i_orbfire(std::unique_ptr<object> &o)
 {
   if(!orbcheck('f'))
@@ -568,7 +567,7 @@ void i_orbair(std::unique_ptr<object> &o)
   else
   {
     queue_message("The Orb of Air flashes blue!");
-    spell::Spells[spell::BALL_LIGHTNING].known = true; /* lball */
+    spell::Spells[spell::BALL_LIGHTNING].known = true; // lball
     gain_experience(10000);
     queue_message("You feel airy!");
     Player.immunity[ELECTRICITY] += 100;
@@ -659,9 +658,9 @@ void i_dispel(std::unique_ptr<object> &o)
   dispel((o->blessing > -1) ? o->blessing + random_range(3) : o->blessing);
 }
 
-/* stick functions */
+// stick functions
 
-/* wand of apportation */
+// wand of apportation
 void i_apport(std::unique_ptr<object> &o)
 {
   o->known             = std::max(1, static_cast<int>(o->known));
@@ -669,7 +668,7 @@ void i_apport(std::unique_ptr<object> &o)
   apport(o->blessing);
 }
 
-/* staff of firebolts */
+// staff of firebolts
 void i_firebolt(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
@@ -712,7 +711,7 @@ void i_disrupt(std::unique_ptr<object> &o)
   disrupt(x, y, 100);
 }
 
-/* staff of lightning bolts */
+// staff of lightning bolts
 void i_lbolt(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
@@ -727,7 +726,7 @@ void i_lbolt(std::unique_ptr<object> &o)
   lbolt(Player.x, Player.y, x, y, Player.dex * 2 + Player.level, 75);
 }
 
-/* wand of magic missiles */
+// wand of magic missiles
 void i_missile(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
@@ -742,7 +741,7 @@ void i_missile(std::unique_ptr<object> &o)
   nbolt(Player.x, Player.y, x, y, Player.dex * 2 + Player.level, 20);
 }
 
-/* wand of fire balls */
+// wand of fire balls
 void i_fireball(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
@@ -757,7 +756,7 @@ void i_fireball(std::unique_ptr<object> &o)
   fball(Player.x, Player.y, x, y, 35);
 }
 
-/* wand of snowballs */
+// wand of snowballs
 void i_snowball(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
@@ -772,7 +771,7 @@ void i_snowball(std::unique_ptr<object> &o)
   snowball(Player.x, Player.y, x, y, 20);
 }
 
-/* wand of lightning balls */
+// wand of lightning balls
 void i_lball(std::unique_ptr<object> &o)
 {
   int x = Player.x, y = Player.y;
@@ -787,7 +786,7 @@ void i_lball(std::unique_ptr<object> &o)
   lball(Player.x, Player.y, x, y, 50);
 }
 
-/* staff of sleep */
+// staff of sleep
 void i_sleep_other(std::unique_ptr<object> &o)
 {
   Objects[o->id].known = 1;
@@ -795,8 +794,8 @@ void i_sleep_other(std::unique_ptr<object> &o)
   sleep_monster(o->blessing);
 }
 
-/* rod of summoning */
-/* rod of summoning now always summons as if cursed */
+// rod of summoning
+// rod of summoning now always summons as if cursed
 void i_summon(std::unique_ptr<object> &o)
 {
   Objects[o->id].known = 1;

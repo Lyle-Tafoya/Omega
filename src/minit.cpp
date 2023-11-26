@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* minit.h */
-/* This file defines and initializes the Monsters Array */
+// minit.cpp
+// This file defines and initializes the Monsters Array
 
 #include "monster.h"
 #include "defs.h"
@@ -532,8 +532,6 @@ std::array Monsters = std::to_array<monster>(
     "aggravator fungus spores",
     ""
   },
-
-    /* WDT: this one used to blink.  I HATE BLINKING. */
   {
     0,
     0,
@@ -565,7 +563,7 @@ std::array Monsters = std::to_array<monster>(
     M_MOVE_TELEPORT,
     MOBILE,
     0,
-    'b' | CLR(BRIGHT_WHITE) /*|CLR(FG_BLINK)*/,
+    'b' | CLR(BRIGHT_WHITE),
     "blipper",
     "blipper organ",
     "BX"

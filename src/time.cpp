@@ -16,9 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* time.c */
-
-/* this file deals with the passage of time in omega */
+// time.cpp
+// this file deals with the passage of time in omega
 
 #include "glob.h"
 #include "scr.h"
@@ -50,7 +49,7 @@ void time_clock(int reset)
   if(++Tick > 60)
   {
     Tick = 0;
-    minute_status_check(); /* see about some player statuses each minute */
+    minute_status_check(); // see about some player statuses each minute
     if(++Time % 10 == 0)
     {
       tenminute_check();
@@ -83,11 +82,11 @@ void time_clock(int reset)
     Player.click = (Player.click + Command_Duration) % 60;
   }
 
-  /* klugy but what the heck. w/o this line, if the player caused
-  a change-environment to the country, the monsters on the old Level
-  will still act, causing all kinds of anomalies and core dumps,
-  intermittently. However, any other environment change will reset
-  Level appropriately, so only have to check for countryside */
+  // klugy but what the heck. w/o this line, if the player caused
+  // a change-environment to the country, the monsters on the old Level
+  // will still act, causing all kinds of anomalies and core dumps,
+  // intermittently. However, any other environment change will reset
+  // Level appropriately, so only have to check for countryside
 
   if(Current_Environment != E_COUNTRYSIDE)
   {

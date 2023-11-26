@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* mmove.c */
-/* monster move functions */
+// mmove.cpp
+// monster move functions
 
 #include "glob.h"
 #include "scr.h"
@@ -25,19 +25,19 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <format>
 
-/* like m_normal_move, but can open doors */
+// like m_normal_move, but can open doors
 void m_smart_move(monster *m)
 {
   m_simple_move(m);
 }
 
-/* not very smart, but not altogether stupid movement */
+// not very smart, but not altogether stupid movement
 void m_normal_move(monster *m)
 {
   m_simple_move(m);
 }
 
-/* used by both m_normal_move and m_smart_move */
+// used by both m_normal_move and m_smart_move
 void m_simple_move(monster *m)
 {
   int dx = sign(Player.x - m->x);
@@ -129,7 +129,7 @@ void m_move_animal(monster *m)
   }
 }
 
-/* same as simple move except run in opposite direction */
+// same as simple move except run in opposite direction
 void m_scaredy_move(monster *m)
 {
   int dx = -sign(Player.x - m->x);
@@ -183,8 +183,8 @@ void m_scaredy_move(monster *m)
   }
 }
 
-/* for spirits (and earth creatures) who can ignore blockages because
-   either they are noncorporeal or they can move through stone */
+// for spirits (and earth creatures) who can ignore blockages because
+// either they are noncorporeal or they can move through stone
 void m_spirit_move(monster *m)
 {
   int dx = sign(Player.x - m->x);
@@ -332,7 +332,7 @@ void m_move_leash(monster *m)
     {
       if(los_p(Player.x, Player.y, m->aux1, m->aux2))
       {
-        /* some other monster is where the chain starts */
+        // some other monster is where the chain starts
         if(creature->uniqueness == COMMON)
         {
           queue_message(std::format("The {} releases the dog's chain!", creature->monstring));
@@ -343,7 +343,7 @@ void m_move_leash(monster *m)
         }
       }
       m->movef = M_MOVE_NORMAL;
-      /* otherwise, we'd lose either the dog or the other monster. */
+      // otherwise, we'd lose either the dog or the other monster
     }
     else if(los_p(Player.x, Player.y, m->x, m->y))
     {

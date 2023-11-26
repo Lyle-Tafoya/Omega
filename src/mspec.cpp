@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* mspec.c */
-/* monster special functions */
+// mspec.cpp
+// monster special functions
 
 #include "glob.h"
 #include "scr.h"
@@ -93,7 +93,7 @@ void m_sp_demon(monster *m)
 
   if(random_range(2))
   {
-    if((m->id != INCUBUS) && /*succubi don't give fear */
+    if((m->id != INCUBUS) && // succubi don't give fear
        los_p(m->x, m->y, Player.x, Player.y) && (random_range(30) > Player.level + 10) &&
        (Player.status[AFRAID] == 0))
     {
@@ -124,19 +124,19 @@ void m_sp_demon(monster *m)
       case 4:
       case 5:
         mid = L_FDEMON;
-        break; /* lesser frost demon */
+        break; // lesser frost demon
       case 6:
         mid = FROST_DEMON;
         break;
       case 7:
         mid = OUTER_DEMON;
-        break; /* outer circle demon */
+        break; // outer circle demon
       case 8:
         mid = DEMON_SERP;
-        break; /* demon serpent */
+        break; // demon serpent
       default:
         mid = INNER_DEMON;
-        break; /* inner circle demon */
+        break; // inner circle demon
     }
     summon(-1, mid);
     summon(-1, mid);
@@ -177,7 +177,7 @@ void m_sp_ghost(monster *m)
   }
 }
 
-/* random spell cast by monster */
+// random spell cast by monster
 void m_sp_spell(monster *m)
 {
   if(m_statusp(*m, HOSTILE) && los_p(Player.x, Player.y, m->x, m->y))
@@ -208,9 +208,9 @@ void m_sp_spell(monster *m)
           cure(-1);
           break;
         case 4:
-          /* WDT: I'd like to make this (and "case 5" below) dependant on
-         * the monster's IQ in some way -- dumb but powerful monsters
-         * deserve what they get :).  No rush. */
+          // WDT: I'd like to make this (and "case 5" below) dependant on
+          // the monster's IQ in some way -- dumb but powerful monsters
+          // deserve what they get :).  No rush.
           if(m_immunityp(*m, ELECTRICITY) || distance(m->x, m->y, Player.x, Player.y) > 2)
           {
             lball(m->x, m->y, Player.x, Player.y, 20);
@@ -273,8 +273,7 @@ void m_sp_spell(monster *m)
   }
 }
 
-/* monsters with this have some way to hide, camouflage, etc until they
-   attack */
+// monsters with this have some way to hide, camouflage, etc until they attack
 void m_sp_surprise(monster *m)
 {
   if(m->attacked)
@@ -511,7 +510,7 @@ void m_sp_were(monster *m)
     do
     {
       mid = random_range(ML9 - NML_0) + ML1;
-      /* log npc, 0th level npc, high score npc or were-creature */
+      // log npc, 0th level npc, high score npc or were-creature
     } while(mid == NPC || mid == ZERO_NPC || mid == HISCORE_NPC || mid == WEREHUMAN ||
             (Monsters[mid].uniqueness != COMMON) || (!m_statusp(Monsters[mid], MOBILE)) ||
             (!m_statusp(Monsters[mid], HOSTILE)));
@@ -625,12 +624,12 @@ void m_sp_angel(monster *m)
     summon(-1, mid);
     summon(-1, mid);
     summon(-1, mid);
-    /* prevent angel from summoning infinitely */
+    // prevent angel from summoning infinitely
     m->specialf = M_NO_OP;
   }
 }
 
-/* Could completely fill up level */
+// Could completely fill up level
 void m_sp_swarm(monster *m)
 {
   if(random_range(5) == 1)
@@ -838,8 +837,8 @@ void m_sp_merchant(monster *m)
   }
 }
 
-/* The special function of the various people in the court of the archmage */
-/* and the sorcerors' circle */
+// The special function of the various people in the court of the archmage
+// and the sorcerors' circle
 void m_sp_court(monster *m)
 {
   if(m_statusp(*m, HOSTILE))
@@ -857,7 +856,7 @@ void m_sp_court(monster *m)
   }
 }
 
-/* The special function of the dragons in the dragons' lair */
+// The special function of the dragons in the dragons' lair
 void m_sp_lair(monster *m)
 {
   if(m_statusp(*m, HOSTILE))

@@ -16,9 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* file.c */
-/* functions with file access in them. Also some direct calls to
-   curses functions */
+// file.cpp
+// functions with file access in them. Also some direct calls to curses functions
 
 #include "file.h"
 
@@ -154,7 +153,7 @@ FILE *checkfopen(const std::string &filestring, const std::string &optionstring)
       exit(0);
     }
   }
-  return (fd);
+  return fd;
 }
 
 void commandlist()
@@ -350,8 +349,8 @@ void read_scores()
   unlock_score_file();
 }
 
-/* Writes a new high-score file, with the nominated npc as whatever it is */
-/* in this particular game, but the others as they appear in the file. */
+// Writes a new high-score file, with the nominated npc as whatever it is
+// in this particular game, but the others as they appear in the file.
 void save_hiscore_npc(int npc)
 {
   if(gamestatusp(CHEATED, GameStatus))
@@ -591,7 +590,7 @@ int filecheck()
   }
 }
 
-/* display a file given a string name of file */
+// display a file given a string name of file
 void displayfile(const std::string &filestr)
 {
   FILE *fd = checkfopen(filestr, "r");

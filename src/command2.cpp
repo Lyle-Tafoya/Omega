@@ -16,9 +16,9 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* command2.c */
+// command2.cpp
 
-/* This file contains toplevel commands called from command1.c */
+// This file contains toplevel commands called from command1.cpp
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -39,7 +39,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern interactive_menu *menu;
 extern std::string get_username();
 
-/* no op a turn.... */
+// no op a turn....
 void rest()
 {
   if(random_range(20) == 1)
@@ -80,7 +80,7 @@ void rest()
   }
 }
 
-/* read a scroll, book, tome, etc. */
+// read a scroll, book, tome, etc...
 void peruse()
 {
   int index;
@@ -401,7 +401,7 @@ void drop_equipped_item()
   calc_melee();
 }
 
-/* talk to the animals -- learn their languages.... */
+// talk to the animals -- learn their languages....
 void talk()
 {
   int dx, dy, index = 0;
@@ -459,7 +459,7 @@ void talk()
   xredraw();
 }
 
-/* try to deactivate a trap */
+// try to deactivate a trap
 void disarm()
 {
   int x, y, index = 0;
@@ -555,7 +555,7 @@ void disarm()
   }
 }
 
-/* is it more blessed to give, or receive? */
+// is it more blessed to give, or receive?
 void give()
 {
   int index;
@@ -613,7 +613,7 @@ void give()
   }
 }
 
-/* zap a wand, of course */
+// zap a wand, of course
 void zapwand()
 {
   if(Player.status[AFRAID] > 0)
@@ -649,7 +649,7 @@ void zapwand()
   }
 }
 
-/* cast a spell */
+// cast a spell
 void magic()
 {
   int drain;
@@ -697,7 +697,7 @@ void magic()
   dataprint();
 }
 
-/* go upstairs ('<' command) */
+// go upstairs ('<' command)
 void upstairs()
 {
   if(Level->site[Player.x][Player.y].locchar != STAIRS_UP)
@@ -735,7 +735,7 @@ void upstairs()
   setgamestatus(SKIP_MONSTERS, GameStatus);
 }
 
-/* go downstairs ('>' command) */
+// go downstairs ('>' command)
 void downstairs()
 {
   if(Level->site[Player.x][Player.y].locchar != STAIRS_DOWN)
@@ -770,8 +770,8 @@ void downstairs()
   setgamestatus(SKIP_MONSTERS, GameStatus);
 }
 
-/* set various player options */
-/* have to redefine in odefs for next full recompile */
+// set various player options
+// have to redefine in odefs for next full recompile
 void setoptions()
 {
   int slot = 1, to;
@@ -902,7 +902,7 @@ void setoptions()
   xredraw();
 }
 
-/* name an item */
+// name an item
 void callitem()
 {
   setgamestatus(SKIP_MONSTERS, GameStatus);
@@ -932,7 +932,7 @@ void callitem()
   }
 }
 
-/* open a door */
+// open a door
 void opendoor()
 {
   int dir;
@@ -985,7 +985,7 @@ void opendoor()
   }
 }
 
-/* Try to destroy some location */
+// Try to destroy some location
 void bash_location()
 {
   int dir;
@@ -1031,7 +1031,7 @@ void bash_location()
         Player.y = oy;
         p_damage(3, UNSTOPPABLE, "silliness");
         p_movefunction(Level->site[Player.x][Player.y].p_locf);
-        setgamestatus(SKIP_MONSTERS, GameStatus); /* monsters are surprised... */
+        setgamestatus(SKIP_MONSTERS, GameStatus); // monsters are surprised...
       }
       else if(Level->site[ox][oy].locchar == CLOSED_DOOR)
       {
@@ -1051,7 +1051,7 @@ void bash_location()
             Level->site[ox][oy].locchar = FLOOR;
             lset(ox, oy, CHANGED, *Level);
             p_movefunction(Level->site[Player.x][Player.y].p_locf);
-            setgamestatus(SKIP_MONSTERS, GameStatus); /* monsters are surprised... */
+            setgamestatus(SKIP_MONSTERS, GameStatus); // monsters are surprised...
           }
           else
           {
@@ -1074,7 +1074,7 @@ void bash_location()
           Level->site[ox][oy].locchar = OPEN_DOOR;
           lset(ox, oy, CHANGED, *Level);
           p_movefunction(Level->site[Player.x][Player.y].p_locf);
-          setgamestatus(SKIP_MONSTERS, GameStatus); /* monsters are surprised... */
+          setgamestatus(SKIP_MONSTERS, GameStatus); // monsters are surprised...
         }
       }
       else if(Level->site[ox][oy].locchar == STATUE)
@@ -1156,7 +1156,7 @@ void bash_location()
   }
 }
 
-/* attempt destroy an item */
+// attempt destroy an item
 void bash_item()
 {
   queue_message("Destroy an item --");
@@ -1198,8 +1198,8 @@ void bash_item()
   }
 }
 
-/* guess what this does */
-/* if force is true, exiting due to some problem - don't bomb out */
+// guess what this does
+// if force is true, exiting due to some problem - don't bomb out
 void save(int force)
 {
   bool ok = true;
@@ -1284,10 +1284,10 @@ void save(int force)
       save(force);
     }
   }
-  setgamestatus(SKIP_MONSTERS, GameStatus); /* if we get here, we failed to save */
+  setgamestatus(SKIP_MONSTERS, GameStatus); // if we get here, we failed to save
 }
 
-/* close a door */
+// close a door
 void closedoor()
 {
   int dir;
@@ -1321,7 +1321,7 @@ void closedoor()
   }
 }
 
-/* handle a h,j,k,l, etc. */
+// handle a h,j,k,l, etc...
 void moveplayer(int dx, int dy)
 {
   if(p_moveable(Player.x + dx, Player.y + dy))
@@ -1354,8 +1354,8 @@ void moveplayer(int dx, int dy)
       screencheck(Player.x, Player.y);
       p_movefunction(Level->site[Player.x][Player.y].p_locf);
 
-      /* causes moves to take effectively 30 seconds in town without
-         monsters being sped up compared to player */
+      // causes moves to take effectively 30 seconds in town without
+      // monsters being sped up compared to player
       if((Current_Environment == E_CITY) || (Current_Environment == E_VILLAGE))
       {
         twiddle = !twiddle;
@@ -1373,8 +1373,8 @@ void moveplayer(int dx, int dy)
         }
       }
 
-      /* this test protects against player entering countryside and still
-      having effects from being on the Level, a kluge, but hey,... */
+      // this test protects against player entering countryside and still
+      // having effects from being on the Level, a kluge, but hey,...
 
       if(Current_Environment != E_COUNTRYSIDE)
       {
@@ -1432,7 +1432,7 @@ void moveplayer(int dx, int dy)
   }
 }
 
-/* handle a h,j,k,l, etc. */
+// handle a h,j,k,l, etc...
 void movepincountry(int dx, int dy)
 {
   bool takestime = true;

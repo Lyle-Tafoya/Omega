@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* mon.c */
-/* various functions to do with monsters */
+// mon.cpp
+// various functions to do with monsters
 
 #include "glob.h"
 #include "scr.h"
@@ -35,7 +35,7 @@ void monster_action(monster *m, int action)
   int meleef;
   if((action >= M_MELEE_NORMAL) && (action < M_MOVE_NORMAL))
   {
-    /* kluge allows multiple attack forms */
+    // kluge allows multiple attack forms
     if(distance(m->x, m->y, Player.x, Player.y) < 2)
     {
       meleef    = m->meleef;
@@ -339,7 +339,7 @@ void monster_strike(monster *m)
   }
   else
   {
-    /* It's lawful to wait to be attacked */
+    // It's lawful to wait to be attacked
     if(m->attacked == 0)
     {
       Player.alignment++;
@@ -349,9 +349,9 @@ void monster_strike(monster *m)
   }
 }
 
-/*               Revised function                   */
-/* WDT: code contributed by David J. Robertson */
-/* consider one monster's action */
+//               Revised function
+// WDT: code contributed by David J. Robertson
+// consider one monster's action
 void m_pulse(monster *m)
 {
   if(Time % 10 == 0)
@@ -424,7 +424,7 @@ void m_pulse(monster *m)
   }
 }
 
-/* actually make a move */
+// actually make a move
 void movemonster(monster *m, int newx, int newy)
 {
   if(Level->site[newx][newy].creature)
@@ -561,7 +561,7 @@ void m_death(monster *m)
     Level->site[m->x][m->y].creature = nullptr;
     if(m == Arena_Monster)
     {
-      Arena_Victory = true; /* won this round of arena combat */
+      Arena_Victory = true; // won this round of arena combat
     }
     if(random_range(2) || (m->uniqueness != COMMON))
     {
@@ -704,7 +704,7 @@ void m_death(monster *m)
                 queue_message("materializes, sheds a tear, and leaves.");
               }
               alert_guards();
-              /* will cause order to be destroyed if no guards or justiciar*/
+              // will cause order to be destroyed if no guards or justiciar
             }
             else
             {
@@ -720,7 +720,7 @@ void m_death(monster *m)
         }
         save_hiscore_npc(m->aux2);
         break;
-      case GUARD: /* guard */
+      case GUARD: // guard
         Player.alignment -= 10;
         if((Current_Environment == E_CITY) || (Current_Environment == E_VILLAGE))
         {
@@ -734,7 +734,7 @@ void m_death(monster *m)
           queue_message("'Well done! Come to me now....'");
         }
         setgamestatus(COMPLETED_CAVES, GameStatus);
-        break; /* gob king */
+        break; // gob king
       case GREAT_WYRM:
         if(!gamestatusp(ATTACKED_ORACLE, GameStatus))
         {
@@ -742,7 +742,7 @@ void m_death(monster *m)
           queue_message("'Well fought! I have some new advice for you....'");
         }
         setgamestatus(COMPLETED_SEWERS, GameStatus);
-        break; /*grt worm */
+        break; // grt worm
       case EATER:
         setgamestatus(KILLED_EATER, GameStatus);
         break;
@@ -768,7 +768,7 @@ void m_death(monster *m)
           queue_message("Words appear before you, traced in blue flame!");
           queue_message("'Return to the Prime Plane via the Circle of Sorcerors....'");
         }
-        break; /* elem mast */
+        break; // elem mast
     }
     switch(m->specialf)
     {
@@ -785,13 +785,13 @@ void monster_talk(monster *m)
   monster_action(m, m->talkf);
 }
 
-/* makes one of the highscore npcs */
+// makes one of the highscore npcs
 void make_hiscore_npc(monster *npc, int npcid)
 {
   int st = -1;
   *npc      = Monsters[HISCORE_NPC];
   npc->aux2 = npcid;
-  /* each of the high score npcs can be created here */
+  // each of the high score npcs can be created here
   std::string npc_name;
   switch(npcid)
   {
@@ -807,7 +807,7 @@ void make_hiscore_npc(monster *npc, int npcid)
     case 6:
       npc_name = Priest[npcid];
       determine_npc_behavior(npc, Priestlevel[npcid], Priestbehavior[npcid]);
-      st                     = ARTIFACTID + 13 + npcid; /* appropriate holy symbol... */
+      st                     = ARTIFACTID + 13 + npcid; // appropriate holy symbol...
       Objects[st].uniqueness = UNIQUE_MADE;
       if(npcid == DRUID)
       {
@@ -833,7 +833,7 @@ void make_hiscore_npc(monster *npc, int npcid)
     case 9:
       npc_name = Archmage;
       determine_npc_behavior(npc, Archmagelevel, Archmagebehavior);
-      st         = ARTIFACTID + 9; /* kolwynia */
+      st         = ARTIFACTID + 9; // kolwynia
       npc->talkf = M_TALK_ARCHMAGE;
       m_status_reset(*npc, WANDERING);
       m_status_reset(*npc, HOSTILE);
@@ -879,7 +879,7 @@ void make_hiscore_npc(monster *npc, int npcid)
     case 15:
       npc_name = Justiciar;
       determine_npc_behavior(npc, Justiciarlevel, Justiciarbehavior);
-      st            = THINGID + 16; /* badge */
+      st            = THINGID + 16; // badge
       npc->talkf    = M_TALK_GUARD;
       npc->specialf = M_SP_WHISTLEBLOWER;
       m_status_reset(*npc, WANDERING);
@@ -898,7 +898,7 @@ void make_hiscore_npc(monster *npc, int npcid)
   npc->corpsestr = std::format("The body of {}", npc_name);
 }
 
-/* sets npc behavior given level and behavior code */
+// sets npc behavior given level and behavior code
 void determine_npc_behavior(monster *npc, int level, int behavior)
 {
   int combatype, competence, talktype;
@@ -915,34 +915,34 @@ void determine_npc_behavior(monster *npc, int level, int behavior)
   npc->xpv = npc->level * 20;
   switch(combatype)
   {
-    case 1: /* melee */
+    case 1: // melee
       npc->meleef = M_MELEE_NORMAL;
       npc->dmg    = competence * 5;
       npc->hit    = competence * 3;
       npc->speed  = 3;
       break;
-    case 2: /*missile*/
+    case 2: // missile
       npc->meleef  = M_MELEE_NORMAL;
       npc->strikef = M_STRIKE_MISSILE;
       npc->dmg     = competence * 3;
       npc->hit     = competence * 2;
       npc->speed   = 4;
       break;
-    case 3: /* spellcasting */
+    case 3: // spellcasting
       npc->meleef   = M_MELEE_NORMAL;
       npc->dmg      = competence;
       npc->hit      = competence;
       npc->specialf = M_SP_SPELL;
       npc->speed    = 6;
       break;
-    case 4: /* thievery */
+    case 4: // thievery
       npc->meleef   = M_MELEE_NORMAL;
       npc->dmg      = competence;
       npc->hit      = competence;
       npc->specialf = M_SP_THIEF;
       npc->speed    = 3;
       break;
-    case 5: /* flee */
+    case 5: // flee
       npc->dmg      = competence;
       npc->hit      = competence;
       npc->meleef   = M_MELEE_NORMAL;
@@ -977,7 +977,7 @@ void determine_npc_behavior(monster *npc, int level, int behavior)
   npc->uniqueness = UNIQUE_MADE;
 }
 
-/* makes an ordinary npc (maybe undead) */
+// makes an ordinary npc (maybe undead)
 void make_log_npc(monster *npc)
 {
   // in case the log file is null
@@ -1360,20 +1360,20 @@ void m_altar(monster *m)
   }
   else if(m->id == HISCORE_NPC && m->aux2 == altar)
   {
-    reaction = 1; /* high priest of same deity */
+    reaction = 1; // high priest of same deity
   }
   else if((m->id == ANGEL || m->id == HIGH_ANGEL || m->id == ARCHANGEL) && m->aux1 == altar)
   {
-    reaction = 1; /* angel of same deity */
+    reaction = 1; // angel of same deity
   }
   else if(altar == Player.patron)
   {
-    reaction = -1; /* friendly deity will zap hostile monster */
+    reaction = -1; // friendly deity will zap hostile monster
   }
   else if(((Player.patron == ODIN || Player.patron == ATHENA) && (altar == SET || altar == HECATE)) ||
           ((Player.patron == SET || Player.patron == HECATE) && (altar == ODIN || altar == ATHENA)))
   {
-    reaction = 1; /* hostile deity will help hostile monster */
+    reaction = 1; // hostile deity will help hostile monster
   }
   switch(reaction)
   {

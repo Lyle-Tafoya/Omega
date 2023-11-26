@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* item.c */
+// item.cpp
 
 #include "glob.h"
 #include "spell.h"
@@ -121,8 +121,8 @@ void make_corpse(object *o, const monster *m)
   o->known     = 2;
   o->objstr    = m->corpsestr;
   o->truename = o->cursestr = o->objstr;
-/* DG I_CANNIBAL not implemented... fall through to code in I_CORPSE */
-#if 0 /* WDT HACK, of course -- we need to implement I_CANNIBAL. */
+// DG I_CANNIBAL not implemented... fall through to code in I_CORPSE
+#if 0 // WDT HACK, of course -- we need to implement I_CANNIBAL.
   if ((m->monchar&0xff) == '@')
     o->on_use = I_CANNIBAL;
   else
@@ -135,14 +135,14 @@ void make_corpse(object *o, const monster *m)
   else if(m_statusp(*m, POISONOUS))
   {
     o->on_use = I_POISON_FOOD;
-    /* Special corpse-eating effects */
+    // Special corpse-eating effects
   }
   else
   {
     switch(m->id)
     {
-      case TSETSE: /*tse tse fly */
-      case TORPOR: /*torpor beast */
+      case TSETSE: // tse tse fly
+      case TORPOR: // torpor beast
         o->on_use = I_SLEEP_SELF;
         break;
       case NASTY:
@@ -151,10 +151,10 @@ void make_corpse(object *o, const monster *m)
       case BLIPPER:
         o->on_use = I_TELEPORT;
         break;
-      case EYE: /* floating eye -- it's traditional.... */
+      case EYE: // floating eye -- it's traditional...
         o->on_use = I_CLAIRVOYANCE;
         break;
-      case FUZZY: /*astral fuzzy */
+      case FUZZY: // astral fuzzy
         o->on_use = I_DISPLACE;
         break;
       case SERV_LAW:
@@ -163,7 +163,7 @@ void make_corpse(object *o, const monster *m)
       case SERV_CHAOS:
         o->on_use = I_LAW;
         break;
-      case ASTRAL_VAMP: /* astral vampire */
+      case ASTRAL_VAMP: // astral vampire
         o->on_use = I_ENCHANT;
         break;
       case MANABURST:
@@ -172,8 +172,8 @@ void make_corpse(object *o, const monster *m)
       case RAKSHASA:
         o->on_use = I_TRUESIGHT;
         break;
-/* DG fall through to code in I_CORPSE and special case there */
-#if 0 /* WDT HACK? */
+// DG fall through to code in I_CORPSE and special case there
+#if 0 // WDT HACK?
   case BEHEMOTH:
     o->on_use = I_HEAL;
     break;
@@ -181,11 +181,11 @@ void make_corpse(object *o, const monster *m)
     o->on_use = I_NEUTRALIZE_POISON;
     break;
 #endif
-      case COMA: /*coma beast */
+      case COMA: // coma beast
         o->on_use = I_ALERT;
         break;
-/* DG I_INEDIBLE not implemented... fall through to code in I_CORPSE */
-#if 0 /* WDT HACK: yawn. */
+// DG I_INEDIBLE not implemented... fall through to code in I_CORPSE
+#if 0 // WDT HACK: yawn.
   default:
     o->on_use = I_INEDIBLE; 
     break;
@@ -200,12 +200,12 @@ int itemblessing()
   {
     case 0:
     case 1:
-      return (-1 - random_range(10));
+      return -1 - random_range(10);
     case 8:
     case 9:
-      return (1 + random_range(10));
+      return 1 + random_range(10);
     default:
-      return (0);
+      return 0;
   }
 }
 
@@ -217,12 +217,12 @@ int itemplus()
   {
     p++;
   }
-  return (p);
+  return p;
 }
 
 int itemcharge()
 {
-  return (random_range(20) + 1);
+  return random_range(20) + 1;
 }
 
 void make_ring(object *o, int id)
@@ -315,7 +315,7 @@ void make_scroll(object *o, int id)
     id = random_range(NUMSCROLLS);
   }
   *o = Objects[SCROLLID + id];
-  /* if a scroll of spells, aux is the spell id in Spells */
+  // if a scroll of spells, aux is the spell id in Spells
   if(o->id == SCROLLID + 1)
   {
     o->aux = random_range(spell::NUM_SPELLS);
@@ -343,7 +343,7 @@ void make_weapon(object *o, int id)
   }
   *o = Objects[WEAPONID + id];
   if((id == 28) || (id == 29))
-  { /* bolt or arrow */
+  { // bolt or arrow
     o->number = random_range(20) + 1;
   }
   if(o->blessing == 0)
@@ -467,8 +467,8 @@ void make_artifact(object *o, int id)
   *o = Objects[ARTIFACTID + id];
 }
 
-/* this function is used to shuffle the id numbers of scrolls, potions, etc */
-/* taken from Knuth 2 */
+// this function is used to shuffle the id numbers of scrolls, potions, etc
+// taken from Knuth 2
 void shuffle(int ids[], int number)
 {
   int top, swap, with;
@@ -480,14 +480,13 @@ void shuffle(int ids[], int number)
   for(top = number - 1; top >= 0; top--)
   {
     swap      = ids[top];
-    with      = random_range(top + 1); /* from  0 to top, inclusive */
+    with      = random_range(top + 1); // from  0 to top, inclusive
     ids[top]  = ids[with];
     ids[with] = swap;
   }
 }
 
-/* item name functions */
-
+// item name functions
 const std::string scrollname(int id)
 {
   switch(scroll_ids[id])

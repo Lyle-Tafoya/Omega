@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* This file is the header file for all omega modules */
-/* defs.h */
+// This file is the header file for all omega module
+// defs.h
 
 #ifndef OMEGA_DEFS_H_
 #define OMEGA_DEFS_H_
@@ -1330,32 +1330,32 @@ constexpr long pow2(int n)
 
 inline bool loc_statusp(int x, int y, lstatus_bit status, const level &lvl)
 {
-  return ((lvl.site[x][y].lstatus & (status)) ? true : false);
+  return lvl.site[x][y].lstatus & status;
 }
 
 inline void lset(int x, int y, lstatus_bit status, level &lvl)
 {
-  lvl.site[x][y].lstatus |= (status);
+  lvl.site[x][y].lstatus |= status;
 }
 
 inline void lreset(int x, int y, lstatus_bit status, level &lvl)
 {
-  lvl.site[x][y].lstatus &= ~(status);
+  lvl.site[x][y].lstatus &= ~status;
 }
 
 inline bool c_statusp(int x, int y, lstatus_bit status, const terrain (&country)[MAXWIDTH][MAXLENGTH])
 {
-  return ((country[x][y].status & (status)) ? true : false);
+  return country[x][y].status & status;
 }
 
 inline void c_set(int x, int y, lstatus_bit status, terrain (&country)[MAXWIDTH][MAXLENGTH])
 {
-  country[x][y].status |= (status);
+  country[x][y].status |= status;
 }
 
 inline bool m_statusp(const monster &m, monster_status_bit status)
 {
-  return ((m.status & status) ? true : false);
+  return m.status & status;
 }
 
 inline void m_status_set(monster &m, monster_status_bit status)
@@ -1370,12 +1370,12 @@ inline void m_status_reset(monster &m, monster_status_bit status)
 
 inline bool m_immunityp(const monster &m, damage_type status)
 {
-  return ((m.immunity & pow2(status)) ? true : false);
+  return m.immunity & pow2(status);
 }
 
 inline bool gamestatusp(int flag, const long &status)
 {
-  return ((status & flag) ? true : false);
+  return status & flag;
 }
 
 inline void setgamestatus(int flag, long &status)
@@ -1385,12 +1385,12 @@ inline void setgamestatus(int flag, long &status)
 
 inline void resetgamestatus(int flag, long &status)
 {
-  status &= ~(flag);
+  status &= ~flag;
 }
 
 inline bool optionp(int option, const player &p)
 {
-  return ((p.options & option) ? true : false);
+  return p.options & option;
 }
 
 inline void optionset(int option, player &p)
@@ -1400,7 +1400,7 @@ inline void optionset(int option, player &p)
 
 inline void optionreset(int option, player &p)
 {
-  p.options &= ~(option);
+  p.options &= ~option;
 }
 
 #endif

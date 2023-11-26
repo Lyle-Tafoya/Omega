@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* iinit.h */
-/* This file defines and initializes the Objects Array */
+// iinit.cpp
+// This file defines and initializes the Objects Array
 
 #include "defs.h"
 

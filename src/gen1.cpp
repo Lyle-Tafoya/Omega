@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* gen1.c */
-/* level generator functions */
+// gen1.cpp
+// level generator functions
 
 #include "glob.h"
 #include "scr.h"
@@ -31,7 +31,7 @@ void kill_levels(const std::string &str);
 level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
-/* Deallocate current dungeon */
+// Deallocate current dungeon
 void free_dungeon()
 {
 #ifdef SAVE_LEVELS
@@ -98,7 +98,7 @@ level *findlevel(level *dungeon, char levelnum)
     if(dungeon->depth == levelnum)
     {
       dungeon->last_visited = time(nullptr);
-      return (dungeon);
+      return dungeon;
     }
     else
     {
@@ -146,17 +146,17 @@ void find_stairs(char fromlevel, char tolevel)
   }
 }
 
-/* Looks for level tolevel in current dungeon which is named by
-Dungeon, which may be nullptr. If the level is found, and rewrite_level
-is false, and the level has already been generated, nothing happens
-beyond Level being set correctly. Otherwise the level is recreated
-from scratch */
+// Looks for level tolevel in current dungeon which is named by
+// Dungeon, which may be nullptr. If the level is found, and rewrite_level
+// is false, and the level has already been generated, nothing happens
+// beyond Level being set correctly. Otherwise the level is recreated
+// from scratch
 
 void change_level(char fromlevel, char tolevel, char rewrite_level)
 {
   level *thislevel = nullptr;
   Player.sx        = -1;
-  Player.sy        = -1; /* sanctuary effect dispelled */
+  Player.sy        = -1; // sanctuary effect dispelled
 #ifdef SAVE_LEVELS
   thislevel = msdos_changelevel(Level, Current_Environment, tolevel);
 #else
@@ -241,7 +241,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
   show_screen();
   screencheck(Player.x, Player.y);
   drawvision(Player.x, Player.y);
-  /* synchronize with player on level change */
+  // synchronize with player on level change
   Player.click = (Tick + 1) % 60;
   roomcheck();
 }
@@ -275,8 +275,7 @@ void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, chtype loc, char rs
   }
 }
 
-/* keep going in one orthogonal direction or another until we hit our */
-/* destination */
+// keep going in one orthogonal direction or another until we hit our destination
 
 void straggle_corridor(int fx, int fy, int tx, int ty, chtype loc, char rsi)
 {
@@ -333,7 +332,7 @@ void makedoor(int x, int y)
     lset(x, y, STOPS, *Level);
   }
   Level->site[x][y].p_locf = L_NO_OP;
-  /* prevents water corridors from being instant death in sewers */
+  // prevents water corridors from being instant death in sewers
 }
 
 const std::string roomname(int index)

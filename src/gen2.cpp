@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* gen2.c */
-/* level generator functions */
+// gen2.cpp
+// level generator functions
 
 #include "glob.h"
 #include "scr.h"
@@ -27,15 +27,15 @@ extern level TheLevel;
 level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
-/* For each level, there should be one stairway going up and one down.
-fromlevel determines whether the player is placed on the up or the down
-staircase. The aux value is currently unused elsewhere, but is set
-to the destination level. */
+// For each level, there should be one stairway going up and one down.
+// fromlevel determines whether the player is placed on the up or the down
+// staircase. The aux value is currently unused elsewhere, but is set
+// to the destination level.
 
 void make_stairs(int fromlevel)
 {
   int x, y;
-  /* no stairway out of astral */
+  // no stairway out of astral
   if(Current_Environment != E_ASTRAL)
   {
     do
@@ -298,9 +298,9 @@ void room_corridor(int fx, int fy, int tx, int ty, int baux)
   makedoor(fx, fy);
 }
 
-/* builds a room. Then, for each successive room, sends off at least one
-corridor which is guaranteed to connect up to another room, thus guaranteeing
-fully connected level. */
+// builds a room. Then, for each successive room, sends off at least one
+// corridor which is guaranteed to connect up to another room, thus guaranteeing
+// fully connected level.
 
 void room_level()
 {
@@ -528,18 +528,18 @@ void maze_level()
     {
       case 1:
         mid = LORD_EARTH;
-        break; /* Elemental Lord of Earth */
+        break; // Elemental Lord of Earth
       case 2:
         mid = LORD_AIR;
-        break; /* Elemental Lord of Air */
+        break; // Elemental Lord of Air
       case 3:
         mid = LORD_WATER;
-        break; /* Elemental Lord of Water */
+        break; // Elemental Lord of Water
       case 4:
         mid = LORD_FIRE;
-        break; /* Elemental Lord of Fire */
+        break; // Elemental Lord of Fire
       default:
-        mid = ELEM_MASTER; /* Elemental Master */
+        mid = ELEM_MASTER; // Elemental Master
     }
     if(Level->depth == 5)
     {
@@ -571,7 +571,7 @@ void maze_level()
   }
 }
 
-/* keep drawing corridors recursively for 2^5 endpoints */
+// keep drawing corridors recursively for 2^5 endpoints
 void maze_corridor(int fx, int fy, int tx, int ty, char rsi, char num)
 {
   if(num < 6)

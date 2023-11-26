@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* site2.c */
-/* 2nd half of site functions and aux functions to them */
+// site2.cpp
+// 2nd half of site functions and aux functions to them
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -673,7 +673,7 @@ void l_brothel()
             Player.status[DISEASED] = 0;
             Player.status[POISONED] = 0;
             Player.hp               = Player.maxhp;
-            /* reduce temporary stat gains to max stat levels */
+            // reduce temporary stat gains to max stat levels
             toggle_item_use(true);
             Player.str = std::min(Player.str, Player.maxstr);
             Player.con = std::min(Player.con, Player.maxcon);
@@ -684,7 +684,7 @@ void l_brothel()
             toggle_item_use(false);
             if(preference == 'n')
             {
-              Player.iq++; /* whatever :-) */
+              Player.iq++; // whatever :-)
             }
             else
             {
@@ -743,7 +743,7 @@ void l_brothel()
   }
 }
 
-/* if signp is true, always print message, otherwise do so only sometimes */
+// if signp is true, always print message, otherwise do so only sometimes
 void sign_print(int x, int y, int signp)
 {
   if((Level->site[x][y].p_locf >= CITYSITEBASE) && (Level->site[x][y].p_locf < CITYSITEBASE + NUMCITYSITES))

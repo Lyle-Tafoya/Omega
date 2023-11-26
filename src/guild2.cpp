@@ -16,12 +16,12 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* guild2.c */
-/* L_ functions  */
+// guild2.cpp
+// l_ functions
 
-/* These functions implement the various guilds. */
-/* They are all l_ functions since they are basically activated*/
-/* at some site or other. */
+// These functions implement the various guilds.
+// They are all l_ functions since they are basically activated
+// at some site or other.
 
 #include "glob.h"
 #include "scr.h"
@@ -302,7 +302,7 @@ void l_thieves_guild()
                   item_unequip(Player.possessions[i]);
                 }
                 Player.cash += number * price;
-                /* Fenced artifacts could turn up anywhere, really... */
+                // Fenced artifacts could turn up anywhere, really...
                 if(Objects[Player.possessions[i]->id].uniqueness > UNIQUE_UNMADE)
                 {
                   Objects[Player.possessions[i]->id].uniqueness = UNIQUE_UNMADE;

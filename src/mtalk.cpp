@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* mtalk.c */
-/* monster talk functions */
+// mtalk.cpp
+// monster talk functions
 
 #include "glob.h"
 #include "scr.h"
@@ -27,7 +27,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern bool received_directions;
 
-/* The druid's altar is in the northern forest */
+// The druid's altar is in the northern forest
 void m_talk_druid(monster *m)
 {
   if(!m_statusp(*m, HOSTILE))
@@ -56,7 +56,7 @@ void m_talk_druid(monster *m)
     if(ynq() == 'y')
     {
       if(Phase / 2 == 6 || Phase / 2 == 0)
-      { /* full or new moon */
+      { // full or new moon
         queue_message("\"Unfortunately, I cannot perform a ritual of balance on");
         if(Phase / 2 == 6)
         {
@@ -68,15 +68,15 @@ void m_talk_druid(monster *m)
         }
       }
       else if(Phase / 2 == 3 || Phase / 2 == 9)
-      { /* half moon */
+      { // half moon
         queue_message("You take part in today's holy celebration of balance...");
         Player.alignment = 0;
         Player.mana      = calcmana();
         if(Player.patron == DRUID)
         {
-          gain_experience(200); /* if a druid wants to spend 2 days */
+          gain_experience(200); // if a druid wants to spend 2 days
         }
-        Time += 60; /* celebrating for 1600 xp, why not? */
+        Time += 60; // celebrating for 1600 xp, why not?
         hourly_check();
         Time += 60;
         hourly_check();
@@ -101,7 +101,7 @@ void m_talk_druid(monster *m)
         {
           Player.alignment -= Player.alignment * std::max(0, 10 - Player.level) / 10;
         }
-        /* the higher level the character is, the more set in his/her ways */
+        // the higher level the character is, the more set in his/her ways
         Time += 60;
         hourly_check();
       }

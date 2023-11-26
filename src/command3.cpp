@@ -16,10 +16,9 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* command3.c */
+// command3.cpp
 
-/* This file contains some more top level command functions
-   called from command1.c */
+// This file contains some more top level command functions called from command1.cpp
 
 #include "date.h"
 #include "glob.h"
@@ -379,7 +378,7 @@ void fire()
   else if(cursed(Player.possessions[index].get()) && Player.possessions[index]->used)
   {
     queue_message("You can't seem to get rid of it!");
-    /* load a crossbow */
+    // load a crossbow
   }
   else if(Player.possessions[O_WEAPON_HAND] &&
           (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) &&
@@ -430,7 +429,7 @@ void fire()
         if(obj->dmg == 0)
         {
           if(m->treasure > 0)
-          { /* the monster can have treasure/objects */
+          { // the monster can have treasure/objects
             queue_message("Your gift is caught!");
             givemonster(m, split_item(1, obj.get()));
             dispose_lost_objects(1, obj);
@@ -513,8 +512,7 @@ void quit(int)
   }
 }
 
-/* rest in 10 second segments so if woken up by monster won't
-die automatically.... */
+// rest in 10 second segments so if woken up by monster won't die automatically
 void nap()
 {
   static int naptime;
@@ -733,7 +731,7 @@ void wizard()
   }
 }
 
-/* Jump, that is */
+// Jump, that is
 void vault()
 {
   int x = Player.x, y = Player.y, jumper = 0;
@@ -990,7 +988,7 @@ void tacoptions()
   Player.meleestr[place] = 0;
 }
 
-/* Do the Artful Dodger trick */
+// Do the Artful Dodger trick
 void pickpocket()
 {
   int dx, dy;

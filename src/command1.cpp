@@ -16,11 +16,11 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* command1.c */
+// command1.cpp
 
-/* This file has the two toplevel command scanners, p_process,
-which works everywhere but the countryside, and p_couyntry_process,
-which works.... */
+// This file has the two toplevel command scanners, p_process,
+// which works everywhere but the countryside, and p_couyntry_process,
+// which works....
 
 #include "glob.h"
 #include "scr.h"
@@ -370,7 +370,7 @@ void p_process()
   screencheck(Player.x, Player.y);
 }
 
-/* deal with a new player command in countryside mode */
+// deal with a new player command in countryside mode
 void p_country_process()
 {
   int no_op;
@@ -389,31 +389,31 @@ void p_country_process()
         break;
       case 7:
         wizard();
-        break; /* ^g */
+        break; // ^g
       case 12:
         xredraw();
         no_op = true;
-        break; /* ^l */
+        break; // ^l
       case 16:
         bufferprint();
         no_op = true;
-        break; /* ^p */
+        break; // ^p
       case 18:
         xredraw();
         no_op = true;
-        break; /* ^r */
+        break; // ^r
       case 23:
         if(gamestatusp(CHEATED, GameStatus))
         {
           drawscreen();
         }
-        break; /* ^w */
+        break; // ^w
       case 24:
         if(gamestatusp(CHEATED, GameStatus) || Player.rank[ADEPT])
         {
           wish(1);
         }
-        break; /* ^x */
+        break; // ^x
       case 'd':
         drop_pack_item();
         break;
@@ -440,7 +440,7 @@ void p_country_process()
         break;
       case 'P':
         show_license();
-        break; /* actually show_license is in file.c */
+        break; // actually show_license is in file.cpp
       case 'Q':
         quit();
         break;

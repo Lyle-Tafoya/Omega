@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* abyss.c */
-/* some functions to make the abyss level and run the final challenge */
+// abyss.cpp
+// some functions to make the abyss level and run the final challenge
 
 #include "glob.h"
 
@@ -26,12 +26,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <regex>
 
 #ifdef SAVE_LEVELS
-/* This stuff is in this file because the file was really small. */
+// This stuff is in this file because the file was really small
 extern level TheLevel;
 
 void kill_levels(const std::string &str)
 {
-  /* Remove old level files laying around */
+  // Remove old level files laying around
   for(auto &p : std::filesystem::directory_iterator(Omegalib))
   {
     if(std::filesystem::is_regular_file(p) && std::regex_match(p.path().filename().string(), std::regex(str)))
@@ -58,11 +58,10 @@ void msdos_init()
 
 static FILE *open_levfile(int env, int depth, int rw)
 {
-  return (fopen(std::format("{}om{:03}{:03}.lev", Omegalib, env, depth).c_str(), (rw) ? "wb" : "rb"));
+  return fopen(std::format("{}om{:03}{:03}.lev", Omegalib, env, depth).c_str(), (rw) ? "wb" : "rb");
 }
 
-/* Saves oldlevel (unless nullptr), and reads in the new level,
-   unless depth is < 0. */
+// Saves oldlevel (unless nullptr), and reads in the new level, unless depth is < 0
 level *msdos_changelevel(level *oldlevel, int newenv, int newdepth)
 {
   FILE *fp;
@@ -70,7 +69,7 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth)
   if(oldlevel)
   {
     if(oldlevel->environment == newenv && oldlevel->depth == newdepth)
-      return (oldlevel);
+      return oldlevel;
     if((fp = open_levfile(oldlevel->environment, oldlevel->depth, 1)))
     {
       save_level(fp, oldlevel);
@@ -78,7 +77,7 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth)
     }
     else
       queue_message("Cannot save level!!!");
-    /* Free up monsters and items */
+    // Free up monsters and items
     free_level(oldlevel);
   }
   if(newdepth >= 0)

@@ -16,9 +16,9 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* utils.c */
+// utils.cpp
 
-/* Random utility functions called from all over */
+// Random utility functions called from all over
 
 #include "glob.h"
 #include "scr.h"
@@ -34,7 +34,7 @@ std::mt19937 generator;
 // x and y on level?
 bool inbounds(int x, int y)
 {
-  return ((x >= 0) && (y >= 0) && (x < WIDTH) && (y < LENGTH));
+  return x >= 0 && y >= 0 && x < WIDTH && y < LENGTH;
 }
 
 int random_range(int k)
@@ -58,10 +58,10 @@ int random_range(int k)
   return distribution(generator);
 }
 
-/* modify absolute y coord relative to which part of level we are on */
+// modify absolute y coord relative to which part of level we are on
 int screenmod(int y)
 {
-  return (y - ScreenOffset);
+  return y - ScreenOffset;
 }
 
 int screenmod_horizontal(int x)
@@ -71,11 +71,11 @@ int screenmod_horizontal(int x)
 
 bool offscreen(int x, int y)
 {
-  return ((y < 0) || (y < ScreenOffset) || (y > ScreenOffset + ScreenLength - 1) || (y > LENGTH)) ||
-         ((x < 0) || (x < HorizontalOffset) || (x > HorizontalOffset + ScreenWidth - 1) || (x > WIDTH));
+  return (y < 0 || y < ScreenOffset || y > ScreenOffset + ScreenLength - 1 || y > LENGTH) ||
+         (x < 0 || x < HorizontalOffset || x > HorizontalOffset + ScreenWidth - 1 || x > WIDTH);
 }
 
-/* always hit on a natural 0; never hit on a natural 19 */
+// always hit on a natural 0; never hit on a natural 19
 bool hitp(int hit, int ac)
 {
   int roll = random_range(20);
@@ -93,10 +93,10 @@ bool hitp(int hit, int ac)
   }
 }
 
-/* number of moves from x1,y1 to x2,y2 */
+// number of moves from x1,y1 to x2,y2
 int distance(int x1, int y1, int x2, int y2)
 {
-  return (std::max(abs(x2 - x1), abs(y2 - y1)));
+  return std::max(abs(x2 - x1), abs(y2 - y1));
 }
 
 // can you shoot, or move monsters through a spot?
@@ -128,7 +128,7 @@ bool m_unblocked(const monster *m, int x, int y)
   }
   else if(m_statusp(*m, ONLYSWIM))
   {
-    return (Level->site[x][y].locchar == WATER);
+    return Level->site[x][y].locchar == WATER;
   }
   else if(loc_statusp(x, y, SECRET, *Level))
   {
@@ -150,7 +150,7 @@ bool m_unblocked(const monster *m, int x, int y)
     }
     else
     {
-      return (m_statusp(*m, INTANGIBLE));
+      return m_statusp(*m, INTANGIBLE);
     }
   }
   else if((Level->site[x][y].locchar == FLOOR) || (Level->site[x][y].locchar == OPEN_DOOR))
@@ -160,14 +160,12 @@ bool m_unblocked(const monster *m, int x, int y)
   else if((Level->site[x][y].locchar == PORTCULLIS) || (Level->site[x][y].locchar == WALL) ||
           (Level->site[x][y].locchar == STATUE))
   {
-    return (m_statusp(*m, INTANGIBLE));
+    return m_statusp(*m, INTANGIBLE);
   }
   else if(Level->site[x][y].locchar == WATER)
   {
-    return (
-      m_statusp(*m, SWIMMING) || m_statusp(*m, ONLYSWIM) || m_statusp(*m, INTANGIBLE) ||
-      m_statusp(*m, FLYING)
-    );
+    return m_statusp(*m, SWIMMING) || m_statusp(*m, ONLYSWIM) ||
+      m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING);
   }
   else if(Level->site[x][y].locchar == CLOSED_DOOR)
   {
@@ -187,24 +185,22 @@ bool m_unblocked(const monster *m, int x, int y)
     }
     else
     {
-      return (m_statusp(*m, INTANGIBLE));
+      return m_statusp(*m, INTANGIBLE);
     }
   }
   else if(Level->site[x][y].locchar == LAVA)
   {
-    return (
-      (m_immunityp(*m, FLAME) && m_statusp(*m, SWIMMING)) || m_statusp(*m, INTANGIBLE) ||
-      m_statusp(*m, FLYING)
-    );
+    return (m_immunityp(*m, FLAME) && m_statusp(*m, SWIMMING)) ||
+      m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING);
   }
   else if(Level->site[x][y].locchar == FIRE)
   {
-    return (m_statusp(*m, INTANGIBLE) || m_immunityp(*m, FLAME));
+    return m_statusp(*m, INTANGIBLE) || m_immunityp(*m, FLAME);
   }
   else if((Level->site[x][y].locchar == TRAP) || (Level->site[x][y].locchar == HEDGE) ||
           (Level->site[x][y].locchar == ABYSS))
   {
-    return ((m->movef == M_MOVE_CONFUSED) || m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING));
+    return m->movef == M_MOVE_CONFUSED || m_statusp(*m, INTANGIBLE) || m_statusp(*m, FLYING);
   }
   else
   {
@@ -231,7 +227,7 @@ bool view_unblocked(int x, int y)
   }
 }
 
-/* 8 moves in Dirs */
+// 8 moves in Dirs
 void initdirs()
 {
   Dirs[0][0] = 1;
@@ -254,9 +250,9 @@ void initdirs()
   Dirs[1][8] = 0;
 }
 
-/* do_los moves pyx along a lineofsight from x1 to x2 */
-/* x1 and x2 are pointers because as a side effect they are changed */
-/* to the final location of the pyx */
+// do_los moves pyx along a lineofsight from x1 to x2
+// x1 and x2 are pointers because as a side effect they are changed
+// to the final location of the pyx
 void do_los(chtype pyx, int *x1, int *y1, int x2, int y2)
 {
   int dx, dy, ox, oy;
@@ -303,7 +299,7 @@ void do_los(chtype pyx, int *x1, int *y1, int x2, int y2)
     delta = 2 * abs(x2 - *x1);
   }
   if(major == -1)
-  { /* x1,y2 already == x2,y2 */
+  { // x1,y2 already == x2,y2
     return;
   }
   error = 0;
@@ -315,7 +311,7 @@ void do_los(chtype pyx, int *x1, int *y1, int x2, int y2)
     *y1 += Dirs[1][major];
     error += delta;
     if(error > step)
-    { /* don't need to check that minor >= 0 */
+    { // don't need to check that minor >= 0
       *x1 += Dirs[0][minor];
       *y1 += Dirs[1][minor];
       error -= 2 * step;
@@ -338,8 +334,7 @@ void do_los(chtype pyx, int *x1, int *y1, int x2, int y2)
   levelrefresh();
 }
 
-/* This is the same as do_los, except we stop before hitting nonliving
-obstructions */
+// This is the same as do_los, except we stop before hitting nonliving obstructions
 void do_object_los(chtype pyx, int *x1, int *y1, int x2, int y2)
 {
   int dx, dy, ox, oy;
@@ -386,7 +381,7 @@ void do_object_los(chtype pyx, int *x1, int *y1, int x2, int y2)
     delta = 2 * abs(x2 - *x1);
   }
   if(major == -1)
-  { /* x1,y2 already == x2,y2 */
+  { // x1,y2 already == x2,y2
     return;
   }
   error = 0;
@@ -398,7 +393,7 @@ void do_object_los(chtype pyx, int *x1, int *y1, int x2, int y2)
     *y1 += Dirs[1][major];
     error += delta;
     if(error > step)
-    { /* don't need to check that minor >= 0 */
+    { // don't need to check that minor >= 0
       *x1 += Dirs[0][minor];
       *y1 += Dirs[1][minor];
       error -= 2 * step;
@@ -500,10 +495,10 @@ bool los_p(int x1, int y1, int x2, int y2)
       blocked = !unblocked(x1, y1);
     }
   } while((x1 != x2 || y1 != y2) && !blocked);
-  return ((x1 == x2) && (y1 == y2));
+  return x1 == x2 && y1 == y2;
 }
 
-/* view_los_p sees through monsters */
+// view_los_p sees through monsters
 bool view_los_p(int x1, int y1, int x2, int y2)
 {
   int dx, dy;
@@ -574,7 +569,7 @@ bool view_los_p(int x1, int y1, int x2, int y2)
       blocked = !view_unblocked(x1, y1);
     }
   } while((x1 != x2 || y1 != y2) && !blocked);
-  return ((x1 == x2) && (y1 == y2));
+  return x1 == x2 && y1 == y2;
 }
 
 long calc_points()
@@ -659,22 +654,22 @@ long calc_points()
     points *= 10;
   }
 
-  return (points);
+  return points;
 }
 
-/* returns the 24 hour clock hour */
+// returns the 24 hour clock hour
 int hour()
 {
   return static_cast<int>(((Time + 720) / 60) % 24);
 }
 
-/* returns 0, 10, 20, 30, 40, or 50 */
+// returns 0, 10, 20, 30, 40, or 50
 int showminute()
 {
   return static_cast<int>(((Time % 60) / 10) * 10);
 }
 
-/* returns the 12 hour clock hour */
+// returns the 12 hour clock hour
 int showhour()
 {
   int showtime;
@@ -686,13 +681,13 @@ int showhour()
   {
     showtime = (hour() % 12);
   }
-  return (showtime);
+  return showtime;
 }
 
 // nighttime is defined from 9 PM to 6AM
 bool nighttime()
 {
-  return ((hour() > 20) || (hour() < 7));
+  return hour() > 20 || hour() < 7;
 }
 
 const std::string getarticle(const std::string &str)
@@ -709,7 +704,7 @@ const std::string getarticle(const std::string &str)
 
 int day()
 {
-  return ((Date % 30) + 1);
+  return (Date % 30) + 1;
 }
 
 const std::string ordinal(int number)
@@ -769,16 +764,13 @@ const std::string month()
   }
 }
 
-/* WDT: code for the following two functions contributed by Sheldon
- * Simms. */
-/* finds floor space on level with buildaux not equal to baux,
-sets x,y there. There must *be* floor space somewhere on level.... */
+// WDT: code for the following two functions contributed by Sheldon Simms
+// finds floor space on level with buildaux not equal to baux,
+// sets x,y there. There must *be* floor space somewhere on level...
 int spaceok(int x, int y, int baux)
 {
-  return (
-    Level->site[x][y].locchar == FLOOR && !Level->site[x][y].creature &&
-    !loc_statusp(x, y, SECRET, *Level) && Level->site[x][y].buildaux != baux
-  );
+  return Level->site[x][y].locchar == FLOOR && !Level->site[x][y].creature &&
+    !loc_statusp(x, y, SECRET, *Level) && Level->site[x][y].buildaux != baux;
 }
 
 bool findspace(int *x, int *y, int baux)
@@ -903,10 +895,8 @@ bool ok_to_free(level *level)
   }
   else
   {
-    return (
-      (level->environment != E_CITY) && (level->environment != E_VILLAGE) &&
-      (level->environment != Current_Dungeon)
-    );
+    return level->environment != E_CITY && level->environment != E_VILLAGE &&
+      level->environment != Current_Dungeon;
   }
 }
 

@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* aux1.c */
-/* auxiliary functions for those in com.c, also see aux2.c and aux3.c */
+// aux1.cpp
+// auxiliary functions for those in commmand[123].cpp, also see aux2.cpp and aux3.cpp
 
 #include "glob.h"
 #include "scr.h"
@@ -30,7 +30,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern void kill_all_levels();
 #endif
 
-/* check to see if too much tunneling has been done in this level */
+// check to see if too much tunneling has been done in this level
 void tunnelcheck()
 {
   if((Level->depth == 0 && Current_Environment != E_DLAIR) || Current_Environment == E_ASTRAL)
@@ -82,7 +82,7 @@ void tunnelcheck()
   }
 }
 
-/* displays a room's name */
+// displays a room's name
 void showroom(int i)
 {
   std::string location;
@@ -233,7 +233,7 @@ void fight_monster(monster *m)
 
     if(!m->attacked)
     {
-      Player.alignment -= 2; /* chaotic action */
+      Player.alignment -= 2; // chaotic action
     }
     m_status_set(*m, AWAKE);
     m_status_set(*m, HOSTILE);
@@ -334,7 +334,7 @@ bool p_moveable(int x, int y)
       {
         setgamestatus(SKIP_MONSTERS, GameStatus);
       }
-      return (!gamestatusp(SKIP_MONSTERS, GameStatus));
+      return !gamestatusp(SKIP_MONSTERS, GameStatus);
     }
     else
     {
@@ -360,7 +360,7 @@ bool p_country_moveable(int x, int y)
   {
     if((Country[x][y].current_terrain_type == CHAOS_SEA) || (Country[x][y].current_terrain_type == MOUNTAINS))
     {
-      return (confirmation());
+      return confirmation();
     }
     else
     {
@@ -409,8 +409,8 @@ void searchat(int x, int y)
   }
 }
 
-/* This is to be called whenever anything might change player performance in
-   melee, such as changing weapon, statistics, etc. */
+// This is to be called whenever anything might change player performance in
+// melee, such as changing weapon, statistics, etc...
 void calc_melee()
 {
   calc_weight();
@@ -486,14 +486,13 @@ void calc_melee()
     }
   }
 
-  /* weapon */
-  /* have to check for used since it could be a 2h weapon just carried
-     in one hand */
+  // weapon
+  // have to check for used since it could be a 2h weapon just carried in one hand
   if(Player.possessions[O_WEAPON_HAND])
   {
     if(Player.possessions[O_WEAPON_HAND]->used &&
-       ((Player.possessions[O_WEAPON_HAND]->objchar == WEAPON) ||
-        (Player.possessions[O_WEAPON_HAND]->objchar == MISSILEWEAPON)))
+       (Player.possessions[O_WEAPON_HAND]->objchar == WEAPON ||
+        Player.possessions[O_WEAPON_HAND]->objchar == MISSILEWEAPON))
     {
       Player.hit += Player.possessions[O_WEAPON_HAND]->hit + Player.possessions[O_WEAPON_HAND]->plus;
       Player.dmg += Player.possessions[O_WEAPON_HAND]->dmg + Player.possessions[O_WEAPON_HAND]->plus;
@@ -515,13 +514,13 @@ void calc_melee()
     }
   }
 
-  /* shield or defensive weapon */
+  // shield or defensive weapon
   if(Player.possessions[O_SHIELD])
   {
     Player.defense += Player.possessions[O_SHIELD]->aux + Player.possessions[O_SHIELD]->plus;
   }
 
-  /* armor */
+  // armor
   if(Player.possessions[O_ARMOR])
   {
     Player.absorption += Player.possessions[O_ARMOR]->dmg;
@@ -562,11 +561,11 @@ bool damage_item(std::unique_ptr<object> &o)
       queue_message("with a muted giggle.");
       dispose_lost_objects(1, o);
       Objects[o->id].uniqueness = UNIQUE_UNMADE;
-      /* WDT HACK: the above is correct only if UNIQUE_UNMADE means that
-       * the artifact hasn't been generated yet.  (Clearly, Omega is a
-       * little buggy in that regard with respect to artifacts in general
-       * -- it's almost trivial to force two identical artefacts to be
-       * generated right now.) */
+      // WDT HACK: the above is correct only if UNIQUE_UNMADE means that
+      // the artifact hasn't been generated yet.  (Clearly, Omega is a
+      // little buggy in that regard with respect to artifacts in general
+      // -- it's almost trivial to force two identical artefacts to be
+      // generated right now.)
     }
     return true;
   }
@@ -625,7 +624,7 @@ bool damage_item(std::unique_ptr<object> &o)
   }
 }
 
-/* do dmg points of damage of type dtype, from source fromstring */
+// do dmg points of damage of type dtype, from source fromstring
 void p_damage(int dmg, int dtype, const std::string &fromstring)
 {
   if(!p_immune(dtype))
@@ -655,7 +654,7 @@ void p_damage(int dmg, int dtype, const std::string &fromstring)
   dataprint();
 }
 
-/* game over, you lose! */
+// game over, you lose!
 void p_death(const std::string &fromstring)
 {
   Player.hp = 0;
@@ -670,7 +669,7 @@ void p_death(const std::string &fromstring)
   exit(0);
 }
 
-/* move the cursor around, like for firing a wand, sets x and y to target */
+// move the cursor around, like for firing a wand, sets x and y to target
 void setspot(int &x, int &y)
 {
   queue_message("Targeting.... '?' for help.");
@@ -754,7 +753,7 @@ void setspot(int &x, int &y)
   screencheck(Player.x, Player.y);
 }
 
-/* get a direction: return index into Dirs array corresponding to direction */
+// get a direction: return index into Dirs array corresponding to direction
 int getdir()
 {
   while(1)
@@ -765,37 +764,37 @@ int getdir()
       case '4':
       case 'h':
       case 'H':
-        return (5);
+        return 5;
       case '2':
       case 'j':
       case 'J':
-        return (6);
+        return 6;
       case '8':
       case 'k':
       case 'K':
-        return (7);
+        return 7;
       case '6':
       case 'l':
       case 'L':
-        return (4);
+        return 4;
       case '7':
       case 'y':
       case 'Y':
-        return (3);
+        return 3;
       case '9':
       case 'u':
       case 'U':
-        return (1);
+        return 1;
       case '1':
       case 'b':
       case 'B':
-        return (2);
+        return 2;
       case '3':
       case 'n':
       case 'N':
-        return (0);
+        return 0;
       case ESCAPE:
-        return (ABORT);
+        return ABORT;
       default:
         queue_message("That's not a direction!");
     }
@@ -853,7 +852,7 @@ std::string mstatus_string(const monster *m)
   return monster_status;
 }
 
-/* for the examine function */
+// for the examine function
 std::string describe_player()
 {
   std::string description;
@@ -894,13 +893,13 @@ std::string describe_player()
   return description;
 }
 
-/* access to player experience... */
-/* share out experience among guild memberships */
+// access to player experience...
+// share out experience among guild memberships
 void gain_experience(int amount)
 {
   int count = 0, share;
   Player.xp += static_cast<long>(amount);
-  gain_level(); /* actually, check to see if should gain level */
+  gain_level(); // actually, check to see if should gain level
   for(int i = 0; i < NUMRANKS; ++i)
   {
     if(Player.guildxp[i] > 0)
@@ -918,9 +917,9 @@ void gain_experience(int amount)
   }
 }
 
-/* try to hit a monster in an adjacent space. If there are none
-   return false. Note if you're berserk you get to attack ALL
-   adjacent monsters! */
+// try to hit a monster in an adjacent space. If there are none
+// return false. Note if you're berserk you get to attack ALL
+// adjacent monsters!
 bool goberserk()
 {
   bool wentberserk = false;
@@ -939,7 +938,7 @@ bool goberserk()
   return wentberserk;
 }
 
-/* identifies a trap for examine() by its aux value */
+// identifies a trap for examine() by its aux value
 std::string trapid(int trapno)
 {
   switch(trapno)
@@ -975,7 +974,7 @@ std::string trapid(int trapno)
   }
 }
 
-/* checks current food status of player, every hour, and when food is eaten */
+// checks current food status of player, every hour, and when food is eaten
 void foodcheck()
 {
   if(Player.food > 48)
@@ -1017,7 +1016,7 @@ void foodcheck()
   showflags();
 }
 
-/* see whether room should be illuminated */
+// see whether room should be illuminated
 void roomcheck()
 {
   static int oldroomno = -1;
@@ -1214,7 +1213,7 @@ void threaten(monster *m)
   }
 }
 
-/* name of the player's experience level */
+// name of the player's experience level
 std::string levelname(int level)
 {
   switch(level)

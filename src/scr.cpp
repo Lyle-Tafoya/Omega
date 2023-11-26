@@ -16,10 +16,10 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* scr.c */
-/* functions that use curses routines directly */
-/* plus a few file i/o stuff */
-/* also some in file.c */
+// scr.cpp
+// functions that use curses routines directly
+// plus a few file i/o stuff
+// also some in file.cpp
 
 #include "scr.h"
 
@@ -417,7 +417,7 @@ int mgetc()
   return player_input;
 }
 
-/* case insensitive mgetc -- sends uppercase to lowercase */
+// case insensitive mgetc -- sends uppercase to lowercase
 int mcigetc()
 {
   print_messages();
@@ -513,7 +513,7 @@ void omega_title()
   wnoutrefresh(stdscr);
 }
 
-/* blanks out ith line of menu_window or level_window */
+// blanks out ith line of menu_window or level_window
 void hide_line(int i)
 {
   werase(Showline[i]);
@@ -881,7 +881,7 @@ void drawplayer()
   lasty = Player.y;
 }
 
-void setlastxy(int new_x, int new_y) /* used when changing environments */
+void setlastxy(int new_x, int new_y) // used when changing environments
 {
   lastx = new_x;
   lasty = new_y;
@@ -1052,7 +1052,7 @@ void blotspot(int x, int y)
   }
 }
 
-/* for displaying activity specifically at some point */
+// for displaying activity specifically at some point
 void plotspot(int x, int y, int showmonster)
 {
   if(loc_statusp(x, y, SEEN, *Level))
@@ -1065,7 +1065,7 @@ void plotspot(int x, int y, int showmonster)
   }
 }
 
-/* Puts c at x,y on screen. No fuss, no bother. */
+// Puts c at x,y on screen. No fuss, no bother
 void putspot(int x, int y, chtype c)
 {
   if(!offscreen(x, y))
@@ -1074,7 +1074,7 @@ void putspot(int x, int y, chtype c)
   }
 }
 
-/* regardless of line of sight, etc, draw a monster */
+// regardless of line of sight, etc, draw a monster
 void plotmon(monster *m)
 {
   if(!offscreen(m->x, m->y))
@@ -1083,7 +1083,7 @@ void plotmon(monster *m)
   }
 }
 
-/* if display, displays monsters, otherwise erases them */
+// if display, displays monsters, otherwise erases them
 void drawmonsters(int display)
 {
   shown_mobs.clear();
@@ -1136,7 +1136,7 @@ void drawmonsters(int display)
   print_shown_entities();
 }
 
-/* replace monster with what would be displayed if monster weren't there */
+// replace monster with what would be displayed if monster weren't there
 void erase_monster(monster *m)
 {
   if(loc_statusp(m->x, m->y, SEEN, *Level))
@@ -1149,12 +1149,12 @@ void erase_monster(monster *m)
   }
 }
 
-/* find apt char to display at some location */
+// find apt char to display at some location
 chtype getspot(int x, int y, int showmonster)
 {
   if(loc_statusp(x, y, SECRET, *Level))
   {
-    return (WALL);
+    return WALL;
   }
   else
   {
@@ -1163,56 +1163,56 @@ chtype getspot(int x, int y, int showmonster)
       case WATER:
         if(!Level->site[x][y].creature)
         {
-          return (WATER);
+          return WATER;
         }
         else if(m_statusp(*Level->site[x][y].creature, SWIMMING))
         {
-          return (WATER);
+          return WATER;
         }
         else if(showmonster)
         {
-          return (Level->site[x][y].creature->monchar);
+          return Level->site[x][y].creature->monchar;
         }
         else
         {
-          return (WATER);
+          return WATER;
         }
-      /* these sites never show anything but their location char's */
+      // these sites never show anything but their location char's
       case CLOSED_DOOR:
       case LAVA:
       case FIRE:
       case ABYSS:
-        return (Level->site[x][y].locchar);
-      /* rubble and hedge don't show items on their location */
+        return Level->site[x][y].locchar;
+      // rubble and hedge don't show items on their location
       case RUBBLE:
       case HEDGE:
         if(showmonster && Level->site[x][y].creature)
         {
           if((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) && (!Player.status[TRUESIGHT]))
           {
-            return (getspot(x, y, false));
+            return getspot(x, y, false);
           }
           else
           {
-            return (Level->site[x][y].creature->monchar);
+            return Level->site[x][y].creature->monchar;
           }
         }
         else
         {
-          return (Level->site[x][y].locchar);
+          return Level->site[x][y].locchar;
         }
-      /* everywhere else, first try to show monster, next show items, next show
-       location char */
+      // everywhere else, first try to show monster, next show items, next show
+      // location char
       default:
         if(showmonster && Level->site[x][y].creature)
         {
           if((m_statusp(*Level->site[x][y].creature, M_INVISIBLE)) && (!Player.status[TRUESIGHT]))
           {
-            return (getspot(x, y, false));
+            return getspot(x, y, false);
           }
           else
           {
-            return (Level->site[x][y].creature->monchar);
+            return Level->site[x][y].creature->monchar;
           }
         }
         else if(!Level->site[x][y].things.empty())
@@ -1539,7 +1539,7 @@ void dataprint()
   print_weight();
 }
 
-/* redraw each permanent window */
+// redraw each permanent window
 void xredraw()
 {
   touchwin(stdscr);
@@ -1662,7 +1662,7 @@ bool stillonblock()
   } while((c != ' ') && (c != ESCAPE) && (c != EOF));
   werase(message_window);
   wnoutrefresh(message_window);
-  return (c == ' ');
+  return c == ' ';
 }
 
 void menuclear()
@@ -1811,7 +1811,7 @@ int getnumber(int range)
   int value = 1;
   if(range == 1)
   {
-    return (1);
+    return 1;
   }
   else
   {
@@ -1844,7 +1844,7 @@ int getnumber(int range)
   return value;
 }
 
-/* reads a positive number up to 999999 */
+// reads a positive number up to 999999
 long parsenum()
 {
   int number[8];
@@ -2161,9 +2161,9 @@ void drawomega()
   wattrset(stdscr, CHARATTR(CLR(WHITE)));
 }
 
-/* y is an absolute coordinate */
-/* ScreenOffset is the upper left hand corner of the current screen
-   in absolute coordinates */
+// y is an absolute coordinate
+// ScreenOffset is the upper left hand corner of the current screen
+// in absolute coordinates
 
 void screencheck(int x, int y)
 {
@@ -2193,7 +2193,7 @@ void spreadroomlight(int x, int y, int roomno)
   }
 }
 
-/* illuminate one spot at x y */
+// illuminate one spot at x y
 void lightspot(int x, int y)
 {
   lset(x, y, LIT, *Level);
@@ -2318,11 +2318,11 @@ int move_slot(int oldslot, int newslot, int maxslot)
     mvwaddstr(Showline[newslot], 0, 0, ">>");
     wstandend(Showline[newslot]);
     wnoutrefresh(Showline[newslot]);
-    return (newslot);
+    return newslot;
   }
   else
   {
-    return (oldslot);
+    return oldslot;
   }
 }
 
@@ -2403,7 +2403,7 @@ void display_options()
   }
 }
 
-/* nya ha ha ha ha haaaa.... */
+// nya ha ha ha ha haaaa....
 void deathprint()
 {
   mgetc();
@@ -2439,11 +2439,11 @@ void bufferprint()
     waddstr(message_window, Stringbuffer[i].c_str());
     c = mgetc();
     if(c == 16)
-    { /* ^p */
+    { // ^p
       --i;
     }
     else if(c == 14)
-    { /* ^n */
+    { // ^n
       ++i;
     }
     else

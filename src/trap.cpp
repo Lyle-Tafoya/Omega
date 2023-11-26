@@ -16,16 +16,16 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* trap.c */
-/* trap movement functions */
+// trap.cpp
+// trap movement functions
 
 #include "glob.h"
 #include "scr.h"
 #include "spell.h"
 
-/* various traps */
+// various traps
 
-/* note special function on different levels */
+// note special function on different levels
 void l_trap_siren()
 {
   Level->site[Player.x][Player.y].locchar = TRAP;
@@ -54,7 +54,7 @@ void l_trap_siren()
   {
     if(Current_Environment == E_CIRCLE)
     {
-      summon(-1, DEMON_PRINCE); /* prime circle demon */
+      summon(-1, DEMON_PRINCE); // prime circle demon
       summon(-1, DEMON_PRINCE);
       summon(-1, DEMON_PRINCE);
     }

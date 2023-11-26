@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* etc.c */
-/* grab bag of random functions used in random places */
+// etc.cpp
+// grab bag of random functions used in random places
 
 #include "glob.h"
 #include "scr.h"
@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <array>
 #include <string_view>
 
-/* there are various ways for the player to receive one of these hints */
+// there are various ways for the player to receive one of these hints
 void hint()
 {
   switch(random_range(96))
@@ -322,7 +322,7 @@ void hint()
   }
 }
 
-/* for when a deity teaches spells to a devotee */
+// for when a deity teaches spells to a devotee
 void learnclericalspells(int deity, int level)
 {
   queue_message("With your new clerical rank comes knowledge of magic...");
@@ -517,13 +517,13 @@ constexpr std::array names{
   "Oxxblud",
   "Dorian"};
 
-/* random names for various uses */
+// random names for various uses
 std::string_view nameprint()
 {
   return names[random_range(static_cast<int>(names.size()))];
 }
 
-/* returns english string equivalent of number */
+// returns english string equivalent of number
 const std::string wordnum(int num)
 {
   switch(num)

@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* site1.c */
-/* 1st half of site functions and aux functions to them */
+// site1.cpp
+// 1st half of site functions and aux functions to them
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -486,9 +486,9 @@ void statue_random(int x, int y)
       {
         queue_message("You hear the whirr of some mechanism.");
         queue_message("The statue glides smoothly into the floor!");
-        /* WDT HACK: I shouldn't be making this choice on a level
-       * where no stairs can be (or perhaps I should, and I should
-       * implement a bonus level!). */
+        // WDT HACK: I shouldn't be making this choice on a level
+        // where no stairs can be (or perhaps I should, and I should
+        // implement a bonus level!).
         Level->site[x][y].locchar = STAIRS_DOWN;
         Level->site[x][y].p_locf  = L_NO_OP;
         lset(x, y, static_cast<lstatus_bit>(CHANGED | STOPS), *Level);
@@ -1010,7 +1010,7 @@ void l_tavern()
           Player.status[POISONED] = 0;
           Player.status[DISEASED] = 0;
           Player.food             = 40;
-          /* reduce temporary stat gains to max stat levels */
+          // reduce temporary stat gains to max stat levels
           toggle_item_use(true);
           Player.str = std::min(Player.str, Player.maxstr);
           Player.con = std::min(Player.con, Player.maxcon);

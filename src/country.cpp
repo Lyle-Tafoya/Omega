@@ -16,9 +16,9 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* country.c */
-/* load_country(), and all load_ functions for places which are */
-/* accessible from the country and don't have their own files */
+// country.cpp
+// load_country(), and all load_ functions for places which are
+// accessible from the country and don't have their own files
 
 #include "glob.h"
 #include "scr.h"
@@ -569,10 +569,10 @@ void random_temple_site(int x, int y, int, int populate)
 // loads a temple into Level
 void load_temple(int deity, int populate)
 {
-  /* WDT HACK: I don't know why this is wrong.  Shrug.  David Givens
-   * suggested removing it, and he has more experience with Omega
-   * than I, so... */
-  /*  initrand(Current_Environment, deity); */ /* FIXED! 12/30/98 */
+  // WDT HACK: I don't know why this is wrong.  Shrug.  David Givens
+  // suggested removing it, and he has more experience with Omega
+  // than I, so...
+  //  initrand(Current_Environment, deity); // FIXED! 12/30/98
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {

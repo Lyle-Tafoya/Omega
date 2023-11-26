@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* inv.c */
-/* functions having to do with player item inventory */
+// inv.cpp
+// functions having to do with player item inventory
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -167,7 +167,7 @@ int aux_slottable(const object *o, int slot)
       ok = false;
     }
   }
-  return (ok);
+  return ok;
 }
 
 // are two objects equal except for their number field?
@@ -180,12 +180,12 @@ int objequal(const object *o, const object *p)
   }
   else
   {
-    return (
-      o->id == p->id && o->weight == p->weight && o->plus == p->plus && o->charge == p->charge &&
-      o->dmg == p->dmg && o->hit == p->hit && o->aux == p->aux && o->fragility == p->fragility &&
-      o->basevalue == p->basevalue && o->known == p->known && o->blessing == p->blessing &&
-      o->on_use == p->on_use && o->on_equip == p->on_equip && o->on_unequip == p->on_unequip
-    );
+    return o->id == p->id && o->weight == p->weight && o->plus == p->plus &&
+      o->charge == p->charge && o->dmg == p->dmg && o->hit == p->hit &&
+      o->aux == p->aux && o->fragility == p->fragility &&
+      o->basevalue == p->basevalue&& o->known == p->known &&
+      o->blessing == p->blessing && o->on_use == p->on_use &&
+      o->on_equip == p->on_equip && o->on_unequip == p->on_unequip;
   }
 }
 
@@ -576,8 +576,7 @@ char inventory_keymap[] = "-abcfghimnoqruvwyz";
 // WDT -- convert from a char (keypress) to an item index in player inventory
 int key_to_index(signed char key)
 {
-  assert(MAXITEMS > 0); /* must have room for an item, or this loop will
-                         * die! */
+  assert(MAXITEMS > 0); // must have room for an item, or this loop will die!
 
   for(int i = 0; i < MAXITEMS; ++i)
   {
@@ -635,7 +634,7 @@ int getitem(chtype itype)
   if(!found)
   {
     queue_message("Nothing appropriate.");
-    return (ABORT);
+    return ABORT;
   }
   else
   {
@@ -1031,9 +1030,9 @@ void take_from_pack(int slot)
       }
       else if(response == '-')
       {
-        /* WDT HACK: this _should_ make us page up.  Sadly,
-         * I have no way of calculating how much I'll be paging up.
-         * This is fixable, but I have no idea how much work... */
+        // WDT HACK: this _should_ make us page up.  Sadly,
+        // I have no way of calculating how much I'll be paging up.
+        // This is fixable, but I have no idea how much work...
         pack_item = 0;
         ok        = false;
       }
@@ -1079,7 +1078,7 @@ int get_item_number(const object *o)
   {
     n = 0;
   }
-  return (n);
+  return n;
 }
 
 void put_to_pack(int slot)

@@ -16,22 +16,22 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* lev.c */
+// lev.cpp
 
 #include "glob.h"
 
 #include <cassert>
 #include <format>
 
-/* Functions dealing with dungeon and country levels aside from actual
-level structure generation */
+// Functions dealing with dungeon and country levels aside from actual
+// level structure generation
 
-/* monsters for tactical encounters */
+// monsters for tactical encounters
 void make_country_monsters(chtype terrain)
 {
   static int plains[10] = {BUNNY, BUNNY, HORNET, QUAIL, HAWK, DEER, WOLF, LION, BRIGAND, RANDOM};
-  /*    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};*/
-  /* DG changed (WDT: I'd like to see a blacksnake). */
+  //    {BUNNY,BUNNY,BLACKSNAKE,HAWK,IMPALA,WOLF,LION,BRIGAND,RANDOM};*/
+  // DG changed (WDT: I'd like to see a blacksnake). */
   static int forest[10]   = {BUNNY, QUAIL, HAWK, BADGER, DEER, DEER, WOLF, BEAR, BRIGAND, RANDOM};
   static int jungle[10]   = {ANTEATER, PARROT, MAMBA, ANT, ANT, HYENA, HYENA, ELEPHANT, LION, RANDOM};
   static int river[10]    = {QUAIL, TROUT, TROUT, MANOWAR, BASS, BASS, CROC, CROC, BRIGAND, RANDOM};
@@ -100,10 +100,10 @@ void make_country_monsters(chtype terrain)
   }
 }
 
-/* monstertype is more or less Current_Dungeon */
-/* The caves and sewers get harder as you penetrate them; the castle
-is completely random, but also gets harder as it is explored;
-the astral and the volcano just stay hard... */
+// monstertype is more or less Current_Dungeon
+// The caves and sewers get harder as you penetrate them; the castle
+// is completely random, but also gets harder as it is explored;
+// the astral and the volcano just stay hard...
 void populate_level(int monstertype)
 {
   int nummonsters = (random_range(difficulty() / 3) + 1) * 3 + 8;
@@ -486,9 +486,9 @@ void make_site_monster(int i, int j, int mid)
   Level->mlist.push_front(std::move(m));
 }
 
-/* make and return an appropriate monster for the level and depth*/
-/* called by populate_level, doesn't actually add to mlist for some reason*/
-/* eventually to be more intelligent */
+// make and return an appropriate monster for the level and depth
+// called by populate_level, doesn't actually add to mlist for some reason
+// eventually to be more intelligent
 std::unique_ptr<monster> m_create(int x, int y, int kind, int level)
 {
   int monster_range;
@@ -560,7 +560,7 @@ std::unique_ptr<monster> make_creature(int mid)
   *newmonster = Monsters[mid];
   if((mid == ANGEL) || (mid == HIGH_ANGEL) || (mid == ARCHANGEL))
   {
-    /* aux1 field of an angel is its deity */
+    // aux1 field of an angel is its deity
     if(Current_Environment == E_TEMPLE)
     {
       newmonster->aux1 = Country[LastCountryLocX][LastCountryLocY].aux;
@@ -595,13 +595,13 @@ std::unique_ptr<monster> make_creature(int mid)
   }
   else if(mid == ZERO_NPC || mid == WEREHUMAN)
   {
-    /* generic 0th level human, or a were-human */
+    // generic 0th level human, or a were-human
     newmonster->monstring = mantype();
     newmonster->corpsestr = std::format("dead {}", newmonster->monstring);
   }
   else if((newmonster->monchar & 0xff) == '!')
   {
-    /* the nymph/satyr and incubus/succubus */
+    // the nymph/satyr and incubus/succubus
     if(random_range(2))
     {
       newmonster->monchar   = 'n' | CLR(RED);
@@ -706,7 +706,7 @@ void make_site_treasure(int i, int j, int itemlevel)
   Level->site[i][j].things.push_front(create_object(itemlevel));
 }
 
-/* make a specific new object at site i,j on level*/
+// make a specific new object at site i,j on level
 void make_specific_treasure(int i, int j, int itemid)
 {
   if(Objects[itemid].uniqueness == UNIQUE_TAKEN)
@@ -716,10 +716,10 @@ void make_specific_treasure(int i, int j, int itemid)
   Level->site[i][j].things.push_front(std::make_unique<object>(Objects[itemid]));
 }
 
-/* returns a "level of difficulty" based on current environment
-   and depth in dungeon. Is somewhat arbitrary. value between 1 and 10.
-   May not actually represent real difficulty, but instead level
-   of items, monsters encountered.    */
+// returns a "level of difficulty" based on current environment
+// and depth in dungeon. Is somewhat arbitrary. value between 1 and 10.
+// May not actually represent real difficulty, but instead level
+// of items, monsters encountered
 int difficulty()
 {
   int depth = 1;
@@ -730,44 +730,44 @@ int difficulty()
   switch(Current_Environment)
   {
     case E_COUNTRYSIDE:
-      return (7);
+      return 7;
     case E_CITY:
-      return (3);
+      return 3;
     case E_VILLAGE:
-      return (1);
+      return 1;
     case E_TACTICAL_MAP:
-      return (7);
+      return 7;
     case E_SEWERS:
-      return (depth / 6) + 3;
+      return depth / 6 + 3;
     case E_CASTLE:
-      return (depth / 4) + 4;
+      return depth / 4 + 4;
     case E_CAVES:
-      return (depth / 3) + 1;
+      return depth / 3 + 1;
     case E_VOLCANO:
-      return (depth / 4) + 5;
+      return depth / 4 + 5;
     case E_ASTRAL:
-      return (8);
+      return 8;
     case E_ARENA:
-      return (5);
+      return 5;
     case E_HOVEL:
-      return (3);
+      return 3;
     case E_MANSION:
-      return (7);
+      return 7;
     case E_HOUSE:
-      return (5);
+      return 5;
     case E_DLAIR:
-      return (9);
+      return 9;
     case E_ABYSS:
-      return (10);
+      return 10;
     case E_STARPEAK:
-      return (9);
+      return 9;
     case E_CIRCLE:
-      return (8);
+      return 8;
     case E_MAGIC_ISLE:
-      return (8);
+      return 8;
     case E_TEMPLE:
-      return (8);
+      return 8;
     default:
-      return (3);
+      return 3;
   }
 }

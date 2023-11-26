@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* priest.c */
-/* functions for clerics. */
+// priest.cpp
+// functions for clerics
 
 #include "glob.h"
 #include "scr.h"
@@ -230,7 +230,7 @@ void make_hp(object *o)
       break;
   }
   o->known  = 2;
-  o->charge = 17; /* random hack to convey bit that symbol is functional */
+  o->charge = 17; // random hack to convey bit that symbol is functional
   if(Player.patron == DRUID)
   {
     queue_message("Your deity raises you to the post of ArchDruid!");

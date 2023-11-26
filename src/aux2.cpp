@@ -16,11 +16,11 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* aux2.c */
-/* some functions called by ocom.c, also see aux1.c and aux3.c*/
-/* This is a real grab bag file. It contains functions used by
-   aux1.c and omega.c, as well as elsewhere. It is mainly here so aux1.c
-   and aux3.c are not huge */
+// aux2.cpp
+// some functions called by commmand[123].cpp, also see aux1.cpp and aux3.cpp
+// This is a real grab bag file. It contains functions used by
+// aux1.cpp and omega.cpp, as well as elsewhere. It is mainly here so aux1.cpp
+// and aux3.cpp are not huge
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -37,11 +37,11 @@ extern interactive_menu *menu;
 level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
 #endif
 
-/* Player stats like str, agi, etc give modifications to various abilities
-   chances to do things, etc. Positive is good, negative bad. */
+// Player stats like str, agi, etc give modifications to various abilities
+// chances to do things, etc. Positive is good, negative bad.
 int statmod(int stat)
 {
-  return ((stat - 10) / 2);
+  return (stat - 10) / 2;
 }
 
 // effects of hitting
@@ -50,7 +50,7 @@ void p_hit(monster *m, int dmg, damage_type dtype)
   int dmult;
 
   std::string hit_message;
-  /* chance for critical hit..., 3/10 */
+  // chance for critical hit..., 3/10
   switch(random_range(10))
   {
     case 0:
@@ -237,8 +237,7 @@ void p_win()
   exit(0);
 }
 
-/* handle a h,j,k,l, etc., to change x and y by dx and dy */
-/* for targeting in dungeon */
+// handle a h,j,k,l, etc., to change x and y by dx and dy for targeting in dungeon
 void movecursor(int &x, int &y, int dx, int dy)
 {
   if(inbounds(x + dx, y + dy))
@@ -253,12 +252,12 @@ void movecursor(int &x, int &y, int dx, int dy)
 // is Player immune to damage type dtype
 bool p_immune(int dtype)
 {
-  return (Player.immunity[dtype] > 0);
+  return Player.immunity[dtype] > 0;
 }
 
-/* deal with each possible stati -- values are per move */
-/* this function is executed every move */
-/* A value over 1000 indicates a permanent effect */
+// deal with each possible stati -- values are per move
+// this function is executed every move
+// A value over 1000 indicates a permanent effect
 void minute_status_check()
 {
   if(Player.status[HASTED] > 0)
@@ -429,8 +428,8 @@ void torch_check()
   }
 }
 
-/* values are in multiples of ten minutes */
-/* values over 1000 indicate a permanent effect */
+// values are in multiples of ten minutes
+// values over 1000 indicate a permanent effect
 void tenminute_status_check()
 {
   if((Player.status[SHADOWFORM] > 0) && (Player.status[SHADOWFORM] < 1000))
@@ -583,33 +582,33 @@ long expval(int plevel)
   switch(plevel)
   {
     case 0:
-      return (0L);
+      return 0L;
     case 1:
-      return (20L);
+      return 20L;
     case 2:
-      return (50L);
+      return 50L;
     case 3:
-      return (200L);
+      return 200L;
     case 4:
-      return (500L);
+      return 500L;
     case 5:
-      return (1000L);
+      return 1000L;
     case 6:
-      return (2000L);
+      return 2000L;
     case 7:
-      return (3000L);
+      return 3000L;
     case 8:
-      return (5000L);
+      return 5000L;
     case 9:
-      return (7000L);
+      return 7000L;
     case 10:
-      return (10000L);
+      return 10000L;
     default:
-      return ((plevel - 9) * 10000L);
+      return (plevel - 9) * 10000L;
   }
 }
 
-/* Increase in level at appropriate experience gain */
+// Increase in level at appropriate experience gain
 void gain_level()
 {
   int hp_gain;
@@ -625,7 +624,7 @@ void gain_level()
     queue_message(
       std::format("You are now {}{}", getarticle(levelname(Player.level)), levelname(Player.level))
     );
-    hp_gain = random_range(Player.con) + 1; /* start fix 12/30/98 */
+    hp_gain = random_range(Player.con) + 1;
     if(Player.hp < Player.maxhp)
     {
       Player.hp += hp_gain * Player.hp / Player.maxhp;
@@ -634,55 +633,54 @@ void gain_level()
     {
       Player.hp = Player.maxhp + hp_gain;
     }
-    /* else leave current hp alone */
+    // else leave current hp alone
     Player.maxhp += hp_gain;
     Player.maxmana = calcmana();
-    /* If the character was given a bonus, let him keep it.  Otherwise
-     * recharge him. */
-    Player.mana = std::max(Player.mana, Player.maxmana); /* end fix 12/30/98 */
+    // If the character was given a bonus, let him keep it.  Otherwise recharge him
+    Player.mana = std::max(Player.mana, Player.maxmana);
   }
   calc_melee();
 }
 
-/* If an item is unidentified, it isn't worth much to those who would buy it */
+// If an item is unidentified, it isn't worth much to those who would buy it
 long item_value(const object *item)
 {
   if(item->known == 0)
   {
     if(item->objchar == THING)
     {
-      return (1);
+      return 1;
     }
     else
     {
-      return (true_item_value(item) / 10);
+      return true_item_value(item) / 10;
     }
   }
   else if(item->known == 1)
   {
     if(item->objchar == THING)
     {
-      return (item->basevalue);
+      return item->basevalue;
     }
     else
     {
-      return (item->basevalue / 2);
+      return item->basevalue / 2;
     }
   }
   else
   {
-    return (true_item_value(item));
+    return true_item_value(item);
   }
 }
 
-/* figures value based on item base-value, charge, plus, and blessing */
+// figures value based on item base-value, charge, plus, and blessing
 long true_item_value(const object *item)
 {
   long value = item->basevalue;
 
   if(item->objchar == THING)
   {
-    return (item->basevalue);
+    return item->basevalue;
   }
   else
   {
@@ -702,11 +700,11 @@ long true_item_value(const object *item)
     {
       value *= 2;
     }
-    return ((long)value);
+    return (long)value;
   }
 }
 
-/* kill off player if he isn't got the "breathing" status */
+// kill off player if he isn't got the "breathing" status
 void p_drown()
 {
   int attempts = 3;
@@ -835,7 +833,7 @@ void weapon_use(int dmgmod, std::unique_ptr<object> &weapon, monster *m)
   }
 }
 
-/* for printing actions in printactions above */
+// for printing actions in printactions above
 std::string actionlocstr(char dir)
 {
   switch(dir)
@@ -991,9 +989,9 @@ void tacplayer(monster *m)
   }
 }
 
-/* This function is used to undo all items temporarily, should
-always be used in pairs with on being true and false, and may cause
-anomalous stats and item-usage if used indiscriminately */
+// This function is used to undo all items temporarily, should
+// always be used in pairs with on being true and false, and may cause
+// anomalous stats and item-usage if used indiscriminately
 
 void toggle_item_use(bool on)
 {
@@ -1067,14 +1065,14 @@ void enter_site(chtype site)
   }
 }
 
-/* Switches context dungeon/countryside/city, etc */
+// Switches context dungeon/countryside/city, etc
 void change_environment(char new_environment)
 {
   bool emerging = false;
 
   Player.sx = -1;
-  Player.sy = -1;                    /* reset sanctuary if there was one */
-  resetgamestatus(LOST, GameStatus); /* in case the player gets lost _on_ a site */
+  Player.sy = -1;                    // reset sanctuary if there was one
+  resetgamestatus(LOST, GameStatus); // in case the player gets lost _on_ a site
 
   resetgamestatus(FAST_MOVE, GameStatus);
 
@@ -1271,7 +1269,7 @@ void change_environment(char new_environment)
       LENGTH = 16;
       if(!emerging)
       {
-        /* different villages per different locations */
+        // different villages per different locations
         switch(Country[Player.x][Player.y].aux)
         {
           case 1:

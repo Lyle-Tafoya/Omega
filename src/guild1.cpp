@@ -16,12 +16,12 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* guild1.c */
-/* L_ functions  */
+// guild1.cpp
+// l_ functions
 
-/* These functions implement the various guilds. */
-/* They are all l_ functions since they are basically activated*/
-/* at some site or other. */
+// These functions implement the various guilds
+// They are all l_ functions since they are basically activated
+// at some site or other
 
 #include "glob.h"
 #include "scr.h"

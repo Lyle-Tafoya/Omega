@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* effect3.c */
+// effect3.cpp
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -66,7 +66,7 @@ int list_monsters()
   return itemno;
 }
 
-/* if know id, then summon that monster; else (if < 0) get one. */
+// if know id, then summon that monster; else (if < 0) get one
 void summon(int blessing, int id)
 {
   bool looking = true;
@@ -79,7 +79,7 @@ void summon(int blessing, int id)
       id = list_monsters();
       xredraw();
     }
-    /* for (id ==0) case, see below -- get a "fair" monster */
+    // for (id ==0) case, see below -- get a "fair" monster
     else if(blessing < 0)
     {
       id = random_range(NUMMONSTERS);
@@ -285,7 +285,7 @@ void sleep_monster(int blessing)
 void sleep_player(int amount)
 {
   if(Player.status[SLEPT] == 0)
-  { /* prevent player from sleeping forever */
+  { // prevent player from sleeping forever
     queue_message("You feel sleepy...");
     if(!p_immune(SLEEP))
     {
@@ -616,7 +616,7 @@ void acid_cloud()
   }
 }
 
-/* teleport player */
+// teleport player
 void p_teleport(int type)
 {
   int x = Player.x, y = Player.y;
@@ -704,11 +704,11 @@ void strategic_teleport(int blessing)
 {
   int new_env;
 
-  /* WDT HACK: Game balance issue: the star gem is supposed to be the only
-   * way out of the astral plane (including the Circle of Sorcerors).  However,
-   * Hy Magic offers the Location wish, and some artifacts grant this
-   * as well.  Seems to me that Hy Magic ought to allow it, and nothing
-   * else (aside from the Star Gem, of course). */
+  // WDT HACK: Game balance issue: the star gem is supposed to be the only
+  // way out of the astral plane (including the Circle of Sorcerors).  However,
+  // Hy Magic offers the Location wish, and some artifacts grant this
+  // as well.  Seems to me that Hy Magic ought to allow it, and nothing
+  // else (aside from the Star Gem, of course). */
   if((Current_Environment == E_CIRCLE || Current_Environment == E_ASTRAL) && !gamestatusp(CHEATED, GameStatus))
   {
     queue_message("Some property of this eerie place interferes with the magic!\n");
@@ -885,7 +885,7 @@ void levitate(int blessing)
   }
 }
 
-/* has effect of switching between 1st level and deepest level attained */
+// has effect of switching between 1st level and deepest level attained
 void level_return()
 {
   if(Current_Environment == Current_Dungeon)
@@ -1119,9 +1119,8 @@ void polymorph(int blessing)
   setspot(x, y);
   if((x == Player.x) && (y == Player.y))
   {
-    /* WDT HACK: shouldn't this use one of the 'getarticle' functions
-     * to prevent things like "a elder grue" (should be "an elder grue")?
-     */
+    // WDT HACK: shouldn't this use one of the 'getarticle' functions
+    // to prevent things like "a elder grue" (should be "an elder grue")?
     queue_message("You enjoy your new life as a");
     queue_message(Monsters[random_range(NUMMONSTERS)].monstring);
     queue_message("But your game is over....");
@@ -1156,11 +1155,11 @@ void polymorph(int blessing)
         } while((newmonster == NPC) || (newmonster == MAST_THIEF) ||
                 (Monsters[newmonster].uniqueness != COMMON));
       }
-      /* WDT HACK: most of this could (and should) be implemented by
-       * the following line: "*m = Monsters[newmonster];".  The exception,
-       * of course, are the parts where the new monster inherits the old
-       * one's abilities.  This would be better because it would be robust
-       * even in the face of additions to the monster structure. */
+      // WDT HACK: most of this could (and should) be implemented by
+      // the following line: "*m = Monsters[newmonster];".  The exception,
+      // of course, are the parts where the new monster inherits the old
+      // one's abilities.  This would be better because it would be robust
+      // even in the face of additions to the monster structure.
       m->id           = Monsters[newmonster].id;
       m->hp           = std::max(m->hp, Monsters[newmonster].id);
       m->speed        = Monsters[newmonster].speed;
@@ -1334,9 +1333,9 @@ void sanctuary()
 
 void shadowform()
 {
-  /* WDT HACK: this fix might work, but it seems like the immunity
-   * will be FAR too short.  It's obviously better than the old
-   * situation, though... */
+  // WDT HACK: this fix might work, but it seems like the immunity
+  // will be FAR too short.  It's obviously better than the old
+  // situation, though...
   if(!Player.status[SHADOWFORM])
   {
     queue_message("You feel like a shadow.");
@@ -1474,7 +1473,7 @@ void inflict_fear(int x, int y)
   }
 }
 
-/*Turns on deflection status for the player */
+// Turns on deflection status for the player
 void deflection(int blessing)
 {
   if(blessing > -1)

@@ -16,231 +16,229 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* this file contains extern declarations of global variables used
-   throughout the program */
-/* it includes the other header files, so every program module
-(except o.c) can just include this file. */
+// this file contains extern declarations of global variables used
+// throughout the program
+// it includes the other header files, so every program module
+// (except o.c) can just include this file.
 
 #ifndef OMEGA_GLOB_H_
 #define OMEGA_GLOB_H_
 
-/* glob.h */
+// glob.h
 
 #include "defs.h"
 #include "extern.h"
 
 #include <memory>
 
-/* This string holds the path to the library files */
+// This string holds the path to the library files
 extern const char *Omegalib;
 
-/* one of each monster */
+// one of each monster
 extern monster Monsters[NUMMONSTERS];
 
-/* one of each item */
+// one of each item
 extern object Objects[TOTALITEMS];
 
-/* locations of city sites [0] - found, [1] - x, [2] - y */
+// locations of city sites [0] - found, [1] - x, [2] - y
 extern int CitySiteList[NUMCITYSITES][3];
 
+// the player
 extern player Player;
-/* the player */
 
+// level y dimension
 extern int LENGTH;
-/* level y dimension */
 
+// level x dimension
 extern int WIDTH;
-/* level x dimension */
 
+// Game Status bit vector
 extern long GameStatus;
-/* Game Status bit vector */
 
+// How large is level window
 extern int ScreenLength;
-/* How large is level window */
-
 extern int ScreenWidth;
 
+// The countryside
 extern terrain Country[MAXWIDTH][MAXLENGTH];
-/* The countryside */
 
+// The city of Rampart
 extern level *City;
-/* The city of Rampart */
 
+// Place holder
 extern level *TempLevel;
-/* Place holder */
 
+// Pointer to current Dungeon
 extern level *Dungeon;
-/* Pointer to current Dungeon */
 
+// Pointer to current Level
 extern level *Level;
-/* Pointer to current Level */
 
+// What is Dungeon now (an E_ constant)
 extern int Current_Dungeon;
-/* What is Dungeon now (an E_ constant) */
 
+// Current Village number
 extern int Villagenum;
-/* Current Village number */
 
+// Offset of displayed screen to level
 extern int ScreenOffset;
-/* Offset of displayed screen to level */
 
 extern int HorizontalOffset;
 
+//Deepest level allowed in dungeon
 extern int MaxDungeonLevels;
-/*Deepest level allowed in dungeon */
 
+// Which environment are we in (an E_ constant)
 extern int Current_Environment;
-/* Which environment are we in (an E_ constant) */
 
+// Which environment were we in last (an E_ constant)
 extern int Last_Environment;
-/* Which environment were we in last (an E_ constant) */
 
+// 9 xy directions
 extern int Dirs[2][9];
-/* 9 xy directions */
 
+// last player command
 extern int Cmd;
-/* last player command */
 
+// how long does current command take
 extern int Command_Duration;
-/* how long does current command take */
 
+// Opponent in arena
 extern monster *Arena_Monster;
-/* Opponent in arena */
 
+// case label of opponent in l_arena(
 extern int Arena_Opponent;
-/* case label of opponent in l_arena()*/
 
+// did player win in arena?
 extern int Arena_Victory;
-/* did player win in arena? */
 
+// amount of time spent in jail
 extern int Imprisonment;
-/* amount of time spent in jail */
 
+// Hours of rain, snow, etc
 extern int Precipitation;
-/* Hours of rain, snow, etc */
 
+// Phase of the moon
 extern int Phase;
-/* Phase of the moon */
 
+// How player is affected by moon
 extern int Lunarity;
-/* How player is affected by moon */
 
+// day of the year
 extern int Date;
-/* day of the year */
 
+// Pawn Shop item generation date
 extern int Pawndate;
-/* Pawn Shop item generation date */
 
+// items in pawn shop
 extern std::array<std::unique_ptr<object>, PAWNITEMS> Pawnitems;
-/* items in pawn shop */
 
+// crystal ball use marker
 extern int ViewDay;
 extern int ViewHour;
-/* crystal ball use marker */
 
+// staff of enchantment use marker
 extern int ZapDay;
 extern int ZapHour;
-/* staff of enchantment use marker */
 
+// helm of teleportation use marke
 extern int HelmDay;
 extern int HelmHour;
-/* helm of teleportation use marker*/
 
+// holy symbol use marker
 extern int SymbolUseDay;
 extern int SymbolUseHour;
-/* holy symbol use marker */
 
+// Dragonlord Attack State
 extern int Constriction;
-/* Dragonlord Attack State */
 
+// Altar Blessing State
 extern int Blessing;
-/* Altar Blessing State */
 
+// DPW date of dole
 extern int LastDay;
-/* DPW date of dole */
 
 extern int RitualDay;
+// last use of ritual magic
 extern int RitualHour;
-/* last use of ritual magic */
 
+// last room use of ritual magic
 extern int RitualRoom;
-/* last room use of ritual magic */
 
+// magic stone counter
 extern int Lawstone;
-/* magic stone counter */
 
+// magic stone counter
 extern int Chaostone;
-/* magic stone counter */
 
+// magic stone counter
 extern int Mindstone;
-/* magic stone counter */
 
+// number of times to search on 's'
 extern int Searchnum;
-/* number of times to search on 's' */
 
+// verbosity level
 extern int Verbosity;
-/* verbosity level */
 
+// NPC behavior, if entered
 extern int Behavior;
-/* NPC behavior, if entered */
 
+// random seed
 extern char Seed;
-/* random seed */
 
+// turn number
 extern long Time;
-/* turn number */
 
+// current second in minute; action coordinator
 extern int Tick;
-/* current second in minute; action coordinator */
 
+// the last printed strings
 extern std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer;
-/* the last printed strings */
 
+// credit at rampart gym
 extern long Gymcredit;
-/* credit at rampart gym */
 
 extern int Studiesleft;
 
+// research allowance at college
 extern int Spellsleft;
-/* research allowance at college */
 
+// last date of star gem use
 extern int StarGemUse;
-/* last date of star gem use */
 
+// last date of high magic use
 extern int HiMagicUse;
-/* last date of high magic use */
 
+// current level for l_throne
 extern int HiMagic;
-/* current level for l_throne */
 
+// bank account
 extern long Balance;
-/* bank account */
 
+// points are frozen after adepthood
 extern long FixedPoints;
-/* points are frozen after adepthood*/
 
+// previous position in countryside
 extern int LastCountryLocX;
-/* previous position in countryside */
 
+// previous position in countryside
 extern int LastCountryLocY;
-/* previous position in countryside */
 
+// previous position in village or city
 extern int LastTownLocX;
-/* previous position in village or city */
 
+// previous position in village or city
 extern int LastTownLocY;
-/* previous position in village or city */
 
+// autoteller password
 extern std::string Password;
-/* autoteller password */
 
 extern int MazeNum;
 
+// items in condo
 extern std::forward_list<std::unique_ptr<object>> Condoitems;
-/* items in condo */
 
-/* high score names, levels, behavior */
-
+// high score names, levels, behavior
 extern int Shadowlordbehavior, Archmagebehavior, Primebehavior, Justiciarbehavior;
 extern int Commandantbehavior, Chaoslordbehavior, Lawlordbehavior, Grandmasterbehavior;
 extern int Championbehavior, Priestbehavior[7], Hibehavior, Dukebehavior;
@@ -252,7 +250,7 @@ extern int Championlevel, Priestlevel[7], Hilevel, Justiciarlevel, Grandmasterle
 extern long Hiscore;
 extern int Chaoslordlevel, Lawlordlevel, Chaos, Law;
 
-/* New globals which used to be statics */
+// New globals which used to be statics
 extern int twiddle;
 extern int saved;
 extern int onewithchaos;

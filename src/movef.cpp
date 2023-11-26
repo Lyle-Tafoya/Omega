@@ -16,21 +16,21 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* movef.c */
-/* the movefunctions switch functions, for player and monster*/
+// movef.cpp
+// the movefunctions switch functions, for player and monster
 
 #include "glob.h"
 #include "scr.h"
 
 void p_movefunction(int movef)
 {
-  /* loc functs above traps should be activated whether levitating or not */
+  // loc functs above traps should be activated whether levitating or not
   drawvision(Player.x, Player.y);
   sign_print(Player.x, Player.y, false);
   if(Player.status[SHADOWFORM])
   {
     switch(movef)
-    { /* player in shadow form is unable to do most things */
+    { // player in shadow form is unable to do most things
       case L_CHAOS:
         l_chaos();
         break;
@@ -124,12 +124,12 @@ void p_movefunction(int movef)
     }
   }
   else if((!Player.status[LEVITATING]) || gamestatusp(MOUNTED, GameStatus) ||
-          (Cmd == '@') || /* @ command activates all effects under player */
+          (Cmd == '@') || // @ command activates all effects under player
           (movef < LEVITATION_AVOIDANCE))
   {
     switch(movef)
     {
-        /* miscellaneous */
+      // miscellaneous
       case L_NO_OP:
         l_no_op();
         break;
@@ -229,7 +229,7 @@ void p_movefunction(int movef)
         l_trap_abyss();
         break;
 
-        /*door functions */
+      // door functions
       case L_BANK:
         l_bank();
         break;
@@ -378,7 +378,7 @@ void p_movefunction(int movef)
         l_mindstone();
         break;
 
-      /* challenge functions */
+      // challenge functions
       case L_ADEPT:
         l_adept();
         break;
@@ -418,15 +418,15 @@ void p_movefunction(int movef)
   }
 }
 
-/* execute some move function for a monster */
+// execute some move function for a monster
 void m_movefunction(monster *m, int movef)
 {
-  /* loc functs above traps should be activated whether levitating or not */
+  // loc functs above traps should be activated whether levitating or not
   if(!m_statusp(*m, FLYING) && !m_statusp(*m, INTANGIBLE))
   {
     switch(movef)
     {
-      /* miscellaneous */
+      // miscellaneous
       case L_NO_OP:
         m_no_op(m);
         break;

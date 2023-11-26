@@ -487,7 +487,7 @@ void i_summon(std::unique_ptr<object> &);
 void i_symbol(std::unique_ptr<object> &);
 
 // lev.cpp functions
-int difficulty(); /* this function in util.c if MSDOS defined */
+int difficulty();
 std::unique_ptr<monster> m_create(int, int, int, int);
 std::unique_ptr<monster> make_creature(int);
 void make_country_monsters(chtype);
@@ -594,7 +594,6 @@ void l_whirlwind();
 // movef.cpp functions
 void m_movefunction(monster *, int);
 void p_movefunction(int);
-void sign_print(int, int, int); /* this function in site1.c if MSDOS defined */
 
 // mspec.cpp functions
 void m_aggravate(monster *);
@@ -722,6 +721,7 @@ void l_triffid();
 void l_vault();
 void pacify_guards();
 void send_to_jail();
+void sign_print(int, int, int);
 
 // time.cpp functions
 void time_clock(int);

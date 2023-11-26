@@ -16,9 +16,9 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* itemf1.c */
+// itemf1.cpp
 
-/* various item functions: potions,scrolls,boots,cloaks,things,food */
+// various item functions: potions,scrolls,boots,cloaks,things,food
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -278,14 +278,14 @@ void i_neutralize_poison(std::unique_ptr<object> &o)
   }
 }
 
-/* potion of sleep */
+// potion of sleep
 void i_sleep_self(std::unique_ptr<object> &o)
 {
   sleep_player(6);
   Objects[o->id].known = 1;
 }
 
-/* potion of speed */
+// potion of speed
 void i_speed(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
@@ -295,7 +295,7 @@ void i_speed(std::unique_ptr<object> &o)
   haste(o->blessing);
 }
 
-/* potion of restoration */
+// potion of restoration
 void i_restore(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
@@ -358,7 +358,7 @@ void i_regenerate(std::unique_ptr<object> &o)
   regenerate(o->blessing);
 }
 
-/* boots functions */
+// boots functions
 void i_perm_speed(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
@@ -405,7 +405,7 @@ void i_perm_speed(std::unique_ptr<object> &o)
   }
 }
 
-/* cloak functions */
+// cloak functions
 void i_perm_displace(std::unique_ptr<object> &o)
 {
   if(o->blessing > -1)
@@ -463,7 +463,7 @@ void i_perm_negimmune(std::unique_ptr<object> &o)
   }
 }
 
-/* food functions */
+// food functions
 
 void i_food(std::unique_ptr<object> &)
 {
@@ -669,7 +669,7 @@ void i_fear_resist(std::unique_ptr<object> &o)
   }
 }
 
-/* use a thieves pick */
+// use a thieves pick
 void i_pick(std::unique_ptr<object> &o)
 {
   int dir;
@@ -773,9 +773,9 @@ void i_key(std::unique_ptr<object> &o)
 
 void i_corpse(std::unique_ptr<object> &o)
 {
-  /* WDT HACK: there are some comments in this function which need
-   * to be backed up with assert(). */
-  /* object's charge holds the former monster id */
+  // WDT HACK: there are some comments in this function which need
+  // to be backed up with assert().
+  // object's charge holds the former monster id
   switch(o->charge)
   {
     case MEND_PRIEST:
@@ -791,7 +791,7 @@ void i_corpse(std::unique_ptr<object> &o)
     case GENIN:
     case MAST_THIEF:
     case CHUNIN:
-    case JONIN: /* cannibalism */
+    case JONIN: // cannibalism
       queue_message("Yechh! How could you! You didn't even cook him, first!");
       if(Player.alignment > 0)
       {
@@ -801,15 +801,15 @@ void i_corpse(std::unique_ptr<object> &o)
       Player.alignment -= 10;
       foodcheck();
       break;
-    case FNORD: /* fnord */
+    case FNORD: // fnord
       queue_message("You feel illuminated!");
       Player.iq++;
       break;
-    case DENEBIAN: /* denebian slime devil */
+    case DENEBIAN: // denebian slime devil
       queue_message("I don't believe this. You ate Denebian Slime?");
       queue_message("You deserve a horrible wasting death, uncurable by any means!");
       break;
-    case DRAGONETTE: /* can't get here... i_usef changed to I_FOOD */
+    case DRAGONETTE: // can't get here... i_usef changed to I_FOOD
       queue_message("Those dragon-steaks were fantastic!");
       Player.food = 24;
       foodcheck();
@@ -833,30 +833,30 @@ void i_corpse(std::unique_ptr<object> &o)
       queue_message("You ATE a unicorn's horn?!?!?");
       Player.immunity[POISON] = 1000;
       break;
-    case HORNET: /* can't get here... i_usef changed to I_POISON_FOOD */
+    case HORNET: // can't get here... i_usef changed to I_POISON_FOOD
     case GRUNT:
-    case TSETSE: /* can't get here... i_usef changed to I_SLEEP_SELF */
+    case TSETSE: // can't get here... i_usef changed to I_SLEEP_SELF
     case AGGRAVATOR:
-    case BLIPPER: /* can't get here... i_usef changed to I_TELEPORT */
+    case BLIPPER: // can't get here... i_usef changed to I_TELEPORT
     case GOBLIN:
     case GEEK:
-    case NIGHT_GAUNT: /* can't get here... i_usef changed to I_POISON_FOOD */
+    case NIGHT_GAUNT: // can't get here... i_usef changed to I_POISON_FOOD
     case TOVE:
     case TASMANIAN:
-    case JUBJUB: /* can't get here... i_usef changed to I_FOOD */
+    case JUBJUB: // can't get here... i_usef changed to I_FOOD
     case CATEAGLE:
       queue_message("Well, you forced it down. Not much nutrition, though.");
       Player.food++;
       foodcheck();
       break;
     case SEWER_RAT:
-    case PHANTASTICON: /* can't get here... i_usef changed to I_POISON_FOOD */
-    case EYE:          /* can't get here... i_usef changed to I_CLAIRVOYANCE */
-    case NASTY:        /* can't get here... i_usef changed to I_INVISIBLE */
+    case PHANTASTICON: // can't get here... i_usef changed to I_POISON_FOOD
+    case EYE:          // can't get here... i_usef changed to I_CLAIRVOYANCE
+    case NASTY:        // can't get here... i_usef changed to I_INVISIBLE
     case CATOBLEPAS:
-    case HAUNT: /* can't get here... i_usef changed to I_POISON_FOOD */
+    case HAUNT: // can't get here... i_usef changed to I_POISON_FOOD
     case ROUS:
-    case DEATHSTAR: /* can't get here... i_usef changed to I_POISON_FOOD */
+    case DEATHSTAR: // can't get here... i_usef changed to I_POISON_FOOD
     case EATER:
       queue_message("Oh, yuck. The 'food' seems to be tainted.");
       queue_message("You feel very sick. You throw up.");

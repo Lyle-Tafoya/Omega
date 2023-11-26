@@ -16,11 +16,11 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* aux3.c */
-/* some functions called by com.c, also see aux1.c, aux2.c */
-/* This is a real grab bag file. It contains functions used by
-   aux1.c and omega.c, as well as elsewhere. It is mainly here so aux1.c
-   and aux2.c are not huge */
+// aux3.cpp
+// some functions called by commmand[123].cpp, also see aux1.cpp, aux2.cpp
+// This is a real grab bag file. It contains functions used by
+// aux1.cpp and omega.cpp, as well as elsewhere. It is mainly here so aux1.cpp
+// and aux2.cpp are not huge
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -88,7 +88,7 @@ void indoors_random_event()
     case 10:
       queue_message("You trip over something hidden in a shadow...");
       Level->site[Player.x][Player.y].things.push_front(create_object(difficulty()));
-      assert(Level->site[Player.x][Player.y].things.front());  // WDT I want to make sure...
+      assert(Level->site[Player.x][Player.y].things.front()); // WDT I want to make sure...
       pickup();
       break;
     case 11:
@@ -148,16 +148,16 @@ void tenminute_check()
   }
 }
 
-/* hourly check is same as ten_minutely check except food is also
-   checked, and since time moves in hours out of doors, also
-   outdoors_random_event is possible */
+// hourly check is same as ten_minutely check except food is also
+// checked, and since time moves in hours out of doors, also
+// outdoors_random_event is possible
 
 void hourly_check()
 {
   Player.food--;
   foodcheck();
   if(hour() == 0)
-  { /* midnight, a new day */
+  { // midnight, a new day
     moon_check();
     Date++;
   }
@@ -249,18 +249,18 @@ void outdoors_random_event()
         queue_message("The chaos storm warps your frame!");
         queue_message("Your statistical entropy has been maximized.");
         queue_message("You feel average...");
-        toggle_item_use(true); /* FIXED! 12/30/98 */
+        toggle_item_use(true);
         Player.str = Player.maxstr = Player.con = Player.maxcon = Player.dex = Player.maxdex =
           Player.agi = Player.maxagi = Player.iq = Player.maxiq = Player.pow = Player.maxpow =
             ((Player.maxstr + Player.maxcon + Player.maxdex + Player.maxagi + Player.maxiq +
               Player.maxpow + 12) /
              6);
-        toggle_item_use(false); /* FIXED! 12/30/98 */
+        toggle_item_use(false);
       }
       else if(num < 30)
       {
         queue_message("Your entire body glows with an eerie flickering light.");
-        toggle_item_use(true); /* FIXED! 12/30/98 */
+        toggle_item_use(true);
         for(int i = 1; i < MAXITEMS; ++i)
         {
           if(Player.possessions[i])
@@ -273,7 +273,7 @@ void outdoors_random_event()
             Player.possessions[i]->blessing += 10;
           }
         }
-        toggle_item_use(false); /* FIXED! 12/30/98 */
+        toggle_item_use(false);
         cleanse(1);
         queue_message("You feel filled with energy!");
         Player.maxpow += 5;
@@ -444,7 +444,7 @@ char getlocation()
     }
   }
   showmenu();
-  return (c - 'a' + 'A');
+  return c - 'a' + 'A';
 }
 
 // chance for player to resist magic somehow
@@ -1378,7 +1378,7 @@ void alert_guards()
   for(std::unique_ptr<monster> &m : Level->mlist)
   {
     if((m->id == GUARD || (m->id == HISCORE_NPC && m->aux2 == 15)) && m->hp > 0)
-    { //justiciar
+    { // justiciar
       foundguard = true;
       m_status_set(*m, AWAKE);
       m_status_set(*m, HOSTILE);

@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* mmelee */
-/* various functions to do with monster melee */
+// mmelee
+// various functions to do with monster melee
 
 #include "glob.h"
 #include "scr.h"
@@ -104,7 +104,7 @@ void monster_melee(monster *m, char hitloc, int bonus)
   }
   else
   {
-    /* It's lawful to wait to be attacked */
+    // It's lawful to wait to be attacked
     if(m->attacked == 0)
     {
       ++Player.alignment;
@@ -263,7 +263,7 @@ void monster_melee(monster *m, char hitloc, int bonus)
   }
 }
 
-/* execute monster attacks versus player */
+// execute monster attacks versus player
 void tacmonster(monster *m)
 {
   drawvision(Player.x, Player.y);
@@ -296,9 +296,9 @@ void tacmonster(monster *m)
   }
 }
 
-/* decide monster actions in tactical combat mode */
-/* if monster is skilled, it can try see the player's attacks coming and
-   try to block appropriately. */
+// decide monster actions in tactical combat mode
+// if monster is skilled, it can try see the player's attacks coming and
+// try to block appropriately.
 
 void transcribe_monster_actions(monster *m)
 {
@@ -313,7 +313,7 @@ void transcribe_monster_actions(monster *m)
     p_blocks[i] = p_attacks[i] = 0;
   }
 
-  /* Find which area player blocks and attacks least in */
+  // Find which area player blocks and attacks least in
   size_t meleestr_length = std::min(Player.meleestr.length(), maneuvers() * 2);
   for(size_t i = 0; i < meleestr_length; i += 2)
   {
@@ -435,10 +435,10 @@ char random_loc()
   switch(random_range(3))
   {
     case 0:
-      return ('H');
+      return 'H';
     case 1:
-      return ('C');
+      return 'C';
     default:
-      return ('L');
+      return 'L';
   }
 }

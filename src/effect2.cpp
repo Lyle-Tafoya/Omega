@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* effect2.c */
+// effect2.cpp
 
 #include "glob.h"
 #include "interactive_menu.hpp"
@@ -485,7 +485,7 @@ void knowledge(int blessing)
   }
 }
 
-/* Recreates the current level */
+// Recreates the current level
 void flux(int)
 {
   queue_message("The universe warps around you!");
@@ -511,7 +511,7 @@ void flux(int)
   }
 }
 
-/*Turns on displacement status for the player */
+// Turns on displacement status for the player */
 void displace(int blessing)
 {
   if(blessing > -1)

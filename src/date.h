@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* date.h */
+// date.h
 
 #ifndef OMEGA_DATE_H_
 #define OMEGA_DATE_H_

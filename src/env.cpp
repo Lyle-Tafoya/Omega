@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* env.c */
-/* some load_* routines for special environments */
+// env.cpp
+// some load_* routines for special environments
 
 #include "glob.h"
 #include "scr.h"

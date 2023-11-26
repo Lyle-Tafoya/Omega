@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* mstrike.c */
-/* monster strike functions */
+// mstrike.cpp
+// monster strike functions
 
 #include "glob.h"
 #include "scr.h"

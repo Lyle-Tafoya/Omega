@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* village.c */
-/* some functions to make the village levels */
+// village.cpp
+// some functions to make the village levels
 
 #include "glob.h"
 

@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* effect1.c */
+// effect1.cpp
 
 #include "glob.h"
 #include "scr.h"
@@ -26,7 +26,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <cassert>
 #include <format>
 
-/* enchant */
+// enchant
 void enchant(int delta)
 {
   if(delta < 0)
@@ -146,7 +146,7 @@ void enchant(int delta)
   }
 }
 
-/* bless */
+// bless
 void bless(int blessing)
 {
   if(blessing < 0)
@@ -282,7 +282,7 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
       boltchar = ('o' | CLR(WHITE));
       break;
     default:
-      assert(false); /* this should never happen, right? WDT */
+      assert(false); // this should never happen, right? WDT
   }
 
   do_los(boltchar, &xx, &yy, tx, ty);
@@ -333,8 +333,8 @@ void bolt(int fx, int fy, int tx, int ty, int hit, int dmg, damage_type dtype)
       }
       switch(dtype)
       {
-          /* WDT: these sentances really ought to be livened up.  Especially
-         * in full verbose mode. */
+        // WDT: these sentances really ought to be livened up.  Especially
+        // in full verbose mode.
         case FLAME:
           damage_message += " was blasted by a firebolt!";
           break;
@@ -711,7 +711,7 @@ void identify(int blessing)
   calc_melee();
 }
 
-/* returns index of random item, ABORT if player carrying none */
+// returns index of random item, ABORT if player carrying none
 int random_item()
 {
   int item = ABORT, tries = 0;
@@ -728,10 +728,10 @@ int random_item()
       }
     }
   }
-  return (item);
+  return item;
 }
 
-/* various kinds of wishes */
+// various kinds of wishes
 void wish(int blessing)
 {
   std::string wishstr;
@@ -836,7 +836,7 @@ void wish(int blessing)
   showflags();
 }
 
-/* gain for an item */
+// gain for an item
 void acquire(int blessing)
 {
   if(blessing < 0)

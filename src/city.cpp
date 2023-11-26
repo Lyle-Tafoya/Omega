@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* city.c */
-/* some functions to make the city level */
+// city.cpp
+// some functions to make the city level
 
 #include "defs.h"
 #include "glob.h"
@@ -683,7 +683,7 @@ static char jail[5][11] = {
   {'#', '#', 'R', '#', 'R', '#', 'R', '#', 'R', '#', '#'}
 };
 
-/* fixes up the jail in case it has been munged by player action */
+// fixes up the jail in case it has been munged by player action
 void repair_jail()
 {
   for(int x = 0; x < 11; ++x)

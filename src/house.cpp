@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* house.c */
-/* some functions to make the house levels */
+// house.cpp
+// some functions to make the house levels
 
 #include "glob.h"
 #include "scr.h"
