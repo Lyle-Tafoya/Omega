@@ -32,12 +32,6 @@ inline std::array Monsters = std::to_array<const monster>(
 {
   {
     0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     1,
     1,
     10,
@@ -67,12 +61,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     1,
     30,
     0,
@@ -103,12 +91,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "BX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     2,
     15,
     0,
@@ -139,12 +121,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "BX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     3,
     150,
     20,
@@ -175,12 +151,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     4,
     5,
     5,
@@ -211,12 +181,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     5,
     5,
     5,
@@ -247,12 +211,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ALBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     6,
     16,
     6,
@@ -283,12 +241,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     7,
     10,
     5,
@@ -319,12 +271,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     8,
     5,
     5,
@@ -355,12 +301,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     9,
     25,
     12,
@@ -391,12 +331,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACAC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     10,
     1,
     10,
@@ -427,12 +361,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     11,
     1,
     0,
@@ -463,12 +391,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     12,
     5,
     5,
@@ -499,12 +421,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ALAL"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     13,
     12,
     0,
@@ -535,12 +451,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     14,
     50,
     0,
@@ -571,12 +481,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "BX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     15,
     8,
     10,
@@ -607,12 +511,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     16,
     10,
     10,
@@ -643,12 +541,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     17,
     5,
     10,
@@ -679,12 +571,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACBC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     18,
     1,
     5,
@@ -715,12 +601,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     19,
     6,
     8,
@@ -751,12 +631,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     20,
     3,
     0,
@@ -787,12 +661,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     21,
     13,
     10,
@@ -823,12 +691,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ALAL"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     22,
     7,
     15,
@@ -859,12 +721,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AH"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     23,
     23,
     5,
@@ -895,12 +751,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     24,
     30,
     10,
@@ -931,12 +781,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     25,
     20,
     0,
@@ -967,12 +811,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AL"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     26,
     3,
     0,
@@ -1003,12 +841,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AL"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     27,
     3,
     0,
@@ -1039,12 +871,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     28,
     1,
     0,
@@ -1075,12 +901,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     29,
     5,
     10,
@@ -1111,12 +931,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AH"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     30,
     10,
     10,
@@ -1147,12 +961,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     31,
     20,
     16,
@@ -1183,12 +991,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     32,
     30,
     15,
@@ -1219,12 +1021,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACAC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     33,
     32,
     0,
@@ -1255,12 +1051,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXB?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     34,
     25,
     0,
@@ -1291,12 +1081,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     35,
     30,
     10,
@@ -1327,12 +1111,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ALBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     36,
     32,
     15,
@@ -1363,12 +1141,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACAC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     37,
     32,
     0,
@@ -1399,12 +1171,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     38,
     20,
     5,
@@ -1435,12 +1201,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     39,
     7,
     0,
@@ -1471,12 +1231,6 @@ inline std::array Monsters = std::to_array<const monster>(
     ""
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     40,
     25,
     20,
@@ -1507,12 +1261,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     41,
     40,
     15,
@@ -1543,12 +1291,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     42,
     20,
     15,
@@ -1579,12 +1321,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     43,
     100,
     25,
@@ -1615,12 +1351,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     44,
     50,
     20,
@@ -1651,12 +1381,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     45,
     35,
     15,
@@ -1687,12 +1411,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     46,
     100,
     10,
@@ -1723,12 +1441,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     47,
     15,
     18,
@@ -1759,12 +1471,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     48,
     10,
     20,
@@ -1795,12 +1501,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     49,
     1,
     20,
@@ -1831,12 +1531,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     50,
     32,
     18,
@@ -1867,12 +1561,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     51,
     42,
     16,
@@ -1903,12 +1591,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AH"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     52,
     25,
     10,
@@ -1939,12 +1621,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     53,
     60,
     20,
@@ -1975,12 +1651,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     54,
     30,
     15,
@@ -2011,12 +1681,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     55,
     70,
     25,
@@ -2047,12 +1711,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     56,
     10,
     25,
@@ -2083,12 +1741,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     57,
     40,
     15,
@@ -2119,12 +1771,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     58,
     40,
     5,
@@ -2155,12 +1801,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     59,
     4,
     0,
@@ -2191,12 +1831,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACACACACAC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     60,
     100,
     15,
@@ -2227,12 +1861,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     61,
     50,
     12,
@@ -2263,12 +1891,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     62,
     100,
     15,
@@ -2299,12 +1921,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACBC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     63,
     75,
     30,
@@ -2335,12 +1951,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AL"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     64,
     50,
     18,
@@ -2371,12 +1981,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AHAH"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     65,
     50,
     15,
@@ -2407,12 +2011,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACAC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     66,
     50,
     20,
@@ -2443,12 +2041,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "(null)"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     67,
     50,
     0,
@@ -2479,12 +2071,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "(null)"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     68,
     80,
     25,
@@ -2515,12 +2101,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ALALBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     69,
     40,
     30,
@@ -2551,12 +2131,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     70,
     40,
     20,
@@ -2587,12 +2161,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "LXLXLX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     71,
     40,
     10,
@@ -2623,12 +2191,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     72,
     30,
     40,
@@ -2659,12 +2221,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     73,
     40,
     25,
@@ -2695,12 +2251,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXAX?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     74,
     40,
     15,
@@ -2731,12 +2281,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     75,
     40,
     10,
@@ -2767,12 +2311,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "LX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     76,
     50,
     20,
@@ -2803,12 +2341,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "LHAHLH"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     77,
     40,
     20,
@@ -2839,12 +2371,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?R?R"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     78,
     50,
     20,
@@ -2875,12 +2401,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     79,
     50,
     15,
@@ -2911,12 +2431,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     80,
     100,
     20,
@@ -2947,12 +2461,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     81,
     50,
     15,
@@ -2983,12 +2491,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     82,
     75,
     20,
@@ -3019,12 +2521,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     83,
     75,
     20,
@@ -3055,12 +2551,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     84,
     50,
     12,
@@ -3091,12 +2581,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     85,
     40,
     18,
@@ -3127,12 +2611,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACACAC"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     86,
     80,
     22,
@@ -3163,12 +2641,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXB?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     87,
     40,
     25,
@@ -3199,12 +2671,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     88,
     100,
     40,
@@ -3235,12 +2701,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     89,
     1,
     0,
@@ -3271,12 +2731,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "BX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     90,
     120,
     25,
@@ -3307,12 +2761,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     91,
     40,
     15,
@@ -3343,12 +2791,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     92,
     125,
     30,
@@ -3379,12 +2821,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXRXRX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     93,
     125,
     25,
@@ -3415,12 +2851,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXAXBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     94,
     100,
     15,
@@ -3451,12 +2881,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     95,
     200,
     20,
@@ -3487,12 +2911,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     96,
     100,
     20,
@@ -3523,12 +2941,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     97,
     100,
     15,
@@ -3559,12 +2971,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     98,
     100,
     20,
@@ -3595,12 +3001,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     99,
     100,
     0,
@@ -3631,12 +3031,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     100,
     200,
     50,
@@ -3667,12 +3061,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "LX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     101,
     100,
     20,
@@ -3703,12 +3091,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?L?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     102,
     100,
     40,
@@ -3739,12 +3121,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?L?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     103,
     120,
     30,
@@ -3775,12 +3151,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?R?RX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     104,
     100,
     25,
@@ -3811,12 +3181,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?R?R?R"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     105,
     300,
     30,
@@ -3847,12 +3211,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AHBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     106,
     250,
     40,
@@ -3883,12 +3241,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     107,
     100,
     100,
@@ -3919,12 +3271,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "ACACB?B?B?B?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     108,
     150,
     30,
@@ -3955,12 +3301,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     109,
     100,
     20,
@@ -3991,12 +3331,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     110,
     250,
     40,
@@ -4027,12 +3361,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     111,
     150,
     30,
@@ -4063,12 +3391,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     112,
     150,
     50,
@@ -4099,12 +3421,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?L?L?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     113,
     50,
     30,
@@ -4135,12 +3451,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     114,
     50,
     40,
@@ -4171,12 +3481,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     115,
     150,
     30,
@@ -4207,12 +3511,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXL?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     116,
     150,
     50,
@@ -4243,12 +3541,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXL?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     117,
     100,
     10,
@@ -4279,12 +3571,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     118,
     50,
     30,
@@ -4315,12 +3601,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     119,
     240,
     35,
@@ -4351,12 +3631,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?L?R?R?R?RXRXRX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     120,
     1,
     0,
@@ -4387,12 +3661,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     121,
     100,
     50,
@@ -4423,12 +3691,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     122,
     500,
     30,
@@ -4459,12 +3721,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     123,
     500,
     50,
@@ -4495,12 +3751,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     124,
     500,
     40,
@@ -4531,12 +3781,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?A?A?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     125,
     350,
     40,
@@ -4567,12 +3811,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     126,
     350,
     35,
@@ -4603,12 +3841,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     127,
     250,
     40,
@@ -4639,12 +3871,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?R?R?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     128,
     250,
     30,
@@ -4675,12 +3901,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     129,
     250,
     30,
@@ -4711,12 +3931,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     130,
     150,
     25,
@@ -4747,12 +3961,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     131,
     250,
     50,
@@ -4783,12 +3991,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?R?RXRX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     132,
     750,
     80,
@@ -4819,12 +4021,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AHAHB?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     133,
     1000,
     50,
@@ -4855,12 +4051,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     134,
     700,
     50,
@@ -4891,12 +4081,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AXAXAXBXBX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     135,
     500,
     30,
@@ -4927,12 +4111,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "BX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     136,
     250,
     20,
@@ -4963,12 +4141,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?B?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     137,
     750,
     70,
@@ -4999,12 +4171,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     138,
     1000,
     100,
@@ -5035,12 +4201,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?R?R?R?R?R?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     139,
     800,
     80,
@@ -5071,12 +4231,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "LLLCLHRLRCRHRLRCRH"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     140,
     100,
     10,
@@ -5107,12 +4261,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "AX"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     141,
     1000,
     0,
@@ -5143,12 +4291,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "B?B?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     142,
     500,
     50,
@@ -5179,12 +4321,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?B?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     143,
     2000,
     100,
@@ -5215,12 +4351,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?A?A?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     144,
     3000,
     200,
@@ -5251,12 +4381,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "L?L?L?L?L?R?R?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     145,
     2000,
     200,
@@ -5287,12 +4411,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     146,
     1000,
     100,
@@ -5323,12 +4441,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?A?A?A?A?A?A?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     147,
     1500,
     100,
@@ -5359,12 +4471,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?B?B?B?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     148,
     1500,
     200,
@@ -5395,12 +4501,6 @@ inline std::array Monsters = std::to_array<const monster>(
     "A?A?A?R?R?R?R?"
   },
   {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
     149,
     1000,
     200,

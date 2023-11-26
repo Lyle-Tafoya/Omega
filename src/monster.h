@@ -46,7 +46,7 @@ public:
 
   monster() = default;
   monster(const monster &m);
-  monster(unsigned char attacked, int aux1, int aux2, int x, int y, int click, int id, int hp, int hit, int ac, int dmg, int sense, int wakeup, int level, int speed, unsigned char sleep, unsigned char treasure, long xpv, int corpseweight, int corpsevalue, int transformid, int startthing, unsigned char uniqueness, int talkf, int movef, int meleef, int strikef,int specialf, long status, long immunity, chtype monchar, const std::string &monstring, const std::string &corpsestr, const std::string &meleestr);
+  monster(int id, int hp, int hit, int ac, int dmg, int sense, int wakeup, int level, int speed, unsigned char sleep, unsigned char treasure, long xpv, int corpseweight, int corpsevalue, int transformid, int startthing, unsigned char uniqueness, int talkf, int movef, int meleef, int strikef,int specialf, long status, long immunity, chtype monchar, const std::string &monstring, const std::string &corpsestr, const std::string &meleestr);
   monster &operator=(const monster &m);
 };
 
