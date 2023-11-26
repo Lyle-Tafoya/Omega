@@ -4,6 +4,7 @@
 #include "defs.h"
 #include "monster.h"
 
+#include <ctime>
 #include <curses.h>
 #include <forward_list>
 #include <vector>
@@ -37,7 +38,7 @@ struct level
   char tunnelled;     // amount of tunnelling done on this level
   std::forward_list<std::unique_ptr<monster>> mlist; // List of monsters on level
   int environment;    // where kind of level is this?
-  int last_visited;   // time player was last on this level
+  time_t last_visited;   // time player was last on this level
 };
 
 inline bool loc_statusp(int x, int y, lstatus_bit status, const level &lvl)
