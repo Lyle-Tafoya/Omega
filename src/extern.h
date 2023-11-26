@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #define OMEGA_EXTERN_H_
 
 #include "defs.h"
+#include "level.h"
 
 #include <memory>
 #include <string>
