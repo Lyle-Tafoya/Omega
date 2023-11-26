@@ -29,14 +29,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "defs.h"
 #include "extern.h"
 #include "player.h"
+#include "minit.h"
 
 #include <memory>
 
 // This string holds the path to the library files
 extern const char *Omegalib;
-
-// one of each monster
-extern monster Monsters[NUMMONSTERS];
 
 // one of each item
 extern object Objects[TOTALITEMS];

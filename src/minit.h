@@ -16,8 +16,11 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-// minit.cpp
+// minit.h
 // This file defines and initializes the Monsters Array
+
+#ifndef OMEGA_MINIT_H_
+#define OMEGA_MINIT_H_
 
 #include "monster.h"
 #include "defs.h"
@@ -25,8 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <array>
 
 // clang-format off
-
-std::array Monsters = std::to_array<monster>(
+inline std::array Monsters = std::to_array<const monster>(
 {
   {
     0,
@@ -5429,5 +5431,6 @@ std::array Monsters = std::to_array<monster>(
     "A?A?A?A?R?R?R?R?"
   }
 });
-
 // clang-format on
+
+#endif

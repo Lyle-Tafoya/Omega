@@ -428,7 +428,6 @@ constexpr int NUMROOMNAMES = 30;
 
 #define ROOMBASE         39 // normal room name indices start after the RS_ constants
 
-#define PDC_NCMOUSE
 #include "clrgen.h"
 
 #include <curses.h>

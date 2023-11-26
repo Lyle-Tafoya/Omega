@@ -22,9 +22,9 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-  string(REPLACE "/W3" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  set(CMAKE_CXX_FLAGS "/EHsc /DPDC_NCMOUSE")
   set(CMAKE_CXX_FLAGS_DEBUG "/W3 /Zi")
-  set(CMAKE_CXX_FLAGS_DEBUG "/DNDEBUG")
+  set(CMAKE_CXX_FLAGS_RELEASE "/DNDEBUG")
 endif()
 
 if(WIN32)
@@ -98,7 +98,6 @@ add_executable(omega
   src/itemf2.cpp
   src/itemf3.cpp
   src/lev.cpp
-  src/minit.cpp
   src/mmelee.cpp
   src/mmove.cpp
   src/mon.cpp
