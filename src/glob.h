@@ -28,6 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "defs.h"
 #include "extern.h"
+#include "player.h"
 
 #include <memory>
 
