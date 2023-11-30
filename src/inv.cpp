@@ -941,7 +941,7 @@ size_t aux_display_pack(size_t start_item, int slot)
     }
     showmenu();
   }
-  return Player.pack.size() - i;
+  return Player.pack.size() - 1 - i;
 }
 
 // takes something from pack, puts to slot
