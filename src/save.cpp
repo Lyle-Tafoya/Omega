@@ -167,17 +167,6 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, Player.meleestr.size());
   save_file.write(reinterpret_cast<char *>(Player.meleestr.data()), Player.meleestr.size());
 
-  // Save player possessions
-  for(std::unique_ptr<object> &o : Player.possessions)
-  {
-    save_item(save_file, o.get());
-  }
-  file_write(save_file, Player.pack.size());
-  for(std::unique_ptr<object> &o : Player.pack)
-  {
-    save_item(save_file, o.get());
-  }
-
   file_write(save_file, Password.size());
   save_file.write(reinterpret_cast<char *>(Password.data()), Password.size());
   file_write(save_file, CitySiteList);
@@ -251,6 +240,13 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, deepest);
   file_write(save_file, level_seed);
   file_write(save_file, received_directions);
+
+  // Save player possessions
+  for(std::unique_ptr<object> &o : Player.possessions)
+  {
+    save_item(save_file, o.get());
+  }
+  save_items(save_file, Player.pack);
 
   for(int i = 0; i < PAWNITEMS; ++i)
   {
@@ -655,18 +651,6 @@ void restore_player(std::ifstream &save_file, player &p)
   p.meleestr.resize(size);
   save_file.read(&p.meleestr[0], size);
 
-  inititem(false); // Set up the strings for the id's
-  for(int i = 0; i < MAXITEMS; ++i)
-  {
-    p.possessions[i] = restore_item(save_file);
-  }
-  decltype(Player.pack)::size_type num_pack_items;
-  file_read(save_file, num_pack_items);
-  for(size_t i = 0; i < num_pack_items; ++i)
-  {
-    p.pack.emplace_back(restore_item(save_file));
-  }
-
   file_read(save_file, size);
   Password.resize(size);
   save_file.read(&Password[0], size);
@@ -763,6 +747,13 @@ void restore_player(std::ifstream &save_file, player &p)
   file_read(save_file, level_seed);
 
   file_read(save_file, received_directions);
+
+  inititem(false); // Set up the strings for the id's
+  for(int i = 0; i < MAXITEMS; ++i)
+  {
+    p.possessions[i] = restore_item(save_file);
+  }
+  p.pack = restore_items(save_file);
 
   for(int i = 0; i < PAWNITEMS; ++i)
   {
