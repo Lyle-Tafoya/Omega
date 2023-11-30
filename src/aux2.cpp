@@ -137,7 +137,7 @@ void break_weapon()
   if(Player.possessions[O_WEAPON_HAND])
   {
     queue_message("Your " + itemid(Player.possessions[O_WEAPON_HAND].get()) + " vibrates in your hand....");
-    damage_item(Player.possessions[O_WEAPON_HAND]);
+    damage_item(O_WEAPON_HAND);
   }
 }
 
@@ -148,7 +148,7 @@ void drop_weapon()
   {
     queue_message(std::format("You dropped your {}.", Player.possessions[O_WEAPON_HAND]->objstr));
     p_drop_at(Player.x, Player.y, 1, Player.possessions[O_WEAPON_HAND].get());
-    dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
+    dispose_lost_objects(1, O_WEAPON_HAND);
   }
   else
   {
@@ -752,22 +752,18 @@ void p_drown()
           break;
         case 'c':
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          for(int i = 0; i < MAXPACK; ++i)
+          for(std::unique_ptr<object> &item : Player.pack)
           {
-            if(Player.pack[i])
+            if(Level->site[Player.x][Player.y].p_locf != L_WATER)
             {
-              if(Level->site[Player.x][Player.y].p_locf != L_WATER)
-              {
-                p_drop_at(Player.x, Player.y, Player.pack[i]->number, Player.pack[i].get());
-              }
-              Player.pack[i].reset();
+              p_drop_at(Player.x, Player.y, item->number, item.get());
             }
           }
+          Player.pack.clear();
           if(Level->site[Player.x][Player.y].p_locf == L_WATER)
           {
             queue_message("It sinks without a trace.");
           }
-          Player.packptr = 0;
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
           calc_melee();
           break;

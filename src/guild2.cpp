@@ -240,18 +240,15 @@ void l_thieves_guild()
             {
               if(Player.possessions[i]->known < 2)
               {
-                count++;
+                ++count;
               }
             }
           }
-          for(int i = 0; i < Player.packptr; ++i)
+          for(std::unique_ptr<object> &item : Player.pack)
           {
-            if(Player.pack[i])
+            if(item->known < 2)
             {
-              if(Player.pack[i]->known < 2)
-              {
-                count++;
-              }
+              ++count;
             }
           }
           queue_message(std::format("The fee will be: {}Au. Pay it? [yn] ", std::max(count * fee, fee)));
@@ -281,33 +278,33 @@ void l_thieves_guild()
           queue_message("Fence one item or go through pack? [ip] ");
           if((char)mcigetc() == 'i')
           {
-            int i = getitem(NULL_ITEM);
-            if(i == ABORT || !Player.possessions[i])
+            int slot = getitem(NULL_ITEM);
+            if(slot == ABORT || !Player.possessions[slot])
             {
               queue_message("Huh, Is this some kind of set-up?");
             }
-            else if(Player.possessions[i]->blessing < 0)
+            else if(Player.possessions[slot]->blessing < 0)
             {
               queue_message("I don't want to buy a cursed item!");
             }
             else
             {
-              long price = 2 * item_value(Player.possessions[i].get()) / 3;
+              long price = 2 * item_value(Player.possessions[slot].get()) / 3;
               queue_message(std::format("I'll give you {} Au each. OK? [yn] ", price));
               if(ynq() == 'y')
               {
-                number = getnumber(Player.possessions[i]->number);
-                if((number >= Player.possessions[i]->number) && Player.possessions[i]->used)
+                number = getnumber(Player.possessions[slot]->number);
+                if(number >= Player.possessions[slot]->number && Player.possessions[slot]->used)
                 {
-                  item_unequip(Player.possessions[i]);
+                  item_unequip(Player.possessions[slot]);
                 }
                 Player.cash += number * price;
                 // Fenced artifacts could turn up anywhere, really...
-                if(Objects[Player.possessions[i]->id].uniqueness > UNIQUE_UNMADE)
+                if(Objects[Player.possessions[slot]->id].uniqueness > UNIQUE_UNMADE)
                 {
-                  Objects[Player.possessions[i]->id].uniqueness = UNIQUE_UNMADE;
+                  Objects[Player.possessions[slot]->id].uniqueness = UNIQUE_UNMADE;
                 }
-                dispose_lost_objects(number, Player.possessions[i]);
+                dispose_lost_objects(number, slot);
                 dataprint();
               }
               else
@@ -318,27 +315,28 @@ void l_thieves_guild()
           }
           else
           {
-            for(int i = 0; i < Player.packptr; ++i)
+            for(int i = Player.pack.size(); i-- > 0;)
             {
-              if(Player.pack[i]->blessing > -1)
+              std::unique_ptr<object> &item = Player.pack[i];
+              if(item->blessing > -1)
               {
-                long price = 2 * item_value(Player.pack[i].get()) / 3;
+                long price = 2 * item_value(item.get()) / 3;
                 queue_message(
-                  std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i].get()), price)
+                  std::format("Sell {} for {} Au each? [ynq] ", itemid(item.get()), price)
                 );
                 if((c = ynq()) == 'y')
                 {
-                  number = getnumber(Player.pack[i]->number);
+                  number = getnumber(item->number);
                   Player.cash += number * price;
-                  Player.pack[i]->number -= number;
-                  if(Player.pack[i]->number < 1)
+                  item->number -= number;
+                  if(item->number < 1)
                   {
                     // Fenced an artifact?  You just might see it again
-                    if(Objects[Player.pack[i]->id].uniqueness > UNIQUE_UNMADE)
+                    if(Objects[item->id].uniqueness > UNIQUE_UNMADE)
                     {
-                      Objects[Player.pack[i]->id].uniqueness = UNIQUE_UNMADE;
+                      Objects[item->id].uniqueness = UNIQUE_UNMADE;
                     }
-                    Player.pack[i].reset();
+                    Player.pack.erase(Player.pack.begin() + i);
                   }
                   calc_melee();
                   dataprint();
@@ -349,7 +347,6 @@ void l_thieves_guild()
                 }
               }
             }
-            fixpack();
           }
         }
       }

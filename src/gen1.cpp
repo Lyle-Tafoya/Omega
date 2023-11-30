@@ -561,7 +561,7 @@ void cavern_level()
       Level->site[tx][ty].creature = m.get();
       m->x                         = tx;
       m->y                         = ty;
-      Level->mlist.push_front(std::move(m));
+      Level->mlist.emplace_front(std::move(m));
     }
   }
   else if(Current_Environment == E_VOLCANO)
@@ -573,7 +573,7 @@ void cavern_level()
       Level->site[tx][ty].creature = m.get();
       m->x                         = tx;
       m->y                         = ty;
-      Level->mlist.push_front(std::move(m));
+      Level->mlist.emplace_front(std::move(m));
     }
   }
 }
@@ -659,7 +659,7 @@ void sewer_level()
       Level->site[tx][ty].creature = m.get();
       m->x                         = tx;
       m->y                         = ty;
-      Level->mlist.push_front(std::move(m));
+      Level->mlist.emplace_front(std::move(m));
     }
   }
 }

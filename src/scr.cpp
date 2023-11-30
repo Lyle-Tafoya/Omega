@@ -1217,7 +1217,7 @@ chtype getspot(int x, int y, int showmonster)
         }
         else if(!Level->site[x][y].things.empty())
         {
-          if(std::next(Level->site[x][y].things.begin()) != Level->site[x][y].things.end())
+          if(Level->site[x][y].things.size() > 1)
           {
             return PILE;
           }
@@ -2221,7 +2221,7 @@ void spreadroomdark(int x, int y, int roomno)
 
 void display_pack()
 {
-  if(Player.packptr < 1)
+  if(Player.pack.empty())
   {
     queue_message("Pack is empty.");
   }
@@ -2229,9 +2229,9 @@ void display_pack()
   {
     std::vector<std::string> lines;
     lines.emplace_back("Items in Pack:");
-    for(int i = 0; i < Player.packptr; ++i)
+    for(size_t i = Player.pack.size(); i-- > 0;)
     {
-      lines.emplace_back(std::format("  {}: {}", static_cast<char>('a' + i), itemid(Player.pack[i].get())));
+      lines.emplace_back(std::format("  {}: {}", static_cast<char>('a' + Player.pack.size() - 1 - i), itemid(Player.pack[i].get())));
     }
     menu->load(lines);
     menu->get_player_input();
@@ -2241,12 +2241,12 @@ void display_pack()
 object *find_first_pack_obj(uint8_t slot)
 {
   setgamestatus(SUPPRESS_PRINTING, GameStatus);
-  for(uint8_t i = 0; i < MAXPACK; ++i)
+  for(std::unique_ptr<object> &item : Player.pack)
   {
-    if(slottable(Player.pack[i].get(), slot))
+    if(slottable(item.get(), slot))
     {
       resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-      return Player.pack[i].get();
+      return item.get();
     }
   }
   resetgamestatus(SUPPRESS_PRINTING, GameStatus);

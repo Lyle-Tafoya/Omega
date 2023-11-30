@@ -298,7 +298,7 @@ void l_trap_acid()
         if(Player.possessions[i])
         {
           ++k;
-          damage_item(Player.possessions[i]);
+          damage_item(i);
         }
       }
     }

@@ -79,7 +79,10 @@ void i_stargem(std::unique_ptr<object> &o)
     queue_message("and it vanishes a puff of regret.");
     Objects[o->id].uniqueness = UNIQUE_UNMADE;
     // it's now out there, somewhere
-    dispose_lost_objects(1, o);
+    if(--o->number < 1)
+    {
+      o.reset();
+    }
   }
   else
   {
@@ -205,7 +208,10 @@ void i_juggernaut(std::unique_ptr<object> &o)
         queue_message("You hear a distant scream...");
       }
       gain_experience(1000);
-      dispose_lost_objects(1, o);
+      if(--o->number < 1)
+      {
+        o.reset();
+      }
       Level->tunnelled += tunneled - 1;
       tunnelcheck();
     }
@@ -231,7 +237,7 @@ void i_symbol(std::unique_ptr<object> &o)
       {
         if(Player.possessions[i])
         {
-          dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
+          dispose_lost_objects(Player.possessions[i]->number, i);
         }
       }
       Player.mana = 0;
@@ -241,7 +247,7 @@ void i_symbol(std::unique_ptr<object> &o)
   {
     queue_message("Your deity frowns upon this profligate use of power...");
     queue_message("Shazam! A bolt of Godsfire! Your symbol shatters!");
-    dispose_lost_objects(1, o);
+    o.reset();
     Player.hp = 1;
     dataprint();
   }
@@ -337,7 +343,10 @@ void i_antioch(std::unique_ptr<object> &o)
       Level->site[x][y].things.clear();
     }
   }
-  dispose_lost_objects(1, o);
+  if(--o->number < 1)
+  {
+    o.reset();
+  }
 }
 
 void i_kolwynia(std::unique_ptr<object> &o)
@@ -357,7 +366,10 @@ void i_kolwynia(std::unique_ptr<object> &o)
       spell::Spells[i].known = true;
     }
   }
-  dispose_lost_objects(1, o);
+  if(--o->number < 1)
+  {
+    o.reset();
+  }
 }
 
 void i_enchantment(std::unique_ptr<object> &o)
@@ -427,7 +439,10 @@ void i_life(std::unique_ptr<object> &o)
 {
   queue_message("Good move.");
   Player.hp = Player.maxhp = 2 * Player.maxhp;
-  dispose_lost_objects(1, o);
+  if(--o->number < 1)
+  {
+    o.reset();
+  }
 }
 
 // f = fire, w = water, e = earth, a = air, m = mastery
@@ -521,17 +536,10 @@ void i_orbearth(std::unique_ptr<object> &o)
       {
         if(Player.possessions[i])
         {
-          dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
+          dispose_lost_objects(Player.possessions[i]->number, i);
         }
       }
-      for(int i = 0; i < MAXPACK; ++i)
-      {
-        if(Player.pack[i])
-        {
-          Player.pack[i].reset();
-        }
-      }
-      Player.packptr = 0;
+      Player.pack.clear();
       if(!o->known)
       {
         o->known = 1;

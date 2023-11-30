@@ -533,8 +533,9 @@ void calc_melee()
 }
 
 // Attempt to break an object o
-bool damage_item(std::unique_ptr<object> &o)
+bool damage_item(int slot)
 {
+  object *o = Player.possessions[slot].get();
   // special case -- break star gem
   if(o->id == ARTIFACTID + 21)
   {
@@ -553,13 +554,13 @@ bool damage_item(std::unique_ptr<object> &o)
       Player.str = std::max(Player.str, Player.maxstr + 5);
       Player.pow = std::max(Player.pow, Player.maxpow + 5);
       Player.alignment -= 200;
-      dispose_lost_objects(1, o);
+      dispose_lost_objects(1, slot);
     }
     else
     {
       queue_message("The shards coalesce back together again, and vanish");
       queue_message("with a muted giggle.");
-      dispose_lost_objects(1, o);
+      dispose_lost_objects(1, slot);
       Objects[o->id].uniqueness = UNIQUE_UNMADE;
       // WDT HACK: the above is correct only if UNIQUE_UNMADE means that
       // the artifact hasn't been generated yet.  (Clearly, Omega is a
@@ -585,23 +586,23 @@ bool damage_item(std::unique_ptr<object> &o)
           queue_message(" Ka-Blamm!!!");
           // general case. Some sticks will eventually do special things
           manastorm(Player.x, Player.y, o->charge * o->level * 10);
-          dispose_lost_objects(1, o);
+          dispose_lost_objects(1, slot);
         }
         return true;
       }
-      else if((o->blessing > 0) && (o->level > random_range(10)))
+      else if(o->blessing > 0 && o->level > random_range(10))
       {
-        queue_message("Your " + itemid(o.get()) + " glows strongly.");
+        queue_message("Your " + itemid(o) + " glows strongly.");
         return false;
       }
-      else if((o->blessing < -1) && (o->level > random_range(10)))
+      else if(o->blessing < -1 && o->level > random_range(10))
       {
-        queue_message(std::format("You hear an evil giggle from your {}.", itemid(o.get())));
+        queue_message(std::format("You hear an evil giggle from your {}.", itemid(o)));
         return false;
       }
       else if(o->plus > 0)
       {
-        queue_message(std::format("Your {} glos and fades.", itemid(o.get())));
+        queue_message(std::format("Your {} glos and fades.", itemid(o)));
         o->plus--;
         return false;
       }
@@ -615,8 +616,8 @@ bool damage_item(std::unique_ptr<object> &o)
         {
           queue_message("You hear an agonized scream!");
         }
-        queue_message(std::format("Your {} shatters in a thousand lost fragments!", itemid(o.get())));
-        dispose_lost_objects(1, o);
+        queue_message(std::format("Your {} shatters in a thousand lost fragments!", itemid(o)));
+        dispose_lost_objects(1, slot);
         return true;
       }
     }
@@ -1043,8 +1044,6 @@ void roomcheck()
 // ask for mercy
 void surrender(monster *m)
 {
-  long bestitem, bestvalue;
-
   switch(random_range(4))
   {
     case 0:
@@ -1092,8 +1091,8 @@ void surrender(monster *m)
       queue_message(" All your gold is taken....");
     }
     Player.cash = 0;
-    bestvalue   = 0;
-    bestitem    = ABORT;
+    long bestvalue   = 0;
+    int bestitem    = ABORT;
     for(int i = 1; i < MAXITEMS; ++i)
     {
       if(Player.possessions[i])

@@ -444,7 +444,7 @@ void movemonster(monster *m, int newx, int newy)
 // give object o to monster m
 void m_pickup(monster *m, std::unique_ptr<object> o)
 {
-  m->possessions.push_front(std::move(o));
+  m->possessions.emplace_front(std::move(o));
 }
 
 void m_dropstuff(monster *m)
@@ -494,7 +494,7 @@ void strengthen_death(monster *m)
   m->speed       = std::max(m->speed - 1, 1);
   m->movef       = M_MOVE_SMART;
   m->hp          = std::min(100000, 100 + m->dmg * 10);
-  m->possessions.push_front(std::make_unique<object>(Objects[WEAPONID + 39]));
+  m->possessions.emplace_front(std::make_unique<object>(Objects[WEAPONID + 39]));
 }
 
 void m_death(monster *m)

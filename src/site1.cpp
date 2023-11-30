@@ -549,7 +549,7 @@ void wake_statue(int x, int y, int first)
     std::unique_ptr<monster> m = m_create(x, y, 0, difficulty() + 1);
     Level->site[x][y].creature = m.get();
     m_status_set(*m, HOSTILE);
-    Level->mlist.push_front(std::move(m));
+    Level->mlist.emplace_front(std::move(m));
     for(int i = 0; i < 8; ++i)
     {
       wake_statue(x + Dirs[0][i], y + Dirs[1][i], false);
@@ -1060,15 +1060,15 @@ void l_alchemist()
     menu->load(lines);
     for(bool done = false; !done;)
     {
-      int i;
+      int slot;
       switch(menu->get_player_input())
       {
         case 'a':
           done = true;
-          i    = getitem(CORPSE);
-          if(i != ABORT && Player.possessions[i])
+          slot = getitem(CORPSE);
+          if(slot != ABORT && Player.possessions[slot])
           {
-            std::unique_ptr<object> &obj = Player.possessions[i];
+            std::unique_ptr<object> &obj = Player.possessions[slot];
             if(Monsters[obj->charge].transformid == -1)
             {
               queue_message("I don't want such a thing.");
@@ -1085,7 +1085,7 @@ void l_alchemist()
               {
                 int n = getnumber(obj->number);
                 Player.cash += sell_price * n;
-                dispose_lost_objects(n, obj);
+                dispose_lost_objects(n, slot);
               }
               else
               {
@@ -1100,10 +1100,10 @@ void l_alchemist()
           break;
         case 'b':
           done = true;
-          i    = getitem(CORPSE);
-          if(i != ABORT && Player.possessions[i])
+          slot = getitem(CORPSE);
+          if(slot != ABORT && Player.possessions[slot])
           {
-            object *obj = Player.possessions[i].get();
+            object *obj = Player.possessions[slot].get();
             if(Monsters[obj->charge].transformid == -1)
             {
               queue_message("Oy vey! You want me to transform such a thing?");
@@ -1182,11 +1182,8 @@ void l_dpw()
       append_message("Well, ok, but spend it wisely.", true);
       append_message("Please enter your name for our records:");
       std::string name = msgscanstring();
-      if(name[0] >= 'a' && name[0] <= 'z')
-      {
-        name[0] += 'A' - 'a';
-      }
-      if(name[0] == '\0')
+      name[0] = std::toupper(name[0]);
+      if(name.empty())
       {
         append_message("Maybe you should come back when you've learned to write.", true);
       }
@@ -1352,23 +1349,17 @@ void l_pawn_shop()
           Objects[Pawnitems[0]->id].uniqueness = UNIQUE_UNMADE;
         }
         // could turn up anywhere, really :)
-        Pawnitems[0].reset();
       }
       for(int i = 0; i < PAWNITEMS - 1; ++i)
       {
         Pawnitems[i] = std::move(Pawnitems[i + 1]);
       }
-      Pawnitems[PAWNITEMS - 1].reset();
       for(int i = 0; i < PAWNITEMS; ++i)
       {
         if(!Pawnitems[i])
         {
           do
           {
-            if(Pawnitems[i])
-            {
-              Pawnitems[i].reset();
-            }
             Pawnitems[i]        = create_object(5);
             Pawnitems[i]->known = 2;
           } while(Pawnitems[i]->objchar == CASH || Pawnitems[i]->objchar == ARTIFACT ||
@@ -1439,38 +1430,37 @@ void l_pawn_shop()
       {
         menuclear();
         queue_message("Sell which item: ");
-        int i = getitem(NULL_ITEM);
-        if(i != ABORT && Player.possessions[i])
+        int slot = getitem(NULL_ITEM);
+        if(slot != ABORT && Player.possessions[slot])
         {
-          if(cursed(Player.possessions[i].get()))
+          if(cursed(Player.possessions[slot].get()))
           {
             queue_message("No loans on cursed items! I been burned before....");
           }
-          else if(true_item_value(Player.possessions[i].get()) <= 0)
+          else if(true_item_value(Player.possessions[slot].get()) <= 0)
           {
             queue_message("That looks like a worthless piece of junk to me.");
           }
           else
           {
-            long price = item_value(Player.possessions[i].get()) / 2;
+            long price = item_value(Player.possessions[slot].get()) / 2;
             queue_message(std::format("You can get {} Au each. Sell? [yn] ", price));
             if(ynq() == 'y')
             {
-              number = getnumber(Player.possessions[i]->number);
-              if((number >= Player.possessions[i]->number) && Player.possessions[i]->used)
+              number = getnumber(Player.possessions[slot]->number);
+              if((number >= Player.possessions[slot]->number) && Player.possessions[slot]->used)
               {
-                item_unequip(Player.possessions[i]);
+                item_unequip(Player.possessions[slot]);
               }
               Player.cash += number * price;
-              Pawnitems[0].reset();
-              for(int j = 0; j < PAWNITEMS - 1; ++j)
+              for(int i = 0; i < PAWNITEMS - 1; ++i)
               {
-                Pawnitems[j] = std::move(Pawnitems[j + 1]);
+                Pawnitems[i] = std::move(Pawnitems[i + 1]);
               }
-              Pawnitems[PAWNITEMS - 1]         = std::make_unique<object>(*Player.possessions[i]);
+              Pawnitems[PAWNITEMS - 1]         = std::make_unique<object>(*Player.possessions[slot]);
               Pawnitems[PAWNITEMS - 1]->number = number;
               Pawnitems[PAWNITEMS - 1]->known  = 2;
-              dispose_lost_objects(number, Player.possessions[i]);
+              dispose_lost_objects(number, slot);
               dataprint();
             }
           }
@@ -1478,31 +1468,31 @@ void l_pawn_shop()
       }
       else if(player_input == 'p')
       {
-        for(int i = 0; i < Player.packptr; ++i)
+        for(int i = Player.pack.size(); --i > 0;)
         {
-          if(Player.pack[i]->blessing > -1 && true_item_value(Player.pack[i].get()) > 0)
+          std::unique_ptr<object> &item = Player.pack[i];
+          if(item->blessing > -1 && true_item_value(item.get()) > 0)
           {
-            long price = item_value(Player.pack[i].get()) / 2;
-            queue_message(std::format("Sell {} for {} Au each? [ynq] ", itemid(Player.pack[i].get()), price));
+            long price = item_value(item.get()) / 2;
+            queue_message(std::format("Sell {} for {} Au each? [ynq] ", itemid(item.get()), price));
             player_input = ynq();
             if(player_input == 'y')
             {
-              number = getnumber(Player.pack[i]->number);
+              number = getnumber(item->number);
               if(number > 0)
               {
                 Player.cash += number * price;
-                Pawnitems[0].reset();
                 for(int j = 0; j < PAWNITEMS - 1; ++j)
                 {
                   Pawnitems[j] = std::move(Pawnitems[j + 1]);
                 }
-                Pawnitems[PAWNITEMS - 1]         = std::make_unique<object>(*Player.pack[i]);
+                Pawnitems[PAWNITEMS - 1]         = std::make_unique<object>(*item);
                 Pawnitems[PAWNITEMS - 1]->number = number;
                 Pawnitems[PAWNITEMS - 1]->known  = 2;
-                Player.pack[i]->number -= number;
-                if(Player.pack[i]->number < 1)
+                item->number -= number;
+                if(item->number < 1)
                 {
-                  Player.pack[i].reset();
+                  Player.pack.erase(Player.pack.begin() + i);
                 }
                 dataprint();
               }
@@ -1513,7 +1503,6 @@ void l_pawn_shop()
             }
           }
         }
-        fixpack();
       }
     }
   }

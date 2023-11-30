@@ -103,7 +103,7 @@ void l_condo()
           {
             queue_message(std::format("Item stored in safe: {}", itemid(Player.possessions[i].get())));
             conform_unused_object(Player.possessions[i]);
-            Condoitems.push_front(std::move(Player.possessions[i]));
+            Condoitems.emplace_front(std::move(Player.possessions[i]));
           }
         }
       }
@@ -1098,7 +1098,7 @@ void l_safe()
       do
       {
         std::unique_ptr<object> newitem = create_object(difficulty());
-        queue_message(itemid(newitem.get()));
+        queue_message(itemid(newitem.get()) + ".");
         gain_item(std::move(newitem));
       } while(random_range(3) == 1);
     }
@@ -1142,7 +1142,7 @@ void l_safe()
         queue_message("Your cloak is destroyed!");
         if(Player.possessions[O_CLOAK])
         {
-          dispose_lost_objects(Player.possessions[O_CLOAK]->number, Player.possessions[O_CLOAK]);
+          dispose_lost_objects(Player.possessions[O_CLOAK]->number, O_CLOAK);
         }
         p_damage(10, ACID, "a safe");
       }

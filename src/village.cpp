@@ -113,7 +113,7 @@ void make_guard(int x, int y)
   Level->site[x][y].creature = m.get();
   m->x                       = x;
   m->y                       = y;
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 void make_sheep(int x, int y)
@@ -122,7 +122,7 @@ void make_sheep(int x, int y)
   Level->site[x][y].creature = m.get();
   m->x                       = x;
   m->y                       = y;
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 void make_horse(int x, int y)
@@ -131,7 +131,7 @@ void make_horse(int x, int y)
   Level->site[x][y].creature = m.get();
   m->x                       = x;
   m->y                       = y;
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 void make_merchant(int x, int y)
@@ -140,7 +140,7 @@ void make_merchant(int x, int y)
   Level->site[x][y].creature = m.get();
   m->x                       = x;
   m->y                       = y;
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 void special_village_site(int x, int y, int villagenum)

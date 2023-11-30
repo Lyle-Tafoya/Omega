@@ -117,7 +117,7 @@ void enchant(int delta)
         queue_message("Uh-oh, the force of the enchantment was too much!");
         queue_message("There is a loud explosion!");
         manastorm(Player.x, Player.y, Player.possessions[i]->plus * 5);
-        dispose_lost_objects(1, Player.possessions[i]);
+        dispose_lost_objects(1, i);
       }
       else
       {
@@ -185,45 +185,45 @@ void bless(int blessing)
   }
   else
   {
-    int index = getitem(NULL_ITEM);
-    if(index == CASHVALUE)
+    int slot = getitem(NULL_ITEM);
+    if(slot == CASHVALUE)
     {
       queue_message("Blessing your money has no effect.");
     }
-    else if(index != ABORT)
+    else if(slot != ABORT)
     {
-      bool used = Player.possessions[index]->used;
+      bool used = Player.possessions[slot]->used;
       if(used)
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
-        item_unequip(Player.possessions[index]);
+        item_unequip(Player.possessions[slot]);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
       queue_message("A pure white light surrounds the item... ");
-      if(Player.possessions[index]->blessing < 0 - (blessing + 1))
+      if(Player.possessions[slot]->blessing < 0 - (blessing + 1))
       {
         queue_message("which is evil enough to resist the effect of the blessing!");
       }
-      else if(Player.possessions[index]->blessing < -1)
+      else if(Player.possessions[slot]->blessing < -1)
       {
         queue_message("which disintegrates under the influence of the holy aura!");
-        Player.itemweight -= Player.possessions[index]->weight;
-        dispose_lost_objects(1, Player.possessions[index]);
+        Player.itemweight -= Player.possessions[slot]->weight;
+        dispose_lost_objects(1, slot);
       }
-      else if(Player.possessions[index]->blessing < blessing + 1)
+      else if(Player.possessions[slot]->blessing < blessing + 1)
       {
         queue_message("which now seems affected by afflatus!");
-        Player.possessions[index]->blessing++;
-        Player.possessions[index]->plus = abs(Player.possessions[index]->plus) + 1;
+        Player.possessions[slot]->blessing++;
+        Player.possessions[slot]->plus = abs(Player.possessions[slot]->plus) + 1;
       }
       else
       {
         queue_message("The hierolux fades without any appreciable effect....");
       }
-      if(used && Player.possessions[index])
+      if(used && Player.possessions[slot])
       {
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
-        item_equip(Player.possessions[index]);
+        item_equip(Player.possessions[slot]);
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
       }
     }
@@ -633,78 +633,73 @@ void objdet(int blessing)
 
 void identify(int blessing)
 {
-  int index;
-
   if(blessing == 0)
   {
     queue_message("Identify:");
-    index = getitem(NULL_ITEM);
-    if(index == CASHVALUE)
+    int slot = getitem(NULL_ITEM);
+    if(slot == CASHVALUE)
     {
       queue_message("Your money is really money.");
     }
-    else if(index == ABORT)
+    else if(slot == ABORT)
     {
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
     {
-      if(Player.possessions[index]->objchar == FOOD)
+      if(Player.possessions[slot]->objchar == FOOD)
       {
-        Player.possessions[index]->known = 1;
+        Player.possessions[slot]->known = 1;
       }
       else
       {
-        Player.possessions[index]->known             = 2;
-        Objects[Player.possessions[index]->id].known = 1;
+        Player.possessions[slot]->known             = 2;
+        Objects[Player.possessions[slot]->id].known = 1;
       }
       queue_message("Identified: ");
-      queue_message(itemid(Player.possessions[index].get()));
+      queue_message(itemid(Player.possessions[slot].get()));
     }
   }
   else if(blessing < 0)
   {
     queue_message("You feel forgetful.");
-    for(index = 0; index < MAXITEMS; index++)
+    for(int i = 0; i < MAXITEMS; ++i)
     {
-      if(Player.possessions[index])
+      if(Player.possessions[i])
       {
-        Player.possessions[index]->known             = 0;
-        Objects[Player.possessions[index]->id].known = 0;
+        Player.possessions[i]->known             = 0;
+        Objects[Player.possessions[i]->id].known = 0;
       }
     }
   }
   else
   {
     queue_message("You feel encyclopaedic.");
-    for(index = 0; index < MAXITEMS; index++)
+    for(int i = 0; i < MAXITEMS; ++i)
     {
-      if(Player.possessions[index])
+      if(Player.possessions[i])
       {
-        if(Player.possessions[index]->objchar == FOOD)
+        if(Player.possessions[i]->objchar == FOOD)
         {
-          Player.possessions[index]->known = 1;
+          Player.possessions[i]->known = 1;
         }
         else
         {
-          Player.possessions[index]->known             = 2;
-          Objects[Player.possessions[index]->id].known = 1;
+          Player.possessions[i]->known             = 2;
+          Objects[Player.possessions[i]->id].known = 1;
         }
       }
     }
-    for(index = 0; index < Player.packptr; index++)
+    for(std::unique_ptr<object> &item : Player.pack)
     {
-      if(Player.pack[index])
+      if(item->objchar == FOOD)
       {
-        if(Player.pack[index]->objchar == FOOD)
-        {
-          Player.pack[index]->known = 1;
-        }
-        else
-        {
-          Player.pack[index]->known             = 2;
-          Objects[Player.pack[index]->id].known = 1;
-        }
+        item->known = 1;
+      }
+      else
+      {
+        item->known             = 2;
+        Objects[item->id].known = 1;
       }
     }
   }
@@ -841,8 +836,8 @@ void acquire(int blessing)
 {
   if(blessing < 0)
   {
-    int index = random_item();
-    if(index == ABORT)
+    int slot = random_item();
+    if(slot == ABORT)
     {
       queue_message("You feel fortunate.");
     }
@@ -850,14 +845,14 @@ void acquire(int blessing)
     {
       queue_message("Smoke drifts out of your pack.... ");
       queue_message("Destroyed: ");
-      queue_message(itemid(Player.possessions[index].get()));
-      dispose_lost_objects(1, Player.possessions[index]);
+      queue_message(itemid(Player.possessions[slot].get()));
+      dispose_lost_objects(1, slot);
     }
   }
   else
   {
     auto newthing = std::make_unique<object>();
-    newthing->id     = -1;
+    newthing->id  = -1;
     if(gamestatusp(CHEATED, GameStatus))
     {
       queue_message("Acquire which kind of item: !?][}{)/=%%\\& ");

@@ -106,9 +106,9 @@ void make_prime(int x, int y)
 
   if(Objects[ARTIFACTID + 21].uniqueness != UNIQUE_TAKEN)
   {
-    m->possessions.push_front(std::make_unique<object>(Objects[ARTIFACTID + 21]));
+    m->possessions.emplace_front(std::make_unique<object>(Objects[ARTIFACTID + 21]));
   }
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 // loads the sorcereror's circle into Level
@@ -258,7 +258,7 @@ void make_archmage(int x, int y)
   m->y                       = y;
   Level->site[x][y].creature = m.get();
   m->specialf                = M_SP_COURT;
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 // loads the court of the archmage into Level

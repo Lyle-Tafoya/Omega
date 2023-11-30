@@ -60,7 +60,7 @@ void make_house_npc(int x, int y)
   {
     m_pickup(m.get(), std::make_unique<object>(Objects[m->startthing]));
   }
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 // makes a hiscore npc for mansions
 void make_mansion_npc(int x, int y)
@@ -81,7 +81,7 @@ void make_mansion_npc(int x, int y)
   {
     m_status_set(*m, AWAKE);
   }
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 // loads the house level into Level

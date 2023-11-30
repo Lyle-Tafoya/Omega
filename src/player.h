@@ -7,6 +7,7 @@
 #include <array>
 #include <memory>
 #include <string>
+#include <vector>
 
 // PLAYER STATUS INDICES
 enum status_id
@@ -57,14 +58,13 @@ struct player
   int x, y;   // current player coordinates
   int itemweight, maxweight;
   long options;
-  int packptr;
   std::string meleestr;
   std::array<int, NUMIMMUNITIES> immunity;
   std::array<int, NUMSTATI> status;
   std::array<int, NUMRANKS> rank;
   std::array<long, NUMRANKS> guildxp;
   std::array<std::unique_ptr<object>, MAXITEMS> possessions;
-  std::array<std::unique_ptr<object>, MAXPACK> pack;
+  std::vector<std::unique_ptr<object>> pack;
 };
 
 inline bool optionp(int option, const player &p)

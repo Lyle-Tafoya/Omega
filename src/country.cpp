@@ -522,7 +522,7 @@ void make_high_priest(int x, int y, int deity)
   m->x                       = x;
   m->y                       = y;
   Level->site[x][y].creature = m.get();
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 void random_temple_site(int x, int y, int, int populate)

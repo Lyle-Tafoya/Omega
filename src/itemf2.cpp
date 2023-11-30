@@ -316,7 +316,8 @@ void weapon_demonblade(int dmgmod, std::unique_ptr<object> &o, monster *m)
     queue_message("Demonblade disintegrates with a soft sigh.");
     queue_message("You stop foaming at the mouth.");
     Player.status[BERSERK] = 0;
-    dispose_lost_objects(o->number, o);
+    conform_unused_object(o);
+    o.reset();
   }
   else if(m->specialf == M_SP_DEMON)
   {
@@ -351,7 +352,8 @@ void weapon_demonblade(int dmgmod, std::unique_ptr<object> &o, monster *m)
     {
       queue_message("... and shatters into a thousand lost fragments!");
       p_damage(50, UNSTOPPABLE, "Demonblade exploding");
-      dispose_lost_objects(o->number, o);
+      conform_unused_object(o);
+      o.reset();
     }
     else
     {
@@ -633,7 +635,8 @@ void i_desecrate(std::unique_ptr<object> &o)
   {
     queue_message("How weird, a blessed desecrator... ");
     queue_message("The structure of reality cannot permit such a thing....");
-    dispose_lost_objects(1, o);
+    conform_unused_object(o);
+    o.reset();
   }
   else if(Level->site[Player.x][Player.y].locchar == ALTAR)
   {

@@ -215,7 +215,6 @@ void s_fear()
 // Eventually will be more interesting
 void s_ritual()
 {
-  object *symbol;
   int roomno;
   int x, y;
 
@@ -354,7 +353,8 @@ void s_ritual()
               if(Player.patron == DESTINY)
               {
                 queue_message("Your patrons take pity on you.");
-                if((Player.rank[PRIESTHOOD] < SPRIEST) && (!find_item(&symbol, ARTIFACTID + 19, -1)))
+                object *o;
+                if(Player.rank[PRIESTHOOD] < SPRIEST && !find_item(o, ARTIFACTID + 19, -1))
                 {
                   auto symbol = std::make_unique<object>(Objects[ARTIFACTID + 19]);
                   symbol->known  = 2;

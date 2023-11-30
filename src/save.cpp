@@ -158,7 +158,6 @@ void save_player(std::ofstream &save_file)
   file_write(save_file, Player.itemweight);
   file_write(save_file, Player.maxweight);
   file_write(save_file, Player.options);
-  file_write(save_file, Player.packptr);
 
   file_write(save_file, Player.immunity);
   file_write(save_file, Player.status);
@@ -173,6 +172,7 @@ void save_player(std::ofstream &save_file)
   {
     save_item(save_file, o.get());
   }
+  file_write(save_file, Player.pack.size());
   for(std::unique_ptr<object> &o : Player.pack)
   {
     save_item(save_file, o.get());
@@ -645,7 +645,6 @@ void restore_player(std::ifstream &save_file, player &p)
   file_read(save_file, p.itemweight);
   file_read(save_file, p.maxweight);
   file_read(save_file, p.options);
-  file_read(save_file, p.packptr);
 
   file_read(save_file, p.immunity);
   file_read(save_file, p.status);
@@ -661,9 +660,11 @@ void restore_player(std::ifstream &save_file, player &p)
   {
     p.possessions[i] = restore_item(save_file);
   }
-  for(int i = 0; i < MAXPACK; ++i)
+  decltype(Player.pack)::size_type num_pack_items;
+  file_read(save_file, num_pack_items);
+  for(size_t i = 0; i < num_pack_items; ++i)
   {
-    p.pack[i] = restore_item(save_file);
+    p.pack.emplace_back(restore_item(save_file));
   }
 
   file_read(save_file, size);

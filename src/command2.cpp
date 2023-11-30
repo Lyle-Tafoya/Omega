@@ -83,8 +83,6 @@ void rest()
 // read a scroll, book, tome, etc...
 void peruse()
 {
-  int index;
-
   if(Player.status[BLINDED] > 0)
   {
     queue_message("You're blind -- you can't read!!!");
@@ -96,24 +94,24 @@ void peruse()
   else
   {
     queue_message("Read -- ");
-    index = getitem(SCROLL);
-    if(index == ABORT)
+    int slot = getitem(SCROLL);
+    if(slot == ABORT)
     {
       setgamestatus(SKIP_MONSTERS, GameStatus);
     }
     else
     {
-      std::unique_ptr<object> &obj = Player.possessions[index];
-      if(obj->objchar != SCROLL)
+      std::unique_ptr<object> &o = Player.possessions[slot];
+      if(o->objchar != SCROLL)
       {
         queue_message("There's nothing written on ");
-        queue_message(itemid(obj.get()));
+        queue_message(itemid(o.get()));
       }
       else
       {
         queue_message("You carefully unfurl the scroll....");
-        item_use(obj);
-        dispose_lost_objects(1, obj);
+        item_use(o);
+        dispose_lost_objects(1, slot);
       }
     }
   }
@@ -122,52 +120,51 @@ void peruse()
 void quaff()
 {
   queue_message("Quaff --");
-  int index = getitem(POTION);
-  if(index == ABORT)
+  int slot = getitem(POTION);
+  if(slot == ABORT)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else
   {
-    std::unique_ptr<object> &obj = Player.possessions[index];
-    if(obj->objchar != POTION)
+    std::unique_ptr<object> &o = Player.possessions[slot];
+    if(o->objchar != POTION)
     {
       queue_message("You can't drink ");
-      queue_message(itemid(obj.get()));
+      queue_message(itemid(o.get()));
     }
     else
     {
       queue_message("You drink it down.... ");
-      item_use(obj);
-      dispose_lost_objects(1, obj);
+      item_use(o);
+      dispose_lost_objects(1, slot);
     }
   }
 }
 
 void activate()
 {
-  int index;
-  char response;
-
   queue_message("Activate -- item [i] or artifact [a] or quit [ESCAPE]?");
+  char response;
   do
   {
     response = (char)mcigetc();
   } while((response != 'i') && (response != 'a') && (response != ESCAPE));
   if(response != ESCAPE)
   {
+    int slot;
     if(response == 'i')
     {
-      index = getitem(THING);
+      slot = getitem(THING);
     }
     else
     {
-      index = getitem(ARTIFACT);
+      slot = getitem(ARTIFACT);
     }
-    if(index != ABORT)
+    if(slot != ABORT)
     {
       queue_message("You activate it.... ");
-      item_use(Player.possessions[index]);
+      item_use(Player.possessions[slot]);
     }
     else
     {
@@ -183,27 +180,27 @@ void activate()
 void eat()
 {
   queue_message("Eat --");
-  int index = getitem(FOOD);
-  if(index == ABORT)
+  int slot = getitem(FOOD);
+  if(slot == ABORT)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else
   {
-    std::unique_ptr<object> &obj = Player.possessions[index];
-    if(obj->objchar != FOOD && obj->objchar != CORPSE)
+    std::unique_ptr<object> &o = Player.possessions[slot];
+    if(o->objchar != FOOD && o->objchar != CORPSE)
     {
       queue_message("You can't eat ");
-      queue_message(itemid(obj.get()));
+      queue_message(itemid(o.get()));
     }
     else
     {
-      if(obj->on_use == I_FOOD)
+      if(o->on_use == I_FOOD)
       {
-        Player.food = std::max(0, Player.food + obj->aux);
+        Player.food = std::max(0, Player.food + o->aux);
       }
-      item_use(obj);
-      dispose_lost_objects(1, obj);
+      item_use(o);
+      dispose_lost_objects(1, slot);
       if(Current_Dungeon == E_COUNTRYSIDE)
       {
         Time += 100;
@@ -255,7 +252,7 @@ void pickup()
 
 void drop_pack_item()
 {
-  if(!Player.packptr && Player.cash <= 0)
+  if(Player.pack.empty() && Player.cash <= 0)
   {
     queue_message("You have nothing to drop.");
     return;
@@ -280,42 +277,43 @@ void drop_pack_item()
     std::pair{"|YArtifacts|w",     &artifacts},
     std::pair{"|YMiscellaneous|w", &other    }
   };
-  for(int i = 0; i < Player.packptr; ++i)
+  for(size_t i = 0; i < Player.pack.size(); ++i)
   {
+    char pack_letter = 'a' + (Player.pack.size() - 1 - i);
     object *pack_item = Player.pack[i].get();
     switch(pack_item->objchar)
     {
       case FOOD:
-        food.emplace_back(std::make_pair(pack_item, 'a' + i));
+        food.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case WEAPON:
       case MISSILEWEAPON:
-        weapons.emplace_back(std::make_pair(pack_item, 'a' + i));
+        weapons.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case SCROLL:
-        scrolls.emplace_back(std::make_pair(pack_item, 'a' + i));
+        scrolls.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case POTION:
-        potions.emplace_back(std::make_pair(pack_item, 'a' + i));
+        potions.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case ARMOR:
       case SHIELD:
       case CLOAK:
       case BOOTS:
-        armor.emplace_back(std::make_pair(pack_item, 'a' + i));
+        armor.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case STICK:
-        sticks.emplace_back(std::make_pair(pack_item, 'a' + i));
+        sticks.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case RING:
-        jewelery.emplace_back(std::make_pair(pack_item, 'a' + i));
+        jewelery.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case ARTIFACT:
-        artifacts.emplace_back(std::make_pair(pack_item, 'a' + i));
+        artifacts.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
       case THING:
       default:
-        other.emplace_back(std::make_pair(pack_item, 'a' + i));
+        other.emplace_back(std::make_pair(pack_item, pack_letter));
         break;
     }
   }
@@ -339,6 +337,7 @@ void drop_pack_item()
   menu->load(lines, {"|WDrop Item:|w", ""});
 
   int player_input;
+  size_t pack_index;
   do
   {
     player_input = menu->get_player_input();
@@ -352,50 +351,46 @@ void drop_pack_item()
       calc_melee();
       return;
     }
-  } while((player_input < 'a' || player_input > 'a' + Player.packptr - 1));
-  int index    = player_input - 'a';
-  object *item = Player.pack[index].get();
+    pack_index = Player.pack.size() - 1 - (player_input - 'a');
+  } while(player_input < 'a' || player_input > 'z' || pack_index > Player.pack.size() - 1);
+  object *item = Player.pack[pack_index].get();
   p_drop_at(Player.x, Player.y, item->number, item);
-  for(int i = index; i < Player.packptr - 1; ++i)
-  {
-    Player.pack[i] = std::move(Player.pack[i + 1]);
-  }
-  Player.pack[--Player.packptr].reset();
+  Player.pack.erase(Player.pack.begin() + pack_index);
   calc_melee();
 }
 
 void drop_equipped_item()
 {
   queue_message("Drop --");
-  int index = getitem(CASH);
-  if(index == ABORT)
+  int slot = getitem(CASH);
+  if(slot == ABORT)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
   else
   {
-    if(index == CASHVALUE)
+    if(slot == CASHVALUE)
     {
       drop_money();
     }
-    else if(!Player.possessions[index]->used || !cursed(Player.possessions[index].get()))
+    else if(!Player.possessions[slot]->used || !cursed(Player.possessions[slot].get()))
     {
-      if(Player.possessions[index]->number == 1)
+      if(Player.possessions[slot]->number == 1)
       {
-        p_drop_at(Player.x, Player.y, 1, Player.possessions[index].get());
-        dispose_lost_objects(1, Player.possessions[index]);
+        p_drop_at(Player.x, Player.y, 1, Player.possessions[slot].get());
+        dispose_lost_objects(1, slot);
       }
       else
       {
-        int n = getnumber(Player.possessions[index]->number);
-        p_drop_at(Player.x, Player.y, n, Player.possessions[index].get());
-        dispose_lost_objects(n, Player.possessions[index]);
+        int n = getnumber(Player.possessions[slot]->number);
+        p_drop_at(Player.x, Player.y, n, Player.possessions[slot].get());
+        dispose_lost_objects(n, slot);
       }
     }
     else
     {
       queue_message("You can't seem to get rid of: ");
-      queue_message(itemid(Player.possessions[index].get()));
+      queue_message(itemid(Player.possessions[slot].get()));
     }
   }
   calc_melee();
@@ -558,10 +553,7 @@ void disarm()
 // is it more blessed to give, or receive?
 void give()
 {
-  int index;
   int dx, dy, dindex = 0;
-  monster *m;
-
   queue_message("Give to monster --");
   dindex = getdir();
   if(dindex == ABORT)
@@ -583,23 +575,23 @@ void give()
     }
     else
     {
-      m = Level->site[Player.x + dx][Player.y + dy].creature;
+      monster *m = Level->site[Player.x + dx][Player.y + dy].creature;
       queue_message("Give what? ");
-      index = getitem(CASH);
-      if(index == ABORT)
+      int slot = getitem(CASH);
+      if(slot == ABORT)
       {
         setgamestatus(SKIP_MONSTERS, GameStatus);
       }
-      else if(index == CASHVALUE)
+      else if(slot == CASHVALUE)
       {
         give_money(m);
       }
-      else if(!cursed(Player.possessions[index].get()))
+      else if(!cursed(Player.possessions[slot].get()))
       {
-        auto obj = std::make_unique<object>(*Player.possessions[index]);
+        auto obj = std::make_unique<object>(*Player.possessions[slot]);
         obj->used = false;
         obj->number = 1;
-        dispose_lost_objects(1, Player.possessions[index]);
+        dispose_lost_objects(1, slot);
         queue_message(std::format("Given: {}.", itemid(obj.get())));
         givemonster(m, std::move(obj));
         calc_melee();
@@ -607,7 +599,7 @@ void give()
       else
       {
         queue_message("You can't even give away: ");
-        queue_message(itemid(Player.possessions[index].get()));
+        queue_message(itemid(Player.possessions[slot].get()));
       }
     }
   }
@@ -1160,18 +1152,18 @@ void bash_location()
 void bash_item()
 {
   queue_message("Destroy an item --");
-  int item = getitem(NULL_ITEM);
-  if(item == CASHVALUE)
+  int slot = getitem(NULL_ITEM);
+  if(slot == CASHVALUE)
   {
     queue_message("Can't destroy cash!");
   }
-  else if(item != ABORT)
+  else if(slot != ABORT)
   {
-    std::unique_ptr<object> &obj = Player.possessions[item];
+    std::unique_ptr<object> &obj = Player.possessions[slot];
     if(Player.str + random_range(20) > obj->fragility + random_range(20))
     {
       int item_level = obj->level;
-      if(damage_item(obj) && Player.alignment < 0)
+      if(damage_item(slot) && Player.alignment < 0)
       {
         queue_message("That was fun....");
         gain_experience(item_level * item_level * 5);
@@ -1446,15 +1438,11 @@ void movepincountry(int dx, int dy)
       resetgamestatus(MOUNTED, GameStatus);
       queue_message("With a shrill neigh of defiance, your former steed gallops");
       queue_message("off into the middle distance....");
-      if(Player.packptr != 0)
+      if(!Player.pack.empty())
       {
         queue_message("You remember (too late) that the contents of your pack");
         queue_message("were kept in your steed's saddlebags!");
-        for(int i = 0; i < MAXPACK; ++i)
-        {
-          Player.pack[i].reset();
-        }
-        Player.packptr = 0;
+        Player.pack.clear();
         calc_melee();
       }
     }
@@ -1494,7 +1482,7 @@ void movepincountry(int dx, int dy)
               Player.x = random_range(WIDTH);
               Player.y = random_range(LENGTH);
               queue_message("Your boots disintegrate with a malicious giggle...");
-              dispose_lost_objects(1, Player.possessions[O_BOOTS]);
+              dispose_lost_objects(1, O_BOOTS);
             }
             else if(Player.possessions[O_BOOTS]->known != 2)
             {

@@ -156,7 +156,7 @@ void l_hedge()
         if(Player.possessions[O_CLOAK])
         {
           queue_message("Your cloak was torn on the brambles!");
-          dispose_lost_objects(1, Player.possessions[O_CLOAK]);
+          dispose_lost_objects(1, O_CLOAK);
         }
         else
         {
@@ -393,7 +393,7 @@ void l_magic_pool()
     if(Player.possessions[O_WEAPON_HAND])
     {
       queue_message("You drop your weapon in the pool! It's gone forever!");
-      dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
+      dispose_lost_objects(1, O_WEAPON_HAND);
     }
     else
     {
@@ -791,9 +791,9 @@ void l_air_station()
 
 void l_earth_station()
 {
-  object *o;
   queue_message("The tendrilled mass reaches out for you from the muddy ooze.");
-  if(find_item(&o, THINGID + 6, -1))
+  object *o;
+  if(find_item(o, THINGID + 6, -1))
   {
     queue_message("A splash of salt water does nothing to dissuade the vines.");
   }
@@ -846,7 +846,6 @@ void l_earth_station()
 
 void l_void_station()
 {
-  bool something = false;
   queue_message("You are at the brink of an endless void. Enter it? [yn] ");
   if(ynq() == 'y')
   {
@@ -866,7 +865,7 @@ void l_void_station()
     {
       queue_message("You enter the void.");
       queue_message("You feel a sudden surge of power from five directions.");
-      something = (Player.packptr > 0);
+      bool something = !Player.pack.empty();
       if(!something)
       {
         for(int i = 0; i < MAXITEMS && !something; ++i)
@@ -1008,12 +1007,12 @@ void l_temple_warning()
 
 void l_throne()
 {
-  object *o;
   queue_message("You have come upon a huge ornately appointed throne!");
   queue_message("Sit in it? [yn] ");
   if(ynq() == 'y')
   {
-    if(!find_item(&o, ARTIFACTID + 22, -1))
+    object *o;
+    if(!find_item(o, ARTIFACTID + 22, -1))
     {
       queue_message("The throne emits an eerie violet-black radiance.");
       queue_message("You find, to your horror, that you cannot get up!");

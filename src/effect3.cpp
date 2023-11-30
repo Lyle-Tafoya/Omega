@@ -115,7 +115,7 @@ void summon(int blessing, int id)
     {
       m_status_set(*m, HOSTILE);
     }
-    Level->mlist.push_front(std::move(m));
+    Level->mlist.emplace_front(std::move(m));
   }
 }
 
@@ -468,12 +468,12 @@ void disintegrate(int x, int y)
     if(Player.possessions[O_CLOAK])
     {
       queue_message("Your cloak disintegrates!");
-      dispose_lost_objects(1, Player.possessions[O_CLOAK]);
+      dispose_lost_objects(1, O_CLOAK);
     }
     else if(Player.possessions[O_ARMOR])
     {
       queue_message("Your armor disintegrates!");
-      dispose_lost_objects(1, Player.possessions[O_ARMOR]);
+      dispose_lost_objects(1, O_ARMOR);
     }
     else
     {
@@ -594,7 +594,7 @@ void acid_cloud()
   queue_message("You are caught in an acid cloud!  ");
   if(Player.possessions[O_CLOAK])
   {
-    damage_item(Player.possessions[O_CLOAK]);
+    damage_item(O_CLOAK);
     queue_message("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
   }
@@ -602,7 +602,7 @@ void acid_cloud()
   {
     queue_message("You are burned by acid.");
     p_damage(3, ACID, "an acid cloud");
-    damage_item(Player.possessions[O_ARMOR]);
+    damage_item(O_ARMOR);
   }
   else if(p_immune(ACID))
   {

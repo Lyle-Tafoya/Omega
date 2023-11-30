@@ -624,13 +624,9 @@ long calc_points()
       points += Player.possessions[i]->level * (Player.possessions[i]->known + 1);
     }
   }
-
-  for(int i = 0; i < MAXPACK; ++i)
+  for(std::unique_ptr<object> &item : Player.pack)
   {
-    if(Player.pack[i])
-    {
-      points += Player.pack[i]->level * (Player.pack[i]->known + 1);
-    }
+    points += item->level * (item->known + 1);
   }
 
   for(int i = 0; i < NUMRANKS; ++i)
@@ -871,16 +867,9 @@ void calc_weight()
       weight += Player.possessions[i]->weight * Player.possessions[i]->number;
     }
   }
-  if(Player.possessions[O_WEAPON_HAND] && Player.possessions[O_READY_HAND] == Player.possessions[O_WEAPON_HAND])
+  for(std::unique_ptr<object> &item : Player.pack)
   {
-    weight -= Player.possessions[O_READY_HAND]->weight * Player.possessions[O_READY_HAND]->number;
-  }
-  for(int i = 0; i < MAXPACK; ++i)
-  {
-    if(Player.pack[i])
-    {
-      weight += Player.pack[i]->weight * Player.pack[i]->number;
-    }
+    weight += item->weight * item->number;
   }
   Player.itemweight = weight;
   dataprint();

@@ -550,17 +550,8 @@ void initplayer(bool play_yourself = false)
 {
   Player.itemweight = 0;
   Player.food       = 36;
-  Player.packptr    = 0;
   Behavior          = -1;
   Player.options    = 0;
-  for(int i = 0; i < MAXITEMS; ++i)
-  {
-    Player.possessions[i].reset();
-  }
-  for(int i = 0; i < MAXPACK; ++i)
-  {
-    Player.pack[i].reset();
-  }
   for(int i = 0; i < NUMIMMUNITIES; ++i)
   {
     Player.immunity[i] = 0;

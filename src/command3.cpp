@@ -362,20 +362,17 @@ void version()
 
 void fire()
 {
-  int index, x1, y1, x2, y2;
-  monster *m;
-
   queue_message("Fire/Throw --");
-  index = getitem(NULL_ITEM);
-  if(index == ABORT)
+  int slot = getitem(NULL_ITEM);
+  if(slot == ABORT)
   {
     setgamestatus(SKIP_MONSTERS, GameStatus);
   }
-  else if(index == CASHVALUE)
+  else if(slot == CASHVALUE)
   {
     queue_message("Can't fire money at something!");
   }
-  else if(cursed(Player.possessions[index].get()) && Player.possessions[index]->used)
+  else if(cursed(Player.possessions[slot].get()) && Player.possessions[slot]->used)
   {
     queue_message("You can't seem to get rid of it!");
     // load a crossbow
@@ -383,16 +380,16 @@ void fire()
   else if(Player.possessions[O_WEAPON_HAND] &&
           (Player.possessions[O_WEAPON_HAND]->id == WEAPONID + 27) &&
           (Player.possessions[O_WEAPON_HAND]->aux != LOADED) &&
-          (Player.possessions[index]->id == WEAPONID + 29))
+          (Player.possessions[slot]->id == WEAPONID + 29))
   {
     queue_message("You crank back the crossbow and load a bolt.");
     Player.possessions[O_WEAPON_HAND]->aux = LOADED;
   }
   else
   {
-    std::unique_ptr<object> &obj = Player.possessions[index];
-    x1 = x2 = Player.x;
-    y1 = y2 = Player.y;
+    std::unique_ptr<object> &obj = Player.possessions[slot];
+    int x1 = Player.x, x2 = Player.x;
+    int y1 = Player.y, y2 = Player.y;
     setspot(x2, y2);
     if(x2 == ABORT || y2 == ABORT)
     {
@@ -407,7 +404,8 @@ void fire()
     else
     {
       do_object_los(obj->objchar, &x1, &y1, x2, y2);
-      if((m = Level->site[x1][y1].creature))
+      monster *m = Level->site[x1][y1].creature;
+      if(m)
       {
         int hitroll;
         if(obj->used)
@@ -432,7 +430,7 @@ void fire()
           { // the monster can have treasure/objects
             queue_message("Your gift is caught!");
             givemonster(m, split_item(1, obj.get()));
-            dispose_lost_objects(1, obj);
+            dispose_lost_objects(1, slot);
           }
           else
           {
@@ -440,7 +438,7 @@ void fire()
             setgamestatus(SUPPRESS_PRINTING, GameStatus);
             p_drop_at(x1, y1, 1, obj.get());
             resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-            dispose_lost_objects(1, obj);
+            dispose_lost_objects(1, slot);
           }
         }
         else if(obj->aux == I_SCYTHE)
@@ -449,21 +447,21 @@ void fire()
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           p_drop_at(x1, y1, 1, obj.get());
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-          dispose_lost_objects(1, obj);
+          dispose_lost_objects(1, slot);
         }
         else if(hitp(hitroll, m->ac))
         { // ok already, hit the damn thing
           weapon_use(2 * statmod(Player.str), obj, m);
           if((obj->id == WEAPONID + 28 || obj->id == WEAPONID + 29) && !random_range(4))
           {
-            dispose_lost_objects(1, obj);
+            dispose_lost_objects(1, slot);
           }
           else
           {
             setgamestatus(SUPPRESS_PRINTING, GameStatus);
             p_drop_at(x1, y1, 1, obj.get());
             resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-            dispose_lost_objects(1, obj);
+            dispose_lost_objects(1, slot);
           }
         }
         else
@@ -472,7 +470,7 @@ void fire()
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
           p_drop_at(x1, y1, 1, obj.get());
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-          dispose_lost_objects(1, obj);
+          dispose_lost_objects(1, slot);
         }
       }
       else
@@ -480,7 +478,7 @@ void fire()
         setgamestatus(SUPPRESS_PRINTING, GameStatus);
         p_drop_at(x1, y1, 1, obj.get());
         resetgamestatus(SUPPRESS_PRINTING, GameStatus);
-        dispose_lost_objects(1, obj);
+        dispose_lost_objects(1, slot);
         plotspot(x1, y1, true);
       }
     }
@@ -1128,7 +1126,7 @@ void tunnel()
                  (Player.possessions[O_WEAPON_HAND]->fragility < random_range(20))))
         {
           queue_message("Clang! Uh oh...");
-          damage_item(Player.possessions[O_WEAPON_HAND]);
+          damage_item(O_WEAPON_HAND);
         }
         else
         {
@@ -1291,7 +1289,7 @@ void dismount_steed()
     m->y                                     = Player.y;
     m->status                                = MOBILE + SWIMMING;
     Level->site[Player.x][Player.y].creature = m.get();
-    Level->mlist.push_front(std::move(m));
+    Level->mlist.emplace_front(std::move(m));
   }
   calc_melee();
 }

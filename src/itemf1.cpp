@@ -757,7 +757,10 @@ void i_key(std::unique_ptr<object> &o)
       if((o->blessing < 0) || (Level->depth == MaxDungeonLevels - 1))
       {
         queue_message("The key disintegrates!");
-        dispose_lost_objects(1, o);
+        if(--o->number < 1)
+        {
+          o.reset();
+        }
       }
       else
       {
@@ -1188,12 +1191,18 @@ void i_trap(std::unique_ptr<object> &o)
     Level->site[Player.x][Player.y].p_locf = o->aux;
     lset(Player.x, Player.y, CHANGED, *Level);
   }
-  dispose_lost_objects(1, o);
+  if(--o->number < 1)
+  {
+    o.reset();
+  }
 }
 
 void i_raise_portcullis(std::unique_ptr<object> &o)
 {
   l_raise_portcullis();
   queue_message("The box beeps once and explodes in your hands!");
-  dispose_lost_objects(1, o);
+  if(--o->number < 1)
+  {
+    o.reset();
+  }
 }

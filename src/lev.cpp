@@ -96,7 +96,7 @@ void make_country_monsters(chtype terrain)
       lset(m->x, m->y, CHANGED, *Level);
     }
 
-    Level->mlist.push_front(std::move(m));
+    Level->mlist.emplace_front(std::move(m));
   }
 }
 
@@ -451,7 +451,7 @@ void populate_level(int monstertype)
       lset(x, y, CHANGED, *Level);
     }
 
-    Level->mlist.push_front(std::move(m));
+    Level->mlist.emplace_front(std::move(m));
   }
 }
 
@@ -464,7 +464,7 @@ void wandercheck()
     findspace(&x, &y, -1);
     std::unique_ptr<monster> m = m_create(x, y, WANDERING, difficulty());
     Level->site[x][y].creature = m.get();
-    Level->mlist.push_front(std::move(m));
+    Level->mlist.emplace_front(std::move(m));
   }
 }
 
@@ -483,7 +483,7 @@ void make_site_monster(int i, int j, int mid)
   m->x                       = i;
   m->y                       = j;
   Level->site[i][j].creature = m.get();
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 // make and return an appropriate monster for the level and depth
@@ -551,26 +551,24 @@ std::unique_ptr<monster> m_create(int x, int y, int kind, int level)
 // make creature allocates space for the creature
 std::unique_ptr<monster> make_creature(int mid)
 {
-  auto newmonster = std::make_unique<monster>();
-
   if(mid == -1)
   {
     mid = random_range(ML9);
   }
-  *newmonster = Monsters[mid];
-  if((mid == ANGEL) || (mid == HIGH_ANGEL) || (mid == ARCHANGEL))
+  auto m = std::make_unique<monster>(Monsters[mid]);
+  if(mid == ANGEL || mid == HIGH_ANGEL || mid == ARCHANGEL)
   {
     // aux1 field of an angel is its deity
     if(Current_Environment == E_TEMPLE)
     {
-      newmonster->aux1 = Country[LastCountryLocX][LastCountryLocY].aux;
+      m->aux1 = Country[LastCountryLocX][LastCountryLocY].aux;
     }
     else
     {
-      newmonster->aux1 = random_range(6) + 1;
+      m->aux1 = random_range(6) + 1;
     }
     std::string angel_name;
-    switch(newmonster->aux1)
+    switch(m->aux1)
     {
       case ODIN:
         angel_name = std::format("{} of Odin", Monsters[mid].monstring);
@@ -591,77 +589,77 @@ std::unique_ptr<monster> make_creature(int mid)
         angel_name = std::format("{} of Balance", Monsters[mid].monstring);
         break;
     }
-    newmonster->monstring = angel_name;
+    m->monstring = angel_name;
   }
   else if(mid == ZERO_NPC || mid == WEREHUMAN)
   {
     // generic 0th level human, or a were-human
-    newmonster->monstring = mantype();
-    newmonster->corpsestr = std::format("dead {}", newmonster->monstring);
+    m->monstring = mantype();
+    m->corpsestr = std::format("dead {}", m->monstring);
   }
-  else if((newmonster->monchar & 0xff) == '!')
+  else if((m->monchar & 0xff) == '!')
   {
     // the nymph/satyr and incubus/succubus
     if(random_range(2))
     {
-      newmonster->monchar   = 'n' | CLR(RED);
-      newmonster->monstring = "nymph";
-      newmonster->corpsestr = "dead nymph";
+      m->monchar   = 'n' | CLR(RED);
+      m->monstring = "nymph";
+      m->corpsestr = "dead nymph";
     }
     else
     {
-      newmonster->monchar   = 's' | CLR(RED);
-      newmonster->monstring = "satyr";
-      newmonster->corpsestr = "dead satyr";
+      m->monchar   = 's' | CLR(RED);
+      m->monstring = "satyr";
+      m->corpsestr = "dead satyr";
     }
-    if(newmonster->id == INCUBUS)
+    if(m->id == INCUBUS)
     {
-      if((newmonster->monchar & 0xff) == 'n')
+      if((m->monchar & 0xff) == 'n')
       {
-        newmonster->corpsestr = "dead succubus";
+        m->corpsestr = "dead succubus";
       }
       else
       {
-        newmonster->corpsestr = "dead incubus";
+        m->corpsestr = "dead incubus";
       }
     }
   }
   if(mid == NPC)
   {
-    make_log_npc(newmonster.get());
+    make_log_npc(m.get());
   }
   else if(mid == HISCORE_NPC)
   {
-    make_hiscore_npc(newmonster.get(), random_range(15));
+    make_hiscore_npc(m.get(), random_range(15));
   }
   else
   {
-    if(newmonster->sleep < random_range(100))
+    if(m->sleep < random_range(100))
     {
-      m_status_set(*newmonster, AWAKE);
+      m_status_set(*m, AWAKE);
     }
-    if(newmonster->startthing > -1 && Objects[newmonster->startthing].uniqueness <= UNIQUE_MADE)
+    if(m->startthing > -1 && Objects[m->startthing].uniqueness <= UNIQUE_MADE)
     {
-      m_pickup(newmonster.get(), std::make_unique<object>(Objects[newmonster->startthing]));
+      m_pickup(m.get(), std::make_unique<object>(Objects[m->startthing]));
     }
-    int treasures = random_range(newmonster->treasure);
+    int treasures = random_range(m->treasure);
     for(int i = 0; i < treasures; ++i)
     {
       std::unique_ptr<object> o;
       do
       {
-        o = create_object(newmonster->level);
+        o = create_object(m->level);
         if(o->uniqueness != COMMON)
         {
           Objects[o->id].uniqueness = UNIQUE_UNMADE;
           o.reset();
         }
       } while(!o);
-      m_pickup(newmonster.get(), std::move(o));
+      m_pickup(m.get(), std::move(o));
     }
   }
-  newmonster->click = (Tick + 1) % 50;
-  return newmonster;
+  m->click = (Tick + 1) % 50;
+  return m;
 }
 
 // drop treasures randomly onto level

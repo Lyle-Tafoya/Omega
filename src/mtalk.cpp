@@ -262,7 +262,7 @@ void m_talk_guard(monster *m)
       else
       {
         queue_message("Mollified, the guard disarms you and sends you away.");
-        dispose_lost_objects(1, Player.possessions[O_WEAPON_HAND]);
+        dispose_lost_objects(1, O_WEAPON_HAND);
         pacify_guards();
       }
     }

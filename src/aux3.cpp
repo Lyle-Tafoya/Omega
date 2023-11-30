@@ -88,7 +88,6 @@ void indoors_random_event()
     case 10:
       queue_message("You trip over something hidden in a shadow...");
       Level->site[Player.x][Player.y].things.emplace_back(create_object(difficulty()));
-      assert(Level->site[Player.x][Player.y].things.back()); // WDT I want to make sure...
       pickup();
       break;
     case 11:
@@ -1191,14 +1190,7 @@ bool stonecheck(int alignment)
       queue_message("The stone glows black");
       queue_message("A burden has been removed from your shoulders.....");
       queue_message("Your pack has disintegrated!");
-      for(int i = 0; i < MAXPACK; ++i)
-      {
-        if(Player.pack[i])
-        {
-          Player.pack[i].reset();
-        }
-      }
-      Player.packptr = 0;
+      Player.pack.clear();
       break;
     case 3:
       queue_message("The stone glows microwave");

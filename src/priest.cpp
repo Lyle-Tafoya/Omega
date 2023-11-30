@@ -76,7 +76,7 @@ int check_sacrilege(int deity)
             {
               if(Player.possessions[i] && Player.possessions[i]->blessing > -1)
               {
-                dispose_lost_objects(Player.possessions[i]->number, Player.possessions[i]);
+                dispose_lost_objects(Player.possessions[i]->number, i);
               }
             }
             queue_message("You feel Set's Black Hand on your heart....");
@@ -254,7 +254,7 @@ void hp_req_test()
   switch(Player.patron)
   {
     case ODIN:
-      if(find_item(&o, ARTIFACTID + 15, -1))
+      if(find_item(o, ARTIFACTID + 15, -1))
       {
         make_hp(o);
       }
@@ -264,7 +264,7 @@ void hp_req_test()
       }
       break;
     case SET:
-      if(find_item(&o, ARTIFACTID + 14, -1))
+      if(find_item(o, ARTIFACTID + 14, -1))
       {
         make_hp(o);
       }
@@ -274,7 +274,7 @@ void hp_req_test()
       }
       break;
     case ATHENA:
-      if(find_item(&o, ARTIFACTID + 17, -1))
+      if(find_item(o, ARTIFACTID + 17, -1))
       {
         make_hp(o);
       }
@@ -284,7 +284,7 @@ void hp_req_test()
       }
       break;
     case HECATE:
-      if(find_item(&o, ARTIFACTID + 16, -1))
+      if(find_item(o, ARTIFACTID + 16, -1))
       {
         make_hp(o);
       }
@@ -294,19 +294,19 @@ void hp_req_test()
       }
       break;
     case DRUID:
-      if(find_item(&o, ARTIFACTID + 14, -1))
+      if(find_item(o, ARTIFACTID + 14, -1))
       {
         make_hp(o);
       }
-      else if(find_item(&o, ARTIFACTID + 15, -1))
+      else if(find_item(o, ARTIFACTID + 15, -1))
       {
         make_hp(o);
       }
-      else if(find_item(&o, ARTIFACTID + 16, -1))
+      else if(find_item(o, ARTIFACTID + 16, -1))
       {
         make_hp(o);
       }
-      else if(find_item(&o, ARTIFACTID + 17, -1))
+      else if(find_item(o, ARTIFACTID + 17, -1))
       {
         make_hp(o);
       }
@@ -316,7 +316,7 @@ void hp_req_test()
       }
       break;
     case DESTINY:
-      if(find_item(&o, ARTIFACTID + 19, -1))
+      if(find_item(o, ARTIFACTID + 19, -1))
       {
         make_hp(o);
       }
@@ -507,7 +507,7 @@ int increase_priest_rank(int deity)
 // prayer occurs at altars, hence name of function
 void l_altar()
 {
-  int i, deity;
+  int deity;
   char response;
 
   if(Current_Environment == E_COUNTRYSIDE)
@@ -601,23 +601,23 @@ void l_altar()
       else if(response == 's')
       {
         queue_message("Which item to Sacrifice?");
-        i = getitem(NULL_ITEM);
-        if(i == ABORT)
+        int slot = getitem(NULL_ITEM);
+        if(slot == ABORT)
         {
-          i = 0;
+          slot = 0;
         }
-        if(!Player.possessions[i])
+        if(!Player.possessions[slot])
         {
           queue_message("You have insulted your deity!");
           queue_message("Not a good idea, as it turns out...");
           dispel(-1);
           p_damage(Player.hp - 1, UNSTOPPABLE, "a god's pique");
         }
-        else if(true_item_value(Player.possessions[i].get()) >
+        else if(true_item_value(Player.possessions[slot].get()) >
                 (long)(Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * Player.rank[PRIESTHOOD] * 50))
         {
           queue_message("With a burst of blue flame, your offering vanishes!");
-          dispose_lost_objects(1, Player.possessions[i]);
+          dispose_lost_objects(1, slot);
           queue_message("A violet nimbus settles around your head and slowly fades.");
           Blessing = true;
         }
@@ -626,15 +626,15 @@ void l_altar()
           queue_message("A darkling glow envelopes your offering!");
           queue_message("The glow slowly fades....");
           setgamestatus(SUPPRESS_PRINTING, GameStatus);
-          if(Player.possessions[i]->used)
+          if(Player.possessions[slot]->used)
           {
-            item_unequip(Player.possessions[i]);
-            Player.possessions[i]->blessing = -1 - abs(Player.possessions[i]->blessing);
-            item_equip(Player.possessions[i]);
+            item_unequip(Player.possessions[slot]);
+            Player.possessions[slot]->blessing = -1 - abs(Player.possessions[slot]->blessing);
+            item_equip(Player.possessions[slot]);
           }
           else
           {
-            Player.possessions[i]->blessing = -1 - abs(Player.possessions[i]->blessing);
+            Player.possessions[slot]->blessing = -1 - abs(Player.possessions[slot]->blessing);
           }
           resetgamestatus(SUPPRESS_PRINTING, GameStatus);
         }

@@ -198,8 +198,6 @@ void l_merc_guild()
 
 void l_castle()
 {
-  object *o;
-
   if(Player.level < 3)
   {
     queue_message("You can't possibly enter the castle, you nobody!");
@@ -282,7 +280,8 @@ void l_castle()
     }
     else if(Player.rank[NOBILITY] == LORD)
     {
-      if(find_item(&o, ARTIFACTID + 0, -1))
+      object *o;
+      if(find_item(o, ARTIFACTID + 0, -1))
       {
         queue_message("My sincerest thanks, my lord.");
         queue_message("You have proved yourself a true paragon of chivalry");
@@ -499,7 +498,7 @@ void l_arena()
     change_environment(E_ARENA);
     queue_message("Let the battle begin....");
 
-    Level->mlist.push_front(std::move(m));
+    Level->mlist.emplace_front(std::move(m));
 
     time_clock(true);
     while(Current_Environment == E_ARENA)

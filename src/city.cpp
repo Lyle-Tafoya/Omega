@@ -208,7 +208,7 @@ void make_justiciar(int x, int y)
   m->click                   = (Tick + 1) % 60;
   Level->site[x][y].creature = m.get();
   m_status_reset(*m, AWAKE);
-  Level->mlist.push_front(std::move(m));
+  Level->mlist.emplace_front(std::move(m));
 }
 
 // undead are not hostile unless disturbed....

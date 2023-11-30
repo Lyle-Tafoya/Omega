@@ -95,23 +95,23 @@ void pickup_at(int x, int y)
 {
   resetgamestatus(FAST_MOVE, GameStatus);
 
-  std::vector<std::unique_ptr<object>> &object_list = Level->site[x][y].things;
-  if(!object_list.empty() && object_list.size() == 1)
+  std::vector<std::unique_ptr<object>> &items = Level->site[x][y].things;
+  if(items.size() == 1)
   {
-    gain_item(std::move(object_list.back()));
-    object_list.pop_back();
+    gain_item(std::move(items.back()));
+    items.pop_back();
   }
   else
   {
-    for(auto i = object_list.size(); i-- > 0;)
+    for(auto i = items.size(); i-- > 0;)
     {
-      std::unique_ptr<object> &item = object_list[i];
+      std::unique_ptr<object> &item = items[i];
       queue_message(std::format("Pick up: {} [ynq] ", itemid(item.get())));
       char player_input = ynq();
       if(player_input == 'y')
       {
         gain_item(std::move(item));
-        object_list.erase(object_list.begin() + i);
+        items.erase(items.begin() + i);
       }
       else if(player_input == 'q')
       {
@@ -522,36 +522,18 @@ void givemonster(monster *m, std::unique_ptr<object> o)
 }
 
 // removes n of object from inventory; frees object if appropriate
-void dispose_lost_objects(int n, std::unique_ptr<object> &obj)
+void dispose_lost_objects(int n, int slot)
 {
-  bool conformed = false, subtracted = false;
-
-  if(!obj)
+  std::unique_ptr<object> &item = Player.possessions[slot];
+  if(!item)
   {
     return;
   }
-  for(std::unique_ptr<object> &inventory_item : Player.possessions)
+  item->number -= n;
+  if(item->number < 1)
   {
-    if(inventory_item == obj)
-    {
-      if(!subtracted)
-      {
-        obj->number -= n;
-        subtracted = true;
-      }
-      if(obj->number < 1)
-      {
-        if(!conformed)
-        {
-          conform_unused_object(obj);
-          conformed = true;
-        }
-      }
-    }
-  }
-  if(obj->number < 1)
-  {
-    obj.reset();
+    conform_unused_object(item);
+    item.reset();
   }
 }
 
@@ -608,10 +590,7 @@ char index_to_key(signed int index)
 int getitem(chtype itype)
 {
   std::string invstr;
-  char key;
-  bool ok = false, drewmenu = false, found = false;
-
-  found     = (itype == NULL_ITEM || (itype == CASH && Player.cash > 0));
+  bool found = itype == NULL_ITEM || (itype == CASH && Player.cash > 0);
   for(int i = 1; i < MAXITEMS; ++i)
   {
     if(Player.possessions[i])
@@ -624,7 +603,7 @@ int getitem(chtype itype)
       }
     }
   }
-  if((itype == CASH) && found)
+  if(itype == CASH && found)
   {
     invstr += '$';
   }
@@ -638,7 +617,9 @@ int getitem(chtype itype)
     queue_message("Select an item [");
     queue_message(invstr);
     queue_message(",?] ");
-    while(!ok)
+    bool drewmenu = false;
+    char key;
+    for(bool ok = false; !ok;)
     {
       key = (char)mcigetc();
       if(key == '?')
@@ -696,11 +677,11 @@ bool merge_item_with_pack(const object *o)
   {
     return false;
   }
-  for(std::unique_ptr<object> &pack_item : Player.pack)
+  for(std::unique_ptr<object> &item : Player.pack)
   {
-    if(pack_item && objequal(o, pack_item.get()))
+    if(item && objequal(o, item.get()))
     {
-      pack_item->number += o->number;
+      item->number += o->number;
       return true;
     }
   }
@@ -726,15 +707,10 @@ bool merge_item_with_inventory(const object *o)
   return false;
 }
 
-// inserts the item at the start of the pack array
+// inserts the item at the end of the pack array
 void push_pack(std::unique_ptr<object> o)
 {
-  for(int i = Player.packptr; i > 0; --i)
-  {
-    Player.pack[i] = std::move(Player.pack[i - 1]);
-  }
-  Player.pack[0] = std::move(o);
-  Player.packptr++;
+  Player.pack.emplace_back(std::move(o));
 }
 
 void add_to_pack(std::unique_ptr<object> o)
@@ -743,7 +719,7 @@ void add_to_pack(std::unique_ptr<object> o)
   {
     return;
   }
-  if(Player.packptr >= MAXPACK)
+  if(Player.pack.size() >= MAXPACK)
   {
     queue_message("Your pack is full. The item drops to the ground.");
     drop_at(Player.x, Player.y, std::move(o));
@@ -761,7 +737,7 @@ void get_to_pack(std::unique_ptr<object> o)
   {
     return;
   }
-  if(Player.packptr >= MAXPACK)
+  if(Player.pack.size() >= MAXPACK)
   {
     queue_message("Your pack is full.");
     p_drop_at(Player.x, Player.y, o->number, o.get());
@@ -798,20 +774,19 @@ void gain_item(std::unique_ptr<object> o)
 
 int pack_item_cost(int index)
 {
-  int cost;
+  index = Player.pack.size() - 1 - index;
   if(index > 20)
   {
-    cost = 17;
+    return 17;
   }
   else if(index > 15)
   {
-    cost = 7;
+    return 7;
   }
   else
   {
-    cost = 2;
+    return 2;
   }
-  return cost;
 }
 
 bool is_two_handed(const object *o)
@@ -871,7 +846,7 @@ void pack_extra_items(object *item)
   extra->number = item->number - 1;
   extra->used   = false;
   item->number  = 1;
-  if(Player.packptr < MAXPACK)
+  if(Player.pack.size() < MAXPACK)
   {
     queue_message("Putting extra items back in pack.");
     push_pack(std::move(extra));
@@ -887,24 +862,20 @@ void pack_extra_items(object *item)
 // WDT -- 'response' must be an index into the pack
 void use_pack_item(int response, int slot)
 {
-  int i = pack_item_cost(response);
-  if(i > 10)
+  int duration = pack_item_cost(response);
+  if(duration > 10)
   {
     queue_message("You begin to rummage through your pack.");
   }
-  if(i > 5)
+  if(duration > 5)
   {
     queue_message("You search your pack for the item.");
   }
   queue_message("You take the item from your pack.");
-  Command_Duration += i;
+  Command_Duration += duration;
 
   Player.possessions[slot] = std::move(Player.pack[response]);
-  for(i = response; i < Player.packptr - 1; ++i)
-  {
-    Player.pack[i] = std::move(Player.pack[i + 1]);
-  }
-  Player.pack[--Player.packptr] = nullptr;
+  Player.pack.erase(Player.pack.begin() + response);
 
   if(item_useable(Player.possessions[slot].get(), slot))
   {
@@ -918,26 +889,26 @@ void use_pack_item(int response, int slot)
 
 // WDT HACK!  This ought to be in scr.c, along with its companion.  However,
 // right now it's only used in the function directly below.
-int aux_display_pack(int start_item, int slot)
+size_t aux_display_pack(size_t start_item, int slot)
 {
-  int i = start_item, items;
-  const char *depth_string;
-  if(Player.packptr < 1)
+  size_t i = Player.pack.size() - start_item;
+  if(Player.pack.empty())
   {
     queue_message("Pack is empty.");
   }
-  else if(Player.packptr <= start_item)
+  else if(Player.pack.size() <= start_item)
   {
     queue_message("You see the leather at the bottom of the pack.");
   }
   else
   {
     menuclear();
-    items = 0;
-    for(i = start_item; i < Player.packptr && items < ScreenLength - 5; ++i)
+    int items = 0;
+    while(i-- > 0  && items < ScreenLength - 5)
     {
       if(aux_slottable(Player.pack[i].get(), slot))
       {
+        std::string depth_string;
         if(pack_item_cost(i) > 10)
         {
           depth_string = "**";
@@ -955,7 +926,7 @@ int aux_display_pack(int start_item, int slot)
           menuprint("Items in Pack:\n");
         }
         menuprint(
-          std::format("  {}: {} {}\n", static_cast<char>('a' + i), depth_string, itemid(Player.pack[i].get()))
+          std::format("  {}: {} {}\n", static_cast<char>('a' + Player.pack.size() - 1 - i), depth_string, itemid(Player.pack[i].get()))
         );
         ++items;
       }
@@ -970,31 +941,30 @@ int aux_display_pack(int start_item, int slot)
     }
     showmenu();
   }
-  return i;
+  return Player.pack.size() - i;
 }
 
 // takes something from pack, puts to slot
 void take_from_pack(int slot)
 {
-  char pack_item, last_item;
-  bool quit = false, ok = true;
-  int response;
-  if(Player.packptr < 1)
+  if(Player.pack.empty())
   {
     queue_message("Pack is empty!");
   }
   else
   {
-    pack_item = 0;
+    int response;
+    int pack_item = 0;
+    bool quit = false, ok;
     do
     {
       ok        = true;
-      last_item = aux_display_pack(pack_item, slot);
-      if(last_item == Player.packptr && pack_item == 0)
+      size_t last_item = aux_display_pack(pack_item, slot);
+      if(last_item == Player.pack.size() && pack_item == 0)
       {
         queue_message("Enter pack slot letter or ESCAPE to quit.");
       }
-      else if(last_item == Player.packptr)
+      else if(last_item == Player.pack.size())
       {
         queue_message("Enter pack slot letter, - to go back, or ESCAPE to quit.");
       }
@@ -1019,7 +989,7 @@ void take_from_pack(int slot)
       }
       else if(response == '+')
       {
-        if(last_item < Player.packptr)
+        if(last_item < Player.pack.size())
         {
           pack_item = last_item;
         }
@@ -1035,16 +1005,17 @@ void take_from_pack(int slot)
       }
       else
       {
-        ok = ((response >= 'a') && (response < 'a' + Player.packptr));
+        size_t pack_index = response - 'a';
+        ok = response >= 'a' && response <= 'z' && pack_index < Player.pack.size();
         if(ok)
         {
-          ok = slottable(Player.pack[response - 'a'].get(), slot);
+          ok = slottable(Player.pack[Player.pack.size() - 1 - pack_index].get(), slot);
         }
       }
     } while(!ok);
     if(!quit)
     {
-      use_pack_item(response - 'a', slot);
+      use_pack_item(Player.pack.size() - 1 - (response - 'a'), slot);
     }
   }
   print_inventory_menu();
@@ -1108,9 +1079,9 @@ void put_to_pack(int slot)
     }
     else if(num > 0)
     {
-      std::unique_ptr<object> temp = split_item(num, inventory_item.get());
-      add_to_pack(std::move(temp));
-      dispose_lost_objects(num, inventory_item);
+      std::unique_ptr<object> o = split_item(num, inventory_item.get());
+      add_to_pack(std::move(o));
+      dispose_lost_objects(num, slot);
     }
   }
 }
@@ -1168,13 +1139,13 @@ std::unique_ptr<object> split_item(int num, const object *item)
 {
   if(item)
   {
-    auto newitem = std::make_unique<object>(*item);
+    auto o = std::make_unique<object>(*item);
     if(num <= item->number)
     {
-      newitem->number = num;
+      o->number = num;
     }
-    newitem->used = false;
-    return newitem;
+    o->used = false;
+    return o;
   }
   else
   {
@@ -1248,36 +1219,32 @@ bool cursed(const object *obj)
 // returns true if item with id and charge is found in pack or in
 // inventory slot. charge is used to differentiate
 // corpses instead of aux, which is their food value.
-bool find_item(object **o, int id, int chargeval)
+bool find_item(object *&o, int id, int chargeval)
 {
-  bool found = false;
-  *o = nullptr;
-  for(int i = 1; (i < MAXITEMS && !found); ++i)
+  o = nullptr;
+  for(std::unique_ptr<object> &item : Player.possessions)
   {
-    if(Player.possessions[i])
+    if(item)
     {
-      if((Player.possessions[i]->id == id) && ((chargeval == -1) || (Player.possessions[i]->charge == chargeval)))
+      if(item->id == id && (chargeval == -1 || item->charge == chargeval))
       {
-        *o    = Player.possessions[i].get();
-        found = true;
+        o = item.get();
+        return true;
       }
     }
   }
-  if(!found)
+  for(std::unique_ptr<object> &item : Player.pack)
   {
-    for(int i = 0; ((i < Player.packptr) && (!found)); ++i)
+    if(item)
     {
-      if(Player.pack[i])
+      if(item->id == id && (chargeval == -1 || item->charge == chargeval))
       {
-        if((Player.pack[i]->id == id) && ((chargeval == -1) || (Player.pack[i]->charge == chargeval)))
-        {
-          *o    = Player.pack[i].get();
-          found = true;
-        }
+        o = item.get();
+        return true;
       }
     }
   }
-  return found;
+  return false;
 }
 
 // returns true if item with id and charge is found in pack or in
@@ -1285,81 +1252,46 @@ bool find_item(object **o, int id, int chargeval)
 // corpses instead of aux, which is their food value.
 bool find_and_remove_item(int id, int chargeval)
 {
-  bool found = false;
-  for(int i = 1; i < MAXITEMS && !found; ++i)
+  for(int i = 1; i < MAXITEMS; ++i)
   {
-    if(Player.possessions[i])
+    std::unique_ptr<object> &item = Player.possessions[i];
+    if(item)
     {
-      if(Player.possessions[i]->id == id && (chargeval == -1 || Player.possessions[i]->charge == chargeval))
+      if(item->id == id && (chargeval == -1 || item->charge == chargeval))
       {
-        dispose_lost_objects(1, Player.possessions[i]);
-        found = true;
+        dispose_lost_objects(1, i);
+        return true;
       }
     }
   }
-  if(!found)
+  for(size_t i = 0; i < Player.pack.size(); ++i)
   {
-    for(int i = 0; i < Player.packptr && !found; ++i)
+    std::unique_ptr<object> &item = Player.possessions[i];
+    if(item)
     {
-      if(Player.pack[i])
+      if(item->id == id && (chargeval == -1 || item->charge == chargeval))
       {
-        if(Player.pack[i]->id == id && (chargeval == -1 || Player.pack[i]->charge == chargeval))
+        if(--item->number == 0)
         {
-          Player.pack[i]->number--;
-          if(Player.pack[i]->number == 0)
-          {
-            Player.pack[i].reset();
-            fixpack();
-          }
-          found = true;
+          Player.pack.erase(Player.pack.begin() + i);
         }
+        return true;
       }
     }
   }
-  return found;
+  return false;
 }
 
 void lose_all_items()
 {
   queue_message("You notice that you are completely devoid of all possessions.");
-  for(std::unique_ptr<object> &inventory_item : Player.possessions)
+  for(int i = 0; i < MAXITEMS; ++i)
   {
-    if(inventory_item)
+    if(Player.possessions[i])
     {
-      dispose_lost_objects(inventory_item->number, inventory_item);
+      dispose_lost_objects(Player.possessions[i]->number, i);
     }
   }
-  for(std::unique_ptr<object> &pack_item : Player.pack)
-  {
-    if(pack_item)
-    {
-      pack_item.reset();
-    }
-  }
-  Player.packptr = 0;
+  Player.pack.clear();
   calc_melee();
-}
-
-// makes sure Player.pack is OK, (used after sale from pack)
-void fixpack()
-{
-  for(int i = 0; i < MAXPACK; ++i)
-  {
-    if(!Player.pack[i])
-    {
-      for(int j = i + 1; j < MAXPACK; ++j)
-      {
-        if(Player.pack[j])
-        {
-          Player.pack[i] = std::move(Player.pack[j]);
-          break;
-        }
-      }
-    }
-    if(!Player.pack[i])
-    {
-      Player.packptr = i;
-      break;
-    }
-  }
 }
