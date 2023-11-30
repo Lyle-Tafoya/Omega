@@ -98,8 +98,9 @@ void pickup_at(int x, int y)
   std::vector<std::unique_ptr<object>> &items = Level->site[x][y].things;
   if(items.size() == 1)
   {
-    gain_item(std::move(items.back()));
+    std::unique_ptr<object> tmp = std::move(items.back());
     items.pop_back();
+    gain_item(std::move(tmp));
   }
   else
   {
@@ -110,8 +111,9 @@ void pickup_at(int x, int y)
       char player_input = ynq();
       if(player_input == 'y')
       {
-        gain_item(std::move(item));
+        std::unique_ptr<object> tmp = std::move(item);
         items.erase(items.begin() + i);
+        gain_item(std::move(tmp));
       }
       else if(player_input == 'q')
       {
