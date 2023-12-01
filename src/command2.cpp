@@ -279,7 +279,7 @@ void drop_pack_item()
   };
   for(size_t i = 0; i < Player.pack.size(); ++i)
   {
-    char pack_letter = 'a' + (Player.pack.size() - 1 - i);
+    char pack_letter = 'a' + static_cast<char>(Player.pack.size() - 1 - i);
     object *pack_item = Player.pack[i].get();
     switch(pack_item->objchar)
     {
