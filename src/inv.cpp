@@ -1266,16 +1266,16 @@ bool find_and_remove_item(int id, int chargeval)
       }
     }
   }
-  for(size_t i = 0; i < Player.pack.size(); ++i)
+  for(auto it = Player.pack.begin(); it != Player.pack.end(); ++it)
   {
-    std::unique_ptr<object> &item = Player.possessions[i];
+    std::unique_ptr<object> &item = *it;
     if(item)
     {
       if(item->id == id && (chargeval == -1 || item->charge == chargeval))
       {
         if(--item->number == 0)
         {
-          Player.pack.erase(Player.pack.begin() + i);
+          Player.pack.erase(it);
         }
         return true;
       }
