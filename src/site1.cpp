@@ -1468,7 +1468,7 @@ void l_pawn_shop()
       }
       else if(player_input == 'p')
       {
-        for(int i = Player.pack.size(); --i > 0;)
+        for(size_t i = Player.pack.size(); --i > 0;)
         {
           std::unique_ptr<object> &item = Player.pack[i];
           if(item->blessing > -1 && true_item_value(item.get()) > 0)

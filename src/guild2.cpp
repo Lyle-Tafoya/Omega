@@ -315,7 +315,7 @@ void l_thieves_guild()
           }
           else
           {
-            for(int i = Player.pack.size(); i-- > 0;)
+            for(size_t i = Player.pack.size(); i-- > 0;)
             {
               std::unique_ptr<object> &item = Player.pack[i];
               if(item->blessing > -1)

@@ -96,7 +96,7 @@ void save_item(std::ofstream &save_file, object *o)
 
 void save_itemlist(std::ofstream &save_file, std::forward_list<std::unique_ptr<object>> &ol)
 {
-  int num_items = std::distance(ol.begin(), ol.end());
+  size_t num_items = std::distance(ol.begin(), ol.end());
   file_write(save_file, num_items);
   for(std::unique_ptr<object> &o : ol)
   {
@@ -576,10 +576,10 @@ std::unique_ptr<object> restore_item(std::ifstream &save_file)
 std::forward_list<std::unique_ptr<object>> restore_itemlist(std::ifstream &save_file)
 {
   std::forward_list<std::unique_ptr<object>> item_list;
-  int num_items;
+  size_t num_items;
   file_read(save_file, num_items);
   auto it = item_list.before_begin();
-  for(int i = 0; i < num_items; ++i)
+  for(size_t i = 0; i < num_items; ++i)
   {
     it = item_list.insert_after(it, restore_item(save_file));
   }

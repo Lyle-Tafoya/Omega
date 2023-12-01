@@ -774,7 +774,7 @@ void gain_item(std::unique_ptr<object> o)
   calc_melee();
 }
 
-int pack_item_cost(int index)
+int pack_item_cost(size_t index)
 {
   index = Player.pack.size() - 1 - index;
   if(index > 20)
@@ -862,7 +862,7 @@ void pack_extra_items(object *item)
 }
 
 // WDT -- 'response' must be an index into the pack
-void use_pack_item(int response, int slot)
+void use_pack_item(size_t response, int slot)
 {
   int duration = pack_item_cost(response);
   if(duration > 10)
@@ -956,7 +956,7 @@ void take_from_pack(int slot)
   else
   {
     int response;
-    int pack_item = 0;
+    size_t pack_item = 0;
     bool quit = false, ok;
     do
     {
