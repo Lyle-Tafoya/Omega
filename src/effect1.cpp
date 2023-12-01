@@ -855,11 +855,11 @@ void acquire(int blessing)
     newthing->id  = -1;
     if(gamestatusp(CHEATED, GameStatus))
     {
-      queue_message("Acquire which kind of item: !?][}{)/=%%\\& ");
+      queue_message("Acquire which kind of item: !?][}{)/=%\\& ");
     }
     else
     {
-      queue_message("Acquire which kind of item: !?][}{)/=%%\\ ");
+      queue_message("Acquire which kind of item: !?][}{)/=%\\ ");
     }
     int id     = ABORT;
     char otype = mgetc();
