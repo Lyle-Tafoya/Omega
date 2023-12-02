@@ -33,10 +33,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 extern interactive_menu *menu;
 
-#ifdef SAVE_LEVELS
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 // Player stats like str, agi, etc give modifications to various abilities
 // chances to do things, etc. Positive is good, negative bad.
 int statmod(int stat)
@@ -1252,10 +1248,6 @@ void change_environment(char new_environment)
       {
         load_city(true);
       }
-#ifdef SAVE_LEVELS
-      else
-        msdos_changelevel(Level, new_environment, 0);
-#endif
       Level = City;
       calculate_offsets(Player.x, Player.y);
       show_screen();
@@ -1313,9 +1305,6 @@ void change_environment(char new_environment)
       }
       else
       {
-#ifdef SAVE_LEVELS
-        msdos_changelevel(Level, new_environment, 0);
-#endif
         Level = TempLevel;
       }
       if(emerging)
@@ -1346,9 +1335,6 @@ void change_environment(char new_environment)
       MaxDungeonLevels = CAVELEVELS;
       if(Current_Dungeon != E_CAVES)
       {
-#ifdef SAVE_LEVELS
-        msdos_changelevel(Level, 0, -1);
-#endif
         free_dungeon();
         Dungeon         = nullptr;
         Level           = nullptr;
@@ -1370,9 +1356,6 @@ void change_environment(char new_environment)
       MaxDungeonLevels = VOLCANOLEVELS;
       if(Current_Dungeon != E_VOLCANO)
       {
-#ifdef SAVE_LEVELS
-        msdos_changelevel(Level, 0, -1);
-#endif
         free_dungeon();
         Dungeon         = nullptr;
         Level           = nullptr;
@@ -1393,9 +1376,6 @@ void change_environment(char new_environment)
       MaxDungeonLevels = ASTRALLEVELS;
       if(Current_Dungeon != E_ASTRAL)
       {
-#ifdef SAVE_LEVELS
-        msdos_changelevel(Level, 0, -1);
-#endif
         free_dungeon();
         Dungeon         = nullptr;
         Level           = nullptr;
@@ -1416,9 +1396,6 @@ void change_environment(char new_environment)
       MaxDungeonLevels = CASTLELEVELS;
       if(Current_Dungeon != E_CASTLE)
       {
-#ifdef SAVE_LEVELS
-        msdos_changelevel(Level, 0, -1);
-#endif
         free_dungeon();
         Dungeon         = nullptr;
         Level           = nullptr;
@@ -1438,9 +1415,6 @@ void change_environment(char new_environment)
       MaxDungeonLevels = SEWERLEVELS;
       if(Current_Dungeon != E_SEWERS)
       {
-#ifdef SAVE_LEVELS
-        msdos_changelevel(Level, 0, -1);
-#endif
         free_dungeon();
         Dungeon         = nullptr;
         Level           = nullptr;

@@ -27,12 +27,7 @@ struct level
 {
   char depth;  // which level is this
   level *next; // pointer to next level in dungeon
-#ifdef SAVE_LEVELS
-  // Over 64K worth of data!
-  location *site[MAXWIDTH]; // dungeon data
-#else
   std::array<std::array<location, MAXLENGTH>, MAXWIDTH> site; // dungeon data
-#endif
   char generated;     // has the level been made (visited) yet?
   char numrooms;      // number of rooms on level
   char tunnelled;     // amount of tunnelling done on this level

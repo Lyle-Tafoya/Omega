@@ -23,11 +23,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <format>
 
-#ifdef SAVE_LEVELS
-extern level TheLevel;
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 void assign_village_function(int x, int y, int setup)
 {
   static int next = 0;
@@ -183,9 +178,7 @@ void load_village(int villagenum, int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
 
@@ -193,12 +186,7 @@ void load_village(int villagenum, int populate)
 
   assign_village_function(0, 0, true);
 
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_VILLAGE;
   char site          = cryptkey("village.dat");

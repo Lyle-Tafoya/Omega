@@ -31,10 +31,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-#ifdef SAVE_LEVELS
-extern void kill_all_levels();
-#endif
-
 extern std::string get_username();
 
 extern interactive_menu *menu;
@@ -498,9 +494,6 @@ void quit(int)
     {
       display_bigwin();
     }
-#ifdef SAVE_LEVELS
-    kill_all_levels();
-#endif
     endgraf();
     exit(0);
   }

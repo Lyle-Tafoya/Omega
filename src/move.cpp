@@ -449,7 +449,6 @@ void l_tactical_exit()
       return;
     }
   }
-  // Free up monsters and items, and the level, if not SAVE_LEVELS
   delete Level;
   Level = nullptr;
   if((Current_Environment == E_TEMPLE) || (Current_Environment == E_TACTICAL_MAP))

@@ -24,11 +24,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <format>
 
-#ifdef SAVE_LEVELS
-extern level TheLevel;
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 // makes a log npc for houses and hovels
 void make_house_npc(int x, int y)
 {
@@ -91,17 +86,10 @@ void load_house(int kind, int populate)
   initrand(Current_Environment, Player.x + Player.y + hour() * 10);
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   std::string home_filepath;
   char site;

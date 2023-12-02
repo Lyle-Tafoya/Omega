@@ -25,11 +25,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <format>
 
-#ifdef SAVE_LEVELS
-extern level TheLevel;
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 // loads the countryside level from the data file
 void load_country()
 {
@@ -146,17 +141,10 @@ void load_dlair(int empty, int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_DLAIR;
   FILE *fd           = checkfopen(std::format("{}dlair.dat", Omegalib), "rb");
@@ -292,17 +280,10 @@ void load_speak(int empty, int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_STARPEAK;
   FILE *fd           = checkfopen(std::format("{}speak.dat", Omegalib), "rb");
@@ -433,17 +414,10 @@ void load_misle(int empty, int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_MAGIC_ISLE;
   FILE *fd           = checkfopen(std::format("{}misle.dat", Omegalib), "rb");
@@ -576,17 +550,10 @@ void load_temple(int deity, int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_TEMPLE;
   FILE *fd           = checkfopen(std::format("{}temple.dat", Omegalib), "rb");

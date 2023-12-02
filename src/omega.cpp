@@ -39,10 +39,6 @@ extern "C"
 // Note: in order to avoid a memory bug I've been told about, I'm
 // explicitly initializing every global to something.
 
-#ifdef SAVE_LEVELS
-extern void msdos_init();
-#endif
-
 extern std::mt19937 generator;
 extern std::string get_username();
 extern bool title_menu();
@@ -67,9 +63,6 @@ int ScreenLength         = 0;  // How large is level window
 int ScreenWidth          = 0;
 player Player;                        // the player
 terrain Country[MAXWIDTH][MAXLENGTH]; // The countryside
-#ifdef SAVE_LEVELS
-level TheLevel;
-#endif
 level *City             = nullptr; // The city of Rampart
 level *TempLevel        = nullptr; // Place holder
 level *Level            = nullptr; // Pointer to current Level
@@ -293,10 +286,6 @@ int main(int, char *[])
   {
     buffer_string = "<nothing>";
   }
-
-#ifdef SAVE_LEVELS
-  msdos_init();
-#endif
 
   omega_title();
 

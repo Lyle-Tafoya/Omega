@@ -26,10 +26,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 #include <string>
 
-#ifdef SAVE_LEVELS
-extern void kill_all_levels();
-#endif
-
 // check to see if too much tunneling has been done in this level
 void tunnelcheck()
 {
@@ -663,9 +659,6 @@ void p_death(const std::string &fromstring)
   queue_message("You died!", true);
   more_wait();
   display_death(fromstring);
-#ifdef SAVE_LEVELS
-  kill_all_levels();
-#endif
   endgraf();
   exit(0);
 }

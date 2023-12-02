@@ -25,21 +25,9 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <ctime>
 
-#ifdef SAVE_LEVELS
-extern level TheLevel;
-void kill_levels(const std::string &str);
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 // Deallocate current dungeon
 void free_dungeon()
 {
-#ifdef SAVE_LEVELS
-  if(Dungeon)
-  {
-    kill_levels(std::format("om{}.*.lev", Dungeon->environment));
-  }
-#else
   level *tlv;
 
   while(Dungeon)
@@ -48,7 +36,6 @@ void free_dungeon()
     Dungeon = Dungeon->next;
     delete tlv;
   }
-#endif
 }
 
 // erase the level w/o deallocating it
@@ -81,7 +68,6 @@ void clear_level(level *dungeon_level)
   }
 }
 
-#ifndef SAVE_LEVELS
 // tries to find the level of depth levelnum in dungeon; if can't find it returns nullptr
 level *findlevel(level *dungeon, char levelnum)
 {
@@ -106,7 +92,6 @@ level *findlevel(level *dungeon, char levelnum)
     }
   }
 }
-#endif
 
 // puts the player on the first set of stairs from the apt level
 // if can't find them, just drops player anywhere....
@@ -157,19 +142,11 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
   level *thislevel = nullptr;
   Player.sx        = -1;
   Player.sy        = -1; // sanctuary effect dispelled
-#ifdef SAVE_LEVELS
-  thislevel = msdos_changelevel(Level, Current_Environment, tolevel);
-#else
   thislevel = findlevel(Dungeon, tolevel);
-#endif
   deepest[Current_Environment] = std::max(deepest[Current_Environment], static_cast<int>(tolevel));
   if(!thislevel)
   {
-#ifdef SAVE_LEVELS
-    thislevel = &TheLevel;
-#else
     thislevel = new level;
-#endif
     clear_level(thislevel);
     Level       = thislevel;
     Level->next = Dungeon;

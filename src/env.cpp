@@ -24,11 +24,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <format>
 
-#ifdef SAVE_LEVELS
-extern level TheLevel;
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 // loads the arena level into Level
 void load_arena()
 {
@@ -38,17 +33,10 @@ void load_arena()
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_ARENA;
   fd                 = checkfopen(std::format("{}arena.dat", Omegalib), "rb");
@@ -119,17 +107,10 @@ void load_circle(int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_CIRCLE;
   FILE *fd           = checkfopen(std::format("{}circle.dat", Omegalib), "rb");
@@ -267,17 +248,10 @@ void load_court(int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_COURT;
   FILE *fd           = checkfopen(std::format("{}court.dat", Omegalib), "rb");

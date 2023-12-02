@@ -22,16 +22,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "glob.h"
 #include "scr.h"
 
-#ifdef SAVE_LEVELS
-extern level TheLevel;
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 // For each level, there should be one stairway going up and one down.
 // fromlevel determines whether the player is placed on the up or the down
 // staircase. The aux value is currently unused elsewhere, but is set
 // to the destination level.
-
 void make_stairs(int fromlevel)
 {
   int x, y;
@@ -206,17 +200,10 @@ void make_country_screen(chtype terrain)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->environment = E_TACTICAL_MAP;
   Level->generated   = true;

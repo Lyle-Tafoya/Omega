@@ -28,10 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 
-#ifdef SAVE_LEVELS
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 extern std::string version_string(int version);
 
 // Various functions for doing game saves and restores
@@ -434,10 +430,6 @@ void save_level(std::ofstream &save_file, level *level)
 // The player, the city level, and the current dungeon level are saved.
 bool save_game(const std::string &save_file_name)
 {
-#ifdef SAVE_LEVELS
-  int tmpdepth;
-#endif
-
   bool writeok = true;
   if(std::filesystem::exists(save_file_name))
   {
@@ -464,11 +456,6 @@ bool save_game(const std::string &save_file_name)
   save_player(save_file);
   save_country(save_file);
 
-#ifdef SAVE_LEVELS
-  tmpdepth = Level->depth;
-  City     = msdos_changelevel(Level, E_CITY, 0);
-#endif
-
   save_level(save_file, City);
 
   level *save;
@@ -490,10 +477,6 @@ bool save_game(const std::string &save_file_name)
   {
   }
   file_write(save_file, i);
-
-#ifdef SAVE_LEVELS
-  Level = msdos_changelevel(nullptr, Current_Environment, tmpdepth);
-#endif
 
   for(current = save; current; current = current->next)
   {
@@ -1131,10 +1114,6 @@ bool restore_game(const std::string &save_file_name)
     file_read(save_file, i);
     for(; i > 0; --i)
     {
-#ifdef SAVE_LEVELS
-      msdos_changelevel(Level, 0, -1);
-#endif
-
       restore_level(save_file);
       if(Level->environment == Current_Dungeon)
       {

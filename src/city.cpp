@@ -24,11 +24,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <format>
 
-#ifdef SAVE_LEVELS
-extern level TheLevel;
-level *msdos_changelevel(level *oldlevel, int newenv, int newdepth);
-#endif
-
 void assign_city_function(int x, int y)
 {
   static int setup = 0;
@@ -342,17 +337,10 @@ void load_city(int populate)
   TempLevel = Level;
   if(ok_to_free(TempLevel))
   {
-#ifndef SAVE_LEVELS
     delete TempLevel;
-#endif
     TempLevel = nullptr;
   }
-#ifdef SAVE_LEVELS
-  msdos_changelevel(TempLevel, 0, -1);
-  Level = &TheLevel;
-#else
   Level = new level;
-#endif
   clear_level(Level);
   Level->depth       = 0;
   Level->environment = E_CITY;
