@@ -184,7 +184,7 @@ void load_village(int villagenum, int populate)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }

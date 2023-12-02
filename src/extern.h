@@ -758,7 +758,6 @@ bool m_unblocked(const monster *, int, int);
 bool nighttime();
 bool offscreen(int, int);
 bool ok_to_free(level *);
-void free_level(level *);
 int random_range(int);
 int screenmod(int);
 int screenmod_horizontal(int);

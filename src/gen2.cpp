@@ -207,7 +207,7 @@ void make_country_screen(chtype terrain)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }

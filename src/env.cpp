@@ -39,7 +39,7 @@ void load_arena()
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }
@@ -120,7 +120,7 @@ void load_circle(int populate)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }
@@ -268,7 +268,7 @@ void load_court(int populate)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }

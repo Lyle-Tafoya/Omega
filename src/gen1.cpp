@@ -46,7 +46,7 @@ void free_dungeon()
   {
     tlv     = Dungeon;
     Dungeon = Dungeon->next;
-    free_level(tlv);
+    delete tlv;
   }
 #endif
 }

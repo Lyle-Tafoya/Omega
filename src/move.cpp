@@ -450,7 +450,7 @@ void l_tactical_exit()
     }
   }
   // Free up monsters and items, and the level, if not SAVE_LEVELS
-  free_level(Level);
+  delete Level;
   Level = nullptr;
   if((Current_Environment == E_TEMPLE) || (Current_Environment == E_TACTICAL_MAP))
   {
@@ -569,7 +569,7 @@ void l_raise_portcullis()
 void l_arena_exit()
 {
   resetgamestatus(ARENA_MODE, GameStatus);
-  free_level(Level);
+  delete Level;
   Level = nullptr;
   change_environment(E_CITY);
 }
@@ -584,7 +584,7 @@ void l_house_exit()
       return;
     }
   }
-  free_level(Level);
+  delete Level;
   Level = nullptr;
   change_environment(Last_Environment);
 }

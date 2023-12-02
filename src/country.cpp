@@ -147,7 +147,7 @@ void load_dlair(int empty, int populate)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }
@@ -293,7 +293,7 @@ void load_speak(int empty, int populate)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }
@@ -434,7 +434,7 @@ void load_misle(int empty, int populate)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }
@@ -577,7 +577,7 @@ void load_temple(int deity, int populate)
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }

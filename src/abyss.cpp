@@ -78,7 +78,7 @@ level *msdos_changelevel(level *oldlevel, int newenv, int newdepth)
     else
       queue_message("Cannot save level!!!");
     // Free up monsters and items
-    free_level(oldlevel);
+    delete oldlevel;
   }
   if(newdepth >= 0)
   {
@@ -100,7 +100,7 @@ void load_abyss()
   if(ok_to_free(TempLevel))
   {
 #ifndef SAVE_LEVELS
-    free_level(TempLevel);
+    delete TempLevel;
 #endif
     TempLevel = nullptr;
   }

@@ -889,14 +889,6 @@ bool ok_to_free(level *level)
   }
 }
 
-// Free up monsters and items on a level
-void free_level(level *level)
-{
-#ifndef SAVE_LEVELS
-  delete level;
-#endif
-}
-
 char cryptkey(const std::string &fname)
 {
   int key = 0;
