@@ -28,10 +28,15 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "defs.h"
 #include "extern.h"
+#include "interactive_menu.hpp"
 #include "player.h"
 #include "minit.h"
 
+#include <forward_list>
 #include <memory>
+#include <vector>
+
+extern std::unique_ptr<interactive_menu> menu;
 
 // This string holds the path to the library files
 extern const char *Omegalib;
@@ -61,14 +66,14 @@ extern int ScreenWidth;
 // The countryside
 extern terrain Country[MAXWIDTH][MAXLENGTH];
 
+// Temporary levels (ie. villages, houses, arena, etc...)
+extern std::unique_ptr<level> TempLevel;
+
 // The city of Rampart
-extern level *City;
+extern std::unique_ptr<level> City;
 
-// Place holder
-extern level *TempLevel;
-
-// Pointer to current Dungeon
-extern level *Dungeon;
+// Current Dungeon
+extern std::vector<std::unique_ptr<level>> Dungeon;
 
 // Pointer to current Level
 extern level *Level;

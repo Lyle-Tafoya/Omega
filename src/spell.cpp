@@ -23,7 +23,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "extern.h"
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 #include "scrolling_buffer.hpp"
 
@@ -35,7 +34,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <vector>
 
 extern scrolling_buffer message_buffer;
-extern interactive_menu *menu;
 
 void cast_spell(spell::spell_id id)
 {

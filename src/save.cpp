@@ -376,7 +376,14 @@ void save_level(std::ofstream &save_file, level *level)
         file_write(save_file, run);
         for(; x < run; ++x)
         {
-          file_write(save_file, level->site[x][y]);
+          location &site = level->site[x][y];
+          file_write(save_file, site.p_locf);
+          file_write(save_file, site.lstatus);
+          file_write(save_file, site.roomnumber);
+          file_write(save_file, site.locchar);
+          file_write(save_file, site.showchar);
+          file_write(save_file, site.aux);
+          file_write(save_file, site.buildaux);
         }
       }
     }
@@ -456,39 +463,37 @@ bool save_game(const std::string &save_file_name)
   save_player(save_file);
   save_country(save_file);
 
-  save_level(save_file, City);
-
-  level *save;
-  if(Current_Environment == E_CITY || Current_Environment == E_COUNTRYSIDE)
+  save_level(save_file, City.get());
+  decltype(Dungeon)::size_type num_dungeon_levels = 0;
+  for(std::unique_ptr<level> &dungeon_level : Dungeon)
   {
-    save = Dungeon;
+    if(dungeon_level)
+    {
+      ++num_dungeon_levels;
+    }
   }
-  else if(Current_Environment == Current_Dungeon)
+  file_write(save_file, num_dungeon_levels);
+  for(std::unique_ptr<level> &dungeon_level : Dungeon)
   {
-    save = Dungeon;
+    if(dungeon_level)
+    {
+      save_level(save_file, dungeon_level.get());
+    }
+  }
+  if(TempLevel)
+  {
+    file_write(save_file, true);
+    save_level(save_file, TempLevel.get());
   }
   else
   {
-    save = Level;
+    file_write(save_file, false);
   }
-  int i;
-  level *current;
-  for(i = 0, current = save; current; current = current->next, i++)
+  if(Current_Environment == Current_Dungeon)
   {
+    file_write(save_file, Level->depth);
   }
-  file_write(save_file, i);
 
-  for(current = save; current; current = current->next)
-  {
-    if(current != Level)
-    {
-      save_level(save_file, current);
-    }
-  }
-  if(save)
-  {
-    save_level(save_file, Level); // put current level last
-  }
   save_file.close();
   if(!save_file.fail())
   {
@@ -892,8 +897,10 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
 
 void restore_level(std::ifstream &save_file)
 {
-  Level = new level;
+  auto lvl = std::make_unique<level>();
+  Level = lvl.get();
   clear_level(Level);
+
   file_read(save_file, Level->depth);
   file_read(save_file, Level->numrooms);
   file_read(save_file, Level->tunnelled);
@@ -901,20 +908,24 @@ void restore_level(std::ifstream &save_file)
   Level->generated    = true;
   int temp_env        = Current_Environment;
   Current_Environment = Level->environment;
+  if(Level->environment == Current_Dungeon)
+  {
+    Dungeon[Level->depth-1] = std::move(lvl);
+  }
   switch(Level->environment)
   {
     case E_COUNTRYSIDE:
       load_country();
       break;
     case E_CITY:
-      load_city(false);
+      load_city(false, std::move(lvl));
       break;
     case E_VILLAGE:
-      load_village(Country[LastCountryLocX][LastCountryLocY].aux, false);
+      load_village(Country[LastCountryLocX][LastCountryLocY].aux, false, std::move(lvl));
       break;
     case E_CAVES:
       initrand(Current_Environment, Level->depth);
-      if((random_range(4) == 0) && (Level->depth < MaxDungeonLevels))
+      if(random_range(4) == 0 && Level->depth < MaxDungeonLevels)
       {
         room_level();
       }
@@ -925,7 +936,7 @@ void restore_level(std::ifstream &save_file)
       break;
     case E_SEWERS:
       initrand(Current_Environment, Level->depth);
-      if((random_range(4) == 0) && (Level->depth < MaxDungeonLevels))
+      if(random_range(4) == 0 && Level->depth < MaxDungeonLevels)
       {
         room_level();
       }
@@ -960,25 +971,25 @@ void restore_level(std::ifstream &save_file)
     case E_HOVEL:
     case E_MANSION:
     case E_HOUSE:
-      load_house(Level->environment, false);
+      load_house(Level->environment, false, std::move(lvl));
       break;
     case E_DLAIR:
-      load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), false);
+      load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), false, std::move(lvl));
       break;
     case E_STARPEAK:
-      load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), false);
+      load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), false, std::move(lvl));
       break;
     case E_MAGIC_ISLE:
-      load_misle(gamestatusp(KILLED_EATER, GameStatus), false);
+      load_misle(gamestatusp(KILLED_EATER, GameStatus), false, std::move(lvl));
       break;
     case E_TEMPLE:
-      load_temple(Country[LastCountryLocX][LastCountryLocY].aux, false);
+      load_temple(Country[LastCountryLocX][LastCountryLocY].aux, false, std::move(lvl));
       break;
     case E_CIRCLE:
-      load_circle(false);
+      load_circle(false, std::move(lvl));
       break;
     case E_COURT:
-      load_court(false);
+      load_court(false, std::move(lvl));
       break;
     default:
       queue_message("This dungeon not implemented!");
@@ -1002,10 +1013,15 @@ void restore_level(std::ifstream &save_file)
     file_read(save_file, run);
     for(; x < run; ++x)
     {
-      Level->site[x][y].things.~vector();
-      file_read(save_file, Level->site[x][y]);
-      new(&Level->site[x][y].things) std::vector<std::unique_ptr<object >>;
-      Level->site[x][y].creature = nullptr;
+      location &site = Level->site[x][y];
+      file_read(save_file, site.p_locf);
+      file_read(save_file, site.lstatus);
+      file_read(save_file, site.roomnumber);
+      file_read(save_file, site.locchar);
+      file_read(save_file, site.showchar);
+      file_read(save_file, site.aux);
+      file_read(save_file, site.buildaux);
+      site.creature = nullptr;
     }
     file_read(save_file, x);
     file_read(save_file, y);
@@ -1110,20 +1126,51 @@ bool restore_game(const std::string &save_file_name)
     restore_player(save_file, Player);
     restore_country(save_file);
     restore_level(save_file); // the city level
-    int i;
-    file_read(save_file, i);
-    for(; i > 0; --i)
+
+    switch(Current_Dungeon)
+    {
+      case E_CAVES:
+        Dungeon.resize(CAVELEVELS);
+        break;
+      case E_VOLCANO:
+        Dungeon.resize(VOLCANOLEVELS);
+        break;
+      case E_ASTRAL:
+        Dungeon.resize(ASTRALLEVELS);
+        break;
+      case E_CASTLE:
+        Dungeon.resize(CASTLELEVELS);
+        break;
+      case E_SEWERS:
+        Dungeon.resize(SEWERLEVELS);
+        break;
+    }
+    decltype(Dungeon)::size_type num_dungeon_levels;
+    file_read(save_file, num_dungeon_levels);
+    for(; num_dungeon_levels > 0; --num_dungeon_levels)
     {
       restore_level(save_file);
-      if(Level->environment == Current_Dungeon)
-      {
-        Level->next = Dungeon;
-        Dungeon     = Level;
-      }
-      if(Current_Environment == E_CITY)
-      {
-        Level = City;
-      }
+    }
+    bool is_temp_level;
+    file_read(save_file, is_temp_level);
+    if(is_temp_level)
+    {
+      restore_level(save_file);
+    }
+
+    if(Current_Environment == Current_Dungeon)
+    {
+      uint8_t current_depth;
+      file_read(save_file, current_depth);
+      Level = Dungeon[current_depth-1].get();
+    }
+    else if(Current_Environment == E_CITY)
+    {
+      Level = City.get();
+    }
+    else
+    {
+      Level = TempLevel.get();
     }
     // this disgusting kludge because LENGTH and WIDTH are globals...
     WIDTH = 64;

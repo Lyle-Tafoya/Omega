@@ -19,15 +19,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // effect2.cpp
 
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 
 #include <algorithm>
 #include <format>
 #include <string>
 #include <vector>
-
-extern interactive_menu *menu;
 
 void knowledge(int blessing)
 {

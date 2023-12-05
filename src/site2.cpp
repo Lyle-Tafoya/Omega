@@ -20,15 +20,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // 2nd half of site functions and aux functions to them
 
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 
 #include <algorithm>
 #include <format>
 #include <string>
 #include <vector>
-
-extern interactive_menu *menu;
 
 void l_condo()
 {

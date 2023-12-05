@@ -102,7 +102,7 @@ int fixnpc(int);
 void save_omegarc();
 
 // city.cpp functions
-void load_city(int);
+void load_city(bool, std::unique_ptr<level> = nullptr);
 void repair_jail();
 void resurrect_guards();
 
@@ -159,10 +159,10 @@ void wizard();
 
 // country.cpp functions
 void load_country();
-void load_dlair(int, int);
-void load_misle(int, int);
-void load_speak(int, int);
-void load_temple(int, int);
+void load_dlair(int, int, std::unique_ptr<level> = nullptr);
+void load_misle(int, int, std::unique_ptr<level> = nullptr);
+void load_speak(int, int, std::unique_ptr<level> = nullptr);
+void load_temple(int, int, std::unique_ptr<level> = nullptr);
 
 // effect1.cpp functions
 int random_item();
@@ -238,8 +238,8 @@ void truesight(int);
 
 // env.cpp functions
 void load_arena();
-void load_circle(int);
-void load_court(int);
+void load_circle(int, std::unique_ptr<level> = nullptr);
+void load_court(int, std::unique_ptr<level> = nullptr);
 
 // etc.cpp functions
 std::string_view nameprint();
@@ -270,7 +270,6 @@ void build_room(int, int, int, char, int);
 void cavern_level();
 void change_level(char, char, char);
 void clear_level(level *);
-void free_dungeon();
 void install_specials();
 void install_traps();
 void makedoor(int, int);
@@ -297,7 +296,7 @@ void l_sorcerors();
 void l_thieves_guild();
 
 // house.cpp functions
-void load_house(int, int);
+void load_house(int, int, std::unique_ptr<level> = nullptr);
 
 // inv.cpp functions
 const std::string cashstr();
@@ -757,7 +756,6 @@ bool los_p(int, int, int, int);
 bool m_unblocked(const monster *, int, int);
 bool nighttime();
 bool offscreen(int, int);
-bool ok_to_free(level *);
 int random_range(int);
 int screenmod(int);
 int screenmod_horizontal(int);
@@ -773,6 +771,6 @@ bool findspace(int *, int *, int);
 void initdirs();
 
 // village.cpp functions
-void load_village(int, int);
+void load_village(int, int, std::unique_ptr<level> = nullptr);
 
 #endif

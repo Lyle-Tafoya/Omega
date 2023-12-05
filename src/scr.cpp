@@ -73,7 +73,7 @@ WINDOW *hunger_window, *poison_window, *disease_window, *footing_window;
 WINDOW *shown_entities_window;
 
 scrolling_buffer message_buffer;
-interactive_menu *menu;
+std::unique_ptr<interactive_menu> menu;
 
 int message_window_length = 6;
 
@@ -573,7 +573,7 @@ void initialize_windows()
   uint16_t menu_width = (COLS - 42 < 64 ? COLS : 64);
   menu_window         = newwin(ScreenLength, menu_width, 0, 0);
   keypad(menu_window, true);
-  menu = new interactive_menu(menu_window, menu_width, ScreenLength);
+  menu = std::make_unique<interactive_menu>(menu_window, menu_width, ScreenLength);
 
   keypad(stdscr, true);
   message_window = newwin(6, COLS, ScreenLength, 0);

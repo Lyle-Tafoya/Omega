@@ -80,16 +80,18 @@ void make_mansion_npc(int x, int y)
 }
 
 // loads the house level into Level
-void load_house(int kind, int populate)
+void load_house(int kind, int populate, std::unique_ptr<level> lvl)
 {
-  TempLevel = Level;
-  initrand(Current_Environment, Player.x + Player.y + hour() * 10);
-  if(ok_to_free(TempLevel))
+  if(lvl)
   {
-    delete TempLevel;
-    TempLevel = nullptr;
+    TempLevel = std::move(lvl);
   }
-  Level = new level;
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  initrand(Current_Environment, Player.x + Player.y + hour() * 10);
+  Level = TempLevel.get();
   clear_level(Level);
   std::string home_filepath;
   char site;

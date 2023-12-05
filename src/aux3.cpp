@@ -36,7 +36,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <vector>
 
 extern scrolling_buffer message_buffer;
-extern interactive_menu *menu;
 
 void indoors_random_event()
 {
@@ -1327,7 +1326,7 @@ bool stonecheck(int alignment)
 void destroy_order()
 {
   setgamestatus(DESTROYED_ORDER, GameStatus);
-  if(Level != City)
+  if(Level != City.get())
   {
     queue_message("Zounds! A Serious Mistake!");
   }

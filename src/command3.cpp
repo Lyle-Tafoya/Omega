@@ -22,7 +22,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "date.h"
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 
 #include <algorithm>
@@ -32,8 +31,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <vector>
 
 extern std::string get_username();
-
-extern interactive_menu *menu;
 
 // look at some spot
 void examine()

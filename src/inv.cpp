@@ -20,7 +20,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // functions having to do with player item inventory
 
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 
 #include <array>
@@ -29,8 +28,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <span>
 #include <string>
 #include <vector>
-
-extern interactive_menu *menu;
 
 // returns some money from player back into "money" item.
 // for giving and dropping money

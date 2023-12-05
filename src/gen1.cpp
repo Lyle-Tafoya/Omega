@@ -25,19 +25,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 #include <ctime>
 
-// Deallocate current dungeon
-void free_dungeon()
-{
-  level *tlv;
-
-  while(Dungeon)
-  {
-    tlv     = Dungeon;
-    Dungeon = Dungeon->next;
-    delete tlv;
-  }
-}
-
 // erase the level w/o deallocating it
 void clear_level(level *dungeon_level)
 {
@@ -48,8 +35,6 @@ void clear_level(level *dungeon_level)
     dungeon_level->tunnelled    = 0;
     dungeon_level->depth        = 0;
     dungeon_level->mlist.clear();
-    dungeon_level->next         = nullptr;
-    dungeon_level->last_visited = time(nullptr);
     for(int x = 0; x < MAXWIDTH; ++x)
     {
       for(int y = 0; y < MAXLENGTH; ++y)
@@ -64,31 +49,6 @@ void clear_level(level *dungeon_level)
         dungeon_level->site[x][y].roomnumber = RS_WALLSPACE;
         dungeon_level->site[x][y].things.clear();
       }
-    }
-  }
-}
-
-// tries to find the level of depth levelnum in dungeon; if can't find it returns nullptr
-level *findlevel(level *dungeon, char levelnum)
-{
-  if(!dungeon)
-  {
-    return nullptr;
-  }
-  else
-  {
-    while(dungeon->next && (dungeon->depth != levelnum))
-    {
-      dungeon = dungeon->next;
-    }
-    if(dungeon->depth == levelnum)
-    {
-      dungeon->last_visited = time(nullptr);
-      return dungeon;
-    }
-    else
-    {
-      return nullptr;
     }
   }
 }
@@ -139,21 +99,16 @@ void find_stairs(char fromlevel, char tolevel)
 
 void change_level(char fromlevel, char tolevel, char rewrite_level)
 {
-  level *thislevel = nullptr;
   Player.sx        = -1;
   Player.sy        = -1; // sanctuary effect dispelled
-  thislevel = findlevel(Dungeon, tolevel);
   deepest[Current_Environment] = std::max(deepest[Current_Environment], static_cast<int>(tolevel));
-  if(!thislevel)
+  if(!Dungeon[tolevel - 1])
   {
-    thislevel = new level;
-    clear_level(thislevel);
-    Level       = thislevel;
-    Level->next = Dungeon;
-    Dungeon     = Level;
+    Dungeon[tolevel - 1] = std::make_unique<level>();
+    clear_level(Dungeon[tolevel - 1].get());
   }
-  Level = thislevel;
-  if((!Level->generated) || rewrite_level)
+  Level = Dungeon[tolevel - 1].get();
+  if(!Level->generated || rewrite_level)
   {
     initrand(Current_Environment, tolevel);
     Level->environment = Current_Environment;
@@ -162,7 +117,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
     switch(Current_Environment)
     {
       case E_CAVES:
-        if((random_range(4) == 0) && (tolevel < MaxDungeonLevels))
+        if(random_range(4) == 0 && tolevel < MaxDungeonLevels)
         {
           room_level();
         }
@@ -172,7 +127,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
         }
         break;
       case E_SEWERS:
-        if((random_range(4) == 0) && (tolevel < MaxDungeonLevels))
+        if(random_range(4) == 0 && tolevel < MaxDungeonLevels)
         {
           room_level();
         }
@@ -253,7 +208,6 @@ void corridor_crawl(int *fx, int *fy, int sx, int sy, int n, chtype loc, char rs
 }
 
 // keep going in one orthogonal direction or another until we hit our destination
-
 void straggle_corridor(int fx, int fy, int tx, int ty, chtype loc, char rsi)
 {
   int dx, dy;

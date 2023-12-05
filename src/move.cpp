@@ -449,9 +449,9 @@ void l_tactical_exit()
       return;
     }
   }
-  delete Level;
+  TempLevel.reset();
   Level = nullptr;
-  if((Current_Environment == E_TEMPLE) || (Current_Environment == E_TACTICAL_MAP))
+  if(Current_Environment == E_TEMPLE || Current_Environment == E_TACTICAL_MAP)
   {
     change_environment(E_COUNTRYSIDE);
   }
@@ -568,7 +568,7 @@ void l_raise_portcullis()
 void l_arena_exit()
 {
   resetgamestatus(ARENA_MODE, GameStatus);
-  delete Level;
+  TempLevel.reset();
   Level = nullptr;
   change_environment(E_CITY);
 }
@@ -583,7 +583,7 @@ void l_house_exit()
       return;
     }
   }
-  delete Level;
+  TempLevel.reset();
   Level = nullptr;
   change_environment(Last_Environment);
 }

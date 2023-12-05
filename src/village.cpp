@@ -173,20 +173,21 @@ void special_village_site(int x, int y, int villagenum)
 }
 
 // loads the village level into Level
-void load_village(int villagenum, int populate)
+void load_village(int villagenum, int populate, std::unique_ptr<level> lvl)
 {
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
-  {
-    delete TempLevel;
-    TempLevel = nullptr;
-  }
 
   initrand(Current_Environment, villagenum);
-
   assign_village_function(0, 0, true);
 
-  Level = new level;
+  if(lvl)
+  {
+    TempLevel = std::move(lvl);
+  }
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_VILLAGE;
   char site          = cryptkey("village.dat");

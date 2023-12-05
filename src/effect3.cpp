@@ -19,7 +19,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // effect3.cpp
 
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 #include "spell.h"
 
@@ -27,8 +26,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 #include <string>
 #include <vector>
-
-extern interactive_menu *menu;
 
 int list_monsters()
 {

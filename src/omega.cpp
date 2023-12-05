@@ -30,6 +30,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <format>
 #include <random>
 #include <string>
+#include <vector>
 #ifdef PDC_GL_BUILD
 extern "C"
 {
@@ -61,15 +62,15 @@ bool IsMenu              = false;
 long GameStatus          = 0L; // Game Status bit vector
 int ScreenLength         = 0;  // How large is level window
 int ScreenWidth          = 0;
-player Player;                        // the player
-terrain Country[MAXWIDTH][MAXLENGTH]; // The countryside
-level *City             = nullptr; // The city of Rampart
-level *TempLevel        = nullptr; // Place holder
-level *Level            = nullptr; // Pointer to current Level
-level *Dungeon          = nullptr; // Pointer to current Dungeon
-int Villagenum          = 0;       // Current Village number
-int ScreenOffset        = 0;       // Offset of displayed screen to level
-int HorizontalOffset    = 0;
+player Player;                               // the player
+terrain Country[MAXWIDTH][MAXLENGTH];        // The countryside
+std::unique_ptr<level> TempLevel;            // Temporary level
+std::unique_ptr<level> City;                 // The city of Rampart
+std::vector<std::unique_ptr<level>> Dungeon; // Current Dungeon
+level *Level            = nullptr;           // Pointer to current Level
+int Villagenum          = 0;                 // Current Village number
+int ScreenOffset        = 0;                 // Vertical offset of level
+int HorizontalOffset    = 0;                 // Horizontal offset of level
 int MaxDungeonLevels    = 0;             // Deepest level allowed in dungeon
 int Current_Dungeon     = -1;            // What is Dungeon now
 int Current_Environment = E_CITY;        // Which environment are we in
@@ -355,7 +356,6 @@ int main(int, char *[])
 // Start up game with new dungeons; start with player in city
 void init_world()
 {
-  City = Level = TempLevel = Dungeon = nullptr;
   for(int env = 0; env <= E_MAX; ++env)
   {
     level_seed[env] = random_range(RAND_MAX);
@@ -370,7 +370,6 @@ void init_world()
   LENGTH              = 64;
   Player.x            = 62;
   Player.y            = 21;
-  Level               = City;
   Current_Environment = E_CITY;
   queue_message("You pass through the massive gates of Rampart, the city.");
 }

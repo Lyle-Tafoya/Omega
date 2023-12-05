@@ -31,8 +31,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-extern interactive_menu *menu;
-
 // Player stats like str, agi, etc give modifications to various abilities
 // chances to do things, etc. Positive is good, negative bad.
 int statmod(int stat)
@@ -1074,12 +1072,13 @@ void change_environment(char new_environment)
     LastCountryLocX = Player.x;
     LastCountryLocY = Player.y;
   }
-  if(((Last_Environment == E_CITY) || (Last_Environment == E_VILLAGE)) && ((new_environment == E_MANSION) || (new_environment == E_HOUSE) || (new_environment == E_HOVEL) || (new_environment == E_SEWERS) || (new_environment == E_ARENA)))
+  if((Last_Environment == E_CITY || Last_Environment == E_VILLAGE) &&
+      (new_environment == E_MANSION || new_environment == E_HOUSE || new_environment == E_HOVEL || new_environment == E_SEWERS || new_environment == E_ARENA))
   {
     LastTownLocX = Player.x;
     LastTownLocY = Player.y;
   }
-  else if(((Last_Environment == E_MANSION) || (Last_Environment == E_HOUSE) || (Last_Environment == E_HOVEL) || (Last_Environment == E_SEWERS) || (Last_Environment == E_ARENA)) && ((new_environment == E_CITY) || (new_environment == E_VILLAGE)))
+  else if((Last_Environment == E_MANSION || Last_Environment == E_HOUSE || Last_Environment == E_HOVEL || Last_Environment == E_SEWERS || Last_Environment == E_ARENA) && (new_environment == E_CITY || new_environment == E_VILLAGE))
   {
     Player.x = LastTownLocX;
     Player.y = LastTownLocY;
@@ -1244,11 +1243,7 @@ void change_environment(char new_environment)
         Player.x = 62;
         Player.y = 21;
       }
-      if(!City)
-      {
-        load_city(true);
-      }
-      Level = City;
+      Level = City.get();
       calculate_offsets(Player.x, Player.y);
       show_screen();
       break;
@@ -1305,7 +1300,7 @@ void change_environment(char new_environment)
       }
       else
       {
-        Level = TempLevel;
+        Level = TempLevel.get();
       }
       if(emerging)
       {
@@ -1335,8 +1330,8 @@ void change_environment(char new_environment)
       MaxDungeonLevels = CAVELEVELS;
       if(Current_Dungeon != E_CAVES)
       {
-        free_dungeon();
-        Dungeon         = nullptr;
+        Dungeon.clear();
+        Dungeon.resize(MaxDungeonLevels);
         Level           = nullptr;
         Current_Dungeon = E_CAVES;
       }
@@ -1356,8 +1351,8 @@ void change_environment(char new_environment)
       MaxDungeonLevels = VOLCANOLEVELS;
       if(Current_Dungeon != E_VOLCANO)
       {
-        free_dungeon();
-        Dungeon         = nullptr;
+        Dungeon.clear();
+        Dungeon.resize(MaxDungeonLevels);
         Level           = nullptr;
         Current_Dungeon = E_VOLCANO;
       }
@@ -1376,8 +1371,8 @@ void change_environment(char new_environment)
       MaxDungeonLevels = ASTRALLEVELS;
       if(Current_Dungeon != E_ASTRAL)
       {
-        free_dungeon();
-        Dungeon         = nullptr;
+        Dungeon.clear();
+        Dungeon.resize(MaxDungeonLevels);
         Level           = nullptr;
         Current_Dungeon = E_ASTRAL;
       }
@@ -1396,8 +1391,8 @@ void change_environment(char new_environment)
       MaxDungeonLevels = CASTLELEVELS;
       if(Current_Dungeon != E_CASTLE)
       {
-        free_dungeon();
-        Dungeon         = nullptr;
+        Dungeon.clear();
+        Dungeon.resize(MaxDungeonLevels);
         Level           = nullptr;
         Current_Dungeon = E_CASTLE;
       }
@@ -1415,8 +1410,8 @@ void change_environment(char new_environment)
       MaxDungeonLevels = SEWERLEVELS;
       if(Current_Dungeon != E_SEWERS)
       {
-        free_dungeon();
-        Dungeon         = nullptr;
+        Dungeon.clear();
+        Dungeon.resize(MaxDungeonLevels);
         Level           = nullptr;
         Current_Dungeon = E_SEWERS;
       }

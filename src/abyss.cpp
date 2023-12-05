@@ -28,13 +28,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // loads the abyss level into Level
 void load_abyss()
 {
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
-  {
-    delete TempLevel;
-    TempLevel = nullptr;
-  }
-  Level = new level;
+  TempLevel = std::make_unique<level>();
+  Level = TempLevel.get();
   clear_level(Level);
 
   std::string filepath{std::format("{}abyss.dat", Omegalib)};

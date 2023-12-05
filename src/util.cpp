@@ -875,20 +875,6 @@ void calc_weight()
   dataprint();
 }
 
-// returns true if its ok to get rid of a level
-bool ok_to_free(level *level)
-{
-  if(!level)
-  {
-    return false;
-  }
-  else
-  {
-    return level->environment != E_CITY && level->environment != E_VILLAGE &&
-      level->environment != Current_Dungeon;
-  }
-}
-
 char cryptkey(const std::string &fname)
 {
   int key = 0;

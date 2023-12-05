@@ -21,7 +21,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // This file contains toplevel commands called from command1.cpp
 
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 #include "spell.h"
 
@@ -36,7 +35,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <thread>
 #include <utility>
 
-extern interactive_menu *menu;
 extern std::string get_username();
 
 // no op a turn....

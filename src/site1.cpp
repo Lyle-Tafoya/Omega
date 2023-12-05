@@ -20,7 +20,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // 1st half of site functions and aux functions to them
 
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 #include "scrolling_buffer.hpp"
 #include "spell.h"
@@ -32,7 +31,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <vector>
 
 extern scrolling_buffer message_buffer;
-extern interactive_menu *menu;
 
 // the bank; can be broken into (!)
 void l_bank()

@@ -27,20 +27,12 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // loads the arena level into Level
 void load_arena()
 {
-  char site;
-  FILE *fd;
-
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
-  {
-    delete TempLevel;
-    TempLevel = nullptr;
-  }
-  Level = new level;
+  TempLevel = std::make_unique<level>();
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_ARENA;
-  fd                 = checkfopen(std::format("{}arena.dat", Omegalib), "rb");
-  site               = cryptkey("arena.dat");
+  FILE *fd           = checkfopen(std::format("{}arena.dat", Omegalib), "rb");
+  char site          = cryptkey("arena.dat");
   for(int y = 0; y < LENGTH; ++y)
   {
     for(int x = 0; x < WIDTH; ++x)
@@ -100,17 +92,19 @@ void make_prime(int x, int y)
 }
 
 // loads the sorcereror's circle into Level
-void load_circle(int populate)
+void load_circle(int populate, std::unique_ptr<level> lvl)
 {
   bool safe = (Player.rank[CIRCLE] > 0);
 
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
+  if(lvl)
   {
-    delete TempLevel;
-    TempLevel = nullptr;
+    TempLevel = std::move(lvl);
   }
-  Level = new level;
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_CIRCLE;
   FILE *fd           = checkfopen(std::format("{}circle.dat", Omegalib), "rb");
@@ -243,15 +237,17 @@ void make_archmage(int x, int y)
 }
 
 // loads the court of the archmage into Level
-void load_court(int populate)
+void load_court(int populate, std::unique_ptr<level> lvl)
 {
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
+  if(lvl)
   {
-    delete TempLevel;
-    TempLevel = nullptr;
+    TempLevel = std::move(lvl);
   }
-  Level = new level;
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_COURT;
   FILE *fd           = checkfopen(std::format("{}court.dat", Omegalib), "rb");

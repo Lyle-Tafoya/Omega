@@ -197,13 +197,8 @@ void make_swamp()
 // tactical map generating functions
 void make_country_screen(chtype terrain)
 {
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
-  {
-    delete TempLevel;
-    TempLevel = nullptr;
-  }
-  Level = new level;
+  TempLevel = std::make_unique<level>();
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_TACTICAL_MAP;
   Level->generated   = true;

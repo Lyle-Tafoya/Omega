@@ -21,14 +21,11 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // various item functions: potions,scrolls,boots,cloaks,things,food
 
 #include "glob.h"
-#include "interactive_menu.hpp"
 #include "scr.h"
 
 #include <algorithm>
 #include <string>
 #include <vector>
-
-extern interactive_menu *menu;
 
 // general item functions
 

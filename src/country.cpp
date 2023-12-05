@@ -74,8 +74,9 @@ void load_country()
         case 'd':
         case 'e':
         case 'f':
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = VILLAGE;
-          Country[x][y].aux                                                    = 1 + site - 'a';
+          Country[x][y].current_terrain_type = VILLAGE;
+          Country[x][y].base_terrain_type    = VILLAGE;
+          Country[x][y].aux                  = 1 + site - 'a';
           break;
         case '1':
         case '2':
@@ -83,41 +84,53 @@ void load_country()
         case '4':
         case '5':
         case '6':
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = TEMPLE;
-          Country[x][y].aux                                                    = site - '0';
+          Country[x][y].current_terrain_type = TEMPLE;
+          Country[x][y].base_terrain_type    = TEMPLE;
+          Country[x][y].aux                  = site - '0';
           break;
         case(PLAINS & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = PLAINS;
+          Country[x][y].current_terrain_type = PLAINS;
+          Country[x][y].base_terrain_type    = PLAINS;
           break;
         case(TUNDRA & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = TUNDRA;
+          Country[x][y].current_terrain_type = TUNDRA;
+          Country[x][y].base_terrain_type    = TUNDRA;
           break;
         case(ROAD & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = ROAD;
+          Country[x][y].current_terrain_type = ROAD;
+          Country[x][y].base_terrain_type    = ROAD;
           break;
         case(MOUNTAINS & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = MOUNTAINS;
+          Country[x][y].current_terrain_type = MOUNTAINS;
+          Country[x][y].base_terrain_type    = MOUNTAINS;
           break;
         case(RIVER & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = RIVER;
+          Country[x][y].current_terrain_type = RIVER;
+          Country[x][y].base_terrain_type    = RIVER;
           break;
         case(CITY & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = CITY;
+          Country[x][y].current_terrain_type = CITY;
+          Country[x][y].base_terrain_type    = CITY;
           break;
         case(FOREST & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = FOREST;
+          Country[x][y].current_terrain_type = FOREST;
+          Country[x][y].base_terrain_type    = FOREST;
           break;
         case(JUNGLE & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = JUNGLE;
+          Country[x][y].current_terrain_type = JUNGLE;
+          Country[x][y].base_terrain_type    = JUNGLE;
           break;
         case(SWAMP & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = SWAMP;
+          Country[x][y].current_terrain_type = SWAMP;
+          Country[x][y].base_terrain_type    = SWAMP;
           break;
         case(DESERT & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = DESERT;
+          Country[x][y].current_terrain_type = DESERT;
+          Country[x][y].base_terrain_type    = DESERT;
           break;
         case(CHAOS_SEA & 0xff):
-          Country[x][y].current_terrain_type = Country[x][y].base_terrain_type = CHAOS_SEA;
+          Country[x][y].current_terrain_type = CHAOS_SEA;
+          Country[x][y].base_terrain_type    = CHAOS_SEA;
           break;
       }
     }
@@ -127,7 +140,7 @@ void load_country()
 }
 
 // loads the dragon's lair into Level
-void load_dlair(int empty, int populate)
+void load_dlair(int empty, int populate, std::unique_ptr<level> lvl)
 {
   if(empty)
   {
@@ -138,13 +151,15 @@ void load_dlair(int empty, int populate)
   {
     empty = true;
   }
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
+  if(lvl)
   {
-    delete TempLevel;
-    TempLevel = nullptr;
+    TempLevel = std::move(lvl);
   }
-  Level = new level;
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_DLAIR;
   FILE *fd           = checkfopen(std::format("{}dlair.dat", Omegalib), "rb");
@@ -263,7 +278,7 @@ void load_dlair(int empty, int populate)
 }
 
 // loads the star peak into Level
-void load_speak(int empty, int populate)
+void load_speak(int empty, int populate, std::unique_ptr<level> lvl)
 {
   int safe = Player.alignment > 0;
 
@@ -277,13 +292,15 @@ void load_speak(int empty, int populate)
     empty = true;
   }
 
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
+  if(lvl)
   {
-    delete TempLevel;
-    TempLevel = nullptr;
+    TempLevel = std::move(lvl);
   }
-  Level = new level;
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_STARPEAK;
   FILE *fd           = checkfopen(std::format("{}speak.dat", Omegalib), "rb");
@@ -399,7 +416,7 @@ void load_speak(int empty, int populate)
 }
 
 // loads the magic isle into Level
-void load_misle(int empty, int populate)
+void load_misle(int empty, int populate, std::unique_ptr<level> lvl)
 {
   if(empty)
   {
@@ -411,13 +428,15 @@ void load_misle(int empty, int populate)
     empty = true;
   }
 
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
+  if(lvl)
   {
-    delete TempLevel;
-    TempLevel = nullptr;
+    TempLevel = std::move(lvl);
   }
-  Level = new level;
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_MAGIC_ISLE;
   FILE *fd           = checkfopen(std::format("{}misle.dat", Omegalib), "rb");
@@ -541,19 +560,21 @@ void random_temple_site(int x, int y, int, int populate)
 }
 
 // loads a temple into Level
-void load_temple(int deity, int populate)
+void load_temple(int deity, int populate, std::unique_ptr<level> lvl)
 {
   // WDT HACK: I don't know why this is wrong.  Shrug.  David Givens
   // suggested removing it, and he has more experience with Omega
   // than I, so...
   //  initrand(Current_Environment, deity); // FIXED! 12/30/98
-  TempLevel = Level;
-  if(ok_to_free(TempLevel))
+  if(lvl)
   {
-    delete TempLevel;
-    TempLevel = nullptr;
+    TempLevel = std::move(lvl);
   }
-  Level = new level;
+  else
+  {
+    TempLevel = std::make_unique<level>();
+  }
+  Level = TempLevel.get();
   clear_level(Level);
   Level->environment = E_TEMPLE;
   FILE *fd           = checkfopen(std::format("{}temple.dat", Omegalib), "rb");
