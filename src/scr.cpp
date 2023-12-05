@@ -565,6 +565,8 @@ void initialize_windows()
 {
   calculate_screen_size();
 
+  message_buffer.resize(ScreenWidth, MESSAGE_BUFFER_SIZE);
+
   for(int i = 0; i < MAXITEMS; ++i)
   {
     Showline[i] = newwin(1, (COLS - 42 < 64 ? COLS : 64), i, 0);
@@ -631,6 +633,8 @@ void initialize_windows()
 void resize_screen()
 {
   calculate_screen_size();
+
+  message_buffer.resize(ScreenWidth, MESSAGE_BUFFER_SIZE);
 
   for(int i = 0; i < MAXITEMS; ++i)
   {
@@ -2419,39 +2423,48 @@ void deathprint()
   mgetc();
 }
 
-int bufferpos = 0;
-
 void bufferprint()
 {
-  int i = bufferpos - 1, c, finished = 0;
-  wprintw(message_window, "^p for previous message, ^n for next, anything else to quit.");
+  wresize(message_window, LINES, ScreenWidth);
+  mvwin(message_window, 0, 0);
+  const std::deque<std::string> &message_history = message_buffer.get_message_history();
+  bool finished = false;
+  auto first_message_it = message_history.rbegin();
   do
   {
-    if(i >= STRING_BUFFER_SIZE)
-    {
-      i = 0;
-    }
-    if(i < 0)
-    {
-      i = STRING_BUFFER_SIZE - 1;
-    }
     werase(message_window);
-    waddstr(message_window, Stringbuffer[i].c_str());
-    c = mgetc();
-    if(c == 16)
-    { // ^p
-      --i;
-    }
-    else if(c == 14)
-    { // ^n
-      ++i;
-    }
-    else
+    bool can_scroll_up = (message_history.rend() - first_message_it) > LINES;
+    bool can_scroll_down = first_message_it != message_history.rbegin();
+    size_t position = LINES-1;
+    for(auto it = first_message_it; it != message_history.rend(); ++it, --position)
     {
-      finished = 1;
+      mvwaddstr(message_window, position, 0, it->c_str());
+    }
+    int player_input = wgetch(message_window);
+    switch(player_input)
+    {
+      case KEY_UP:
+      case 16:
+        if(can_scroll_up)
+        {
+          ++first_message_it;
+        }
+        break;
+      case KEY_DOWN:
+      case 14:
+        if(can_scroll_down)
+        {
+          --first_message_it;
+        }
+        break;
+      case ESCAPE:
+        finished = true;
+        break;
     }
   } while(!finished);
-  omshowcursor(Player.x, Player.y);
+  wresize(message_window, 6, COLS);
+  mvwin(message_window, ScreenLength, 0);
+  print_messages();
 }
 
 void clear_screen()

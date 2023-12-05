@@ -110,7 +110,6 @@ int Behavior;                                             // Player NPC behavior
 int Verbosity = VERBOSE;                                  // verbosity level
 long Time     = 0;                                        // turn number
 int Tick      = 0;                                        // 10 a turn; action coordinator
-std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer; // last strings printed
 long Gymcredit      = 0;                                  // credit at rampart gym
 int Spellsleft      = 0;                                  // research allowance at college
 int Studiesleft     = 0;                                  // Study allowance at monastery
@@ -282,11 +281,6 @@ int main(int, char *[])
 #endif
   initdirs();
   initrand(E_RANDOM, 0);
-
-  for(std::string &buffer_string : Stringbuffer)
-  {
-    buffer_string = "<nothing>";
-  }
 
   omega_title();
 

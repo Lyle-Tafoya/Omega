@@ -84,7 +84,7 @@ constexpr uint8_t MAXPACK = 26;
 constexpr uint8_t PAWNITEMS = 20;
 
 // number of lines back strings are recalled
-constexpr int STRING_BUFFER_SIZE = 25;
+constexpr int MESSAGE_BUFFER_SIZE = 1000;
 
 // Verbosity levels
 enum verbosity_levels

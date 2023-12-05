@@ -196,9 +196,6 @@ extern long Time;
 // current second in minute; action coordinator
 extern int Tick;
 
-// the last printed strings
-extern std::array<std::string, STRING_BUFFER_SIZE> Stringbuffer;
-
 // credit at rampart gym
 extern long Gymcredit;
 
