@@ -630,6 +630,60 @@ void initialize_windows()
   touchwin(stdscr);
 }
 
+void deallocate_windows()
+{
+  for(int i = 0; i < MAXITEMS; ++i)
+  {
+    delwin(Showline[i]);
+  }
+  delwin(menu_window);
+  delwin(level_window);
+  delwin(message_window);
+  delwin(shown_entities_window);
+  delwin(name_window);
+  delwin(time_window);
+  delwin(health_label_window);
+  delwin(health_window);
+  delwin(health_meter_window);
+  delwin(mana_label_window);
+  delwin(mana_window);
+  delwin(mana_meter_window);
+  delwin(strength_label_window);
+  delwin(strength_window);
+  delwin(dexterity_label_window);
+  delwin(dexterity_window);
+  delwin(constitution_label_window);
+  delwin(constitution_window);
+  delwin(agility_label_window);
+  delwin(agility_window);
+  delwin(intelligence_label_window);
+  delwin(intelligence_window);
+  delwin(power_label_window);
+  delwin(power_window);
+  delwin(gold_label_window);
+  delwin(gold_window);
+  delwin(hitroll_label_window);
+  delwin(hitroll_window);
+  delwin(dmgroll_label_window);
+  delwin(dmgroll_window);
+  delwin(defense_label_window);
+  delwin(defense_window);
+  delwin(absorption_label_window);
+  delwin(absorption_window);
+  delwin(speed_label_window);
+  delwin(speed_window);
+  delwin(experience_label_window);
+  delwin(experience_window);
+  delwin(carry_label_window);
+  delwin(carry_window);
+  delwin(hunger_window);
+  delwin(poison_window);
+  delwin(disease_window);
+  delwin(footing_window);
+  delwin(location_window);
+  delwin(room_name_window);
+}
+
 void resize_screen()
 {
   calculate_screen_size();
@@ -1695,6 +1749,7 @@ void showmenu()
 void endgraf()
 {
   clear();
+  deallocate_windows();
   touchwin(stdscr);
   refresh();
   endwin();

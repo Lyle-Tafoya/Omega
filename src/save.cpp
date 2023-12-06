@@ -71,21 +71,49 @@ void save_item(std::ofstream &save_file, object *o)
       type |= 4;
     }
     file_write(save_file, type);
-    file_write(save_file, *o);
+    file_write(save_file, o->id);
+    file_write(save_file, o->weight);
+    file_write(save_file, o->plus);
+    file_write(save_file, o->charge);
+    file_write(save_file, o->dmg);
+    file_write(save_file, o->hit);
+    file_write(save_file, o->aux);
+    file_write(save_file, o->number);
+    file_write(save_file, o->fragility);
+    file_write(save_file, o->basevalue);
+    file_write(save_file, o->known);
+    file_write(save_file, o->used);
+    file_write(save_file, o->blessing);
+    file_write(save_file, o->type);
+    file_write(save_file, o->uniqueness);
+    file_write(save_file, o->on_use);
+    file_write(save_file, o->on_equip);
+    file_write(save_file, o->on_unequip);
+    file_write(save_file, o->level);
+    file_write(save_file, o->objchar);
     if(type & 1)
     {
       file_write(save_file, o->objstr.size());
-      save_file.write(reinterpret_cast<char *>(o->objstr.data()), o->objstr.size());
+      if(!o->objstr.empty())
+      {
+        save_file.write(reinterpret_cast<char *>(o->objstr.data()), o->objstr.size());
+      }
     }
     if(type & 2)
     {
       file_write(save_file, o->truename.size());
-      save_file.write(reinterpret_cast<char *>(o->truename.data()), o->truename.size());
+      if(!o->truename.empty())
+      {
+        save_file.write(reinterpret_cast<char *>(o->truename.data()), o->truename.size());
+      }
     }
     if(type & 4)
     {
       file_write(save_file, o->cursestr.size());
-      save_file.write(reinterpret_cast<char *>(o->cursestr.data()), o->cursestr.size());
+      if(!o->cursestr.empty())
+      {
+        save_file.write(reinterpret_cast<char *>(o->cursestr.data()), o->cursestr.size());
+      }
     }
   }
 }
@@ -323,7 +351,37 @@ void save_monsters(std::ofstream &save_file, std::forward_list<std::unique_ptr<m
   {
     if(m->hp > 0)
     {
-      file_write(save_file, *m);
+      file_write(save_file, m->attacked);
+      file_write(save_file, m->aux1);
+      file_write(save_file, m->aux2);
+      file_write(save_file, m->x);
+      file_write(save_file, m->y);
+      file_write(save_file, m->click);
+      file_write(save_file, m->id);
+      file_write(save_file, m->hp);
+      file_write(save_file, m->hit);
+      file_write(save_file, m->ac);
+      file_write(save_file, m->dmg);
+      file_write(save_file, m->sense);
+      file_write(save_file, m->wakeup);
+      file_write(save_file, m->level);
+      file_write(save_file, m->speed);
+      file_write(save_file, m->sleep);
+      file_write(save_file, m->treasure);
+      file_write(save_file, m->xpv);
+      file_write(save_file, m->corpseweight);
+      file_write(save_file, m->corpsevalue);
+      file_write(save_file, m->transformid);
+      file_write(save_file, m->startthing);
+      file_write(save_file, m->uniqueness);
+      file_write(save_file, m->talkf);
+      file_write(save_file, m->movef);
+      file_write(save_file, m->meleef);
+      file_write(save_file, m->strikef);
+      file_write(save_file, m->specialf);
+      file_write(save_file, m->status);
+      file_write(save_file, m->immunity);
+      file_write(save_file, m->monchar);
       if(m->id != HISCORE_NPC)
       {
         unsigned char type = 0x0;
@@ -339,12 +397,18 @@ void save_monsters(std::ofstream &save_file, std::forward_list<std::unique_ptr<m
         if(type & 1)
         {
           file_write(save_file, m->monstring.size());
-          save_file.write(reinterpret_cast<char *>(m->monstring.data()), m->monstring.size());
+          if(!m->monstring.empty())
+          {
+            save_file.write(reinterpret_cast<char *>(m->monstring.data()), m->monstring.size());
+          }
         }
         if(type & 2)
         {
           file_write(save_file, m->corpsestr.size());
-          save_file.write(reinterpret_cast<char *>(m->corpsestr.data()), m->corpsestr.size());
+          if(!m->corpsestr.empty())
+          {
+            save_file.write(reinterpret_cast<char *>(m->corpsestr.data()), m->corpsestr.size());
+          }
         }
       }
       save_itemlist(save_file, m->possessions);
@@ -518,20 +582,35 @@ std::unique_ptr<object> restore_item(std::ifstream &save_file)
   if(type != 0xff)
   {
     item = std::make_unique<object>();
-    item->objstr.~basic_string();
-    item->truename.~basic_string();
-    item->cursestr.~basic_string();
-
-    file_read(save_file, *item);
-    new(&item->objstr) std::string;
-    new(&item->truename) std::string;
-    new(&item->cursestr) std::string;
+    file_read(save_file, item->id);
+    file_read(save_file, item->weight);
+    file_read(save_file, item->plus);
+    file_read(save_file, item->charge);
+    file_read(save_file, item->dmg);
+    file_read(save_file, item->hit);
+    file_read(save_file, item->aux);
+    file_read(save_file, item->number);
+    file_read(save_file, item->fragility);
+    file_read(save_file, item->basevalue);
+    file_read(save_file, item->known);
+    file_read(save_file, item->used);
+    file_read(save_file, item->blessing);
+    file_read(save_file, item->type);
+    file_read(save_file, item->uniqueness);
+    file_read(save_file, item->on_use);
+    file_read(save_file, item->on_equip);
+    file_read(save_file, item->on_unequip);
+    file_read(save_file, item->level);
+    file_read(save_file, item->objchar);
     size_t size;
     if(type & (1 << 0))
     {
       file_read(save_file, size);
-      item->objstr.resize(size);
-      save_file.read(&item->objstr[0], size);
+      if(size > 0)
+      {
+        item->objstr.resize(size);
+        save_file.read(&item->objstr[0], size);
+      }
     }
     else
     {
@@ -540,8 +619,11 @@ std::unique_ptr<object> restore_item(std::ifstream &save_file)
     if(type & (1 << 1))
     {
       file_read(save_file, size);
-      item->truename.resize(size);
-      save_file.read(&item->truename[0], size);
+      if(size > 0)
+      {
+        item->truename.resize(size);
+        save_file.read(&item->truename[0], size);
+      }
     }
     else
     {
@@ -550,8 +632,11 @@ std::unique_ptr<object> restore_item(std::ifstream &save_file)
     if(type & (1 << 2))
     {
       file_read(save_file, size);
-      item->cursestr.resize(size);
-      save_file.read(&item->cursestr[0], size);
+      if(size > 0)
+      {
+        item->cursestr.resize(size);
+        save_file.read(&item->cursestr[0], size);
+      }
     }
     else
     {
@@ -848,15 +933,37 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
   for(int i = 0; i < num_monsters; ++i)
   {
     auto m = std::make_unique<monster>();
-    m->monstring.~basic_string();
-    m->corpsestr.~basic_string();
-    m->meleestr.~basic_string();
-    m->possessions.~forward_list();
-    file_read(save_file, *m);
-    new(&m->monstring) std::string;
-    new(&m->corpsestr) std::string;
-    new(&m->meleestr) std::string;
-    new(&m->possessions) std::forward_list<std::unique_ptr<object>>;
+    file_read(save_file, m->attacked);
+    file_read(save_file, m->aux1);
+    file_read(save_file, m->aux2);
+    file_read(save_file, m->x);
+    file_read(save_file, m->y);
+    file_read(save_file, m->click);
+    file_read(save_file, m->id);
+    file_read(save_file, m->hp);
+    file_read(save_file, m->hit);
+    file_read(save_file, m->ac);
+    file_read(save_file, m->dmg);
+    file_read(save_file, m->sense);
+    file_read(save_file, m->wakeup);
+    file_read(save_file, m->level);
+    file_read(save_file, m->speed);
+    file_read(save_file, m->sleep);
+    file_read(save_file, m->treasure);
+    file_read(save_file, m->xpv);
+    file_read(save_file, m->corpseweight);
+    file_read(save_file, m->corpsevalue);
+    file_read(save_file, m->transformid);
+    file_read(save_file, m->startthing);
+    file_read(save_file, m->uniqueness);
+    file_read(save_file, m->talkf);
+    file_read(save_file, m->movef);
+    file_read(save_file, m->meleef);
+    file_read(save_file, m->strikef);
+    file_read(save_file, m->specialf);
+    file_read(save_file, m->status);
+    file_read(save_file, m->immunity);
+    file_read(save_file, m->monchar);
     if(m->id == HISCORE_NPC)
     {
       restore_hiscore_npc(m.get(), m->aux2);
@@ -869,8 +976,11 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
       {
         size_t size;
         file_read(save_file, size);
-        m->monstring.resize(size);
-        save_file.read(&m->monstring[0], size);
+        if(size > 0)
+        {
+          m->monstring.resize(size);
+          save_file.read(&m->monstring[0], size);
+        }
       }
       else
       {
@@ -880,8 +990,11 @@ void restore_monsters(std::ifstream &save_file, level *lvl)
       {
         size_t size;
         file_read(save_file, size);
-        m->corpsestr.resize(size);
-        save_file.read(&m->corpsestr[0], size);
+        if(size > 0)
+        {
+          m->corpsestr.resize(size);
+          save_file.read(&m->corpsestr[0], size);
+        }
       }
       else
       {
