@@ -222,7 +222,7 @@ void buyfromstock(int base, int numitems)
   std::vector<std::string> lines;
   for(int i = 0; i < numitems; ++i)
   {
-    lines.emplace_back(std::format("{}:{}", static_cast<char>(i + 'a'), Objects[base + i].objstr));
+    lines.emplace_back(std::format("{}:{}", static_cast<char>(i + 'a'), itemid(&Objects[base + i], 2)));
   }
   menu->load(lines);
   int player_input = ' ';

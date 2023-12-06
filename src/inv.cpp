@@ -297,7 +297,7 @@ std::string getnumstr(const object *obj)
 }
 
 // returns a string for identified items
-std::string itemid(object *obj)
+std::string itemid(object *obj, int known)
 {
   std::string item_name;
   if(obj->objchar == CASH)
@@ -310,13 +310,17 @@ std::string itemid(object *obj)
     {
       obj->known = Objects[obj->id].known;
     }
+    if(known < 0)
+    {
+      known = obj->known;
+    }
 
     item_name += getnumstr(obj);
-    if(obj->known == 0)
+    if(known == 0)
     {
       item_name += obj->objstr;
     }
-    else if(obj->known == 1)
+    else if(known == 1)
     {
       if(obj->id == ARTIFACTID + 8 || obj->id == ARTIFACTID + 20 || obj->id == ARTIFACTID + 21)
       {

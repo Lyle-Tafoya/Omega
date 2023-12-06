@@ -314,7 +314,7 @@ long get_money(long);
 void give_money(monster *);
 void givemonster(monster *, std::unique_ptr<object>);
 char index_to_key(int);
-std::string itemid(object *);
+std::string itemid(object *, int = -1);
 void lose_all_items();
 bool merge_item(std::span<std::unique_ptr<object>>, const object *, int);
 void p_drop_at(int, int, int, object *);
