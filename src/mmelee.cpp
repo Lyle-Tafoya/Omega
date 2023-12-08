@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scr.h"
 
 #include <algorithm>
+#include <format>
 #include <string>
 
 void m_hit(monster *m, int dtype)
@@ -89,7 +90,7 @@ bool monster_hit(monster *m, char hitloc, int bonus)
       }
       else
       {
-        queue_message("You missed.");
+        queue_message("|LYou missed.|w");
       }
     }
   }
@@ -195,7 +196,7 @@ void monster_melee(monster *m, char hitloc, int bonus)
     {
       if(random_range(10))
       {
-        queue_message(monster_name + " missed you.");
+        queue_message(std::format("|L{} missed you.|w", monster_name));
       }
       else
       {
@@ -204,19 +205,19 @@ void monster_melee(monster *m, char hitloc, int bonus)
           switch(random_range(10))
           {
             case 0:
-              queue_message(monster_name + " blundered severely.");
+              queue_message(std::format("|L{} blundered severely.|w", monster_name));
               m_damage(m, m->dmg, UNSTOPPABLE);
               break;
             case 1:
-              queue_message(monster_name + " tripped while attacking.");
+              queue_message(std::format("|L{} tripped while attacking.|w", monster_name));
               m_dropstuff(m);
               break;
             case 2:
-              queue_message(monster_name + " seems seriously confused.");
+              queue_message(std::format("|L{} seems seriously confused.|w", monster_name));
               m->speed = std::min(30, m->speed * 2);
               break;
             default:
-              queue_message(monster_name + " missed you.");
+              queue_message(std::format("|L{} missed you.|w", monster_name));
           }
         }
         else
@@ -224,37 +225,37 @@ void monster_melee(monster *m, char hitloc, int bonus)
           switch(random_range(10))
           {
             case 0:
-              queue_message(monster_name + " flailed stupidly at you.");
+              queue_message(std::format("|L{} flailed stupidly at you.|w", monster_name));
               break;
             case 1:
-              queue_message(monster_name + " made you laugh.");
+              queue_message(std::format("|L{} made you laugh.|w", monster_name));
               break;
             case 2:
-              queue_message(monster_name + " blundered severely.");
+              queue_message(std::format("|L{} blundered severely.|w", monster_name));
               m_damage(m, m->dmg, UNSTOPPABLE);
               break;
             case 3:
-              queue_message(monster_name + " tripped while attacking.");
+              queue_message(std::format("|L{} tripped while attacking.|w", monster_name));
               m_dropstuff(m);
               break;
             case 4:
-              queue_message(monster_name + " seems seriously confused.");
+              queue_message(std::format("|L{} seems seriously confused.|w", monster_name));
               m->speed = std::min(30, m->speed * 2);
               break;
             case 5:
-              queue_message(monster_name + " is seriously ashamed.");
+              queue_message(std::format("|L{} is seriously ashamed.|w", monster_name));
               break;
             case 6:
-              queue_message(monster_name + " made a boo-boo.");
+              queue_message(std::format("|L{} made a boo-boo.|w", monster_name));
               break;
             case 7:
-              queue_message(monster_name + " blundered.");
+              queue_message(std::format("|L{} blundered.|w", monster_name));
               break;
             case 8:
-              queue_message(monster_name + " cries out in anger and frustration.");
+              queue_message(std::format("|L{} cries out in anger and frustration.|w", monster_name));
               break;
             case 9:
-              queue_message(monster_name + " curses your ancestry.");
+              queue_message(std::format("|L{} curses your ancestry.|w", monster_name));
               break;
           }
         }

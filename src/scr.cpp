@@ -329,7 +329,7 @@ void print_messages()
     }
     for(size_t i = 0; start + i < end; ++i)
     {
-      mvwaddstr(message_window, static_cast<int>(i), 0, message_history[start + i].c_str());
+      color_mvwaddstr(message_window, static_cast<int>(i), 0, message_history[start + i].c_str());
     }
     wnoutrefresh(message_window);
     if(!done)
@@ -2524,7 +2524,7 @@ void bufferprint()
     size_t position = LINES-1;
     for(auto it = first_message_it; it != message_history.rend(); ++it, --position)
     {
-      mvwaddstr(message_window, position, 0, it->c_str());
+      color_mvwaddstr(message_window, position, 0, it->c_str());
     }
     int player_input = wgetch(message_window);
     switch(player_input)

@@ -194,30 +194,30 @@ void player_miss(const monster *m, int dtype)
       monster_name += m->monstring;
       if(random_range(10))
       {
-        queue_message("You miss " + monster_name + ".");
+        queue_message(std::format("|LYou miss {}.|w", monster_name));
       }
       else
       {
         switch(random_range(4))
         {
           case 0:
-            queue_message("You flail lamely at " + monster_name + ".");
+            queue_message(std::format("|LYou flail lamely at {}.|w", monster_name));
             break;
           case 1:
-            queue_message("You only amuse " + monster_name + ".");
+            queue_message(std::format("|LYou only amuse {}.|w", monster_name));
             break;
           case 2:
-            queue_message("You fail to even come close to " + monster_name + ".");
+            queue_message(std::format("|LYou fail to even come close to {}.|w", monster_name));
             break;
           case 3:
-            queue_message("You totally avoid contact with " + monster_name + ".");
+            queue_message(std::format("|LYou totally avoid contact with {}.|w", monster_name));
             break;
         }
       }
     }
     else
     {
-      queue_message("You missed it.");
+      queue_message("|LYou missed it.|l");
     }
   }
 }
@@ -614,9 +614,9 @@ void gain_level()
   while(expval(Player.level + 1) <= Player.xp)
   {
     Player.level++;
-    queue_message("You have attained a new experience level!");
+    queue_message("|gYou have attained a new experience level!|w");
     queue_message(
-      std::format("You are now {}{}", getarticle(levelname(Player.level)), levelname(Player.level))
+      std::format("|GYou are now {}{}.|w", getarticle(levelname(Player.level)), levelname(Player.level))
     );
     hp_gain = random_range(Player.con) + 1;
     if(Player.hp < Player.maxhp)

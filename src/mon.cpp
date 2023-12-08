@@ -508,11 +508,11 @@ void m_death(monster *m)
     calc_melee();
     if(m->uniqueness != COMMON)
     {
-      queue_message(std::format("{} is dead!", m->monstring));
+      queue_message(std::format("|r{} is dead!|w", m->monstring));
     }
     else
     {
-      queue_message(std::format("The {} is dead!", m->monstring));
+      queue_message(std::format("|rThe {} is dead!|w", m->monstring));
     }
   }
   m_dropstuff(m);
