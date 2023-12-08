@@ -35,8 +35,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-extern scrolling_buffer message_buffer;
-
 void indoors_random_event()
 {
   switch(random_range(1000))
@@ -1044,7 +1042,7 @@ int parsecitysite()
           {
             found = false;
           }
-          message_buffer.replace_last(prefix);
+          replace_last_message(prefix);
         }
         if(prefix.empty())
         {
@@ -1054,7 +1052,7 @@ int parsecitysite()
         }
         break;
       case ESCAPE:
-        message_buffer.replace_last("_ Move cancelled.");
+        replace_last_message("_ Move cancelled.");
         xredraw();
         return ABORT;
       case '?':
@@ -1090,13 +1088,13 @@ int parsecitysite()
           continue;
         }
         prefix.push_back(player_input);
-        message_buffer.replace_last(prefix);
+        replace_last_message(prefix);
         first = f;
         last  = l;
         if(first == last && !found)
-        { /* unique name */
+        { // unique name
           found = true;
-          message_buffer.replace_last(sitenames[first]);
+          replace_last_message(sitenames[first]);
         }
         break;
     }

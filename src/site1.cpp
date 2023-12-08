@@ -30,8 +30,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <thread>
 #include <vector>
 
-extern scrolling_buffer message_buffer;
-
 // the bank; can be broken into (!)
 void l_bank()
 {
@@ -613,7 +611,7 @@ void l_casino()
               a = random_range(10);
               b = random_range(10);
               c = random_range(10);
-              message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
+              replace_last_message(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
               print_messages();
             }
             if(winnings > 0)
@@ -631,7 +629,7 @@ void l_casino()
               b = random_range(10);
               c = random_range(10);
             }
-            message_buffer.replace_last(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
+            replace_last_message(REEL_VALUES[a] + " " + REEL_VALUES[b] + " " + REEL_VALUES[c]);
             print_messages();
             if((a == b) && (a == c))
             {
@@ -705,15 +703,15 @@ void l_casino()
               b = a % 2;
               if(a == 0)
               {
-                message_buffer.replace_last("0 ");
+                replace_last_message("0 ");
               }
               else if(a == 1)
               {
-                message_buffer.replace_last("0 - 0 ");
+                replace_last_message("0 - 0 ");
               }
               else
               {
-                message_buffer.replace_last((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
+                replace_last_message((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
               }
               print_messages();
             }
@@ -732,15 +730,15 @@ void l_casino()
             }
             if(a == 0)
             {
-              message_buffer.replace_last("0 ");
+              replace_last_message("0 ");
             }
             else if(a == 1)
             {
-              message_buffer.replace_last("0 - 0 ");
+              replace_last_message("0 - 0 ");
             }
             else
             {
-              message_buffer.replace_last((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
+              replace_last_message((b == 0 ? "Red " : "Black ") + std::to_string(a - 1));
             }
             print_messages();
             if((a > 1) && (b == match))

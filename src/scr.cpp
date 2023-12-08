@@ -300,22 +300,50 @@ void print_shown_entities()
   wnoutrefresh(shown_entities_window);
 }
 
+int get_player_input(WINDOW *, bool = true);
 void print_messages()
 {
-  werase(message_window);
+  static size_t last_message_count = 0;
   const std::deque<std::string> &message_history = message_buffer.get_message_history();
-  size_t size = std::min(message_history.size(), static_cast<size_t>(message_window_length));
-  uint16_t i  = 0;
-  for(auto message = message_history.rbegin(); message != message_history.rend() && i < size;
-      ++message, ++i)
+  size_t start = last_message_count;
+  for(bool done = false; !done;)
   {
-    mvwaddstr(message_window, static_cast<int>(size - 1 - i), 0, message->c_str());
+    werase(message_window);
+    size_t end;
+    if(start + message_window_length < message_history.size())
+    {
+      end = start + message_window_length - 1;
+    }
+    else
+    {
+      if(static_cast<size_t>(message_window_length) > message_history.size())
+      {
+        start = 0;
+      }
+      else
+      {
+        start = message_history.size() - message_window_length;
+      }
+      end = message_history.size();
+      done = true;
+    }
+    for(size_t i = 0; start + i < end; ++i)
+    {
+      mvwaddstr(message_window, static_cast<int>(i), 0, message_history[start + i].c_str());
+    }
+    wnoutrefresh(message_window);
+    if(!done)
+    {
+      start = end;
+      mvwaddstr(message_window, message_window_length - 1, 0, "--MORE--");
+      int player_input;
+      do
+      {
+        player_input = get_player_input(message_window, false);
+      } while(player_input != KEY_ENTER && player_input != '\n' && player_input != ' ');
+    }
   }
-  if(size > 0)
-  {
-    wmove(message_window, static_cast<int>(size - 1), static_cast<int>(message_history.back().size()));
-  }
-  wnoutrefresh(message_window);
+  last_message_count = message_history.size();
 }
 
 void expand_message_window()
@@ -747,9 +775,12 @@ void resize_screen()
   xredraw();
 }
 
-int get_player_input(WINDOW *window)
+int get_player_input(WINDOW *window, bool print)
 {
-  print_messages();
+  if(print)
+  {
+    print_messages();
+  }
   while(true)
   {
     int x, y;

@@ -33,8 +33,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-extern scrolling_buffer message_buffer;
-
 void cast_spell(spell::spell_id id)
 {
   spell::Spells[id].cast();
@@ -653,7 +651,7 @@ std::optional<spell::spell_id> spellparse()
           {
             found = 0;
           }
-          message_buffer.replace_last(prefix);
+          replace_last_message(prefix);
         }
         if(prefix.empty())
         {
@@ -663,7 +661,7 @@ std::optional<spell::spell_id> spellparse()
         }
         break;
       case ESCAPE:
-        message_buffer.replace_last("_ Spell cancelled.");
+        replace_last_message("_ Spell cancelled.");
         xredraw();
         return {};
       case '?':
@@ -698,13 +696,13 @@ std::optional<spell::spell_id> spellparse()
           continue;
         }
         prefix += player_input;
-        message_buffer.replace_last(prefix);
+        replace_last_message(prefix);
         first = f;
         last  = l;
         if(first == last && !found) // unique name
         {
           found = 1;
-          message_buffer.replace_last(spell::spell_names[first]);
+          replace_last_message(spell::spell_names[first]);
         }
         break;
     }
