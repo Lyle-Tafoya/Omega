@@ -762,6 +762,7 @@ bool title_menu()
             break;
           default:
             erase();
+            read_scores();
             if(game_restore(save_file_paths[selected_option - menu_lines.size()]))
             {
               return true;
