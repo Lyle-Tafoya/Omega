@@ -188,8 +188,7 @@ void eat()
     std::unique_ptr<object> &o = Player.possessions[slot];
     if(o->objchar != FOOD && o->objchar != CORPSE)
     {
-      queue_message("You can't eat ");
-      queue_message(itemid(o.get()));
+      queue_message("You can't eat " + itemid(o.get()));
     }
     else
     {
@@ -199,6 +198,7 @@ void eat()
       }
       item_use(o);
       dispose_lost_objects(1, slot);
+      calc_weight();
       if(Current_Dungeon == E_COUNTRYSIDE)
       {
         Time += 100;
