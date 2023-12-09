@@ -2521,8 +2521,8 @@ void bufferprint()
     werase(message_window);
     bool can_scroll_up = (message_history.rend() - first_message_it) > LINES;
     bool can_scroll_down = first_message_it != message_history.rbegin();
-    size_t position = LINES-1;
-    for(auto it = first_message_it; it != message_history.rend(); ++it, --position)
+    size_t position = LINES;
+    for(auto it = first_message_it; it != message_history.rend() && position-- > 0; ++it)
     {
       color_mvwaddstr(message_window, position, 0, it->c_str());
     }
