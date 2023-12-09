@@ -672,6 +672,11 @@ void apport(int blessing)
   {
     queue_message("Apport from:");
     setspot(x, y);
+    if(x == -1 || y == -1)
+    {
+      queue_message("Cancelled.");
+      return;
+    }
     if(!Level->site[x][y].things.empty())
     {
       pickup_at(x, y);
