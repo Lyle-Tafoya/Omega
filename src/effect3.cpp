@@ -879,6 +879,7 @@ void levitate(int blessing)
       queue_message("You discover you can easily control your altitude...");
       queue_message("(Note use of '@' command may be useful while levitating)");
       Player.status[LEVITATING] += random_range(5) + 1 + blessing;
+      showflags();
     }
   }
   else
