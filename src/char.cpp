@@ -31,8 +31,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <string>
 
-extern bool read_omegarc();
-extern void save_omegarc();
 extern void restore_player(std::ifstream &save_file, player &p);
 bool game_restore(const std::filesystem::path &save_file_path);
 extern WINDOW *menu_window;
@@ -65,21 +63,6 @@ std::string get_home_path()
   }
 }
 
-std::ifstream omegarc_check()
-{
-  std::string omegarc_filename = std::format("{}/.omegarc", get_home_path());
-  std::ifstream omegarc_file(omegarc_filename, std::ios::binary);
-  if(omegarc_file.is_open())
-  {
-    queue_message("Use .omegarc in home directory? [yn] ");
-    if(ynq() != 'y')
-    {
-      omegarc_file.close();
-    }
-  }
-  return omegarc_file;
-}
-
 std::string version_string(int version)
 {
   int bugfix_version = version % 100;
@@ -90,13 +73,13 @@ std::string version_string(int version)
 
 void user_character_stats()
 {
-  std::filesystem::path omegarc_path{std::format("{}/.omegarc", get_home_path())};
+  std::filesystem::path omegarc_path{std::format("{}/.omega.toml", get_home_path())};
   if(std::filesystem::exists(omegarc_path))
   {
     queue_message("Would you like to load saved responses from your .omegarc? ");
     if(ynq() == 'y')
     {
-      if(read_omegarc())
+      if(read_omegarc(true, true))
       {
         return;
       }
@@ -436,7 +419,10 @@ void user_character_stats()
   queue_message("Do you want to save this set-up to .omegarc in your home directory? [yn] ");
   if(ynq() == 'y')
   {
-    save_omegarc();
+    if(!save_omegarc(false, true))
+    {
+      queue_message("Unable to save omegarc!");
+    }
   }
 }
 
@@ -589,7 +575,7 @@ void initplayer(bool play_yourself = false)
   Player.click                 = 1;
   Player.meleestr              = "ACBC";
   calc_melee();
-  ScreenOffset = -1000; /* to force a redraw */
+  ScreenOffset = -1000; // to force a redraw
 }
 
 // monsters initialized in game_restore if game is being restored
@@ -604,6 +590,7 @@ void init_game(bool play_yourself = false)
   initplayer(play_yourself);
   init_world();
   xredraw();
+  read_omegarc(true, false);
   queue_message("'?' for help or commandlist, 'Q' to quit.");
 }
 
@@ -763,6 +750,7 @@ bool title_menu()
           default:
             erase();
             read_scores();
+            read_omegarc(true, false);
             if(game_restore(save_file_paths[selected_option - menu_lines.size()]))
             {
               return true;

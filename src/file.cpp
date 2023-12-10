@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "glob.h"
 #include "scr.h"
+#include "toml.hpp"
 
 #include <array>
 #include <chrono>
@@ -36,69 +37,216 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 extern std::string get_home_path();
 extern std::string version_string(int version);
 
-void save_omegarc()
+bool save_omegarc(bool save_options, bool save_stats)
 {
-  std::string omegarc_filename = std::format("{}/.omegarc", get_home_path());
-  std::ofstream omegarc_file(omegarc_filename, std::ios::binary);
+  std::string omegarc_path = std::format("{}/.omega.toml", get_home_path());
+  toml::table config;
+  if(std::filesystem::exists(omegarc_path))
+  {
+    config = toml::parse_file(omegarc_path);
+    if(config.contains("version") && *config["version"].as_integer() != CONFIG_FILE_VERSION)
+    {
+      config = toml::table();
+    }
+  }
+  config.insert_or_assign("version", CONFIG_FILE_VERSION);
+  if(save_options)
+  {
+    if(!config.contains("options"))
+    {
+      config.insert("options", toml::table());
+    }
+    toml::table &options = *config["options"].as_table();
+    options.insert_or_assign("bellicose", optionp(BELLICOSE, Player));
+    options.insert_or_assign("jumpmove", optionp(JUMPMOVE, Player));
+    options.insert_or_assign("runstop", optionp(RUNSTOP, Player));
+    options.insert_or_assign("pickup", optionp(PICKUP, Player));
+    options.insert_or_assign("confirm", optionp(CONFIRM, Player));
+    options.insert_or_assign("paranoid_confirm", optionp(PARANOID_CONFIRM, Player));
+    options.insert_or_assign("color", optionp(SHOW_COLOUR, Player));
+    options.insert_or_assign("mouse_enabled", optionp(MOUSE_ENABLED, Player));
+    switch(Verbosity)
+    {
+      case TERSE:
+        options.insert_or_assign("verbosity", "terse");
+        break;
+      case MEDIUM:
+        options.insert_or_assign("verbosity", "medium");
+        break;
+      case VERBOSE:
+        options.insert_or_assign("verbosity", "verbose");
+        break;
+    }
+    options.insert_or_assign("searchnum", Searchnum);
+  }
+  if(save_stats)
+  {
+    if(!config.contains("play_yourself"))
+    {
+      config.insert("play_yourself", toml::table());
+    }
+    toml::table &play_yourself = *config["play_yourself"].as_table();
+    play_yourself.insert_or_assign("strength", Player.str);
+    play_yourself.insert_or_assign("dexterity", Player.dex);
+    play_yourself.insert_or_assign("constitution", Player.con);
+    play_yourself.insert_or_assign("agility", Player.agi);
+    play_yourself.insert_or_assign("intelligence", Player.iq);
+    play_yourself.insert_or_assign("power", Player.pow);
+  }
+  std::ofstream omegarc_file(omegarc_path);
   if(!omegarc_file)
   {
-    queue_message("Sorry, couldn't save .omegarc for some reason.");
+    return false;
   }
-  else
-  {
-    file_write(omegarc_file, CONFIG_FILE_VERSION);
-    file_write(omegarc_file, GAME_VERSION);
-    file_write(omegarc_file, Player.maxstr);
-    file_write(omegarc_file, Player.maxcon);
-    file_write(omegarc_file, Player.maxdex);
-    file_write(omegarc_file, Player.maxagi);
-    file_write(omegarc_file, Player.maxiq);
-    file_write(omegarc_file, Player.maxpow);
-  }
+  omegarc_file << config;
+  return true;
 }
 
-bool read_omegarc()
+bool read_omegarc(bool read_options, bool read_stats)
 {
-  std::filesystem::path omegarc_path{std::format("{}/.omegarc", get_home_path())};
-  std::ifstream omegarc_file{omegarc_path, std::ios::binary};
-  if(!omegarc_file.is_open())
+  std::string omegarc_path{std::format("{}/.omega.toml", get_home_path())};
+  if(!std::filesystem::exists(omegarc_path))
   {
-    queue_message("Found omegarc, but could not open it!");
+    queue_message("omegarc not found!");
     return false;
   }
-  int config_file_version;
-  file_read(omegarc_file, config_file_version);
-  int game_version;
-  file_read(omegarc_file, game_version);
-  if(config_file_version != CONFIG_FILE_VERSION)
+  toml::table config = toml::parse_file(omegarc_path);
+  int version = config["version"].as_integer()->get();
+
+  if(version != CONFIG_FILE_VERSION)
   {
-    omegarc_file.close();
-    queue_message("Sorry, I can't load an outdated omegarc file!");
-    queue_message("omegarc is from version " + version_string(game_version));
+    queue_message("Outdated config file!");
     return false;
   }
-  file_read(omegarc_file, Player.maxstr);
-  file_read(omegarc_file, Player.maxcon);
-  file_read(omegarc_file, Player.maxdex);
-  file_read(omegarc_file, Player.maxagi);
-  file_read(omegarc_file, Player.maxiq);
-  file_read(omegarc_file, Player.maxpow);
-  Player.str = Player.maxstr;
-  Player.con = Player.maxcon;
-  Player.dex = Player.maxdex;
-  Player.agi = Player.maxagi;
-  Player.iq  = Player.maxiq;
-  Player.pow = Player.maxpow;
-  omegarc_file.close();
-  if(omegarc_file.fail())
+  if(read_stats && config.contains("play_yourself"))
   {
-    queue_message("Error reading omegarc file!");
-    return false;
+    toml::table &play_yourself = *config["play_yourself"].as_table();
+    Player.maxagi = play_yourself["agility"].as_integer()->get();
+    Player.maxcon = play_yourself["constitution"].as_integer()->get();
+    Player.maxdex = play_yourself["dexterity"].as_integer()->get();
+    Player.maxiq  = play_yourself["intelligence"].as_integer()->get();
+    Player.maxpow = play_yourself["power"].as_integer()->get();
+    Player.maxstr = play_yourself["strength"].as_integer()->get();
+    Player.agi    = Player.maxagi;
+    Player.con    = Player.maxcon;
+    Player.dex    = Player.maxdex;
+    Player.iq     = Player.maxiq;
+    Player.pow    = Player.maxpow;
+    Player.str    = Player.maxstr;
   }
-  else
+  if(read_options && config.contains("options"))
   {
-    return true;
+    toml::table &options = *config["options"].as_table();
+    if(options.contains("bellicose"))
+    {
+      if(options["bellicose"].as_boolean()->get())
+      {
+        optionset(BELLICOSE, Player);
+      }
+      else
+      {
+        optionreset(BELLICOSE, Player);
+      }
+    }
+    if(options.contains("color"))
+    {
+      if(options["color"].as_boolean()->get())
+      {
+        optionset(SHOW_COLOUR, Player);
+      }
+      else
+      {
+        optionreset(SHOW_COLOUR, Player);
+      }
+    }
+    if(options.contains("confirm"))
+    {
+      if(options["confirm"].as_boolean()->get())
+      {
+        optionset(CONFIRM, Player);
+      }
+      else
+      {
+        optionreset(CONFIRM, Player);
+      }
+    }
+    if(options.contains("jumpmove"))
+    {
+      if(options["jumpmove"].as_boolean()->get())
+      {
+        optionset(JUMPMOVE, Player);
+      }
+      else
+      {
+        optionreset(JUMPMOVE, Player);
+      }
+    }
+    if(options.contains("mouse_enabled"))
+    {
+      if(options["mouse_enabled"].as_boolean()->get())
+      {
+        optionset(MOUSE_ENABLED, Player);
+      }
+      else
+      {
+        optionreset(MOUSE_ENABLED, Player);
+      }
+    }
+    if(options.contains("paranoid_confirm"))
+    {
+      if(options["paranoid_confirm"].as_boolean()->get())
+      {
+        optionset(PARANOID_CONFIRM, Player);
+      }
+      else
+      {
+        optionreset(PARANOID_CONFIRM, Player);
+      }
+    }
+    if(options.contains("pickup"))
+    {
+      if(options["pickup"].as_boolean()->get())
+      {
+        optionset(PICKUP, Player);
+      }
+      else
+      {
+        optionreset(PICKUP, Player);
+      }
+    }
+    if(options.contains("runstop"))
+    {
+      if(options["runstop"].as_boolean()->get())
+      {
+        optionset(RUNSTOP, Player);
+      }
+      else
+      {
+        optionreset(RUNSTOP, Player);
+      }
+    }
+    if(options.contains("searchnum"))
+    {
+      Searchnum = options["searchnum"].as_integer()->get();
+    }
+    if(options.contains("verbosity"))
+    {
+      std::string verbosity = options["verbosity"].as_string()->get();
+      if(verbosity == "terse")
+      {
+        Verbosity = TERSE;
+      }
+      else if(verbosity == "medium")
+      {
+        Verbosity = MEDIUM;
+      }
+      else if(verbosity == "verbose")
+      {
+        Verbosity = VERBOSE;
+      }
+    }
   }
+  return true;
 }
 
 std::fstream check_fstream_open(const std::string &file_path, std::ios::openmode mode)

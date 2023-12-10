@@ -99,7 +99,6 @@ void terrain_check(int);
 // char.cpp functions
 long calcmana();
 int fixnpc(int);
-void save_omegarc();
 
 // city.cpp functions
 void load_city(bool, std::unique_ptr<level> = nullptr);
@@ -257,7 +256,9 @@ void combat_help();
 void commandlist();
 void displayfile(const std::string &);
 void extendlog(const std::string &, int);
+bool read_omegarc(bool, bool);
 void save_hiscore_npc(int);
+bool save_omegarc(bool, bool);
 void show_license();
 void showmotd();
 void theologyfile();
