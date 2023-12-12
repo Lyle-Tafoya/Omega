@@ -112,22 +112,33 @@ bool read_omegarc(bool read_options, bool read_stats)
     return false;
   }
   toml::table config = toml::parse_file(omegarc_path);
-  int version = config["version"].as_integer()->get();
+  if(!config.contains("version") || !config["version"].is_integer())
+  {
+    queue_message("Config value \"version\" is missing or invalid");
+    return false;
+  }
+  int version = config["version"].value<int>().value();
 
-  if(version != CONFIG_FILE_VERSION)
+  if(version < CONFIG_FILE_VERSION)
   {
     queue_message("Outdated config file!");
     return false;
   }
-  if(read_stats && config.contains("play_yourself"))
+  else if(version > CONFIG_FILE_VERSION)
+  {
+    queue_message("Config file is for a more recent version of Omega");
+    return false;
+  }
+
+  if(read_stats && config.contains("play_yourself") && config["play_yourself"].is_table())
   {
     toml::table &play_yourself = *config["play_yourself"].as_table();
-    Player.maxagi = std::clamp(play_yourself["agility"].as_integer()->get(), 4l, 18l);
-    Player.maxcon = std::clamp(play_yourself["constitution"].as_integer()->get(), 4l, 18l);
-    Player.maxdex = std::clamp(play_yourself["dexterity"].as_integer()->get(), 4l, 18l);
-    Player.maxiq  = std::clamp(play_yourself["intelligence"].as_integer()->get(), 4l, 18l);
-    Player.maxpow = std::clamp(play_yourself["power"].as_integer()->get(), 4l, 18l);
-    Player.maxstr = std::clamp(play_yourself["strength"].as_integer()->get(), 4l, 18l);
+    Player.maxagi = std::clamp(play_yourself["agility"].value_or(3), 3, 18);
+    Player.maxcon = std::clamp(play_yourself["constitution"].value_or(3), 3, 18);
+    Player.maxdex = std::clamp(play_yourself["dexterity"].value_or(3), 3, 18);
+    Player.maxiq  = std::clamp(play_yourself["intelligence"].value_or(3), 3, 18);
+    Player.maxpow = std::clamp(play_yourself["power"].value_or(3), 3, 18);
+    Player.maxstr = std::clamp(play_yourself["strength"].value_or(3), 3, 18);
     Player.agi    = Player.maxagi;
     Player.con    = Player.maxcon;
     Player.dex    = Player.maxdex;
@@ -135,10 +146,10 @@ bool read_omegarc(bool read_options, bool read_stats)
     Player.pow    = Player.maxpow;
     Player.str    = Player.maxstr;
   }
-  if(read_options && config.contains("options"))
+  if(read_options && config.contains("options") && config["options"].is_table())
   {
     toml::table &options = *config["options"].as_table();
-    if(options.contains("bellicose"))
+    if(options.contains("bellicose") && options["bellicose"].is_boolean())
     {
       if(options["bellicose"].as_boolean()->get())
       {
@@ -149,7 +160,7 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(BELLICOSE, Player);
       }
     }
-    if(options.contains("color"))
+    if(options.contains("color") && options["color"].is_boolean())
     {
       if(options["color"].as_boolean()->get())
       {
@@ -160,7 +171,7 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(SHOW_COLOUR, Player);
       }
     }
-    if(options.contains("confirm"))
+    if(options.contains("confirm") && options["confirm"].is_boolean())
     {
       if(options["confirm"].as_boolean()->get())
       {
@@ -171,7 +182,7 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(CONFIRM, Player);
       }
     }
-    if(options.contains("jumpmove"))
+    if(options.contains("jumpmove") && options["jumpmove"].is_boolean())
     {
       if(options["jumpmove"].as_boolean()->get())
       {
@@ -182,7 +193,7 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(JUMPMOVE, Player);
       }
     }
-    if(options.contains("mouse_enabled"))
+    if(options.contains("mouse_enabled") && options["mouse_enabled"].is_boolean())
     {
       if(options["mouse_enabled"].as_boolean()->get())
       {
@@ -193,7 +204,7 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(MOUSE_ENABLED, Player);
       }
     }
-    if(options.contains("paranoid_confirm"))
+    if(options.contains("paranoid_confirm") && options["paranoid_confirm"].is_boolean())
     {
       if(options["paranoid_confirm"].as_boolean()->get())
       {
@@ -204,7 +215,7 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(PARANOID_CONFIRM, Player);
       }
     }
-    if(options.contains("pickup"))
+    if(options.contains("pickup") && options["pickup"].is_boolean())
     {
       if(options["pickup"].as_boolean()->get())
       {
@@ -215,7 +226,7 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(PICKUP, Player);
       }
     }
-    if(options.contains("runstop"))
+    if(options.contains("runstop") && options["runstop"].is_boolean())
     {
       if(options["runstop"].as_boolean()->get())
       {
@@ -226,11 +237,11 @@ bool read_omegarc(bool read_options, bool read_stats)
         optionreset(RUNSTOP, Player);
       }
     }
-    if(options.contains("searchnum"))
+    if(options.contains("searchnum") && options["searchnum"].is_integer())
     {
-      Searchnum = options["searchnum"].as_integer()->get();
+      Searchnum = options["searchnum"].value<int>().value();
     }
-    if(options.contains("verbosity"))
+    if(options.contains("verbosity") && options["verbosity"].is_string())
     {
       std::string verbosity = options["verbosity"].as_string()->get();
       if(verbosity == "terse")
