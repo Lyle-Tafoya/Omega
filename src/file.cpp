@@ -25,6 +25,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "scr.h"
 #include "toml.hpp"
 
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <filesystem>
@@ -121,12 +122,12 @@ bool read_omegarc(bool read_options, bool read_stats)
   if(read_stats && config.contains("play_yourself"))
   {
     toml::table &play_yourself = *config["play_yourself"].as_table();
-    Player.maxagi = play_yourself["agility"].as_integer()->get();
-    Player.maxcon = play_yourself["constitution"].as_integer()->get();
-    Player.maxdex = play_yourself["dexterity"].as_integer()->get();
-    Player.maxiq  = play_yourself["intelligence"].as_integer()->get();
-    Player.maxpow = play_yourself["power"].as_integer()->get();
-    Player.maxstr = play_yourself["strength"].as_integer()->get();
+    Player.maxagi = std::clamp(play_yourself["agility"].as_integer()->get(), 4l, 18l);
+    Player.maxcon = std::clamp(play_yourself["constitution"].as_integer()->get(), 4l, 18l);
+    Player.maxdex = std::clamp(play_yourself["dexterity"].as_integer()->get(), 4l, 18l);
+    Player.maxiq  = std::clamp(play_yourself["intelligence"].as_integer()->get(), 4l, 18l);
+    Player.maxpow = std::clamp(play_yourself["power"].as_integer()->get(), 4l, 18l);
+    Player.maxstr = std::clamp(play_yourself["strength"].as_integer()->get(), 4l, 18l);
     Player.agi    = Player.maxagi;
     Player.con    = Player.maxcon;
     Player.dex    = Player.maxdex;
