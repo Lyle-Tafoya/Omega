@@ -34,6 +34,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <forward_list>
 #include <memory>
+#include <random>
 #include <vector>
 
 extern std::unique_ptr<interactive_menu> menu;
@@ -187,9 +188,6 @@ extern int Verbosity;
 // NPC behavior, if entered
 extern int Behavior;
 
-// random seed
-extern char Seed;
-
 // turn number
 extern long Time;
 
@@ -269,5 +267,7 @@ extern int deepest[E_MAX + 1];
 extern int level_seed[E_MAX + 1];
 
 extern bool received_directions;
+
+extern std::mt19937 generator;
 
 #endif

@@ -201,6 +201,11 @@ void color_mvwaddstr(WINDOW *window, int y, int x, const std::string &s)
   color_waddstr(window, s);
 }
 
+void color_mvaddstr(int y, int x, const std::string &s)
+{
+  color_mvwaddstr(stdscr, y, x, s);
+}
+
 struct entity_info
 {
   std::string name;

@@ -594,6 +594,47 @@ void init_game(bool play_yourself = false)
   queue_message("'?' for help or commandlist, 'Q' to quit.");
 }
 
+void choose_seed()
+{
+  uint_fast32_t seed = 0;
+  constexpr uint_fast32_t limit = std::numeric_limits<uint_fast32_t>::max();
+  while(true)
+  {
+    erase();
+    color_mvaddstr(0, 0, "|BPlay a game with a custom seed|w");
+    mvaddstr(2, 0, "Choose 0 for a random seed");
+    color_mvaddstr(4, 0, std::format("Seed: |W{}|w", seed).c_str());
+    mvaddstr(6, 0, "The seed will determine the dungeon layout, monsters, items.");
+    mvaddstr(7, 0, "Seeds may not be compatible between versions of the game.");
+    int player_input = getch();
+    if(player_input >= '0' && player_input <= '9')
+    {
+      uint8_t digit = player_input - '0';
+      if(seed < limit / 10 || (seed == limit / 10 && digit <= limit % 10))
+      {
+        seed *= 10;
+        seed += digit;
+      }
+    }
+    else if(player_input == KEY_BACKSPACE || player_input == '\b')
+    {
+      seed /= 10;
+    }
+    else if(player_input == KEY_ENTER || player_input == '\n')
+    {
+      if(seed != 0)
+      {
+        generator.seed(seed);
+      }
+      break;
+    }
+    else if(player_input == ESCAPE)
+    {
+      break;
+    }
+  }
+}
+
 bool title_menu()
 {
   const std::string default_name       = Player.name;
@@ -646,6 +687,7 @@ bool title_menu()
   {
     PLAY_GAME,
     PLAY_YOURSELF,
+    CHOOSE_SEED,
     SHOW_SCORES,
     DISPLAY_HELP
   };
@@ -653,7 +695,7 @@ bool title_menu()
   const int top_option    = PLAY_GAME;
   const int bottom_option = DISPLAY_HELP;
 
-  std::array menu_lines   = {"Omega Rebirth", "Play As Yourself", "High Scores", "Help Menu"};
+  std::array menu_lines   = {"Omega Rebirth", "Play As Yourself", "Choose Seed", "High Scores", "Help Menu"};
   uint8_t selected_option = save_file_lines.empty() ? PLAY_GAME : bottom_option + 1;
   std::string name;
   int player_input;
@@ -739,6 +781,9 @@ bool title_menu()
             init_game(true);
             user_intro();
             return false;
+          case CHOOSE_SEED:
+            choose_seed();
+            break;
           case SHOW_SCORES:
             showscores();
             break;

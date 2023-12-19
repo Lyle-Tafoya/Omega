@@ -67,6 +67,7 @@ void blotspot(int, int);
 void bufferprint();
 void calculate_offsets(int, int);
 void clear_screen();
+void color_mvaddstr(int, int, const std::string &);
 void color_mvwaddstr(WINDOW *, int, int, const std::string &);
 void color_waddstr(WINDOW *, const std::string &);
 void colour_on();
