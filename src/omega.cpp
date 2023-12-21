@@ -28,6 +28,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <ctime>
 #include <filesystem>
 #include <format>
+#include <limits>
 #include <random>
 #include <string>
 #include <vector>
@@ -164,7 +165,7 @@ void initrand(int environment, int level)
 
   if(environment >= 0)
   {
-    store = random_range(std::numeric_limits<int>::max());
+    store = random_range((std::numeric_limits<int>::max)());
   }
   // Pseudo Random Seed
   if(environment == E_RANDOM)
@@ -351,7 +352,7 @@ void init_world()
 {
   for(int env = 0; env <= E_MAX; ++env)
   {
-    level_seed[env] = random_range(std::numeric_limits<int>::max());
+    level_seed[env] = random_range((std::numeric_limits<int>::max)());
   }
   load_country();
   for(int i = 0; i < NUMCITYSITES; ++i)
