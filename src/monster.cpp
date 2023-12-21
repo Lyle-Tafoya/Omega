@@ -60,6 +60,12 @@ monster::monster(const monster &m)
   monstring = m.monstring;
   corpsestr = m.corpsestr;
   meleestr = m.meleestr;
+  possessions.clear();
+  auto it = possessions.before_begin();
+  for(const std::unique_ptr<object> &item : m.possessions)
+  {
+    it = possessions.insert_after(it, std::make_unique<object>(*item));
+  }
 }
 
 monster &monster::operator=(const monster &m)
@@ -98,5 +104,11 @@ monster &monster::operator=(const monster &m)
   monstring = m.monstring;
   corpsestr = m.corpsestr;
   meleestr = m.meleestr;
+  possessions.clear();
+  auto it = possessions.before_begin();
+  for(const std::unique_ptr<object> &item : m.possessions)
+  {
+    it = possessions.insert_after(it, std::make_unique<object>(*item));
+  }
   return *this;
 }

@@ -652,17 +652,6 @@ void m_death(monster *m)
             Player.alignment -= 100;
             if(!gamestatusp(DESTROYED_ORDER, GameStatus))
             {
-              std::vector<std::unique_ptr<object>> &item_list = Level->site[m->x][m->y].things;
-              std::unique_ptr<object> badge;
-              for(auto it = item_list.rbegin(); it != item_list.rend(); ++it)
-              {
-                if((*it)->id == THINGID + 16)
-                {
-                  badge = std::move(*it);
-                  item_list.erase(it.base());
-                  break;
-                }
-              }
               Justiciar         = nameprint();
               Justiciarbehavior = 2911;
               queue_message("In the distance you hear a trumpet. A Servant of Law");
@@ -678,11 +667,20 @@ void m_death(monster *m)
               if(it != City->mlist.end())
               {
                 monster *guard = it->get();
-                if(badge)
+                std::vector<std::unique_ptr<object>> &item_list = Level->site[m->x][m->y].things;
+                bool found_badge = false;
+                for(auto it = item_list.begin(); it != item_list.end(); ++it)
                 {
-                  queue_message("materializes, sheds a tear, picks up the badge, and "
-                                "leaves.");
-                  m_pickup(guard, std::move(badge));
+                  if((*it)->id == THINGID + 16)
+                  {
+                    found_badge = true;
+                    item_list.erase(it);
+                    break;
+                  }
+                }
+                if(found_badge)
+                {
+                  queue_message("materializes, sheds a tear, picks up the badge, and leaves.");
                 }
                 else
                 {
