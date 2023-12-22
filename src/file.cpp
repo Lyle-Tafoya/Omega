@@ -502,7 +502,7 @@ void read_scores()
   std::getline(high_score_file, Justiciar);
   high_score_file >> Justiciarlevel >> Justiciarbehavior >> std::ws;
   std::getline(high_score_file, Grandmaster);
-  high_score_file >> Grandmasterlevel >> Grandmasterbehavior >> std::ws;
+  high_score_file >> Grandmasterlevel >> Grandmasterbehavior;
 
   high_score_file.close();
 
@@ -522,7 +522,7 @@ void save_hiscore_npc(int npc)
   std::fstream infile      = check_fstream_open(infile_name, std::ios::in);
   std::string outfile_name = std::format("{}omega.hi.new", Omegalib);
   std::fstream outfile     = check_fstream_open(outfile_name, std::ios::out);
-  for(int i = 0; i < 16; ++i)
+  for(int i = 0; i < 17; ++i)
   {
     if(npc == i)
     {
