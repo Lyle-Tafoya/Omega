@@ -598,7 +598,7 @@ bool damage_item(int slot)
       }
       else if(o->plus > 0)
       {
-        queue_message(std::format("Your {} glos and fades.", itemid(o)));
+        queue_message(std::format("Your {} glows and fades.", itemid(o)));
         o->plus--;
         return false;
       }

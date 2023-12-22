@@ -2584,7 +2584,7 @@ void showscores()
            "Prime Sorceror:               {} ({})\n"
            "Shadowlord:                   {} ({})\n"
            "\n"
-           "High Preists:\n"
+           "High Priests:\n"
            " of Odin:                     {} ({})\n"
            " of Set:                      {} ({})\n"
            " of Athena:                   {} ({})\n"
