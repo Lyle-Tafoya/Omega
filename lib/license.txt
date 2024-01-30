@@ -15,6 +15,7 @@ Permission for this change was received from:
   Nathan Glasser            - August 24th, 2023 - LinkedIn message
   Erik Max Francis          - August 24th, 2023 - email
   Robert Rendell            - August 24th, 2023 - email
+  William Tanksley          - January 29th, 2024 - github PR
 
 Special thanks to Josh Backstein (https://github.com/joshbackstein) for helping
 to find and contact these contributors.
