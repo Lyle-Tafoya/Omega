@@ -1161,7 +1161,11 @@ void bash_item()
     if(Player.str + random_range(20) > obj->fragility + random_range(20))
     {
       int item_level = obj->level;
-      if(damage_item(slot) && Player.alignment < 0)
+      if(!damage_item(slot))
+      {
+        queue_message("Damn thing refuses to break...");
+      }
+      else if(Player.alignment < 0)
       {
         queue_message("That was fun....");
         gain_experience(item_level * item_level * 5);
