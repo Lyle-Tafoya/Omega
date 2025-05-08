@@ -101,7 +101,6 @@ void l_bank()
             menu->load(lines);
             menu->print();
             doupdate();
-            std::this_thread::sleep_for(std::chrono::seconds(2));
             lines.emplace_back("^@^@^@^@^@00AD1203BC0F0000FFFFFFFFFFFF");
             lines.emplace_back("Interrupt in _get_space. Illegal Character.");
             menu->load(lines);
