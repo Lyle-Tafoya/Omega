@@ -280,9 +280,9 @@ void mazesite(int x, int y, int populate)
     fd   = checkfopen(std::format("{}maze{}.dat", Omegalib, MazeNum), "rb");
     site = cryptkey("mazes");
   }
-  site = getc(fd) ^ site;
-  k++;
-  if(k == 286)
+
+  while((site = getc(fd) ^ site) == '\n');
+  if(++k == 286)
   {
     fclose(fd);
   }
