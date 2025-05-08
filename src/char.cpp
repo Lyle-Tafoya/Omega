@@ -511,7 +511,7 @@ void omegan_character_stats()
       case KEY_LEFT:
       case '<':
       case 'h':
-        if(stats[stat_num] > 4)
+        if(stats[stat_num] > 3)
         {
           --stats[stat_num];
           ++stat_pool;
