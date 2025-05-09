@@ -381,20 +381,27 @@ void minute_status_check()
 void moon_check()
 {
   // 24 day lunar cycle
-  Phase    = (Phase + 1) % 24;
-  Lunarity = 0;
-  if(((Player.patron == DRUID) && ((Phase / 2 == 3) || (Phase / 2 == 9))) ||
-     ((Player.alignment > 10) && (Phase / 2 == 6)) || ((Player.alignment < -10) && (Phase / 2 == 0)))
+  Phase    = Date % 24;
+  if((Player.patron == DRUID && (Phase / 2 == 3 || Phase / 2 == 9)) ||
+     (Player.alignment > 10 && Phase / 2 == 6) || (Player.alignment < -10 && Phase / 2 == 0))
   {
     queue_message("As the moon rises you feel unusually vital!");
     Lunarity = 1;
   }
-  else if(((Player.patron == DRUID) && ((Phase / 2 == 0) || (Phase / 2 == 6))) ||
-          ((Player.alignment > 10) && (Phase / 2 == 0)) ||
-          ((Player.alignment < -10) && (Phase / 2 == 6)))
+  else if((Player.patron == DRUID && (Phase / 2 == 0 || Phase / 2 == 6)) ||
+          (Player.alignment > 10 && Phase / 2 == 0) ||
+          (Player.alignment < -10 && Phase / 2 == 6))
   {
     queue_message("The rise of the moon tokens a strange enervation!");
     Lunarity = -1;
+  }
+  else
+  {
+    if(Lunarity != 0)
+    {
+      queue_message("The moon's energy leaves you.");
+    }
+    Lunarity = 0;
   }
 }
 

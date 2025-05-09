@@ -150,12 +150,14 @@ void tenminute_check()
 
 void hourly_check()
 {
-  Player.food--;
+  --Player.food;
   foodcheck();
+
+  // midnight, a new day
   if(hour() == 0)
-  { // midnight, a new day
+  {
+    ++Date;
     moon_check();
-    Date++;
   }
   torch_check();
   if(Current_Environment == Current_Dungeon)

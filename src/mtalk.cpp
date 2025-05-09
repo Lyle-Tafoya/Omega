@@ -55,20 +55,19 @@ void m_talk_druid(monster *m)
     queue_message("Do you request a ritual of neutralization? [yn] ");
     if(ynq() == 'y')
     {
-      if(Phase / 2 == 6 || Phase / 2 == 0)
-      { // full or new moon
-        queue_message("\"Unfortunately, I cannot perform a ritual of balance on");
-        if(Phase / 2 == 6)
-        {
-          queue_message("this lawful day.\"");
-        }
-        else
-        {
-          queue_message("this chaotic day.\"");
-        }
+      // Full moon
+      if(Phase / 2 == 6)
+      {
+        queue_message("\"Unfortunately, I cannot perform a ritual of balance on this lawful day.\"");
       }
+      // New moon
+      else if(Phase / 2 == 0)
+      {
+        queue_message("\"Unfortunately, I cannot perform a ritual of balance on this chaotic day.\"");
+      }
+      // Half moon
       else if(Phase / 2 == 3 || Phase / 2 == 9)
-      { // half moon
+      {
         queue_message("You take part in today's holy celebration of balance...");
         Player.alignment = 0;
         Player.mana      = calcmana();

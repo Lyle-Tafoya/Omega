@@ -660,11 +660,11 @@ void magic()
       drain = spell::Spells[id.value()].powerdrain;
       if(Lunarity == 1)
       {
-        drain = drain / 2;
+        drain /= 2;
       }
       else if(Lunarity == -1)
       {
-        drain = drain * 2;
+        drain *= 2;
       }
       if(drain > Player.mana)
       {

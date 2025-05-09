@@ -304,6 +304,14 @@ int main(int, char *[])
   if(continuing)
   {
     queue_message("Your adventure continues....");
+    if(Lunarity == 1)
+    {
+      queue_message("You feel vitalized by the moon!");
+    }
+    else if(Lunarity == -1)
+    {
+      queue_message("The feel enervated by the moon!");
+    }
   }
 
   timeprint();
