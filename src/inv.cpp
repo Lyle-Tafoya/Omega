@@ -720,9 +720,9 @@ void add_to_pack(std::unique_ptr<object> o)
 {
   if(merge_item_with_pack(o.get()))
   {
-    return;
+    queue_message("Putting item in pack.");
   }
-  if(Player.pack.size() >= MAXPACK)
+  else if(Player.pack.size() >= MAXPACK)
   {
     queue_message("Your pack is full. The item drops to the ground.");
     drop_at(Player.x, Player.y, std::move(o));
