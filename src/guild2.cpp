@@ -33,7 +33,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 void l_thieves_guild()
 {
-  int fee, count, number, dues = 1000;
+  int fee, number, dues = 1000;
   char c, action;
   queue_message("You have penetrated to the Lair of the Thieves' Guild.");
   if(!nighttime())
@@ -233,12 +233,14 @@ void l_thieves_guild()
         }
         else
         {
-          count = 0;
+          int count = 0;
           for(int i = 1; i < MAXITEMS; ++i)
           {
-            if(Player.possessions[i])
+            std::unique_ptr<object> &item = Player.possessions[i];
+            if(item)
             {
-              if(Player.possessions[i]->known < 2)
+              if((item->known < 2 && item->objchar != FOOD) ||
+                 (item->known < 1 && item->objchar == FOOD))
               {
                 ++count;
               }
@@ -246,23 +248,31 @@ void l_thieves_guild()
           }
           for(std::unique_ptr<object> &item : Player.pack)
           {
-            if(item->known < 2)
+            if((item->known < 2 && item->objchar != FOOD) ||
+               (item->known < 1 && item->objchar == FOOD))
             {
               ++count;
             }
           }
-          queue_message(std::format("The fee will be: {}Au. Pay it? [yn] ", std::max(count * fee, fee)));
-          if(ynq() == 'y')
+          if(count == 0)
           {
-            if(Player.cash < std::max(count * fee, fee))
+            queue_message("Everything is already identified.");
+          }
+          else
+          {
+            queue_message(std::format("The fee will be: {}Au. Pay it? [yn] ", count*fee));
+            if(ynq() == 'y')
             {
-              queue_message("Try again when you have the cash.");
-            }
-            else
-            {
-              Player.cash -= std::max(count * fee, fee);
-              dataprint();
-              identify(1);
+              if(Player.cash < count*fee)
+              {
+                queue_message("Try again when you have the cash.");
+              }
+              else
+              {
+                Player.cash -= count*fee;
+                dataprint();
+                identify(1);
+              }
             }
           }
         }
