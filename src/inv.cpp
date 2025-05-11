@@ -724,8 +724,8 @@ void add_to_pack(std::unique_ptr<object> o)
   }
   else if(Player.pack.size() >= MAXPACK)
   {
-    queue_message("Your pack is full. The item drops to the ground.");
     drop_at(Player.x, Player.y, std::move(o));
+    queue_message("Your pack is full. The item drops to the ground.");
   }
   else
   {
@@ -738,17 +738,17 @@ void get_to_pack(std::unique_ptr<object> o)
 {
   if(merge_item_with_pack(o.get()))
   {
-    return;
+    queue_message("Putting item in pack.");
   }
-  if(Player.pack.size() >= MAXPACK)
+  else if(Player.pack.size() >= MAXPACK)
   {
-    queue_message("Your pack is full.");
     p_drop_at(Player.x, Player.y, o->number, o.get());
+    queue_message("Your pack is full.");
   }
   else
   {
-    queue_message("Putting item in pack.");
     push_pack(std::move(o));
+    queue_message("Putting item in pack.");
   }
 }
 
