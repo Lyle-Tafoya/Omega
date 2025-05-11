@@ -20,7 +20,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 // This file contains some more top level command functions called from command1.cpp
 
-#include "date.h"
 #include "glob.h"
 #include "scr.h"
 
@@ -348,9 +347,6 @@ void version()
 {
   setgamestatus(SKIP_MONSTERS, GameStatus);
   queue_message(VERSIONSTRING);
-  queue_message(":");
-  queue_message(" Last Edited: ");
-  queue_message(LAST_OMEGA_EDIT_DATE);
 }
 
 void fire()
