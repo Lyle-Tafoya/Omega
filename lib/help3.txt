@@ -1,0 +1,20 @@
+INVENTORY
+=========
+Unlike rogue, et al., you cannot directly employ every object you carry. Every
+object may either go into your "pack" or into some specific inventory slot such
+as "belt" or "ready hand" or "left shoulder" etc. Some slots are dedicated to
+certain types of items (eg, only armor can go in the armor slot), but other
+slots are general purpose, like your belt or your shoulder.
+
+When you pick up an item, it gets stored in your pack. To equip an from your
+pack, press 'i' and then select the letter corresponding to the slot you wish
+to equip it to. It takes game time to equip an object from your pack. The deeper
+you burrow into your pack for an item, the more game time you are wasting.
+Therefore, carrying a whole lot of (semi)useless items may be a strategically
+bad move. Of course, as always, you can't carry more weight (either in your pack
+or in your inventory slots) than is dictated by your current STRENGTH and
+AGILITY.
+
+You can drop an item from your pack with 'd'. You cannot drop an equipped item
+without first transferring it back to your pack. Items dropped on the world map
+are lost forever.

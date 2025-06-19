@@ -7,12 +7,11 @@ Options may be set with the 'O' command. The options are:
 (T) RUNSTOP: Stop a run when something like a door is passed.
 (F) PICKUP: Automatically pick things up when you move over them.
 (T) CONFIRM: Ask confirmation before you do some dangerous things.
-(F) TOPINV: Display inventory to message line, not to full screen.
-(F) PACKADD: Add new items to pack, instead of going into inventory mode.
-(T) COMPRESS: Determines if saved games are compressed (recommended).
-(T) COLOUR: On IBMs, this toggles whether the display in in colour.
+(F) PARANOID_CONFIRM: Requiring "yes" or "no" for confirmations.
+(T) COLOUR: This toggles whether the display in in colour.
+(T) MOUSE_ENABLED: Enables rudimentary mouse support.
 (V) VERBOSITY: TERSE, MEDIUM, or VERBOSE, the level of detail in combat.
 (1) SEARCHNUM: the number of turns spent searching when you hit the 's' key.
 
 The default values are parenthesized. These options will be recovered from
-your .omegarc if you use one.
+your .omega.toml if you use one.

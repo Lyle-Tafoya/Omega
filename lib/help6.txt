@@ -2,12 +2,8 @@ BUGS AND FEATURES
 =================
 "It's not a bug, it's an undocumented feature." 
 
-omega is not just a large program, it is a large, complicated, and not
-particularly well written program. There are so many features that not
-all can be well tested, particularly in combination with one another.
-Therefore, it is likely that your version, whatever it is, has some
-bugs. The author no longer strives to correct bugs and remedy
-misfeatures, so you probably shouldn't send mail to
-brothers@paul.rutgers.edu.  However, if you send such mail to
-omega@alcyone.darkside.com (Erik Max Francis), there may be attempts
-to remedy the problem - don't hold your breath, though.
+Omega is not just a large program, it is a large, complicated, and not
+particularly well written program. There are so many features that not all can
+be well tested, particularly in combination with one another. Therefore, it is
+likely that your version, whatever it is, has some bugs. You can report a bug or
+request a new feature on GitHub: https://github.com/Lyle-Tafoya/Omega/issues
