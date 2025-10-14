@@ -20,6 +20,16 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include <array>
 #include <string>
+#include <curses.h>
+
+// Some curses implementations don't define BUTTON5 constants
+#ifndef BUTTON5_PRESSED
+#define BUTTON5_PRESSED 0x08000000L
+#define BUTTON5_RELEASED 0x04000000L
+#define BUTTON5_CLICKED 0x02000000L
+#define BUTTON5_DOUBLE_CLICKED 0x01000000L
+#define BUTTON5_TRIPLE_CLICKED 0x00800000L
+#endif
 
 enum mouse_event_t
 {

@@ -30,6 +30,20 @@ CXX=g++-13 cmake ..
 cmake --build .
 ```
 
+### MacOS
+
+Tested on macOS 15.7.1
+
+```
+brew install cmake
+git clone https://github.com/Lyle-Tafoya/Omega.git
+mkdir Omega/build
+cd Omega/build
+cmake ..
+cmake --build .
+```
+
+
 ### Windows
 
 I have been building Omega for Windows using NMake from the "x64 Native Tools Command Prompt for VS 2022"
