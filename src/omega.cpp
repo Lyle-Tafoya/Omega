@@ -310,7 +310,7 @@ int main(int, char *[])
     }
     else if(Lunarity == -1)
     {
-      queue_message("The feel enervated by the moon!");
+      queue_message("You feel enervated by the moon!");
     }
   }
 
