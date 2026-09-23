@@ -62,7 +62,7 @@ void examine()
           replace_last_message("That terrain is:" + countryid(Country[x][y].current_terrain_type));
         }
       }
-      else if(!view_los_p(Player.x, Player.y, x, y))
+      else if(!loc_statusp(x, y, VISIBLE, *Level))
       {
         replace_last_message("I refuse to examine something I can't see.");
       }
@@ -506,7 +506,6 @@ void nap()
     {
       queue_message("Yawn. You wake up.");
       resetgamestatus(FAST_MOVE, GameStatus);
-      drawvision(Player.x, Player.y);
     }
   }
   else
@@ -1333,7 +1332,6 @@ void city_move()
       Player.y = y;
       screencheck(Player.x, Player.y);
       queue_message("Made it!");
-      drawvision(Player.x, Player.y);
       p_movefunction(Level->site[x][y].p_locf);
     }
   }

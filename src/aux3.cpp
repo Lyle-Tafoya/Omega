@@ -389,7 +389,6 @@ void outdoors_random_event()
           }
         }
       }
-      show_screen();
       break;
     case 12:
       if(!gamestatusp(MOUNTED, GameStatus))

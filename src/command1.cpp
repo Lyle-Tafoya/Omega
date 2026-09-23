@@ -35,7 +35,6 @@ void p_process()
     if(goberserk())
     {
       setgamestatus(SKIP_PLAYER, GameStatus);
-      drawvision(Player.x, Player.y);
     }
   }
   if(!gamestatusp(SKIP_PLAYER, GameStatus))
@@ -48,7 +47,6 @@ void p_process()
         resetgamestatus(FAST_MOVE, GameStatus);
       }
     }
-    drawvision(Player.x, Player.y);
     if(!gamestatusp(FAST_MOVE, GameStatus))
     {
       searchval = 0;
@@ -508,5 +506,4 @@ void p_country_process()
         break;
     }
   } while(no_op);
-  screencheck(Player.x, Player.y);
 }

@@ -227,7 +227,6 @@ void search(int *searchval)
     {
       searchat(Player.x + Dirs[0][i], Player.y + Dirs[1][i]);
     }
-    drawvision(Player.x, Player.y);
   }
 }
 
@@ -1421,7 +1420,6 @@ void moveplayer(int dx, int dy)
   }
   else if(gamestatusp(FAST_MOVE, GameStatus))
   {
-    drawvision(Player.x, Player.y);
     resetgamestatus(FAST_MOVE, GameStatus);
   }
 }

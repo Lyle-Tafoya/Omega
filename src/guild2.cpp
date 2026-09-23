@@ -1138,7 +1138,6 @@ void l_order()
     if(it != Level->mlist.end() && *it)
     {
       Level->site[(*it)->x][(*it)->y].creature = nullptr;
-      erase_monster(it->get());
       (*it)->hp = -1; // signals "death" -- no credit to player, though
     }
     Justiciarlevel    = Player.level;

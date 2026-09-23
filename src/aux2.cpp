@@ -771,7 +771,6 @@ void p_drown()
       }
     }
   }
-  show_screen();
   return;
 }
 
@@ -1104,7 +1103,6 @@ void change_environment(char new_environment)
       load_arena();
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_ABYSS:
       LENGTH   = 16;
@@ -1116,7 +1114,6 @@ void change_environment(char new_environment)
       lose_all_items();
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_CIRCLE:
       LENGTH   = 16;
@@ -1152,7 +1149,6 @@ void change_environment(char new_environment)
       }
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_COURT:
       WIDTH           = 64;
@@ -1164,7 +1160,6 @@ void change_environment(char new_environment)
       load_court(true);
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_MANSION:
       WIDTH  = 64;
@@ -1174,7 +1169,6 @@ void change_environment(char new_environment)
       Player.x         = 2;
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_HOUSE:
       WIDTH  = 64;
@@ -1184,7 +1178,6 @@ void change_environment(char new_environment)
       Player.x         = 2;
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_HOVEL:
       WIDTH  = 64;
@@ -1194,7 +1187,6 @@ void change_environment(char new_environment)
       Player.x         = 2;
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_DLAIR:
       WIDTH    = 64;
@@ -1204,7 +1196,6 @@ void change_environment(char new_environment)
       load_dlair(gamestatusp(KILLED_DRAGONLORD, GameStatus), true);
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_STARPEAK:
       WIDTH    = 64;
@@ -1214,7 +1205,6 @@ void change_environment(char new_environment)
       load_speak(gamestatusp(KILLED_LAWBRINGER, GameStatus), true);
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_MAGIC_ISLE:
       WIDTH    = 64;
@@ -1224,7 +1214,6 @@ void change_environment(char new_environment)
       load_misle(gamestatusp(KILLED_EATER, GameStatus), true);
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_TEMPLE:
       WIDTH  = 64;
@@ -1234,7 +1223,6 @@ void change_environment(char new_environment)
       Player.x         = 32;
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_CITY:
       WIDTH  = 64;
@@ -1251,8 +1239,6 @@ void change_environment(char new_environment)
         Player.y = 21;
       }
       Level = City.get();
-      calculate_offsets(Player.x, Player.y);
-      show_screen();
       break;
     case E_VILLAGE:
       WIDTH  = 64;
@@ -1320,7 +1306,6 @@ void change_environment(char new_environment)
       }
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_CAVES:
       WIDTH  = 64;
@@ -1442,8 +1427,6 @@ void change_environment(char new_environment)
       {
         c_set(Player.x + Dirs[0][i], Player.y + Dirs[1][i], SEEN, Country);
       }
-      calculate_offsets(Player.x, Player.y);
-      show_screen();
       break;
     case E_TACTICAL_MAP:
       WIDTH  = 64;
@@ -1472,14 +1455,11 @@ void change_environment(char new_environment)
       }
       ScreenOffset     = 0;
       HorizontalOffset = 0;
-      show_screen();
       break;
     case E_NEVER_NEVER_LAND:
     default:
       queue_message("There must be some mistake. You don't look like Peter Pan.");
       queue_message("(But here you are in Never-Never Land)");
-      calculate_offsets(Player.x, Player.y);
-      show_screen();
       break;
   }
   setlastxy(Player.x, Player.y);

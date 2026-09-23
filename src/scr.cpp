@@ -33,6 +33,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include <array>
 #include <cassert>
 #include <chrono>
+#include <cmath>
 #include <curses.h>
 #include <format>
 #include <queue>
@@ -373,16 +374,153 @@ void clear_message_window()
   werase(message_window);
 }
 
-void calculate_offsets(int x, int y)
+void cast_light(uint32_t x, uint32_t y, uint32_t row, float start_slope, float end_slope,
+                uint32_t xx, uint32_t xy, uint32_t yx, uint32_t yy)
 {
-  ScreenOffset     = std::max(0, std::min(y - ScreenLength / 2, LENGTH - ScreenLength));
-  HorizontalOffset = std::max(0, std::min(x - ScreenWidth / 2, WIDTH - ScreenWidth));
+  if(start_slope < end_slope)
+  {
+    return;
+  }
+  float next_start_slope = start_slope;
+  for(uint32_t i = row;; ++i)
+  {
+    bool blocked = false;
+    for(int dx = -i, dy = -i; dx <= 0; ++dx)
+    {
+      float l_slope = (dx - 0.5) / (dy + 0.5);
+      float r_slope = (dx + 0.5) / (dy - 0.5);
+      if(start_slope < r_slope)
+      {
+        continue;
+      }
+      else if(end_slope > l_slope)
+      {
+        break;
+      }
+
+      int sax = dx * xx + dy * xy;
+      int say = dx * yx + dy * yy;
+      if((sax < 0 && static_cast<uint32_t>(std::abs(sax)) > x) ||
+        (say < 0 && static_cast<uint32_t>(std::abs(say)) > y))
+      {
+        continue;
+      }
+      uint32_t ax = x + sax;
+      uint32_t ay = y + say;
+      if(ax >= WIDTH || ay >= LENGTH)
+      {
+        continue;
+      }
+
+      lset(ax, ay, VISIBLE, *Level);
+
+      if(blocked)
+      {
+        if(!view_unblocked(ax, ay))
+        {
+          next_start_slope = r_slope;
+          continue;
+        }
+        else
+        {
+          blocked = false;
+          start_slope = next_start_slope;
+        }
+      }
+      else if(!view_unblocked(ax, ay))
+      {
+        blocked = true;
+        next_start_slope = r_slope;
+        cast_light(x, y, i + 1, start_slope, l_slope, xx, xy, yx, yy);
+      }
+    }
+    if(blocked)
+    {
+      break;
+    }
+
+    uint32_t max_x = std::max(x, WIDTH - x - 1);
+    uint32_t max_y = std::max(y, LENGTH - y - 1);
+    uint32_t max_dist = std::max(max_x, max_y);
+    if(i > max_dist)
+    {
+      break;
+    }
+  }
 }
 
-void show_screen()
+void do_fov(uint32_t x, uint32_t y)
 {
+  static constexpr int multipliers[4][8] =
+  {
+    {1, 0, 0, -1, -1, 0, 0, 1},
+    {0, 1, -1, 0, 0, -1, 1, 0},
+    {0, 1, 1, 0, 0, -1, -1, 0},
+    {1, 0, 0, 1, -1, 0, 0, -1}
+  };
+
+  for(uint32_t i = 0; i < 8; ++i)
+  {
+    cast_light(x, y, 1, 1.0, 0.0,
+      multipliers[0][i], multipliers[1][i], multipliers[2][i], multipliers[3][i]);
+  }
+}
+
+bool is_illuminated(int x, int y)
+{
+  if(loc_statusp(x, y, LIT, *Level))
+  {
+    return true;
+  }
+
+  int view_radius = 1;
+  // Player is outdoors
+  if(Current_Environment == E_CITY || Current_Environment == E_VILLAGE || Current_Environment == E_TACTICAL_MAP || Current_Environment == E_ARENA)
+  {
+    int current_minute = (Time + 720) % 1440; // 1440 minutes in a day
+    // Full daylight hours (9am - 6pm)
+    if(current_minute >= 540 && current_minute < 1080)
+    {
+      return true;
+    }
+    // Sunrise (6am - 9am)
+    if(current_minute >= 360 && current_minute < 540)
+    {
+      view_radius = static_cast<float>(current_minute - 360) / 180.f * 64.f;
+    }
+    // Sunset (6pm - 9pm)
+    else if(current_minute >= 1080 && current_minute < 1260)
+    {
+      view_radius = 64 - static_cast<float>(current_minute - 1080) / 180.f * 64;
+    }
+  }
+
+  if(Player.status[ILLUMINATION])
+  {
+    view_radius = std::max(view_radius, 5);
+  }
+
+  if(view_radius >= 2)
+  {
+    if(((Player.x-x)*(Player.x-x) + (Player.y-y)*(Player.y-y)) <= view_radius * view_radius)
+    {
+      return true;
+    }
+  }
+  // Player can still see what is immediately around them without a light source
+  else if(std::abs(Player.x - x) <= 1 && std::abs(Player.y - y) <= 1)
+  {
+    return true;
+  }
+  return false;
+}
+
+void draw_level()
+{
+  int start_x, start_y;
+  getyx(level_window, start_y, start_x);
   werase(level_window);
-  shown_items.clear();
+
   int left   = std::max(0, HorizontalOffset);
   int top    = std::max(0, ScreenOffset);
   int bottom = std::min(LENGTH, ScreenOffset + ScreenLength);
@@ -390,35 +528,77 @@ void show_screen()
 
   if(Current_Environment != E_COUNTRYSIDE)
   {
+    shown_items.clear();
+    shown_mobs.clear();
+    for(int x = 0; x < MAXWIDTH; ++x)
+    {
+      for(int y = 0; y < MAXLENGTH; ++y)
+      {
+        lreset(x, y, VISIBLE, *Level);
+      }
+    }
+    do_fov(Player.x, Player.y);
+    lset(Player.x, Player.y, VISIBLE, *Level);
+
     for(int y = top; y < bottom; ++y)
     {
       wmove(level_window, screenmod(y), 0);
       for(int x = left; x < right; ++x)
       {
-        chtype c     = loc_statusp(x, y, SEEN, *Level) ? getspot(x, y, false) : SPACE;
-        bool is_pile = c == PILE;
-        if(is_pile)
+        chtype showchar = getspot(x, y, true);
+        if(showchar == PLAYER)
         {
-          c = Level->site[x][y].things.back()->objchar | A_STANDOUT;
+          color_waddch(level_window, PLAYER);
         }
-        color_waddch(level_window, c);
-
-        if((Level->site[x][y].things.empty() || (Level->site[x][y].things.back()->objchar != c && !is_pile)) ||
-           (Player.x == x && Player.y == y && (!Player.status[INVISIBLE] || Player.status[TRUESIGHT])) ||
-           (Level->site[x][y].creature &&
-            (!m_statusp(*Level->site[x][y].creature, M_INVISIBLE) || Player.status[TRUESIGHT])))
+        else if(loc_statusp(x, y, VISIBLE, *Level) && is_illuminated(x, y))
         {
-          continue;
-        }
-        object *o = Level->site[x][y].things.back().get();
-        if(shown_items.find(o->objstr) == shown_items.end())
-        {
-          std::string obj_name  = itemid(o);
-          shown_items[obj_name] = {obj_name, c, 1, perceived_item_value(*o)};
+          lset(x, y, SEEN, *Level);
+          if(Player.x == x && Player.y == y)
+          {
+            Level->site[x][y].showchar = getspot(x, y, false);
+          }
+          else
+          {
+            Level->site[x][y].showchar = showchar;
+          }
+          color_waddch(level_window, showchar);
+          if(Level->site[x][y].creature && 
+            (!m_statusp(*Level->site[x][y].creature, M_INVISIBLE) || Player.status[TRUESIGHT]))
+          {
+            monster *m = Level->site[x][y].creature;
+            if(shown_mobs.find(m->monstring) == shown_mobs.end())
+            {
+              shown_mobs[m->monstring] = {m->monstring, m->monchar, 1, m->level};
+            }
+            else
+            {
+              ++shown_mobs[m->monstring].count;
+            }
+          }
+          else if(!Level->site[x][y].things.empty() && !loc_statusp(x, y, SECRET, *Level))
+          {
+            object *o = Level->site[x][y].things.back().get();
+            if(shown_items.find(o->objstr) == shown_items.end())
+            {
+              std::string obj_name  = itemid(o);
+              shown_items[obj_name] = {obj_name, Level->site[x][y].showchar, 1, perceived_item_value(*o)};
+            }
+            else
+            {
+              ++shown_items[o->objstr].count;
+            }
+          }
         }
         else
         {
-          ++shown_items[o->objstr].count;
+          if(loc_statusp(x, y, SEEN, *Level))
+          {
+            color_waddch(level_window, (Level->site[x][y].showchar & ~A_COLOR) | CLR(GREY));
+          }
+          else
+          {
+            color_waddch(level_window, SPACE);
+          }
         }
       }
     }
@@ -431,11 +611,20 @@ void show_screen()
       wmove(level_window, screenmod(y), 0);
       for(int x = left; x < right; ++x)
       {
-        chtype c = c_statusp(x, y, SEEN, Country) ? Country[x][y].current_terrain_type : SPACE;
-        color_waddch(level_window, c);
+        if(Player.x == x && Player.y == y)
+        {
+          color_waddch(level_window, PLAYER);
+        }
+        else
+        {
+          chtype c = c_statusp(x, y, SEEN, Country) ? Country[x][y].current_terrain_type : SPACE;
+          color_waddch(level_window, c);
+        }
       }
     }
   }
+
+  wmove(level_window, start_y, start_x);
   wnoutrefresh(level_window);
   print_shown_entities();
 }
@@ -788,9 +977,14 @@ int get_player_input(WINDOW *window, bool print)
   }
   while(true)
   {
+    if(!IsMenu)
+    {
+      screencheck(Lastx, Lasty);
+    }
+    doupdate();
+
     int x, y;
     getyx(window, y, x);
-    doupdate();
     int player_input = mvwgetch(window, y, x);
     if(player_input == KEY_RESIZE)
     {
@@ -799,11 +993,6 @@ int get_player_input(WINDOW *window, bool print)
       if(IsMenu)
       {
         menu->print();
-      }
-      else
-      {
-        screencheck(Lastx, Lasty);
-        omshowcursor(Lastx, Lasty);
       }
     }
     else if(!terminal_size_too_small)
@@ -995,79 +1184,24 @@ bool litroom(int x, int y)
 
 void drawvision(int x, int y)
 {
-  static int oldx = -1, oldy = -1;
-
-  if(Current_Environment != E_COUNTRYSIDE)
+  for(int i = -1; i < 2; ++i)
   {
-    if(Player.status[BLINDED])
+    for(int j = -1; j < 2; ++j)
     {
-      drawspot(oldx, oldy);
-      drawspot(x, y);
-      drawplayer();
-    }
-    else
-    {
-      if(Player.status[ILLUMINATION] > 0)
+      if(!inbounds(x + i, y + j) || c_statusp(x + i, y + j, SEEN, Country))
       {
-        for(int i = -2; i < 3; ++i)
-        {
-          for(int j = -2; j < 3; ++j)
-          {
-            if(inbounds(x + i, y + j))
-            {
-              if(view_los_p(x + i, y + j, Player.x, Player.y))
-              {
-                dodrawspot(x + i, y + j);
-              }
-            }
-          }
-        }
+        continue;
       }
-      else
+      c_set(x + i, y + j, SEEN, Country);
+      if(!offscreen(x + i, y + j))
       {
-        for(int i = -1; i < 2; ++i)
-        {
-          for(int j = -1; j < 2; ++j)
-          {
-            if(inbounds(x + i, y + j))
-            {
-              dodrawspot(x + i, y + j);
-            }
-          }
-        }
+        chtype c = Country[x + i][y + j].current_terrain_type;
+        color_mvwaddch(level_window, screenmod(y + j), screenmod_horizontal(x + i), c);
       }
-      drawplayer();
-      drawmonsters(false); // erase all monsters
-      drawmonsters(true);  // draw those now visible
     }
-    if((!gamestatusp(FAST_MOVE, GameStatus)) || (!optionp(JUMPMOVE, Player)))
-    {
-      wnoutrefresh(level_window);
-    }
-    oldx = x;
-    oldy = y;
   }
-  else
-  {
-    for(int i = -1; i < 2; ++i)
-    {
-      for(int j = -1; j < 2; ++j)
-      {
-        if(!inbounds(x + i, y + j) || c_statusp(x + i, y + j, SEEN, Country))
-        {
-          continue;
-        }
-        c_set(x + i, y + j, SEEN, Country);
-        if(!offscreen(x + i, y + j))
-        {
-          chtype c = Country[x + i][y + j].current_terrain_type;
-          color_mvwaddch(level_window, screenmod(y + j), screenmod_horizontal(x + i), c);
-        }
-      }
-    }
-    drawplayer();
-    wnoutrefresh(level_window);
-  }
+  drawplayer();
+  wnoutrefresh(level_window);
 }
 
 void omshowcursor(int x, int y)
@@ -1092,7 +1226,7 @@ void drawspot(int x, int y)
     chtype c = getspot(x, y, false);
     if(c != Level->site[x][y].showchar)
     {
-      if(view_los_p(Player.x, Player.y, x, y))
+      if(loc_statusp(x, y, VISIBLE, *Level))
       {
         lset(x, y, SEEN, *Level);
         Level->site[x][y].showchar = c;
@@ -1127,7 +1261,6 @@ void blankoutspot(int x, int y)
     if(Level->site[x][y].locchar == FLOOR)
     {
       Level->site[x][y].showchar = SPACE;
-      putspot(x, y, SPACE);
     }
   }
 }
@@ -1178,7 +1311,7 @@ void plotmon(monster *m)
 }
 
 // if display, displays monsters, otherwise erases them
-void drawmonsters(int display)
+void drawmonsters()
 {
   shown_mobs.clear();
   int left   = std::max(0, HorizontalOffset);
@@ -1187,66 +1320,54 @@ void drawmonsters(int display)
   int right  = std::min(WIDTH, HorizontalOffset + ScreenWidth);
   for(std::unique_ptr<monster> &m : Level->mlist)
   {
-    if(m->hp > 0)
+    if(m->hp > 0 && loc_statusp(m->x, m->y, VISIBLE, *Level))
     {
-      if(display)
+      if(Player.status[TRUESIGHT] || (!m_statusp(*m, M_INVISIBLE)))
       {
-        if(view_los_p(Player.x, Player.y, m->x, m->y))
+        if(!optionp(SHOW_COLOUR, Player) && (m->level > 5) && ((m->monchar & 0xff) != '@') &&
+           ((m->monchar & 0xff) != '|'))
         {
-          if(Player.status[TRUESIGHT] || (!m_statusp(*m, M_INVISIBLE)))
-          {
-            if(!optionp(SHOW_COLOUR, Player) && (m->level > 5) && ((m->monchar & 0xff) != '@') &&
-               ((m->monchar & 0xff) != '|'))
-            {
-              wstandout(level_window);
-            }
-            putspot(m->x, m->y, m->monchar);
-            if(!optionp(SHOW_COLOUR, Player))
-            {
-              wstandend(level_window);
-            }
-
-            if(m->x < left || m->x > right || m->y < top || m->y > bottom)
-            {
-              continue;
-            }
-            if(shown_mobs.find(m->monstring) == shown_mobs.end())
-            {
-              shown_mobs[m->monstring] = {m->monstring, m->monchar, 1, m->level};
-            }
-            else
-            {
-              ++shown_mobs[m->monstring].count;
-            }
-          }
+          wstandout(level_window);
         }
-      }
-      else
-      {
-        erase_monster(m.get());
+        putspot(m->x, m->y, m->monchar);
+        if(!optionp(SHOW_COLOUR, Player))
+        {
+          wstandend(level_window);
+        }
+
+        if(m->x < left || m->x > right || m->y < top || m->y > bottom)
+        {
+          continue;
+        }
+        if(shown_mobs.find(m->monstring) == shown_mobs.end())
+        {
+          shown_mobs[m->monstring] = {m->monstring, m->monchar, 1, m->level};
+        }
+        else
+        {
+          ++shown_mobs[m->monstring].count;
+        }
       }
     }
   }
   print_shown_entities();
 }
 
-// replace monster with what would be displayed if monster weren't there
-void erase_monster(monster *m)
-{
-  if(loc_statusp(m->x, m->y, SEEN, *Level))
-  {
-    putspot(m->x, m->y, getspot(m->x, m->y, false));
-  }
-  else
-  {
-    blotspot(m->x, m->y);
-  }
-}
-
 // find apt char to display at some location
 chtype getspot(int x, int y, int showmonster)
 {
-  if(loc_statusp(x, y, SECRET, *Level))
+  if(showmonster && Player.x == x && Player.y == y)
+  {
+    if(!Player.status[INVISIBLE] || Player.status[TRUESIGHT])
+    {
+      return PLAYER;
+    }
+    else
+    {
+      return getspot(x, y, false) | A_REVERSE;
+    }
+  }
+  else if(loc_statusp(x, y, SECRET, *Level))
   {
     return WALL;
   }
@@ -1313,7 +1434,7 @@ chtype getspot(int x, int y, int showmonster)
         {
           if(Level->site[x][y].things.size() > 1)
           {
-            return PILE;
+            return Level->site[x][y].things.back()->objchar | A_STANDOUT;
           }
           else
           {
@@ -1897,7 +2018,7 @@ void drawscreen()
       CitySiteList[i][0] = 1;
     }
   }
-  show_screen();
+  draw_level();
 }
 
 // selects a number up to range
@@ -2264,16 +2385,9 @@ void screencheck(int x, int y)
 {
   Lastx = x;
   Lasty = y;
-  calculate_offsets(x, y);
-  show_screen();
-  if(Current_Environment != E_COUNTRYSIDE)
-  {
-    drawmonsters(true);
-  }
-  if(!offscreen(Player.x, Player.y))
-  {
-    drawplayer();
-  }
+  ScreenOffset     = std::max(0, std::min(y - ScreenLength / 2, LENGTH - ScreenLength));
+  HorizontalOffset = std::max(0, std::min(x - ScreenWidth / 2, WIDTH - ScreenWidth));
+  draw_level();
 }
 
 void spreadroomlight(int x, int y, int roomno)
@@ -2292,11 +2406,9 @@ void spreadroomlight(int x, int y, int roomno)
 void lightspot(int x, int y)
 {
   lset(x, y, LIT, *Level);
-  lset(x, y, SEEN, *Level);
   lset(x, y, CHANGED, *Level);
   chtype c                   = getspot(x, y, false);
   Level->site[x][y].showchar = c;
-  putspot(x, y, c);
 }
 
 void spreadroomdark(int x, int y, int roomno)

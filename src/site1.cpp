@@ -522,7 +522,6 @@ void statue_random(int x, int y)
           }
         }
       }
-      show_screen();
       break;
   }
 }

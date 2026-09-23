@@ -301,7 +301,6 @@ void hide(int x, int y)
   {
     lset(x, y, SECRET, *Level);
     lset(x, y, CHANGED, *Level);
-    putspot(x, y, WALL);
     queue_message("You feel sneaky.");
   }
 }
@@ -395,9 +394,6 @@ void amnesia()
       lreset(x, y, SEEN, *Level);
     }
   }
-
-  erase_level();
-  drawvision(Player.x, Player.y);
 }
 
 // affects player only
@@ -481,7 +477,7 @@ void disintegrate(int x, int y)
   }
   else
   {
-    if(!view_los_p(Player.x, Player.y, x, y))
+    if(!loc_statusp(x, y, VISIBLE, *Level))
     {
       setgamestatus(SUPPRESS_PRINTING, GameStatus);
     }
@@ -575,7 +571,7 @@ void disintegrate(int x, int y)
     {
       queue_message("The blast has no effect.");
     }
-    if(!view_los_p(Player.x, Player.y, x, y))
+    if(!loc_statusp(x, y, VISIBLE, *Level))
     {
       resetgamestatus(SUPPRESS_PRINTING, GameStatus);
     }
@@ -841,7 +837,6 @@ void strategic_teleport(int blessing)
   }
   setlastxy(Player.x, Player.y);
   screencheck(Player.x, Player.y);
-  drawvision(Player.x, Player.y);
   if(Current_Environment == E_COUNTRYSIDE)
   {
     terrain_check(false);
@@ -909,7 +904,6 @@ void level_return()
     Player.x = 27;
     Player.y = 19;
     screencheck(Player.x, Player.y);
-    drawvision(Player.x, Player.y);
     locprint("Back Outside Rampart.");
   }
   else

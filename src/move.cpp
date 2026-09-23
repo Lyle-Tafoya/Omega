@@ -492,7 +492,6 @@ void l_portcullis_trap()
       {
         Level->site[x][y].locchar = PORTCULLIS;
         lset(x, y, CHANGED, *Level);
-        putspot(x, y, PORTCULLIS);
         if(x == Player.x && y == Player.y)
         {
           queue_message("Smash! You've been hit by a falling portcullis!");
@@ -527,7 +526,6 @@ void l_drop_every_portcullis()
       {
         Level->site[x][y].locchar = PORTCULLIS;
         lset(x, y, CHANGED, *Level);
-        putspot(x, y, PORTCULLIS);
         if(Player.x == x && Player.y == y)
         {
           queue_message("Smash! You've been hit by a falling portcullis!");
@@ -554,7 +552,6 @@ void l_raise_portcullis()
       {
         Level->site[x][y].locchar = FLOOR;
         lset(x, y, CHANGED, *Level);
-        putspot(x, y, FLOOR);
         open = true;
       }
     }
@@ -1184,7 +1181,6 @@ void l_balancestone()
         Player.y = random_range(LENGTH);
       } while(Country[Player.x][Player.y].current_terrain_type == CHAOS_SEA);
       screencheck(Player.x, Player.y);
-      drawvision(Player.x, Player.y);
     }
     else
     {

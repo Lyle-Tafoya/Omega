@@ -604,7 +604,6 @@ void mondet(int blessing)
   }
   levelrefresh();
   get_message_input();
-  show_screen();
 }
 
 void objdet(int blessing)
@@ -628,7 +627,6 @@ void objdet(int blessing)
   }
   levelrefresh();
   get_message_input();
-  show_screen();
 }
 
 void identify(int blessing)

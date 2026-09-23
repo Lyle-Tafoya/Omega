@@ -391,7 +391,6 @@ void searchat(int x, int y)
       {
         queue_message("You find a secret passage!");
       }
-      drawvision(Player.x, Player.y);
     }
     if((Level->site[x][y].p_locf >= TRAP_BASE) && (Level->site[x][y].locchar != TRAP) &&
        (Level->site[x][y].p_locf <= TRAP_BASE + NUMTRAPS))
@@ -399,7 +398,6 @@ void searchat(int x, int y)
       Level->site[x][y].locchar = TRAP;
       lset(x, y, CHANGED, *Level);
       queue_message("You find a trap!");
-      drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE, GameStatus);
     }
   }
@@ -628,7 +626,6 @@ void p_damage(int dmg, int dtype, const std::string &fromstring)
   {
     if(gamestatusp(FAST_MOVE, GameStatus))
     {
-      drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE, GameStatus);
     }
     if(dtype == NORMAL_DAMAGE)
@@ -669,6 +666,7 @@ void setspot(int &x, int &y)
   queue_message("Targeting.... '?' for help.");
   int cursor_visibility = curs_set(1);
   omshowcursor(x, y);
+  doupdate();
   int player_input;
   do
   {
@@ -993,7 +991,6 @@ void foodcheck()
     queue_message("You feel weak.");
     if(gamestatusp(FAST_MOVE, GameStatus))
     {
-      drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE, GameStatus);
     }
   }
@@ -1001,7 +998,6 @@ void foodcheck()
   {
     if(gamestatusp(FAST_MOVE, GameStatus))
     {
-      drawvision(Player.x, Player.y);
       resetgamestatus(FAST_MOVE, GameStatus);
     }
     queue_message("You're starving!");
@@ -1187,7 +1183,6 @@ void threaten(monster *m)
       m_dropstuff(m);
       m->hp                            = -1;
       Level->site[m->x][m->y].creature = nullptr;
-      putspot(m->x, m->y, getspot(m->x, m->y, false));
     }
     else
     {
@@ -1200,7 +1195,6 @@ void threaten(monster *m)
       queue_message("It departs with a renewed sense of its own mortality.");
       m->hp                            = -1;
       Level->site[m->x][m->y].creature = nullptr;
-      putspot(m->x, m->y, getspot(m->x, m->y, false));
     }
   }
 }
