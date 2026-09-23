@@ -43,7 +43,6 @@ void m_simple_move(monster *m)
   int dx = sign(Player.x - m->x);
   int dy = sign(Player.y - m->y);
 
-  erase_monster(m);
   if(m->hp < Monsters[m->id].hp / 4)
   {
     dx       = -dx;
@@ -134,7 +133,6 @@ void m_scaredy_move(monster *m)
 {
   int dx = -sign(Player.x - m->x);
   int dy = -sign(Player.y - m->y);
-  erase_monster(m);
   if(Player.status[INVISIBLE])
   {
     m_random_move(m);
@@ -189,7 +187,6 @@ void m_spirit_move(monster *m)
 {
   int dx = sign(Player.x - m->x);
   int dy = sign(Player.y - m->y);
-  erase_monster(m);
   if(m->hp < Monsters[m->id].hp / 6)
   {
     dx = -dx;
@@ -211,7 +208,6 @@ void m_flutter_move(monster *m)
 {
   int trange, range = distance(m->x, m->y, Player.x, Player.y);
   int tx, ty, nx = m->x, ny = m->y;
-  erase_monster(m);
   if(Player.status[INVISIBLE] > 0)
   {
     m_random_move(m);
@@ -258,7 +254,6 @@ void m_follow_move(monster *m)
 // allows monsters to fall into pools, revealed traps, etc
 void m_confused_move(monster *m)
 {
-  erase_monster(m);
   bool done = false;
   for(int i = 0; i < 8 && !done; ++i)
   {
@@ -274,7 +269,6 @@ void m_confused_move(monster *m)
 
 void m_random_move(monster *m)
 {
-  erase_monster(m);
   bool done = false;
   for(int i = 0; i < 8 && !done; ++i)
   {
@@ -300,18 +294,15 @@ void m_vanish(monster *m)
     queue_message(std::format("{} vanishes in the twinkling of an eye!", m->monstring));
   }
   Level->site[m->x][m->y].creature = nullptr;
-  erase_monster(m);
   m->hp = -1; // signals "death" -- no credit to player, though
 }
 
 // monster still in play
 void m_teleport(monster *m)
 {
-  erase_monster(m);
   if(m_statusp(*m, AWAKE))
   {
     Level->site[m->x][m->y].creature = nullptr;
-    putspot(m->x, m->y, getspot(m->x, m->y, false));
     findspace(&(m->x), &(m->y), -1);
     Level->site[m->x][m->y].creature = m;
   }

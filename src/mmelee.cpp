@@ -267,7 +267,6 @@ void monster_melee(monster *m, char hitloc, int bonus)
 // execute monster attacks versus player
 void tacmonster(monster *m)
 {
-  drawvision(Player.x, Player.y);
   transcribe_monster_actions(m);
   for(size_t i = 0; i < m->meleestr.length() && m->hp > 0; i += 2)
   {

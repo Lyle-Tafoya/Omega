@@ -381,7 +381,8 @@ enum lstatus_bit : uint8_t
   LIT     = (1 << 1),
   SECRET  = (1 << 2),
   STOPS   = (1 << 3),
-  CHANGED = (1 << 4)
+  CHANGED = (1 << 4),
+  VISIBLE = (1 << 5)
 };
 
 // room string id for use in roomname()
@@ -437,10 +438,10 @@ constexpr int NUMROOMNAMES = 30;
 // objects, locations, and terrain; characters to draw
 #define NULL_ITEM     '\0'
 #define SPACE         (' ' | CLR(WHITE))
-#define WALL          ('#' | CLR(GREY))
+#define WALL          ('#' | CLR(BROWN))
 #define PORTCULLIS    ('7' | CLR(WHITE))
-#define OPEN_DOOR     ('|' | CLR(BROWN))
-#define CLOSED_DOOR   ('-' | CLR(BROWN))
+#define OPEN_DOOR     ('|' | CLR(BRIGHT_WHITE))
+#define CLOSED_DOOR   ('-' | CLR(BRIGHT_WHITE))
 #define WHIRLWIND     ('6' | CLR(LIGHT_BLUE))
 #define ABYSS         ('0' | CLRS(BLACK, BROWN))
 #define VOID_CHAR     (' ' | CLR(WHITE))
@@ -452,7 +453,7 @@ constexpr int NUMROOMNAMES = 30;
 #define LIFT          ('_' | CLR(BRIGHT_WHITE))
 #define STAIRS_UP     ('<' | CLR(WHITE))
 #define STAIRS_DOWN   ('>' | CLR(WHITE))
-#define FLOOR         ('.' | CLR(BROWN))
+#define FLOOR         ('.' | CLR(WHITE))
 #define PLAYER        ('@' | CLRS(BLACK, WHITE))
 #define CORPSE        ('+' | CLR(RED))
 #define STATUE        ('1' | CLR(GREY))

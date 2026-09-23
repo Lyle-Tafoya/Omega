@@ -1336,7 +1336,7 @@ void m_lava(monster *m)
 
 void m_altar(monster *m)
 {
-  int visible  = view_los_p(Player.x, Player.y, m->x, m->y);
+  int visible  = loc_statusp(m->x, m->y, VISIBLE, *Level);
   int reaction = 0;
   int altar    = Level->site[m->x][m->y].aux;
 

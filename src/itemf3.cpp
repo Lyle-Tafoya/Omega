@@ -106,7 +106,6 @@ void i_stargem(std::unique_ptr<object> &o)
     Player.x = 61;
     Player.y = 3;
     screencheck(Player.x, Player.y);
-    drawvision(Player.x, Player.y);
     locprint("Star Peak");
     Country[Player.x][Player.y].current_terrain_type = Country[Player.x][Player.y].base_terrain_type;
     c_set(Player.x, Player.y, CHANGED, Country);

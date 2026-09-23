@@ -25,7 +25,6 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 void p_movefunction(int movef)
 {
   // loc functs above traps should be activated whether levitating or not
-  drawvision(Player.x, Player.y);
   sign_print(Player.x, Player.y, false);
   if(Player.status[SHADOWFORM])
   {

@@ -763,7 +763,6 @@ int screenmod_horizontal(int);
 int showhour();
 int showminute();
 bool unblocked(int, int);
-bool view_los_p(int, int, int, int);
 bool view_unblocked(int, int);
 void calc_weight();
 void do_los(chtype, int *, int *, int, int);

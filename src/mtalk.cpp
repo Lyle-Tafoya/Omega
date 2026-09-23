@@ -256,7 +256,6 @@ void m_talk_guard(monster *m)
         queue_message("Go directly to jail. Do not pass go, do not collect 200Au.");
         queue_message("You are taken to the city gaol.");
         send_to_jail();
-        drawvision(Player.x, Player.y);
       }
       else
       {
@@ -720,7 +719,6 @@ void m_talk_horse(monster *m)
     {
       m->hp                            = -1;
       Level->site[m->x][m->y].creature = nullptr;
-      putspot(m->x, m->y, getspot(m->x, m->y, false));
       setgamestatus(MOUNTED, GameStatus);
       calc_melee();
       queue_message("You are now equitating!");
@@ -756,8 +754,7 @@ void m_talk_servant(monster *m)
   if(ynq() == 'y')
   {
     queue_message("Show me.");
-    show_screen();
-    drawmonsters(true);
+    drawmonsters();
     setspot(x, y);
     if(Level->site[x][y].creature)
     {

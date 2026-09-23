@@ -169,10 +169,7 @@ void change_level(char fromlevel, char tolevel, char rewrite_level)
     stock_level();
   }
   find_stairs(fromlevel, tolevel);
-  calculate_offsets(Player.x, Player.y);
-  show_screen();
   screencheck(Player.x, Player.y);
-  drawvision(Player.x, Player.y);
   // synchronize with player on level change
   Player.click = (Tick + 1) % 60;
   roomcheck();

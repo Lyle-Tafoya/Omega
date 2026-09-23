@@ -421,7 +421,7 @@ void m_sp_dragonlord(monster *m)
     else
     {
       Constriction = 0;
-      if(view_los_p(m->x, m->y, Player.x, Player.y))
+      if(loc_statusp(m->x, m->y, VISIBLE, *Level))
       {
         if((!Player.immunity[FEAR]) && (!Player.status[AFRAID]))
         {
@@ -634,7 +634,7 @@ void m_sp_swarm(monster *m)
 {
   if(random_range(5) == 1)
   {
-    if(view_los_p(m->x, m->y, Player.x, Player.y))
+    if(loc_statusp(m->x, m->y, VISIBLE, *Level))
     {
       queue_message("The swarm expands!");
     }
@@ -700,7 +700,7 @@ void m_sp_mb(monster *m)
 
 void m_sp_mirror(monster *m)
 {
-  if(view_los_p(m->x, m->y, Player.x, Player.y))
+  if(loc_statusp(m->x, m->y, VISIBLE, *Level))
   {
     if(random_range(20) + 6 < m->level)
     {
@@ -716,7 +716,6 @@ void m_sp_mirror(monster *m)
         if(inbounds(x, y))
         {
           Level->site[x][y].showchar = m->monchar;
-          putspot(x, y, m->monchar);
         }
       }
     }
