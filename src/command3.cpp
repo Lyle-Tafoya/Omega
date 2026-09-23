@@ -824,6 +824,10 @@ void tacoptions()
   size_t place       = 0;
   bool done          = false;
   bool draw_again    = true;
+  if(Player.meleestr.size() < actionsleft*2)
+  {
+    Player.meleestr.resize(actionsleft*2);
+  }
   do
   {
     if(draw_again)
