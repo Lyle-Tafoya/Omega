@@ -431,7 +431,7 @@ constexpr int NUMROOMNAMES = 30;
 
 #include "clrgen.h"
 
-#include <curses.h>
+#include "omega_curses.h"
 #define CLR(fg)       CLR_##fg##_BLACK
 #define CLRS(fg, bg)  CLR_##fg##_##bg
 

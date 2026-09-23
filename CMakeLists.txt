@@ -67,7 +67,15 @@ if(WIN32)
   link_directories(${CMAKE_BINARY_DIR}/installed/Release/lib/${PDC_WINDOW_TYPE})
 endif()
 
-add_executable(omega
+# ---------------------------------------------------------------------------
+# omega-core: game logic shared between the standalone executable and the
+# Godot GDExtension. Excludes omega.cpp (main + globals), scr.cpp (curses
+# rendering), and interactive_menu.cpp (curses UI). The latter two will be
+# replaced by scr_godot.cpp and Godot scenes in the GDExtension build.
+# ---------------------------------------------------------------------------
+add_library(omega-core STATIC
+  src/game_session.cpp
+  src/globals.cpp
   src/abyss.cpp
   src/aux1.cpp
   src/aux2.cpp
@@ -91,7 +99,6 @@ add_executable(omega
   src/guild2.cpp
   src/house.cpp
   src/iinit.cpp
-  src/interactive_menu.cpp
   src/inv.cpp
   src/item.cpp
   src/itemf1.cpp
@@ -107,10 +114,8 @@ add_executable(omega
   src/mspec.cpp
   src/mstrike.cpp
   src/mtalk.cpp
-  src/omega.cpp
   src/priest.cpp
   src/save.cpp
-  src/scr.cpp
   src/scrolling_buffer.cpp
   src/site1.cpp
   src/site2.cpp
@@ -120,6 +125,17 @@ add_executable(omega
   src/util.cpp
   src/village.cpp
 )
+target_include_directories(omega-core PUBLIC src)
+
+# ---------------------------------------------------------------------------
+# Standalone executable (curses-based, existing build)
+# ---------------------------------------------------------------------------
+add_executable(omega
+  src/omega.cpp
+  src/interactive_menu.cpp
+  src/scr.cpp
+)
+target_link_libraries(omega PRIVATE omega-core)
 
 add_custom_command(
   TARGET omega POST_BUILD
@@ -173,7 +189,7 @@ if(WIN32)
       msvcrtd
     )
   endif()
-  target_link_libraries(omega
+  target_link_libraries(omega PRIVATE
     $<$<CONFIG:Debug>:${DEBUG_LIBS}>
     $<$<CONFIG:Release>:${RELEASE_LIBS}>
   )

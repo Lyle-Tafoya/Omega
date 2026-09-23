@@ -21,7 +21,8 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "object.h"
 
-#include <curses.h>
+#include "omega_curses.h"
+
 #include <forward_list>
 #include <memory>
 #include <string>

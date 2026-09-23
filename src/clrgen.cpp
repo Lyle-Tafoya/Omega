@@ -14,10 +14,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "clrgen.h"
+#include "omega_curses.h"
 
 #include <cstdio>
 #include <cstdlib>
-#include <curses.h>
 
 void clrgen_init()
 {

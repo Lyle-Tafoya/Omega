@@ -18,6 +18,10 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #ifndef OMEGA_INTERACTIVE_MENU_HPP_
 #define OMEGA_INTERACTIVE_MENU_HPP_
 
+#ifdef OMEGA_CURSES_STUB
+#  include "interactive_menu_stub.hpp"
+#else
+
 #include <curses.h>
 #include <string>
 #include <vector>
@@ -42,5 +46,7 @@ private:
   uint16_t width;
   uint16_t height;
 };
+
+#endif
 
 #endif

@@ -16,38 +16,26 @@ You should have received a copy of the GNU General Public License along with
 Omega. If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef OMEGA_OBJECT_H_
-#define OMEGA_OBJECT_H_
+#ifndef OMEGA_GAME_SESSION_H_
+#define OMEGA_GAME_SESSION_H_
 
-#include "omega_curses.h"
-
-#include <string>
-
-struct object
+// Outcome of init_game_session(): Failed if data files are missing or
+// initialization otherwise fails; NewGame for a fresh character;
+// Continued for a restored save.
+enum class InitResult
 {
-  int id;
-  int weight;
-  int plus;
-  int charge;
-  int dmg;
-  int hit;
-  int aux;
-  int number;
-  int fragility;
-  long basevalue;
-  unsigned char known;
-  unsigned char used;
-  int blessing;
-  unsigned char type;
-  unsigned char uniqueness;
-  int on_use;
-  int on_equip;
-  int on_unequip;
-  unsigned char level;
-  chtype objchar;
-  std::string objstr;
-  std::string truename;
-  std::string cursestr;
+  Failed,
+  NewGame,
+  Continued
 };
+
+// Initializes the game world and rendering. Returns once the world is set up
+// and the first screen has been drawn; the first turn has NOT yet run.
+InitResult init_game_session();
+
+// Runs the main game loop. Blocks until the player quits.
+// Pass reset_clock = true for a new game (resets Tick/Player.click on the
+// first turn). In the GDExtension build this is called on a background thread.
+void run_game_loop(bool reset_clock);
 
 #endif

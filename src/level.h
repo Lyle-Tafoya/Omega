@@ -4,8 +4,9 @@
 #include "defs.h"
 #include "monster.h"
 
+#include "omega_curses.h"
+
 #include <ctime>
-#include <curses.h>
 #include <forward_list>
 #include <vector>
 
