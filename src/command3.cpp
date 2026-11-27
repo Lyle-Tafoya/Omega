@@ -22,6 +22,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "date.h"
 #include "glob.h"
+#include "omega_ui.hpp"
 #include "scr.h"
 
 #include <algorithm>
@@ -44,6 +45,7 @@ void examine()
   queue_message("Examine --");
   queue_message("Targeting....");
   append_message("", true);
+  ui_mode_scope ui(UI_LOOK);
   int x = Player.x, y = Player.y;
   int cursor_visibility = curs_set(1);
   omshowcursor(x, y);

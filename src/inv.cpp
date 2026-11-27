@@ -621,6 +621,11 @@ int getitem(chtype itype)
     queue_message(invstr);
     queue_message(",?] ");
     bool drewmenu = false;
+#ifdef OMEGA_SDL
+    // with a gamepad there's no typing: show the choices straight away
+    drewmenu = true;
+    print_inventory_menu(itype);
+#endif
     char key;
     for(bool ok = false; !ok;)
     {

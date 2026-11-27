@@ -21,6 +21,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "file.h"
 #include "glob.h"
+#include "omega_ui.hpp"
 #include "scr.h"
 #include "scrolling_buffer.hpp"
 
@@ -759,7 +760,11 @@ bool title_menu()
     }
     attroff(CLR(BRIGHT_WHITE));
 
-    switch(player_input = getch())
+    {
+      ui_mode_scope ui(UI_TITLE);
+      player_input = getch();
+    }
+    switch(player_input)
     {
       case ESCAPE:
         endgraf();
