@@ -20,6 +20,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // auxiliary functions for those in commmand[123].cpp, also see aux2.cpp and aux3.cpp
 
 #include "glob.h"
+#include "omega_ui.hpp"
 #include "scr.h"
 
 #include <algorithm>
@@ -667,6 +668,7 @@ void p_death(const std::string &fromstring)
 void setspot(int &x, int &y)
 {
   queue_message("Targeting.... '?' for help.");
+  ui_mode_scope ui(UI_TARGET);
   int cursor_visibility = curs_set(1);
   omshowcursor(x, y);
   int player_input;
@@ -750,6 +752,7 @@ void setspot(int &x, int &y)
 // get a direction: return index into Dirs array corresponding to direction
 int getdir()
 {
+  ui_mode_scope ui(UI_DIRECTION);
   while(1)
   {
     queue_message("Select direction [hjklyubn, ESCAPE to quit]: ");

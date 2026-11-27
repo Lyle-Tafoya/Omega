@@ -19,6 +19,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 
 #include "defs.h"
 #include "scr.h"
+#include "omega_ui.hpp"
 
 extern bool IsMenu;
 
@@ -91,6 +92,7 @@ void interactive_menu::print()
 
 int interactive_menu::get_player_input()
 {
+  ui_mode_scope ui(UI_MENU);
   IsMenu = true;
   while(true)
   {

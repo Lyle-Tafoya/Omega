@@ -27,7 +27,9 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   set(CMAKE_CXX_FLAGS_RELEASE "/DNDEBUG")
 endif()
 
-if(WIN32)
+option(OMEGA_SDL "Build the SDL2 tiles + gamepad frontend instead of curses" ON)
+
+if(WIN32 AND NOT OMEGA_SDL)
   if(NOT DEFINED PDC_GL_BUILD)
     set(PDC_GL_BUILD ON)
   endif()
@@ -121,6 +123,31 @@ add_executable(omega
   src/village.cpp
 )
 
+if(OMEGA_SDL)
+  find_package(SDL2 REQUIRED)
+  target_sources(omega PRIVATE src/sdl/sdlcurses.cpp src/sdl/frontend.cpp src/sdl_hooks.cpp)
+  # our curses.h shim must win over any system curses
+  target_include_directories(omega BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/src/sdl)
+  target_compile_definitions(omega PRIVATE OMEGA_SDL)
+  if(TARGET SDL2::SDL2)
+    target_link_libraries(omega PRIVATE SDL2::SDL2)
+  else()
+    target_include_directories(omega PRIVATE ${SDL2_INCLUDE_DIRS})
+    target_link_libraries(omega PRIVATE ${SDL2_LIBRARIES})
+  endif()
+  # Self-contained binary for handhelds: only SDL2 and libc are needed at runtime
+  option(OMEGA_STATIC_RUNTIME "Statically link libstdc++/libgcc" ON)
+  if(OMEGA_STATIC_RUNTIME AND CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND NOT WIN32)
+    target_link_options(omega PRIVATE -static-libstdc++ -static-libgcc)
+  endif()
+  add_custom_command(
+    TARGET omega POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      ${CMAKE_SOURCE_DIR}/assets
+      $<TARGET_FILE_DIR:omega>/assets
+  )
+endif()
+
 add_custom_command(
   TARGET omega POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -128,7 +155,9 @@ add_custom_command(
     $<TARGET_FILE_DIR:omega>/lib
 )
 
-if(WIN32)
+if(OMEGA_SDL)
+  # nothing else to link
+elseif(WIN32)
   add_dependencies(omega PDCursesMod)
   ExternalProject_Get_Property(PDCursesMod BINARY_DIR)
   if(PDC_GL_BUILD MATCHES "ON")

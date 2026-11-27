@@ -1,0 +1,76 @@
+name: Handheld build
+
+# Builds the SDL2/gamepad version for Steam Deck and other Linux handhelds.
+#  - pull requests: build only, tarball attached to the run as an artifact
+#  - push to main:  build + publish a GitHub release (build-<number>)
+#  - tag v*:        build + publish a release named after the tag
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # 22.04 = glibc 2.35, so the binary runs on older SteamOS / distros too
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain and SDL2
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install -y g++-13 libsdl2-dev cmake
+
+      - name: Build and package
+        env:
+          CC: gcc-13
+          CXX: g++-13
+        run: |
+          tools/package_handheld.sh
+          mv dist/omega-handheld.tar.gz dist/OmegaDeck-linux-x86_64.tar.gz
+
+      - name: Smoke test (headless start)
+        run: |
+          sudo apt-get install -y xvfb
+          printf 'shot /tmp/title.bmp\nquit\n' > /tmp/script.txt
+          cd dist/omega-handheld
+          SDL_RENDER_DRIVER=software OMEGA_PAD_SCRIPT=/tmp/script.txt \
+            timeout 30 xvfb-run -s "-screen 0 1280x800x24" ./omega
+          test -s /tmp/title.bmp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OmegaDeck-linux-x86_64
+          path: dist/OmegaDeck-linux-x86_64.tar.gz
+
+      - name: Publish release
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('build-{0}', github.run_number) }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('OmegaDeck build {0}', github.run_number) }}
+          target_commitish: ${{ github.sha }}
+          make_latest: true
+          files: dist/OmegaDeck-linux-x86_64.tar.gz
+          body: |
+            **OmegaDeck**: the 1987 roguelike Omega with 2D tiles and gamepad controls,
+            built for Steam Deck and other Linux handhelds.
+
+            **Install:** unpack anywhere in your home folder, add `omega.sh` to Steam as a
+            non-Steam game, and pick the **Gamepad** controller template.
+            Controls and options are in `README-HANDHELD.md` inside the archive.
+            Needs SDL2 (SteamOS has it) and glibc 2.35 or newer.
+
+            **Credits:** Omega by Laurence R. Brothers, with Erik Max Francis, Nathan Glasser,
+            Robert Rendell, William Tanksley and other contributors. C++ port by Lyle Tafoya.
+            Tiles are DawnLike by DragonDePlatino and DawnBringer (CC-BY 4.0), via Tommy
+            Ettinger's DawnLikeAtlas. Font is DejaVu Sans Mono, and the frontend uses SDL2.
+            Everyone is listed in `CREDITS.md`. Licensed GPLv3.
+
+            Built from ${{ github.sha }}.

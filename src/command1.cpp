@@ -23,6 +23,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 // which works....
 
 #include "glob.h"
+#include "omega_ui.hpp"
 #include "scr.h"
 
 // deal with a new player command in dungeon or city mode
@@ -53,6 +54,7 @@ void p_process()
     {
       searchval = 0;
       print_messages();
+      ui_mode_scope ui(UI_COMMAND);
       Cmd = get_level_input();
     }
     Command_Duration = 0;
@@ -380,7 +382,10 @@ void p_country_process()
   {
     no_op = false;
     print_messages();
-    Cmd = get_message_input();
+    {
+      ui_mode_scope ui(UI_COMMAND);
+      Cmd = get_message_input();
+    }
     switch(Cmd)
     {
       case ' ':

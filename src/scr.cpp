@@ -27,6 +27,7 @@ Omega. If not, see <https://www.gnu.org/licenses/>.
 #include "file.h"
 #include "glob.h"
 #include "interactive_menu.hpp"
+#include "omega_ui.hpp"
 #include "scrolling_buffer.hpp"
 
 #include <algorithm>
@@ -475,6 +476,7 @@ char menugetc()
 
 int ynq()
 {
+  ui_mode_scope ui(UI_YESNO);
   int cursor_visibility = curs_set(1);
   print_messages();
   int p;
@@ -615,6 +617,9 @@ void initialize_windows()
   keypad(message_window, true);
   level_window = newwin(ScreenLength, ScreenWidth, 0, 0);
   keypad(level_window, true);
+#ifdef OMEGA_SDL
+  sdlc_set_map_window(level_window);
+#endif
   shown_entities_window     = newwin(max_shown_entities, 41, 13, ScreenWidth + 1);
   name_window               = newwin(1, 33, 0, ScreenWidth + 1);
   time_window               = newwin(1, 8, 0, ScreenWidth + 34);
@@ -830,6 +835,7 @@ void more_wait()
     return;
   }
   append_message("--MORE--", true);
+  ui_mode_scope ui(UI_MORE);
   int player_input;
   do
   {
@@ -1826,6 +1832,7 @@ void draw_explosion(chtype pyx, int x, int y)
 
 std::string msgscanstring()
 {
+  ui_mode_scope ui(UI_TEXT);
   int cursor_visibility = curs_set(1);
   std::string input_str;
   int player_input = mgetc();
@@ -1912,6 +1919,7 @@ int getnumber(int range)
   {
     std::string message = "How many? Change with < or >, ESCAPE to select: " + std::to_string(value);
     append_message(message, true);
+    ui_mode_scope ui(UI_COUNT);
     bool done = false;
     while(!done)
     {
@@ -1942,6 +1950,7 @@ int getnumber(int range)
 // reads a positive number up to 999999
 long parsenum()
 {
+  ui_mode_scope ui(UI_NUMBER);
   int number[8];
   int place = -1;
   int i, mult = 1;
