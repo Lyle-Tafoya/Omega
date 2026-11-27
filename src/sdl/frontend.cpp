@@ -1210,6 +1210,7 @@ void render()
   draw_map(scr);
 
   // menus drawn over the map: dim the whole tile view behind them
+  bool dimmed = false;
   if(view.active)
   {
     const WINDOW *w = scr.map_win;
@@ -1228,6 +1229,7 @@ void render()
     if(covered > 8)
     {
       fill(view.rect.x, view.rect.y, view.rect.w, view.rect.h, {8, 8, 14, 200});
+      dimmed = true;
     }
   }
 
@@ -1246,7 +1248,7 @@ void render()
         {
           continue;
         }
-        if(inside)
+        if(inside && !dimmed)
         {
           fill(x, y, cw, ch, {8, 8, 14, 140}); // overlay panel (menus over the map)
         }

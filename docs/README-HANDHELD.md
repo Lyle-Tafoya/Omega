@@ -1,8 +1,12 @@
-# Omega for Steam Deck and other handhelds
+# OmegaDeck: Omega for Steam Deck and other handhelds
 
 This build of Omega has a 2D tile view, using the DawnLike pixel art, and you
 can play it entirely with a gamepad. The game rules haven't changed. Only the
 screen and the controls are new.
+
+The game is the work of Laurence R. Brothers and the Omega contributors, and the
+C++ port is Lyle Tafoya's. The tiles are DawnLike by DragonDePlatino and
+DawnBringer (CC-BY 4.0). See `CREDITS.md` for everyone.
 
 ## Install on Steam Deck
 

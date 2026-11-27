@@ -59,10 +59,18 @@ jobs:
           make_latest: true
           files: dist/OmegaDeck-linux-x86_64.tar.gz
           body: |
-            Steam Deck / Linux handheld build of Omega with 2D tiles and gamepad controls.
+            **OmegaDeck**: the 1987 roguelike Omega with 2D tiles and gamepad controls,
+            built for Steam Deck and other Linux handhelds.
 
             **Install:** unpack anywhere in your home folder, add `omega.sh` to Steam as a
-            non-Steam game, and use the **Gamepad** controller template.
+            non-Steam game, and pick the **Gamepad** controller template.
             Controls and options are in `README-HANDHELD.md` inside the archive.
+            Needs SDL2 (SteamOS has it) and glibc 2.35 or newer.
+
+            **Credits:** Omega by Laurence R. Brothers, with Erik Max Francis, Nathan Glasser,
+            Robert Rendell, William Tanksley and other contributors. C++ port by Lyle Tafoya.
+            Tiles are DawnLike by DragonDePlatino and DawnBringer (CC-BY 4.0), via Tommy
+            Ettinger's DawnLikeAtlas. Font is DejaVu Sans Mono, and the frontend uses SDL2.
+            Everyone is listed in `CREDITS.md`. Licensed GPLv3.
 
             Built from ${{ github.sha }}.
