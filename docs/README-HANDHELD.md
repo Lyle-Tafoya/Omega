@@ -16,7 +16,7 @@ screen and the controls are new.
 Saves go in `lib/saves/` inside the game folder. When you close the window
 during a game, the game saves to `Omega.sav` first.
 
-The binary needs SDL2 (SteamOS has it) and glibc 2.38 or newer. If it won't start
+Release builds from GitHub Actions need SDL2 (SteamOS has it) and glibc 2.35 or newer. If it won't start
 on an older system, build it there (see "Building" below).
 
 ## Controls
@@ -99,3 +99,11 @@ All the sprite choices (which sprite each monster, item and terrain uses) are in
   item) and what the A button should do.
 - `src/omega_ui.hpp`: lets the game say what kind of input it's waiting for
   (`ui_mode_scope`). In the curses build these calls do nothing.
+
+## Releases
+
+GitHub Actions (`.github/workflows/handheld-release.yml`) builds every pull request.
+Each push to `main` publishes a release called `build-N`, and pushing a `v*` tag
+publishes a release named after the tag. Every release has
+`OmegaDeck-linux-x86_64.tar.gz` attached, ready for the GitHub Installer Decky plugin
+or a manual unpack.
